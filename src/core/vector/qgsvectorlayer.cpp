@@ -188,7 +188,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   for ( const QgsField &field : std::as_const( mFields ) )
   {
-    mAttributeAliasMap.insert( field.name(), QString() );
+    if ( !mAttributeAliasMap.contains( field.name() ) )
+      mAttributeAliasMap.insert( field.name(), QString() );
   }
 
   if ( isValid() )
@@ -1802,6 +1803,10 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     {
       mFieldWidgetSetups[ field.name() ] = field.editorWidgetSetup();
     }
+    if ( !field.alias().isEmpty() && mAttributeAliasMap.value( field.name() ).isEmpty() )
+    {
+      mAttributeAliasMap[ field.name() ] = field.alias();
+    }
   }
 
   if ( profile )
@@ -2212,7 +2217,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Fields ) )
   {
-    mAttributeAliasMap.clear();
+    // IMPORTANT - we don't clear mAttributeAliasMap here, as it may contain aliases which are coming direct
+    // from the data provider. Instead we leave any existing aliases and only overwrite them if the style
+    // has a specific value for that field's alias
     QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
     if ( !aliasesNode.isNull() )
     {

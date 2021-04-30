@@ -10,13 +10,12 @@ __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
+import hashlib
 import os
 import shutil
 import sys
 import tempfile
-import hashlib
 from datetime import datetime
-import mockedwebserver
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
@@ -42,9 +41,10 @@ from qgis.core import (
     QgsNetworkAccessManager
 )
 from qgis.testing import start_app, unittest
-
-from utilities import unitTestDataPath
 from qgis.utils import spatialite_connect
+
+import mockedwebserver
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -654,7 +654,8 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Int)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Int)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
         self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [111, 222]}, f3_id: {3: [121, 122, 123]}}))
@@ -734,10 +735,12 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Double)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Double)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [111.1, 222.2]}, f3_id: {3: [121.1, 122.2, 123.3]}}))
+        self.assertTrue(
+            vl.dataProvider().changeAttributeValues({f1_id: {3: [111.1, 222.2]}, f3_id: {3: [121.1, 122.2, 123.3]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -802,7 +805,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         # change attribute values
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {2: NULL}, f3_id: {2: [3234567890123, 3234567890124, 3234567890125, 3234567890126]}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues(
+            {f1_id: {2: NULL}, f3_id: {2: [3234567890123, 3234567890124, 3234567890125, 3234567890126]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -814,10 +818,12 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.LongLong)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.LongLong)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [4234567890123, 4234567890124]}, f3_id: {3: [5234567890123, 5234567890124, 5234567890125]}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues(
+            {f1_id: {3: [4234567890123, 4234567890124]}, f3_id: {3: [5234567890123, 5234567890124, 5234567890125]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -825,7 +831,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual([f.attributes() for f in vl.getFeatures()],
                          [['one', 1, NULL, [4234567890123, 4234567890124]],
                           ['two', 2, [2234567890123, 2234567890124, 2234567890125, 2234567890126], NULL],
-                          ['three', 3, [3234567890123, 3234567890124, 3234567890125, 3234567890126], [5234567890123, 5234567890124, 5234567890125]],
+                          ['three', 3, [3234567890123, 3234567890124, 3234567890125, 3234567890126],
+                           [5234567890123, 5234567890124, 5234567890125]],
                           ['four', 4, NULL, NULL]])
 
     def testBlobCreation(self):
@@ -1015,15 +1022,25 @@ class PyQgsOGRProvider(unittest.TestCase):
                                    'guid', 'SHAPE_Length', 'SHAPE_Area']
             expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field',
                               'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', '', '']
+            expected_alias_map = {'OBJECTID': '', 'SHAPE_Area': '', 'SHAPE_Length': '', 'blob': 'My Blob Field',
+                                  'date': 'My Date Field', 'double': 'My Double Field', 'float': 'My Float Field',
+                                  'guid': 'My GUID field', 'long_int': 'My Long Int Field',
+                                  'short_int': 'My Short Int Field', 'text': 'My Text Field'}
         else:
             expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob',
                                    'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area']
             expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field',
                               'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field',
                               '', '']
+            expected_alias_map = {'OBJECTID': '', 'SHAPE_Area': '', 'SHAPE_Length': '', 'blob': 'My Blob Field',
+                                  'date': 'My Date Field', 'double': 'My Double Field', 'float': 'My Float Field',
+                                  'guid': 'My GUID field', 'long_int': 'My Long Int Field', 'raster': 'My Raster Field',
+                                  'short_int': 'My Short Int Field', 'text': 'My Text Field'}
 
         self.assertEqual([f.name() for f in fields], expected_fieldnames)
         self.assertEqual([f.alias() for f in fields], expected_alias)
+
+        self.assertEqual(vl.attributeAliases(), expected_alias_map)
 
     def testGdbLayerMetadata(self):
         """
