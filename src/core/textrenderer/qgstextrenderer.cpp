@@ -28,7 +28,6 @@
 
 #include <optional>
 #include "qgsrendercontext.h"
-#include <QDebug>
 
 #include <QTextBoundaryFinder>
 
@@ -2102,7 +2101,6 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
 bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format )
 {
-  qDebug()<<QString("requireswrap?")<<QString::number(space);
   const QStringList multiLineSplit = text.split( '\n' );
   double currentTextLength;
   if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
@@ -2114,19 +2112,15 @@ bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const
 
 QStringList QgsTextRenderer::wrapText( const QString &text, double space, const QgsRenderContext &context, const QgsTextFormat &format, const bool autoSize )
 {
-  qDebug()<<QString("wrap")<<QString::number(space);
   const QStringList lines = text.split( '\n' );
   const int startIdx = ( format.orientation() == QgsTextFormat::HorizontalOrientation ) ? 0 : lines.length() - 1;
   const int stepIdx = ( format.orientation() == QgsTextFormat::HorizontalOrientation ) ? 1 : -1;
   int idx;
   QStringList outLines;
-  if (autoSize)
-    qDebug()<<QString("autosize");
   for ( int i = 0; i < lines.length() ; ++i )
   {
     idx = startIdx + ( i * stepIdx );
     const QString line = lines.at( idx );
-    qDebug()<<line;
     if ( autoSize || QgsTextRenderer::requiresWrapping( line, space, context, format ) )
     {
       //first step is to identify words which must be on their own line (too long to fit)
@@ -2190,7 +2184,6 @@ QStringList QgsTextRenderer::wrapText( const QString &text, double space, const 
 
 QString QgsTextRenderer::justify( const QString &text, const int space, const QgsRenderContext &context, const QgsTextFormat &format )
 {
-  qDebug()<<QString("justif");
   QStringList words = text.simplified().split( ' ' );
   const double screenScale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   double currentTextSpace;
