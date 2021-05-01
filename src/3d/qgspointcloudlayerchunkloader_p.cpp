@@ -52,7 +52,6 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   , mFactory( factory )
   , mContext( factory->mMap, coordinateTransform, std::move( symbol ), zValueScale, zValueOffset )
 {
-  mContext.setIsCanceledCallback( [this] { return mCanceled; } );
 
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc->attributes() );
@@ -84,7 +83,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   {
     QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
-    if ( mCanceled )
+    if ( mContext.isCanceled() )
     {
       QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
@@ -104,7 +103,6 @@ QgsPointCloudLayerChunkLoader::~QgsPointCloudLayerChunkLoader()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mCanceled = true;
     mContext.cancelRendering();
     mFutureWatcher->waitForFinished();
   }
@@ -112,7 +110,7 @@ QgsPointCloudLayerChunkLoader::~QgsPointCloudLayerChunkLoader()
 
 void QgsPointCloudLayerChunkLoader::cancel()
 {
-  mCanceled = true;
+  mContext.cancelRendering();
 }
 
 Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )

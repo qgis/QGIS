@@ -26,6 +26,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgsfeedback.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QAttribute>
@@ -240,7 +241,7 @@ QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloud
     QgsPointCloudBlockRequest *req = pc->asyncNodeData( n, request );
     QObject::connect( req, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
 
-    QMetaObject::Connection connection = QObject::connect( &context, &QgsPointCloud3DRenderContext::renderingCanceled, [ & ]()
+    QMetaObject::Connection connection = QObject::connect( context.feedback(), &QgsFeedback::canceled, [ & ]()
     {
       loopAborted = true;
       loop.quit();
