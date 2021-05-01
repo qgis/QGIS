@@ -33,6 +33,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRenderChecker,
                        QgsBlurEffect,
                        QgsMarkerSymbol,
+                       QgsFillSymbol,
+                       QgsSimpleFillSymbolLayer,
                        QgsPalLayerSettings,
                        QgsProperty,
                        QgsFontUtils,
@@ -2024,6 +2026,24 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
         format.background().setFillColor(QColor(50, 100, 50))
         assert self.checkRender(format, 'background_fillcolor', QgsTextRenderer.Background)
+
+    def testDrawBackgroundFillSymbol(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.background().setEnabled(True)
+        format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
+        format.background().setSize(QSizeF(30, 20))
+        format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        format.background().setFillColor(QColor(255, 0, 0))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(QColor(0, 255, 0, 25))
+        fill.setStrokeColor(QColor(0, 0, 255))
+        fill.setStrokeWidth(6)
+        format.background().setFillSymbol(fill_symbol)
+
+        assert self.checkRender(format, 'background_fillsymbol', QgsTextRenderer.Background)
 
     def testDrawBackgroundStroke(self):
         format = QgsTextFormat()

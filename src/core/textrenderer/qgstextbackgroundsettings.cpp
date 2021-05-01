@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfillsymbollayer.h"
 #include "qgspainting.h"
 #include "qgstextrendererutils.h"
 #include "qgspainteffectregistry.h"
@@ -25,6 +26,18 @@
 QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {
   d = new QgsTextBackgroundSettingsPrivate();
+
+  // Create a default fill symbol to preserve API promise until QGIS 4.0
+  QgsSimpleFillSymbolLayer *fill = new QgsSimpleFillSymbolLayer( d->fillColor, Qt::SolidPattern, d->strokeColor );
+  fill->setStrokeWidth( d->strokeWidth );
+  fill->setStrokeWidthUnit( d->strokeWidthUnits );
+  fill->setStrokeWidthMapUnitScale( d->strokeWidthMapUnitScale );
+  fill->setStrokeStyle( !qgsDoubleNear( d->strokeWidth, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
+  fill->setPenJoinStyle( d->joinStyle );
+
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, fill );
+  setFillSymbol( fillSymbol );
 }
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other ) //NOLINT
@@ -79,6 +92,10 @@ bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &oth
        || ( d->markerSymbol && QgsSymbolLayerUtils::symbolProperties( d->markerSymbol.get() ) != QgsSymbolLayerUtils::symbolProperties( other.markerSymbol() ) ) )
     return false;
 
+  if ( static_cast< bool >( d->fillSymbol ) != static_cast< bool >( other.fillSymbol() )
+       || ( d->fillSymbol && QgsSymbolLayerUtils::symbolProperties( d->fillSymbol.get() ) != QgsSymbolLayerUtils::symbolProperties( other.fillSymbol() ) ) )
+    return false;
+
   return true;
 }
 
@@ -125,6 +142,16 @@ QgsMarkerSymbol *QgsTextBackgroundSettings::markerSymbol() const
 void QgsTextBackgroundSettings::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
   d->markerSymbol.reset( symbol );
+}
+
+QgsFillSymbol *QgsTextBackgroundSettings::fillSymbol() const
+{
+  return d->fillSymbol.get();
+}
+
+void QgsTextBackgroundSettings::setFillSymbol( QgsFillSymbol *symbol )
+{
+  d->fillSymbol.reset( symbol );
 }
 
 QgsTextBackgroundSettings::SizeType QgsTextBackgroundSettings::sizeType() const
@@ -275,6 +302,10 @@ QColor QgsTextBackgroundSettings::fillColor() const
 void QgsTextBackgroundSettings::setFillColor( const QColor &color )
 {
   d->fillColor = color;
+  if ( d->fillSymbol )
+  {
+    d->fillSymbol->setColor( color );
+  }
 }
 
 QColor QgsTextBackgroundSettings::strokeColor() const
@@ -285,6 +316,10 @@ QColor QgsTextBackgroundSettings::strokeColor() const
 void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
 {
   d->strokeColor = color;
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  {
+    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
+  }
 }
 
 double QgsTextBackgroundSettings::strokeWidth() const
@@ -295,6 +330,12 @@ double QgsTextBackgroundSettings::strokeWidth() const
 void QgsTextBackgroundSettings::setStrokeWidth( double width )
 {
   d->strokeWidth = width;
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  {
+    QgsSimpleFillSymbolLayer *fill = static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+    fill->setStrokeWidth( width );
+    fill->setStrokeStyle( !qgsDoubleNear( width, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
+  }
 }
 
 QgsUnitTypes::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
@@ -305,6 +346,10 @@ QgsUnitTypes::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
 void QgsTextBackgroundSettings::setStrokeWidthUnit( QgsUnitTypes::RenderUnit units )
 {
   d->strokeWidthUnits = units;
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  {
+    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
+  }
 }
 
 QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
@@ -315,6 +360,10 @@ QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
 void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale )
 {
   d->strokeWidthMapUnitScale = scale;
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  {
+    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
+  }
 }
 
 Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
@@ -325,6 +374,10 @@ Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
 void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
 {
   d->joinStyle = style;
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  {
+    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
+  }
 }
 
 const QgsPaintEffect *QgsTextBackgroundSettings::paintEffect() const
@@ -589,11 +642,39 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   else
     setPaintEffect( nullptr );
 
-  const QDomElement symbolElem = backgroundElem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !symbolElem.isNull() )
-    setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
-  else
-    setMarkerSymbol( nullptr );
+  setMarkerSymbol( nullptr );
+  setFillSymbol( nullptr );
+  const QDomNodeList symbols = backgroundElem.elementsByTagName( QStringLiteral( "symbol" ) );
+  for ( int i = 0; i < symbols.size(); ++i )
+  {
+    if ( symbols.at( i ).isElement() )
+    {
+      const QDomElement symbolElement = symbols.at( i ).toElement();
+      const QString symbolElementName = symbolElement.attribute( QStringLiteral( "name" ) );
+      if ( symbolElementName == QStringLiteral( "markerSymbol" ) )
+      {
+        setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ) );
+      }
+      else if ( symbolElementName == QStringLiteral( "fillSymbol" ) )
+      {
+        setFillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ) );
+      }
+    }
+  }
+
+  if ( !d->fillSymbol )
+  {
+    QgsSimpleFillSymbolLayer *fill = new QgsSimpleFillSymbolLayer( d->fillColor, Qt::SolidPattern, d->strokeColor );
+    fill->setStrokeWidth( d->strokeWidth );
+    fill->setStrokeWidthUnit( d->strokeWidthUnits );
+    fill->setStrokeWidthMapUnitScale( d->strokeWidthMapUnitScale );
+    fill->setStrokeStyle( !qgsDoubleNear( d->strokeWidth, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
+    fill->setPenJoinStyle( d->joinStyle );
+
+    QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+    fillSymbol->changeSymbolLayer( 0, fill );
+    setFillSymbol( fillSymbol );
+  }
 }
 
 QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -630,6 +711,9 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
 
   if ( d->markerSymbol )
     backgroundElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "markerSymbol" ), d->markerSymbol.get(), doc, context ) );
+
+  if ( d->fillSymbol )
+    backgroundElem.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fillSymbol" ), d->fillSymbol.get(), doc, context ) );
 
   return backgroundElem;
 }
@@ -817,6 +901,10 @@ QSet<QString> QgsTextBackgroundSettings::referencedFields( const QgsRenderContex
   if ( d->markerSymbol )
   {
     fields.unite( d->markerSymbol->usedAttributes( context ) );
+  }
+  if ( d->fillSymbol )
+  {
+    fields.unite( d->fillSymbol->usedAttributes( context ) );
   }
   return fields;
 }

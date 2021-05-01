@@ -309,7 +309,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
 
   mTextFormatsListWidget->setLayerType( mLayer ? mLayer->geometryType() : mGeomType );
-  mBackgroundSymbolButton->setLayer( mLayer );
+  mBackgroundMarkerSymbolButton->setLayer( mLayer );
+  mBackgroundFillSymbolButton->setLayer( mLayer );
 
   // load labeling settings from layer
   updateGeometryTypeBasedWidgets();

@@ -1008,60 +1008,56 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       p->translate( QPointF( xoff, yoff ) );
       p->rotate( component.rotationOffset );
 
-      double penSize = context.convertToPainterUnits( background.strokeWidth(), background.strokeWidthUnit(), background.strokeWidthMapUnitScale() );
-
-      QPen pen;
-      if ( background.strokeWidth() > 0 )
-      {
-        pen.setColor( background.strokeColor() );
-        pen.setWidthF( penSize );
-        if ( background.type() == QgsTextBackgroundSettings::ShapeRectangle )
-          pen.setJoinStyle( background.joinStyle() );
-      }
-      else
-      {
-        pen = Qt::NoPen;
-      }
-
-      // store painting in QPicture for shadow drawing
-      QPicture shapePict;
-      QPainter shapep;
-      shapep.begin( &shapePict );
-      shapep.setPen( pen );
-      shapep.setBrush( background.fillColor() );
-
+      QPainterPath path;
       if ( background.type() == QgsTextBackgroundSettings::ShapeRectangle
            || background.type() == QgsTextBackgroundSettings::ShapeSquare )
       {
         if ( background.radiiUnit() == QgsUnitTypes::RenderPercentage )
         {
-          shapep.drawRoundedRect( rect, background.radii().width(), background.radii().height(), Qt::RelativeSize );
+          path.addRoundedRect( rect, background.radii().width(), background.radii().height(), Qt::RelativeSize );
         }
         else
         {
           double xRadius = context.convertToPainterUnits( background.radii().width(), background.radiiUnit(), background.radiiMapUnitScale() );
           double yRadius = context.convertToPainterUnits( background.radii().height(), background.radiiUnit(), background.radiiMapUnitScale() );
-          shapep.drawRoundedRect( rect, xRadius, yRadius );
+          path.addRoundedRect( rect, xRadius, yRadius );
         }
       }
       else if ( background.type() == QgsTextBackgroundSettings::ShapeEllipse
                 || background.type() == QgsTextBackgroundSettings::ShapeCircle )
       {
-        shapep.drawEllipse( rect );
+        path.addEllipse( rect );
       }
+      QPolygonF polygon = path.toFillPolygon();
+      QPicture shapePict;
+      QPainter *oldp = context.painter();
+      QPainter shapep;
+
+      shapep.begin( &shapePict );
+      context.setPainter( &shapep );
+
+      std::unique_ptr< QgsFillSymbol > renderedSymbol;
+      renderedSymbol.reset( background.fillSymbol()->clone() );
+      renderedSymbol->setOpacity( background.opacity() );
+
+      const QgsFeature f = context.expressionContext().feature();
+      renderedSymbol->startRender( context, context.expressionContext().fields() );
+      renderedSymbol->renderPolygon( polygon, nullptr, &f, context );
+      renderedSymbol->stopRender( context );
+
       shapep.end();
+      context.setPainter( oldp );
 
       if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
       {
         component.picture = shapePict;
-        component.pictureBuffer = penSize / 2.0;
+        component.pictureBuffer = 2.0; // arbitrary
 
         component.size = rect.size();
         component.offset = QPointF( rect.width() / 2, -rect.height() / 2 );
         drawShadow( context, component, format );
       }
 
-      p->setOpacity( background.opacity() );
       if ( context.useAdvancedEffects() )
       {
         p->setCompositionMode( background.blendMode() );
@@ -1071,6 +1067,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       p->scale( component.dpiRatio, component.dpiRatio );
       _fixQPictureDPI( p );
       p->drawPicture( 0, 0, shapePict );
+      p->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
       break;
     }
   }
