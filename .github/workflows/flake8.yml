@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Run flake8
-        uses: julianwachholz/flake8-action@v1.1.0
+        uses: julianwachholz/flake8-action@v2.0.0
         with:
           checkName: 'Python Lint'
         env:
