@@ -302,9 +302,9 @@ QColor QgsTextBackgroundSettings::fillColor() const
 void QgsTextBackgroundSettings::setFillColor( const QColor &color )
 {
   d->fillColor = color;
-  if ( d->fillSymbol )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    d->fillSymbol->setColor( color );
+    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setColor( color );
   }
 }
 
@@ -718,6 +718,44 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
   return backgroundElem;
 }
 
+void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollection &properties )
+{
+  if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QStringLiteral( "SimpleFill" ) )
+    return;
+  QgsSimpleFillSymbolLayer *fill = static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+
+  if ( d->type != QgsTextBackgroundSettings::ShapeSVG )
+  {
+    if ( properties.hasProperty( QgsPalLayerSettings::ShapeFillColor ) &&
+         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::PropertyFillColor ) )
+    {
+      fill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyFillColor, properties.property( QgsPalLayerSettings::ShapeFillColor ) );
+      properties.setProperty( QgsPalLayerSettings::ShapeFillColor, QgsProperty() );
+    }
+
+    if ( properties.hasProperty( QgsPalLayerSettings::ShapeStrokeColor ) &&
+         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::PropertyStrokeColor ) )
+    {
+      fill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyStrokeColor, properties.property( QgsPalLayerSettings::ShapeStrokeColor ) );
+      properties.setProperty( QgsPalLayerSettings::ShapeStrokeColor, QgsProperty() );
+    }
+
+    if ( properties.hasProperty( QgsPalLayerSettings::ShapeStrokeWidth ) &&
+         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::PropertyStrokeWidth ) )
+    {
+      fill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyStrokeWidth, properties.property( QgsPalLayerSettings::ShapeStrokeWidth ) );
+      properties.setProperty( QgsPalLayerSettings::ShapeStrokeWidth, QgsProperty() );
+    }
+
+    if ( properties.hasProperty( QgsPalLayerSettings::ShapeJoinStyle ) &&
+         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::PropertyJoinStyle ) )
+    {
+      fill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyJoinStyle, properties.property( QgsPalLayerSettings::ShapeJoinStyle ) );
+      properties.setProperty( QgsPalLayerSettings::ShapeJoinStyle, QgsProperty() );
+    }
+  }
+}
+
 void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties )
 {
   if ( properties.isActive( QgsPalLayerSettings::ShapeDraw ) )
@@ -847,6 +885,8 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
     d->opacity = properties.value( QgsPalLayerSettings::ShapeOpacity, context.expressionContext(), d->opacity * 100 ).toDouble() / 100.0;
   }
 
+  // for non-SVG background types, those data defined properties will not having an impact,
+  // instead use data defined properties within symbols
   if ( properties.isActive( QgsPalLayerSettings::ShapeFillColor ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( d->fillColor ) );

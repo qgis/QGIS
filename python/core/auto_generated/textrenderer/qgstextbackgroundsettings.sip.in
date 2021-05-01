@@ -668,7 +668,20 @@ Write settings into a DOM element.
 %Docstring
 Updates the format by evaluating current values of data defined properties.
 
+.. note::
+
+   Since QGIS 3.20, data defined fill color, stroke color, stroke width, and
+   pen join style will only modify SVG backgrounds. For other background types, the
+   data defined properties within symbols are to be used.
+
 .. versionadded:: 3.10
+%End
+
+    void upgradeDataDefinedProperties( QgsPropertyCollection &properties );
+%Docstring
+Upgrade data defined properties when reading a project file saved in QGIS prior to version 3.20.
+
+.. versionadded:: 3.20
 %End
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;

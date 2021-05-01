@@ -544,9 +544,18 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /**
      * Updates the format by evaluating current values of data defined properties.
+     * \note Since QGIS 3.20, data defined fill color, stroke color, stroke width, and
+     * pen join style will only modify SVG backgrounds. For other background types, the
+     * data defined properties within symbols are to be used.
      * \since QGIS 3.10
      */
     void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
+    /**
+     * Upgrade data defined properties when reading a project file saved in QGIS prior to version 3.20.
+     * \since QGIS 3.20
+     */
+    void upgradeDataDefinedProperties( QgsPropertyCollection &properties );
 
     /**
      * Returns all field names referenced by the configuration (e.g. from data defined properties).

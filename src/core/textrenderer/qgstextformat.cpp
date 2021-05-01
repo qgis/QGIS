@@ -582,6 +582,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   if ( !ddElem.isNull() )
   {
     d->mDataDefinedProperties.readXml( ddElem, QgsPalLayerSettings::propertyDefinitions() );
+    mBackgroundSettings.upgradeDataDefinedProperties( d->mDataDefinedProperties );
   }
   else
   {
