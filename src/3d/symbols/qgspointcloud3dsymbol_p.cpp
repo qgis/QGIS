@@ -240,14 +240,12 @@ QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloud
     QEventLoop loop;
     QgsPointCloudBlockRequest *req = pc->asyncNodeData( n, request );
     QObject::connect( req, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
-
-    QMetaObject::Connection connection = QObject::connect( context.feedback(), &QgsFeedback::canceled, [ & ]()
+    QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, [ & ]()
     {
       loopAborted = true;
       loop.quit();
     } );
     loop.exec();
-    QObject::disconnect( connection );
 
     if ( !loopAborted )
       block = req->block();
