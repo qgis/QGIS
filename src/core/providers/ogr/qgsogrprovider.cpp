@@ -1441,26 +1441,41 @@ void QgsOgrProvider::loadMetadata()
 
     if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     {
-      // read Geopackage layer metadata - scan gpkg_metadata table for QGIS metadata
-      const QString sql = QStringLiteral( "SELECT metadata from gpkg_metadata LEFT JOIN gpkg_metadata_reference ON "
-                                          "(gpkg_metadata_reference.table_name = %1 AND gpkg_metadata.id = gpkg_metadata_reference.md_file_id) "
-                                          "WHERE md_standard_uri = %2 and reference_scope = %3" ).arg(
-                            QgsSqliteUtils::quotedString( mOgrOrigLayer->name() ),
-                            QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
-                            QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );                                                         ;
-
+      // first check if metadata tables/extension exists
+      QString sql = QStringLiteral( "SELECT name FROM sqlite_master WHERE name='gpkg_metadata' AND type='table'" );
+      bool metadataTableExists = false;
       if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
       {
         gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
         if ( f )
         {
-          bool ok = false;
-          QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
-          if ( ok )
+          metadataTableExists = true;
+        }
+      }
+
+      if ( metadataTableExists )
+      {
+        // read Geopackage layer metadata - scan gpkg_metadata table for QGIS metadata
+        sql = QStringLiteral( "SELECT metadata from gpkg_metadata LEFT JOIN gpkg_metadata_reference ON "
+                              "(gpkg_metadata_reference.table_name = %1 AND gpkg_metadata.id = gpkg_metadata_reference.md_file_id) "
+                              "WHERE md_standard_uri = %2 and reference_scope = %3" ).arg(
+                QgsSqliteUtils::quotedString( mOgrOrigLayer->name() ),
+                QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );                                                         ;
+
+        if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+        {
+          gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+          if ( f )
           {
-            QDomDocument doc;
-            doc.setContent( res.toString() );
-            mLayerMetadata.readMetadataXml( doc.documentElement() );
+            bool ok = false;
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+            if ( ok )
+            {
+              QDomDocument doc;
+              doc.setContent( res.toString() );
+              mLayerMetadata.readMetadataXml( doc.documentElement() );
+            }
           }
         }
       }
