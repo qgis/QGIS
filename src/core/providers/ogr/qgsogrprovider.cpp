@@ -617,48 +617,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsBoolean = false;
 
   // layer metadata
-  if ( mOgrOrigLayer )
-  {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
-    QRecursiveMutex *mutex = nullptr;
-#endif
-    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
-    QMutexLocker locker( mutex );
-    if ( ( mGDALDriverName == QLatin1String( "FileGDB" ) || mGDALDriverName == QLatin1String( "OpenFileGDB" ) ) )
-    {
-      // read layer metadata
-
-      // important -- this ONLY works if the layer name is NOT quoted!!
-      QByteArray sql = "GetLayerMetadata " + mOgrOrigLayer->name();
-      if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql ) )
-      {
-        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
-        if ( f )
-        {
-          bool ok = false;
-          QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, textEncoding(), &ok );
-          if ( ok )
-          {
-            QDomDocument metadataDoc;
-            metadataDoc.setContent( res.toString() );
-            mLayerMetadata = QgsMetadataUtils::convertFromEsri( metadataDoc );
-          }
-        }
-      }
-    }
-    else
-    {
-      const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
-      if ( !identifier.isEmpty() )
-        mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
-      const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
-      if ( !abstract.isEmpty() )
-        mLayerMetadata.setAbstract( abstract );
-    }
-  }
-  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  loadMetadata();
 
   if ( mOgrOrigLayer )
   {
@@ -1461,6 +1420,76 @@ void QgsOgrProvider::loadFields()
   }
 }
 
+void QgsOgrProvider::loadMetadata()
+{
+  if ( mOgrOrigLayer )
+  {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QMutex *mutex = nullptr;
+#else
+    QRecursiveMutex *mutex = nullptr;
+#endif
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
+    QMutexLocker locker( mutex );
+
+    const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
+    if ( !identifier.isEmpty() )
+      mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
+    const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
+    if ( !abstract.isEmpty() )
+      mLayerMetadata.setAbstract( abstract );
+
+    if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+    {
+      // read Geopackage layer metadata - scan gpkg_metadata table for QGIS metadata
+      const QString sql = QStringLiteral( "SELECT metadata from gpkg_metadata LEFT JOIN gpkg_metadata_reference ON "
+                                          "(gpkg_metadata_reference.table_name = %1 AND gpkg_metadata.id = gpkg_metadata_reference.md_file_id) "
+                                          "WHERE md_standard_uri = %2 and reference_scope = %3" ).arg(
+                            QgsSqliteUtils::quotedString( mOgrOrigLayer->name() ),
+                            QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                            QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );                                                         ;
+
+      if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          bool ok = false;
+          QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+          if ( ok )
+          {
+            QDomDocument doc;
+            doc.setContent( res.toString() );
+            mLayerMetadata.readMetadataXml( doc.documentElement() );
+          }
+        }
+      }
+    }
+    else if ( ( mGDALDriverName == QLatin1String( "FileGDB" ) || mGDALDriverName == QLatin1String( "OpenFileGDB" ) ) )
+    {
+      // read ESRI FileGeodatabase layer metadata
+
+      // important -- this ONLY works if the layer name is NOT quoted!!
+      QByteArray sql = "GetLayerMetadata " + mOgrOrigLayer->name();
+      if ( QgsOgrLayerUniquePtr l = mOgrOrigLayer->ExecuteSQL( sql ) )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          bool ok = false;
+          QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, textEncoding(), &ok );
+          if ( ok )
+          {
+            QDomDocument metadataDoc;
+            metadataDoc.setContent( res.toString() );
+            mLayerMetadata = QgsMetadataUtils::convertFromEsri( metadataDoc );
+          }
+        }
+      }
+    }
+  }
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+}
 
 QString QgsOgrProvider::storageType() const
 {
