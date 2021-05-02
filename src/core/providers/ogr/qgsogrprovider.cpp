@@ -669,7 +669,7 @@ QgsTransaction *QgsOgrProvider::transaction() const
 
 void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
 {
-  QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 2 );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsOgrTransaction *>( transaction );
 }
@@ -3219,7 +3219,7 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
   if ( mUpdateModeStackDepth == 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Enter update mode implicitly" ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Enter update mode implicitly" ), 2 );
     if ( !_enterUpdateMode( true ) )
       return false;
   }
@@ -4829,11 +4829,11 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       {
         if ( openedAsUpdate )
         {
-          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying again" ), 1 );
+          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying again" ), 2 );
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 1 );
+          QgsDebugMsgLevel( QStringLiteral( "GPKG: Trying to return to delete mode" ), 2 );
         }
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
         hDS = GDALOpenEx( datasetName.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
@@ -4852,7 +4852,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
             if ( hFeat != nullptr )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
-              QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 1 );
+              QgsDebugMsgLevel( QStringLiteral( "Return: %1" ).arg( pszRet ), 2 );
             }
             GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           }
@@ -5081,7 +5081,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   {
     QByteArray sql = encoding->fromUnicode( subsetString );
 
-    QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ), 2 );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
@@ -5115,7 +5115,7 @@ void QgsOgrProvider::open( OpenMode mode )
       mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsgLevel( QStringLiteral( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ), 2 );
   }
 
   QgsDebugMsgLevel( "mFilePath: " + mFilePath, 3 );
@@ -5361,7 +5361,7 @@ bool QgsOgrProvider::_enterUpdateMode( bool implicit )
   if ( mUpdateModeStackDepth == 0 )
   {
     Q_ASSERT( mDynamicWriteAccess );
-    QgsDebugMsgLevel( QStringLiteral( "Reopening %1 in update mode" ).arg( dataSourceUri() ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Reopening %1 in update mode" ).arg( dataSourceUri() ), 2 );
     close();
     open( implicit ? OpenModeForceUpdate : OpenModeForceUpdateRepackOff );
     if ( !mOgrLayer || !mWriteAccess )
@@ -5431,7 +5431,7 @@ bool QgsOgrProvider::leaveUpdateMode()
   }
   if ( mUpdateModeStackDepth == 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Reopening %1 in read-only mode" ).arg( dataSourceUri() ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "Reopening %1 in read-only mode" ).arg( dataSourceUri() ), 2 );
     close();
     open( OpenModeForceReadOnly );
     if ( !mOgrLayer )
@@ -5739,7 +5739,7 @@ void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsNam
   auto iter = sMapDSNameToLastModifiedDate()->find( dsName );
   if ( iter != sMapDSNameToLastModifiedDate()->end() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "invalidating last modified date for %1" ).arg( dsName ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "invalidating last modified date for %1" ).arg( dsName ), 2 );
     iter.value() = iter.value().addSecs( -10 );
   }
 }
