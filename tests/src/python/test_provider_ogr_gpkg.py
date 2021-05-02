@@ -1132,10 +1132,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
         self.assertEqual(layer.featureCount(), 2)
-        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(),
-                         'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
-        self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(),
-                         'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
+        g, g2 = [f.geometry() for f in layer.getFeatures()]
+        g.normalize()
+        g2.normalize()
+        self.assertCountEqual([geom.asWkt() for geom in [g, g2]], ['Polygon ((0 0, 0 1, 0.5 1, 0.5 0, 0 0))',
+                                                                   'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))'])
 
     def testCreateAttributeIndex(self):
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageAttributeIndex.gpkg')
