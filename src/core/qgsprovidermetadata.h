@@ -43,6 +43,7 @@ class QgsTransaction;
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
 class QgsAbstractDatabaseProviderConnection;
+class QgsLayerMetadata;
 
 struct QgsMesh;
 
@@ -471,6 +472,19 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.10
      */
     virtual QString loadStyle( const QString &uri, QString &errCause );
+
+    /**
+     * Saves \a metadata to the layer corresponding to the specified \a uri.
+     *
+     * \param uri uri of layer to store metadata for
+     * \param metadata layer metadata
+     * \param errorMessage descriptive string of error if encountered
+     *
+     * \returns TRUE if the metadata was successfully saved.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT );
 
     /**
      * Creates database by the provider on the path

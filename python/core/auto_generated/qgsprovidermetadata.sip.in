@@ -425,6 +425,20 @@ Loads a layer style defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+.. versionadded:: 3.20
+%End
+
     virtual bool createDb( const QString &dbPath, QString &errCause );
 %Docstring
 Creates database by the provider on the path
