@@ -7329,16 +7329,16 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
         document.save( textStream, 2 );
 
         // so far so good, ready to throw the whole of the QGIS layer XML into the metadata table!
-        QString sql = QStringLiteral( "INSERT INTO gpkg_metadata (md_scope, md_standard_uri, mime_type, metadata) VALUES (%1,%2,%3,%4);" )
-                      .arg( QgsSqliteUtils::quotedString( QStringLiteral( "dataset" ) ),
-                            QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
-                            QgsSqliteUtils::quotedString( QStringLiteral( "text/xml" ) ),
-                            QgsSqliteUtils::quotedString( metadataXml ) );
-        userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
 
-        sql = QStringLiteral( "SELECT last_insert_rowid();" );
-        int lastRowId = -1;
-        if ( QgsOgrLayerUniquePtr  l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+        // first we need to check if there's already a corresponding entry in gpkg_metadata -- if so, we need to update it.
+        QString sql = QStringLiteral( "SELECT id from gpkg_metadata LEFT JOIN gpkg_metadata_reference ON "
+                                      "(gpkg_metadata_reference.table_name = %1 AND gpkg_metadata.id = gpkg_metadata_reference.md_file_id) "
+                                      "WHERE md_standard_uri = %2 and reference_scope = %3" ).arg(
+                        QgsSqliteUtils::quotedString( layerName ),
+                        QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                        QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );
+        int existingRowId = -1;
+        if ( QgsOgrLayerUniquePtr l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
         {
           // retrieve inserted row id
           gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
@@ -7346,22 +7346,68 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
           {
             bool ok = false;
             QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
-            if ( !ok )
+            if ( ok )
             {
-              return false;
+              existingRowId = res.toInt( &ok );
+              if ( !ok )
+                existingRowId = -1;
             }
-            lastRowId = res.toInt();
+          }
+        }
 
-            sql = QStringLiteral( "INSERT INTO gpkg_metadata_reference (reference_scope, table_name, md_file_id) VALUES (%1,%2,%3);" )
-                  .arg( QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ),
-                        QgsSqliteUtils::quotedString( layerName ) )
-                  .arg( lastRowId );
-            userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+        if ( existingRowId >= 0 )
+        {
+          // update existing row
+          sql = QStringLiteral( "UPDATE gpkg_metadata SET metadata=%1 where id=%2;" ).arg(
+                  QgsSqliteUtils::quotedString( metadataXml ) ).arg( existingRowId );
+          userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+          if ( CPLGetLastErrorType() != CE_None )
+          {
+            errorMessage = QStringLiteral( "%1 (%2): %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() );
+            return false;
+          }
+          else
+          {
             return true;
           }
         }
-        errorMessage = QStringLiteral( "Could not retrieve gpkg_metadata row id" );
-        return false;
+        else
+        {
+          // insert new details in metadata tables
+          sql = QStringLiteral( "INSERT INTO gpkg_metadata (md_scope, md_standard_uri, mime_type, metadata) VALUES (%1,%2,%3,%4);" )
+                .arg( QgsSqliteUtils::quotedString( QStringLiteral( "dataset" ) ),
+                      QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                      QgsSqliteUtils::quotedString( QStringLiteral( "text/xml" ) ),
+                      QgsSqliteUtils::quotedString( metadataXml ) );
+          userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+
+          sql = QStringLiteral( "SELECT last_insert_rowid();" );
+          int lastRowId = -1;
+          if ( QgsOgrLayerUniquePtr  l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+          {
+            // retrieve inserted row id
+            gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+            if ( f )
+            {
+              bool ok = false;
+              QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+              if ( !ok )
+              {
+                return false;
+              }
+              lastRowId = res.toInt();
+
+              sql = QStringLiteral( "INSERT INTO gpkg_metadata_reference (reference_scope, table_name, md_file_id) VALUES (%1,%2,%3);" )
+                    .arg( QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ),
+                          QgsSqliteUtils::quotedString( layerName ) )
+                    .arg( lastRowId );
+              userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+              return true;
+            }
+          }
+          errorMessage = QStringLiteral( "Could not retrieve gpkg_metadata row id" );
+          return false;
+        }
       }
       else
       {

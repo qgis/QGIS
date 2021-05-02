@@ -1650,6 +1650,46 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(metadata2.identifier(), 'my identifier')
         self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
 
+        # try updating existing metadata -- current row must be updated, not a new row added
+        metadata2.setAbstract('my abstract 2')
+        metadata2.setIdentifier('my identifier 2')
+        metadata2.setHistory(['h1', 'h2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata2)
+        self.assertTrue(ok)
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertEqual(len(rows), 1)
+        self.assertCountEqual(rows[0], ['my identifier 2', 'my abstract 2'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        rows = [r for r in rs]
+        file_ids = [row[0] for row in rows]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        metadata_xml = res[0][3]
+        con.close()
+
+        metadata3 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata3.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata3.abstract(), 'my abstract 2')
+        self.assertEqual(metadata3.identifier(), 'my identifier 2')
+        self.assertEqual(metadata3.licenses(), ['l1', 'l2'])
+        self.assertEqual(metadata3.history(), ['h1', 'h2'])
+
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
 
