@@ -7328,7 +7328,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
         QTextStream textStream( &metadataXml );
         document.save( textStream, 2 );
 
-        // so far so good, ready to through the whole of the QGIS layer XML into the metadata table!
+        // so far so good, ready to throw the whole of the QGIS layer XML into the metadata table!
         QString sql = QStringLiteral( "INSERT INTO gpkg_metadata (md_scope, md_standard_uri, mime_type, metadata) VALUES (%1,%2,%3,%4);" )
                       .arg( QgsSqliteUtils::quotedString( QStringLiteral( "dataset" ) ),
                             QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),

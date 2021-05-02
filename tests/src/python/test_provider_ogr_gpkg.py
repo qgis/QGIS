@@ -41,11 +41,15 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsDataProvider,
                        QgsVectorDataProvider,
+                       QgsLayerMetadata,
                        NULL)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 from utilities import unitTestDataPath
+
+from sqlite3 import OperationalError
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -1587,6 +1591,63 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl1.isValid())
         self.assertEqual(vl1.metadata().title(), 'my title')
         self.assertEqual(vl1.metadata().abstract(), 'my desc')
+
+    def testGeopackageSaveMetadata(self):
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSaveMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+        try:
+            rs = cur.execute("SELECT * FROM gpkg_metadata_reference WHERE table_name='test'")
+            res = [row for row in rs]
+            self.assertEqual(len(res), 0)
+            con.close()
+        except OperationalError:
+            # geopackage_metadata_reference table doesn't exist, that's ok
+            pass
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata)
+        self.assertTrue(ok)
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertCountEqual(rows[0], ['my identifier', 'my abstract'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        file_ids = [row[0] for row in rs]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        metadata_xml = res[0][3]
+        con.close()
+
+        metadata2 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata2.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
 
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
