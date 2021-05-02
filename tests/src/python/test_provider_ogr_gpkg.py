@@ -1690,6 +1690,33 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(metadata3.licenses(), ['l1', 'l2'])
         self.assertEqual(metadata3.history(), ['h1', 'h2'])
 
+    def testGeopackageRestoreMetadata(self):
+        """
+        Test that metadata saved to gpkg_metadata is automatically restored on layer load
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageRestoreMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata)
+        self.assertTrue(ok)
+
+        vl = QgsVectorLayer(tmpfile, 'test')
+        self.assertTrue(vl.isValid())
+        metadata2 = vl.metadata()
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
+
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
 
