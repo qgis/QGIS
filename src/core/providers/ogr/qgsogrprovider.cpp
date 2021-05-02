@@ -7275,6 +7275,105 @@ QString QgsOgrProviderMetadata::getStyleById( const QString &uri, QString styleI
   return styleQML;
 }
 
+bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  const QVariantMap parts = decodeUri( uri );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  if ( !path.isEmpty() )
+  {
+    QFileInfo fi( path );
+    if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      QgsOgrLayerUniquePtr userLayer;
+      userLayer = QgsOgrProviderUtils::getLayer( path, true, QStringList(), layerName, errorMessage, true );
+      if ( !userLayer )
+        return false;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+      QMutex *mutex = nullptr;
+#else
+      QRecursiveMutex *mutex = nullptr;
+#endif
+      // Returns native OGRLayerH object with the mutex to lock when using it
+      OGRLayerH hLayer = userLayer->getHandleAndMutex( mutex );
+      QMutexLocker locker( mutex );
+
+      // These are special keys which get stored into the gpkg_contents table
+      if ( !metadata.abstract().isEmpty() )
+        GDALSetMetadataItem( hLayer, "DESCRIPTION", metadata.abstract().toUtf8().constData(), nullptr );
+      if ( !metadata.identifier().isEmpty() )
+        GDALSetMetadataItem( hLayer, "IDENTIFIER", metadata.identifier().toUtf8().constData(), nullptr );
+
+      // we write a simple piece of GDAL metadata too -- this is solely to delegate responsibility of
+      // creating all the metadata tables to GDAL!
+      if ( GDALSetMetadataItem( hLayer, "QGIS_VERSION", Qgis::version().toLocal8Bit().constData(), nullptr ) == CE_None )
+      {
+        // export metadata to XML
+        QDomImplementation domImplementation;
+        QDomDocumentType documentType = domImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+        QDomDocument document( documentType );
+
+        QDomElement rootNode = document.createElement( QStringLiteral( "qgis" ) );
+        rootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
+        document.appendChild( rootNode );
+
+        if ( !metadata.writeMetadataXml( rootNode, document ) )
+        {
+          errorMessage = QObject::tr( "Error exporting metadata to XML" );
+          return false;
+        }
+
+        QString metadataXml;
+        QTextStream textStream( &metadataXml );
+        document.save( textStream, 2 );
+
+        // so far so good, ready to through the whole of the QGIS layer XML into the metadata table!
+        QString sql = QStringLiteral( "INSERT INTO gpkg_metadata (md_scope, md_standard_uri, mime_type, metadata) VALUES (%1,%2,%3,%4);" )
+                      .arg( QgsSqliteUtils::quotedString( QStringLiteral( "dataset" ) ),
+                            QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
+                            QgsSqliteUtils::quotedString( QStringLiteral( "text/xml" ) ),
+                            QgsSqliteUtils::quotedString( metadataXml ) );
+        userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+
+        sql = QStringLiteral( "SELECT last_insert_rowid();" );
+        int lastRowId = -1;
+        if ( QgsOgrLayerUniquePtr  l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+        {
+          // retrieve inserted row id
+          gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+          if ( f )
+          {
+            bool ok = false;
+            QVariant res = QgsOgrUtils::getOgrFeatureAttribute( f.get(), QgsField( QString(), QVariant::String ), 0, nullptr, &ok );
+            if ( !ok )
+            {
+              return false;
+            }
+            lastRowId = res.toInt();
+
+            sql = QStringLiteral( "INSERT INTO gpkg_metadata_reference (reference_scope, table_name, md_file_id) VALUES (%1,%2,%3);" )
+                  .arg( QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ),
+                        QgsSqliteUtils::quotedString( layerName ) )
+                  .arg( lastRowId );
+            userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+            return true;
+          }
+        }
+        errorMessage = QStringLiteral( "Could not retrieve gpkg_metadata row id" );
+        return false;
+      }
+      else
+      {
+        errorMessage = QStringLiteral( "%1 (%2): %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() );
+        return false;
+      }
+    }
+  }
+  errorMessage = QObject::tr( "Storing metadata for the specified uri is not supported" );
+  return false;
+}
+
 
 // ---------------------------------------------------------------------------
 
