@@ -828,11 +828,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options)
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
         options['layerName'] = 'table2'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(3113),
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3113'),
                                           False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {} : {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1356,7 +1356,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options,
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options,
                                           QgsFeatureSink.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1406,7 +1406,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'output'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326),
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'),
                                           False, options, QgsFeatureSink.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1996,7 +1996,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         if layerOptions:
             options['layerOptions'] = layerOptions
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", QgsFields(), QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options)
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
 
