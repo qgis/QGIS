@@ -81,8 +81,9 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     /**
      * Sets the scale of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
      */
-    void setScale( QgsVector3D scale ) { mScale = scale; }
+    void setScale( const QgsVector3D &scale ) { mScale = scale; }
 
     /**
      * Returns the offset of the layer's int32 coordinates compared to CRS coords.
@@ -91,8 +92,9 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     /**
      * Sets the offset of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
      */
-    void setOffset( QgsVector3D offset ) { mOffset = offset; }
+    void setOffset( const QgsVector3D &offset ) { mOffset = offset; }
 
     /**
      * Returns the total number of points rendered.
