@@ -19,6 +19,8 @@ from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     NULL,
     QgsAuthMethodConfig,
@@ -38,7 +40,9 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorFileWriter,
     QgsWkbTypes,
-    QgsNetworkAccessManager
+    QgsNetworkAccessManager,
+    QgsLayerMetadata,
+    QgsNotSupportedException
 )
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
@@ -1199,6 +1203,73 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
+
+    def testNonGeopackageSaveMetadata(self):
+        """
+        Save layer metadata for a file-based format which doesn't have native metadata support.
+        In this case we should resort to a sidecar file instead.
+        """
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=pk:integer&field=cnt:int8', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.layerName = 'metadatatest'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'metadatatest.shp'),
+                                                           QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'metadatatest.shp')))
+
+        uri = d.path() + '/metadatatest.shp'
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', uri, metadata)
+        self.assertTrue(ok)
+
+        self.assertTrue(os.path.exists(os.path.join(d.path(), 'metadatatest.qmd')))
+        with open(os.path.join(d.path(), 'metadatatest.qmd'), 'rt') as f:
+            metadata_xml = ''.join(f.readlines())
+
+        metadata2 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata2.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
+
+        # try updating existing metadata -- file should be overwritten
+        metadata2.setAbstract('my abstract 2')
+        metadata2.setIdentifier('my identifier 2')
+        metadata2.setHistory(['h1', 'h2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', uri, metadata2)
+        self.assertTrue(ok)
+
+        with open(os.path.join(d.path(), 'metadatatest.qmd'), 'rt') as f:
+            metadata_xml = ''.join(f.readlines())
+
+        metadata3 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata3.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata3.abstract(), 'my abstract 2')
+        self.assertEqual(metadata3.identifier(), 'my identifier 2')
+        self.assertEqual(metadata3.licenses(), ['l1', 'l2'])
+        self.assertEqual(metadata3.history(), ['h1', 'h2'])
+
+    def testSaveMetadataUnsupported(self):
+        """
+        Test saving metadata to an unsupported URI
+        """
+        metadata = QgsLayerMetadata()
+        # this should raise a QgsNotSupportedException, as we don't support writing metadata to a WFS uri
+        with self.assertRaises(QgsNotSupportedException):
+            QgsProviderRegistry.instance().saveLayerMetadata('ogr', 'WFS:http://www2.dmsolutions.ca/cgi-bin/mswfs_gmap', metadata)
 
     def testEmbeddedSymbolsKml(self):
         """
