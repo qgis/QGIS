@@ -197,7 +197,7 @@ class ParametersTest(unittest.TestCase):
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'crs')
-        self.assertEqual(param.name(), 'in_bool')
+        self.assertEqual(param.name(), 'in_crs')
         self.assertEqual(param.description(), 'Input CRS')
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
