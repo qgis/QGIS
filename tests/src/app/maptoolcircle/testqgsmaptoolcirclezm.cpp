@@ -1,9 +1,9 @@
 /***************************************************************************
-     testqgsmaptoolcircle.cpp
+     testqgsmaptoolcirclezm.cpp
      ------------------------
-    Date                 : January 2018
-    Copyright            : (C) 2018 by Paul Blottiere
-    Email                : paul.blottiere@oslandia.com
+    Date                 : April 2021
+    Copyright            : (C) 2021 by Loïc Bartoletti
+    Email                : loic dot bartoletti @oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
+#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 
@@ -28,12 +28,12 @@
 #include "qgsmaptoolcirclecenterpoint.h"
 
 
-class TestQgsMapToolCircle : public QObject
+class TestQgsMapToolCircleZM : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsMapToolCircle();
+    TestQgsMapToolCircleZM();
 
   private slots:
     void initTestCase();
@@ -53,11 +53,11 @@ class TestQgsMapToolCircle : public QObject
     QgsVectorLayer *mLayer = nullptr;
 };
 
-TestQgsMapToolCircle::TestQgsMapToolCircle() = default;
+TestQgsMapToolCircleZM::TestQgsMapToolCircleZM() = default;
 
 
 //runs before all tests
-void TestQgsMapToolCircle::initTestCase()
+void TestQgsMapToolCircleZM::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -68,7 +68,7 @@ void TestQgsMapToolCircle::initTestCase()
   mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
 
   // make testing layers
-  mLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayer = new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=EPSG:27700" ), QStringLiteral( "layer line ZM" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayer->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
 
@@ -79,14 +79,15 @@ void TestQgsMapToolCircle::initTestCase()
   mParentTool = new QgsMapToolAddFeature( mCanvas, QgsMapToolCapture::CaptureLine );
 }
 
-void TestQgsMapToolCircle::cleanupTestCase()
+void TestQgsMapToolCircleZM::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolCircle::testCircleFrom2Points()
+void TestQgsMapToolCircleZM::testCircleFrom2Points()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -96,21 +97,23 @@ void TestQgsMapToolCircle::testCircleFrom2Points()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 333, 1 1 333, 0 0 333, -1 1 333, 0 2 333))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 333, 1 1 444 333, 0 0 444 333, -1 1 444 333, 0 2 444 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-void TestQgsMapToolCircle::testCircleFrom2PointsWithDeletedVertex()
+void TestQgsMapToolCircleZM::testCircleFrom2PointsWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -123,21 +126,23 @@ void TestQgsMapToolCircle::testCircleFrom2PointsWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 333, 1 1 333, 0 0 333, -1 1 333, 0 2 333))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 333, 1 1 444 333, 0 0 444 333, -1 1 444 333, 0 2 444 333))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-void TestQgsMapToolCircle::testCircleFrom3Points()
+void TestQgsMapToolCircleZM::testCircleFrom3Points()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -148,21 +153,23 @@ void TestQgsMapToolCircle::testCircleFrom3Points()
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 1, 1 );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 111, 1 1 111, 0 0 111, -1 1 111, 0 2 111))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 111, 1 1 444 111, 0 0 444 111, -1 1 444 111, 0 2 444 111))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-void TestQgsMapToolCircle::testCircleFrom3PointsWithDeletedVertex()
+void TestQgsMapToolCircleZM::testCircleFrom3PointsWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -175,21 +182,23 @@ void TestQgsMapToolCircle::testCircleFrom3PointsWithDeletedVertex()
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 1, 1 );
   utils.mouseClick( 1, 1, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 111, 1 1 111, 0 0 111, -1 1 111, 0 2 111))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 111, 1 1 444 111, 0 0 444 111, -1 1 444 111, 0 2 444 111))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-void TestQgsMapToolCircle::testCircleFromCenterPoint()
+void TestQgsMapToolCircleZM::testCircleFromCenterPoint()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -199,21 +208,23 @@ void TestQgsMapToolCircle::testCircleFromCenterPoint()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 222, 2 0 222, 0 -2 222, -2 0 222, 0 2 222))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 222, 2 0 444 222, 0 -2 444 222, -2 0 444 222, 0 2 444 222))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-void TestQgsMapToolCircle::testCircleFromCenterPointWithDeletedVertex()
+void TestQgsMapToolCircleZM::testCircleFromCenterPointWithDeletedVertex()
 {
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -226,17 +237,18 @@ void TestQgsMapToolCircle::testCircleFromCenterPointWithDeletedVertex()
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseMove( 0, 2 );
   utils.mouseClick( 0, 2, Qt::RightButton );
-  const QgsFeatureId newFid = utils.newFeatureId();
+  QgsFeatureId newFid = utils.newFeatureId();
 
   QCOMPARE( mLayer->featureCount(), ( long )1 );
-  const QgsFeature f = mLayer->getFeature( newFid );
+  QgsFeature f = mLayer->getFeature( newFid );
 
-  const QString wkt = "CompoundCurveZ (CircularStringZ (0 2 222, 2 0 222, 0 -2 222, -2 0 222, 0 2 222))";
+  QString wkt = "CompoundCurveZM (CircularStringZM (0 2 444 222, 2 0 444 222, 0 -2 444 222, -2 0 444 222, 0 2 444 222))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
 }
 
-QGSTEST_MAIN( TestQgsMapToolCircle )
-#include "testqgsmaptoolcircle.moc"
+QGSTEST_MAIN( TestQgsMapToolCircleZM )
+#include "testqgsmaptoolcirclezm.moc"
