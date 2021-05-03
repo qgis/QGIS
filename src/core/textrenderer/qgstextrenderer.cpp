@@ -920,7 +920,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         renderedSymbol->setSizeUnit( QgsUnitTypes::RenderPixels );
       }
 
-      renderedSymbol->setOpacity( background.opacity() );
+      renderedSymbol->setOpacity( renderedSymbol->opacity() * background.opacity() );
 
       // draw the actual symbol
       QgsScopedQPainterState painterState( p );
@@ -1009,6 +1009,13 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       p->rotate( component.rotationOffset );
 
       QPainterPath path;
+
+      // Paths with curves must be enlarged before conversion to QPolygonF, or
+      // the curves are approximated too much and appear jaggy
+      QTransform t = QTransform::fromScale( 10, 10 );
+      // inverse transform used to scale created polygons back to expected size
+      QTransform ti = t.inverted();
+
       if ( background.type() == QgsTextBackgroundSettings::ShapeRectangle
            || background.type() == QgsTextBackgroundSettings::ShapeSquare )
       {
@@ -1018,8 +1025,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
         }
         else
         {
-          double xRadius = context.convertToPainterUnits( background.radii().width(), background.radiiUnit(), background.radiiMapUnitScale() );
-          double yRadius = context.convertToPainterUnits( background.radii().height(), background.radiiUnit(), background.radiiMapUnitScale() );
+          const double xRadius = context.convertToPainterUnits( background.radii().width(), background.radiiUnit(), background.radiiMapUnitScale() );
+          const double yRadius = context.convertToPainterUnits( background.radii().height(), background.radiiUnit(), background.radiiMapUnitScale() );
           path.addRoundedRect( rect, xRadius, yRadius );
         }
       }
@@ -1028,7 +1035,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       {
         path.addEllipse( rect );
       }
-      QPolygonF polygon = path.toFillPolygon();
+      QPolygonF tempPolygon = path.toFillPolygon( t );
+      QPolygonF polygon = ti.map( tempPolygon );
       QPicture shapePict;
       QPainter *oldp = context.painter();
       QPainter shapep;
@@ -1038,7 +1046,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
 
       std::unique_ptr< QgsFillSymbol > renderedSymbol;
       renderedSymbol.reset( background.fillSymbol()->clone() );
-      renderedSymbol->setOpacity( background.opacity() );
+      renderedSymbol->setOpacity( renderedSymbol->opacity() * background.opacity() );
 
       const QgsFeature f = context.expressionContext().feature();
       renderedSymbol->startRender( context, context.expressionContext().fields() );
@@ -1051,7 +1059,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       if ( format.shadow().enabled() && format.shadow().shadowPlacement() == QgsTextShadowSettings::ShadowShape )
       {
         component.picture = shapePict;
-        component.pictureBuffer = 2.0; // arbitrary
+        component.pictureBuffer = QgsSymbolLayerUtils::estimateMaxSymbolBleed( renderedSymbol.get(), context ) * 2;
 
         component.size = rect.size();
         component.offset = QPointF( rect.width() / 2, -rect.height() / 2 );

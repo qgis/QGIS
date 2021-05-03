@@ -304,7 +304,7 @@ void QgsTextBackgroundSettings::setFillColor( const QColor &color )
   d->fillColor = color;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setColor( color );
+    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setColor( color );
   }
 }
 
@@ -318,7 +318,7 @@ void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
   d->strokeColor = color;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
+    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
   }
 }
 
@@ -332,7 +332,7 @@ void QgsTextBackgroundSettings::setStrokeWidth( double width )
   d->strokeWidth = width;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    QgsSimpleFillSymbolLayer *fill = static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+    QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
     fill->setStrokeWidth( width );
     fill->setStrokeStyle( !qgsDoubleNear( width, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
   }
@@ -348,7 +348,7 @@ void QgsTextBackgroundSettings::setStrokeWidthUnit( QgsUnitTypes::RenderUnit uni
   d->strokeWidthUnits = units;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
+    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
   }
 }
 
@@ -362,7 +362,7 @@ void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScal
   d->strokeWidthMapUnitScale = scale;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
+    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
   }
 }
 
@@ -376,7 +376,7 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
   {
-    static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
+    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
   }
 }
 
@@ -722,7 +722,7 @@ void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollect
 {
   if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QStringLiteral( "SimpleFill" ) )
     return;
-  QgsSimpleFillSymbolLayer *fill = static_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+  QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
 
   if ( d->type != QgsTextBackgroundSettings::ShapeSVG )
   {

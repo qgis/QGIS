@@ -156,7 +156,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
     /**
      * Returns the fill symbol to be rendered in the background. Ownership remains with
      * the background settings.
-     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle .
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle,
      * QgsTextBackgroundSettings::ShapeSquare, QgsTextBackgroundSettings::ShapeCircle or
      * QgsTextBackgroundSettings::ShapeEllipse
      * \see setFillSymbol()
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
     /**
      * Sets the current fill \a symbol for the background shape. Ownership is transferred
      * to the background settings.
-     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle .
+     * \note This is only used when the type() is QgsTextBackgroundSettings::ShapeRectangle,
      * QgsTextBackgroundSettings::ShapeSquare, QgsTextBackgroundSettings::ShapeCircle or
      * QgsTextBackgroundSettings::ShapeEllipse
      * \see fillSymbol()
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Upgrade data defined properties when reading a project file saved in QGIS prior to version 3.20.
      * \since QGIS 3.20
      */
-    void upgradeDataDefinedProperties( QgsPropertyCollection &properties );
+    void upgradeDataDefinedProperties( QgsPropertyCollection &properties ) SIP_SKIP;
 
     /**
      * Returns all field names referenced by the configuration (e.g. from data defined properties).

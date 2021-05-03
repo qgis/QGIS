@@ -150,7 +150,7 @@ the background settings.
 
 .. note::
 
-   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle .
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle,
    QgsTextBackgroundSettings.ShapeSquare, QgsTextBackgroundSettings.ShapeCircle or
    QgsTextBackgroundSettings.ShapeEllipse
 
@@ -166,7 +166,7 @@ to the background settings.
 
 .. note::
 
-   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle .
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle,
    QgsTextBackgroundSettings.ShapeSquare, QgsTextBackgroundSettings.ShapeCircle or
    QgsTextBackgroundSettings.ShapeEllipse
 
@@ -677,12 +677,6 @@ Updates the format by evaluating current values of data defined properties.
 .. versionadded:: 3.10
 %End
 
-    void upgradeDataDefinedProperties( QgsPropertyCollection &properties );
-%Docstring
-Upgrade data defined properties when reading a project file saved in QGIS prior to version 3.20.
-
-.. versionadded:: 3.20
-%End
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring
