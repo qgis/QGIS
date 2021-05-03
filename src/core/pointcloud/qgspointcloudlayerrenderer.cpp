@@ -260,7 +260,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     {
       int nodeIndex = groupIndex + i;
       const IndexedPointCloudNode &n = nodes[nodeIndex];
-      QString nStr = n.toString();
+      const QString nStr = n.toString();
       QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
       blockRequests[ i ] = blockRequest;
       QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
@@ -372,4 +372,3 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
 }
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-
