@@ -146,6 +146,34 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.minimum(), 0)
         self.assertEqual(param.maximum(), 20)
 
+    def testParameterBooleanDesc(self):
+        desc = 'QgsProcessingParameterBoolean|in_bool|Input Boolean'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'boolean')
+        self.assertEqual(param.name(), 'in_bool')
+        self.assertEqual(param.description(), 'Input Boolean')
+        self.assertFalse(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterBoolean|in_bool|Input Boolean|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'boolean')
+        self.assertEqual(param.name(), 'in_bool')
+        self.assertEqual(param.description(), 'Input Boolean')
+        self.assertTrue(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterBoolean|in_bool|Input Boolean|False|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'boolean')
+        self.assertEqual(param.name(), 'in_bool')
+        self.assertEqual(param.description(), 'Input Boolean')
+        self.assertFalse(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
 
 if __name__ == '__main__':
     unittest.main()
