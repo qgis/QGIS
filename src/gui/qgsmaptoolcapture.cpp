@@ -464,7 +464,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
       layerPoint.addZValue( defaultZValue() );
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
-      layerPoint.addMValue( 0.0 );
+      layerPoint.addMValue( defaultMValue() );
   }
   catch ( QgsCsException &cse )
   {
@@ -515,7 +515,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( defaultZValue() );
         if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
-          layerPoint.addMValue( 0.0 );
+          layerPoint.addMValue( defaultMValue() );
       }
 
       // ZM support depends on the target layer
@@ -1006,6 +1006,11 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
   {
     newPoint.setZ( defaultZValue() );
+  }
+  // set m value if necessary
+  if ( QgsWkbTypes::hasM( newPoint.wkbType() ) )
+  {
+    newPoint.setM( defaultMValue() );
   }
 
   return newPoint;

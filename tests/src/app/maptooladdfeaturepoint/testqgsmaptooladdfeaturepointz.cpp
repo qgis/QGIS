@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsmaptooladdfeaturepoint.cpp
+     testqgsmaptooladdfeaturepointz.cpp
      ----------------------
     Date                 : October 2017
     Copyright            : (C) 2017 by Martin Dobias
@@ -35,11 +35,11 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolAddFeaturePoint : public QObject
+class TestQgsMapToolAddFeaturePointZ : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolAddFeaturePoint();
+    TestQgsMapToolAddFeaturePointZ();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -57,11 +57,11 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     QgsVectorLayer *mLayerPointZ = nullptr;
 };
 
-TestQgsMapToolAddFeaturePoint::TestQgsMapToolAddFeaturePoint() = default;
+TestQgsMapToolAddFeaturePointZ::TestQgsMapToolAddFeaturePointZ() = default;
 
 
 //runs before all tests
-void TestQgsMapToolAddFeaturePoint::initTestCase()
+void TestQgsMapToolAddFeaturePointZ::initTestCase()
 {
   qDebug() << "TestMapToolCapture::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -146,14 +146,14 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
 }
 
 //runs after all tests
-void TestQgsMapToolAddFeaturePoint::cleanupTestCase()
+void TestQgsMapToolAddFeaturePointZ::cleanupTestCase()
 {
   delete mCaptureTool;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsMapToolAddFeaturePoint::testPointZ()
+void TestQgsMapToolAddFeaturePointZ::testPointZ()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
@@ -182,7 +182,7 @@ void TestQgsMapToolAddFeaturePoint::testPointZ()
   mLayerPointZ->undoStack()->undo();
 }
 
-void TestQgsMapToolAddFeaturePoint::testTopologicalEditingZ()
+void TestQgsMapToolAddFeaturePointZ::testTopologicalEditingZ()
 {
   bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
@@ -215,5 +215,6 @@ void TestQgsMapToolAddFeaturePoint::testTopologicalEditingZ()
   mLayerLineZSnap->undoStack()->undo();
 
 }
-QGSTEST_MAIN( TestQgsMapToolAddFeaturePoint )
-#include "testqgsmaptooladdfeaturepoint.moc"
+
+QGSTEST_MAIN( TestQgsMapToolAddFeaturePointZ )
+#include "testqgsmaptooladdfeaturepointz.moc"

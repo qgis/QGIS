@@ -24,7 +24,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
-#include "qgssettingsregistrycore.h"
+#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
 #include "qgsmapmouseevent.h"
@@ -68,9 +68,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testTracingWithOffset();
     void testTracingWithConvertToCurves();
     void testTracingWithConvertToCurvesCustomTolerance();
-    void testZ();
-    void testZMSnapping();
-    void testTopologicalEditingZ();
     void testCloseLine();
     void testSelfSnapping();
     void testLineString();
@@ -89,8 +86,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLineCurved = nullptr;
     QgsVectorLayer *mLayerLineCurvedOffset = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
-    QgsVectorLayer *mLayerPointZM = nullptr;
-    QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsVectorLayer *mLayerLine2D = nullptr;
     QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsVectorLayer *mLayerSelfSnapLine = nullptr;
@@ -199,31 +194,6 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  // make layer for snapping
-  mLayerPointZM = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:27700" ), QStringLiteral( "layer point ZM" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerPointZM->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZM );
-
-  mLayerPointZM->startEditing();
-  QgsFeature pointF;
-  QString pointWktZM = "PointZM(6 6 3 4)";
-  pointF.setGeometry( QgsGeometry::fromWkt( pointWktZM ) );
-
-  mLayerPointZM->addFeature( pointF );
-  QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
-
-  // make layer for topologicalEditing with Z
-  mLayerTopoZ = new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer topologicalEditing Z" ), QStringLiteral( "memory" ) );
-  QVERIFY( mLayerTopoZ->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopoZ );
-
-  mLayerTopoZ->startEditing();
-  QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0))" ) );
-
-  mLayerTopoZ->addFeature( topoFeat );
-  QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
-
   // make 2D layer for snapping with a 3D layer
   mLayerLine2D = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLine2D->isValid() );
@@ -243,7 +213,7 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerSelfSnapLine->startEditing();
 
   // add layers to canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D << mLayerSelfSnapLine );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineCurved << mLayerLineCurvedOffset << mLayerLineZ << mLayerLine2D << mLayerSelfSnapLine );
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
   // create the tool
@@ -461,7 +431,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( false );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
 
   utils.mouseClick( 6, 1, Qt::LeftButton );
   utils.mouseClick( 7, 1, Qt::LeftButton );
@@ -477,7 +447,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurves()
   mLayerLineCurved->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( true );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( 6, 1, Qt::LeftButton );
@@ -506,8 +476,8 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   // At this distance, the arcs aren't correctly detected with the default tolerance
   double offset = 100000000; // remember to change the feature geometry accordingly in initTestCase (sic)
 
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.setValue( 1e-5 );
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.setValue( 1e-5 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-5 );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-5 );
 
   mCanvas->setExtent( QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( offset + 0, offset + 0, offset + 8, offset + 8 ) );
@@ -522,7 +492,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // tracing enabled - without converting to curves
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( false );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false );
 
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
   utils.mouseClick( offset + 7, offset + 1, Qt::LeftButton );
@@ -538,7 +508,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   mLayerLineCurvedOffset->undoStack()->undo();
 
   // we redo the same with convert to curves enabled
-  QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.setValue( true );
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), true );
 
   // tracing enabled - without converting to curves
   utils.mouseClick( offset + 6, offset + 1, Qt::LeftButton );
@@ -563,167 +533,6 @@ void TestQgsMapToolAddFeatureLine::testTracingWithConvertToCurvesCustomTolerance
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-}
-
-void TestQgsMapToolAddFeatureLine::testZ()
-{
-  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  mCanvas->setCurrentLayer( mLayerLineZ );
-
-  // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 4, 0, Qt::LeftButton );
-  utils.mouseClick( 5, 0, Qt::LeftButton );
-  utils.mouseClick( 5, 1, Qt::LeftButton );
-  utils.mouseClick( 4, 1, Qt::LeftButton );
-  utils.mouseClick( 4, 1, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
-
-  QString wkt = "LineStringZ (4 0 333, 5 0 333, 5 1 333, 4 1 333)";
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  mLayerLine->undoStack()->undo();
-
-  // test with default Z value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
-
-  oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 4, 0, Qt::LeftButton );
-  utils.mouseClick( 5, 0, Qt::LeftButton );
-  utils.mouseClick( 5, 1, Qt::LeftButton );
-  utils.mouseClick( 4, 1, Qt::LeftButton );
-  utils.mouseClick( 4, 1, Qt::RightButton );
-  newFid = utils.newFeatureId( oldFids );
-
-  wkt = "LineStringZ (4 0 222, 5 0 222, 5 1 222, 4 1 222)";
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  mLayerLine->undoStack()->undo();
-
-  mCanvas->setCurrentLayer( mLayerLine );
-}
-
-void TestQgsMapToolAddFeatureLine::testZMSnapping()
-{
-  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  mCanvas->setCurrentLayer( mLayerLine );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
-  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  cfg.setMode( QgsSnappingConfig::AllLayers );
-  cfg.setEnabled( true );
-  mCanvas->snappingUtils()->setConfig( cfg );
-
-  // snap a on a layer with ZM support
-  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 5, 0, Qt::LeftButton );
-  utils.mouseClick( 5, 0, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
-
-  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->is3D(), false );
-  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->isMeasure(), false );
-
-  mLayerLine->undoStack()->undo();
-
-  mCanvas->setCurrentLayer( mLayerLineZ );
-  oldFids = utils.existingFeatureIds();
-  // test with default Z value = 222
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
-  // snap a on a layer without ZM support
-  utils.mouseClick( 9, 9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 8, 7, Qt::LeftButton );
-  utils.mouseClick( 5, 0, Qt::RightButton );
-
-  newFid = utils.newFeatureId( oldFids );
-
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
-
-  QString wkt = "LineStringZ (9 9 222, 8 7 222)";
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->isMeasure(), false );
-
-  mLayerLine->undoStack()->undo();
-
-
-  // Snap on middle Segment
-  mCanvas->setCurrentLayer( mLayerLineZ );
-  cfg.setTypeFlag( QgsSnappingConfig::MiddleOfSegmentFlag );
-  mCanvas->snappingUtils()->setConfig( cfg );
-
-  // create geometry will be snapped
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 123 );
-
-  oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 20, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 30, 20, Qt::LeftButton );
-  utils.mouseClick( 30, 20, Qt::RightButton );
-  newFid = utils.newFeatureId( oldFids );
-
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
-  wkt = "LineStringZ (20 20 123, 30 20 123)";
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 321 );
-  oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 25, 20, Qt::LeftButton, Qt::KeyboardModifiers(), true );
-  utils.mouseClick( 25, 25, Qt::LeftButton );
-  utils.mouseClick( 25, 25, Qt::RightButton );
-  newFid = utils.newFeatureId( oldFids );
-
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
-  wkt = "LineStringZ (25 20 123, 25 25 321)";
-  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  mLayerLineZ->undoStack()->undo();
-  mLayerLineZ->undoStack()->undo();
-
-  cfg.setEnabled( false );
-  mCanvas->snappingUtils()->setConfig( cfg );
-}
-
-void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
-{
-  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  mCanvas->setCurrentLayer( mLayerTopoZ );
-
-  // test with default Z value = 333
-  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
-  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
-  bool topologicalEditing = cfg.project()->topologicalEditing();
-  cfg.project()->setTopologicalEditing( true );
-
-  cfg.setMode( QgsSnappingConfig::AllLayers );
-  cfg.setEnabled( true );
-  mCanvas->snappingUtils()->setConfig( cfg );
-
-  oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 6, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 6.75, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.25, 6.5, Qt::LeftButton );
-  utils.mouseClick( 7.5, 6.5, Qt::LeftButton );
-  utils.mouseClick( 8, 6.5, Qt::RightButton );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
-
-  QString wkt = "LineStringZ (6 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
-  QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 5, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
-  QCOMPARE( mLayerTopoZ->getFeature( qgis::setToList( oldFids ).last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  mLayerLine->undoStack()->undo();
-
-  cfg.setEnabled( false );
-  mCanvas->snappingUtils()->setConfig( cfg );
-  cfg.project()->setTopologicalEditing( topologicalEditing );
 }
 
 void TestQgsMapToolAddFeatureLine::testCloseLine()
@@ -995,7 +804,8 @@ void TestQgsMapToolAddFeatureLine::testUndo()
 void TestQgsMapToolAddFeatureLine::testStreamTolerance()
 {
   // test streaming mode digitizing with tolerance
-  QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( 10 );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 10 );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
