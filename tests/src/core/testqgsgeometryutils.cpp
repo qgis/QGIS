@@ -87,6 +87,7 @@ class TestQgsGeometryUtils: public QObject
     void testClosestSideOfRectangle();
     void transferFirstZValueToPoint();
     void transferFirstMValueToPoint();
+    void transferFirstZOrMValueToPoint();
 };
 
 
@@ -1668,6 +1669,52 @@ void TestQgsGeometryUtils::transferFirstMValueToPoint()
   QCOMPARE( ret, true );
   QCOMPARE( pointZ.wkbType(), QgsWkbTypes::PointZM );
   QCOMPARE( pointZ.m(), 5.0 );
+}
+
+void TestQgsGeometryUtils::transferFirstZOrMValueToPoint()
+{
+  QgsPoint point( 1, 2 );
+
+  // Type: Point
+  bool ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( 0, 2 ), point );
+  QCOMPARE( ret, false );
+
+  // Type: PointZ
+  point = QgsPoint( 1, 2 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( 0, 2, 4 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( point.z(), 4.0 );
+
+  // Type: PointM
+  point = QgsPoint( 1, 2 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 4 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.m(), 4.0 );
+
+  // Type: PointM
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( point.m(), 5.0 ); // now point.m == 5
+
+  // Add M to a PointZ
+  point = QgsPoint( 1, 2, 4 );
+  // Type: PointM
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.m(), 5.0 );
+
+  // Add Z from point1 and M from point2
+  point = QgsPoint( 1, 2 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << QgsPoint( 7, 8, 9 ) << QgsPoint( QgsWkbTypes::PointM, 0, 2, 0, 5 ), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( point.z(), 9.0 );
+  QCOMPARE( point.m(), 5.0 );
+
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
