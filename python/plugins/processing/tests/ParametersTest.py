@@ -200,7 +200,26 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.name(), 'in_bool')
         self.assertEqual(param.description(), 'Input CRS')
         self.assertIsNone(param.defaultValue())
-        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+    def testParameterExtentDesc(self):
+        desc = 'QgsProcessingParameterExtent|in_extent|Input Extent'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'extent')
+        self.assertEqual(param.name(), 'in_extent')
+        self.assertEqual(param.description(), 'Input Extent')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterExtent|in_extent|Input Extent|None|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'extent')
+        self.assertEqual(param.name(), 'in_extent')
+        self.assertEqual(param.description(), 'Input Extent')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
 
 if __name__ == '__main__':
