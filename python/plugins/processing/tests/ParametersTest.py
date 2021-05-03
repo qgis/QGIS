@@ -85,7 +85,7 @@ class ParametersTest(unittest.TestCase):
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
     def testParameterNumberDesc(self):
-        desc = 'QgsProcessingParameterNumber|in_number|Input number'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
@@ -94,7 +94,7 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Double'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number|QgsProcessingParameterNumber.Double'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
@@ -103,7 +103,7 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Double)
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number|QgsProcessingParameterNumber.Integer|10'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
@@ -113,7 +113,7 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.defaultValue(), 10)
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|None|True'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number|QgsProcessingParameterNumber.Integer|None|True'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
@@ -123,7 +123,7 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10|False|0'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number|QgsProcessingParameterNumber.Integer|10|False|0'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
@@ -134,7 +134,7 @@ class ParametersTest(unittest.TestCase):
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.assertEqual(param.minimum(), 0)
 
-        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10|False|0|20'
+        desc = 'QgsProcessingParameterNumber|in_number|Input Number|QgsProcessingParameterNumber.Integer|10|False|0|20'
         param = getParameterFromString(desc)
         self.assertIsNotNone(param)
         self.assertEqual(param.type(), 'number')
