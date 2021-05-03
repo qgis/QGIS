@@ -273,7 +273,10 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
 QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  if ( !mHierarchy.contains( n ) )
+  mHierarchyMutex.lock();
+  bool found = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  if ( !found )
     return nullptr;
 
   if ( mDataType == QLatin1String( "binary" ) )
@@ -416,7 +419,9 @@ bool QgsEptPointCloudIndex::loadHierarchy()
       else
       {
         IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
+        mHierarchyMutex.lock();
         mHierarchy[nodeId] = nodePointCount;
+        mHierarchyMutex.unlock();
       }
     }
   }
