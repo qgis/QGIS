@@ -157,6 +157,14 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       if ( !block )
         continue;
 
+      QgsVector3D blockScale = index->scale();
+      QgsVector3D blockOffset = index->offset();
+      if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+      {
+        blockScale = customBlock->scale();
+        blockOffset = customBlock->offset();
+      }
+
       const char *ptr = block->data();
       QgsPointCloudAttributeCollection blockAttributes = block->attributes();
       const std::size_t recordSize = blockAttributes.pointRecordSize();
@@ -167,7 +175,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       for ( int i = 0; i < block->pointCount(); ++i )
       {
         double x, y, z;
-        QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, index->scale(), index->offset(), x, y, z );
+        QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
         QVector3D point( x, y, z );
 
         // check whether point is in front of the ray

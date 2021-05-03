@@ -53,9 +53,19 @@ Returns a reference to the context's render context.
 Returns the scale of the layer's int32 coordinates compared to CRS coords.
 %End
 
+    void setScale( QgsVector3D scale );
+%Docstring
+Sets the scale of the layer's int32 coordinates compared to CRS coords.
+%End
+
     QgsVector3D offset() const;
 %Docstring
 Returns the offset of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    void setOffset( QgsVector3D offset );
+%Docstring
+Sets the offset of the layer's int32 coordinates compared to CRS coords.
 %End
 
     long pointsRendered() const;

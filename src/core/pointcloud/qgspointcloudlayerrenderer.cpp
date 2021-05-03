@@ -215,10 +215,21 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
 
     if ( !block )
       continue;
+    QgsVector3D contextScale = context.scale();
+    QgsVector3D contextOffset = context.offset();
+    if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+    {
+      context.setScale( customBlock->scale() );
+      context.setOffset( customBlock->offset() );
+    }
 
     context.setAttributes( block->attributes() );
 
     mRenderer->renderBlock( block.get(), context );
+
+    context.setScale( contextScale );
+    context.setOffset( contextOffset );
+
     ++nodesDrawn;
 
     // as soon as first block is rendered, we can start showing layer updates.
@@ -293,9 +304,22 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
         if ( !blockRequests[ i ]->block() )
           continue;
 
+        QgsVector3D contextScale = context.scale();
+        QgsVector3D contextOffset = context.offset();
+
+        if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( blockRequests[ i ]->block() ) )
+        {
+          context.setScale( customBlock->scale() );
+          context.setOffset( customBlock->offset() );
+        }
+
         context.setAttributes( blockRequests[ i ]->block()->attributes() );
 
         mRenderer->renderBlock( blockRequests[ i ]->block(), context );
+
+        context.setScale( contextScale );
+        context.setOffset( contextOffset );
+
         ++nodesDrawn;
 
         // as soon as first block is rendered, we can start showing layer updates.

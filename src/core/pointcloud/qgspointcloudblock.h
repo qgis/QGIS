@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPointCloudBlock
                         const QgsPointCloudAttributeCollection &attributes,
                         const QByteArray &data );
     //! Dtor
-    ~QgsPointCloudBlock();
+    virtual ~QgsPointCloudBlock() = default;
 
     //! Returns raw pointer to data
     const char *data() const;
@@ -58,6 +58,35 @@ class CORE_EXPORT QgsPointCloudBlock
     int mPointCount;
     QgsPointCloudAttributeCollection mAttributes;
     QByteArray mStorage;
+};
+
+
+/**
+ * \ingroup core
+ * \brief Base class for storing raw data from point cloud nodes that have a custom scale and offset values
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsCustomPointCloudBlock : public QgsPointCloudBlock
+{
+  public:
+    //! Ctor
+    QgsCustomPointCloudBlock( int count,
+                              const QgsPointCloudAttributeCollection &attributes,
+                              const QByteArray &data,
+                              const QgsVector3D &scale,
+                              const QgsVector3D &offset );
+
+    //! Returns the custom scale of the block.
+    QgsVector3D scale() const { return mScale; }
+
+    //! Returns the custom offset of the block.
+    QgsVector3D offset() const { return mOffset; }
+  private:
+    QgsVector3D mScale, mOffset;
+
 };
 
 #endif // QGSPOINTCLOUDBLOCK_H

@@ -31,8 +31,6 @@ QgsPointCloudBlock::QgsPointCloudBlock(
 {
 }
 
-QgsPointCloudBlock::~QgsPointCloudBlock() = default;
-
 const char *QgsPointCloudBlock::data() const
 {
   return mStorage.data();
@@ -46,4 +44,14 @@ int QgsPointCloudBlock::pointCount() const
 QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
 {
   return mAttributes;
+}
+
+// QgsCustomPointCloudBlock
+
+QgsCustomPointCloudBlock::QgsCustomPointCloudBlock( int count,
+    const QgsPointCloudAttributeCollection &attributes,
+    const QByteArray &data,
+    const QgsVector3D &scale,
+    const QgsVector3D &offset ) : QgsPointCloudBlock( count, attributes, data ), mScale( scale ), mOffset( offset )
+{
 }
