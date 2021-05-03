@@ -7323,8 +7323,27 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
 {
   const QVariantMap parts = decodeUri( uri );
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  if ( !path.isEmpty() )
+  if ( !path.isEmpty() && QFileInfo::exists( path ) )
   {
+    // export metadata to XML
+    QDomImplementation domImplementation;
+    QDomDocumentType documentType = domImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+    QDomDocument document( documentType );
+
+    QDomElement rootNode = document.createElement( QStringLiteral( "qgis" ) );
+    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
+    document.appendChild( rootNode );
+
+    if ( !metadata.writeMetadataXml( rootNode, document ) )
+    {
+      errorMessage = QObject::tr( "Error exporting metadata to XML" );
+      return false;
+    }
+
+    QString metadataXml;
+    QTextStream textStream( &metadataXml );
+    document.save( textStream, 2 );
+
     QFileInfo fi( path );
     if ( fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -7353,25 +7372,6 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       // creating all the metadata tables to GDAL!
       if ( GDALSetMetadataItem( hLayer, "QGIS_VERSION", Qgis::version().toLocal8Bit().constData(), nullptr ) == CE_None )
       {
-        // export metadata to XML
-        QDomImplementation domImplementation;
-        QDomDocumentType documentType = domImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
-        QDomDocument document( documentType );
-
-        QDomElement rootNode = document.createElement( QStringLiteral( "qgis" ) );
-        rootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
-        document.appendChild( rootNode );
-
-        if ( !metadata.writeMetadataXml( rootNode, document ) )
-        {
-          errorMessage = QObject::tr( "Error exporting metadata to XML" );
-          return false;
-        }
-
-        QString metadataXml;
-        QTextStream textStream( &metadataXml );
-        document.save( textStream, 2 );
-
         // so far so good, ready to throw the whole of the QGIS layer XML into the metadata table!
 
         // first we need to check if there's already a corresponding entry in gpkg_metadata -- if so, we need to update it.
@@ -7459,11 +7459,30 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
         return false;
       }
     }
+    else
+    {
+      // file based, but not a geopackage -- store as .qmd sidecar file instead
+      // (possibly there's other formats outside of GPKG which also has some native means of storing metadata,
+      // which could be added for those formats before we resort to the sidecar approach!)
+      const QString qmdFileName = fi.dir().filePath( fi.completeBaseName() + QStringLiteral( ".qmd" ) );
+      QFile qmdFile( qmdFileName );
+      if ( qmdFile.open( QFile::WriteOnly | QFile::Truncate ) )
+      {
+        QTextStream fileStream( &qmdFile );
+        fileStream << metadataXml;
+        qmdFile.close();
+        return true;
+      }
+      else
+      {
+        errorMessage = tr( "ERROR: Failed to created default metadata file as %1. Check file permissions and retry." ).arg( qmdFileName );
+        return false;
+      }
+    }
   }
-  errorMessage = QObject::tr( "Storing metadata for the specified uri is not supported" );
-  return false;
-}
 
+  throw QgsNotSupportedException( QObject::tr( "Storing metadata for the specified uri is not supported" ) );
+}
 
 // ---------------------------------------------------------------------------
 
