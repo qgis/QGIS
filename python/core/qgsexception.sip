@@ -46,3 +46,15 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%Exception QgsNotSupportedException(SIP_Exception) /PyName=QgsNotSupportedException/
+{
+%TypeHeaderCode
+#include <qgsexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsNotSupportedException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
