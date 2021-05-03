@@ -973,7 +973,7 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
     mLineRender.renderInDeviceCoordinate( v1, v2, v1, v2, p1, p2, context.renderContext() );
   }
 
-  render( context );
+  renderPolyline( points, context );
 }
 
 
@@ -1033,7 +1033,7 @@ QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayer::interpolatedColor() con
   return mLineRender.interpolatedColor();
 }
 
-QgsInterpolatedLineSymbolLayer::QgsInterpolatedLineSymbolLayer(): QgsHybridSymbolLayer( true ) {}
+QgsInterpolatedLineSymbolLayer::QgsInterpolatedLineSymbolLayer(): QgsLineSymbolLayer( true ) {}
 
 
 void QgsInterpolatedLineSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderContext & )
@@ -1046,8 +1046,10 @@ void QgsInterpolatedLineSymbolLayer::stopFeatureRender( const QgsFeature &, QgsR
   mFeature = QgsFeature();
 }
 
-void QgsInterpolatedLineSymbolLayer::render( QgsSymbolRenderContext &context )
+void QgsInterpolatedLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
+  Q_UNUSED( points ); //this symbol layer need to used all the feature geometry, not clipped/simplified geometry
+
   QVector<QgsPolylineXY> lineStrings;
 
   double startValWidth = 0;

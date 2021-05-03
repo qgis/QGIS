@@ -8,7 +8,7 @@
 
 
 
-class QgsGeometryGeneratorSymbolLayer : QgsHybridSymbolLayer
+class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
 
 %TypeHeaderCode
@@ -89,8 +89,7 @@ This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
 %End
 
-    virtual void render( QgsSymbolRenderContext &context );
-
+    void render( QgsSymbolRenderContext &context );
 %Docstring
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since

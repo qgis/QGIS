@@ -50,6 +50,8 @@ class QgsSymbolLayer
           sipType = sipType_QgsSimpleLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
+        else if ( sipCpp->layerType() == "InterpolatedLine" )
+          sipType = sipType_QgsInterpolatedLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -79,8 +81,6 @@ class QgsSymbolLayer
 
       case QgsSymbol::Hybrid:
         sipType = sipType_QgsGeometryGeneratorSymbolLayer;
-        break;
-        sipType = sipType_QgsInterpolatedLineSymbolLayer;
         break;
     }
 %End
@@ -1215,36 +1215,6 @@ Default method to render polygon
 
   private:
     QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
-};
-
-class QgsHybridSymbolLayer : QgsSymbolLayer
-{
-%Docstring(signature="appended")
-:py:class:`QgsHybridSymbolLayer`
-
-.. versionadded:: 3.20
-%End
-
-%TypeHeaderCode
-#include "qgssymbollayer.h"
-%End
-  public:
-
-
-    virtual void render( QgsSymbolRenderContext &context ) = 0;
-%Docstring
-Will render this symbol layer using the context.
-In comparison to other symbols there is no geometry passed in
-
-:param context: The rendering context which will be used to render
-%End
-
-  protected:
-    QgsHybridSymbolLayer( bool locked = false );
-%Docstring
-Constructor
-%End
-
 };
 
 

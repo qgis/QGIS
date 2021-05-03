@@ -279,7 +279,7 @@ Sets if the rendering must be done as the element is selected
 
 };
 
-class QgsInterpolatedLineSymbolLayer : QgsHybridSymbolLayer
+class QgsInterpolatedLineSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring(signature="appended")
 A symbol layer that represents vector layer line feature as interpolated line
@@ -320,7 +320,7 @@ Creates the symbol layer
 
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
-    virtual void render( QgsSymbolRenderContext &context );
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
