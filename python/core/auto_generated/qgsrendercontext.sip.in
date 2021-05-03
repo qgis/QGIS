@@ -283,7 +283,6 @@ per millimeter.
     double dpiTarget() const;
 %Docstring
 Returns the targeted DPI for rendering.
-scale.
 
 .. seealso:: :py:func:`setDpiTarget`
 

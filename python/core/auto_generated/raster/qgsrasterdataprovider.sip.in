@@ -78,7 +78,7 @@ Base class for raster data providers.
       ProviderHintBenefitsFromResampling,
       ProviderHintCanPerformProviderResampling,
       ReloadData,
-      PixelDependentRendering,
+      DpiDependentData,
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;

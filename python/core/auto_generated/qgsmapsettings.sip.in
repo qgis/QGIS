@@ -199,7 +199,9 @@ Returns the target DPI (dots per inch) to be taken into consideration when rende
 
 The default value is -1, which states no DPI target is provided.
 
-.. seealso:: :py:func:`setDpiTarger`
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
 %End
 
     void setDpiTarget( double dpi );
@@ -207,6 +209,8 @@ The default value is -1, which states no DPI target is provided.
 Sets the target ``dpi`` (dots per inch) to be taken into consideration when rendering.
 
 .. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
 %End
 
     void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );

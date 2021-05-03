@@ -209,7 +209,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * The default value is -1, which states no DPI target is provided.
      *
-     * \see setDpiTarger()
+     * \see setDpiTarget()
+     * \since QGIS 3.20
      */
     double dpiTarget() const;
 
@@ -217,6 +218,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Sets the target \a dpi (dots per inch) to be taken into consideration when rendering.
      *
      * \see dpiTarget()
+     * \since QGIS 3.20
      */
     void setDpiTarget( double dpi );
 

@@ -117,7 +117,6 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
   }
 }
 
-#include <QDebug>
 void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *qgsMapToPixel ) const
 {
   if ( !p || !viewPort )
@@ -127,7 +126,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
 
   const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol / dpiScaleFactor, viewPort->mTopLeftPoint.y() + topLeftRow / dpiScaleFactor );
+  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
 
   QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
@@ -136,11 +135,11 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   // in #7766, it seems to be a bug in Qt, setting a brush with alpha 255 is a workaround
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
-  int w = qgsMapToPixel->mapWidth();
-  int h = qgsMapToPixel->mapHeight();
   if ( qgsMapToPixel )
   {
-    double rotation = qgsMapToPixel->mapRotation();
+    const int w = qgsMapToPixel->mapWidth();
+    const int h = qgsMapToPixel->mapHeight();
+    const double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale
@@ -152,7 +151,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToWidth( img.width() / dpiScaleFactor ) : img );
+  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / dpiScaleFactor ) ) : img );
 
 #if 0
   // For debugging:

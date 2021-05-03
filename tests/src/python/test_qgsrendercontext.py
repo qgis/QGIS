@@ -163,6 +163,10 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.temporalRange(),
                          QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
+        ms.setDpiTarget(111.1)
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.dpiTarget(), 111.1)
+
     def testVectorSimplification(self):
         """
         Test vector simplification hints, ensure they are copied correctly from map settings

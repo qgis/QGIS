@@ -37,6 +37,12 @@ class QgsRasterIterator;
 class CORE_EXPORT QgsRasterDrawer
 {
   public:
+
+    /**
+     * The QgsRasterDrawer constructor.
+     * \param iterator the raster iterator to fetch data from
+     * \param dpiTarget the target \a dpi (dots per inch) to be taken into consideration when rendering
+     */
     QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget = -1.0 );
 
     /**

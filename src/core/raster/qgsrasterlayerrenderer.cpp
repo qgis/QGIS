@@ -202,7 +202,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
 
-  if ( mProviderCapabilities & QgsRasterDataProvider::PixelDependentRendering
+  if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {
     const double dpiScaleFactor = rendererContext.dpiTarget() / rendererContext.painter()->device()->logicalDpiX();

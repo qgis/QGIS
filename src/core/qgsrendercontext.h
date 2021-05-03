@@ -335,7 +335,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     /**
      * Returns the targeted DPI for rendering.
-     * scale.
      *
      * \see setDpiTarget()
      * \since QGIS 3.20
