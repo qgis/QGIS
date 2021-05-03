@@ -260,13 +260,14 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     {
       int nodeIndex = groupIndex + i;
       const IndexedPointCloudNode &n = nodes[nodeIndex];
+      const QString nStr = n.toString();
       QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
       blockRequests[ i ] = blockRequest;
-      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, [ &, i, blockRequest ]()
+      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
       {
         if ( !blockRequest->block() )
         {
-          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), blockRequest->errorStr() ) );
+          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
         }
         finishedLoadingBlock[ i ] = true;
         // If all blocks are loaded, exit the event loop
@@ -371,4 +372,3 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
 }
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-
