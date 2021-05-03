@@ -24,7 +24,8 @@ __copyright__ = '(C) 2021, René-Luc DHONT'
 import os
 import shutil
 
-from qgis.core import QgsProcessingParameterDefinition
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingParameterNumber)
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import getParameterFromString
@@ -121,6 +122,29 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10|False|0'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
+        self.assertEqual(param.defaultValue(), 10)
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertEqual(param.minimum(), 0)
+
+        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10|False|0|20'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
+        self.assertEqual(param.defaultValue(), 10)
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertEqual(param.minimum(), 0)
+        self.assertEqual(param.maximum(), 20)
 
 
 if __name__ == '__main__':
