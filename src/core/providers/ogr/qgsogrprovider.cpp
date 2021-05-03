@@ -7652,6 +7652,6 @@ void QgsOgrProviderMetadata::saveConnection( const QgsAbstractProviderConnection
 
 QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabilities() const
 {
-  return FileBasedUris;
+  return FileBasedUris | SaveLayerMetadata;
 }
 ///@endcond
