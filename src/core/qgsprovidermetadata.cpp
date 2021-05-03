@@ -232,10 +232,9 @@ QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
   return QString();
 }
 
-bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMetadata &, QString &errorMessage )
+bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMetadata &, QString & )
 {
-  errorMessage = QObject::tr( "Provider %1 does not support writing layer metadata" ).arg( key() );
-  return false;
+  throw QgsNotSupportedException( QObject::tr( "Provider %1 does not support writing layer metadata" ).arg( key() ) );
 }
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
