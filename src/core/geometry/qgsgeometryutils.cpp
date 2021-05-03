@@ -252,10 +252,8 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
-  // z support for intersection point
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, intersection );
-  // m support for intersection point
-  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
+  // z and m support for intersection point
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -854,10 +852,8 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
 
   result = possibleMidPoints.at( minDistIndex );
 
-  // add z support if necessary
-  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, result );
-  // add m support if necessary
-  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, result );
+  // add z and m support if necessary
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << p1 << p2, result );
 
   return true;
 }
@@ -1808,6 +1804,32 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
 
   pointX = rBx + rCx + aX;
   pointY = rBy + rCy + aY;
+}
+
+bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
+{
+  bool z_passed = false;
+  bool m_passed = false;
+
+  for ( const QgsPoint &pt : points )
+  {
+    if ( !m_passed && pt.isMeasure() )
+    {
+      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
+      point.setM( pt.m() );
+      m_passed = true;
+    }
+    if ( !z_passed && pt.is3D() )
+    {
+      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+      point.setZ( pt.z() );
+      z_passed = true;
+    }
+    if ( z_passed && m_passed )
+      break;
+  }
+
+  return z_passed || m_passed;
 }
 
 bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
