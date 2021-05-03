@@ -83,5 +83,6 @@ class ParametersTest(unittest.TestCase):
         self.assertFalse(param.multiLine())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
+
 if __name__ == '__main__':
     unittest.main()
