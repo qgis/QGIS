@@ -588,7 +588,7 @@ QgsPoint QgsTriangle::inscribedCenter() const
 
   QgsPointSequence points;
   points << vertexAt( 0 ) << vertexAt( 1 ) << vertexAt( 2 );
-  QgsGeometryUtils::transferFirstZValueToPoint( points, center );
+  QgsGeometryUtils::transferFirstZOrMValueToPoint( points, center );
 
   return center;
 }
