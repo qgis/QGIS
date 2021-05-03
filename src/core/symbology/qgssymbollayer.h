@@ -88,6 +88,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsSimpleLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
+        else if ( sipCpp->layerType() == "InterpolatedLine" )
+          sipType = sipType_QgsInterpolatedLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -117,8 +119,6 @@ class CORE_EXPORT QgsSymbolLayer
 
       case QgsSymbol::Hybrid:
         sipType = sipType_QgsGeometryGeneratorSymbolLayer;
-        break;
-        sipType = sipType_QgsInterpolatedLineSymbolLayer;
         break;
     }
     SIP_END
@@ -1150,34 +1150,6 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 #ifdef SIP_RUN
     QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
 #endif
-};
-
-/**
- * \ingroup core
- * \brief QgsHybridSymbolLayer
- * \since QGIS 3.20
- */
-class CORE_EXPORT QgsHybridSymbolLayer : public QgsSymbolLayer
-{
-  public:
-    //! QgsHybridSymbolLayer cannot be copied
-    QgsHybridSymbolLayer( const QgsHybridSymbolLayer &other ) = delete;
-
-    //! QgsHybridSymbolLayer cannot be copied
-    QgsHybridSymbolLayer &operator=( const QgsHybridSymbolLayer &other ) = delete;
-
-    /**
-     * Will render this symbol layer using the context.
-     * In comparison to other symbols there is no geometry passed in
-     *
-     * \param context The rendering context which will be used to render
-     */
-    virtual void render( QgsSymbolRenderContext &context ) = 0;
-
-  protected:
-    //! Constructor
-    QgsHybridSymbolLayer( bool locked = false ): QgsSymbolLayer( QgsSymbol::Hybrid, locked ) {}
-
 };
 
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here

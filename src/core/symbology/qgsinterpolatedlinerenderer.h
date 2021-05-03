@@ -273,7 +273,7 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
  * The interpolation is done between two values defined at the extremities
  * \since QGIS 3.20
  */
-class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsHybridSymbolLayer
+class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsHybridSymbolLayer
 
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
-    void render( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
