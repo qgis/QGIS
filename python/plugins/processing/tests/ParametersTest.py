@@ -83,6 +83,45 @@ class ParametersTest(unittest.TestCase):
         self.assertFalse(param.multiLine())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
+    def testParameterNumberDesc(self):
+        desc = 'QgsProcessingParameterNumber|in_number|Input number'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Double'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Double)
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|10'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
+        self.assertEqual(param.defaultValue(), 10)
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterNumber|in_number|Input number|QgsProcessingParameterNumber.Integer|None|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'number')
+        self.assertEqual(param.name(), 'in_number')
+        self.assertEqual(param.description(), 'Input Number')
+        self.assertEqual(param.dataType(), QgsProcessingParameterNumber.Integer)
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
 
 if __name__ == '__main__':
     unittest.main()
