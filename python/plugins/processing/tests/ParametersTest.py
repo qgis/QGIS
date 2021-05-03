@@ -174,6 +174,34 @@ class ParametersTest(unittest.TestCase):
         self.assertFalse(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
+    def testParameterCrsDesc(self):
+        desc = 'QgsProcessingParameterCrs|in_crs|Input CRS'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'crs')
+        self.assertEqual(param.name(), 'in_crs')
+        self.assertEqual(param.description(), 'Input CRS')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterCrs|in_crs|Input CRS|EPSG:2154'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'crs')
+        self.assertEqual(param.name(), 'in_crs')
+        self.assertEqual(param.description(), 'Input CRS')
+        self.assertEqual(param.defaultValue(), 'EPSG:2154')
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterCrs|in_crs|Input CRS|None|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'crs')
+        self.assertEqual(param.name(), 'in_bool')
+        self.assertEqual(param.description(), 'Input CRS')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional
+
 
 if __name__ == '__main__':
     unittest.main()
