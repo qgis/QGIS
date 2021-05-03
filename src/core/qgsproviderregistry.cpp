@@ -668,8 +668,7 @@ bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const Q
     return meta->saveLayerMetadata( uri, metadata, errorMessage );
   else
   {
-    errorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
-    return false;
+    throw QgsNotSupportedException( QObject::tr( "Unable to load %1 provider" ).arg( providerKey ) );
   }
 }
 

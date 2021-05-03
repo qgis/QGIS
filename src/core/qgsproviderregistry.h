@@ -271,9 +271,12 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \returns TRUE if the metadata was successfully saved.
      *
+     * \throws QgsNotSupportedException if the provider does not support saving layer metadata for the
+     * specified \a uri.
+     *
      * \since QGIS 3.20
      */
-    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT );
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates database by the provider on the path

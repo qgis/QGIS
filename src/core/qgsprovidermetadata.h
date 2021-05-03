@@ -483,9 +483,12 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \returns TRUE if the metadata was successfully saved.
      *
+     * \throws QgsNotSupportedException if the provider does not support saving layer metadata for the
+     * specified \a uri.
+     *
      * \since QGIS 3.20
      */
-    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT );
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
 
     /**
      * Creates database by the provider on the path
