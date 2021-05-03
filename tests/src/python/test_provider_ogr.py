@@ -1271,6 +1271,22 @@ class PyQgsOGRProvider(unittest.TestCase):
         with self.assertRaises(QgsNotSupportedException):
             QgsProviderRegistry.instance().saveLayerMetadata('ogr', 'WFS:http://www2.dmsolutions.ca/cgi-bin/mswfs_gmap', metadata)
 
+    def testSaveDefaultMetadataUnsupported(self):
+        """
+        Test saving default metadata to an unsupported layer
+        """
+        layer = QgsVectorLayer('WFS:http://www2.dmsolutions.ca/cgi-bin/mswfs_gmap', 'test')
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        layer.setMetadata(metadata)
+        # save as default
+        msg, res = layer.saveDefaultMetadata()
+        self.assertFalse(res)
+        self.assertEqual(msg, 'Storing metadata for the specified uri is not supported')
+
     def testEmbeddedSymbolsKml(self):
         """
         Test retrieving embedded symbols from a KML file

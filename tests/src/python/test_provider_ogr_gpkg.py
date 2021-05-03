@@ -1717,6 +1717,64 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(metadata2.identifier(), 'my identifier')
         self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
 
+    def testGeopackageSaveDefaultMetadata(self):
+        """
+        Test saving layer metadata as default to a gpkg file
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSaveMetadataDefault.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        uri = QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'})
+        layer = QgsVectorLayer(uri, 'test')
+        self.assertTrue(layer.isValid())
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        layer.setMetadata(metadata)
+        # save as default
+        msg, res = layer.saveDefaultMetadata()
+        self.assertTrue(res)
+
+        # QMD sidecar should NOT exist -- metadata should be written to gpkg_metadata table
+        self.assertFalse(os.path.exists(os.path.join(self.basetestpath, 'testGeopackageSaveMetadataDefault.qmd')))
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertEqual(len(rows), 1)
+        self.assertCountEqual(rows[0], ['my identifier', 'my abstract'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        rows = [r for r in rs]
+        file_ids = [row[0] for row in rows]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        con.close()
+
+        # reload layer and check that metadata was restored
+        layer2 = QgsVectorLayer(uri, 'test')
+        self.assertTrue(layer2.isValid())
+        self.assertEqual(layer2.metadata().abstract(), 'my abstract')
+        self.assertEqual(layer2.metadata().identifier(), 'my identifier')
+        self.assertEqual(layer2.metadata().licenses(), ['l1', 'l2'])
+
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
 

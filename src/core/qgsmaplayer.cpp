@@ -59,6 +59,7 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsprovidermetadata.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -880,6 +881,28 @@ QString QgsMapLayer::metadataUri() const
 
 QString QgsMapLayer::saveDefaultMetadata( bool &resultFlag )
 {
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    if ( metadata->providerCapabilities() & QgsProviderMetadata::SaveLayerMetadata )
+    {
+      try
+      {
+        QString errorMessage;
+        resultFlag = QgsProviderRegistry::instance()->saveLayerMetadata( providerType(), mDataSource, mMetadata, errorMessage );
+        if ( resultFlag )
+          return tr( "Successfully saved default layer metadata" );
+        else
+          return errorMessage;
+      }
+      catch ( QgsNotSupportedException &e )
+      {
+        resultFlag = false;
+        return e.what();
+      }
+    }
+  }
+
+  // fallback default metadata saving method, for providers which don't support (or implement) saveLayerMetadata
   return saveNamedMetadata( metadataUri(), resultFlag );
 }
 
