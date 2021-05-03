@@ -253,9 +253,13 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const char *ptr = block->data();
   int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
-
-  const QgsVector3D scale = pc->scale();
-  const QgsVector3D offset = pc->offset();
+  QgsVector3D blockScale = pc->scale();
+  QgsVector3D blockOffset = pc->offset();
+  if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+  {
+    blockScale = customBlock->scale();
+    blockOffset = customBlock->offset();
+  }
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
   QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
@@ -270,9 +274,9 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
     qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
 
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
-    double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
+    double x = blockOffset.x() + blockScale.x() * ix;
+    double y = blockOffset.y() + blockScale.y() * iy;
+    double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -378,8 +382,13 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
-  const QgsVector3D scale = pc->scale();
-  const QgsVector3D offset = pc->offset();
+  QgsVector3D blockScale = pc->scale();
+  QgsVector3D blockOffset = pc->offset();
+  if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+  {
+    blockScale = customBlock->scale();
+    blockOffset = customBlock->offset();
+  }
 
   for ( int i = 0; i < count; ++i )
   {
@@ -390,9 +399,9 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
 
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
-    double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
+    double x = blockOffset.x() + blockScale.x() * ix;
+    double y = blockOffset.y() + blockScale.y() * iy;
+    double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -483,8 +492,13 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
-  const QgsVector3D scale = pc->scale();
-  const QgsVector3D offset = pc->offset();
+  QgsVector3D blockScale = pc->scale();
+  QgsVector3D blockOffset = pc->offset();
+  if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+  {
+    blockScale = customBlock->scale();
+    blockOffset = customBlock->offset();
+  }
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
   QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
@@ -509,9 +523,9 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
     qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
-    double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
+    double x = blockOffset.x() + blockScale.x() * ix;
+    double y = blockOffset.y() + blockScale.y() * iy;
+    double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
       coordinateTransform.transformInPlace( x, y, z );
@@ -646,8 +660,13 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   int count = block->pointCount();
   const std::size_t recordSize = attributes.pointRecordSize();
 
-  const QgsVector3D scale = pc->scale();
-  const QgsVector3D offset = pc->offset();
+  QgsVector3D blockScale = pc->scale();
+  QgsVector3D blockOffset = pc->offset();
+  if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+  {
+    blockScale = customBlock->scale();
+    blockOffset = customBlock->offset();
+  }
   const double zValueScale = context.zValueScale();
   const double zValueOffset = context.zValueFixedOffset();
   QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
@@ -663,9 +682,9 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     qint32 iy = *( qint32 * )( ptr + i * recordSize + yOffset );
     qint32 iz = *( qint32 * )( ptr + i * recordSize + zOffset );
 
-    double x = offset.x() + scale.x() * ix;
-    double y = offset.y() + scale.y() * iy;
-    double z = ( offset.z() + scale.z() * iz ) * zValueScale + zValueOffset;
+    double x = blockOffset.x() + blockScale.x() * ix;
+    double y = blockOffset.y() + blockScale.y() * iy;
+    double z = ( blockOffset.z() + blockScale.z() * iz ) * zValueScale + zValueOffset;
     try
     {
       coordinateTransform.transformInPlace( x, y, z );

@@ -201,6 +201,14 @@ struct MapIndexedPointCloudNode
     if ( !block || pointsCount == mPointsLimit )
       return acceptedPoints;
 
+    QgsVector3D blockScale = mIndexScale;
+    QgsVector3D blockOffset = mIndexOffset;
+    if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
+    {
+      blockScale = customBlock->scale();
+      blockOffset = customBlock->offset();
+    }
+
     const char *ptr = block->data();
     QgsPointCloudAttributeCollection blockAttributes = block->attributes();
     const std::size_t recordSize = blockAttributes.pointRecordSize();
@@ -213,7 +221,7 @@ struct MapIndexedPointCloudNode
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, mIndexScale, mIndexOffset, x, y, z );
+      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, blockScale, blockOffset, x, y, z );
       QgsPoint point( x, y );
 
       if ( mZRange.contains( z ) && extentEngine->contains( &point ) )
