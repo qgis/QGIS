@@ -162,6 +162,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     enum ProviderCapability
     {
       FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
+      SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata (since QGIS 3.20)
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
@@ -673,6 +674,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderMetadata::ProviderMetadataCapabilities )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderMetadata::ProviderCapabilities )
 
 #endif //QGSPROVIDERMETADATA_H

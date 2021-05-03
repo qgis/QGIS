@@ -118,6 +118,7 @@ library object.
     enum ProviderCapability
     {
       FileBasedUris,
+      SaveLayerMetadata,
     };
     typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
 
@@ -591,6 +592,7 @@ relating to the connection have been updated.
 
 QFlags<QgsProviderMetadata::ProviderMetadataCapability> operator|(QgsProviderMetadata::ProviderMetadataCapability f1, QFlags<QgsProviderMetadata::ProviderMetadataCapability> f2);
 
+QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::ProviderCapability f1, QFlags<QgsProviderMetadata::ProviderCapability> f2);
 
 
 /************************************************************************
