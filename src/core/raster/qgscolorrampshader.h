@@ -249,19 +249,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
-
-    /**
-     * Returns a string map that contains the configuration information for a symbol layer.
-     * \since QGIS 3.20
-     */
-    QVariantMap properties() const;
-
-    /**
-     * Creates a color ramp sahder from symbol layer properties
-     * \since QGIS 3.20
-     */
-    static QgsColorRampShader createFromSymbolLayerProperties( const QVariantMap &properties );
-
   protected:
 
     //! Source color ramp

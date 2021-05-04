@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * \param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    void render( QgsSymbolRenderContext &context );
+    virtual void render( QgsSymbolRenderContext &context );
 
     void setColor( const QColor &color ) override;
 

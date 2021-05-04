@@ -67,7 +67,7 @@ void QgsInterpolatedLineRenderer::renderInDeviceCoordinate( double valueColor1, 
   QList<QLinearGradient> gradients;
 
   mStrokeColoring.graduatedColors( valueColor1, valueColor2, breakValues, breakColors, gradients );
-  QColor selectedColor = context.selectionColor();;
+  QColor selectedColor = context.selectionColor();
 
   if ( gradients.isEmpty() && !breakValues.empty() && !breakColors.isEmpty() ) //exact colors to render
   {
@@ -894,7 +894,8 @@ QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &prope
 
   if ( properties.contains( QStringLiteral( "single_color" ) ) )
     symbolLayer->mLineRender.mStrokeColoring.setColor( QgsSymbolLayerUtils::decodeColor( properties.value( QStringLiteral( "single_color" ) ).toString() ) );
-  symbolLayer->mLineRender.mStrokeColoring.setColor( QgsColorRampShader::createFromSymbolLayerProperties( properties ) );
+  if ( properties.contains( QStringLiteral( "color_ramp_shader" ) ) )
+    symbolLayer->mLineRender.mStrokeColoring.setColor( createColorRampShaderFromProperties( properties.value( QStringLiteral( "color_ramp_shader" ) ) ) );
   if ( properties.contains( QStringLiteral( "coloring_method" ) ) )
     symbolLayer->mLineRender.mStrokeColoring.setColoringMethod(
       static_cast<QgsInterpolatedLineColor::ColoringMethod>( properties.value( QStringLiteral( "coloring_method" ) ).toInt() ) );
@@ -925,15 +926,7 @@ QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
   // Color varying
   props.insert( QStringLiteral( "coloring_method" ), mLineRender.mStrokeColoring.coloringMethod() );
   props.insert( QStringLiteral( "single_color" ), QgsSymbolLayerUtils::encodeColor( mLineRender.mStrokeColoring.singleColor() ) );
-  QgsColorRamp *colorRamp = mLineRender.mStrokeColoring.colorRampShader().sourceColorRamp();
-  if ( colorRamp )
-  {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    props.unite( mLineRender.mStrokeColoring.colorRampShader().properties() );
-#else
-    props.insert( mLineRender.mStrokeColoring.colorRampShader().properties() );
-#endif
-  }
+  props.insert( QStringLiteral( "color_ramp_shader" ), colorRampShaderProperties() );
 
   return props;
 }
@@ -1031,6 +1024,98 @@ void QgsInterpolatedLineSymbolLayer::setInterpolatedColor( const QgsInterpolated
 QgsInterpolatedLineColor QgsInterpolatedLineSymbolLayer::interpolatedColor() const
 {
   return mLineRender.interpolatedColor();
+}
+
+QVariant QgsInterpolatedLineSymbolLayer::colorRampShaderProperties() const
+{
+  const QgsColorRampShader &colorRampShader = mLineRender.mStrokeColoring.colorRampShader();
+
+  QVariantMap props;
+  if ( colorRampShader.sourceColorRamp() )
+    props.insert( QStringLiteral( "color_ramp_source" ), QgsSymbolLayerUtils::colorRampToVariant( QString(), colorRampShader.sourceColorRamp() ) );
+  props.insert( QStringLiteral( "color_ramp_shader_type" ), colorRampShader.colorRampType() );
+  props.insert( QStringLiteral( "color_ramp_shader_classification_mode" ), colorRampShader.classificationMode() );
+  QVariantList colorRampItemListVariant;
+
+  const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader.colorRampItemList();
+  for ( const QgsColorRampShader::ColorRampItem &item : colorRampItemList )
+  {
+    QVariantMap itemVar;
+    itemVar[QStringLiteral( "label" )] = item.label;
+    itemVar[QStringLiteral( "color" )] = QgsSymbolLayerUtils::encodeColor( item.color );
+    itemVar[QStringLiteral( "value" )] = item.value;
+    colorRampItemListVariant.append( itemVar );
+  }
+  props.insert( QStringLiteral( "color_ramp_shader_items_list" ), colorRampItemListVariant );
+
+  props.insert( QStringLiteral( "color_ramp_shader_minimum_value" ), colorRampShader.minimumValue() );
+  props.insert( QStringLiteral( "color_ramp_shader_maximum_value" ), colorRampShader.maximumValue() );
+  props.insert( QStringLiteral( "color_ramp_shader_value_out_of_range" ), colorRampShader.clip() ? 1 : 0 );
+  props.insert( QStringLiteral( "color_ramp_shader_label_precision" ), colorRampShader.labelPrecision() );
+
+  return props;
+}
+
+QgsColorRampShader QgsInterpolatedLineSymbolLayer::createColorRampShaderFromProperties( const QVariant &properties )
+{
+  QgsColorRampShader colorRampShader;
+
+  if ( properties.type() != QVariant::Map )
+    return colorRampShader;
+
+  QVariantMap shaderVariantMap = properties.toMap();
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_source" ) ) )
+    colorRampShader.setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( shaderVariantMap.value( QStringLiteral( "color_ramp_source" ) ) ) );
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_type" ) ) )
+    colorRampShader.setColorRampType( static_cast<QgsColorRampShader::Type>( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_type" ) ).toInt() ) );
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_classification_mode" ) ) )
+    colorRampShader.setClassificationMode( static_cast<QgsColorRampShader::ClassificationMode>(
+        shaderVariantMap.value( QStringLiteral( "color_ramp_shader_classification_mode" ) ).toInt() ) );
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_items_list" ) ) )
+  {
+    QVariant colorRampItemsVar = shaderVariantMap.value( QStringLiteral( "color_ramp_shader_items_list" ) );
+    if ( colorRampItemsVar.type() == QVariant::List )
+    {
+      QVariantList itemVariantList = colorRampItemsVar.toList();
+      QList<QgsColorRampShader::ColorRampItem> colorRampItemList;
+      for ( const QVariant &itemVar : std::as_const( itemVariantList ) )
+      {
+        QgsColorRampShader::ColorRampItem item;
+        if ( itemVar.type() != QVariant::Map )
+          continue;
+        QVariantMap itemVarMap = itemVar.toMap();
+        if ( !itemVarMap.contains( QStringLiteral( "label" ) ) || !itemVarMap.contains( QStringLiteral( "color" ) ) || !itemVarMap.contains( QStringLiteral( "value" ) ) )
+          continue;
+
+        item.label = itemVarMap.value( QStringLiteral( "label" ) ).toString();
+        item.color = QgsSymbolLayerUtils::decodeColor( itemVarMap.value( QStringLiteral( "color" ) ).toString() );
+        item.value = itemVarMap.value( QStringLiteral( "value" ) ).toDouble();
+
+        colorRampItemList.append( item );
+      }
+      colorRampShader.setColorRampItemList( colorRampItemList );
+    }
+  }
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_minimum_value" ) ) )
+    colorRampShader.setMinimumValue( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_minimum_value" ) ).toDouble() );
+  else
+    colorRampShader.setMinimumValue( std::numeric_limits<double>::quiet_NaN() );
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_maximum_value" ) ) )
+    colorRampShader.setMaximumValue( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_maximum_value" ) ).toDouble() );
+  else
+    colorRampShader.setMaximumValue( std::numeric_limits<double>::quiet_NaN() );
+
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_value_out_of_range" ) ) )
+    colorRampShader.setClip( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_value_out_of_range" ) ).toInt() == 1 );
+  if ( shaderVariantMap.contains( QStringLiteral( "color_ramp_shader_label_precision" ) ) )
+    colorRampShader.setLabelPrecision( shaderVariantMap.value( QStringLiteral( "color_ramp_shader_label_precision" ) ).toInt() );
+
+  return colorRampShader;
 }
 
 QgsInterpolatedLineSymbolLayer::QgsInterpolatedLineSymbolLayer(): QgsLineSymbolLayer( true ) {}
@@ -1182,7 +1267,7 @@ void QgsInterpolatedLineSymbolLayer::renderPolyline( const QPolygonF &points, Qg
       double v1c = startValColor + variationPerMapUnitColor * lengthFromStart;
       double v1w = startValWidth + variationPerMapUnitWidth * lengthFromStart;
       lengthFromStart += p1.distance( p2 );
-      double v2c = startValColor + variationPerMapUnitColor * lengthFromStart;;
+      double v2c = startValColor + variationPerMapUnitColor * lengthFromStart;
       double v2w = startValWidth + variationPerMapUnitWidth * lengthFromStart;
       mLineRender.render( v1c, v2c, v1w, v2w, p1, p2, renderContext );
     }

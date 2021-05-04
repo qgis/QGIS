@@ -234,21 +234,6 @@ Ownership of ``settings`` is transferred.
 .. versionadded:: 3.18
 %End
 
-
-    QVariantMap properties() const;
-%Docstring
-Returns a string map that contains the configuration information for a symbol layer.
-
-.. versionadded:: 3.20
-%End
-
-    static QgsColorRampShader createFromSymbolLayerProperties( const QVariantMap &properties );
-%Docstring
-Creates a color ramp sahder from symbol layer properties
-
-.. versionadded:: 3.20
-%End
-
   protected:
 
 
