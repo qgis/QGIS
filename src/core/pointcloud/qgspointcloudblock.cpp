@@ -23,11 +23,13 @@
 QgsPointCloudBlock::QgsPointCloudBlock(
   int count,
   const QgsPointCloudAttributeCollection &attributes,
-  const QByteArray &data
+  const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset
 )
   : mPointCount( count )
   , mAttributes( attributes )
   , mStorage( data )
+  , mScale( scale )
+  , mOffset( offset )
 {
 }
 
@@ -46,12 +48,12 @@ QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
   return mAttributes;
 }
 
-// QgsCustomPointCloudBlock
-
-QgsCustomPointCloudBlock::QgsCustomPointCloudBlock( int count,
-    const QgsPointCloudAttributeCollection &attributes,
-    const QByteArray &data,
-    const QgsVector3D &scale,
-    const QgsVector3D &offset ) : QgsPointCloudBlock( count, attributes, data ), mScale( scale ), mOffset( offset )
+QgsVector3D QgsPointCloudBlock::scale() const
 {
+  return mScale;
+}
+
+QgsVector3D QgsPointCloudBlock::offset() const
+{
+  return mOffset;
 }

@@ -215,13 +215,12 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
 
     if ( !block )
       continue;
+
     QgsVector3D contextScale = context.scale();
     QgsVector3D contextOffset = context.offset();
-    if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
-    {
-      context.setScale( customBlock->scale() );
-      context.setOffset( customBlock->offset() );
-    }
+
+    context.setScale( block->scale() );
+    context.setOffset( block->offset() );
 
     context.setAttributes( block->attributes() );
 
@@ -306,11 +305,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
         QgsVector3D contextScale = context.scale();
         QgsVector3D contextOffset = context.offset();
 
-        if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( blockRequests[ i ]->block() ) )
-        {
-          context.setScale( customBlock->scale() );
-          context.setOffset( customBlock->offset() );
-        }
+        context.setScale( blockRequests[ i ]->block()->scale() );
+        context.setOffset( blockRequests[ i ]->block()->offset() );
 
         context.setAttributes( blockRequests[ i ]->block()->attributes() );
 
