@@ -45,9 +45,8 @@ class Qgs3DMapSettings;
  *
  * \note Not available in Python bindings
  */
-class Qgs3DRenderContext : public QObject
+class Qgs3DRenderContext
 {
-    Q_OBJECT
   public:
     Qgs3DRenderContext( const Qgs3DMapSettings &map ) : mMap( map ) {}
 
