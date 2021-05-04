@@ -17,6 +17,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
@@ -88,6 +89,7 @@ class TestQgsGeometryUtils: public QObject
     void transferFirstZValueToPoint();
     void transferFirstMValueToPoint();
     void transferFirstZOrMValueToPoint();
+    void transferFirstZOrMValueToPoint_iterator();
 };
 
 
@@ -1714,7 +1716,63 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint()
   QCOMPARE( point.wkbType(), QgsWkbTypes::PointZM );
   QCOMPARE( point.z(), 9.0 );
   QCOMPARE( point.m(), 5.0 );
+}
 
+void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_iterator()
+{
+
+  QgsPoint point( 1, 2 );
+  QgsGeometry geom;
+
+  geom = QgsGeometry::fromWkt( "LineString( 0 2, 2 3)" );
+  bool ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, false );
+
+  // Z
+  point = QgsPoint( 1, 2 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3, 2 3 4)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+
+  // M
+  point = QgsPoint( 1, 2 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3, 2 3 4)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.m(), 3.0 );
+
+  // ZM
+  point = QgsPoint( 1, 2 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // point is Z and linestring ZM
+  point = QgsPoint( 1, 2, 4 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // point is M and linestring ZM
+  point = QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // point is ZM and linestring ZM
+  point = QgsPoint( 1, 2, 5, 4 );
+  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
