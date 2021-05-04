@@ -25,6 +25,8 @@
 #include "qgscolorramptexture.h"
 #include "qgs3dmapsettings.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudblockrequest.h"
+#include "qgsfeedback.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QAttribute>
@@ -225,6 +227,34 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   // cppcheck-suppress memleak
 }
 
+QgsPointCloudBlock *QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
+{
+  QgsPointCloudBlock *block = nullptr;
+  if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
+  {
+    block = pc->nodeData( n, request );
+  }
+  else if ( pc->accessType() == QgsPointCloudIndex::AccessType::Remote )
+  {
+    bool loopAborted = false;
+    QEventLoop loop;
+    QgsPointCloudBlockRequest *req = pc->asyncNodeData( n, request );
+    QObject::connect( req, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+    QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, [ & ]()
+    {
+      loopAborted = true;
+      loop.quit();
+    } );
+    loop.exec();
+
+    if ( !loopAborted )
+      block = req->block();
+  }
+  return block;
+}
+
+//
+
 QgsSingleColorPointCloud3DSymbolHandler::QgsSingleColorPointCloud3DSymbolHandler()
   : QgsPointCloud3DSymbolHandler()
 {
@@ -246,7 +276,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -369,7 +399,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -474,7 +504,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
@@ -637,7 +667,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
 
   QgsPointCloudRequest request;
   request.setAttributes( attributes );
-  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pointCloudBlock( pc, n, request, context ) );
   if ( !block )
     return;
 
