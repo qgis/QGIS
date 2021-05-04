@@ -397,6 +397,38 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.description(), 'Raster Destination')
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterRasterDestination|param_raster_dest|Raster Destination|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'rasterDestination')
+        self.assertEqual(param.name(), 'param_raster_dest')
+        self.assertEqual(param.description(), 'Raster Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
+
+    def testParameterFolderDestDesc(self):
+        desc = 'QgsProcessingParameterFolderDestination|param_folder_dest|Folder Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'folderDestination')
+        self.assertEqual(param.name(), 'param_folder_dest')
+        self.assertEqual(param.description(), 'Folder Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFolderDestination|param_folder_dest|Folder Destination|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'folderDestination')
+        self.assertEqual(param.name(), 'param_folder_dest')
+        self.assertEqual(param.description(), 'Folder Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
 
 
 if __name__ == '__main__':
