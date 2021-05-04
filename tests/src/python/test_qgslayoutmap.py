@@ -860,7 +860,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map.refresh()
         self.assertEqual(len(spy), 7)
 
-    def testCrsChanged(self):
+    def testMapSettingsDpiTarget(self):
         """
         Test that the CRS changed signal is emitted in the right circumstances
         """
