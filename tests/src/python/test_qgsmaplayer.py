@@ -21,7 +21,8 @@ from qgis.core import (QgsReadWriteContext,
                        QgsVectorLayer,
                        QgsRasterLayer,
                        QgsProject,
-                       QgsLayerMetadata)
+                       QgsLayerMetadata,
+                       QgsLayerNotesUtils)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -76,6 +77,25 @@ class TestQgsMapLayer(unittest.TestCase):
         layer.setAutoRefreshInterval(0)  # should disable auto refresh
         self.assertFalse(layer.hasAutoRefreshEnabled())
         self.assertEqual(layer.autoRefreshInterval(), 0)
+
+    def testLayerNotes(self):
+        """
+        Test layer notes
+        """
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        self.assertFalse(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertFalse(QgsLayerNotesUtils.layerNotes(layer))
+
+        QgsLayerNotesUtils.setLayerNotes(layer, 'my notes')
+        self.assertTrue(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer), 'my notes')
+        QgsLayerNotesUtils.setLayerNotes(layer, 'my notes 2')
+        self.assertEqual(QgsLayerNotesUtils.layerNotes(layer), 'my notes 2')
+
+        QgsLayerNotesUtils.removeNotes(layer)
+        self.assertFalse(QgsLayerNotesUtils.layerHasNotes(layer))
+        self.assertFalse(QgsLayerNotesUtils.layerNotes(layer))
 
     def testSaveRestoreAutoRefresh(self):
         """ test saving/restoring auto refresh to xml """
