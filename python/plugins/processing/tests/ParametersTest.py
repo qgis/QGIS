@@ -25,7 +25,8 @@ import os
 import shutil
 
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFile)
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import getParameterFromString
@@ -220,6 +221,60 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.description(), 'Input Extent')
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+    def testParameterFileDesc(self):
+        desc = 'QgsProcessingParameterFile|in_file|Input File'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_folder|Input Folder|1'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_folder')
+        self.assertEqual(param.description(), 'Input Folder')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.Folder)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_folder|Input Folder|QgsProcessingParameterFile.Folder'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_folder')
+        self.assertEqual(param.description(), 'Input Folder')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.Folder)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_file|Input File|0|gpkg'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertEqual(param.extension(), 'gpkg')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_file|Input File|0|png|None|False|PNG Files (*.png);; JPG Files (*.jpg *.jpeg)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertEqual(param.extension(), '')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertEqual(param.fileFilter(), 'PNG Files (*.png);; JPG Files (*.jpg *.jpeg)')
 
 
 if __name__ == '__main__':
