@@ -14,7 +14,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QCoreApplication, QEvent
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QCoreApplication, QEvent, QSizeF
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtTest import QSignalSpy
@@ -859,6 +859,17 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(len(spy), 6)
         map.refresh()
         self.assertEqual(len(spy), 7)
+
+    def testMapSettingsDpiTarget(self):
+        """
+        Test that the CRS changed signal is emitted in the right circumstances
+        """
+        p = QgsProject()
+        layout = QgsLayout(p)
+        layout.renderContext().setDpi(111.1)
+        map = QgsLayoutItemMap(layout)
+        ms = map.mapSettings(QgsRectangle(0, 0, 1, 1), QSizeF(10, 10), 96, False)
+        self.assertEqual(ms.dpiTarget(), 111.1)
 
 
 if __name__ == '__main__':
