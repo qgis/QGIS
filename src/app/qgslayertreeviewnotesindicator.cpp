@@ -20,6 +20,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 #include "qgisapp.h"
 
 QgsLayerTreeViewNotesIndicatorProvider::QgsLayerTreeViewNotesIndicatorProvider( QgsLayerTreeView *view )
@@ -56,7 +57,7 @@ bool QgsLayerTreeViewNotesIndicatorProvider::acceptLayer( QgsMapLayer *layer )
   if ( !layer )
     return false;
 
-  return QgsLayerNotesManager::layerHasNotes( layer );
+  return QgsLayerNotesUtils::layerHasNotes( layer );
 }
 
 QString QgsLayerTreeViewNotesIndicatorProvider::iconName( QgsMapLayer *layer )
@@ -67,6 +68,6 @@ QString QgsLayerTreeViewNotesIndicatorProvider::iconName( QgsMapLayer *layer )
 
 QString QgsLayerTreeViewNotesIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  return QgsLayerNotesManager::layerNotes( layer );
+  return QgsLayerNotesUtils::layerNotes( layer );
 }
 

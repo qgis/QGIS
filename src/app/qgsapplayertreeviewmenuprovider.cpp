@@ -46,6 +46,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 
 #include <QMessageBox>
 
@@ -673,13 +674,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
-      QAction *notes = new QAction( QgsLayerNotesManager::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
+      QAction *notes = new QAction( QgsLayerNotesUtils::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
       connect( notes, &QAction::triggered, this, [layer ]
       {
         QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
       } );
       menu->addAction( notes );
-      if ( QgsLayerNotesManager::layerHasNotes( layer ) )
+      if ( QgsLayerNotesUtils::layerHasNotes( layer ) )
       {
         QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
         connect( notes, &QAction::triggered, this, [layer ]
@@ -688,7 +689,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                                       tr( "Remove Layer Notes" ),
                                       tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
-            QgsLayerNotesManager::removeNotes( layer );
+            QgsLayerNotesUtils::removeNotes( layer );
         } );
         menu->addAction( notes );
       }
