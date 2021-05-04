@@ -152,7 +152,15 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
       }
 
       // open the source layer
-      QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+      bool owner;
+      QString error;
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      if ( !srcLayer )
+      {
+        importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
+        hasError = true;
+        continue;
+      }
 
       if ( srcLayer->isValid() )
       {
@@ -168,8 +176,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
         uri.setWkbType( srcLayer->wkbType() );
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
-          QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ),
-              QStringLiteral( "hana" ), srcLayer->crs() ) );
+          new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ),
+                                          QStringLiteral( "hana" ), srcLayer->crs(), QVariantMap(), owner ) );
+
         // when export is successful:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this,
                  [ = ]()
