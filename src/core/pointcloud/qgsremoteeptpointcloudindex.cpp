@@ -139,7 +139,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes() );
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes(), scale(), offset() );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const

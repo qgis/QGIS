@@ -282,17 +282,17 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( mDataType == QLatin1String( "binary" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else
   {

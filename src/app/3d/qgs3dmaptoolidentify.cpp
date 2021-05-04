@@ -157,13 +157,8 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       if ( !block )
         continue;
 
-      QgsVector3D blockScale = index->scale();
-      QgsVector3D blockOffset = index->offset();
-      if ( QgsCustomPointCloudBlock *customBlock = dynamic_cast<QgsCustomPointCloudBlock *>( block.get() ) )
-      {
-        blockScale = customBlock->scale();
-        blockOffset = customBlock->offset();
-      }
+      const QgsVector3D blockScale = block->scale();
+      const QgsVector3D blockOffset = block->offset();
 
       const char *ptr = block->data();
       QgsPointCloudAttributeCollection blockAttributes = block->attributes();
