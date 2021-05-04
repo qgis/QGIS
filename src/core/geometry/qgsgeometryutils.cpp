@@ -1808,8 +1808,8 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
 
 bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
 {
-  bool z_passed = false;
-  bool m_passed = false;
+  bool zFound = false;
+  bool mFound = false;
 
   for ( const QgsPoint &pt : points )
   {
@@ -1817,19 +1817,19 @@ bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &po
     {
       point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
       point.setM( pt.m() );
-      m_passed = true;
+      mFound = true;
     }
     if ( !z_passed && pt.is3D() )
     {
       point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
       point.setZ( pt.z() );
-      z_passed = true;
+      zFound = true;
     }
-    if ( z_passed && m_passed )
+    if ( zFound && mFound )
       break;
   }
 
-  return z_passed || m_passed;
+  return zFound || mFound;
 }
 
 bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
