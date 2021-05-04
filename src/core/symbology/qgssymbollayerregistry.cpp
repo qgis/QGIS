@@ -34,7 +34,10 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
                       QgsMarkerLineSymbolLayer::create, QgsMarkerLineSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "HashLine" ), QObject::tr( "Hashed Line" ), QgsSymbol::Line,
                       QgsHashedLineSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "ArrowLine" ), QObject::tr( "Arrow" ), QgsSymbol::Line, QgsArrowSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "ArrowLine" ), QObject::tr( "Arrow" ), QgsSymbol::Line,
+                      QgsArrowSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "InterpolatedLine" ), QObject::tr( "Interpolated Line" ), QgsSymbol::Line,
+                      QgsInterpolatedLineSymbolLayer::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SimpleMarker" ), QObject::tr( "Simple Marker" ), QgsSymbol::Marker,
                       QgsSimpleMarkerSymbolLayer::create, QgsSimpleMarkerSymbolLayer::createFromSld ) );
@@ -74,8 +77,6 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "GeometryGenerator" ), QObject::tr( "Geometry Generator" ), QgsSymbol::Hybrid,
                       QgsGeometryGeneratorSymbolLayer::create ) );
-  addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "InterpolatedLine" ), QObject::tr( "Interpolated Line" ), QgsSymbol::Hybrid,
-                      QgsInterpolatedLineSymbolLayer::create ) );
 }
 
 QgsSymbolLayerRegistry::~QgsSymbolLayerRegistry()

@@ -21,8 +21,6 @@
 #include "qgsinterpolatedlinerenderer.h"
 #include "ui_qgsinterpolatedlinesymbollayerwidgetbase.h"
 
-#ifndef SIP_RUN
-
 /**
  * \ingroup gui
  * \brief QgsInterpolatedLineSymbolLayerWidget
@@ -60,7 +58,6 @@ class GUI_EXPORT QgsInterpolatedLineSymbolLayerWidget: public QgsSymbolLayerWidg
     void onColorMinMaxLineTextEdited();
 
   private:
-    //QgsInterpolatedLineWidget *mInterpolatedLineWidget = nullptr;
     QgsInterpolatedLineSymbolLayer *mLayer = nullptr;
 
     double mMinimumForWidthFromLayer = std::numeric_limits<double>::quiet_NaN();
@@ -74,7 +71,5 @@ class GUI_EXPORT QgsInterpolatedLineSymbolLayerWidget: public QgsSymbolLayerWidg
     double lineEditValue( QLineEdit *lineEdit );
     void setLineEditValue( QLineEdit *lineEdit, double value );
 };
-
-#endif //SIP_RUN
 
 #endif // QGSINTERPOLATEDLINESYMBOLLAYERWIDGET_H

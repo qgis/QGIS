@@ -354,6 +354,9 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     std::unique_ptr<QgsExpression> mStartColorExpression;
     std::unique_ptr<QgsExpression> mEndColorExpression;
     QgsFeature mFeature;
+
+    QVariant colorRampShaderProperties() const;
+    static QgsColorRampShader createColorRampShaderFromProperties( const QVariant &properties );
 };
 
 
