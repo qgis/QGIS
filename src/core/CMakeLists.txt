@@ -347,6 +347,7 @@ set(QGIS_CORE_SRCS
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslayerdefinition.cpp
+  qgslayernotesutils.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
   qgslegendstyle.cpp
@@ -949,6 +950,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
   qgslegendstyle.h

@@ -94,6 +94,7 @@
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
 %Include auto_generated/qgslayerdefinition.sip
+%Include auto_generated/qgslayernotesutils.sip
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip

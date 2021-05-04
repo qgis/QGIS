@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslayernotesmanager.h
+  qgslayernotesutils.cpp
   --------------------------------------
   Date                 : April 2021
   Copyright            : (C) 2021 by Nyall Dawson
@@ -13,39 +13,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYERNOTESMANAGER_H
-#define QGSLAYERNOTESMANAGER_H
+#include "qgslayernotesutils.h"
+#include "qgsmaplayer.h"
 
-#include <QString>
-#include <QDialog>
-
-class QgsMapLayer;
-class QWidget;
-class QgsRichTextEditor;
-
-class QgsLayerNotesManager
+QString QgsLayerNotesUtils::layerNotes( QgsMapLayer *layer )
 {
-  public:
+  if ( !layer )
+    return nullptr;
 
-    /**
-     * Shows a dialog allowing users to edit the notes for the specified \a layer.
-     */
-    static void editLayerNotes( QgsMapLayer *layer, QWidget *parent );
-};
+  return layer->customProperty( QStringLiteral( "userNotes" ) ).toString();
+}
 
-class QgsLayerNotesDialog : public QDialog
+void QgsLayerNotesUtils::setLayerNotes( QgsMapLayer *layer, const QString &notes )
 {
-    Q_OBJECT
+  if ( !layer )
+    return;
 
-  public:
+  if ( notes.isEmpty() )
+    layer->removeCustomProperty( QStringLiteral( "userNotes" ) );
+  else
+    layer->setCustomProperty( QStringLiteral( "userNotes" ), notes );
+}
 
-    QgsLayerNotesDialog( QWidget *parent );
+bool QgsLayerNotesUtils::layerHasNotes( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return false;
 
-    void setNotes( const QString &notes );
-    QString notes() const;
+  return !layer->customProperty( QStringLiteral( "userNotes" ) ).toString().isEmpty();
+}
 
-  private:
-    QgsRichTextEditor *mEditor = nullptr;
-};
-
-#endif // QGSLAYERNOTESMANAGER_H
+void QgsLayerNotesUtils::removeNotes( QgsMapLayer *layer )
+{
+  if ( layer )
+    layer->removeCustomProperty( QStringLiteral( "userNotes" ) );
+}
