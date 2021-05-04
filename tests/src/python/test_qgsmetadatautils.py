@@ -42,8 +42,8 @@ class TestPyQgsMetadataUtils(unittest.TestCase):
         self.assertEqual(metadata.abstract(),
                          'This dataset represents street centrelines of Queensland. \n\nTo provide the digital road network of Queensland. \n\nThis is supplementary info')
         self.assertEqual(metadata.language(), 'ENG')
-        self.assertEqual(metadata.keywords(), {'gmd:topicCategory': ['TRANSPORTATION Land', 'road']})
-        self.assertEqual(metadata.categories(), ['TRANSPORTATION Land', 'road'])
+        self.assertEqual(metadata.keywords(), {'Search keys': ['road'], 'gmd:topicCategory': ['TRANSPORTATION Land']})
+        self.assertEqual(metadata.categories(), ['TRANSPORTATION Land'])
         self.assertEqual(metadata.extent().temporalExtents()[0].begin(), QDateTime(2016, 6, 28, 0, 0))
         self.assertEqual(metadata.crs().authid(), 'EPSG:4283')
         self.assertEqual(metadata.extent().spatialExtents()[0].bounds.xMinimum(), 137.921721)
@@ -77,6 +77,48 @@ class TestPyQgsMetadataUtils(unittest.TestCase):
         self.assertEqual(metadata.contacts()[0].voice, '77777777')
         self.assertEqual(metadata.contacts()[0].role, 'Point of contact')
         self.assertEqual(metadata.contacts()[0].organization, 'Department of Natural Resources and Mines')
+
+    def testConvertEsriOld(self):
+        """
+        Test ESRI metadata conversion of older xml format
+        """
+        src = TEST_DATA_DIR + '/esri_metadata2.xml'
+        doc = QDomDocument()
+        with open(src, 'rt') as f:
+            doc.setContent('\n'.join(f.readlines()))
+
+        metadata = QgsMetadataUtils.convertFromEsri(doc)
+        self.assertEqual(metadata.title(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(metadata.identifier(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(metadata.abstract(),
+                         'abstract pt 1 \n\npurpose pt 1\n\nsupp info pt 1')
+        self.assertEqual(metadata.language(), 'EN')
+        self.assertEqual(metadata.keywords(), {'gmd:topicCategory': ['GEOSCIENCES Geology']})
+        self.assertEqual(metadata.categories(), ['GEOSCIENCES Geology'])
+        self.assertEqual(metadata.extent().temporalExtents()[0].begin(), QDateTime(2012, 7, 1, 0, 0))
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.xMinimum(), 137.9947)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.xMaximum(), 153.55183)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMinimum(), -29.17849)
+        self.assertEqual(metadata.extent().spatialExtents()[0].bounds.yMaximum(), -9.2296)
+
+        self.assertEqual(metadata.rights(), ['Creative Commons Attribution 3.0 Australia (CC BY)'])
+        self.assertIn('Unrestricted to all levels of government and community.',
+                      metadata.constraints()[0].constraint)
+        self.assertEqual(metadata.constraints()[0].type, 'Access')
+
+        self.assertEqual(metadata.links()[0].type, 'Local Area Network')
+        self.assertEqual(metadata.links()[0].name, 'Shapefile')
+        self.assertEqual(metadata.links()[0].url, 'file://some.shp')
+
+        self.assertEqual(metadata.contacts()[0].name, 'org')
+        self.assertEqual(metadata.contacts()[0].email, 'someone@gov.au')
+        self.assertEqual(metadata.contacts()[0].voice, '777')
+        self.assertEqual(metadata.contacts()[0].role, 'Point of contact')
+        self.assertEqual(metadata.contacts()[0].organization, 'org')
+        self.assertEqual(metadata.contacts()[0].addresses[0].type, 'mailing address')
+        self.assertEqual(metadata.contacts()[0].addresses[0].city, 'BRISBANE CITY EAST')
+        self.assertEqual(metadata.contacts()[0].addresses[1].type, 'physical address')
+        self.assertEqual(metadata.contacts()[0].addresses[1].city, 'BRISBANE CITY EAST')
 
 
 if __name__ == '__main__':

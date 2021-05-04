@@ -32,11 +32,16 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   metadata.setIdentifier( itemProps.firstChildElement( QStringLiteral( "itemName" ) ).text() );
 
   const QDomElement dataIdInfo = metadataElem.firstChildElement( QStringLiteral( "dataIdInfo" ) );
+  const QDomElement idInfo = metadataElem.firstChildElement( QStringLiteral( "idinfo" ) );
 
   // title
   const QDomElement idCitation = dataIdInfo.firstChildElement( QStringLiteral( "idCitation" ) );
   const QString title = idCitation.firstChildElement( QStringLiteral( "resTitle" ) ).text();
   metadata.setTitle( title );
+
+  // if no explicit identifier we use the title
+  if ( metadata.identifier().isEmpty()  && !title.isEmpty() )
+    metadata.setIdentifier( title );
 
   // abstract
   const QDomElement idAbs = dataIdInfo.firstChildElement( QStringLiteral( "idAbs" ) );
@@ -51,13 +56,51 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   else
     metadata.setAbstract( purposePlainText );
 
+  // older metadata format used "descript" element instead
+  const QDomElement descript = idInfo.firstChildElement( QStringLiteral( "descript" ) );
+  if ( !descript.isNull() )
+  {
+    const QDomElement abstract = descript.firstChildElement( QStringLiteral( "abstract" ) );
+    const QString abstractPlainText = QTextDocumentFragment::fromHtml( abstract.text() ).toPlainText();
+    if ( !abstractPlainText.isEmpty() )
+    {
+      if ( !metadata.abstract().isEmpty() )
+        metadata.setAbstract( metadata.abstract() + QStringLiteral( "\n\n" ) + abstractPlainText );
+      else
+        metadata.setAbstract( abstractPlainText );
+    }
+
+    const QDomElement purpose = descript.firstChildElement( QStringLiteral( "purpose" ) );
+    const QString purposePlainText = QTextDocumentFragment::fromHtml( purpose.text() ).toPlainText();
+    if ( !purposePlainText.isEmpty() )
+    {
+      if ( !metadata.abstract().isEmpty() )
+        metadata.setAbstract( metadata.abstract() + QStringLiteral( "\n\n" ) + purposePlainText );
+      else
+        metadata.setAbstract( purposePlainText );
+    }
+
+    const QDomElement supplinf = descript.firstChildElement( QStringLiteral( "supplinf" ) );
+    const QString supplinfPlainText = QTextDocumentFragment::fromHtml( supplinf.text() ).toPlainText();
+    if ( !supplinfPlainText.isEmpty() )
+    {
+      if ( !metadata.abstract().isEmpty() )
+        metadata.setAbstract( metadata.abstract() + QStringLiteral( "\n\n" ) + supplinfPlainText );
+      else
+        metadata.setAbstract( supplinfPlainText );
+    }
+  }
+
   // supplementary info
   const QDomElement suppInfo = dataIdInfo.firstChildElement( QStringLiteral( "suppInfo" ) );
   const QString suppInfoPlainText = QTextDocumentFragment::fromHtml( suppInfo.text() ).toPlainText();
-  if ( !metadata.abstract().isEmpty() )
-    metadata.setAbstract( metadata.abstract() + QStringLiteral( "\n\n" ) + suppInfoPlainText );
-  else
-    metadata.setAbstract( suppInfoPlainText );
+  if ( !suppInfoPlainText.isEmpty() )
+  {
+    if ( !metadata.abstract().isEmpty() )
+      metadata.setAbstract( metadata.abstract() + QStringLiteral( "\n\n" ) + suppInfoPlainText );
+    else
+      metadata.setAbstract( suppInfoPlainText );
+  }
 
   // language
   const QDomElement dataLang = dataIdInfo.firstChildElement( QStringLiteral( "dataLang" ) );
@@ -79,24 +122,52 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
 
     searchKeys = searchKeys.nextSiblingElement( QStringLiteral( "searchKeys" ) );
   }
-  if ( !keywords.empty() )
-    metadata.addKeywords( QObject::tr( "Search keys" ), keywords );
 
   // categories
   QDomElement themeKeys = dataIdInfo.firstChildElement( QStringLiteral( "themeKeys" ) );
   QStringList categories;
   while ( !themeKeys.isNull() )
   {
+    const QDomElement thesaName = themeKeys.firstChildElement( QStringLiteral( "thesaName" ) );
+    const QString thesaTitle = thesaName.firstChildElement( QStringLiteral( "resTitle" ) ).text();
+
+    const bool isSearchKeyWord = thesaTitle.compare( QLatin1String( "Common Search Terms" ), Qt::CaseInsensitive ) == 0;
+
     QDomElement themeKeyword = themeKeys.firstChildElement( QStringLiteral( "keyword" ) );
     while ( !themeKeyword.isNull() )
     {
-      categories << themeKeyword.text();
+      if ( isSearchKeyWord )
+      {
+        keywords.append( themeKeyword.text().split( ',' ) );
+      }
+      else
+      {
+        categories << themeKeyword.text();
+      }
       themeKeyword = themeKeyword.nextSiblingElement( QStringLiteral( "keyword" ) );
     }
     themeKeys = themeKeys.nextSiblingElement( QStringLiteral( "themeKeys" ) );
   }
+
+  // older xml format
+  QDomElement keywordsElem = idInfo.firstChildElement( QStringLiteral( "keywords" ) );
+  while ( !keywordsElem.isNull() )
+  {
+    QDomElement theme = keywordsElem.firstChildElement( QStringLiteral( "theme" ) );
+    while ( !theme.isNull() )
+    {
+      categories << theme.firstChildElement( QStringLiteral( "themekey" ) ).text();
+      theme = theme.nextSiblingElement( QStringLiteral( "theme" ) );
+    }
+
+    keywordsElem = keywordsElem.nextSiblingElement( QStringLiteral( "keywords" ) );
+  }
+
   if ( !categories.isEmpty() )
     metadata.setCategories( categories );
+
+  if ( !keywords.empty() )
+    metadata.addKeywords( QObject::tr( "Search keys" ), keywords );
 
   QgsLayerMetadata::Extent extent;
 
@@ -108,20 +179,85 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   {
     extent.setTemporalExtents( { publicationDate, QDateTime() } );
   }
+  else
+  {
+    // older XML format
+    QDomElement timeperd = idInfo.firstChildElement( QStringLiteral( "timeperd" ) );
+    while ( !timeperd.isNull() )
+    {
+      if ( timeperd.firstChildElement( QStringLiteral( "current" ) ).text().compare( QLatin1String( "publication date" ) ) == 0 )
+      {
+        const QDomElement timeinfo = timeperd.firstChildElement( QStringLiteral( "timeinfo" ) );
+        const QDomElement sngdate = timeinfo.firstChildElement( QStringLiteral( "sngdate" ) );
+        if ( !sngdate.isNull() )
+        {
+          const QDomElement caldate = sngdate.firstChildElement( QStringLiteral( "caldate" ) );
+          const QString caldateString = caldate.text();
+          const QDateTime publicationDate = QDateTime::fromString( caldateString, QStringLiteral( "MMMM yyyy" ) );
+          if ( publicationDate.isValid() )
+          {
+            extent.setTemporalExtents( { publicationDate, QDateTime() } );
+            break;
+          }
+        }
+        const QDomElement rngdates = timeinfo.firstChildElement( QStringLiteral( "rngdates" ) );
+        if ( !rngdates.isNull() )
+        {
+          const QDomElement begdate = rngdates.firstChildElement( QStringLiteral( "begdate" ) );
+          const QDomElement enddate = rngdates.firstChildElement( QStringLiteral( "enddate" ) );
+          const QString begdateString = begdate.text();
+          const QString enddateString = enddate.text();
+          QDateTime begin;
+          QDateTime end;
+          for ( QString format : { "yyyy-MM-dd", "dd/MM/yyyy" } )
+          {
+            if ( !begin.isValid() )
+              begin = QDateTime::fromString( begdateString, format );
+            if ( !end.isValid() )
+              end = QDateTime::fromString( enddateString, format );
+          }
+
+          if ( begin.isValid() || end.isValid() )
+          {
+            extent.setTemporalExtents( {QgsDateTimeRange{ begin, end } } );
+            break;
+          }
+        }
+      }
+
+      timeperd = timeperd.nextSiblingElement( QStringLiteral( "timeperd" ) );
+    }
+  }
 
   //crs
   QgsCoordinateReferenceSystem crs;
-  const QDomElement refSysInfo = metadataElem.firstChildElement( QStringLiteral( "refSysInfo" ) );
-  if ( !refSysInfo.isNull() )
+  QDomElement refSysInfo = metadataElem.firstChildElement( QStringLiteral( "refSysInfo" ) );
+  while ( !refSysInfo.isNull() )
   {
     const QDomElement refSystem = refSysInfo.firstChildElement( QStringLiteral( "RefSystem" ) );
     const QDomElement refSysID = refSystem.firstChildElement( QStringLiteral( "refSysID" ) );
-    const QString code = refSysID.firstChildElement( QStringLiteral( "identCode" ) ).attribute( QStringLiteral( "code" ) );
-    const QString auth = refSysID.firstChildElement( QStringLiteral( "idCodeSpace" ) ).text();
+    const QDomElement identAuth = refSysID.firstChildElement( QStringLiteral( "identAuth" ) );
+    if ( !identAuth.isNull() )
+    {
+      if ( identAuth.firstChildElement( QStringLiteral( "resTitle" ) ).text().compare( QLatin1String( "EPSG Geodetic Parameter Dataset" ) ) == 0 )
+      {
+        const QString code = refSysID.firstChildElement( QStringLiteral( "identCode" ) ).attribute( QStringLiteral( "code" ) );
+        crs = QgsCoordinateReferenceSystem( code );
+      }
+    }
+    else
+    {
+      const QString code = refSysID.firstChildElement( QStringLiteral( "identCode" ) ).attribute( QStringLiteral( "code" ) );
+      const QString auth = refSysID.firstChildElement( QStringLiteral( "idCodeSpace" ) ).text();
+      crs = QgsCoordinateReferenceSystem( QStringLiteral( "%1:%2" ).arg( auth, code ) );
+    }
 
-    crs = QgsCoordinateReferenceSystem( QStringLiteral( "%1:%2" ).arg( auth, code ) );
     if ( crs.isValid() )
+    {
       metadata.setCrs( crs );
+      break;
+    }
+    refSysInfo = refSysInfo.nextSiblingElement( QStringLiteral( "refSysInfo" ) );
   }
 
   // extent
@@ -200,6 +336,24 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
   if ( !credit.isEmpty() )
     rights << credit;
 
+  // older xml format
+  QDomElement accconst = idInfo.firstChildElement( QStringLiteral( "accconst" ) );
+  while ( !accconst.isNull() )
+  {
+    QgsLayerMetadata::Constraint constraint;
+    constraint.type = QObject::tr( "Access" );
+    constraint.constraint = QTextDocumentFragment::fromHtml( accconst.text() ).toPlainText();
+    constraints << constraint;
+
+    accconst = accconst.nextSiblingElement( QStringLiteral( "accconst" ) );
+  }
+  QDomElement useconst = idInfo.firstChildElement( QStringLiteral( "useconst" ) );
+  while ( !useconst.isNull() )
+  {
+    rights << QTextDocumentFragment::fromHtml( useconst.text() ).toPlainText();
+    useconst = useconst.nextSiblingElement( QStringLiteral( "useconst" ) );
+  }
+
   metadata.setLicenses( licenses );
   metadata.setRights( rights );
   metadata.setConstraints( constraints );
@@ -220,6 +374,12 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
       const QDomElement distorFormat = distributor.firstChildElement( QStringLiteral( "distorFormat" ) );
       link.name = distorFormat.firstChildElement( QStringLiteral( "formatName" ) ).text();
       link.type = distorFormat.firstChildElement( QStringLiteral( "formatSpec" ) ).text();
+
+      if ( link.type.isEmpty() )
+      {
+        // older xml format
+        link.type = onLineSrc.firstChildElement( QStringLiteral( "protocol" ) ).text();
+      }
       metadata.addLink( link );
     }
 
@@ -256,6 +416,68 @@ QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document
     const QDomElement rpCntInfo = mdContact.firstChildElement( QStringLiteral( "rpCntInfo" ) );
     contact.email = rpCntInfo.firstChildElement( QStringLiteral( "cntAddress" ) ).firstChildElement( QStringLiteral( "eMailAdd" ) ).text();
     contact.voice = rpCntInfo.firstChildElement( QStringLiteral( "cntPhone" ) ).firstChildElement( QStringLiteral( "voiceNum" ) ).text();
+
+    QDomElement cntAddress = rpCntInfo.firstChildElement( QStringLiteral( "cntAddress" ) );
+    while ( !cntAddress.isNull() )
+    {
+      QgsAbstractMetadataBase::Address address;
+
+      address.type = cntAddress.attribute( QStringLiteral( "addressType" ) );
+      address.address = cntAddress.firstChildElement( QStringLiteral( "delPoint" ) ).text();
+      address.city = cntAddress.firstChildElement( QStringLiteral( "city" ) ).text();
+      address.administrativeArea = cntAddress.firstChildElement( QStringLiteral( "adminArea" ) ).text();
+      address.postalCode = cntAddress.firstChildElement( QStringLiteral( "postCode" ) ).text();
+      address.country = cntAddress.firstChildElement( QStringLiteral( "country" ) ).text();
+
+      contact.addresses.append( address );
+
+      cntAddress = cntAddress.nextSiblingElement( QStringLiteral( "cntAddress" ) );
+    }
+
+
+    metadata.addContact( contact );
+  }
+
+  // older xml format
+  const QDomElement ptcontac = idInfo.firstChildElement( QStringLiteral( "ptcontac" ) );
+  const QDomElement cntinfo = ptcontac.firstChildElement( QStringLiteral( "cntinfo" ) );
+  if ( !cntinfo.isNull() )
+  {
+    QgsAbstractMetadataBase::Contact contact;
+    const QDomElement cntorgp = cntinfo.firstChildElement( QStringLiteral( "cntorgp" ) );
+    const QString org = cntorgp.firstChildElement( QStringLiteral( "cntorg" ) ).text();
+
+    contact.name = org;
+    contact.organization = org;
+    contact.role = QObject::tr( "Point of contact" );
+
+    const QDomElement rpCntInfo = mdContact.firstChildElement( QStringLiteral( "rpCntInfo" ) );
+    contact.email = cntinfo.firstChildElement( QStringLiteral( "cntemail" ) ).text();
+    contact.fax = cntinfo.firstChildElement( QStringLiteral( "cntfax" ) ).text();
+    contact.voice = cntinfo.firstChildElement( QStringLiteral( "cntvoice" ) ).text();
+
+    QDomElement cntaddr = cntinfo.firstChildElement( QStringLiteral( "cntaddr" ) );
+    while ( !cntaddr.isNull() )
+    {
+      QgsAbstractMetadataBase::Address address;
+
+      QDomElement addressElem = cntaddr.firstChildElement( QStringLiteral( "address" ) );
+      while ( !addressElem.isNull() )
+      {
+        const QString addressPart = addressElem.text();
+        address.address = address.address.isEmpty() ? addressPart : address.address + '\n' + addressPart;
+        addressElem = addressElem.nextSiblingElement( QStringLiteral( "address" ) );
+      }
+      address.type = cntaddr.firstChildElement( QStringLiteral( "addrtype" ) ).text();
+      address.city = cntaddr.firstChildElement( QStringLiteral( "city" ) ).text();
+      address.administrativeArea = cntaddr.firstChildElement( QStringLiteral( "state" ) ).text();
+      address.postalCode = cntaddr.firstChildElement( QStringLiteral( "postal" ) ).text();
+      address.country = cntaddr.firstChildElement( QStringLiteral( "country" ) ).text();
+
+      contact.addresses.append( address );
+
+      cntaddr = cntaddr.nextSiblingElement( QStringLiteral( "cntaddr" ) );
+    }
 
     metadata.addContact( contact );
   }
