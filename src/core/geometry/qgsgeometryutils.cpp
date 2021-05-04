@@ -1832,6 +1832,11 @@ bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &po
   return zFound || mFound;
 }
 
+bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsGeometry &geom, QgsPoint &point )
+{
+  return QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+}
+
 bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsAbstractGeometry::vertex_iterator &verticesBegin, const QgsAbstractGeometry::vertex_iterator &verticesEnd, QgsPoint &point )
 {
   bool zFound = false;
@@ -1841,12 +1846,14 @@ bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsAbstractGeometry:
   {
     if ( !mFound && ( *it ).isMeasure() )
     {
-      point.addMValue( ( *it ).m() );
+      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
+      point.setM( ( *it ).m() );
       mFound = true;
     }
     if ( !zFound && ( *it ).is3D() )
     {
-      point.addZValue( ( *it ).z() );
+      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+      point.setZ( ( *it ).z() );
       zFound = true;
     }
     if ( zFound && mFound )
