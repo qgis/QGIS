@@ -1815,14 +1815,12 @@ bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &po
   {
     if ( !m_passed && pt.isMeasure() )
     {
-      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
-      point.setM( pt.m() );
+      point.addMValue( pt.m() );
       mFound = true;
     }
     if ( !z_passed && pt.is3D() )
     {
-      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
-      point.setZ( pt.z() );
+      point.addZValue( pt.z() );
       zFound = true;
     }
     if ( zFound && mFound )
@@ -1840,8 +1838,7 @@ bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &point
   {
     if ( pt.isMeasure() )
     {
-      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
-      point.setM( pt.m() );
+      point.addMValue( pt.m() );
       rc = true;
       break;
     }
@@ -1858,8 +1855,7 @@ bool QgsGeometryUtils::transferFirstZValueToPoint( const QgsPointSequence &point
   {
     if ( pt.is3D() )
     {
-      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
-      point.setZ( pt.z() );
+      point.addZValue( pt.z() );
       rc = true;
       break;
     }
