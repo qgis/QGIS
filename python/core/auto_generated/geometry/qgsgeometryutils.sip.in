@@ -834,7 +834,8 @@ looping twice over the set of points.
 .. versionadded:: 3.20
 %End
 
-    static bool transferFirstZOrMValueToPoint( const QgsAbstractGeometry::vertex_iterator &verticesBegin, const QgsAbstractGeometry::vertex_iterator &verticesEnd, QgsPoint &point );
+
+    static bool transferFirstZOrMValueToPoint( const QgsGeometry &geom, QgsPoint &point );
 %Docstring
 A Z or M dimension is added to ``point`` if one of the points in the list
 ``points`` contains Z or M value.
@@ -842,7 +843,7 @@ A Z or M dimension is added to ``point`` if one of the points in the list
 This method is equivalent to successively calling Z and M but avoiding
 looping twice over the set of points.
 
-:param points: List of points in which a Z or M point is searched.
+:param geom: :py:class:`QgsGeometry` in which a Z or M point is searched.
 :param point: The point to update with Z or M dimension and value.
 
 :return: ``True`` if the point is updated, ``False`` otherwise

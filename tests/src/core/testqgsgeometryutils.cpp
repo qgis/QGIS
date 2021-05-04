@@ -1720,56 +1720,105 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint()
 
 void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_iterator()
 {
-
   QgsPoint point( 1, 2 );
   QgsGeometry geom;
 
   geom = QgsGeometry::fromWkt( "LineString( 0 2, 2 3)" );
+  // iterator
   bool ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, false );
+  // QgsGeometry
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
   QCOMPARE( ret, false );
 
   // Z
-  point = QgsPoint( 1, 2 );
   geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3, 2 3 4)" );
+  // iterator
+  point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
 
-  // M
+  // QgsGeometry
   point = QgsPoint( 1, 2 );
-  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3, 2 3 4)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+
+  // M
+  geom = QgsGeometry::fromWkt( "LineStringM( 0 2 3, 2 3 4)" );
+  // iterator
+  point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.m(), 3.0 );
 
-  // ZM
+  // QgsGeometry
   point = QgsPoint( 1, 2 );
-  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.m(), 3.0 );
+
+  // ZM
+  geom = QgsGeometry::fromWkt( "LineStringZM( 0 2 3 5, 2 3 4 6)" );
+  // iterator
+  point = QgsPoint( 1, 2 );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // QgsGeometry
+  point = QgsPoint( 1, 2 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
 
   // point is Z and linestring ZM
+  geom = QgsGeometry::fromWkt( "LineStringZM( 0 2 3 5, 2 3 4 6)" );
+  // iterator
   point = QgsPoint( 1, 2, 4 );
-  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // QgsGeometry
+  point = QgsPoint( 1, 2, 4 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
 
   // point is M and linestring ZM
+  geom = QgsGeometry::fromWkt( "LineStringZM( 0 2 3 5, 2 3 4 6)" );
+  // iterator
   point = QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 );
-  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
 
+  // QgsGeometry
+  point = QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
   // point is ZM and linestring ZM
+  geom = QgsGeometry::fromWkt( "LineStringZM( 0 2 3 5, 2 3 4 6)" );
+  // iterator
   point = QgsPoint( 1, 2, 5, 4 );
-  geom = QgsGeometry::fromWkt( "LineStringZ( 0 2 3 5, 2 3 4 6)" );
   ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+  QCOMPARE( ret, true );
+  QCOMPARE( point.z(), 3.0 );
+  QCOMPARE( point.m(), 5.0 );
+
+  // QgsGeometry
+  point = QgsPoint( 1, 2, 5, 4 );
+  ret = QgsGeometryUtils::transferFirstZOrMValueToPoint( geom, point );
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
