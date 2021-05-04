@@ -275,6 +275,8 @@ Reads the metadata state from a ``layer``'s custom properties (see :py:func:`Qgs
 
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
+    virtual void combine( const QgsAbstractMetadataBase *other );
+
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;
 
