@@ -430,6 +430,53 @@ class ParametersTest(unittest.TestCase):
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.assertFalse(param.createByDefault())
 
+    def testParameterFileDestDesc(self):
+        desc = 'QgsProcessingParameterFileDestination|param_file_dest|File Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_file_dest')
+        self.assertEqual(param.description(), 'File Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_html_dest|HTML File Destination|HTML Files (*.html)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_html_dest')
+        self.assertEqual(param.description(), 'HTML File Destination')
+        self.assertEqual(param.fileFilter(), 'HTML Files (*.html)')
+        self.assertEqual(param.defaultFileExtension(), 'html')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_img_dest|Img File Destination|PNG Files (*.png);; JPG Files (*.jpg *.jpeg)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_img_dest')
+        self.assertEqual(param.description(), 'Img File Destination')
+        self.assertEqual(param.fileFilter(), 'PNG Files (*.png);; JPG Files (*.jpg *.jpeg)')
+        self.assertEqual(param.defaultFileExtension(), 'png')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_csv_dest|CSV File Destination|CSV Files (*.csv)|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_csv_dest')
+        self.assertEqual(param.description(), 'CSV File Destination')
+        self.assertEqual(param.fileFilter(), 'CSV Files (*.csv)')
+        self.assertEqual(param.defaultFileExtension(), 'csv')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
+
 
 if __name__ == '__main__':
     unittest.main()
