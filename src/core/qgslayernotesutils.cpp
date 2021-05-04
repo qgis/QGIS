@@ -16,7 +16,7 @@
 #include "qgslayernotesutils.h"
 #include "qgsmaplayer.h"
 
-QString QgsLayerNotesUtils::layerNotes( QgsMapLayer *layer )
+QString QgsLayerNotesUtils::layerNotes( const QgsMapLayer *layer )
 {
   if ( !layer )
     return nullptr;
@@ -35,7 +35,7 @@ void QgsLayerNotesUtils::setLayerNotes( QgsMapLayer *layer, const QString &notes
     layer->setCustomProperty( QStringLiteral( "userNotes" ), notes );
 }
 
-bool QgsLayerNotesUtils::layerHasNotes( QgsMapLayer *layer )
+bool QgsLayerNotesUtils::layerHasNotes( const QgsMapLayer *layer )
 {
   if ( !layer )
     return false;

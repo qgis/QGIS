@@ -37,7 +37,7 @@ class CORE_EXPORT QgsLayerNotesUtils
      *
      * The returned string is a HTML formatted set of user notations for the layer.
      */
-    static QString layerNotes( QgsMapLayer *layer );
+    static QString layerNotes( const QgsMapLayer *layer );
 
     /**
      * Sets the \a notes for the specified \a layer, where \a notes is a HTML formatted string.
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsLayerNotesUtils
     /**
      * Returns TRUE if the specified \a layer has notes available.
      */
-    static bool layerHasNotes( QgsMapLayer *layer );
+    static bool layerHasNotes( const QgsMapLayer *layer );
 
     /**
      * Removes any notes for the specified \a layer.
