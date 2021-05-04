@@ -1842,7 +1842,7 @@ bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsAbstractGeometry:
   bool zFound = false;
   bool mFound = false;
 
-  for ( QgsAbstractGeometry::vertex_iterator it = verticesBegin ; it != verticesEnd ; it++ )
+  for ( QgsAbstractGeometry::vertex_iterator it = verticesBegin ; it != verticesEnd ; ++it )
   {
     if ( !mFound && ( *it ).isMeasure() )
     {
