@@ -338,6 +338,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * This method requires a QGIS build based on GEOS 3.9 or later.
      *
+     * \warning the \a tolerance value must be a value greater than 0, or the algorithm may never converge on a solution
+     *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
      *
      * \since QGIS 3.20

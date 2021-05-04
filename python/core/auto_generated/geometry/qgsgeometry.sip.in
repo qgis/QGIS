@@ -1409,7 +1409,12 @@ on the boundary of the inscribed circle.
 
 This method requires QGIS builds based on GEOS 3.9 or later.
 
+.. warning::
+
+   the ``tolerance`` value must be a value greater than 0, or the algorithm may never converge on a solution
+
 :raises :: py:class:`QgsNotSupportedException` on QGIS builds based on GEOS 3.8 or earlier.
+
 
 .. versionadded:: 3.20
 %End
