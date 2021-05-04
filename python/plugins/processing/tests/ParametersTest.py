@@ -719,6 +719,25 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
+    def testParameterRasterLayerDesc(self):
+        desc = 'QgsProcessingParameterRasterLayer|in_raster|Input Raster'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'raster')
+        self.assertEqual(param.name(), 'in_raster')
+        self.assertEqual(param.description(), 'Input Raster')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterRasterLayer|in_raster|Input Raster|None|True'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'raster')
+        self.assertEqual(param.name(), 'in_raster')
+        self.assertEqual(param.description(), 'Input Raster')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
 
 if __name__ == '__main__':
     unittest.main()
