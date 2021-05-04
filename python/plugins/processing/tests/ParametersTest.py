@@ -388,6 +388,16 @@ class ParametersTest(unittest.TestCase):
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.assertFalse(param.createByDefault())
 
+    def testParameterRasterDestDesc(self):
+        desc = 'QgsProcessingParameterRasterDestination|param_raster_dest|Raster Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'rasterDestination')
+        self.assertEqual(param.name(), 'param_raster_dest')
+        self.assertEqual(param.description(), 'Raster Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
 
 if __name__ == '__main__':
     unittest.main()
