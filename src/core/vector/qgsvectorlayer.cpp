@@ -1783,7 +1783,13 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     profile->switchTask( tr( "Read layer metadata" ) );
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
   {
-    setMetadata( mDataProvider->layerMetadata() );
+    // we combine the provider metadata with the layer's existing metadata, so as not to reset any user customisations to the metadata
+    // back to the default if a layer's data source is changed
+    QgsLayerMetadata newMetadata = mDataProvider->layerMetadata();
+    // this overwrites the provider metadata with any properties which are non-empty from the existing layer metadata
+    newMetadata.combine( &mMetadata );
+
+    setMetadata( newMetadata );
     QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
