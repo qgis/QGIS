@@ -26,7 +26,8 @@ import shutil
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFile)
+                       QgsProcessingParameterFile,
+                       QgsProcessing)
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import getParameterFromString
@@ -275,6 +276,117 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.assertEqual(param.fileFilter(), 'PNG Files (*.png);; JPG Files (*.jpg *.jpeg)')
+
+    def testParameterVectorDestDesc(self):
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorAnyGeometry)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Point|0'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Point')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPoint)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Point|QgsProcessing.TypeVectorPoint'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Point')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPoint)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Line|1'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Line')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorLine)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Line|QgsProcessing.TypeVectorLine'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Line')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorLine)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Polygon|2'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Polygon')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPolygon)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Polygon|QgsProcessing.TypeVectorPolygon'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Polygon')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPolygon)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Table|5'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Table')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVector)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Table|QgsProcessing.TypeVector'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Table')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVector)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination|-1|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorAnyGeometry)
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
 
 
 if __name__ == '__main__':
