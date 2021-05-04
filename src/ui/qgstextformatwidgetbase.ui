@@ -3098,19 +3098,6 @@ font-style: italic;</string>
                              </item>
                             </layout>
                            </item>
-                           <item row="21" column="0">
-                            <widget class="QLabel" name="mShapePenStyleLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Pen join style</string>
-                             </property>
-                            </widget>
-                           </item>
                            <item row="20" column="3">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeUnitsDDBtn">
                              <property name="text">
@@ -3131,9 +3118,6 @@ font-style: italic;</string>
                               <string>Size type</string>
                              </property>
                             </widget>
-                           </item>
-                           <item row="21" column="1">
-                            <widget class="QgsPenJoinStyleComboBox" name="mShapePenStyleCmbBx"/>
                            </item>
                            <item row="19" column="3">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeWidthDDBtn">
@@ -3471,15 +3455,21 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="21" column="3">
-                            <widget class="QgsPropertyOverrideButton" name="mShapePenStyleDDBtn">
+                           <item row="2" column="1">
+                            <widget class="QgsSymbolButton" name="mBackgroundMarkerSymbolButton">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
                              <property name="text">
-                              <string>…</string>
+                              <string>Background Symbol…</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="2" column="1" colspan="2">
-                            <widget class="QgsSymbolButton" name="mBackgroundSymbolButton">
+                           <item row="2" column="1">
+                            <widget class="QgsSymbolButton" name="mBackgroundFillSymbolButton">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -6781,7 +6771,8 @@ font-style: italic;</string>
   <tabstop>mShapeSVGPathLineEdit</tabstop>
   <tabstop>mShapeSVGSelectorBtn</tabstop>
   <tabstop>mShapeSVGPathDDBtn</tabstop>
-  <tabstop>mBackgroundSymbolButton</tabstop>
+  <tabstop>mBackgroundMarkerSymbolButton</tabstop>
+  <tabstop>mBackgroundFillSymbolButton</tabstop>
   <tabstop>mShapeSizeCmbBx</tabstop>
   <tabstop>mShapeSizeTypeDDBtn</tabstop>
   <tabstop>mShapeSizeXSpnBx</tabstop>
@@ -6817,8 +6808,6 @@ font-style: italic;</string>
   <tabstop>mShapeStrokeWidthDDBtn</tabstop>
   <tabstop>mShapeStrokeWidthUnitWidget</tabstop>
   <tabstop>mShapeStrokeUnitsDDBtn</tabstop>
-  <tabstop>mShapePenStyleCmbBx</tabstop>
-  <tabstop>mShapePenStyleDDBtn</tabstop>
   <tabstop>scrollArea_8</tabstop>
   <tabstop>mShadowDrawChkBx</tabstop>
   <tabstop>mShadowDrawDDBtn</tabstop>
