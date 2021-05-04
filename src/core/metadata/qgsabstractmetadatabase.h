@@ -524,6 +524,15 @@ class CORE_EXPORT QgsAbstractMetadataBase
      */
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
+    /**
+     * Combines the metadata from this object with the metadata from an \a other object.
+     *
+     * Any existing values in this object will be overwritten by non-empty values from \a other.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void combine( const QgsAbstractMetadataBase *other );
+
   protected:
 
     /**
