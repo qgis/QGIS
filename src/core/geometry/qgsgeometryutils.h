@@ -823,7 +823,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
 
-    /*
+    /**
      * A Z or M dimension is added to \a point if one of the points in the list
      * \a points contains Z or M value.
      *
