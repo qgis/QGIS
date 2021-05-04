@@ -25,7 +25,9 @@ import os
 import shutil
 
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFile,
+                       QgsProcessing)
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import getParameterFromString
@@ -220,6 +222,260 @@ class ParametersTest(unittest.TestCase):
         self.assertEqual(param.description(), 'Input Extent')
         self.assertIsNone(param.defaultValue())
         self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+    def testParameterFileDesc(self):
+        desc = 'QgsProcessingParameterFile|in_file|Input File'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_folder|Input Folder|1'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_folder')
+        self.assertEqual(param.description(), 'Input Folder')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.Folder)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_folder|Input Folder|QgsProcessingParameterFile.Folder'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_folder')
+        self.assertEqual(param.description(), 'Input Folder')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.Folder)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_file|Input File|0|gpkg'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertEqual(param.extension(), 'gpkg')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+        desc = 'QgsProcessingParameterFile|in_file|Input File|0|png|None|False|PNG Files (*.png);; JPG Files (*.jpg *.jpeg)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'file')
+        self.assertEqual(param.name(), 'in_file')
+        self.assertEqual(param.description(), 'Input File')
+        self.assertEqual(param.behavior(), QgsProcessingParameterFile.File)
+        self.assertEqual(param.extension(), '')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertEqual(param.fileFilter(), 'PNG Files (*.png);; JPG Files (*.jpg *.jpeg)')
+
+    def testParameterVectorDestDesc(self):
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorAnyGeometry)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Point|0'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Point')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPoint)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Point|QgsProcessing.TypeVectorPoint'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Point')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPoint)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Line|1'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Line')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorLine)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Line|QgsProcessing.TypeVectorLine'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Line')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorLine)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Polygon|2'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Polygon')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPolygon)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Polygon|QgsProcessing.TypeVectorPolygon'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Polygon')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorPolygon)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Table|5'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Table')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVector)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination Table|QgsProcessing.TypeVector'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination Table')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVector)
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterVectorDestination|param_vector_dest|Vector Destination|-1|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vectorDestination')
+        self.assertEqual(param.name(), 'param_vector_dest')
+        self.assertEqual(param.description(), 'Vector Destination')
+        self.assertEqual(param.dataType(), QgsProcessing.TypeVectorAnyGeometry)
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
+
+    def testParameterRasterDestDesc(self):
+        desc = 'QgsProcessingParameterRasterDestination|param_raster_dest|Raster Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'rasterDestination')
+        self.assertEqual(param.name(), 'param_raster_dest')
+        self.assertEqual(param.description(), 'Raster Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterRasterDestination|param_raster_dest|Raster Destination|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'rasterDestination')
+        self.assertEqual(param.name(), 'param_raster_dest')
+        self.assertEqual(param.description(), 'Raster Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
+
+    def testParameterFolderDestDesc(self):
+        desc = 'QgsProcessingParameterFolderDestination|param_folder_dest|Folder Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'folderDestination')
+        self.assertEqual(param.name(), 'param_folder_dest')
+        self.assertEqual(param.description(), 'Folder Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFolderDestination|param_folder_dest|Folder Destination|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'folderDestination')
+        self.assertEqual(param.name(), 'param_folder_dest')
+        self.assertEqual(param.description(), 'Folder Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
+
+    def testParameterFileDestDesc(self):
+        desc = 'QgsProcessingParameterFileDestination|param_file_dest|File Destination'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_file_dest')
+        self.assertEqual(param.description(), 'File Destination')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_html_dest|HTML File Destination|HTML Files (*.html)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_html_dest')
+        self.assertEqual(param.description(), 'HTML File Destination')
+        self.assertEqual(param.fileFilter(), 'HTML Files (*.html)')
+        self.assertEqual(param.defaultFileExtension(), 'html')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_img_dest|Img File Destination|PNG Files (*.png);; JPG Files (*.jpg *.jpeg)'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_img_dest')
+        self.assertEqual(param.description(), 'Img File Destination')
+        self.assertEqual(param.fileFilter(), 'PNG Files (*.png);; JPG Files (*.jpg *.jpeg)')
+        self.assertEqual(param.defaultFileExtension(), 'png')
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertTrue(param.createByDefault())
+
+        desc = 'QgsProcessingParameterFileDestination|param_csv_dest|CSV File Destination|CSV Files (*.csv)|None|True|False'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'fileDestination')
+        self.assertEqual(param.name(), 'param_csv_dest')
+        self.assertEqual(param.description(), 'CSV File Destination')
+        self.assertEqual(param.fileFilter(), 'CSV Files (*.csv)')
+        self.assertEqual(param.defaultFileExtension(), 'csv')
+        self.assertIsNone(param.defaultValue())
+        self.assertTrue(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        self.assertFalse(param.createByDefault())
 
 
 if __name__ == '__main__':
