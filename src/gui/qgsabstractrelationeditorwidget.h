@@ -33,8 +33,10 @@
 % End
 #endif
 
+class QVBoxLayout;
 class QgsFeature;
 class QgsVectorLayer;
+class QgsCollapsibleGroupBox;
 
 /**
  * Base class to build new relation widgets.
@@ -234,6 +236,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     bool mForceSuppressFormPopup = false;
     QString mLabel;
 
+    QgsCollapsibleGroupBox *mRootCollapsibleGroupBox = nullptr;
+    QVBoxLayout *mTopVBoxLayout = nullptr;
+
     /**
      * Updates the title contents to reflect the current state of the widget
      */
@@ -261,7 +266,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
-     * Check QgsRealationEditorWidget as an example.
      */
     virtual void setTitle( const QString &title );
 
@@ -288,6 +292,11 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Check QgsRealationEditorWidget as an example.
      */
     virtual void afterSetRelations();
+
+    /**
+     * The root collapsible group box to insert content into
+     */
+    QVBoxLayout *rootTopVBoxLayout() const;
 };
 
 
