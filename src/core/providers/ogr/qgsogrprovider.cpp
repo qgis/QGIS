@@ -1502,6 +1502,34 @@ void QgsOgrProvider::loadMetadata()
         }
       }
     }
+    else if ( ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ) )
+    {
+      // look for .shp.xml sidecar file
+      const QString sidecarPath = mFilePath + ".xml";
+      if ( QFileInfo::exists( sidecarPath ) )
+      {
+        QFile file( sidecarPath );
+        if ( file.open( QFile::ReadOnly ) )
+        {
+          QDomDocument doc;
+          int line, column;
+          QString errorMessage;
+          if ( doc.setContent( &file, &errorMessage, &line, &column ) )
+          {
+            mLayerMetadata = QgsMetadataUtils::convertFromEsri( doc );
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Error reading %1: %2 at line %3 column %4" ).arg( sidecarPath, errorMessage ).arg( line ).arg( column ) );
+          }
+          file.close();
+        }
+      }
+      else
+      {
+        QgsDebugMsg( QStringLiteral( "Error reading %1 - could not open file for read" ).arg( sidecarPath ) );
+      }
+    }
   }
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 }

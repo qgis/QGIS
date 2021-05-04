@@ -1067,6 +1067,18 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 3)
         self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 4)
 
+    def testShpLayerMetadata(self):
+        """
+        Test that we translate .shp.xml metadata to QGIS layer metadata on loading a shp file (if present)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'france_parts.shp')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.metadata().identifier(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(vl.metadata().title(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().language(), 'EN')
+
     def testOpenOptions(self):
 
         filename = os.path.join(tempfile.gettempdir(), "testOpenOptions.gpkg")
