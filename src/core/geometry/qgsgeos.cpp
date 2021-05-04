@@ -514,10 +514,10 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
 
 double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
   ( void )geom;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistance requires a QGIS build based on GEOS 3.9 or later" ) );
+  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistance requires a QGIS build based on GEOS 3.7 or later" ) );
 #else
   double distance = -1.0;
   if ( !mGeos )
@@ -543,11 +543,11 @@ double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *error
 
 double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
   ( void )geom;
   ( void )densifyFraction;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.9 or later" ) );
+  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.7 or later" ) );
 #else
   double distance = -1.0;
   if ( !mGeos )
