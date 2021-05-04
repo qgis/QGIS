@@ -857,8 +857,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \warning This method does not copy the z or m value of the coordinate from the
      * points whose z or m value is closest to the original x/y point, but only the first one found.
      *
-     * \since QGIS 3.20
      * \note Not available in Python bindings
+     * \since QGIS 3.20
      */
     static bool transferFirstZOrMValueToPoint( const QgsAbstractGeometry::vertex_iterator &verticesBegin, const QgsAbstractGeometry::vertex_iterator &verticesEnd, QgsPoint &point ) SIP_SKIP;
 
