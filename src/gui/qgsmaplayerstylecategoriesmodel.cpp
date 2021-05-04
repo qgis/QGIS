@@ -286,6 +286,17 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       }
       break;
 
+    case QgsMapLayer::StyleCategory::Notes:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+          return tr( "Notes" );
+        case Qt::DecorationRole:
+          return QIcon(); // TODO
+      }
+      break;
+
     case QgsMapLayer::StyleCategory::AllStyleCategories:
       switch ( role )
       {

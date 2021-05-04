@@ -23,7 +23,7 @@ Contains utility functions for working with layer notes.
 %End
   public:
 
-    static QString layerNotes( QgsMapLayer *layer );
+    static QString layerNotes( const QgsMapLayer *layer );
 %Docstring
 Returns the notes for the specified ``layer``.
 
@@ -35,7 +35,7 @@ The returned string is a HTML formatted set of user notations for the layer.
 Sets the ``notes`` for the specified ``layer``, where ``notes`` is a HTML formatted string.
 %End
 
-    static bool layerHasNotes( QgsMapLayer *layer );
+    static bool layerHasNotes( const QgsMapLayer *layer );
 %Docstring
 Returns ``True`` if the specified ``layer`` has notes available.
 %End

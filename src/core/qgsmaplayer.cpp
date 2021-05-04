@@ -60,6 +60,7 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsprovidermetadata.h"
+#include "qgslayernotesutils.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -621,6 +622,12 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
       properties->writeXml( layerElement, document, context );
   }
 
+  if ( categories.testFlag( Notes ) && QgsLayerNotesUtils::layerHasNotes( this ) )
+  {
+    QDomElement notesElem = document.createElement( QStringLiteral( "userNotes" ) );
+    notesElem.setAttribute( QStringLiteral( "value" ), QgsLayerNotesUtils::layerNotes( this ) );
+    layerElement.appendChild( notesElem );
+  }
 
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
@@ -1749,6 +1756,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   {
     if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
       properties->readXml( layerElement.toElement(), context );
+  }
+
+  if ( categories.testFlag( Notes ) )
+  {
+    const QDomElement notesElem = layerElement.firstChildElement( QStringLiteral( "userNotes" ) );
+    if ( !notesElem.isNull() )
+    {
+      const QString notes = notesElem.attribute( QStringLiteral( "value" ) );
+      QgsLayerNotesUtils::setLayerNotes( this, notes );
+    }
   }
 }
 
