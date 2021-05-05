@@ -157,6 +157,7 @@ Returns map settings with which this job was started.
 
 
 
+
   signals:
 
     void renderingLayersFinished();

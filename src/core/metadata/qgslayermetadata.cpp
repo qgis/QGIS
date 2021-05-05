@@ -341,6 +341,38 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   return true;
 }
 
+void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )
+{
+  QgsAbstractMetadataBase::combine( other );
+
+  if ( const QgsLayerMetadata *otherLayerMetadata = dynamic_cast< const QgsLayerMetadata * >( other ) )
+  {
+    if ( !otherLayerMetadata->fees().isEmpty() )
+      mFees = otherLayerMetadata->fees();
+
+    if ( !otherLayerMetadata->constraints().isEmpty() )
+      mConstraints = otherLayerMetadata->constraints();
+
+    if ( !otherLayerMetadata->rights().isEmpty() )
+      mRights = otherLayerMetadata->rights();
+
+    if ( !otherLayerMetadata->licenses().isEmpty() )
+      mLicenses = otherLayerMetadata->licenses();
+
+    if ( !otherLayerMetadata->encoding().isEmpty() )
+      mEncoding = otherLayerMetadata->encoding();
+
+    if ( otherLayerMetadata->crs().isValid() )
+      mCrs = otherLayerMetadata->crs();
+
+    if ( !otherLayerMetadata->extent().spatialExtents().isEmpty() )
+      mExtent.setSpatialExtents( otherLayerMetadata->extent().spatialExtents() );
+
+    if ( !otherLayerMetadata->extent().temporalExtents().isEmpty() )
+      mExtent.setTemporalExtents( otherLayerMetadata->extent().temporalExtents() );
+  }
+}
+
 const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const
 {
   return mExtent;

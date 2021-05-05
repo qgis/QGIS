@@ -703,6 +703,18 @@ Returns the default patch geometry for the given symbol ``type`` and ``size`` as
 .. versionadded:: 3.14
 %End
 
+    enum class TextFormatContext
+    {
+      Labeling,
+    };
+
+    QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
+%Docstring
+Returns the default text format to use for new text based objects in the specified ``context``.
+
+.. versionadded:: 3.20
+%End
+
     bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
 %Docstring
 Adds a 3d ``symbol`` to the database.

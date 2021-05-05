@@ -220,7 +220,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( QgsWkbTypes::hasM( layerWKBType ) )
       {
-        g.get()->addMValue();
+        g.get()->addMValue( defaultMValue() );
       }
 
       f.setGeometry( g );

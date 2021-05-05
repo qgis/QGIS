@@ -41,11 +41,15 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsDataProvider,
                        QgsVectorDataProvider,
+                       QgsLayerMetadata,
                        NULL)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
 from utilities import unitTestDataPath
+
+from sqlite3 import OperationalError
 
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -824,11 +828,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options)
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
         options['layerName'] = 'table2'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(3113),
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3113'),
                                           False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {} : {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1128,10 +1132,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
         self.assertEqual(layer.featureCount(), 2)
-        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(),
-                         'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
-        self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(),
-                         'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
+        g, g2 = [f.geometry() for f in layer.getFeatures()]
+        g.normalize()
+        g2.normalize()
+        self.assertCountEqual([geom.asWkt() for geom in [g, g2]], ['Polygon ((0 0, 0 1, 0.5 1, 0.5 0, 0 0))',
+                                                                   'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))'])
 
     def testCreateAttributeIndex(self):
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageAttributeIndex.gpkg')
@@ -1351,7 +1356,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['driverName'] = 'GPKG'
         options['layerName'] = 'table1'
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options,
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options,
                                           QgsFeatureSink.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1401,7 +1406,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         options['update'] = True
         options['driverName'] = 'GPKG'
         options['layerName'] = 'output'
-        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(4326),
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:4326'),
                                           False, options, QgsFeatureSink.RegeneratePrimaryKey)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
@@ -1587,6 +1592,188 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl1.isValid())
         self.assertEqual(vl1.metadata().title(), 'my title')
         self.assertEqual(vl1.metadata().abstract(), 'my desc')
+
+    def testGeopackageSaveMetadata(self):
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSaveMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+        try:
+            rs = cur.execute("SELECT * FROM gpkg_metadata_reference WHERE table_name='test'")
+            res = [row for row in rs]
+            self.assertEqual(len(res), 0)
+            con.close()
+        except OperationalError:
+            # geopackage_metadata_reference table doesn't exist, that's ok
+            pass
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata)
+        self.assertTrue(ok)
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertCountEqual(rows[0], ['my identifier', 'my abstract'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        file_ids = [row[0] for row in rs]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        metadata_xml = res[0][3]
+        con.close()
+
+        metadata2 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata2.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
+
+        # try updating existing metadata -- current row must be updated, not a new row added
+        metadata2.setAbstract('my abstract 2')
+        metadata2.setIdentifier('my identifier 2')
+        metadata2.setHistory(['h1', 'h2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata2)
+        self.assertTrue(ok)
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertEqual(len(rows), 1)
+        self.assertCountEqual(rows[0], ['my identifier 2', 'my abstract 2'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        rows = [r for r in rs]
+        file_ids = [row[0] for row in rows]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        metadata_xml = res[0][3]
+        con.close()
+
+        metadata3 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata3.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata3.abstract(), 'my abstract 2')
+        self.assertEqual(metadata3.identifier(), 'my identifier 2')
+        self.assertEqual(metadata3.licenses(), ['l1', 'l2'])
+        self.assertEqual(metadata3.history(), ['h1', 'h2'])
+
+    def testGeopackageRestoreMetadata(self):
+        """
+        Test that metadata saved to gpkg_metadata is automatically restored on layer load
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageRestoreMetadata.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'}), metadata)
+        self.assertTrue(ok)
+
+        vl = QgsVectorLayer(tmpfile, 'test')
+        self.assertTrue(vl.isValid())
+        metadata2 = vl.metadata()
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
+
+    def testGeopackageSaveDefaultMetadata(self):
+        """
+        Test saving layer metadata as default to a gpkg file
+        """
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSaveMetadataDefault.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        uri = QgsProviderRegistry.instance().encodeUri('ogr', {'path': tmpfile, 'layerName': 'test'})
+        layer = QgsVectorLayer(uri, 'test')
+        self.assertTrue(layer.isValid())
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        layer.setMetadata(metadata)
+        # save as default
+        msg, res = layer.saveDefaultMetadata()
+        self.assertTrue(res)
+
+        # QMD sidecar should NOT exist -- metadata should be written to gpkg_metadata table
+        self.assertFalse(os.path.exists(os.path.join(self.basetestpath, 'testGeopackageSaveMetadataDefault.qmd')))
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+
+        # check that main gpkg_contents metadata columns have been updated
+        rs = cur.execute("SELECT identifier, description FROM gpkg_contents WHERE table_name='test'")
+        rows = [r for r in rs]
+        self.assertEqual(len(rows), 1)
+        self.assertCountEqual(rows[0], ['my identifier', 'my abstract'])
+
+        rs = cur.execute("SELECT md_file_id FROM gpkg_metadata_reference WHERE table_name='test'")
+        rows = [r for r in rs]
+        file_ids = [row[0] for row in rows]
+        self.assertTrue(file_ids)
+
+        rs = cur.execute("SELECT id, md_scope, mime_type, metadata FROM gpkg_metadata WHERE md_standard_uri='http://mrcc.com/qgis.dtd'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        # id must match md_file_id from gpkg_metadata_reference
+        self.assertIn(res[0][0], file_ids)
+        self.assertEqual(res[0][1], 'dataset')
+        self.assertEqual(res[0][2], 'text/xml')
+        con.close()
+
+        # reload layer and check that metadata was restored
+        layer2 = QgsVectorLayer(uri, 'test')
+        self.assertTrue(layer2.isValid())
+        self.assertEqual(layer2.metadata().abstract(), 'my abstract')
+        self.assertEqual(layer2.metadata().identifier(), 'my identifier')
+        self.assertEqual(layer2.metadata().licenses(), ['l1', 'l2'])
 
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for GPKG uniqueValues"""
@@ -1867,7 +2054,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         if layerOptions:
             options['layerOptions'] = layerOptions
         exporter = QgsVectorLayerExporter(tmpfile, "ogr", QgsFields(), QgsWkbTypes.Polygon,
-                                          QgsCoordinateReferenceSystem(3111), False, options)
+                                          QgsCoordinateReferenceSystem('EPSG:3111'), False, options)
         self.assertFalse(exporter.errorCode(),
                          'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
 

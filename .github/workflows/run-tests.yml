@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     paths:
     - 'src/**'
     - 'external/**'
@@ -38,8 +39,6 @@ jobs:
         include:
           - ubuntu-base: '20.04'
             run-tests: true
-          - ubuntu-base: '20.10'
-            run-tests: false
           - ubuntu-base: '21.04'
             run-tests: false
       fail-fast: false
@@ -136,7 +135,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2.2.3
         if: ${{ matrix.run-tests }}
         with:
           name: build.tgz

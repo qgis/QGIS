@@ -118,6 +118,7 @@ Read the geometry options from ``node``.
 .. versionadded:: 3.4
 %End
 
+
   signals:
 
     void checkConfigurationChanged();

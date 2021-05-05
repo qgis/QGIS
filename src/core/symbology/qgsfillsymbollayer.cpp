@@ -3662,15 +3662,19 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     symbolizerElem.appendChild( distanceElem );
 
     QgsSymbolLayer *layer = mMarkerSymbol->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
-    if ( !markerLayer )
+    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      QString errorMsg = QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() );
+      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+    }
+    else if ( layer )
+    {
+      QString errorMsg = QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() );
       graphicFillElem.appendChild( doc.createComment( errorMsg ) );
     }
     else
     {
-      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+      QString errorMsg = QStringLiteral( "Missing point pattern symbol layer. Skip it." );
+      graphicFillElem.appendChild( doc.createComment( errorMsg ) );
     }
   }
 }

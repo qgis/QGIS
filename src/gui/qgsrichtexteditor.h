@@ -39,6 +39,7 @@
 class QImage;
 class QComboBox;
 class QgsColorButton;
+class QgsCodeEditorHTML;
 
 /*
  * Originally ported from https://github.com/Anchakor/MRichTextEditor, courtesy of Hobrasoft.
@@ -69,7 +70,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
      *
      * \see toHtml()
      */
-    QString toPlainText() const { return mTextEdit->toPlainText(); }
+    QString toPlainText() const;
 
     /**
      * Returns the widget's content as a HTML string.
@@ -136,7 +137,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     void increaseIndentation();
     void decreaseIndentation();
     void insertImage();
-    void textSource();
+    void editSource( bool enabled );
 
   private:
     void mergeFormatOnWordOrSelection( const QTextCharFormat &format );
@@ -166,6 +167,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
 
     QgsColorButton *mForeColorButton = nullptr;
     QgsColorButton *mBackColorButton = nullptr;
+    QgsCodeEditorHTML *mSourceEdit = nullptr;
 
     QPointer<QTextList> mLastBlockList;
     QString mMonospaceFontFamily;

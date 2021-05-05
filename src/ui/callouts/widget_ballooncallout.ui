@@ -34,6 +34,23 @@
      <property name="topMargin">
       <number>0</number>
      </property>
+     <item row="5" column="3">
+     <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
+       <property name="text">
+       <string>…</string>
+       </property>
+     </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+     <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
+     </item>
+     <item row="5" column="0">
+     <widget class="QLabel" name="label_18">
+       <property name="text">
+       <string>Blend mode</string>
+       </property>
+     </widget>
+     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_47">
        <property name="text">
@@ -583,6 +600,8 @@
   <tabstop>mOffsetFromAnchorDDBtn</tabstop>
   <tabstop>mAnchorPointComboBox</tabstop>
   <tabstop>mAnchorPointDDBtn</tabstop>
+  <tabstop>mCalloutBlendComboBox</tabstop>
+  <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mCornerRadiusSpin</tabstop>
   <tabstop>mCornerRadiusUnitWidget</tabstop>
   <tabstop>mCornerRadiusDDBtn</tabstop>

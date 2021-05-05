@@ -61,6 +61,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     int numPoints() const override SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    int indexOf( const QgsPoint &point ) const final;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -106,6 +107,14 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      */
     void addVertex( const QgsPoint &pt );
 
+    /**
+     * Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+     * and combining adjacent circularstrings to a single continuous circularstring.
+     *
+     * \since QGIS 3.20
+     */
+    void condenseCurves();
+
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
@@ -139,10 +148,12 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     double yAt( int index ) const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
      * Cast the \a geom to a QgsCompoundCurve.
@@ -174,6 +185,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:

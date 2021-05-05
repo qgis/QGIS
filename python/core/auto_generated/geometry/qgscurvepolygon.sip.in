@@ -58,6 +58,7 @@ Curve polygon geometry type
 
     virtual QString asKml( int precision = 17 ) const;
 
+    void normalize() final /HoldGIL/;
 
     virtual double area() const /HoldGIL/;
 
@@ -296,6 +297,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

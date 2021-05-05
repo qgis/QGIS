@@ -661,6 +661,17 @@ QString QgsProviderRegistry::loadStyle( const QString &providerKey, const QStrin
   return ret;
 }
 
+bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  errorMessage.clear();
+  if ( QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey ) )
+    return meta->saveLayerMetadata( uri, metadata, errorMessage );
+  else
+  {
+    throw QgsNotSupportedException( QObject::tr( "Unable to load %1 provider" ).arg( providerKey ) );
+  }
+}
+
 bool QgsProviderRegistry::createDb( const QString &providerKey, const QString &dbPath, QString &errCause )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );

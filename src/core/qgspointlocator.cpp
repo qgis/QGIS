@@ -1166,7 +1166,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   }
 
   QgsFeature f;
-  if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
+  if ( mLayer->getFeatures( mContext ? QgsFeatureRequest( fid ) : QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f ) )
   {
     if ( !f.hasGeometry() )
       return;

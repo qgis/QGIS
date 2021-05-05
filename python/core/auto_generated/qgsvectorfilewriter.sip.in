@@ -135,6 +135,7 @@ Constructor for MetaData
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      ErrSavingMetadata,
       Canceled,
     };
 
@@ -393,6 +394,10 @@ Constructor
         QgsFeedback *feedback;
 
         FieldNameSource fieldNameSource;
+
+        bool saveMetadata;
+
+        QgsLayerMetadata layerMetadata;
     };
 
 

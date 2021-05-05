@@ -20,6 +20,7 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsstyle.h"
 
 #include <list>
 
@@ -272,6 +273,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
 {
   initPropertyDefinitions();
+
+  mFormat = QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -561,6 +564,11 @@ void QgsPalLayerSettings::stopRender( QgsRenderContext &context )
   }
 
   mRenderStarted = false;
+}
+
+bool QgsPalLayerSettings::containsAdvancedEffects() const
+{
+  return mFormat.containsAdvancedEffects() || mCallout->containsAdvancedEffects();
 }
 
 QgsPalLayerSettings::~QgsPalLayerSettings()
@@ -3004,7 +3012,10 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( !ddFontFamily.isEmpty() )
     {
       // both family and style are different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+
+      QFont styledfont = mFontDB->font( ddFontFamily, ddFontStyle, appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;
@@ -3020,7 +3031,9 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( ddFontStyle.compare( QLatin1String( "Ignore" ), Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+      QFont styledfont = mFontDB->font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;
@@ -3763,6 +3776,74 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
   }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+  // much faster code path for GEOS 3.9+
+  const bool mustClip = ( !clipGeometry.isNull() &&
+                          ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.boundingBox().contains( geom.boundingBox() ) )
+                            || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) );
+
+  bool mustClipExact = false;
+  if ( mustClip )
+  {
+    // nice and fast, but can result in invalid geometries. At least it will potentially strip out a bunch of unwanted vertices upfront!
+    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox() );
+    if ( clipGeom.isEmpty() )
+      return QgsGeometry();
+
+    geom = clipGeom;
+
+    // we've now clipped against the BOUNDING BOX of clipGeometry. But if clipGeometry is an axis parallel rectangle, then there's no
+    // need to do an exact (potentially costly) intersection clip as well!
+    mustClipExact = !clipGeometry.isAxisParallelRectangle( 0.001 );
+  }
+
+  // fix invalid polygons
+  if ( geom.type() == QgsWkbTypes::PolygonGeometry )
+  {
+    if ( geom.isMultipart() )
+    {
+      // important -- we need to treat ever part in isolation here. We can't test the validity of the whole geometry
+      // at once, because touching parts would result in an invalid geometry, and buffering this "dissolves" the parts.
+      // because the actual label engine treats parts as separate entities, we aren't bound by the usual "touching parts are invalid" rule
+      // see https://github.com/qgis/QGIS/issues/26763
+      QVector< QgsGeometry> parts;
+      parts.reserve( qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() )->numGeometries() );
+      for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
+      {
+        QgsGeometry partGeom( ( *it )->clone() );
+        if ( !partGeom.isGeosValid() )
+        {
+
+          partGeom = partGeom.makeValid();
+        }
+        parts.append( partGeom );
+      }
+      geom = QgsGeometry::collectGeometry( parts );
+    }
+    else if ( !geom.isGeosValid() )
+    {
+
+      QgsGeometry bufferGeom = geom.makeValid();
+      if ( bufferGeom.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        return QgsGeometry();
+      }
+      geom = bufferGeom;
+    }
+  }
+
+  if ( mustClipExact )
+  {
+    // now do the real intersection against the actual clip geometry
+    QgsGeometry clipGeom = geom.intersection( clipGeometry );
+    if ( clipGeom.isEmpty() )
+    {
+      return QgsGeometry();
+    }
+    geom = clipGeom;
+  }
+#else
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry )
   {
@@ -3808,6 +3889,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     geom = clipGeom;
   }
+#endif
 
   return geom;
 }

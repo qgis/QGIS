@@ -181,6 +181,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Loads fields from input file to member attributeFields
     void loadFields();
 
+    //! Loads metadata for the layer
+    void loadMetadata();
+
     //! Find out the number of features of the whole layer
     void recalculateFeatureCount() const;
 
@@ -817,6 +820,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
 
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;

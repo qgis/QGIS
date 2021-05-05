@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsregistry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSettingsRegistry
+{
+%Docstring(signature="appended")
+:py:class:`QgsSettingsRegistry` is used for settings introspection and collects a
+list of child :py:class:`QgsSettingsRegistry` and a list of child :py:class:`QgsSettingsRegistry`
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssettingsregistry.h"
+%End
+  public:
+
+    QgsSettingsRegistry();
+%Docstring
+Constructor for QgsSettingsRegistry.
+%End
+
+    virtual ~QgsSettingsRegistry();
+
+    QList<const QgsSettingsEntryBase *> settingEntries() const;
+%Docstring
+Returns the list of registered :py:class:`QgsSettingsEntryBase`.
+%End
+
+    const QgsSettingsEntryBase *settingsEntry( const QString &key, bool searchChildRegistries = true ) const;
+%Docstring
+Returns the :py:class:`QgsSettingsEntry` with the given ``key`` or None if not found.
+
+The ``searchChildRegistries`` parameter specifies if child registries should be included in the search
+%End
+
+    void addSubRegistry( const QgsSettingsRegistry *settingsRegistry );
+%Docstring
+Append a child ``settingsRegistry`` to the register.
+%End
+
+    QList<const QgsSettingsRegistry *> subRegistries() const;
+%Docstring
+Returns the list of registered child QgsSettingsRegistry.
+%End
+
+  protected:
+
+    void addSettingsEntry( const QgsSettingsEntryBase *settingsEntry );
+%Docstring
+Add ``settingsEntry`` to the register.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/settings/qgssettingsregistry.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

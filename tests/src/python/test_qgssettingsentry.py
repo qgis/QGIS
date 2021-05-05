@@ -10,12 +10,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import os
-import tempfile
-from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnum, QgsSettingsEntryFlag, QgsUnitTypes, QgsMapLayerProxyModel
+from qgis.core import QgsSettings, QgsSettingsEntryBase, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QSettings, QVariant, QMetaEnum
-from pathlib import Path
 
 __author__ = 'Damiano Lombardi'
 __date__ = '02/04/2021'
@@ -302,7 +298,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         defaultValue = QgsUnitTypes.LayoutMeters
         description = "Enum value functionality test"
-        settingsEntryEnum = QgsSettingsEntryEnum(settingsKey, self.pluginName, defaultValue, description)
+        settingsEntryEnum = QgsSettingsEntryEnumFlag(settingsKey, self.pluginName, defaultValue, description)
 
         # Check default value
         self.assertEqual(settingsEntryEnum.defaultValue(), QgsUnitTypes.LayoutMeters)
@@ -318,7 +314,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryEnum.value(), QgsUnitTypes.LayoutPicas)
 
         # Check settings type
-        self.assertEqual(settingsEntryEnum.settingsType(), QgsSettingsEntryBase.SettingsType.Enum)
+        self.assertEqual(settingsEntryEnum.settingsType(), QgsSettingsEntryBase.SettingsType.EnumFlag)
 
         # assign to inexisting value
         success = settingsEntryEnum.setValue(-1)
@@ -340,7 +336,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         QgsSettings().remove(settingsKeyComplete, QgsSettings.Plugins)
 
         description = "Flag value functionality test"
-        settingsEntryFlag = QgsSettingsEntryFlag(settingsKey, self.pluginName, pointAndLine, description)
+        settingsEntryFlag = QgsSettingsEntryEnumFlag(settingsKey, self.pluginName, pointAndLine, description)
 
         # Check default value
         self.assertEqual(settingsEntryFlag.defaultValue(), pointAndLine)
@@ -356,7 +352,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
         self.assertEqual(settingsEntryFlag.value(), pointAndPolygon)
 
         # Check settings type
-        self.assertEqual(settingsEntryFlag.settingsType(), QgsSettingsEntryBase.SettingsType.Flag)
+        self.assertEqual(settingsEntryFlag.settingsType(), QgsSettingsEntryBase.SettingsType.EnumFlag)
 
 
 if __name__ == '__main__':

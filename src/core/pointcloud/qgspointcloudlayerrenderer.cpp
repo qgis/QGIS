@@ -216,9 +216,19 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
     if ( !block )
       continue;
 
+    QgsVector3D contextScale = context.scale();
+    QgsVector3D contextOffset = context.offset();
+
+    context.setScale( block->scale() );
+    context.setOffset( block->offset() );
+
     context.setAttributes( block->attributes() );
 
     mRenderer->renderBlock( block.get(), context );
+
+    context.setScale( contextScale );
+    context.setOffset( contextOffset );
+
     ++nodesDrawn;
 
     // as soon as first block is rendered, we can start showing layer updates.
@@ -260,13 +270,14 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     {
       int nodeIndex = groupIndex + i;
       const IndexedPointCloudNode &n = nodes[nodeIndex];
+      const QString nStr = n.toString();
       QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
       blockRequests[ i ] = blockRequest;
-      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, [ &, i, blockRequest ]()
+      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
       {
         if ( !blockRequest->block() )
         {
-          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( n.toString(), blockRequest->errorStr() ) );
+          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
         }
         finishedLoadingBlock[ i ] = true;
         // If all blocks are loaded, exit the event loop
@@ -292,9 +303,19 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
         if ( !blockRequests[ i ]->block() )
           continue;
 
+        QgsVector3D contextScale = context.scale();
+        QgsVector3D contextOffset = context.offset();
+
+        context.setScale( blockRequests[ i ]->block()->scale() );
+        context.setOffset( blockRequests[ i ]->block()->offset() );
+
         context.setAttributes( blockRequests[ i ]->block()->attributes() );
 
         mRenderer->renderBlock( blockRequests[ i ]->block(), context );
+
+        context.setScale( contextScale );
+        context.setOffset( contextOffset );
+
         ++nodesDrawn;
 
         // as soon as first block is rendered, we can start showing layer updates.
@@ -371,4 +392,3 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
 }
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-

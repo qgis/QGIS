@@ -116,7 +116,6 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
       }
       feedback->setProgress( currentFrame / static_cast<double>( totalFrames ) * 100 );
     }
-    ++currentFrame;
 
     navigator.setCurrentFrameNumber( currentFrame );
 
@@ -155,6 +154,8 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     p.end();
 
     img.save( path );
+
+    ++currentFrame;
   }
 
   return true;

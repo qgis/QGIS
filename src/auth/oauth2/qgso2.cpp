@@ -208,7 +208,7 @@ void QgsO2::link()
     query.setQueryItems( parameters );
     url.setQuery( query );
     QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Emit openBrowser %1" ).arg( url.toString() ), 4 );
-    emit openBrowser( url );
+    QgsNetworkAccessManager::instance()->requestAuthOpenBrowser( url );
     if ( !mIsLocalHost )
     {
       emit getAuthCode();
@@ -259,7 +259,7 @@ void QgsO2::setState( const QString & )
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Emitting closeBrowser()" ), 4 );
-  emit closeBrowser();
+  QgsNetworkAccessManager::instance()->requestAuthCloseBrowser();
 
   if ( mIsLocalHost )
   {

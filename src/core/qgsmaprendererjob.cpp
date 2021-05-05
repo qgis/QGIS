@@ -408,6 +408,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.estimatedRenderingTime = mLayerRenderingTimeHints.value( ml->id(), 0 );
     job.renderingTime = -1;
 
+
     job.context = QgsRenderContext::fromMapSettings( mSettings );
     job.context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     job.context.setPainter( painter );
@@ -977,8 +978,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
 
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob )
 {
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
+  if ( !settingsLogCanvasRefreshEvent.value() )
     return;
 
   QMultiMap<int, QString> elapsed;

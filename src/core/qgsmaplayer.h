@@ -183,8 +183,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
       Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
       Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
+      Notes              = 1 << 17, //!< Layer user notes (since QGIS 3.20)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )

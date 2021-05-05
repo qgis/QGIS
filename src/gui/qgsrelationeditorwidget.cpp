@@ -201,11 +201,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mRelationLayout->setContentsMargins( 0, 0, 0, 0 );
   topLayout->addLayout( mRelationLayout );
 
-  mDualView = new QgsDualView( this );
-  mDualView->setView( mViewMode );
-
-  mRelationLayout->addWidget( mDualView );
-
   connect( mRootCollapsibleGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsRelationEditorWidget::onCollapsedStateChanged );
   connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
            this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
@@ -219,14 +214,20 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
 
-  connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
-
   // Set initial state for add/remove etc. buttons
   updateButtons();
 }
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
+  if ( !mDualView )
+  {
+    mDualView = new QgsDualView( this );
+    mDualView->setView( mViewMode );
+    connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
+    mRelationLayout->addWidget( mDualView );
+  }
+
   QgsAttributeEditorContext ctx { mEditorContext };
   ctx.setParentFormFeature( mFeature );
   mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx );
@@ -369,8 +370,11 @@ void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
 {
   if ( !collapsed )
   {
-    mVisible = true;
-    updateUi();
+    if ( !mVisible )
+    {
+      mVisible = true;
+      updateUi();
+    }
   }
 }
 
@@ -379,17 +383,14 @@ void QgsRelationEditorWidget::updateUi()
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
-
-  if ( mVisible )
+  if ( mVisible && mRelation.isValid() && mFeature.isValid() )
   {
-    QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
+    QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
 
     if ( mNmRelation.isValid() )
     {
-      QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( myRequest );
-
+      QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
       QgsFeature fet;
-
       QStringList filters;
 
       while ( it.nextFeature( fet ) )
@@ -399,14 +400,13 @@ void QgsRelationEditorWidget::updateUi()
       }
 
       QgsFeatureRequest nmRequest;
-
       nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
 
       initDualView( mNmRelation.referencedLayer(), nmRequest );
     }
     else if ( mRelation.referencingLayer() )
     {
-      initDualView( mRelation.referencingLayer(), myRequest );
+      initDualView( mRelation.referencingLayer(), request );
     }
   }
 }

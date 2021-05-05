@@ -59,6 +59,8 @@
 #include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsprovidermetadata.h"
+#include "qgslayernotesutils.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -620,6 +622,12 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
       properties->writeXml( layerElement, document, context );
   }
 
+  if ( categories.testFlag( Notes ) && QgsLayerNotesUtils::layerHasNotes( this ) )
+  {
+    QDomElement notesElem = document.createElement( QStringLiteral( "userNotes" ) );
+    notesElem.setAttribute( QStringLiteral( "value" ), QgsLayerNotesUtils::layerNotes( this ) );
+    layerElement.appendChild( notesElem );
+  }
 
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
@@ -880,6 +888,28 @@ QString QgsMapLayer::metadataUri() const
 
 QString QgsMapLayer::saveDefaultMetadata( bool &resultFlag )
 {
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    if ( metadata->providerCapabilities() & QgsProviderMetadata::SaveLayerMetadata )
+    {
+      try
+      {
+        QString errorMessage;
+        resultFlag = QgsProviderRegistry::instance()->saveLayerMetadata( providerType(), mDataSource, mMetadata, errorMessage );
+        if ( resultFlag )
+          return tr( "Successfully saved default layer metadata" );
+        else
+          return errorMessage;
+      }
+      catch ( QgsNotSupportedException &e )
+      {
+        resultFlag = false;
+        return e.what();
+      }
+    }
+  }
+
+  // fallback default metadata saving method, for providers which don't support (or implement) saveLayerMetadata
   return saveNamedMetadata( metadataUri(), resultFlag );
 }
 
@@ -1778,6 +1808,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   {
     if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
       properties->readXml( layerElement.toElement(), context );
+  }
+
+  if ( categories.testFlag( Notes ) )
+  {
+    const QDomElement notesElem = layerElement.firstChildElement( QStringLiteral( "userNotes" ) );
+    if ( !notesElem.isNull() )
+    {
+      const QString notes = notesElem.attribute( QStringLiteral( "value" ) );
+      QgsLayerNotesUtils::setLayerNotes( this, notes );
+    }
   }
 }
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCallout
 {
 %Docstring(signature="appended")
@@ -66,6 +67,7 @@ relevant symbology elements to render them.
       Margins,
       WedgeWidth,
       CornerRadius,
+      BlendMode,
     };
 
     enum DrawOrder
@@ -156,6 +158,14 @@ Restores the callout's properties from a DOM element.
 The default behavior is the read the DOM contents and call :py:func:`~QgsCallout.readProperties` on the subclass.
 
 .. seealso:: :py:func:`readProperties`
+%End
+
+    bool containsAdvancedEffects() const;
+%Docstring
+Returns ``True`` if the callout requires advanced effects such as blend modes, which require
+output in raster formats to be fully respected.
+
+.. versionadded:: 3.20
 %End
 
     virtual void startRender( QgsRenderContext &context );
@@ -390,6 +400,24 @@ anchor point.
 .. seealso:: :py:func:`encodeLabelAnchorPoint`
 
 .. versionadded:: 3.14
+%End
+
+    QPainter::CompositionMode blendMode() const;
+%Docstring
+Returns the blending mode used for drawing callouts.
+
+.. seealso:: :py:func:`setBlendMode`
+
+.. versionadded:: 3.20
+%End
+
+    void setBlendMode( QPainter::CompositionMode mode );
+%Docstring
+Sets the blending ``mode`` used for drawing callouts.
+
+.. seealso:: :py:func:`blendMode`
+
+.. versionadded:: 3.20
 %End
 
   protected:

@@ -233,6 +233,25 @@ Loads a layer style defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param providerKey: identifier of the provider
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.20
+%End
+
     bool createDb( const QString &providerKey, const QString &dbPath, QString &errCause );
 %Docstring
 Creates database by the provider on the path

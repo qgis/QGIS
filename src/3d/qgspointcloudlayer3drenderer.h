@@ -22,7 +22,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
-
+#include "qgsfeedback.h"
 #include <QObject>
 
 class QgsPointCloudLayer;
@@ -151,14 +151,15 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     double zValueFixedOffset() const { return mZValueFixedOffset; }
 
     /**
-     * Sets the function to call to test if the rendering is canceled.
-     */
-    void setIsCanceledCallback( const std::function< bool() > &callback ) { mIsCanceledCallback = callback; }
-
-    /**
      * Returns TRUE if the rendering is canceled.
      */
-    bool isCanceled() const { return mIsCanceledCallback(); }
+    bool isCanceled() const;
+
+    /**
+     * Cancels rendering.
+     * \see isCanceled()
+     */
+    void cancelRendering() const;
 
     /**
      * Sets the coordinate transform used to transform points from layer CRS to the map CRS
@@ -170,6 +171,10 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      */
     QgsCoordinateTransform coordinateTransform() const { return mCoordinateTransform; }
 
+    /**
+     * Returns the feedback object used to cancel rendering and check if rendering was canceled.
+     */
+    QgsFeedback *feedback() const { return mFeedback.get(); }
   private:
 #ifdef SIP_RUN
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -180,9 +185,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
     QgsCoordinateTransform mCoordinateTransform;
-
-    std::function< bool() > mIsCanceledCallback;
-
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 

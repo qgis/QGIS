@@ -177,6 +177,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      ErrSavingMetadata, //!< Metadata saving failed
       Canceled, //!< Writing was interrupted by manual cancellation
     };
 
@@ -533,6 +534,22 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * \since QGIS 3.18
          */
         FieldNameSource fieldNameSource = Original;
+
+        /**
+         * Set to TRUE to save layer metadata for the exported vector file.
+         *
+         * \see layerMetadata
+         * \since QGIS 3.20
+         */
+        bool saveMetadata = false;
+
+        /**
+         * Layer metadata to save for the exported vector file. This will only be used if saveMetadata is TRUE.
+         *
+         * \see saveMetadata
+         * \since QGIS 3.20
+         */
+        QgsLayerMetadata layerMetadata;
     };
 
 #ifndef SIP_RUN

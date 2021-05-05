@@ -29,16 +29,24 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
+#include "qgsguiutils.h"
+
 #include <QMimeData>
 #include <QBuffer>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QMouseEvent>
+#include <QApplication>
+#include <QDesktopServices>
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
   : QTextEdit( parent )
 {
+  setTextInteractionFlags( Qt::TextEditorInteraction | Qt::LinksAccessibleByMouse );
 }
+
+QgsImageDropTextEdit::~QgsImageDropTextEdit() = default;
 
 bool QgsImageDropTextEdit::canInsertFromMimeData( const QMimeData *source ) const
 {
@@ -154,12 +162,19 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
     files.reserve( urls.size() );
     for ( const QUrl &url : urls )
     {
-      QString fileName = url.toLocalFile();
-      // seems that some drag and drop operations include an empty url
-      // so we test for length to make sure we have something
-      if ( !fileName.isEmpty() )
+      if ( url.isLocalFile() )
       {
-        files << fileName;
+        QString fileName = url.toLocalFile();
+        // seems that some drag and drop operations include an empty url
+        // so we test for length to make sure we have something
+        if ( !fileName.isEmpty() )
+        {
+          files << fileName;
+        }
+      }
+      else
+      {
+        dropLink( url );
       }
     }
 
@@ -167,13 +182,20 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
     {
       const QFileInfo fi( file );
       const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+      bool isImage = false;
       for ( const QByteArray &format : formats )
       {
         if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
         {
           const QImage image( file );
           dropImage( image, format );
+          isImage = true;
+          break;
         }
+      }
+      if ( !isImage )
+      {
+        dropLink( QUrl::fromLocalFile( file ) );
       }
     }
     if ( !files.empty() )
@@ -181,6 +203,31 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
   }
 
   QTextEdit::insertFromMimeData( source );
+}
+
+void QgsImageDropTextEdit::mouseMoveEvent( QMouseEvent *e )
+{
+  QTextEdit::mouseMoveEvent( e );
+  mActiveAnchor = anchorAt( e->pos() );
+  if ( !mActiveAnchor.isEmpty() && !mCursorOverride )
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::PointingHandCursor );
+  else if ( mActiveAnchor.isEmpty() && mCursorOverride )
+    mCursorOverride.reset();
+}
+
+void QgsImageDropTextEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::LeftButton && !mActiveAnchor.isEmpty() )
+  {
+    QDesktopServices::openUrl( QUrl( mActiveAnchor ) );
+    if ( mCursorOverride )
+      mCursorOverride.reset();
+    mActiveAnchor.clear();
+  }
+  else
+  {
+    QTextEdit::mouseReleaseEvent( e );
+  }
 }
 
 void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format )
@@ -211,4 +258,11 @@ void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format
                      );
   cursor.insertImage( imageFormat );
 }
+
+void QgsImageDropTextEdit::dropLink( const QUrl &url )
+{
+  QTextCursor cursor = textCursor();
+  cursor.insertHtml( QStringLiteral( "<a href=\"%1\">%1</a>" ).arg( url.toString() ) );
+}
+
 ///@endcond

@@ -349,6 +349,7 @@ Example
 
     QgsPoint operator-( QgsVector v ) const /HoldGIL/;
 
+    void normalize() final /HoldGIL/;
     virtual bool isEmpty() const /HoldGIL/;
 
     virtual QgsRectangle boundingBox() const /HoldGIL/;
@@ -467,6 +468,7 @@ Angle undefined. Always returns 0.0
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual int childCount() const;
 
     virtual QgsPoint childPoint( int index ) const;

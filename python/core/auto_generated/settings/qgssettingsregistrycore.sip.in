@@ -10,9 +10,7 @@
 
 
 
-
-
-class QgsSettingsRegistryCore
+class QgsSettingsRegistryCore : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
 :py:class:`QgsSettingsRegistryCore` is used for settings introspection and collects all
@@ -32,6 +30,7 @@ Constructor for QgsSettingsRegistryCore.
 %End
 
     virtual ~QgsSettingsRegistryCore();
+
 
 };
 

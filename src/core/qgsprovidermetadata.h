@@ -43,6 +43,7 @@ class QgsTransaction;
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
 class QgsAbstractDatabaseProviderConnection;
+class QgsLayerMetadata;
 
 struct QgsMesh;
 
@@ -161,6 +162,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     enum ProviderCapability
     {
       FileBasedUris = 1 << 0, //!< Indicates that the provider can utilize URIs which are based on paths to files (as opposed to database or internet paths)
+      SaveLayerMetadata = 1 << 1, //!< Indicates that the provider supports saving native layer metadata (since QGIS 3.20)
     };
     Q_DECLARE_FLAGS( ProviderCapabilities, ProviderCapability )
 
@@ -473,6 +475,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QString loadStyle( const QString &uri, QString &errCause );
 
     /**
+     * Saves \a metadata to the layer corresponding to the specified \a uri.
+     *
+     * \param uri uri of layer to store metadata for
+     * \param metadata layer metadata
+     * \param errorMessage descriptive string of error if encountered
+     *
+     * \returns TRUE if the metadata was successfully saved.
+     *
+     * \throws QgsNotSupportedException if the provider does not support saving layer metadata for the
+     * specified \a uri.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Creates database by the provider on the path
      * \since QGIS 3.10
      */
@@ -659,6 +677,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderMetadata::ProviderMetadataCapabilities )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderMetadata::ProviderCapabilities )
 
 #endif //QGSPROVIDERMETADATA_H

@@ -55,15 +55,15 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
   QString completeKey = mKey;
   if ( !mPluginName.isEmpty() )
   {
-    if ( !completeKey.startsWith( "/" ) )
-      completeKey.prepend( "/" );
+    if ( !completeKey.startsWith( '/' ) )
+      completeKey.prepend( '/' );
     completeKey.prepend( mPluginName );
   }
 
   if ( dynamicKeyPartList.isEmpty() )
   {
     if ( hasDynamicKey() )
-      QgsLogger::warning( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
+      QgsDebugMsg( QStringLiteral( "Settings '%1' have a dynamic key but the dynamic key part was not provided" ).arg( completeKey ) );
 
     return completeKey;
   }
@@ -71,21 +71,79 @@ QString QgsSettingsEntryBase::key( const QStringList &dynamicKeyPartList ) const
   {
     if ( !hasDynamicKey() )
     {
-      QgsLogger::warning( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
+      QgsDebugMsg( QStringLiteral( "Settings '%1' don't have a dynamic key, the provided dynamic key part will be ignored" ).arg( completeKey ) );
       return completeKey;
     }
 
     for ( int i = 0; i < dynamicKeyPartList.size(); i++ )
     {
-      completeKey.replace( QString( "%%1" ).arg( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
+      completeKey.replace( QStringLiteral( "%" ).append( QString::number( i + 1 ) ), dynamicKeyPartList.at( i ) );
     }
   }
   return completeKey;
 }
 
+bool QgsSettingsEntryBase::keyIsValid( const QString &key ) const
+{
+  if ( !hasDynamicKey() )
+  {
+    if ( !key.contains( definitionKey() ) )
+      return false;
+  }
+
+  // Key to check
+  QString completeKeyToCheck = key;
+
+  QString settingsPrefix = QgsSettings().prefixedKey( QString(), section() );
+  settingsPrefix.chop( 1 );
+  if ( !completeKeyToCheck.startsWith( settingsPrefix ) )
+  {
+    if ( !mPluginName.isEmpty()
+         && !completeKeyToCheck.startsWith( mPluginName ) )
+    {
+      if ( !completeKeyToCheck.startsWith( '/' ) )
+        completeKeyToCheck.prepend( '/' );
+      completeKeyToCheck.prepend( mPluginName );
+    }
+
+    if ( !completeKeyToCheck.startsWith( '/' ) )
+      completeKeyToCheck.prepend( '/' );
+    completeKeyToCheck.prepend( settingsPrefix );
+  }
+
+  // Prefixed settings key
+  QString prefixedSettingsKey = definitionKey();
+  if ( !prefixedSettingsKey.startsWith( settingsPrefix ) )
+  {
+    if ( !prefixedSettingsKey.startsWith( '/' ) )
+      prefixedSettingsKey.prepend( '/' );
+    prefixedSettingsKey.prepend( settingsPrefix );
+  }
+
+  if ( !hasDynamicKey() )
+    return completeKeyToCheck == prefixedSettingsKey;
+
+  const QRegularExpression regularExpression( prefixedSettingsKey.replace( QRegularExpression( QStringLiteral( "%\\d+" ) ), QStringLiteral( ".*" ) ) );
+  const QRegularExpressionMatch regularExpressionMatch = regularExpression.match( completeKeyToCheck );
+  return regularExpressionMatch.hasMatch();
+}
+
+QString QgsSettingsEntryBase::definitionKey() const
+{
+  QString completeKey = mKey;
+  if ( !mPluginName.isEmpty() )
+  {
+    if ( !completeKey.startsWith( '/' ) )
+      completeKey.prepend( '/' );
+    completeKey.prepend( mPluginName );
+  }
+
+  return completeKey;
+}
+
 bool QgsSettingsEntryBase::hasDynamicKey() const
 {
-  static const QRegularExpression regularExpression( "%\\d+" );
+  const thread_local QRegularExpression regularExpression( QStringLiteral( "%\\d+" ) );
   return mKey.contains( regularExpression );
 }
 
@@ -590,5 +648,53 @@ int QgsSettingsEntryDouble::displayHintDecimals() const
   return mDisplayHintDecimals;
 }
 
+QgsSettingsEntryColor::QgsSettingsEntryColor( const QString &key, QgsSettings::Section section, const QColor &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          section,
+                          defaultValue,
+                          description )
+{
+}
 
+QgsSettingsEntryColor::QgsSettingsEntryColor( const QString &key, const QString &pluginName, const QColor &defaultValue, const QString &description )
+  : QgsSettingsEntryBase( key,
+                          pluginName,
+                          defaultValue,
+                          description )
+{
+}
+
+bool QgsSettingsEntryColor::setValue( const QColor &value, const QString &dynamicKeyPart ) const
+{
+  QStringList dynamicKeyPartList;
+  if ( !dynamicKeyPart.isNull() )
+    dynamicKeyPartList.append( dynamicKeyPart );
+
+  return setValue( value, dynamicKeyPartList );
+}
+
+bool QgsSettingsEntryColor::setValue( const QColor &value, const QStringList &dynamicKeyPartList ) const
+{
+  return QgsSettingsEntryBase::setVariantValue( value, dynamicKeyPartList );
+}
+
+QColor QgsSettingsEntryColor::value( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
+{
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).value<QColor>();
+}
+
+QColor QgsSettingsEntryColor::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QString &defaultValueOverride ) const
+{
+  return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).value<QColor>();
+}
+
+QColor QgsSettingsEntryColor::defaultValue() const
+{
+  return defaultValueAsVariant().value<QColor>();
+}
+
+QgsSettingsEntryBase::SettingsType QgsSettingsEntryColor::settingsType() const
+{
+  return QgsSettingsEntryBase::SettingsType::Color;
+}
 

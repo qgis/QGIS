@@ -33,10 +33,12 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QTextEdit>
+#include <memory>
 
 #define SIP_NO_FILE
 
 class QImage;
+class QgsTemporaryCursorOverride;
 
 /*
  * Originally ported from https://github.com/Anchakor/MRichTextEditor, courtesy of Hobrasoft.
@@ -49,12 +51,20 @@ class GUI_EXPORT QgsImageDropTextEdit : public QTextEdit
 
   public:
     QgsImageDropTextEdit( QWidget *parent = nullptr );
+    ~QgsImageDropTextEdit() override;
 
     void dropImage( const QImage &image, const QString &format );
+    void dropLink( const QUrl &url );
 
   protected:
     bool canInsertFromMimeData( const QMimeData *source ) const override;
     void insertFromMimeData( const QMimeData *source ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+
+  private:
+    QString mActiveAnchor;
+    std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
 
 };
 ///@endcond

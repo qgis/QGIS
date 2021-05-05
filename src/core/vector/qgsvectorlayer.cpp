@@ -193,7 +193,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
 
   for ( const QgsField &field : std::as_const( mFields ) )
   {
-    mAttributeAliasMap.insert( field.name(), QString() );
+    if ( !mAttributeAliasMap.contains( field.name() ) )
+      mAttributeAliasMap.insert( field.name(), QString() );
   }
 
   if ( isValid() )
@@ -1777,7 +1778,13 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     profile->switchTask( tr( "Read layer metadata" ) );
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
   {
-    setMetadata( mDataProvider->layerMetadata() );
+    // we combine the provider metadata with the layer's existing metadata, so as not to reset any user customizations to the metadata
+    // back to the default if a layer's data source is changed
+    QgsLayerMetadata newMetadata = mDataProvider->layerMetadata();
+    // this overwrites the provider metadata with any properties which are non-empty from the existing layer metadata
+    newMetadata.combine( &mMetadata );
+
+    setMetadata( newMetadata );
     QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
@@ -1786,6 +1793,22 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
+
+  // before we update the layer fields from the provider, we first copy any default set alias and
+  // editor widget config from the data provider fields, if present
+  const QgsFields providerFields = mDataProvider->fields();
+  for ( const QgsField &field : providerFields )
+  {
+    // we only copy defaults from the provider if we aren't overriding any configuration made in the layer
+    if ( !field.editorWidgetSetup().isNull() && mFieldWidgetSetups.value( field.name() ).isNull() )
+    {
+      mFieldWidgetSetups[ field.name() ] = field.editorWidgetSetup();
+    }
+    if ( !field.alias().isEmpty() && mAttributeAliasMap.value( field.name() ).isEmpty() )
+    {
+      mAttributeAliasMap[ field.name() ] = field.alias();
+    }
+  }
 
   if ( profile )
     profile->switchTask( tr( "Read layer fields" ) );
@@ -2195,7 +2218,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Fields ) )
   {
-    mAttributeAliasMap.clear();
+    // IMPORTANT - we don't clear mAttributeAliasMap here, as it may contain aliases which are coming direct
+    // from the data provider. Instead we leave any existing aliases and only overwrite them if the style
+    // has a specific value for that field's alias
     QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
     if ( !aliasesNode.isNull() )
     {

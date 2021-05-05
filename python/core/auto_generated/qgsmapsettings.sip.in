@@ -193,6 +193,26 @@ Sets the ``dpi`` (dots per inch) used for conversion between real world units (e
 .. seealso:: :py:func:`outputDpi`
 %End
 
+    double dpiTarget() const;
+%Docstring
+Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+
+The default value is -1, which states no DPI target is provided.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the target ``dpi`` (dots per inch) to be taken into consideration when rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
+%End
+
     void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );
 %Docstring
 Set the magnification factor.

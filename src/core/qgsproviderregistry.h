@@ -262,6 +262,23 @@ class CORE_EXPORT QgsProviderRegistry
     QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
 
     /**
+     * Saves \a metadata to the layer corresponding to the specified \a uri.
+     *
+     * \param providerKey identifier of the provider
+     * \param uri uri of layer to store metadata for
+     * \param metadata layer metadata
+     * \param errorMessage descriptive string of error if encountered
+     *
+     * \returns TRUE if the metadata was successfully saved.
+     *
+     * \throws QgsNotSupportedException if the provider does not support saving layer metadata for the
+     * specified \a uri.
+     *
+     * \since QGIS 3.20
+     */
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Creates database by the provider on the path
      * \since QGIS 3.10
      */

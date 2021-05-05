@@ -120,6 +120,7 @@ set(QGIS_CORE_SRCS
   metadata/qgslayermetadata.cpp
   metadata/qgslayermetadatavalidator.cpp
   metadata/qgslayermetadataformatter.cpp
+  metadata/qgsmetadatautils.cpp
   metadata/qgsprojectmetadata.cpp
 
   numericformats/qgsbasicnumericformat.cpp
@@ -346,6 +347,7 @@ set(QGIS_CORE_SRCS
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslayerdefinition.cpp
+  qgslayernotesutils.cpp
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
   qgslegendstyle.cpp
@@ -471,7 +473,6 @@ set(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
-  qgssettings.cpp
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
@@ -717,7 +718,9 @@ set(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  settings/qgssettings.cpp
   settings/qgssettingsentry.cpp
+  settings/qgssettingsregistry.cpp
   settings/qgssettingsregistrycore.cpp
 
   validity/qgsabstractvaliditycheck.cpp
@@ -947,6 +950,7 @@ set(QGIS_CORE_HDRS
   qgsinterval.h
   qgsjsonutils.h
   qgslayerdefinition.h
+  qgslayernotesutils.h
   qgslegendrenderer.h
   qgslegendsettings.h
   qgslegendstyle.h
@@ -1035,7 +1039,6 @@ set(QGIS_CORE_HDRS
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
-  qgssettings.h
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssnappingconfig.h
@@ -1363,6 +1366,7 @@ set(QGIS_CORE_HDRS
   metadata/qgslayermetadata.h
   metadata/qgslayermetadataformatter.h
   metadata/qgslayermetadatavalidator.h
+  metadata/qgsmetadatautils.h
   metadata/qgsprojectmetadata.h
 
   network/qgsblockingnetworkrequest.h
@@ -1561,7 +1565,9 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextrendererutils.h
   textrenderer/qgstextshadowsettings.h
 
+  settings/qgssettings.h
   settings/qgssettingsentry.h
+  settings/qgssettingsregistry.h
   settings/qgssettingsregistrycore.h
 
   validity/qgsabstractvaliditycheck.h
@@ -1717,6 +1723,8 @@ if (WITH_EPT)
       pointcloud/qgseptpointcloudindex.h
       pointcloud/qgsremoteeptpointcloudindex.h
   )
+
+  add_definitions( -DWITH_EPT )
 endif()
 
 if (APPLE)

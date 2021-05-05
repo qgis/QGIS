@@ -164,9 +164,15 @@ void PointSet::invalidateGeos()
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
     GEOSGeom_destroy_r( geosctxt, mGeos );
-  GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
   mOwnsGeom = false;
   mGeos = nullptr;
+
+  if ( mPreparedGeom )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+    mPreparedGeom = nullptr;
+  }
+
   if ( mGeosPreparedBoundary )
   {
     GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
@@ -184,7 +190,6 @@ void PointSet::invalidateGeos()
     mMultipartGeos = nullptr;
   }
 
-  mPreparedGeom = nullptr;
   mLength = -1;
   mArea = -1;
 }
@@ -538,6 +543,80 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
     }
   }
   return outputShapes;
+}
+
+void PointSet::offsetCurveByDistance( double distance )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  if ( !mGeos || type != GEOS_LINESTRING )
+    return;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+  GEOSGeometry *newGeos;
+  try
+  {
+    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
+
+    // happens sometime, if the offset curve self-intersects
+    if ( GEOSGeomTypeId_r( geosctxt, newGeos ) == GEOS_MULTILINESTRING )
+    {
+      // we keep the longest part
+      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos );
+      double maximumLength = -1;
+      const GEOSGeometry *longestPart = nullptr;
+      for ( int i = 0; i < nParts; ++i )
+      {
+        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos, i );
+        double partLength = -1;
+        if ( GEOSLength_r( geosctxt, part, &partLength ) == 1 )
+        {
+          if ( partLength > maximumLength )
+          {
+            maximumLength = partLength;
+            longestPart = part;
+          }
+        }
+      }
+
+      if ( !longestPart )
+      {
+        // something is really wrong!
+        GEOSGeom_destroy_r( geosctxt, newGeos );
+        return;
+      }
+
+      geos::unique_ptr longestPartClone( GEOSGeom_clone_r( geosctxt, longestPart ) );
+      GEOSGeom_destroy_r( geosctxt, newGeos );
+      newGeos = longestPartClone.release();
+    }
+
+    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
+    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
+    std::vector< double > newX;
+    std::vector< double > newY;
+    newX.resize( newNbPoints );
+    newY.resize( newNbPoints );
+    for ( int i = 0; i < newNbPoints; i++ )
+    {
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &newX[i] );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &newY[i] );
+    }
+    nbPoints = newNbPoints;
+    x = newX;
+    y = newY;
+  }
+  catch ( GEOSException &e )
+  {
+    qWarning( "GEOS exception: %s", e.what() );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return;
+  }
+
+  invalidateGeos();
+  mGeos = newGeos;
+  mOwnsGeom = true;
 }
 
 void PointSet::extendLineByDistance( double startDistance, double endDistance, double smoothDistance )
@@ -1048,4 +1127,23 @@ QString PointSet::toWkt() const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return QString();
   }
+}
+
+std::tuple< std::vector< double >, double > PointSet::edgeDistances() const
+{
+  std::vector< double > distances( nbPoints );
+  double totalDistance = 0;
+  double oldX = -1.0, oldY = -1.0;
+  for ( int i = 0; i < nbPoints; i++ )
+  {
+    if ( i == 0 )
+      distances[i] = 0;
+    else
+      distances[i] = std::sqrt( std::pow( oldX - x[i], 2 ) + std::pow( oldY - y[i], 2 ) );
+
+    oldX = x[i];
+    oldY = y[i];
+    totalDistance += distances[i];
+  }
+  return std::make_tuple( std::move( distances ), totalDistance );
 }

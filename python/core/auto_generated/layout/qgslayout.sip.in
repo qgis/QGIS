@@ -614,7 +614,6 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-    const QgsSettingsEntryStringList settingsSearchPathForTemplates;
 
   public slots:
 

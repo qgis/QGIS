@@ -48,16 +48,38 @@
      <addaction name="separator"/>
      <addaction name="mActionInsertLink"/>
      <addaction name="mActionInsertImage"/>
+     <addaction name="mActionEditSource"/>
     </widget>
    </item>
    <item>
-    <widget class="QgsImageDropTextEdit" name="mTextEdit">
-     <property name="autoFormatting">
-      <set>QTextEdit::AutoNone</set>
-     </property>
-     <property name="tabChangesFocus">
-      <bool>true</bool>
-     </property>
+    <widget class="QStackedWidget" name="mStackedWidget">
+     <widget class="QWidget" name="mPageRichEdit">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsImageDropTextEdit" name="mTextEdit">
+         <property name="autoFormatting">
+          <set>QTextEdit::AutoNone</set>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mPageSourceEdit"/>
     </widget>
    </item>
   </layout>
@@ -126,7 +148,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="insert-link"/>
+    <iconset theme="insert-link">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Insert Link</string>
@@ -140,7 +163,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="format-text-bold"/>
+    <iconset theme="format-text-bold">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Bold</string>
@@ -215,7 +239,8 @@
   </action>
   <action name="mActionDecreaseIndent">
    <property name="icon">
-    <iconset theme="format-indent-less"/>
+    <iconset theme="format-indent-less">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Decrease Indentation</string>
@@ -248,6 +273,21 @@
     <string>Insert image</string>
    </property>
   </action>
+  <action name="mActionEditSource">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditHtml.svg</normaloff>:/images/themes/default/mActionEditHtml.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit HTML Source</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit HTML Source</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -256,9 +296,6 @@
    <header>qgsimagedroptextedit.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>mTextEdit</tabstop>
- </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

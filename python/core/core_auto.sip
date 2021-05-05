@@ -94,6 +94,7 @@
 %Include auto_generated/qgsinterval.sip
 %Include auto_generated/qgsjsonutils.sip
 %Include auto_generated/qgslayerdefinition.sip
+%Include auto_generated/qgslayernotesutils.sip
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
@@ -174,7 +175,6 @@
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
-%Include auto_generated/qgssettings.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
@@ -439,6 +439,7 @@
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
 %Include auto_generated/metadata/qgslayermetadatavalidator.sip
+%Include auto_generated/metadata/qgsmetadatautils.sip
 %Include auto_generated/metadata/qgsprojectmetadata.sip
 %Include auto_generated/network/qgsblockingnetworkrequest.sip
 %Include auto_generated/network/qgsfiledownloader.sip
@@ -602,7 +603,9 @@
 %Include auto_generated/textrenderer/qgstextrenderer.sip
 %Include auto_generated/textrenderer/qgstextrendererutils.sip
 %Include auto_generated/textrenderer/qgstextshadowsettings.sip
+%Include auto_generated/settings/qgssettings.sip
 %Include auto_generated/settings/qgssettingsentry.sip
+%Include auto_generated/settings/qgssettingsregistry.sip
 %Include auto_generated/settings/qgssettingsregistrycore.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip

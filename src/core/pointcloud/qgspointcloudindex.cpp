@@ -156,8 +156,17 @@ QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
 QgsPointCloudIndex::~QgsPointCloudIndex() = default;
 
+bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
+{
+  mHierarchyMutex.lock();
+  bool found = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  return found;
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
+  mHierarchyMutex.lock();
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
   int d = n.d() + 1;
@@ -172,6 +181,7 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPoin
     if ( mHierarchy.contains( n2 ) )
       lst.append( n2 );
   }
+  mHierarchyMutex.unlock();
   return lst;
 }
 
@@ -237,7 +247,10 @@ int QgsPointCloudIndex::span() const
 
 int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
 {
-  if ( !mHierarchy.contains( n ) )
-    return -1;
-  return mHierarchy[n];
+  int count = -1;
+  mHierarchyMutex.lock();
+  if ( mHierarchy.contains( n ) )
+    count = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  return count;
 }

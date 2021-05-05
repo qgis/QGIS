@@ -118,6 +118,7 @@ library object.
     enum ProviderCapability
     {
       FileBasedUris,
+      SaveLayerMetadata,
     };
     typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
 
@@ -425,6 +426,24 @@ Loads a layer style defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.20
+%End
+
     virtual bool createDb( const QString &dbPath, QString &errCause );
 %Docstring
 Creates database by the provider on the path
@@ -577,6 +596,7 @@ relating to the connection have been updated.
 
 QFlags<QgsProviderMetadata::ProviderMetadataCapability> operator|(QgsProviderMetadata::ProviderMetadataCapability f1, QFlags<QgsProviderMetadata::ProviderMetadataCapability> f2);
 
+QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::ProviderCapability f1, QFlags<QgsProviderMetadata::ProviderCapability> f2);
 
 
 /************************************************************************

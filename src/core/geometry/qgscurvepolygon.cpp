@@ -464,6 +464,27 @@ QString QgsCurvePolygon::asKml( int precision ) const
   return kml;
 }
 
+void QgsCurvePolygon::normalize()
+{
+  // normalize rings
+  if ( mExteriorRing )
+    mExteriorRing->normalize();
+
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
+  {
+    ring->normalize();
+  }
+
+  // sort rings
+  std::sort( mInteriorRings.begin(), mInteriorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
+  {
+    return a->compareTo( b ) > 0;
+  } );
+
+  // normalize ring orientation
+  forceRHR();
+}
+
 double QgsCurvePolygon::area() const
 {
   if ( !mExteriorRing )
@@ -1362,4 +1383,46 @@ QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
     return mExteriorRing.get();
   else
     return mInteriorRings.at( index - 1 );
+}
+
+int QgsCurvePolygon::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCurvePolygon *otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( other );
+  if ( !otherPolygon )
+    return -1;
+
+  if ( mExteriorRing && !otherPolygon->mExteriorRing )
+    return 1;
+  else if ( !mExteriorRing && otherPolygon->mExteriorRing )
+    return -1;
+  else if ( mExteriorRing && otherPolygon->mExteriorRing )
+  {
+    int shellComp = mExteriorRing->compareTo( otherPolygon->mExteriorRing.get() );
+    if ( shellComp != 0 )
+    {
+      return shellComp;
+    }
+  }
+
+  const int nHole1 = mInteriorRings.size();
+  const int nHole2 = otherPolygon->mInteriorRings.size();
+  if ( nHole1 < nHole2 )
+  {
+    return -1;
+  }
+  if ( nHole1 > nHole2 )
+  {
+    return 1;
+  }
+
+  for ( int i = 0; i < nHole1; i++ )
+  {
+    const int holeComp = mInteriorRings.at( i )->compareTo( otherPolygon->mInteriorRings.at( i ) );
+    if ( holeComp != 0 )
+    {
+      return holeComp;
+    }
+  }
+
+  return 0;
 }

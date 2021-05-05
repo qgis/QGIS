@@ -32,23 +32,20 @@
 #include "qgsguiutils.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditor.h"
+#include "qgscodeeditorhtml.h"
 
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
 #include <QFontDatabase>
 #include <QInputDialog>
-#include <QColorDialog>
 #include <QTextList>
 #include <QtDebug>
 #include <QFileDialog>
 #include <QImageReader>
 #include <QSettings>
-#include <QBuffer>
 #include <QUrl>
-#include <QPlainTextEdit>
 #include <QMenu>
-#include <QDialog>
 #include <QComboBox>
 #include <QToolButton>
 
@@ -58,6 +55,12 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   setupUi( this );
 
   mMonospaceFontFamily = QgsCodeEditor::getMonospaceFont().family();
+
+  QVBoxLayout *sourceLayout = new QVBoxLayout();
+  sourceLayout->setContentsMargins( 0, 0, 0, 0 );
+  mSourceEdit = new QgsCodeEditorHTML();
+  sourceLayout->addWidget( mSourceEdit );
+  mPageSourceEdit->setLayout( sourceLayout );
 
   mToolBar->setIconSize( QgsGuiUtils::iconSize( false ) );
 
@@ -135,11 +138,6 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( removeAllFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveAllFormat );
   mTextEdit->addAction( removeAllFormat );
 
-  QAction *textsource = new QAction( tr( "Edit Document Source" ), this );
-  textsource->setShortcut( QKeySequence( QStringLiteral( "CTRL+O" ) ) );
-  connect( textsource, &QAction::triggered, this, &QgsRichTextEditor::textSource );
-  mTextEdit->addAction( textsource );
-
   QAction *clearText = new QAction( tr( "Clear all Content" ), this );
   connect( clearText, &QAction::triggered, this, &QgsRichTextEditor::clearSource );
   mTextEdit->addAction( clearText );
@@ -147,7 +145,6 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   QMenu *menu = new QMenu( this );
   menu->addAction( removeAllFormat );
   menu->addAction( removeFormat );
-  menu->addAction( textsource );
   menu->addAction( clearText );
 
   QToolButton *menuButton = new QToolButton();
@@ -207,6 +204,8 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mBackColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textBgColor );
   mToolBar->insertWidget( listSeparator, mBackColorButton );
 
+  connect( mActionEditSource, &QAction::toggled, this, &QgsRichTextEditor::editSource );
+
   // images
   connect( mActionInsertImage, &QAction::triggered, this, &QgsRichTextEditor::insertImage );
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -218,19 +217,68 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   fontChanged( mTextEdit->font() );
 }
 
-void QgsRichTextEditor::textSource()
+QString QgsRichTextEditor::toPlainText() const
 {
-  QDialog dialog( this );
-  QPlainTextEdit *pte = new QPlainTextEdit( &dialog );
-  pte->setPlainText( mTextEdit->toHtml() );
-  QGridLayout *gl = new QGridLayout( &dialog );
-  gl->addWidget( pte, 0, 0, 1, 1 );
-  dialog.setWindowTitle( tr( "Document Source" ) );
-  dialog.setMinimumWidth( 400 );
-  dialog.setMinimumHeight( 600 );
-  dialog.exec();
+  switch ( mStackedWidget->currentIndex() )
+  {
+    case 0:
+      return mTextEdit->toPlainText();
 
-  mTextEdit->setHtml( pte->toPlainText() );
+    case 1:
+      // go via text edit to remove html from text...
+      mTextEdit->setText( mSourceEdit->text() );
+      return mTextEdit->toPlainText();
+  }
+  return QString();
+}
+
+QString QgsRichTextEditor::toHtml() const
+{
+  switch ( mStackedWidget->currentIndex() )
+  {
+    case 0:
+      return mTextEdit->toHtml();
+
+    case 1:
+      return mSourceEdit->text();
+  }
+  return QString();
+}
+
+void QgsRichTextEditor::editSource( bool enabled )
+{
+  if ( enabled )
+  {
+    mSourceEdit->setText( mTextEdit->toHtml() );
+    mStackedWidget->setCurrentIndex( 1 );
+  }
+  else
+  {
+    mTextEdit->setHtml( mSourceEdit->text() );
+    mStackedWidget->setCurrentIndex( 0 );
+    mSourceEdit->clear();
+  }
+
+  // disable formatting actions when in html edit mode
+  mFontSizeCombo->setEnabled( !enabled );
+  mParagraphStyleCombo->setEnabled( !enabled );
+  mForeColorButton->setEnabled( !enabled );
+  mBackColorButton->setEnabled( !enabled );
+  mActionUndo->setEnabled( !enabled );
+  mActionRedo->setEnabled( !enabled );
+  mActionCut->setEnabled( !enabled );
+  mActionCopy->setEnabled( !enabled );
+  mActionPaste->setEnabled( !enabled );
+  mActionInsertLink->setEnabled( !enabled );
+  mActionBold->setEnabled( !enabled );
+  mActionItalic->setEnabled( !enabled );
+  mActionUnderline->setEnabled( !enabled );
+  mActionStrikeOut->setEnabled( !enabled );
+  mActionBulletList->setEnabled( !enabled );
+  mActionOrderedList->setEnabled( !enabled );
+  mActionDecreaseIndent->setEnabled( !enabled );
+  mActionIncreaseIndent->setEnabled( !enabled );
+  mActionInsertImage->setEnabled( !enabled );
 }
 
 void QgsRichTextEditor::clearSource()
@@ -607,17 +655,6 @@ void QgsRichTextEditor::slotClipboardDataChanged()
   if ( const QMimeData *md = QApplication::clipboard()->mimeData() )
     mActionPaste->setEnabled( md->hasText() );
 #endif
-}
-
-QString QgsRichTextEditor::toHtml() const
-{
-  QString s = mTextEdit->toHtml();
-  // convert emails to links
-  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)([a-zA-Z\\d]+@[a-zA-Z\\d]+\\.[a-zA-Z]+)" ) ), QStringLiteral( "\\1<a href=\"mailto:\\2\">\\2</a>" ) );
-  // convert links
-  s = s.replace( QRegularExpression( QStringLiteral( "(<[^a][^>]+>(?:<span[^>]+>)?|\\s)((?:https?|ftp|file)://[^\\s'\"<>]+)" ) ), QStringLiteral( "\\1<a href=\"\\2\">\\2</a>" ) );
-  // see also: Utils::linkify()
-  return s;
 }
 
 void QgsRichTextEditor::increaseIndentation()

@@ -24,7 +24,8 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the operations on curve geometries
+ * This is a unit test for QgsSettingsEntry classes
+ * \note Most functions are covered in the python test
  */
 class TestQgsSettingsEntry : public QObject
 {
@@ -95,12 +96,12 @@ void TestQgsSettingsEntry::settingsKey()
 
 void TestQgsSettingsEntry::enumValue()
 {
-  QString settingsKey( "qgis/testing/my_enum_value_for_units" );
+  QString settingsKey( QStringLiteral( "qgis/testing/my_enum_value_for_units" ) );
 
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryEnum settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, "Layout unit" );
+  QgsSettingsEntryEnumFlag settingsEntryEnum( settingsKey, QgsSettings::NoSection, QgsUnitTypes::LayoutMeters, QStringLiteral( "Layout unit" ) );
 
   // Check default value
   QCOMPARE( settingsEntryEnum.defaultValue(), QgsUnitTypes::LayoutMeters );
@@ -118,7 +119,7 @@ void TestQgsSettingsEntry::enumValue()
   QCOMPARE( settingsEntryEnum.value(), QgsUnitTypes::LayoutPicas );
 
   // Check settings type
-  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::Enum );
+  QCOMPARE( settingsEntryEnum.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
 
   // assign to inexisting value
   {
@@ -141,7 +142,7 @@ void TestQgsSettingsEntry::enumValue()
 
 void TestQgsSettingsEntry::flagValue()
 {
-  QString settingsKey( "qgis/testing/my_flag_value_for_units" );
+  QString settingsKey( QStringLiteral( "qgis/testing/my_flag_value_for_units" ) );
   QgsMapLayerProxyModel::Filters pointAndLine = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::LineLayer );
   QgsMapLayerProxyModel::Filters pointAndPolygon = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::PointLayer | QgsMapLayerProxyModel::PolygonLayer );
   QgsMapLayerProxyModel::Filters hasGeometry = QgsMapLayerProxyModel::Filters( QgsMapLayerProxyModel::HasGeometry );
@@ -149,7 +150,7 @@ void TestQgsSettingsEntry::flagValue()
   // Make sure the setting is not existing
   QgsSettings().remove( settingsKey, QgsSettings::NoSection );
 
-  QgsSettingsEntryFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, "Filters" );
+  QgsSettingsEntryEnumFlag settingsEntryFlag( settingsKey, QgsSettings::NoSection, pointAndLine, QStringLiteral( "Filters" ) );
 
   // Check default value
   QCOMPARE( settingsEntryFlag.defaultValue(), pointAndLine );
@@ -167,7 +168,7 @@ void TestQgsSettingsEntry::flagValue()
   QCOMPARE( settingsEntryFlag.value(), pointAndLine );
 
   // Check settings type
-  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::Flag );
+  QCOMPARE( settingsEntryFlag.settingsType(), QgsSettingsEntryBase::SettingsType::EnumFlag );
 
   // check that value is stored as string
   QCOMPARE( settingsEntryFlag.valueAsVariant().toByteArray(), QMetaEnum::fromType<QgsMapLayerProxyModel::Filters>().valueToKeys( pointAndLine ) );

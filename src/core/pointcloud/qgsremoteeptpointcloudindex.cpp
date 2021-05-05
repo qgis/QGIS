@@ -139,7 +139,7 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
     return nullptr;
   }
 
-  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes() );
+  return new QgsPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), request.attributes(), scale(), offset() );
 }
 
 bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
@@ -149,8 +149,12 @@ bool QgsRemoteEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) cons
 
 bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
 {
-  if ( mHierarchy.contains( nodeId ) )
+  mHierarchyMutex.lock();
+  bool found = mHierarchy.contains( nodeId );
+  mHierarchyMutex.unlock();
+  if ( found )
     return true;
+
   QVector<IndexedPointCloudNode> nodePathToRoot;
   {
     IndexedPointCloudNode currentNode = nodeId;
@@ -166,10 +170,14 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
   {
     IndexedPointCloudNode node = nodePathToRoot[i];
     //! The hierarchy of the node is found => No need to load its file
-    if ( mHierarchy.contains( node ) )
+    mHierarchyMutex.lock();
+    bool foundInHierarchy = mHierarchy.contains( node );
+    bool foundInHierarchyNodes = mHierarchyNodes.contains( node );
+    mHierarchyMutex.unlock();
+    if ( foundInHierarchy )
       continue;
 
-    if ( !mHierarchyNodes.contains( node ) )
+    if ( !foundInHierarchyNodes )
       continue;
 
     const QString fileUrl = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, node.toString() );
@@ -203,14 +211,20 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
       QString nodeIdStr = it.key();
       int nodePointCount = it.value().toInt();
       IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
+      mHierarchyMutex.lock();
       if ( nodePointCount > 0 )
         mHierarchy[nodeId] = nodePointCount;
       else if ( nodePointCount == -1 )
         mHierarchyNodes.insert( nodeId );
+      mHierarchyMutex.unlock();
     }
   }
 
-  return mHierarchy.contains( nodeId );
+  mHierarchyMutex.lock();
+  found = mHierarchy.contains( nodeId );
+  mHierarchyMutex.unlock();
+
+  return found;
 }
 
 bool QgsRemoteEptPointCloudIndex::isValid() const

@@ -148,8 +148,8 @@ A common example of usage is to check while initializing the library or showing 
 
 ```cpp
 WinToast::WinToastError error;
-const bool succedded = WinToast::instance()->initialize(&error);
-if (!succedded) {  
+const bool succeeded = WinToast::instance()->initialize(&error);
+if (!succeeded) {  
     std::wcout << L"Error, could not initialize the lib. Error number: " 
     << error << std::endl;
 }

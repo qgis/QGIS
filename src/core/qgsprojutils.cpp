@@ -21,6 +21,7 @@
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
+#include <QDate>
 
 #include <proj.h>
 
@@ -297,6 +298,48 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 int QgsProjUtils::projVersionMajor()
 {
   return PROJ_VERSION_MAJOR;
+}
+
+QString QgsProjUtils::epsgRegistryVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "EPSG.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::epsgRegistryDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "EPSG.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::esriDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "ESRI.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::esriDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "ESRI.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::ignfDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "IGNF.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::ignfDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "IGNF.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
 }
 
 QStringList QgsProjUtils::searchPaths()
