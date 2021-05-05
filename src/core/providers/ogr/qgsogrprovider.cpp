@@ -1524,10 +1524,10 @@ void QgsOgrProvider::loadMetadata()
           }
           file.close();
         }
-      }
-      else
-      {
-        QgsDebugMsg( QStringLiteral( "Error reading %1 - could not open file for read" ).arg( sidecarPath ) );
+        else
+        {
+          QgsDebugMsg( QStringLiteral( "Error reading %1 - could not open file for read" ).arg( sidecarPath ) );
+        }
       }
     }
   }
