@@ -587,6 +587,29 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
+  auto lookupKeyWhereClause = [ = ]
+  {
+    if ( featureIds.isEmpty() )
+      return QString();
+
+    //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+    QString delim;
+    QString expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
+
+    for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+    {
+      const QVariantList pkVals = sharedData->lookupKey( featureId );
+      if ( !pkVals.isEmpty() )
+      {
+        expr += delim + QgsPostgresConn::quotedValue( pkVals.at( 0 ) );
+        delim = ',';
+      }
+    }
+    expr += ')';
+
+    return expr;
+  };
+
   switch ( pkType )
   {
     case PktOid:
@@ -612,34 +635,16 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     }
     case PktInt64:
     case PktUint64:
-    {
-      QString expr;
+      return lookupKeyWhereClause();
 
-      //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
-      if ( !featureIds.isEmpty() )
-      {
-        QString delim;
-        expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
-
-        for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
-        {
-          QVariantList pkVals = sharedData->lookupKey( featureId );
-          if ( !pkVals.isEmpty() )
-          {
-            QgsField fld = fields.at( pkAttrs[0] );
-            expr += delim + pkVals[0].toString();
-            delim = ',';
-          }
-        }
-        expr += ')';
-      }
-
-      return expr;
-    }
     case PktFidMap:
     case PktTid:
     case PktUnknown:
     {
+      // on simple string primary key we can use IN
+      if ( pkType == PktFidMap && pkAttrs.count() == 1 && fields.at( pkAttrs[0] ).type() == QVariant::String )
+        return lookupKeyWhereClause();
+
       //complex primary key, need to build up where string
       QStringList whereClauses;
       for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
