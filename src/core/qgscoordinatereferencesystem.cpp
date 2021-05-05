@@ -40,6 +40,7 @@
 #include "qgslocalec.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsdatums.h"
 
 #include <sqlite3.h>
 #include "qgsprojutils.h"
@@ -1193,6 +1194,52 @@ QString QgsCoordinateReferenceSystem::toProj() const
 bool QgsCoordinateReferenceSystem::isGeographic() const
 {
   return d->mIsGeographic;
+}
+
+QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
+{
+  QgsDatumEnsemble res;
+  res.mValid = false;
+
+  const PJ *pj = projObject();
+  if ( !pj )
+    return res;
+
+#if PROJ_VERSION_MAJOR>=8
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  QgsProjUtils::proj_pj_unique_ptr ensemble = QgsProjUtils::crsToDatumEnsemble( pj );
+  if ( !ensemble )
+    return res;
+
+  res.mValid = true;
+  res.mName = QString( proj_get_name( ensemble.get() ) );
+  res.mAuthority = QString( proj_get_id_auth_name( ensemble.get(), 0 ) );
+  res.mCode = QString( proj_get_id_code( ensemble.get(), 0 ) );
+  res.mRemarks = QString( proj_get_remarks( ensemble.get() ) );
+  res.mScope = QString( proj_get_scope( ensemble.get() ) );
+  res.mAccuracy = proj_datum_ensemble_get_accuracy( context, ensemble.get() );
+
+  const int memberCount = proj_datum_ensemble_get_member_count( context, ensemble.get() );
+  for ( int i = 0; i < memberCount; ++i )
+  {
+    QgsProjUtils::proj_pj_unique_ptr member( proj_datum_ensemble_get_member( context, ensemble.get(), i ) );
+    if ( !member )
+      continue;
+
+    QgsDatumEnsembleMember details;
+    details.mName = QString( proj_get_name( member.get() ) );
+    details.mAuthority = QString( proj_get_id_auth_name( member.get(), 0 ) );
+    details.mCode = QString( proj_get_id_code( member.get(), 0 ) );
+    details.mRemarks = QString( proj_get_remarks( member.get() ) );
+    details.mScope = QString( proj_get_scope( member.get() ) );
+
+    res.mMembers << details;
+  }
+  return res;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
+#endif
 }
 
 QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const

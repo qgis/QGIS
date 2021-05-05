@@ -39,6 +39,7 @@
 class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
+class QgsDatumEnsemble;
 
 #ifndef SIP_RUN
 struct PJconsts;
@@ -729,6 +730,20 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \returns TRUE if CRS is geographic, or FALSE if it is a projected CRS
      */
     bool isGeographic() const;
+
+    /**
+     * Attempts to retrieve datum ensemble details from the CRS.
+     *
+     * If the CRS does not use a datum ensemble then an invalid QgsDatumEnsemble will
+     * be returned.
+     *
+     * \warning This method requires PROJ 8.0 or later
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on PROJ 7 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QgsDatumEnsemble datumEnsemble() const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.

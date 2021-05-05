@@ -897,6 +897,7 @@ set(QGIS_CORE_HDRS
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
+  qgsdatums.h
   qgsdatumtransform.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h

@@ -17,7 +17,7 @@
 #include "qgsprojutils.h"
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
-
+#include "qgsexception.h"
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
@@ -171,6 +171,23 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
 
 #ifndef _MSC_VER  // unreachable
   return nullptr;
+#endif
+}
+
+QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs )
+{
+  if ( !crs )
+    return nullptr;
+
+#if PROJ_VERSION_MAJOR>=8
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr singleCrs = crsToSingleCrs( crs );
+  if ( !singleCrs )
+    return nullptr;
+
+  return QgsProjUtils::proj_pj_unique_ptr( proj_crs_get_datum_ensemble( context, singleCrs.get() ) );
+#else
+  throw QgsNotSupportedException( QStringLiteral( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
 #endif
 }
 
@@ -366,3 +383,4 @@ QStringList QgsProjUtils::searchPaths()
   }
   return res;
 }
+

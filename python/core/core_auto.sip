@@ -46,6 +46,7 @@
 %Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
+%Include auto_generated/qgsdatums.sip
 %Include auto_generated/qgsdatumtransform.sip
 %Include auto_generated/qgsdbfilterproxymodel.sip
 %Include auto_generated/qgsdefaultvalue.sip
