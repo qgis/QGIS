@@ -635,7 +635,8 @@ void QgsVectorLayerProperties::apply()
     const QString newSource = mSourceWidget->sourceUri();
     if ( newSource != mLayer->source() )
     {
-      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(), QgsDataProvider::ProviderOptions() );
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
+                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
     }
   }
 

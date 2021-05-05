@@ -111,8 +111,9 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         while self.running:
             QCoreApplication.processEvents()
 
-        self.assertGreater(res.fetchedRowCount(), 0)
-        self.assertLess(res.fetchedRowCount(), self.NUM_RECORDS)
+        row_count = res.fetchedRowCount()
+        self.assertGreater(row_count, 0)
+        self.assertLess(row_count, self.NUM_RECORDS)
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Local manual test: not for CI')
     def test_widget(self):

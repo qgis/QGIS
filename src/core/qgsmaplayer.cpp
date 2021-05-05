@@ -1668,13 +1668,65 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   return false;
 }
 
-void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                                 bool loadDefaultStyleFlag )
+{
+  QgsDataProvider::ProviderOptions options;
+
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( loadDefaultStyleFlag )
+  {
+    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
+
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  setDataSource( dataSource, baseName, provider, options, flags );
+}
+
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                                 const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( loadDefaultStyleFlag )
+  {
+    flags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
+
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  setDataSource( dataSource, baseName, provider, options, flags );
+}
+
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                                 const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+
+  if ( ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata ) &&
+       !( flags & QgsDataProvider::FlagTrustDataSource ) )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  setDataSourcePrivate( dataSource, baseName, provider, options, flags );
+  emit dataSourceChanged();
+  emit dataChanged();
+  triggerRepaint();
+}
+
+
+void QgsMapLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+                                        const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   Q_UNUSED( dataSource )
   Q_UNUSED( baseName )
   Q_UNUSED( provider )
   Q_UNUSED( options )
-  Q_UNUSED( loadDefaultStyleFlag )
+  Q_UNUSED( flags )
 }
 
 
