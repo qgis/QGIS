@@ -1409,7 +1409,10 @@ void QgsHanaProvider::readAttributeFields( QgsHanaConnection &conn )
 void QgsHanaProvider::readGeometryType( QgsHanaConnection &conn )
 {
   if ( mGeometryColumn.isNull() || mGeometryColumn.isEmpty() )
+  {
     mDetectedGeometryType = QgsWkbTypes::NoGeometry;
+    return;
+  }
 
   if ( mIsQuery )
   {
@@ -1705,18 +1708,12 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
 
   if ( fields.size() > 0 )
   {
-    int offset = ( fields.indexFromName( primaryKey ) >= 0 ) ? 1 : 0;
-
+    // if we create a new primary key column, we start the old columns from 1
+    int offset = ( fields.indexFromName( primaryKey ) >= 0 ) ? 0 : 1;
     QList<QgsField> flist;
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
       QgsField fld = fields.at( i );
-      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
-      {
-        oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), 0 );
-        continue;
-      }
-
       if ( fld.name() == geometryColumn )
         continue;
 
@@ -1728,7 +1725,9 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
-      flist.append( fld );
+      if ( fld.name() != primaryKey )
+        flist.append( fld );
+
       if ( oldToNewAttrIdxMap )
         oldToNewAttrIdxMap->insert( fields.lookupField( fld.name() ), offset++ );
     }
