@@ -20,6 +20,7 @@
 #include <QtGlobal>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsconfig.h"
 #include "qgsdatumtransform.h"
 #include <memory>
@@ -153,6 +154,17 @@ class CORE_EXPORT QgsProjUtils
     static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
 
     /**
+     * Given a PROJ \a crs, attempt to retrieve the datum ensemble from it.
+     *
+     * \warning This method requires PROJ 8.0 or later
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on PROJ 7 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    static proj_pj_unique_ptr crsToDatumEnsemble( const PJ *crs );
+
+    /**
      * Attempts to identify a \a crs, matching it to a known authority and code within
      * an acceptable level of tolerance.
      *
@@ -169,7 +181,6 @@ class CORE_EXPORT QgsProjUtils
      * Returns a list of grids used by the given \a proj string.
      */
     static QList< QgsDatumTransform::GridDetails > gridsUsed( const QString &proj );
-
 
 #if 0 // not possible in current Proj 6 API
 
