@@ -104,7 +104,7 @@
       <item row="2" column="1" colspan="2">
        <widget class="QSlider" name="mLodSlider">
         <property name="toolTip">
-         <string>Level of detail can only be set set when mesh simplification is enabled (see Rendering tab in the Mesh Layer Properties)</string>
+         <string>Level of detail can only be set when mesh simplification is enabled (see Rendering tab in the Mesh Layer Properties)</string>
         </property>
         <property name="value">
          <number>99</number>
