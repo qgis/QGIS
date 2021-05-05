@@ -27,11 +27,16 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsFeatureRequest,
     QgsFeature,
+    QgsField,
     QgsFieldConstraints,
+    QgsGeometry,
+    QgsPointXY,
     QgsProviderRegistry,
     QgsRectangle,
     QgsSettings,
     QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsVectorLayerExporter,
     QgsWkbTypes)
 from qgis.testing import start_app, unittest
 from test_hana_utils import QgsHanaProviderUtils
@@ -441,6 +446,65 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: 'LINESTRING (0 0,2 2)'}}))
         values = {feat['ID']: feat['GEOM2'] for feat in vl.getFeatures()}
         self.assertEqual(values, {1: 'LINESTRING (0 0,2 2)'})
+
+    def testCreateLayerViaExport(self):
+        def runTest(self, primaryKey, attributeNames, attributeValues):
+            layer = QgsVectorLayer("Point?", "new_table", "memory")
+            pr = layer.dataProvider()
+
+            fields = [QgsField("fldid", QVariant.LongLong),
+                      QgsField("fldtxt", QVariant.String),
+                      QgsField("fldint", QVariant.Int)]
+
+            if primaryKey == "fldid":
+                constraints = QgsFieldConstraints()
+                constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull,
+                                          QgsFieldConstraints.ConstraintOriginProvider)
+                constraints.setConstraint(QgsFieldConstraints.ConstraintUnique,
+                                          QgsFieldConstraints.ConstraintOriginProvider)
+                fields[0].setConstraints(constraints)
+
+            layer.startEditing()
+            for f in fields:
+                layer.addAttribute(f)
+            layer.commitChanges(True)
+
+            f1 = QgsFeature()
+            f1.setAttributes([1, "test", 11])
+            f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+            f2 = QgsFeature()
+            f2.setAttributes([2, "test2", 13])
+            f3 = QgsFeature()
+            f3.setAttributes([3, "test2", NULL])
+            f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
+            f4 = QgsFeature()
+            f4.setAttributes([4, NULL, 13])
+            f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
+            pr.addFeatures([f1, f2, f3, f4])
+            layer.commitChanges()
+
+            QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
+            uri = self.uri + f' key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql='
+            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'hana',
+                                                                QgsCoordinateReferenceSystem('EPSG:4326'))
+            self.assertEqual(error, QgsVectorLayerExporter.NoError)
+
+            import_layer = self.createVectorLayer(
+                f'key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql=', 'testimportedlayer')
+            self.assertEqual(import_layer.wkbType(), QgsWkbTypes.Point)
+            self.assertEqual([f.name() for f in import_layer.fields()], attributeNames)
+
+            features = [f.attributes() for f in import_layer.getFeatures()]
+            self.assertEqual(features, attributeValues)
+            geom = [f.geometry().asWkt() for f in import_layer.getFeatures()]
+            self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
+
+        # primary key already exists in the  imported layer
+        runTest(self, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
+                                                               [3, 'test2', NULL], [4, NULL, 13]])
+        # primary key doesn't exist in the imported layer
+        runTest(self, 'pk', ['pk', 'fldid', 'fldtxt', 'fldint'], [[1, 1, 'test', 11], [2, 2, 'test2', 13],
+                                                                  [3, 3, 'test2', NULL], [4, 4, NULL, 13]])
 
     def testFilterRectOutsideSrsExtent(self):
         """Test filterRect which partially lies outside of the srs extent"""
