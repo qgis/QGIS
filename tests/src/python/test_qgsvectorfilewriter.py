@@ -33,7 +33,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsFields,
                        QgsCoordinateTransformContext,
                        QgsFeatureSink,
-                       QgsMemoryProviderUtils
+                       QgsMemoryProviderUtils,
+                       QgsLayerMetadata
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
 import os
@@ -1409,6 +1410,50 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         del writer
         vl = QgsVectorLayer(dest_file_name)
         self.assertTrue(vl.isValid())
+
+    def testPersistMetadata(self):
+        """
+        Test that metadata from the source layer is saved as default for the destination if the
+        persist metadat option is enabled
+        """
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f.setAttribute(0, 'QGIS Rocks!')  # not valid!
+        self.assertTrue(vl.addFeatures([f]))
+        f.setAttribute(0, 12345)  # valid!
+        self.assertTrue(vl.addFeatures([f]))
+
+        # set some metadata on the source layer
+        metadata = QgsLayerMetadata()
+        metadata.setTitle('my title')
+        metadata.setAbstract('my abstract')
+        metadata.setLicenses(['l1', 'l2'])
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'save_metadata.gpkg')
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        options.saveMetadata = True
+        options.layerMetadata = metadata
+
+        write_result, error_message, new_file, new_layer = QgsVectorFileWriter.writeAsVectorFormatV3(
+            vl,
+            dest_file_name,
+            QgsProject.instance().transformContext(),
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.ErrFeatureWriteFailed, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(f'{new_file}|layerName={new_layer}', 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+
+        # layer should have metadata stored
+        self.assertEqual(created_layer.metadata().title(), 'my title')
+        self.assertEqual(created_layer.metadata().abstract(), 'my abstract')
+        self.assertEqual(created_layer.metadata().licenses(), ['l1', 'l2'])
 
 
 if __name__ == '__main__':
