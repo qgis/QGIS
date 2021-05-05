@@ -620,7 +620,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << QStringLiteral( "QGIS_PREFIX_PATH" ) << QStringLiteral( "QGIS_GRASS_CRS" ) << QStringLiteral( "GRASS_REGION" );
-      Q_FOREACH ( const QString &v, variables )
+      for ( const QString &v : variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }

@@ -11,15 +11,15 @@
 
 class QgsLayoutItemAbstractGuiMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores GUI metadata about one layout item class.
 
-This is a companion to QgsLayoutItemAbstractMetadata, storing only
+This is a companion to :py:class:`QgsLayoutItemAbstractMetadata`, storing only
 the components related to the GUI behavior of a layout item.
 
 .. note::
 
-   In C++ you can use QgsLayoutItemGuiMetadata convenience class.
+   In C++ you can use :py:class:`QgsLayoutItemGuiMetadata` convenience class.
 
 .. versionadded:: 3.0
 %End
@@ -42,7 +42,7 @@ Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type
 
 ``visibleName`` should be set to a translated, user visible name identifying the corresponding layout item.
 
-An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
+An optional ``groupId`` can be set, which allows grouping of related layout item classes. See :py:class:`QgsLayoutItemGuiMetadata` for details.
 
 If ``isNodeBased`` is ``True``, then the corresponding item is a node based item.
 %End
@@ -123,10 +123,10 @@ called for items added from templates.
 
 class QgsLayoutItemGuiGroup
 {
-%Docstring
+%Docstring(signature="appended")
 Stores GUI metadata about a group of layout item classes.
 
-QgsLayoutItemGuiGroup stores settings about groups of related layout item classes
+:py:class:`QgsLayoutItemGuiGroup` stores settings about groups of related layout item classes
 which should be presented to users grouped together.
 
 For instance, the various basic shape creation tools would use :py:class:`QgsLayoutItemGuiGroup`
@@ -156,10 +156,10 @@ Constructor for QgsLayoutItemGuiGroup.
 
 class QgsLayoutItemGuiRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available layout item GUI behavior.
 
-QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsLayoutItemGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.layoutItemGuiRegistry()`.
 
 This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only
@@ -188,6 +188,18 @@ QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed th
 %Docstring
 Returns the metadata for the specified item ``metadataId``. Returns ``None`` if
 a corresponding ``metadataId`` was not found in the registry.
+%End
+
+    int metadataIdForItemType( int type ) const;
+%Docstring
+Returns the GUI item metadata ID which corresponds to the specified layout item ``type``.
+
+In the case that multiple GUI metadata classes exist for a single layout item ``type`` then
+only the first encountered GUI metadata ID will be returned.
+
+Returns -1 if no matching metadata is found in the GUI registry.
+
+.. versionadded:: 3.18
 %End
 
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata /Transfer/ );
@@ -219,12 +231,15 @@ Returns a reference to the item group with matching ``id``.
 Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
 %End
 
-    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item, const QVariantMap &properties = QVariantMap() );
 %Docstring
 Called when a newly created item of the associated metadata ``metadataId`` has been added to a layout.
 
 This is only called for additions which result from GUI operations - i.e. it is not
 called for items added from templates.
+
+Since QGIS 3.18 the optional ``properties`` argument can be used to pass custom properties to the
+:py:func:`QgsLayoutItemGuiMetadata.newItemAddedToLayout()` function.
 %End
 
 

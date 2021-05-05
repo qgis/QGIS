@@ -108,17 +108,6 @@ void QgsServerSettings::initSettings()
                            };
   mSettings[ sProject.envVar ] = sProject;
 
-  // max cache layers
-  const Setting sMaxCacheLayers = { QgsServerSettingsEnv::MAX_CACHE_LAYERS,
-                                    QgsServerSettingsEnv::DEFAULT_VALUE,
-                                    QStringLiteral( "Specify the maximum number of cached layers" ),
-                                    QString(),
-                                    QVariant::Int,
-                                    QVariant( 100 ),
-                                    QVariant()
-                                  };
-  mSettings[ sMaxCacheLayers.envVar ] = sMaxCacheLayers;
-
   // cache directory
   const Setting sCacheDir = { QgsServerSettingsEnv::QGIS_SERVER_CACHE_DIRECTORY,
                               QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -278,6 +267,60 @@ void QgsServerSettings::initSettings()
 
   mSettings[ sLogProfile.envVar ] = sLogProfile;
 
+  // the default service URL.
+  const Setting sServiceUrl = { QgsServerSettingsEnv::QGIS_SERVER_SERVICE_URL,
+                                QgsServerSettingsEnv::DEFAULT_VALUE,
+                                QStringLiteral( "The default service URL" ),
+                                QStringLiteral( "/qgis/server_service_url" ),
+                                QVariant::String,
+                                QVariant( "" ),
+                                QVariant()
+                              };
+  mSettings[ sServiceUrl.envVar ] = sServiceUrl;
+
+  // the default WMS service URL.
+  const Setting sWmsServiceUrl = { QgsServerSettingsEnv::QGIS_SERVER_WMS_SERVICE_URL,
+                                   QgsServerSettingsEnv::DEFAULT_VALUE,
+                                   QStringLiteral( "The default WMS service URL" ),
+                                   QStringLiteral( "/qgis/server_wms_service_url" ),
+                                   QVariant::String,
+                                   QVariant( "" ),
+                                   QVariant()
+                                 };
+  mSettings[ sServiceUrl.envVar ] = sWmsServiceUrl;
+
+  // the default WFS service URL.
+  const Setting sWfsServiceUrl = { QgsServerSettingsEnv::QGIS_SERVER_WFS_SERVICE_URL,
+                                   QgsServerSettingsEnv::DEFAULT_VALUE,
+                                   QStringLiteral( "The default WFS service URL" ),
+                                   QStringLiteral( "/qgis/server_wfs_service_url" ),
+                                   QVariant::String,
+                                   QVariant( "" ),
+                                   QVariant()
+                                 };
+  mSettings[ sServiceUrl.envVar ] = sWfsServiceUrl;
+
+  // the default WCS service URL.
+  const Setting sWcsServiceUrl = { QgsServerSettingsEnv::QGIS_SERVER_WCS_SERVICE_URL,
+                                   QgsServerSettingsEnv::DEFAULT_VALUE,
+                                   QStringLiteral( "The default WcS service URL" ),
+                                   QStringLiteral( "/qgis/server_wcs_service_url" ),
+                                   QVariant::String,
+                                   QVariant( "" ),
+                                   QVariant()
+                                 };
+  mSettings[ sServiceUrl.envVar ] = sWfsServiceUrl;
+
+  // the default WMTS service URL.
+  const Setting sWmtsServiceUrl = { QgsServerSettingsEnv::QGIS_SERVER_WMTS_SERVICE_URL,
+                                    QgsServerSettingsEnv::DEFAULT_VALUE,
+                                    QStringLiteral( "The default WMTS service URL" ),
+                                    QStringLiteral( "/qgis/server_wmts_service_url" ),
+                                    QVariant::String,
+                                    QVariant( "" ),
+                                    QVariant()
+                                  };
+  mSettings[ sServiceUrl.envVar ] = sWmtsServiceUrl;
 }
 
 void QgsServerSettings::load()
@@ -356,7 +399,8 @@ void QgsServerSettings::loadQSettings( const QString &envOptPath ) const
 
 void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env )
 {
-  for ( QgsServerSettingsEnv::EnvVar e : env.keys() )
+  const auto constKeys( env.keys() );
+  for ( const QgsServerSettingsEnv::EnvVar &e : constKeys )
   {
     Setting s = mSettings[ e ];
 
@@ -405,7 +449,7 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
 
   QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
-  for ( Setting s : mSettings )
+  for ( const Setting &s : std::as_const( mSettings ) )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = name( s.envVar );
@@ -450,11 +494,6 @@ bool QgsServerSettings::logStderr() const
 Qgis::MessageLevel QgsServerSettings::logLevel() const
 {
   return static_cast<Qgis::MessageLevel>( value( QgsServerSettingsEnv::QGIS_SERVER_LOG_LEVEL ).toInt() );
-}
-
-int QgsServerSettings::maxCacheLayers() const
-{
-  return value( QgsServerSettingsEnv::MAX_CACHE_LAYERS ).toInt();
 }
 
 QString QgsServerSettings::projectFile() const
@@ -530,4 +569,32 @@ bool QgsServerSettings::getPrintDisabled() const
 bool QgsServerSettings::logProfile()
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE, false ).toBool();
+}
+
+QString QgsServerSettings::serviceUrl( const QString &service ) const
+{
+  QString result;
+  if ( service.compare( QStringLiteral( "WMS" ) ) )
+  {
+    result = value( QgsServerSettingsEnv::QGIS_SERVER_WMS_SERVICE_URL ).toString();
+  }
+  else if ( service.compare( QStringLiteral( "WFS" ) ) )
+  {
+    result = value( QgsServerSettingsEnv::QGIS_SERVER_WFS_SERVICE_URL ).toString();
+  }
+  else if ( service.compare( QStringLiteral( "WCS" ) ) )
+  {
+    result = value( QgsServerSettingsEnv::QGIS_SERVER_WCS_SERVICE_URL ).toString();
+  }
+  else if ( service.compare( QStringLiteral( "WMTS" ) ) )
+  {
+    result = value( QgsServerSettingsEnv::QGIS_SERVER_WMTS_SERVICE_URL ).toString();
+  }
+
+  if ( result.isEmpty() )
+  {
+    result = value( QgsServerSettingsEnv::QGIS_SERVER_SERVICE_URL ).toString();
+  }
+
+  return result;
 }

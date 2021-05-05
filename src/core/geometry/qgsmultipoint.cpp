@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QRegularExpression>
 #include <nlohmann/json.hpp>
 
 QgsMultiPoint::QgsMultiPoint()
@@ -45,7 +46,7 @@ QString QgsMultiPoint::geometryType() const
 
 QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiPoint >();
+  auto result = std::make_unique< QgsMultiPoint >();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -64,9 +65,9 @@ bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
-  QRegExp regex( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" );
-  regex.setCaseSensitivity( Qt::CaseInsensitive );
-  if ( regex.indexIn( collectionWkt ) >= 0 )
+  const thread_local QRegularExpression regex( QStringLiteral( "^\\s*MultiPoint\\s*[ZM]*\\s*\\(\\s*[-\\d]" ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpressionMatch match = regex.match( collectionWkt );
+  if ( match.hasMatch() )
   {
     //alternate style without extra brackets, upgrade to standard
     collectionWkt.replace( '(', QLatin1String( "((" ) ).replace( ')', QLatin1String( "))" ) ).replace( ',', QLatin1String( "),(" ) );
@@ -128,7 +129,7 @@ json QgsMultiPoint::asJsonObject( int precision ) const
     { "type", "MultiPoint" },
     { "coordinates", json::array() },
   };
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     const QgsPoint *point = static_cast<const QgsPoint *>( geom );
     if ( point->is3D() )

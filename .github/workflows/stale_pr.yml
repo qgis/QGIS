@@ -1,10 +1,11 @@
-name: "Handle stale pull requests"
+name: 👓 Handle stale pull requests
 on:
   schedule:
   - cron: "30 2 * * *"
 
 jobs:
   stale:
+    if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/stale@v3
@@ -36,8 +37,8 @@ jobs:
 
           If there is no further activity on this pull request, it will be closed in a
           week.
-          
-          
+
+
         close-pr-message: >
           While we hate to see this happen, this PR has been automatically closed because
           it has not had any activity in the last 21 days. If this pull request should be
@@ -45,8 +46,8 @@ jobs:
           this pull request. Or, if you have any further questions, just ask! We love to
           help, and if there's anything the QGIS project can do to help push this PR forward
           please let us know how we can assist.
-          
-          
+
+
         stale-pr-label: 'stale'
         exempt-pr-labels: 'Merge After Thaw'
         days-before-stale: 14

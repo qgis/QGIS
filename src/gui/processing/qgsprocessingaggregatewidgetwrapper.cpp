@@ -21,6 +21,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QToolButton>
+#include <QItemSelectionModel>
 
 #include "qgspanelwidget.h"
 
@@ -247,7 +248,7 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
 
 QgsProcessingParameterDefinition *QgsProcessingAggregateParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterAggregate >( name, description, mParentLayerComboBox->currentData().toString() );
+  auto param = std::make_unique< QgsProcessingParameterAggregate >( name, description, mParentLayerComboBox->currentData().toString() );
   param->setFlags( flags );
   return param.release();
 }
@@ -333,7 +334,7 @@ void QgsProcessingAggregateWidgetWrapper::setParentLayerWrapperValue( const QgsA
 
   if ( !context )
   {
-    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    tmpContext = std::make_unique< QgsProcessingContext >();
     context = tmpContext.get();
   }
 

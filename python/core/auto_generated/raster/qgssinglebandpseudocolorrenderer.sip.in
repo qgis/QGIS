@@ -12,7 +12,7 @@
 
 class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer pipe for single band pseudocolor.
 %End
 
@@ -81,7 +81,7 @@ Creates a color ramp shader
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

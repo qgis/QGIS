@@ -119,7 +119,7 @@ bool QgsVectorTileLayerRenderer::render()
   else
   {
     asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileMatrix, mTileRange, viewCenter, mAuthCfg, mReferer, mFeedback.get() ) );
-    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, [this]( const QgsVectorTileRawData & rawTile )
+    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
       if ( !rawTile.data.isEmpty() )
@@ -132,8 +132,8 @@ bool QgsVectorTileLayerRenderer::render()
 
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
-  scope->setVariable( "zoom_level", mTileZoom, true );
-  scope->setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
+  scope->setVariable( QStringLiteral( "zoom_level" ), mTileZoom, true );
+  scope->setVariable( QStringLiteral( "vector_tile_zoom" ), QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
   QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
@@ -142,16 +142,15 @@ bool QgsVectorTileLayerRenderer::render()
 
   if ( mLabelProvider )
   {
-    QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( ctx, mTileZoom );
-    for ( QString layerName : requiredFieldsLabeling.keys() )
+    const QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( ctx, mTileZoom );
+    for ( auto it = requiredFieldsLabeling.begin(); it != requiredFieldsLabeling.end(); ++it )
     {
-      requiredFields[layerName].unite( requiredFieldsLabeling[layerName] );
+      requiredFields[it.key()].unite( it.value() );
     }
   }
 
-  QMap<QString, QgsFields> perLayerFields;
-  for ( QString layerName : requiredFields.keys() )
-    mPerLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( requiredFields[layerName] );
+  for ( auto it = requiredFields.constBegin(); it != requiredFields.constEnd(); ++it )
+    mPerLayerFields[it.key()] = QgsVectorTileUtils::makeQgisFields( it.value() );
 
   mRequiredLayers = mRenderer->requiredLayers( ctx, mTileZoom );
 

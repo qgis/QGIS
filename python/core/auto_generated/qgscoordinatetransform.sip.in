@@ -12,7 +12,7 @@
 
 class QgsCoordinateTransform
 {
-%Docstring
+%Docstring(signature="appended")
 Class for doing transforms between two map coordinate systems.
 
 This class can convert map coordinates to a different coordinate reference system.
@@ -27,7 +27,7 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 
 .. note::
 
-   Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
+   Since QGIS 3.0 :py:class:`QgsCoordinateReferenceSystem` objects are implicitly shared.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
@@ -62,16 +62,16 @@ will be applied, and is used for calculating necessary datum transforms
 to utilize.
 
 Python scripts should generally use the constructor variant which accepts
-a QgsProject instance instead of this constructor.
+a :py:class:`QgsProject` instance instead of this constructor.
 
 .. warning::
 
    Do NOT use an empty/default constructed QgsCoordinateTransformContext()
    object when creating QgsCoordinateTransform objects. This prevents correct
    datum transform handling and may result in inaccurate transformations. Always
-   ensure that the QgsCoordinateTransformContext object is correctly retrieved
+   ensure that the :py:class:`QgsCoordinateTransformContext` object is correctly retrieved
    based on the current code context, or use the constructor variant which
-   accepts a QgsProject argument instead.
+   accepts a :py:class:`QgsProject` argument instead.
 
 .. versionadded:: 3.0
 %End
@@ -215,6 +215,20 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
+    QgsVector3D transform( const QgsVector3D &point, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param point: coordinates of point to transform
+:param direction: transform direction (defaults to ForwardTransform)
+
+:return: transformed point
+
+.. versionadded:: 3.18
+%End
+
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle from the source CRS to the destination CRS.
@@ -296,7 +310,7 @@ coordinates.
 .. note::
 
    The string returned by this method gives the desired coordinate operation string, based on
-   the state of the QgsCoordinateTransformContext object given in the QgsCoordinateTransform's constructor.
+   the state of the :py:class:`QgsCoordinateTransformContext` object given in the :py:class:`QgsCoordinateTransform`'s constructor.
    It may be an empty string if no explicit coordinate operation is required. In order to determine the
    ACTUAL coordinate operation which is being used by the transform, use the :py:func:`~QgsCoordinateTransform.instantiatedCoordinateOperationDetails` call instead.
 
@@ -470,7 +484,7 @@ Returns ``True`` if a fallback operation occurred for the most recent transform.
 Returns the ID of the datum transform to use when projecting from the source
 CRS.
 
-This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`,
 but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setSourceDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
@@ -488,7 +502,7 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 Sets the ``datumId`` ID of the datum transform to use when projecting from the source
 CRS.
 
-This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`.
 Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`
@@ -506,7 +520,7 @@ Calling this method will overwrite any automatically calculated datum transform.
 Returns the ID of the datum transform to use when projecting to the destination
 CRS.
 
-This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`,
 but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.setDestinationDatumTransformId`.
 
 .. seealso:: :py:class:`QgsDatumTransform`
@@ -524,7 +538,7 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
 Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
 CRS.
 
-This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+This is usually calculated automatically from the transform's :py:class:`QgsCoordinateTransformContext`.
 Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`

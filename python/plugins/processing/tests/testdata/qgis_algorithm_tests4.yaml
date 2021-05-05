@@ -177,6 +177,8 @@ tests:
           fields:
             photo: skip
             directory: skip
+            timestamp:
+              cast: str
 
   - algorithm: qgis:concavehull
     name: Concave Hull - Points (0.3)
@@ -549,6 +551,9 @@ tests:
       OUTPUT:
         name: expected/tapered_buffer_line.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: native:taperedbuffer
     name: Tapered buffers (multiline)
@@ -561,8 +566,14 @@ tests:
       START_WIDTH: 0.4
     results:
       OUTPUT:
-        name: expected/tapered_buffer_multiline.gml
+        name:
+        - expected/tapered_buffer_multiline.gml
+        - expected/tapered_buffer_multilinev2.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
+
 
   - algorithm: native:bufferbym
     name: Variable width buffer by m
@@ -575,6 +586,9 @@ tests:
       OUTPUT:
         name: expected/variable_width_buffer_by_m.gml
         type: vector
+        compare:
+          geometry:
+            topo_equal_check: True
 
   - algorithm: native:reclassifybytable
     name: Reclassify by table
@@ -1492,7 +1506,10 @@ tests:
           fields:
             sum:
               cast: float
-              precision: 5
+              precision: -1
+            mean:
+              cast: float
+              precision: 3
 
   - algorithm: native:antimeridiansplit
     name: Antimeridian split, lines
@@ -2225,9 +2242,11 @@ tests:
     name: Generate vector tiles (Directory)
     params:
       LAYERS:
-      - layer: ../../../../../tests/testdata/lines.shp
-      - layer: ../../../../../tests/testdata/points.shp
-      - layer: ../../../../../tests/testdata/polys.shp
+        type: vrtlayers
+        params:
+        - layer: ../../../../../tests/testdata/lines.shp
+        - layer: ../../../../../tests/testdata/points.shp
+        - layer: ../../../../../tests/testdata/polys.shp
       MAX_ZOOM: 3
       MIN_ZOOM: 1
       XYZ_TEMPLATE: '{z}/{x}/{y}.pbf'
@@ -2263,6 +2282,32 @@ tests:
       OUTPUT:
         name: expected/overlap_analysis_1.gml
         type: vector
+        compare:
+          fields:
+            custom_overlay1_a.geojson_area:
+              precision: 5
+            custom_overlay1_a.geojson_pc:
+              precision: 5
+            custom_overlay1_b.geojson_area:
+              precision: 5
+            custom_overlay1_b.geojson_pc:
+              precision: 5
+            custom_overlay2_a.geojson_area:
+              precision: 5
+            custom_overlay2_a.geojson_pc:
+              precision: 5
+            custom_overlay2_b.geojson_area:
+              precision: 5
+            custom_overlay2_b.geojson_pc:
+              precision: 5
+            custom_overlay3_a.geojson_area:
+              precision: 5
+            custom_overlay3_a.geojson_pc:
+              precision: 5
+            custom_overlay3_b.geojson_area:
+              precision: 4
+            custom_overlay3_b.geojson_pc:
+              precision: 3
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis reprojected
@@ -2294,13 +2339,29 @@ tests:
         compare:
           fields:
             custom_overlay2_a.geojson_area:
-              precision: 13
+              precision: 8
             custom_overlay2_a.geojson_pc:
-              precision: 13
+              precision: 7
             custom_overlay2_b.geojson_area:
               precision: 8
             custom_overlay2_b.geojson_pc:
               precision: 7
+            custom_overlay1_a.geojson_area:
+              precision: 5
+            custom_overlay1_a.geojson_pc:
+              precision: 5
+            custom_overlay1_b.geojson_area:
+              precision: 5
+            custom_overlay1_b.geojson_pc:
+              precision: 5
+            custom_overlay3_a.geojson_area:
+              precision: 5
+            custom_overlay3_a.geojson_pc:
+              precision: 5
+            custom_overlay3_b.geojson_area:
+              precision: 4
+            custom_overlay3_b.geojson_pc:
+              precision: 3
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis 3, reordered inputs
@@ -2352,7 +2413,7 @@ tests:
             custom_overlay3_a.geojson_pc:
               precision: 3
             custom_overlay3_b.geojson_area:
-              precision: 8
+              precision: 4
             custom_overlay3_b.geojson_pc:
               precision: 3
 

@@ -24,7 +24,7 @@
 /**
  * \class QgsEllipsoidUtils
  * \ingroup core
- * Contains utility functions for working with ellipsoids and querying the ellipsoid database.
+ * \brief Contains utility functions for working with ellipsoids and querying the ellipsoid database.
  *
  * \since QGIS 3.0
 */

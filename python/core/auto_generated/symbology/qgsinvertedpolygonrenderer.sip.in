@@ -7,10 +7,10 @@
  ************************************************************************/
 
 
-class QgsInvertedPolygonRenderer : QgsFeatureRenderer
+class QgsInvertedPolygonRenderer : QgsMergedFeatureRenderer
 {
-%Docstring
-QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
+%Docstring(signature="appended")
+:py:class:`QgsInvertedPolygonRenderer` is a polygon-only feature renderer used to
 display features inverted, where the exterior is turned to an interior
 and where the exterior theoretically spans the entire plane, allowing
 to mask the surroundings of some features.
@@ -43,54 +43,8 @@ Constructor
 %Docstring
 Direct copies are forbidden. Use :py:func:`~QgsInvertedPolygonRenderer.clone` instead.
 %End
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
-
-
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
-
-%Docstring
-Renders a given feature.
-This will here collect features. The actual rendering will be postponed to :py:func:`~QgsInvertedPolygonRenderer.stopRender`
-
-:param feature: the feature to render
-:param context: the rendering context
-:param layer: the symbol layer to render, if that makes sense
-:param selected: whether this feature has been selected (this will add decorations)
-:param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
-
-:return: ``True`` if the rendering was OK
-%End
-
-    virtual void stopRender( QgsRenderContext &context );
-
-%Docstring
-The actual rendering will take place here.
-Features collected during :py:func:`~QgsInvertedPolygonRenderer.renderFeature` are rendered using the embedded feature renderer
-%End
 
     virtual QString dump() const;
-
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-
-    virtual bool filterNeedsGeometry() const;
-
-    virtual QgsFeatureRenderer::Capabilities capabilities();
-
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
-
-    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-    virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-    virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
-
-    virtual QgsLegendSymbolList legendSymbolItems() const;
-
-    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
@@ -99,23 +53,6 @@ Creates a renderer out of an XML, for loading
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
-
-
-    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
-
-    virtual const QgsFeatureRenderer *embeddedRenderer() const;
-
-
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
-
-
-    virtual bool legendSymbolItemsCheckable() const;
-
-    virtual bool legendSymbolItemChecked( const QString &key );
-
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true );
-
-    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
     bool preprocessingEnabled() const;
@@ -137,7 +74,7 @@ Creates a renderer out of an XML, for loading
 %Docstring
 Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

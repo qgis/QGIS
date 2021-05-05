@@ -10,15 +10,18 @@ __author__ = 'Nyall Dawson'
 __date__ = '15/07/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
+import os
 import qgis  # NOQA
-
-from qgis.PyQt.QtCore import QVariant
-
+from qgis.PyQt.QtCore import QVariant, QTemporaryDir
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
+                       QgsProject,
                        QgsGeometry,
                        QgsPointXY,
-                       QgsField)
+                       QgsField,
+                       QgsVectorFileWriter,
+                       QgsCoordinateTransformContext)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -390,6 +393,378 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # test contents of buffer
         self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
         self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), 'new2')
+
+    def testTransactionGroup(self):
+        """Test that the buffer works the same when used in transaction and when not"""
+
+        def _test(autoTransaction):
+            """Test buffer methods within and without transactions
+
+            - create a feature
+            - save
+            - retrieve the feature
+            - change geom and attrs
+            - test changes are seen in the buffer
+            """
+
+            def _check_feature(wkt):
+
+                f = next(layer_a.getFeatures())
+                self.assertEqual(f.geometry().asWkt().upper(), wkt)
+                f = list(buffer.addedFeatures().values())[0]
+                self.assertEqual(f.geometry().asWkt().upper(), wkt)
+
+            ml = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+            self.assertTrue(ml.isValid())
+
+            d = QTemporaryDir()
+            options = QgsVectorFileWriter.SaveVectorOptions()
+            options.driverName = 'GPKG'
+            options.layerName = 'layer_a'
+            err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
+
+            self.assertEqual(err, QgsVectorFileWriter.NoError)
+            self.assertTrue(os.path.isfile(newFileName))
+
+            layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+
+            self.assertTrue(layer_a.isValid())
+
+            project = QgsProject()
+            project.setAutoTransaction(autoTransaction)
+            project.addMapLayers([layer_a])
+
+            ###########################################
+            # Tests with a new feature
+
+            self.assertTrue(layer_a.startEditing())
+            buffer = layer_a.editBuffer()
+
+            f = QgsFeature(layer_a.fields())
+            f.setAttribute('int', 123)
+            f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+            self.assertTrue(layer_a.addFeatures([f]))
+
+            _check_feature('POINT (7 45)')
+
+            # Need to fetch the feature because its ID is NULL (-9223372036854775808)
+            f = next(layer_a.getFeatures())
+
+            self.assertEqual(len(buffer.addedFeatures()), 1)
+            layer_a.undoStack().undo()
+            self.assertEqual(len(buffer.addedFeatures()), 0)
+            layer_a.undoStack().redo()
+            self.assertEqual(len(buffer.addedFeatures()), 1)
+            f = list(buffer.addedFeatures().values())[0]
+            self.assertEqual(f.attribute('int'), 123)
+
+            # Now change attribute
+            self.assertEqual(buffer.changedAttributeValues(), {})
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.changeAttributeValue(f.id(), 1, 321)
+            self.assertEqual(len(spy_attribute_changed), 1)
+            self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 321])
+
+            self.assertEqual(len(buffer.addedFeatures()), 1)
+            # This is surprising: because it was a new feature it has been changed directly
+            self.assertEqual(buffer.changedAttributeValues(), {})
+            f = list(buffer.addedFeatures().values())[0]
+            self.assertEqual(f.attribute('int'), 321)
+
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.undoStack().undo()
+            self.assertEqual(len(spy_attribute_changed), 1)
+            self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 123])
+            self.assertEqual(buffer.changedAttributeValues(), {})
+            f = list(buffer.addedFeatures().values())[0]
+            self.assertEqual(f.attribute('int'), 123)
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attribute('int'), 123)
+
+            # Change multiple attributes
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.changeAttributeValues(f.id(), {1: 321, 2: 456})
+            self.assertEqual(len(spy_attribute_changed), 2)
+            self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 321])
+            self.assertEqual(spy_attribute_changed[1], [f.id(), 2, 456])
+            buffer = layer_a.editBuffer()
+            # This is surprising: because it was a new feature it has been changed directly
+            self.assertEqual(buffer.changedAttributeValues(), {})
+
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.undoStack().undo()
+            # This is because QgsVectorLayerUndoCommandChangeAttribute plural
+            if not autoTransaction:
+                layer_a.undoStack().undo()
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attribute('int'), 123)
+            self.assertEqual(f.attribute('int2'), None)
+            self.assertEqual(len(spy_attribute_changed), 2)
+            self.assertEqual(spy_attribute_changed[1 if autoTransaction else 0], [f.id(), 2, None])
+            self.assertEqual(spy_attribute_changed[0 if autoTransaction else 1], [f.id(), 1, 123])
+
+            # Change geometry
+            f = next(layer_a.getFeatures())
+            spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
+            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
+            self.assertTrue(len(spy_geometry_changed), 1)
+            self.assertEqual(spy_geometry_changed[0][0], f.id())
+            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(9 43)').asWkt())
+
+            _check_feature('POINT (9 43)')
+            self.assertEqual(buffer.changedGeometries(), {})
+
+            layer_a.undoStack().undo()
+
+            _check_feature('POINT (7 45)')
+            self.assertEqual(buffer.changedGeometries(), {})
+
+            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
+            _check_feature('POINT (9 43)')
+
+            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(10 44)')))
+            _check_feature('POINT (10 44)')
+
+            # This is another surprise: geometry edits get collapsed into a single
+            # one because they have the same hardcoded id
+            layer_a.undoStack().undo()
+            _check_feature('POINT (7 45)')
+
+            self.assertTrue(layer_a.commitChanges())
+
+            ###########################################
+            # Tests with the existing feature
+
+            # Get the feature
+            f = next(layer_a.getFeatures())
+            self.assertTrue(f.isValid())
+            self.assertEqual(f.attribute('int'), 123)
+            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (7 45)')
+
+            # Change single attribute
+            self.assertTrue(layer_a.startEditing())
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.changeAttributeValue(f.id(), 1, 321)
+            self.assertEqual(len(spy_attribute_changed), 1)
+            self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 321])
+            buffer = layer_a.editBuffer()
+            self.assertEqual(buffer.changedAttributeValues(), {1: {1: 321}})
+
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attribute(1), 321)
+
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.undoStack().undo()
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attribute(1), 123)
+            self.assertEqual(len(spy_attribute_changed), 1)
+            self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 123])
+            self.assertEqual(buffer.changedAttributeValues(), {})
+
+            # Change attributes
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.changeAttributeValues(f.id(), {1: 111, 2: 654})
+            self.assertEqual(len(spy_attribute_changed), 2)
+            self.assertEqual(spy_attribute_changed[0], [1, 1, 111])
+            self.assertEqual(spy_attribute_changed[1], [1, 2, 654])
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attributes(), [1, 111, 654])
+            self.assertEqual(buffer.changedAttributeValues(), {1: {1: 111, 2: 654}})
+
+            spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+            layer_a.undoStack().undo()
+            # This is because QgsVectorLayerUndoCommandChangeAttribute plural
+            if not autoTransaction:
+                layer_a.undoStack().undo()
+            self.assertEqual(len(spy_attribute_changed), 2)
+            self.assertEqual(spy_attribute_changed[0 if autoTransaction else 1], [1, 1, 123])
+            self.assertEqual(spy_attribute_changed[1 if autoTransaction else 0], [1, 2, None])
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.attributes(), [1, 123, None])
+            self.assertEqual(buffer.changedAttributeValues(), {})
+
+            # Change geometry
+            spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
+            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
+            self.assertEqual(spy_geometry_changed[0][0], 1)
+            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(9 43)').asWkt())
+
+            f = next(layer_a.getFeatures())
+            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (9 43)')
+            self.assertEqual(buffer.changedGeometries()[1].asWkt().upper(), 'POINT (9 43)')
+
+            spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
+            layer_a.undoStack().undo()
+            self.assertEqual(spy_geometry_changed[0][0], 1)
+            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(7 45)').asWkt())
+            self.assertEqual(buffer.changedGeometries(), {})
+            f = next(layer_a.getFeatures())
+
+            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (7 45)')
+            self.assertEqual(buffer.changedGeometries(), {})
+
+            # Delete an existing feature
+            self.assertTrue(layer_a.deleteFeature(f.id()))
+            with self.assertRaises(StopIteration):
+                next(layer_a.getFeatures())
+            self.assertEqual(buffer.deletedFeatureIds(), [f.id()])
+
+            layer_a.undoStack().undo()
+            self.assertTrue(layer_a.getFeature(f.id()).isValid())
+            self.assertEqual(buffer.deletedFeatureIds(), [])
+
+            ###########################################
+            # Test delete
+
+            # Delete a new feature
+            f = QgsFeature(layer_a.fields())
+            f.setAttribute('int', 555)
+            f.setGeometry(QgsGeometry.fromWkt('point(8 46)'))
+            self.assertTrue(layer_a.addFeatures([f]))
+            f = [f for f in layer_a.getFeatures() if f.attribute('int') == 555][0]
+            self.assertTrue(f.id() in buffer.addedFeatures())
+            self.assertTrue(layer_a.deleteFeature(f.id()))
+            self.assertFalse(f.id() in buffer.addedFeatures())
+            self.assertFalse(f.id() in buffer.deletedFeatureIds())
+
+            layer_a.undoStack().undo()
+            self.assertTrue(f.id() in buffer.addedFeatures())
+
+            ###########################################
+            # Add attribute
+
+            field = QgsField('attr1', QVariant.String)
+            self.assertTrue(layer_a.addAttribute(field))
+            self.assertNotEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [field])
+
+            layer_a.undoStack().undo()
+            self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [])
+
+            layer_a.undoStack().redo()
+            self.assertNotEqual(layer_a.fields().lookupField(field.name()), -1)
+            self.assertEqual(buffer.addedAttributes(), [field])
+
+            self.assertTrue(layer_a.commitChanges())
+
+            ###########################################
+            # Remove attribute
+
+            self.assertTrue(layer_a.startEditing())
+            buffer = layer_a.editBuffer()
+
+            attr_idx = layer_a.fields().lookupField(field.name())
+            self.assertNotEqual(attr_idx, -1)
+
+            self.assertTrue(layer_a.deleteAttribute(attr_idx))
+            self.assertEqual(buffer.deletedAttributeIds(), [attr_idx])
+            self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
+
+            layer_a.undoStack().undo()
+            self.assertEqual(buffer.deletedAttributeIds(), [])
+            self.assertEqual(layer_a.fields().lookupField(field.name()), attr_idx)
+
+            # This is totally broken at least on OGR/GPKG: the rollback
+            # does not restore the original fields
+            if False:
+
+                layer_a.undoStack().redo()
+                self.assertEqual(buffer.deletedAttributeIds(), [attr_idx])
+                self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
+
+                # Rollback!
+                self.assertTrue(layer_a.rollBack())
+
+                self.assertIn('attr1', layer_a.dataProvider().fields().names())
+                self.assertIn('attr1', layer_a.fields().names())
+                self.assertEqual(layer_a.fields().names(), layer_a.dataProvider().fields().names())
+
+                attr_idx = layer_a.fields().lookupField(field.name())
+                self.assertNotEqual(attr_idx, -1)
+
+                self.assertTrue(layer_a.startEditing())
+                attr_idx = layer_a.fields().lookupField(field.name())
+                self.assertNotEqual(attr_idx, -1)
+
+            ###########################################
+            # Rename attribute
+
+            attr_idx = layer_a.fields().lookupField(field.name())
+            self.assertEqual(layer_a.fields().lookupField('new_name'), -1)
+            self.assertTrue(layer_a.renameAttribute(attr_idx, 'new_name'))
+            self.assertEqual(layer_a.fields().lookupField('new_name'), attr_idx)
+
+            layer_a.undoStack().undo()
+            self.assertEqual(layer_a.fields().lookupField(field.name()), attr_idx)
+            self.assertEqual(layer_a.fields().lookupField('new_name'), -1)
+
+            layer_a.undoStack().redo()
+            self.assertEqual(layer_a.fields().lookupField('new_name'), attr_idx)
+            self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
+
+            #############################################
+            # Try hard to make this fail for transactions
+            if autoTransaction:
+                self.assertTrue(layer_a.commitChanges())
+                self.assertTrue(layer_a.startEditing())
+                f = next(layer_a.getFeatures())
+
+                # Do
+                for i in range(10):
+                    spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+                    layer_a.changeAttributeValue(f.id(), 2, i)
+                    self.assertEqual(len(spy_attribute_changed), 1)
+                    self.assertEqual(spy_attribute_changed[0], [f.id(), 2, i])
+                    buffer = layer_a.editBuffer()
+                    self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: i}})
+                    f = next(layer_a.getFeatures())
+                    self.assertEqual(f.attribute(2), i)
+
+                # Undo/redo
+                for i in range(9):
+
+                    # Undo
+                    spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+                    layer_a.undoStack().undo()
+                    f = next(layer_a.getFeatures())
+                    self.assertEqual(f.attribute(2), 8 - i)
+                    self.assertEqual(len(spy_attribute_changed), 1)
+                    self.assertEqual(spy_attribute_changed[0], [f.id(), 2, 8 - i])
+                    buffer = layer_a.editBuffer()
+                    self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: 8 - i}})
+
+                    # Redo
+                    spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+                    layer_a.undoStack().redo()
+                    f = next(layer_a.getFeatures())
+                    self.assertEqual(f.attribute(2), 9 - i)
+                    self.assertEqual(len(spy_attribute_changed), 1)
+                    self.assertEqual(spy_attribute_changed[0], [f.id(), 2, 9 - i])
+
+                    # Undo again
+                    spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
+                    layer_a.undoStack().undo()
+                    f = next(layer_a.getFeatures())
+                    self.assertEqual(f.attribute(2), 8 - i)
+                    self.assertEqual(len(spy_attribute_changed), 1)
+                    self.assertEqual(spy_attribute_changed[0], [f.id(), 2, 8 - i])
+                    buffer = layer_a.editBuffer()
+                    self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: 8 - i}})
+
+                    # Last check
+                    f = next(layer_a.getFeatures())
+                    self.assertEqual(f.attribute(2), 8 - i)
+
+                self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: 0}})
+                layer_a.undoStack().undo()
+                buffer = layer_a.editBuffer()
+                self.assertEqual(buffer.changedAttributeValues(), {})
+                f = next(layer_a.getFeatures())
+                self.assertEqual(f.attribute(2), None)
+
+        _test(False)
+        _test(True)
 
 
 if __name__ == '__main__':

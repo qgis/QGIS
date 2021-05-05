@@ -16,7 +16,7 @@
 #ifndef QGSTEST_H
 #define QGSTEST_H
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
 
@@ -41,7 +41,7 @@
     bool _xxxresult = qgsDoubleNear( value, expected, epsilon ); \
     if ( !_xxxresult  ) \
     { \
-      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %.10f got %.10f (diff %.10f > %.10f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
   }(void)(0)
@@ -79,10 +79,10 @@
 namespace QgsTest
 {
 
-  //! Returns TRUE if test is running on Travis infrastructure
-  bool isTravis()
+  //! Returns TRUE if test is running on a CI infrastructure
+  bool isCIRun()
   {
-    return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
+    return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
   }
 
   bool runFlakyTests()

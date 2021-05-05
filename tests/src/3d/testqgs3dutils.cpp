@@ -17,7 +17,11 @@
 
 #include "qgs3dutils.h"
 
+#include "qgsbox3d.h"
+#include "qgsray3d.h"
+
 #include <QSize>
+#include <QtMath>
 
 /**
  * \ingroup UnitTests
@@ -34,6 +38,9 @@ class TestQgs3DUtils : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testTransforms();
+    void testRayFromScreenPoint();
+    void testQgsBox3DDistanceTo();
+    void testQgsRay3D();
   private:
 };
 
@@ -80,6 +87,130 @@ void TestQgs3DUtils::testTransforms()
   QgsVector3D mapPoint1 = Qgs3DUtils::worldToMapCoordinates( worldPoint1, origin1 );
   QgsVector3D mapPoint2 = Qgs3DUtils::worldToMapCoordinates( worldPoint2, origin2 );
   QCOMPARE( mapPoint1, mapPoint2 );
+}
+
+void TestQgs3DUtils::testRayFromScreenPoint()
+{
+
+  Qt3DRender::QCamera camera;
+  {
+    camera.setFieldOfView( 45.0f );
+    camera.setNearPlane( 10.0f );
+    camera.setFarPlane( 100.0f );
+    camera.setAspectRatio( 2 );
+    camera.setPosition( QVector3D( 9.0f, 15.0f, 30.0f ) );
+    camera.setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
+    camera.setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
+
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 50, 50 ), QSize( 100, 100 ), &camera );
+      QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.25916051864624f, -0.431934207677841f, -0.863868415355682f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 100, 100 ), &camera );
+      QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( -0.810001313686371f, -0.0428109727799892f, -0.584863305091858f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 100, 100 ), QSize( 100, 100 ), &camera );
+      QgsRay3D ray2( QVector3D( 8.99999904632568f, 14.9999980926514f, 29.9999980926514f ), QVector3D( 0.429731547832489f, -0.590972006320953f, -0.682702660560608f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+  }
+
+  {
+    camera.setFieldOfView( 60.0f );
+    camera.setNearPlane( 1.0f );
+    camera.setFarPlane( 1000.0f );
+    camera.setAspectRatio( 2 );
+    camera.setPosition( QVector3D( 0.0f, 0.0f, 0.0f ) );
+    camera.setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
+    camera.setViewCenter( QVector3D( 0.0f, 100.0f, -100.0f ) );
+
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 500 ), QSize( 1000, 1000 ), &camera );
+      QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.70710676908493f, -0.70710676908493f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 0, 0 ), QSize( 1000, 1000 ), &camera );
+      QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( -0.70710676908493f, 0.683012664318085f, -0.183012709021568f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+    {
+      QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( QPoint( 500, 1000 ), QSize( 1000, 1000 ), &camera );
+      QgsRay3D ray2( QVector3D( 0, 0, 0 ), QVector3D( 0, 0.258819073438644f, -0.965925812721252f ) );
+      QCOMPARE( ray1.origin(), ray2.origin() );
+      QCOMPARE( ray1.direction(), ray2.direction() );
+    }
+  }
+}
+
+void TestQgs3DUtils::testQgsBox3DDistanceTo()
+{
+  {
+    QgsBox3d box( -1, -1, -1, 1, 1, 1 );
+    QCOMPARE( box.distanceTo( QVector3D( 0, 0, 0 ) ), 0.0 );
+    QCOMPARE( box.distanceTo( QVector3D( 2, 2, 2 ) ), qSqrt( 3.0 ) );
+  }
+  {
+    QgsBox3d box( 1, 2, 1, 4, 3, 3 );
+    QCOMPARE( box.distanceTo( QVector3D( 1, 2, 1 ) ), 0.0 );
+    QCOMPARE( box.distanceTo( QVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
+  }
+}
+
+void TestQgs3DUtils::testQgsRay3D()
+{
+  {
+    QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
+    QVector3D p1( 0.5f, 0.5f, 0.5f );
+    QVector3D p2( -0.5f, -0.5f, -0.5f );
+    // points are already on the ray
+    QVector3D projP1 = ray.projectedPoint( p1 );
+    QVector3D projP2 = ray.projectedPoint( p2 );
+
+    QCOMPARE( p1.x(), projP1.x() );
+    QCOMPARE( p1.y(), projP1.y() );
+    QCOMPARE( p1.z(), projP1.z() );
+
+    QCOMPARE( p2.x(), projP2.x() );
+    QCOMPARE( p2.y(), projP2.y() );
+    QCOMPARE( p2.z(), projP2.z() );
+
+    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p1 ) ) );
+    QVERIFY( qFuzzyIsNull( ( float )ray.angleToPoint( p2 ) ) );
+
+    QVERIFY( ray.isInFront( p1 ) );
+    QVERIFY( !ray.isInFront( p2 ) );
+  }
+
+  {
+    QgsRay3D ray( QVector3D( 0, 0, 0 ), QVector3D( 1, 1, 1 ) );
+    QVector3D p1( 0, 1, 1 );
+    QVector3D p2( 0, -1, -1 );
+    QVector3D expectedProjP1( 0.666667f, 0.666667f, 0.666667f );
+    QVector3D expectedProjP2( -0.666667f, -0.666667f, -0.666667f );
+
+    QVector3D projP1 = ray.projectedPoint( p1 );
+    QCOMPARE( projP1.x(), expectedProjP1.x() );
+    QCOMPARE( projP1.y(), expectedProjP1.y() );
+    QCOMPARE( projP1.z(), expectedProjP1.z() );
+
+    QVector3D projP2 = ray.projectedPoint( p2 );
+    QCOMPARE( projP2.x(), expectedProjP2.x() );
+    QCOMPARE( projP2.y(), expectedProjP2.y() );
+    QCOMPARE( projP2.z(), expectedProjP2.z() );
+
+    QVERIFY( ray.isInFront( p1 ) );
+    QVERIFY( !ray.isInFront( p2 ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgs3DUtils )

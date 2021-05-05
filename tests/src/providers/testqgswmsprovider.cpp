@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
+#include <QUrlQuery>
+
 #include "qgstest.h"
 #include <qgswmsprovider.h>
 #include <qgsapplication.h>
@@ -101,6 +103,24 @@ class TestQgsWmsProvider: public QObject
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
+    // regression #41116
+    void queryItemsWithPlusSign()
+    {
+      const QString failingAddress( "layers=plus+sign&styles=&url=http://localhost:8380/mapserv" );
+      const QgsWmsParserSettings config;
+      QgsWmsCapabilities cap;
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll().replace( "<Name>test</Name>",  "<Name>plus+sign</Name>" );
+      QVERIFY( cap.parseResponse( content, config ) );
+      QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
+      QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=0,0,90,90&"
+                                         "CRS=EPSG:2056&WIDTH=100&HEIGHT=100&"
+                                         "LAYERS=plus%2Bsign&STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
+    }
+
+
     void noCrsSpecified()
     {
       QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
@@ -138,7 +158,37 @@ class TestQgsWmsProvider: public QObject
       QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
       QVERIFY( layer.isValid() );
 
-      QVERIFY( imageCheck( "mbtiles_1", &layer, layer.extent() ) );
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      QVERIFY( imageCheck( "mbtiles_1", mapSettings ) );
+    }
+
+    void testDpiDependentData()
+    {
+      QString dataDir( TEST_DATA_DIR );
+      QUrlQuery uq;
+      uq.addQueryItem( "type", "mbtiles" );
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man_xxx_invalid.mbtiles" ).toString() );
+
+      // check first that we do not accept invalid mbtiles paths
+      QgsRasterLayer layerInvalid( uq.toString(), "invalid", "wms" );
+      //QgsWmsProvider providerInvalid( uq.toString(), QgsDataProvider::ProviderOptions() );
+      QVERIFY( !layerInvalid.isValid() );
+
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man.mbtiles" ).toString() );
+      QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
+      QVERIFY( layer.isValid() );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
+      mapSettings.setExtent( layer.extent() );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      mapSettings.setDpiTarget( 48 );
+      QVERIFY( imageCheck( "mbtiles_dpidependentdata", mapSettings ) );
     }
 
     void providerUriUpdates()
@@ -179,15 +229,24 @@ class TestQgsWmsProvider: public QObject
       QCOMPARE( encodedUri, uriString );
     }
 
-    bool imageCheck( const QString &testType, QgsMapLayer *layer, const QgsRectangle &extent )
+    void testOsmMetadata()
+    {
+      // test that we auto-populate openstreetmap tile metadata
+
+      // don't actually hit the osm server -- the url below uses "file" instead of "http"!
+      QgsWmsProvider provider( QStringLiteral( "type=xyz&url=file://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+      QCOMPARE( provider.layerMetadata().identifier(), QStringLiteral( "OpenStreetMap tiles" ) );
+      QCOMPARE( provider.layerMetadata().title(), QStringLiteral( "OpenStreetMap tiles" ) );
+      QVERIFY( !provider.layerMetadata().abstract().isEmpty() );
+      QCOMPARE( provider.layerMetadata().licenses().at( 0 ), QStringLiteral( "Open Data Commons Open Database License (ODbL)" ) );
+      QCOMPARE( provider.layerMetadata().licenses().at( 1 ), QStringLiteral( "Creative Commons Attribution-ShareAlike (CC-BY-SA)" ) );
+      QVERIFY( provider.layerMetadata().rights().at( 0 ).startsWith( "Base map and data from OpenStreetMap and OpenStreetMap Foundation" ) );
+    }
+
+    bool imageCheck( const QString &testType, QgsMapSettings &mapSettings )
     {
       //use the QgsRenderChecker test utility class to
       //ensure the rendered output matches our control image
-      QgsMapSettings mapSettings;
-      mapSettings.setLayers( QList<QgsMapLayer *>() << layer );
-      mapSettings.setExtent( extent );
-      mapSettings.setOutputSize( QSize( 400, 400 ) );
-      mapSettings.setOutputDpi( 96 );
       QgsMultiRenderChecker myChecker;
       myChecker.setControlPathPrefix( QStringLiteral( "wmsprovider" ) );
       myChecker.setControlName( "expected_" + testType );

@@ -4,14 +4,9 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/test
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/server
 )
 
@@ -31,6 +26,7 @@ macro (ADD_QGIS_TEST TESTSRC)
   string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   set (TESTNAME  "qgis_${TESTNAME}test")
   add_executable(${TESTNAME} ${TESTSRC} ${util_SRCS})
+  target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}

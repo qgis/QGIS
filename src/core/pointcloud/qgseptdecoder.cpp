@@ -23,9 +23,11 @@
 #include "qgslogger.h"
 
 #include <QFile>
+#include <QDir>
 #include <iostream>
 #include <memory>
 #include <cstring>
+#include <QTemporaryFile>
 
 #include <zstd.h>
 
@@ -48,33 +50,33 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
     case QgsPointCloudAttribute::Short:
     {
       short val = short( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( short ) );
+      memcpy( s + position, reinterpret_cast<char * >( &val ), sizeof( short ) );
       break;
     }
 
     case QgsPointCloudAttribute::UShort:
     {
       unsigned short val = static_cast< unsigned short>( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( unsigned short ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( unsigned short ) );
       break;
     }
 
     case QgsPointCloudAttribute::Float:
     {
       float val = float( value );
-      memcpy( s + position, ( char * )( &val ),  sizeof( float ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ),  sizeof( float ) );
       break;
     }
     case QgsPointCloudAttribute::Int32:
     {
       qint32 val = qint32( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( qint32 ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( qint32 ) );
       break;
     }
     case QgsPointCloudAttribute::Double:
     {
       double val = double( value );
-      memcpy( s + position, ( char * )( &val ), sizeof( double ) );
+      memcpy( s + position, reinterpret_cast< char * >( &val ), sizeof( double ) );
       break;
     }
   }
@@ -100,27 +102,27 @@ bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Data
     }
     case QgsPointCloudAttribute::Short:
     {
-      short val = *( short * )( input + inputPosition );
+      const short val = *reinterpret_cast< const short * >( input + inputPosition );
       return _storeToStream<short>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::UShort:
     {
-      unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
+      const unsigned short val = *reinterpret_cast< const unsigned short * >( input + inputPosition );
       return _storeToStream<unsigned short>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Float:
     {
-      float val = *( float * )( input + inputPosition );
+      const float val = *reinterpret_cast< const float * >( input + inputPosition );
       return _storeToStream<float>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Int32:
     {
-      qint32 val = *( qint32 * )( input + inputPosition );
+      const qint32 val = *reinterpret_cast<const qint32 * >( input + inputPosition );
       return _storeToStream<qint32>( data, outputPosition, outputType, val );
     }
     case QgsPointCloudAttribute::Double:
     {
-      double val = *( double * )( input + inputPosition );
+      const double val = *reinterpret_cast< const double * >( input + inputPosition );
       return _storeToStream<double>( data, outputPosition, outputType, val );
     }
   }
@@ -129,7 +131,7 @@ bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Data
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
 {
   const std::size_t pointRecordSize = attributes.pointRecordSize( );
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -190,12 +192,11 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   return new QgsPointCloudBlock(
            count,
            requestedAttributes,
-           data
+           data, scale, offset
          );
 }
 
-
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -206,7 +207,12 @@ QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, co
     return nullptr;
 
   QByteArray dataUncompressed = f.read( f.size() );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
+}
+
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+{
+  return _decompressBinary( data, attributes, requestedAttributes, scale, offset );
 }
 
 /* *************************************************************************************** */
@@ -239,7 +245,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
 {
   if ( ! QFile::exists( filename ) )
     return nullptr;
@@ -251,19 +257,24 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
   QByteArray dataCompressed = f.readAll();
   QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-  return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
+}
+
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QByteArray &data, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset )
+{
+  QByteArray dataUncompressed = decompressZtdStream( data );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes, scale, offset );
 }
 
 /* *************************************************************************************** */
 
-QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
-    const QgsPointCloudAttributeCollection &attributes,
-    const QgsPointCloudAttributeCollection &requestedAttributes )
+template<typename FileType>
+QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &_scale, const QgsVector3D &_offset )
 {
-  Q_UNUSED( attributes )
+  Q_UNUSED( attributes );
+  Q_UNUSED( _scale );
+  Q_UNUSED( _offset );
 
-  const QByteArray arr = filename.toUtf8();
-  std::ifstream file( arr.constData(), std::ios::binary );
   if ( ! file.good() )
     return nullptr;
 
@@ -271,9 +282,11 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
   auto start = common::tick();
 #endif
 
-  laszip::io::reader::file f( file );
+  laszip::io::reader::basic_file<FileType> f( file );
 
   const size_t count = f.get_header().point_count;
+  QgsVector3D scale( f.get_header().scale.x, f.get_header().scale.y, f.get_header().scale.z );
+  QgsVector3D offset( f.get_header().offset.x, f.get_header().offset.y, f.get_header().offset.z );
   char buf[sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) + sizeof( laszip::formats::las::rgb ) ]; // a buffer large enough to hold our point
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
@@ -301,7 +314,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     PointSourceId,
     Red,
     Green,
-    Blue
+    Blue,
+    MissingOrUnknown
   };
 
   struct RequestedAttributeDetails
@@ -383,7 +397,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     }
     else
     {
-      // what to do here? store 0?
+      // this can possibly happen -- e.g. if a style built using a different point cloud format references an attribute which isn't available from the laz file
+      requestedAttributeDetails.emplace_back( RequestedAttributeDetails( LazAttribute::MissingOrUnknown, requestedAttribute.type(), requestedAttribute.size() ) );
     }
   }
 
@@ -442,6 +457,10 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
         case LazAttribute::Blue:
           _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
           break;
+        case LazAttribute::MissingOrUnknown:
+          // just store 0 for unknown/missing attributes
+          _storeToStream<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, 0 );
+          break;
       }
 
       outputOffset += requestedAttribute.size;
@@ -452,12 +471,32 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
   float t = common::since( start );
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
+  QgsPointCloudBlock *block = new QgsPointCloudBlock(
+    count,
+    requestedAttributes,
+    data, scale, offset
+  );
+  return block;
+}
 
-  return new QgsPointCloudBlock(
-           count,
-           requestedAttributes,
-           data
-         );
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
+    const QgsPointCloudAttributeCollection &attributes,
+    const QgsPointCloudAttributeCollection &requestedAttributes,
+    const QgsVector3D &scale, const QgsVector3D &offset )
+{
+  const QByteArray arr = filename.toUtf8();
+  std::ifstream file( arr.constData(), std::ios::binary );
+
+  return __decompressLaz<std::ifstream>( file, attributes, requestedAttributes, scale, offset );
+}
+
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QByteArray &byteArrayData,
+    const QgsPointCloudAttributeCollection &attributes,
+    const QgsPointCloudAttributeCollection &requestedAttributes,
+    const QgsVector3D &scale, const QgsVector3D &offset )
+{
+  std::istringstream file( byteArrayData.toStdString() );
+  return __decompressLaz<std::istringstream>( file, attributes, requestedAttributes, scale, offset );
 }
 
 ///@endcond

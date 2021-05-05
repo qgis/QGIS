@@ -74,7 +74,7 @@ bool QgsPaintEffectRegistry::addEffectType( QgsPaintEffectAbstractMetadata *meta
   return true;
 }
 
-QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const QgsStringMap &properties ) const
+QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const QVariantMap &properties ) const
 {
   if ( !mMetadata.contains( name ) )
     return nullptr;

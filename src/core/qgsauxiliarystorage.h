@@ -26,6 +26,7 @@
 #include "qgsproperty.h"
 #include "qgsspatialiteutils.h"
 #include "qgsvectorlayer.h"
+#include "qgscallout.h"
 #include <QString>
 
 class QgsProject;
@@ -35,7 +36,7 @@ class QgsProject;
  *
  * \ingroup core
  *
- * Class allowing to manage the auxiliary storage for a vector layer.
+ * \brief Class allowing to manage the auxiliary storage for a vector layer.
  *
  * Such auxiliary data are data used mostly for the needs of QGIS (symbology)
  * and have no real interest in being stored with the native raw geospatial
@@ -217,6 +218,18 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \returns The index of the auxiliary field or -1
      */
     static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
+
+    /**
+     * Creates if necessary a new auxiliary field for a callout's property and
+     * activates this property in settings.
+     *
+     * \param property The property to create
+     * \param vlayer The vector layer
+     *
+     * \returns The index of the auxiliary field or -1
+     * \since QGIS 3.20
+     */
+    static int createProperty( QgsCallout::Property property, QgsVectorLayer *vlayer );
 
     /**
      * Creates a new auxiliary field from a property definition.

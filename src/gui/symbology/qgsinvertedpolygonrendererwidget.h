@@ -25,7 +25,7 @@ class QMenu;
 
 /**
  * \ingroup gui
- * A widget used represent options of a QgsInvertedPolygonRenderer
+ * \brief A widget used represent options of a QgsInvertedPolygonRenderer
  *
  * \since QGIS 2.4
  */

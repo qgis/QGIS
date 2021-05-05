@@ -12,9 +12,10 @@
 
 class QgsSnappingUtils : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class has all the configuration of snapping and can return answers to snapping queries.
-Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
+
+Internally, it keeps a cache of :py:class:`QgsPointLocator` instances for multiple layers.
 
 Currently it supports the following queries:
 
@@ -26,7 +27,7 @@ point locator instance with layer's indexed data.
 
 Indexing strategy determines how fast the queries will be and how much memory will be used.
 
-When working with map canvas, it may be useful to use derived class QgsMapCanvasSnappingUtils
+When working with map canvas, it may be useful to use derived class :py:class:`QgsMapCanvasSnappingUtils`
 which keeps the configuration in sync with map canvas (e.g. current view, active layer).
 
 .. versionadded:: 2.8

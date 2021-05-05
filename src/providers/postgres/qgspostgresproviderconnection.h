@@ -25,13 +25,13 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
       , mConn( pgConn )
     {}
 
-    QVariantList nextRow() override;
-    bool hasNextRow() const override;
-
     QMap<int, QVariant::Type> typeMap;
     std::unique_ptr<QgsPostgresResult> result;
 
   private:
+
+    QVariantList nextRowPrivate() override;
+    bool hasNextRowPrivate() const override;
 
     bool mResolveTypes = true;
     std::shared_ptr<QgsPoolPostgresConn> mConn;

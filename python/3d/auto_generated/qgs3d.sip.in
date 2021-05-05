@@ -12,7 +12,7 @@
 
 class Qgs3D
 {
-%Docstring
+%Docstring(signature="appended")
 Qgs3D is a singleton class containing various registries and other global members
 related to 3D classes.
 

@@ -10,25 +10,24 @@
 
 
 
-
 class QgsExpression
 {
-%Docstring
+%Docstring(signature="appended")
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 .. code-block:: python
 
-    exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
-    if exp.hasParserError():
-    # show error message with parserErrorString() and exit
+       exp = QgsExpression("gid*2 > 10 and type not in ('D','F')")
+       if exp.hasParserError():
+           # show error message with parserErrorString() and exit
 
-    result = exp.evaluate(feature, fields)
-    if exp.hasEvalError():
-    # show error message with evalErrorString()
-    else:
-    # examine the result
+       result = exp.evaluate(feature, fields)
+       if exp.hasEvalError():
+           # show error message with evalErrorString()
+       else:
+           # examine the result
 
 Three Value Logic
 -----------------
@@ -65,8 +64,8 @@ This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
 `QgsExpression( otherExpression.expression() )`. A deep copy will only be made
 when :py:func:`~prepare` is called. For usage this means mainly, that you should
-normally keep an unprepared master copy of a QgsExpression and whenever using it
-with a particular QgsFeatureIterator copy it just before and prepare it using the
+normally keep an unprepared master copy of a :py:class:`QgsExpression` and whenever using it
+with a particular :py:class:`QgsFeatureIterator` copy it just before and prepare it using the
 same context as the iterator.
 
 Implicit sharing was added in 2.14
@@ -175,9 +174,20 @@ Gets list of columns referenced by the expression.
 
 .. note::
 
-   If the returned list contains the QgsFeatureRequest.AllAttributes constant then
+   If the returned list contains the :py:class:`QgsFeatureRequest`.AllAttributes constant then
    all attributes from the layer are required for evaluation of the expression.
-   QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
+   :py:class:`QgsFeatureRequest`.setSubsetOfAttributes automatically handles this case.
+
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsExpression.prepare()`,
+   or a call to :py:func:`QgsExpressionNode.prepare()` for a node has been made, then parts of
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression.
+
 
 .. seealso:: :py:func:`referencedAttributeIndexes`
 %End
@@ -188,12 +198,24 @@ Returns a list of all variables which are used in this expression.
 If the list contains a NULL QString, there is a variable name used
 which is determined at runtime.
 
+.. note::
+
+   In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
+   or :py:func:`QgsExpressionNode.prepare()`.
+
 .. versionadded:: 3.0
 %End
 
     QSet<QString> referencedFunctions() const;
 %Docstring
 Returns a list of the names of all functions which are used in this expression.
+
+.. note::
+
+   In contrast to the :py:func:`~QgsExpression.referencedColumns` function this method
+   is not affected by any previous calls to :py:func:`QgsExpression.prepare()`,
+   or :py:func:`QgsExpressionNode.prepare()`.
 
 .. versionadded:: 3.2
 %End
@@ -202,6 +224,16 @@ Returns a list of the names of all functions which are used in this expression.
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 %Docstring
 Returns a list of field name indexes obtained from the provided fields.
+
+.. warning::
+
+   If the expression has been prepared via a call to :py:func:`QgsExpression.prepare()`,
+   or a call to :py:func:`QgsExpressionNode.prepare()` for a node has been made, then parts of
+   the expression may have been determined to evaluate to a static pre-calculatable value.
+   In this case the results will omit attribute indices which are used by these
+   pre-calculated nodes, regardless of their actual referenced columns.
+   If you are seeking to use these functions to introspect an expression you must
+   take care to do this with an unprepared expression.
 
 .. versionadded:: 3.0
 %End
@@ -338,7 +370,7 @@ Returns the desired distance units for calculations involving :py:func:`~QgsExpr
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 %Docstring
 Sets the desired distance units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$length" and "$perimeter".
-If distance units are set to QgsUnitTypes.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
+If distance units are set to :py:class:`QgsUnitTypes`.DistanceUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
@@ -370,7 +402,7 @@ Returns the desired areal units for calculations involving :py:func:`~QgsExpress
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Sets the desired areal units for calculations involving :py:func:`~QgsExpression.geomCalculator`, e.g., "$area".
-If distance units are set to QgsUnitTypes.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
+If distance units are set to :py:class:`QgsUnitTypes`.AreaUnknownUnit (default), :py:func:`~QgsExpression.prepare` will read
 variables from the expression context ("project_distance_units") to determine distance units.
 
 .. note::
@@ -394,7 +426,7 @@ Additional substitutions can be passed through the substitutionMap parameter
 
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
-:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the QgsDistanceArea is used for distance
+:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the :py:class:`QgsDistanceArea` is used for distance
                      and area conversion
 
 .. versionadded:: 2.12
@@ -590,13 +622,14 @@ Returns the translated name for a function group.
 :param group: untranslated group name
 %End
 
-    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true, int maximumPreviewLength = 60 );
 %Docstring
 Formats an expression result for friendly display to the user. Truncates the result to a sensible
 length, and presents text representations of non numeric/text types (e.g., geometries and features).
 
 :param value: expression result to format
 :param htmlOutput: set to ``True`` to allow HTML formatting, or ``False`` for plain text output
+:param maximumPreviewLength: define the maximum character length of the preview
 
 :return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is ``True``
 
@@ -614,6 +647,36 @@ value. The value may be null.
 :return: the expression to evaluate field equality
 
 .. versionadded:: 3.0
+%End
+
+    static bool isFieldEqualityExpression( const QString &expression, QString &field /Out/, QVariant &value /Out/ );
+%Docstring
+Returns ``True`` if the given ``expression`` is a simple "field=value" type expression.
+
+:param expression: expression to test
+
+:return: - ``True`` if the expression is a field equality expression
+         - field: will be set to the field name if the expression is a field equality expression
+         - value: will be set to the value if the expression is a field equality expression
+
+.. versionadded:: 3.18
+%End
+
+    static bool attemptReduceToInClause( const QStringList &expressions, QString &result /Out/ );
+%Docstring
+Attempts to reduce a list of expressions to a single "field IN (val1, val2, ... )" type expression.
+
+This will only be possible if all the input expressions form simple "field=value" OR "field IN (value1, value2)" expressions, and all
+reference the same field name.
+
+Returns ``True`` if the given ``expressions`` could be converted to an IN type expression.
+
+:param expressions: expressions to test
+
+:return: - ``True`` if the expression was converted to a field IN type expression
+         - result: will be set to the calculated "field IN (...)" expression, wherever possible
+
+.. versionadded:: 3.18
 %End
 
     SIP_PYOBJECT __repr__();

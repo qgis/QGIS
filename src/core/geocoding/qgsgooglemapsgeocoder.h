@@ -23,7 +23,7 @@
 
 /**
  * \ingroup core
- * A geocoder which uses the Google Map geocoding API to retrieve results.
+ * \brief A geocoder which uses the Google Map geocoding API to retrieve results.
  *
  * This geocoder utilizes the Google Maps "geocoding" API in order to geocode
  * strings. The Google Maps service is not publicly available, and accordingly
@@ -114,7 +114,6 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
     QString mEndpoint;
 
     static QReadWriteLock sMutex;
-    static QMap< QUrl, QList< QgsGeocoderResult > > sCachedResults;
 
 };
 

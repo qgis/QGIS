@@ -36,7 +36,7 @@ class QIODevice;
 /**
  * \ingroup core
  * \class QgsSatelliteInfo
- * Encapsulates information relating to a GPS satellite.
+ * \brief Encapsulates information relating to a GPS satellite.
 */
 class CORE_EXPORT QgsSatelliteInfo
 {
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSatelliteInfo
 /**
  * \ingroup core
  * \class QgsGpsInformation
- * Encapsulates information relating to a GPS position fix.
+ * \brief Encapsulates information relating to a GPS position fix.
 */
 class CORE_EXPORT QgsGpsInformation
 {
@@ -127,6 +127,14 @@ class CORE_EXPORT QgsGpsInformation
      * Altitude (in meters) above or below the mean sea level.
      */
     double elevation = 0;
+
+    /**
+     * Geoidal separation (Diff. between WGS-84 earth ellipsoid and
+     * mean sea level.
+     *
+     * \since QGIS 3.18
+     */
+    double elevation_diff = 0;
 
     /**
      * Ground speed, in km/h.
@@ -172,11 +180,23 @@ class CORE_EXPORT QgsGpsInformation
     double hacc = std::numeric_limits< double >::quiet_NaN();
     //! Vertical accuracy in meters
     double vacc = std::numeric_limits< double >::quiet_NaN();
+
+    /**
+     * 3D RMS
+     * \since QGIS 3.18
+     */
+    double hvacc = std::numeric_limits< double >::quiet_NaN();
 #else
     //! Horizontal accuracy in meters
     double hacc;
     //! Vertical accuracy in meters
     double vacc;
+
+    /**
+     * 3D RMS
+     * \since QGIS 3.18
+     */
+    double hvacc;
 #endif
 
     /**
@@ -241,7 +261,7 @@ class CORE_EXPORT QgsGpsInformation
 
 /**
  * \ingroup core
- * Abstract base class for connection to a GPS device
+ * \brief Abstract base class for connection to a GPS device
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {

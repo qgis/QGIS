@@ -152,7 +152,7 @@ void TestQgsMarkerLineSymbol::pointNumInterval()
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );
 
   // make sub-symbol
-  QgsStringMap props;
+  QVariantMap props;
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
@@ -181,7 +181,7 @@ void TestQgsMarkerLineSymbol::pointNumVertex()
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( lineSymbol );
 
   // make sub-symbol
-  QgsStringMap props;
+  QVariantMap props;
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );

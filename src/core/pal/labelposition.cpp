@@ -94,7 +94,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   if ( !feature->layer()->isCurved() &&
        this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
   {
-    if ( feature->showUprightLabels() )
+    if ( feature->onlyShowUprightLabels() )
     {
       // Turn label upsidedown by inverting boundary points
       double tx, ty;
@@ -151,7 +151,7 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   h = other.h;
 
   if ( other.mNextPart )
-    mNextPart = qgis::make_unique< LabelPosition >( *other.mNextPart );
+    mNextPart = std::make_unique< LabelPosition >( *other.mNextPart );
 
   partId = other.partId;
   upsideDown = other.upsideDown;
@@ -268,29 +268,29 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
     return false; // always overlaping itself !
 
   if ( !nextPart() && !lp->nextPart() )
-    return isInConflictSinglePart( lp );
-  else
-    return isInConflictMultiPart( lp );
-}
-
-bool LabelPosition::isInConflictSinglePart( const LabelPosition *lp ) const
-{
-  if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )
   {
-    // simple case -- both candidates are oriented to axis, so shortcut with easy calculation
-    return boundingBoxIntersects( lp );
+    if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )
+    {
+      // simple case -- both candidates are oriented to axis, so shortcut with easy calculation
+      return boundingBoxIntersects( lp );
+    }
   }
 
-  if ( !mGeos )
-    createGeosGeom();
+  return isInConflictMultiPart( lp );
+}
 
-  if ( !lp->mGeos )
-    lp->createGeosGeom();
+bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
+{
+  if ( !mMultipartGeos )
+    createMultiPartGeosGeom();
+
+  if ( !lp->mMultipartGeos )
+    lp->createMultiPartGeosGeom();
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-    bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
+    bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedMultiPartGeom(), lp->mMultipartGeos ) == 1 );
     return result;
   }
   catch ( GEOSException &e )
@@ -299,26 +299,8 @@ bool LabelPosition::isInConflictSinglePart( const LabelPosition *lp ) const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
-}
 
-bool LabelPosition::isInConflictMultiPart( const LabelPosition *lp ) const
-{
-  // check all parts against all parts of other one
-  const LabelPosition *tmp1 = this;
-  while ( tmp1 )
-  {
-    // check tmp1 against parts of other label
-    const LabelPosition *tmp2 = lp;
-    while ( tmp2 )
-    {
-      if ( tmp1->isInConflictSinglePart( tmp2 ) )
-        return true;
-      tmp2 = tmp2->nextPart();
-    }
-
-    tmp1 = tmp1->nextPart();
-  }
-  return false; // no conflict found
+  return false;
 }
 
 int LabelPosition::partCount() const
@@ -430,6 +412,44 @@ void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
   double amax[2];
   getBoundingBox( amin, amax );
   index.insert( this, QgsRectangle( amin[0], amin[1], amax[0], amax[1] ) );
+}
+
+
+void LabelPosition::createMultiPartGeosGeom() const
+{
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  std::vector< const GEOSGeometry * > geometries;
+  const LabelPosition *tmp1 = this;
+  while ( tmp1 )
+  {
+    const GEOSGeometry *partGeos = tmp1->geos();
+    if ( !GEOSisEmpty_r( geosctxt, partGeos ) )
+      geometries.emplace_back( partGeos );
+    tmp1 = tmp1->nextPart();
+  }
+
+  const std::size_t partCount = geometries.size();
+  GEOSGeometry **geomarr = new GEOSGeometry*[ partCount ];
+  for ( std::size_t i = 0; i < partCount; ++i )
+  {
+    geomarr[i ] = GEOSGeom_clone_r( geosctxt, geometries[i] );
+  }
+
+  mMultipartGeos = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomarr, partCount );
+  delete [] geomarr;
+}
+
+const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
+{
+  if ( !mMultipartGeos )
+    createMultiPartGeosGeom();
+
+  if ( !mMultipartPreparedGeos )
+  {
+    mMultipartPreparedGeos = GEOSPrepare_r( QgsGeos::getGEOSHandler(), mMultipartGeos );
+  }
+  return mMultipartPreparedGeos;
 }
 
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const
@@ -625,4 +645,27 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   }
 
   return cost;
+}
+
+double LabelPosition::angleDifferential()
+{
+  double angleDiff = 0.0, angleLast = 0.0, diff;
+  double sinAvg = 0, cosAvg = 0;
+  LabelPosition *tmp = this;
+  while ( tmp )
+  {
+    if ( tmp != this ) // not first?
+    {
+      diff = std::fabs( tmp->getAlpha() - angleLast );
+      if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
+      diff = std::min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+      angleDiff += diff;
+    }
+
+    sinAvg += std::sin( tmp->getAlpha() );
+    cosAvg += std::cos( tmp->getAlpha() );
+    angleLast = tmp->getAlpha();
+    tmp = tmp->nextPart();
+  }
+  return angleDiff;
 }

@@ -12,8 +12,8 @@
 
 class QgsAbstractContentCacheEntry
 {
-%Docstring
-Base class for entries in a QgsAbstractContentCache.
+%Docstring(signature="appended")
+Base class for entries in a :py:class:`QgsAbstractContentCache`.
 
 Subclasses must take care to correctly implement the :py:func:`~isEqual` method, applying their
 own logic for testing extra cache properties (e.g. image size for an image-based cache).
@@ -73,7 +73,7 @@ properties, such as image size.
 
 class QgsAbstractContentCacheBase: QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QObject derived base class for :py:class:`QgsAbstractContentCache`.
 

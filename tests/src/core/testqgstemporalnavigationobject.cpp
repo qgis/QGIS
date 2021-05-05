@@ -17,6 +17,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgstemporalnavigationobject.h>
@@ -43,6 +44,7 @@ class TestQgsTemporalNavigationObject : public QObject
     void frameSettings();
     void navigationMode();
     void expressionContext();
+    void testIrregularStep();
 
   private:
     QgsTemporalNavigationObject *navigationObject = nullptr;
@@ -177,7 +179,8 @@ void TestQgsTemporalNavigationObject::navigationMode()
 
 void TestQgsTemporalNavigationObject::frameSettings()
 {
-  qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
+  navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
+
   QSignalSpy temporalRangeSignal( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange );
 
   QgsDateTimeRange range = QgsDateTimeRange(
@@ -198,6 +201,9 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( temporalRangeSignal.count(), 2 );
+
+  QCOMPARE( navigationObject->frameDuration().originalDuration(), 1.0 );
+  QCOMPARE( navigationObject->frameDuration().originalUnit(), QgsUnitTypes::TemporalHours );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
@@ -249,10 +255,66 @@ void TestQgsTemporalNavigationObject::expressionContext()
   std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
   QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value< double >(), 1.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value< QgsUnitTypes::TemporalUnit >(), QgsUnitTypes::TemporalUnit::TemporalHours );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
   QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
   QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );
   QCOMPARE( scope->variable( QStringLiteral( "animation_interval" ) ).value< QgsInterval >(), range.end() - range.begin() );
+}
+
+void TestQgsTemporalNavigationObject::testIrregularStep()
+{
+  // test using the navigation in irregular step mode
+  QgsTemporalNavigationObject object;
+  QList< QgsDateTimeRange > ranges{  QgsDateTimeRange(
+                                       QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ),
+                                       QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ),
+                                     QgsDateTimeRange(
+                                       QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ),
+                                       QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ) ),
+                                     QgsDateTimeRange(
+                                       QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ),
+                                       QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) )
+                                  };
+  object.setAvailableTemporalRanges( ranges );
+
+  object.setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep ) );
+
+  QCOMPARE( object.totalFrameCount(), 3LL );
+
+  QCOMPARE( object.dateTimeRangeForFrameNumber( 0 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ) );
+  // negative should return first frame range
+  QCOMPARE( object.dateTimeRangeForFrameNumber( -1 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ) );
+  QCOMPARE( object.dateTimeRangeForFrameNumber( 1 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ) ) );
+  QCOMPARE( object.dateTimeRangeForFrameNumber( 2 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ),
+              QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) ) );
+  QCOMPARE( object.dateTimeRangeForFrameNumber( 5 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ),
+              QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) ) );
+
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2019, 1, 1 ), QTime() ) ), 0LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 10 ), QTime( 0, 0, 0 ) ) ), 0LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 11 ), QTime( 0, 0, 0 ) ) ), 0LL );
+  // in between available ranges, go back a frame
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 12 ), QTime( 0, 0, 0 ) ) ), 0LL );
+
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 15 ), QTime( 0, 0, 0 ) ) ), 1LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 16 ), QTime( 0, 0, 0 ) ) ), 1LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 1, 20 ), QTime( 0, 0, 0 ) ) ), 1LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 2, 15 ), QTime( 0, 0, 0 ) ) ), 1LL );
+
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 3, 1 ), QTime( 0, 0, 0 ) ) ), 2LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 3, 2 ), QTime( 0, 0, 0 ) ) ), 2LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 4, 5 ), QTime( 0, 0, 0 ) ) ), 2LL );
+  QCOMPARE( object.findBestFrameNumberForFrameStart( QDateTime( QDate( 2020, 5, 6 ), QTime( 0, 0, 0 ) ) ), 2LL );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )

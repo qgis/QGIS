@@ -21,7 +21,7 @@ endif(o2_WITH_QT5)
 if (NOT o2_WITH_QT5)
     include( ${QT_USE_FILE} )
 endif(NOT o2_WITH_QT5)
- 
+
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} "../../src" )
 
 set(fb_SRCS

@@ -27,7 +27,7 @@ class QgsProcessingModelAlgorithm;
 ///@cond NOT_STABLE
 
 /**
- * Source for the value of a parameter for a child algorithm within a model.
+ * \brief Source for the value of a parameter for a child algorithm within a model.
  * \ingroup core
  * \since QGIS 3.0
  */
@@ -227,7 +227,14 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      *
      * The \a friendlyChildNames argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
      */
-    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlydChildNames ) const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlyChildNames ) const;
+
+    /**
+     * Returns an explanatory Python comment for the source, or an empty string if no comment is available.
+     *
+     * \since QGIS 3.20
+     */
+    QString asPythonComment( const QgsProcessingParameterDefinition *definition ) const;
 
     /**
      * Returns a user-friendly identifier for this source, given the context of the specified \a model.

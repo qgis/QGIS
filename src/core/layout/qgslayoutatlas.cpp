@@ -288,12 +288,19 @@ int QgsLayoutAtlas::updateFeatures()
     req.setFilterExpression( mFilterExpression );
   }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  if ( mLayout->renderContext().featureFilterProvider() )
+  {
+    mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
+  }
+#endif
+
   QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
 
   std::unique_ptr<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
   {
-    nameExpression = qgis::make_unique< QgsExpression >( mPageNameExpression );
+    nameExpression = std::make_unique< QgsExpression >( mPageNameExpression );
     if ( nameExpression->hasParserError() )
     {
       nameExpression.reset( nullptr );
@@ -313,7 +320,7 @@ int QgsLayoutAtlas::updateFeatures()
   std::unique_ptr<QgsExpression> sortExpression;
   if ( mSortFeatures && !mSortExpression.isEmpty() )
   {
-    sortExpression = qgis::make_unique< QgsExpression >( mSortExpression );
+    sortExpression = std::make_unique< QgsExpression >( mSortExpression );
     if ( sortExpression->hasParserError() )
     {
       sortExpression.reset( nullptr );
@@ -536,17 +543,17 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
 
   if ( !mFilenameExpressionString.isEmpty() )
   {
-    mFilenameExpression = QgsExpression( mFilenameExpressionString );
+    QgsExpression filenameExpression( mFilenameExpressionString );
     // expression used to evaluate each filename
     // test for evaluation errors
-    if ( mFilenameExpression.hasParserError() )
+    if ( filenameExpression.hasParserError() )
     {
-      error = mFilenameExpression.parserErrorString();
+      error = filenameExpression.parserErrorString();
       return false;
     }
 
     // prepare the filename expression
-    evalResult = mFilenameExpression.prepare( &expressionContext );
+    evalResult = filenameExpression.prepare( &expressionContext );
   }
 
   // regenerate current filename
@@ -557,7 +564,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
 
   if ( ! evalResult )
   {
-    error = mFilenameExpression.evalErrorString();
+    error = mFilenameExpressionError;
   }
 
   return evalResult;
@@ -566,12 +573,16 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
 bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )
 {
   //generate filename for current atlas feature
-  if ( !mFilenameExpressionString.isEmpty() && mFilenameExpression.isValid() )
+  mFilenameExpressionError.clear();
+  if ( !mFilenameExpressionString.isEmpty() )
   {
-    QVariant filenameRes = mFilenameExpression.evaluate( &context );
-    if ( mFilenameExpression.hasEvalError() )
+    QgsExpression filenameExpression( mFilenameExpressionString );
+    filenameExpression.prepare( &context );
+    QVariant filenameRes = filenameExpression.evaluate( &context );
+    if ( filenameExpression.hasEvalError() )
     {
-      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Layout" ) );
+      mFilenameExpressionError = filenameExpression.evalErrorString();
+      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( filenameExpression.evalErrorString() ), tr( "Layout" ) );
       return false;
     }
 

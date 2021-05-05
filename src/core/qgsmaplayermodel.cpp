@@ -63,8 +63,10 @@ void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty )
+void QgsMapLayerModel::setAllowEmptyLayer( bool allowEmpty, const QString &text, const QIcon &icon )
 {
+  mEmptyText = text;
+  mEmptyIcon = icon;
   if ( allowEmpty == mAllowEmpty )
     return;
 
@@ -252,7 +254,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
     {
       if ( index.row() == 0 && mAllowEmpty )
-        return QVariant();
+        return mEmptyText;
 
       if ( additionalIndex >= 0 )
         return mAdditionalItems.at( additionalIndex );
@@ -337,7 +339,10 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      if ( isEmpty || additionalIndex >= 0 )
+      if ( isEmpty )
+        return mEmptyIcon.isNull() ? QVariant() : mEmptyIcon;
+
+      if ( additionalIndex >= 0 )
         return QVariant();
 
       QgsMapLayer *layer = mLayers.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
@@ -447,7 +452,7 @@ bool QgsMapLayerModel::canDropMimeData( const QMimeData *data, Qt::DropAction ac
 
 QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
 {
-  std::unique_ptr< QMimeData > mimeData = qgis::make_unique< QMimeData >();
+  std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
 
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
@@ -493,7 +498,7 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   }
 
   insertRows( row, rows, QModelIndex() );
-  for ( const QString &text : qgis::as_const( newItems ) )
+  for ( const QString &text : std::as_const( newItems ) )
   {
     QModelIndex idx = index( row, 0, QModelIndex() );
     setData( idx, text, LayerIdRole );
@@ -525,6 +530,11 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
     case QgsMapLayerType::VectorTileLayer:
     {
       return QgsLayerItem::iconVectorTile();
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      return QgsLayerItem::iconPointCloud();
     }
 
     case QgsMapLayerType::VectorLayer:
@@ -559,6 +569,7 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
         }
       }
     }
+
     default:
     {
       return QIcon();

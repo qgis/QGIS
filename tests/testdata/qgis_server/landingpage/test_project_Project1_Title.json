@@ -20,11 +20,11 @@ Content-Type: application/json
       "owsServiceOnlineResource": "Service Capabilities Oline Resource",
       "owsServiceTitle": "Service Capabilities Title",
       "wcsLayerIds": [],
-      "wcsServiceUrl": "",
+      "wcsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfsLayerIds": [
         "points_842425df_7f45_4091_a6c9_086e1dc1edd1"
       ],
-      "wfsServiceUrl": "",
+      "wfsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfstDeleteLayerIds": [],
       "wfstInsertLayerIds": [],
       "wfstUpdateLayerIds": [
@@ -56,10 +56,10 @@ Content-Type: application/json
       "wmsRestrictedComposers": [],
       "wmsRestrictedLayers": [],
       "wmsRootName": "ShortNameForRootLayer",
-      "wmsServiceUrl": "",
+      "wmsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wmsTileBuffer": 0,
       "wmsUseLayerIds": false,
-      "wmtsServiceUrl": ""
+      "wmtsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
     },
     "crs": "EPSG:4326",
     "description": "Metadata abstract lorem ipsum...",
@@ -75,7 +75,7 @@ Content-Type: application/json
       11.1218662261963,
       52.2622108459473
     ],
-    "id": "dc942915d017625cb26d4cc9ca5bf024",
+    "id": "f41dd162d454a2d7abfb49e8bb67b297",
     "initial_extent": [
       -23.310879982571294,
       32.04119099639189,

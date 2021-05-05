@@ -3,23 +3,7 @@
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/providers/grass
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -87,21 +71,32 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ${GRASS_LIBRARY_UIS_H}
     )
 
+    # require c++17
+    target_compile_features(qgisgrass${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     if(GRASS_OFF_T_SIZE)
       set(GRASS_OFF_T_SIZE_DEF "\"-DGRASS_OFF_T_SIZE=${GRASS_OFF_T_SIZE}\"")
     else()
       set(GRASS_OFF_T_SIZE_DEF "")
     endif()
 
-    set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
-      CLEAN_DIRECT_OUTPUT 1
-      FRAMEWORK 1
-      FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-      MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-      MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-      MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_grass
-      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
-    )
+    if(QGIS_MACAPP_FRAMEWORK)
+      set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+        CLEAN_DIRECT_OUTPUT 1
+        FRAMEWORK 1
+        FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+        MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+        MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+        MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_grass
+        COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
+      )
+    else()
+        set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
+        CLEAN_DIRECT_OUTPUT 1
+        FRAMEWORK 0
+        COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" ${GRASS_OFF_T_SIZE_DEF}"
+      )
+    endif()
 
     if (APPLE)
       set_target_properties(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
@@ -163,6 +158,10 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     set (GRASS_VECTOR_PROVIDER_SRCS ../qgsgrassprovidermodule.cpp)
     add_library(grassprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_VECTOR_PROVIDER_SRCS})
+
+    # require c++17
+    target_compile_features(grassprovider${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     set_target_properties(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
@@ -184,11 +183,15 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassrasterprovidermodule.cpp
     )
     add_library(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
+
+    # require c++17
+    target_compile_features(grassrasterprovider${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+
     set_target_properties(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION} 
-      qgisgrass${GRASS_BUILD_VERSION} 
+    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION}
+      qgisgrass${GRASS_BUILD_VERSION}
       qgis_core
     )
 
@@ -773,6 +776,9 @@ if(WITH_GRASS_DIRECT)
     set (FAKE_LIB_GRASS_GIS "grass_gis.${GRASS_VERSION}")
   endif()
   add_library(${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
+
+  # require c++17
+  target_compile_features(${FAKE_LIB_GRASS_GIS} PRIVATE cxx_std_17)
 
   # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
   # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed

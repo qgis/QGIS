@@ -82,13 +82,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   connect( cmbTransformType, &QComboBox::currentTextChanged, this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
   connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
-  cmbTransformType->addItem( tr( "Linear" ), static_cast<int>( QgsGeorefTransform::Linear ) );
-  cmbTransformType->addItem( tr( "Helmert" ), static_cast<int>( QgsGeorefTransform::Helmert ) );
-  cmbTransformType->addItem( tr( "Polynomial 1" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder1 ) );
-  cmbTransformType->addItem( tr( "Polynomial 2" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder2 ) );
-  cmbTransformType->addItem( tr( "Polynomial 3" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder3 ) );
-  cmbTransformType->addItem( tr( "Thin Plate Spline" ), static_cast<int>( QgsGeorefTransform::ThinPlateSpline ) );
-  cmbTransformType->addItem( tr( "Projective" ), static_cast<int>( QgsGeorefTransform::Projective ) );
+  cmbTransformType->addItem( tr( "Linear" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Linear ) );
+  cmbTransformType->addItem( tr( "Helmert" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Helmert ) );
+  cmbTransformType->addItem( tr( "Polynomial 1" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder1 ) );
+  cmbTransformType->addItem( tr( "Polynomial 2" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder2 ) );
+  cmbTransformType->addItem( tr( "Polynomial 3" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::PolynomialOrder3 ) );
+  cmbTransformType->addItem( tr( "Thin Plate Spline" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::ThinPlateSpline ) );
+  cmbTransformType->addItem( tr( "Projective" ), static_cast<int>( QgsGcpTransformerInterface::TransformMethod::Projective ) );
 
   // Populate CompressionComboBox
   mListCompression.append( QStringLiteral( "None" ) );
@@ -96,7 +96,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mListCompression.append( QStringLiteral( "PACKBITS" ) );
   mListCompression.append( QStringLiteral( "DEFLATE" ) );
   QStringList listCompressionTr;
-  for ( const QString &item : qgis::as_const( mListCompression ) )
+  for ( const QString &item : std::as_const( mListCompression ) )
   {
     listCompressionTr.append( tr( item.toLatin1().data() ) );
   }
@@ -128,16 +128,16 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
 
-void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
+void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformMethod &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
     QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, QString &gcpPoints, bool &zt, bool &loadInQgis,
     double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
-    tp = QgsGeorefTransform::InvalidTransform;
+    tp = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
   else
-    tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->currentData().toInt();
+    tp = static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() );
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
   comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() ).toUpper();
@@ -265,8 +265,8 @@ void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
 bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
-  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformParametrisation )count );
-  minGCPpoints = georefTransform.getMinimumGCPCount();
+  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformMethod )count );
+  minGCPpoints = georefTransform.minimumGcpCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }
 

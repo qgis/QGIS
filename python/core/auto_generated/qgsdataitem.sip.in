@@ -13,8 +13,9 @@
 
 class QgsDataItem : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all items in the model.
+
 Parent/children hierarchy is not based on QObject.
 %End
 
@@ -64,7 +65,7 @@ be used wherever appropriate.
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDataItem();
@@ -238,21 +239,35 @@ double-click behavior for items.
 %Docstring
 Returns ``True`` if the item may be dragged.
 Default implementation returns ``False``.
-A draggable item has to implement :py:func:`~QgsDataItem.mimeUri` that will be used to pass data.
+A draggable item has to implement :py:func:`~QgsDataItem.mimeUris` that will be used to pass data.
 
-.. seealso:: :py:func:`mimeUri`
+.. seealso:: :py:func:`mimeUris`
 
 .. versionadded:: 3.0
 %End
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+ virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
 %Docstring
 Returns mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
 
 .. seealso:: :py:func:`hasDragEnabled`
 
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsDataItem.mimeUris` instead
+
 .. versionadded:: 3.0
+%End
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+%Docstring
+Returns mime URIs for the data item, most data providers will only return a single URI
+but some data collection items (e.g. GPKG, OGR) may report multiple URIs (e.g. for vector and
+raster layer types).
+
+Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+
+.. versionadded:: 3.18
 %End
 
     enum Capability
@@ -285,7 +300,7 @@ Items which implement this method should return the QgsDataItem.Rename capabilit
 
 The default implementation does nothing.
 
-Use QgsDataItemGuiProvider:
+Use :py:class:`QgsDataItemGuiProvider`:
 
 .. versionadded:: 3.4
 
@@ -406,6 +421,17 @@ Sets a custom sorting ``key`` for the item.
 Move object and all its descendants to thread
 %End
 
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const /Factory/;
+%Docstring
+For data items that represent a DB connection or one of its children,
+this method returns a connection.
+All other data items will return NULL.
+
+Ownership of the returned objects is transferred to the caller.
+
+.. versionadded:: 3.16
+%End
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -491,7 +517,7 @@ QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<Qgs
 
 class QgsLayerItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Item that represents a layer that can be opened with one of the providers
 %End
 
@@ -525,7 +551,7 @@ Item that represents a layer that can be opened with one of the providers
 
     virtual bool hasDragEnabled() const;
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
 
@@ -589,7 +615,7 @@ Returns the icon name of the given ``layerType``
  virtual bool deleteLayer() /Deprecated/;
 %Docstring
 Delete this layer item
-Use QgsDataItemGuiProvider.deleteLayer instead
+Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead
 
 .. deprecated::
    QGIS 3.10
@@ -620,7 +646,7 @@ Returns icon for mesh layer type
 %Docstring
 Returns icon for vector tile layer
 %End
-    static QIcon iconPointCloudLayer();
+    static QIcon iconPointCloud();
 %Docstring
 Returns icon for point cloud layer
 %End
@@ -629,12 +655,13 @@ Returns icon for point cloud layer
 
 :return: the layer name
 %End
+
 };
 
 
 class QgsDataCollectionItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 %End
 
@@ -653,7 +680,7 @@ be used wherever appropriate.
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataCollectionItem items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDataCollectionItem();
@@ -674,6 +701,9 @@ Returns the standard browser data collection icon.
 .. seealso:: :py:func:`iconDir`
 %End
 
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
+
+
   protected:
 
     static QIcon openDirIcon();
@@ -689,12 +719,13 @@ Shared home directory icon.
 
 .. versionadded:: 3.4
 %End
+
 };
 
 
 class QgsDatabaseSchemaItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection that represents a database schema item
 
 .. versionadded:: 3.16
@@ -713,12 +744,14 @@ The ``name`` argument specifies the text to show in the model for the item. A tr
 be used wherever appropriate.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsDatabaseSchemaItem();
+
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
     static QIcon iconDataCollection();
@@ -734,7 +767,7 @@ Returns the standard browser data collection icon.
 
 class QgsConnectionsRootItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A Collection that represents a root group of connections from a single data provider
 
 .. versionadded:: 3.16
@@ -753,9 +786,9 @@ The ``name`` argument specifies the text to show in the model for the item. A tr
 be used wherever appropriate.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsSchemaItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsSchemaItem` items pointing to different logical locations should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     ~QgsConnectionsRootItem();
@@ -764,7 +797,7 @@ The optional ``providerKey`` string can be used to specify the key for the QgsDa
 
 class QgsDirectoryItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A directory: contains subdirectories and layers
 %End
 
@@ -802,7 +835,7 @@ The ``path`` argument gives the item path in the browser tree. The ``path`` stri
 the same as ``dirPath`` or ``dirPath`` with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
 items pointing to different ``dirPaths`` should always use a different item ``path``.
 
-The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
     virtual void setState( State state );
@@ -823,7 +856,7 @@ Returns the full path to the directory the item represents.
  virtual QWidget *paramWidget() /Factory,Deprecated/;
 
     virtual bool hasDragEnabled() const;
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
     static bool hiddenPath( const QString &path );
@@ -843,7 +876,7 @@ Check if the given path is hidden from the browser model
 
 class QgsProjectItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Data item that can be used to represent QGIS projects.
 %End
 
@@ -864,14 +897,14 @@ A data item holding a reference to a QGIS project file.
 
     virtual bool hasDragEnabled() const;
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const;
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
 
 
 };
 
 class QgsErrorItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 Data item that can be used to report problems (e.g. network error)
 %End
 
@@ -888,7 +921,7 @@ Data item that can be used to report problems (e.g. network error)
 
 class QgsDirectoryParamWidget : QTreeWidget
 {
-%Docstring
+%Docstring(signature="appended")
 
 Browser parameter widget implementation for directory items.
 %End
@@ -909,7 +942,7 @@ Browser parameter widget implementation for directory items.
 
 class QgsFavoritesItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various Favorites directories
 
 .. versionadded:: 3.0
@@ -963,7 +996,7 @@ Icon for favorites group
 
 class QgsZipItem : QgsDataCollectionItem
 {
-%Docstring
+%Docstring(signature="appended")
 A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 %End
 
@@ -1012,7 +1045,7 @@ Creates a new data item from the specified path.
 
 class QgsFieldsItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A collection of field items with some internal logic to retrieve
 the fields and a the vector layer instance from a connection URI,
 the schema and the table name.
@@ -1035,10 +1068,10 @@ the schema and the table name.
 Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
-but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
 The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
 a connection and retrieve fields information.
-The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
+The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.
 %End
 
@@ -1082,7 +1115,7 @@ Returns the (possibly NULL) properties of the table this fields belong to.
 
 class QgsFieldItem : QgsDataItem
 {
-%Docstring
+%Docstring(signature="appended")
 A layer field item, information about the connection URI, the schema and the
 table as well as the layer instance the field belongs to can be retrieved
 from the parent QgsFieldsItem object.

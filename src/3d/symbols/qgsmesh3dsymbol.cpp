@@ -19,7 +19,7 @@
 #include "qgsphongmaterialsettings.h"
 
 QgsMesh3DSymbol::QgsMesh3DSymbol()
-  : mMaterial( qgis::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
 {
 
 }
@@ -28,7 +28,7 @@ QgsMesh3DSymbol::~QgsMesh3DSymbol() = default;
 
 QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
 {
-  std::unique_ptr< QgsMesh3DSymbol > result = qgis::make_unique< QgsMesh3DSymbol >();
+  std::unique_ptr< QgsMesh3DSymbol > result = std::make_unique< QgsMesh3DSymbol >();
 
   result->mAltClamping = mAltClamping;
   result->mHeight = mHeight;

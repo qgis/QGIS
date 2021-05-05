@@ -81,7 +81,6 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
-#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -225,7 +224,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
   projectionSelector->setPreviewRect( g.boundingBox() );
 
-  mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
+  mMapTileRenderingCheckBox->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), false ) );
 
   // see end of constructor for updating of projection selector
 
@@ -665,6 +664,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mLayerRestrictionsListWidget->addItems( values );
   }
 
+  bool useAttributeFormSettings = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ) );
+  mUseAttributeFormSettingsCheckBox->setChecked( useAttributeFormSettings );
+
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ) );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
@@ -981,7 +983,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   cbtsLocale->addItem( QIcon( QStringLiteral( ":/images/flags/%1.svg" ).arg( QLatin1String( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
-  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( QgsApplication::settingsLocaleUserLocale.value() ) );
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
@@ -1049,6 +1051,7 @@ QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 void QgsProjectProperties::apply()
 {
   mMapCanvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), mMapTileRenderingCheckBox->isChecked() );
 
   // important - set the transform context first, as changing the project CRS may otherwise change this and
   // cause loss of user changes
@@ -1393,6 +1396,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->removeEntry( QStringLiteral( "WMSRestrictedLayers" ), QStringLiteral( "/" ) );
   }
 
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMSFeatureInfoUseAttributeFormSettings" ), QStringLiteral( "/" ), mUseAttributeFormSettingsCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), mAddWktGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), mSegmentizeFeatureInfoGeometryCheckBox->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), mWmsUseLayerIDs->isChecked() );
@@ -1582,13 +1586,14 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), pythonMacros );
 
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
+  QgsProject::instance()->relationManager()->setPolymorphicRelations( mRelationManagerDlg->polymorphicRelations() );
 
   //save variables
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
 
-  for ( QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
   {
     widget->apply();
   }
@@ -1904,7 +1909,7 @@ void QgsProjectProperties::mRemoveWMSPrintLayoutButton_clicked()
 
 void QgsProjectProperties::mAddLayerRestrictionButton_clicked()
 {
-  QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
+  QgsProjectLayerGroupDialog d( QgsProject::instance(), this );
   d.setWindowTitle( tr( "Select Restricted Layers and Groups" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1997,7 +2002,7 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
   QString errors;
   if ( !results )
   {
-    for ( const QgsProjectServerValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    for ( const QgsProjectServerValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % QgsProjectServerValidator::displayValidationError( result.error ) % QLatin1String( " :</b> " );
       errors += result.identifier.toString();
@@ -2408,7 +2413,7 @@ void QgsProjectProperties::populateEllipsoidList()
   }
   // Add all items to selector
 
-  for ( const EllipsoidDefs &i : qgis::as_const( mEllipsoidList ) )
+  for ( const EllipsoidDefs &i : std::as_const( mEllipsoidList ) )
   {
     cmbEllipsoid->addItem( i.description );
   }
@@ -2590,7 +2595,7 @@ void QgsProjectProperties::showHelp()
   }
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  for ( const QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
   {
     if ( widget == activeTab )
     {
@@ -2639,9 +2644,11 @@ void QgsProjectProperties::onGenerateTsFileButton() const
   QMessageBox::information( nullptr, tr( "General TS file generated" ), tr( "TS file generated with source language %1.\n"
                             "- open it with Qt Linguist\n"
                             "- translate strings\n"
-                            "- save it with the postfix of the target language (eg. de)\n"
-                            "- release to get qm file including postfix (eg. aproject_de.qm)\n"
-                            "When you open it again in QGIS having set the target language (de), the project will be translated and saved with postfix (eg. aproject_de.qgs)." ).arg( l ) ) ;
+                            "- save the TS file with the suffix of the target language (e.g. _de.ts)\n"
+                            "- release to get the QM file including the suffix (e.g. aproject_de.qm)\n"
+                            "- open the original QGIS file (e.g. aproject.qgs)\n"
+                            "- if your QGIS is set to use a specific language and the QM file for that language is found, the translated QGIS project will be generated on the fly.\n"
+                            "- you will be redirected to this new project (e.g. aproject_de.qgs)." ).arg( l ) ) ;
 }
 
 void QgsProjectProperties::customizeBearingFormat()

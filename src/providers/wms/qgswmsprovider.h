@@ -136,6 +136,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
+
     /**
      * Reorder the list of WMS layer names to be rendered by this server
      * (in order from bottom to top)
@@ -215,6 +217,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QString description() const override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
+    QgsLayerMetadata layerMetadata() const override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -476,6 +479,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QStringList mSupportedGetFeatureFormats;
 
     QgsCoordinateReferenceSystem mCrs;
+    QgsLayerMetadata mLayerMetadata;
 
     //! Parsed response of server's capabilities - initially (or on error) may be invalid
     QgsWmsCapabilities mCaps;

@@ -11,45 +11,45 @@ if (WITH_GUI)
     qgswmsprovidergui.cpp
     qgswmssourceselect.cpp
     qgswmsdataitemguiproviders.cpp
+    qgswmstsettingswidget.cpp
     qgstilescalewidget.cpp
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
     qgsxyzsourceselect.cpp
+    qgsxyzsourcewidget.cpp
   )
+
+  set(WMS_UIS qgswmstsettingswidgetbase.ui)
 endif()
-
-include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
-)
-include_directories(SYSTEM
-  ${GDAL_INCLUDE_DIR}
-  ${EXPAT_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-)
 
 # static library
 add_library(wmsprovider_a STATIC ${WMS_SRCS})
+
+# require c++17
+target_compile_features(wmsprovider_a PRIVATE cxx_std_17)
+
+if (WITH_GUI)
+  include_directories (
+    ${CMAKE_BINARY_DIR}/src/providers/wms
+    ${CMAKE_SOURCE_DIR}/src/providers/wms
+    ${CMAKE_BINARY_DIR}/src/ui
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
+  QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
+
+  add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_UIS_H})
+
+  # require c++17
+  target_compile_features(wmsprovider_gui_a PRIVATE cxx_std_17)
+
+  add_dependencies(wmsprovider_a ui)
+  add_dependencies(wmsprovider_gui_a ui)
+endif()
+
 target_link_libraries(wmsprovider_a
+  qgis_core
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
   ${Qt5Svg_LIBRARIES}
@@ -60,8 +60,9 @@ target_link_libraries(wmsprovider_a
 target_compile_definitions(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  add_library(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   target_link_libraries(wmsprovider_gui_a
+    qgis_gui
+    wmsprovider_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -72,8 +73,6 @@ if (WITH_GUI)
     ${Qt5Widgets_LIBRARIES}
   )
   target_compile_definitions(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
-  add_dependencies(wmsprovider_gui_a ui)
-  add_dependencies(wmsprovider_a ui)
 endif()
 
 if (FORCE_STATIC_PROVIDERS)
@@ -85,6 +84,9 @@ if (FORCE_STATIC_PROVIDERS)
 else()
   # dynamically loaded module
   add_library(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
+
+  # require c++17
+  target_compile_features(wmsprovider PRIVATE cxx_std_17)
 
   target_link_libraries(wmsprovider
     qgis_core

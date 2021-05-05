@@ -95,15 +95,14 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 
       if ( ! ok )
       {
-        throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName )
-                                                .arg( typeName( mType ) ) );
+        throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName, typeName( mType ) ) );
       }
     }
 
     // 4: check custom validation
     if ( mCustomValidator && ! mCustomValidator( context, value ) )
     {
-      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name() ).arg( description() ) );
+      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name(), description() ) );
     }
   }
   return value;

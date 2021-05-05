@@ -72,7 +72,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        pass
+        del(cls.vl)
+        del(cls.poly_vl)
 
     def treat_datetime_as_string(self):
         return True
@@ -610,14 +611,14 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l4.isValid(), True)
         self.assertEqual(l4.dataProvider().fields().at(0).name(), "count(*)")
-        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.Int)
+        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.LongLong)
 
     def test_sql_field_types(self):
         query = toPercent("SELECT 42 as t, 'ok'||'ok' as t2, GeomFromText('') as t3, 3.14*2 as t4")
         l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l4.isValid(), True)
         self.assertEqual(l4.dataProvider().fields().at(0).name(), "t")
-        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.Int)
+        self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.LongLong)
         self.assertEqual(l4.dataProvider().fields().at(1).name(), "t2")
         self.assertEqual(l4.dataProvider().fields().at(1).type(), QVariant.String)
         self.assertEqual(l4.dataProvider().fields().at(2).name(), "t3")
@@ -635,7 +636,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().fields().at(1).name(), "t2")
         self.assertEqual(l4.dataProvider().fields().at(1).type(), QVariant.String)
         self.assertEqual(l4.dataProvider().fields().at(2).name(), "t4")
-        self.assertEqual(l4.dataProvider().fields().at(2).type(), QVariant.Int)
+        self.assertEqual(l4.dataProvider().fields().at(2).type(), QVariant.LongLong)
         self.assertEqual(l4.dataProvider().wkbType(), 4)  # multipoint
 
         # test value types (!= from declared column types)
@@ -1325,6 +1326,32 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(2, False)])
 
         QgsProject.instance().removeMapLayer(ml.id())
+
+    def test_int64(self):
+        """
+        Test that 64 bits integer doesn't generate an integer overflow
+        """
+        bigint = 2262000000
+
+        ml = QgsVectorLayer('NoGeometry?crs=epsg:4326&field=fldlonglong:long',
+                            'test_bigint', 'memory')
+        provider = ml.dataProvider()
+        feat = QgsFeature(ml.fields())
+        feat.setAttribute('fldlonglong', bigint)
+        provider.addFeatures([feat])
+
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from test_bigint')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(len(vl.fields()), 1)
+        field = vl.fields()[0]
+        self.assertEqual(field.type(), QVariant.LongLong)
+        self.assertTrue(vl.isValid())
+        feat = next(vl.getFeatures())
+        self.assertEqual(feat.attribute('fldlonglong'), bigint)
 
 
 if __name__ == '__main__':

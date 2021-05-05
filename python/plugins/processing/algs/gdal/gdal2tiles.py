@@ -98,38 +98,39 @@ class gdal2tiles(GdalAlgorithm):
                                                        self.tr('Copyright of the map'),
                                                        optional=True))
 
-        params = []
-        params.append(QgsProcessingParameterEnum(self.RESAMPLING,
-                                                 self.tr('Resampling method'),
-                                                 options=[i[0] for i in self.methods],
-                                                 allowMultiple=False,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterCrs(self.SOURCE_CRS,
-                                                self.tr('The spatial reference system used for the source input data'),
-                                                optional=True))
-        params.append(QgsProcessingParameterNumber(self.NODATA,
-                                                   self.tr('Transparency value to assign to the input data'),
-                                                   type=QgsProcessingParameterNumber.Double,
-                                                   defaultValue=0,
-                                                   optional=True))
-        params.append(QgsProcessingParameterString(self.URL,
-                                                   self.tr('URL address where the generated tiles are going to be published'),
-                                                   optional=True))
-        params.append(QgsProcessingParameterString(self.GOOGLE_KEY,
-                                                   self.tr('Google Maps API key (http://code.google.com/apis/maps/signup.html)'),
-                                                   optional=True))
-        params.append(QgsProcessingParameterString(self.BING_KEY,
-                                                   self.tr('Bing Maps API key (https://www.bingmapsportal.com/)'),
-                                                   optional=True))
-        params.append(QgsProcessingParameterBoolean(self.RESUME,
-                                                    self.tr('Generate only missing files'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.KML,
-                                                    self.tr('Generate KML for Google Earth'),
-                                                    defaultValue=False))
-        params.append(QgsProcessingParameterBoolean(self.NO_KML,
-                                                    self.tr('Avoid automatic generation of KML files for EPSG:4326'),
-                                                    defaultValue=False))
+        params = [
+            QgsProcessingParameterEnum(self.RESAMPLING,
+                                       self.tr('Resampling method'),
+                                       options=[i[0] for i in self.methods],
+                                       allowMultiple=False,
+                                       defaultValue=0),
+            QgsProcessingParameterCrs(self.SOURCE_CRS,
+                                      self.tr('The spatial reference system used for the source input data'),
+                                      optional=True),
+            QgsProcessingParameterNumber(self.NODATA,
+                                         self.tr('Transparency value to assign to the input data'),
+                                         type=QgsProcessingParameterNumber.Double,
+                                         defaultValue=0,
+                                         optional=True),
+            QgsProcessingParameterString(self.URL,
+                                         self.tr('URL address where the generated tiles are going to be published'),
+                                         optional=True),
+            QgsProcessingParameterString(self.GOOGLE_KEY,
+                                         self.tr('Google Maps API key (http://code.google.com/apis/maps/signup.html)'),
+                                         optional=True),
+            QgsProcessingParameterString(self.BING_KEY,
+                                         self.tr('Bing Maps API key (https://www.bingmapsportal.com/)'),
+                                         optional=True),
+            QgsProcessingParameterBoolean(self.RESUME,
+                                          self.tr('Generate only missing files'),
+                                          defaultValue=False),
+            QgsProcessingParameterBoolean(self.KML,
+                                          self.tr('Generate KML for Google Earth'),
+                                          defaultValue=False),
+            QgsProcessingParameterBoolean(self.NO_KML,
+                                          self.tr('Avoid automatic generation of KML files for EPSG:4326'),
+                                          defaultValue=False)
+        ]
         for param in params:
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
@@ -156,10 +157,10 @@ class gdal2tiles(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-
-        arguments.append('-p')
-        arguments.append(self.profiles[self.parameterAsEnum(parameters, self.PROFILE, context)][1])
+        arguments = [
+            '-p',
+            self.profiles[self.parameterAsEnum(parameters, self.PROFILE, context)][1],
+        ]
 
         zoom = self.parameterAsString(parameters, self.ZOOM, context)
         if zoom:
@@ -223,11 +224,4 @@ class gdal2tiles(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

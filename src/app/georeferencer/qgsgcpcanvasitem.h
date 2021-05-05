@@ -24,7 +24,7 @@ class QgsGeorefDataPoint;
 class QgsGCPCanvasItem : public QgsMapCanvasItem
 {
   public:
-    QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, const QgsGeorefDataPoint *dataPoint, bool isGCPSource/* = true*/ );
+    QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource/* = true*/ );
 
     //! draws point information
     void paint( QPainter *p ) override;
@@ -41,9 +41,11 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
 
     QgsMapCanvas *canvas() const { return mMapCanvas; }
 
+    void setPointColor( const QColor &color );
+
   private:
 
-    const QgsGeorefDataPoint *mDataPoint = nullptr;
+    QgsGeorefDataPoint *mDataPoint = nullptr;
     QSizeF mTextBounds;
     QBrush mPointBrush;
     QBrush mLabelBrush;

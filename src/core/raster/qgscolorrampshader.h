@@ -37,7 +37,7 @@ class QgsRasterInterface;
 
 /**
  * \ingroup core
- * A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
+ * \brief A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
  */
 class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {
@@ -151,11 +151,16 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**
      * Returns the source color ramp.
-     *
      * \see setSourceColorRamp()
      * \since QGIS 3.0
      */
     QgsColorRamp *sourceColorRamp() const;
+
+    /**
+     * Creates a gradient color ramp from shader settings.
+     * \since QGIS 3.18
+     */
+    QgsColorRamp *createColorRamp() const SIP_FACTORY;
 
     /**
      * Set the source color ramp. Ownership is transferred to the shader.

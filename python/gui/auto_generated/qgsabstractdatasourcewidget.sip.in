@@ -14,7 +14,7 @@
 
 class QgsAbstractDataSourceWidget : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base Data Source Widget to create connections and add layers
 This class provides common functionality and the interface for all
 source select dialogs used by data providers to configure data sources
@@ -87,6 +87,15 @@ Emitted when a DB layer has been selected for addition
 Emitted when a raster layer has been selected for addition
 %End
 
+    void addRasterLayers( const QStringList &layersList );
+%Docstring
+Emitted when one or more GDAL supported layers are selected for addition
+
+:param layersList: list of layers protocol URIs
+
+.. versionadded:: 3.20
+%End
+
     void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 %Docstring
 Emitted when a vector layer has been selected for addition.
@@ -140,7 +149,7 @@ Emitted when a layer needs to be replaced
 Emitted when a progress dialog is shown by the provider dialog.
 
 .. deprecated:: QGIS 3.4
-   this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
+   this signal is no longer used. Use :py:class:`QgsProxyProgressTask` instead to show progress reports.
 %End
 
     void progressMessage( QString message );

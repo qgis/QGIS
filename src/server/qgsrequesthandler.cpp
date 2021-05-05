@@ -220,10 +220,7 @@ void QgsRequestHandler::parseInput()
         const QList<pair_t> items = query.queryItems();
         for ( const pair_t &pair : items )
         {
-          // QUrl::fromPercentEncoding doesn't replace '+' with space
-          const QString key = QUrl::fromPercentEncoding( QString( pair.first ).replace( '+', ' ' ).toUtf8() );
-          const QString value = QUrl::fromPercentEncoding( QString( pair.second ).replace( '+', ' ' ).toUtf8() );
-          mRequest.setParameter( key.toUpper(), value );
+          mRequest.setParameter( pair.first, pair.second );
         }
         setupParameters();
       }

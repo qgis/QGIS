@@ -40,7 +40,6 @@ class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 
-#if PROJ_VERSION_MAJOR>=6
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
@@ -51,7 +50,6 @@ typedef struct pj_ctx PJ_CONTEXT;
 #else
 struct projCtx_t;
 typedef struct projCtx_t PJ_CONTEXT;
-#endif
 #endif
 #endif
 
@@ -69,7 +67,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
 
 /**
  * \ingroup core
- * This class represents a coordinate reference system (CRS).
+ * \brief This class represents a coordinate reference system (CRS).
  *
  * Coordinate reference system object defines a specific map projection, as well as transformations
  * between different coordinate reference systems. There are various ways how a CRS can be defined:
@@ -756,6 +754,24 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // Mutators -----------------------------------
 
     /**
+     * Updates the definition and parameters of the coordinate reference system to their
+     * latest values.
+     *
+     * This only has an effect if the CRS is a user defined custom CRS, and the definition
+     * of that custom CRS has changed. In this case the parameters of the object (such as the
+     * proj and WKT string definitions, and other related properties) will be updated to
+     * reflect the current definition of the custom CRS.
+     *
+     * Any objects which store CRS objects should connect to the QgsApplication::coordinateReferenceSystemRegistry()'s
+     * QgsCoordinateReferenceSystemRegistry::userCrsChanged() signal and call this method
+     * on their stored CRS objects whenever the signal is emitted in order to update these
+     * CRSes to their new definitions.
+     *
+     * \since QGIS 3.18
+     */
+    void updateDefinition();
+
+    /**
      * Set user hint for validation
      */
     void setValidationHint( const QString &html );
@@ -774,7 +790,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static int syncDatabase();
 
     /**
-     * Saves the CRS as a custom ("USER") CRS.
+     * Saves the CRS as a new custom ("USER") CRS.
      *
      * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      *
@@ -783,6 +799,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \warning Not all CRS definitions can be represented as a Proj string, so
      * take care when using the FormatProj option.
+     *
+     * \note Since QGIS 3.18, internally this calls QgsCoordinateReferenceSystemRegistry::addUserCrs().
      */
     long saveAsUserCrs( const QString &name, Format nativeFormat = FormatWkt );
 
@@ -792,13 +810,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( sipCpp->authid() );
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) )
+                        : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
-#if PROJ_VERSION_MAJOR>=6
 
     /**
      * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
@@ -810,7 +828,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.8
      */
     PJ *projObject() const;
-#endif
 #endif
 
     /**
@@ -879,7 +896,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Set the WKT string
      */
-    bool setWktString( const QString &wkt, bool allowProjFallback = true );
+    bool setWktString( const QString &wkt );
 
     /**
      * Print the description if debugging
@@ -908,9 +925,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setMapUnits();
 
     //! Helper for getting number of user CRS already in db
-    long getRecordCount();
+    static long getRecordCount();
 
-#if PROJ_VERSION_MAJOR>=6
     bool loadFromAuthCode( const QString &auth, const QString &code );
 
     /**
@@ -926,7 +942,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * criteria).
      */
     long matchToUserCrs() const;
-#endif
 
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
@@ -936,24 +951,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     bool createFromWktInternal( const QString &wkt, const QString &description );
 
-#if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
-    static bool loadIds( QHash<int, QString> &wkts );
-    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
-
-    //! Update datum shift definitions from GDAL data. Used by syncDb()
-    static bool syncDatumTransform( const QString &dbPath );
-#endif
-
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
     QString mValidationHint;
 
-#if PROJ_VERSION_MAJOR>=6
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
     static void removeFromCacheObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context );
-#endif
 
     //! Function for CRS validation. May be NULLPTR.
     static CUSTOM_CRS_VALIDATION sCustomSrsValidation;
@@ -977,6 +982,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     friend class TestQgsCoordinateReferenceSystem;
     friend class QgsPostgresProvider;
+    friend class QgsCoordinateReferenceSystemRegistry;
+    friend bool CORE_EXPORT operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool CORE_EXPORT operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool CORE_EXPORT operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+    friend bool CORE_EXPORT operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
 
     bool createFromPostgisSrid( const long id );
 };
@@ -1029,6 +1039,11 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateReferenc
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
+
+bool CORE_EXPORT operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool CORE_EXPORT operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool CORE_EXPORT operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
+bool CORE_EXPORT operator<= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
 #endif
 
 #endif // QGSCOORDINATEREFERENCESYSTEM_H

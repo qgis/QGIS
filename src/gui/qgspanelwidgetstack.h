@@ -27,7 +27,7 @@ class QgsPanelWidget;
 
 /**
  * \ingroup gui
- * A stack widget to manage panels in the interface. Handles the open and close events
+ * \brief A stack widget to manage panels in the interface. Handles the open and close events
  * for added panels.
  * Any widgets that want to have a non blocking panel based interface should use this
  * class to manage the panels.
@@ -90,6 +90,9 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * \since QGIS 3.0
      */
     QgsPanelWidget *currentPanel();
+
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
 
   public slots:
 

@@ -113,12 +113,12 @@ void TestQgsDataItem::testValid()
 
 void TestQgsDataItem::testDirItem()
 {
-  std::unique_ptr< QgsDirectoryItem > dirItem = qgis::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
   QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
 
   QVERIFY( dirItem->hasDragEnabled() );
-  QgsMimeDataUtils::Uri mime = dirItem->mimeUri();
+  QgsMimeDataUtils::Uri mime = dirItem->mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : dirItem->mimeUris().first();
   QVERIFY( mime.isValid() );
   QCOMPARE( mime.uri, QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( mime.layerType, QStringLiteral( "directory" ) );
@@ -129,7 +129,7 @@ void TestQgsDataItem::testDirItemChildren()
   QgsSettings settings;
   QStringList tmpSettings;
   tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
+  for ( const QString &tmpSetting : tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
     QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
@@ -202,36 +202,36 @@ void TestQgsDataItem::testDirItemChildren()
 
 void TestQgsDataItem::testLayerItemType()
 {
-  std::unique_ptr< QgsMapLayer > layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "polys.shp",
+  std::unique_ptr< QgsMapLayer > layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "polys.shp",
                                          QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Polygon );
 
-  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "points.shp",
+  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "points.shp",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Point );
 
-  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "lines.shp",
+  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "lines.shp",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Line );
 
-  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "nonspatial.dbf",
+  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "nonspatial.dbf",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::TableLayer );
 
-  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "invalid.dbf",
+  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "invalid.dbf",
           QString(), QStringLiteral( "ogr" ) );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Vector );
 
-  layer = qgis::make_unique< QgsRasterLayer >( mTestDataDir + "rgb256x256.png",
+  layer = std::make_unique< QgsRasterLayer >( mTestDataDir + "rgb256x256.png",
           QString(), QStringLiteral( "gdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Raster );
 
-  layer = qgis::make_unique< QgsMeshLayer >( mTestDataDir + "mesh/quad_and_triangle.2dm",
+  layer = std::make_unique< QgsMeshLayer >( mTestDataDir + "mesh/quad_and_triangle.2dm",
           QString(), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Mesh );

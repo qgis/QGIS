@@ -12,8 +12,8 @@
 
 class QgsPointCloudDataProvider: QgsDataProvider
 {
-%Docstring
-Base class for providing data for QgsPointCloudLayer
+%Docstring(signature="appended")
+Base class for providing data for :py:class:`QgsPointCloudLayer`
 
 Responsible for reading native point cloud data and returning the indexed data.
 
@@ -56,6 +56,39 @@ Ctor
 
     ~QgsPointCloudDataProvider();
 
+
+    SIP_PYLIST identify( float maxErrorInMapCoords, QgsGeometry extentGeometry, const QgsDoubleRange extentZRange = QgsDoubleRange(), int pointsLimit = 1000 );
+%Docstring
+Returns the list of points of the point cloud according to a zoom level
+defined by ``maxError`` (in layer coordinates), an extent ``geometry`` in the 2D plane
+and a range ``extentZRange`` for z values. The function will try to limit
+the number of points returned to ``pointsLimit`` points
+
+``maxErrorPixels`` : maximum accepted error factor in pixels
+
+.. note::
+
+   this function does not handle elevation properties and you need to
+   change elevation coordinates yourself after returning from the function
+%End
+%MethodCode
+    {
+      QVector<QMap<QString, QVariant>> res = sipCpp->identify( a0, *a1, *a2, a3 );
+      sipRes = PyList_New( res.size() );
+      for ( int i = 0; i < res.size(); ++i )
+      {
+        PyObject *dict = PyDict_New();
+        for ( QString key : res[i].keys() )
+        {
+          PyObject *keyObj = sipConvertFromNewType( new QString( key ), sipType_QString, Py_None );
+          PyObject *valObj = sipConvertFromNewType( new QVariant( res[i][key] ), sipType_QVariant, Py_None );
+          PyDict_SetItem( dict, keyObj, valObj );
+        }
+        PyList_SET_ITEM( sipRes, i, dict );
+      }
+    }
+%End
+
     virtual QgsPointCloudDataProvider::Capabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities for the data provider.
@@ -95,7 +128,7 @@ Gets the current index generation state
 Returns whether provider has index which is valid
 %End
 
-    virtual int pointCount() const = 0;
+    virtual qint64 pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.
 %End
@@ -135,7 +168,6 @@ This method returns a new renderer and the caller takes ownership of the returne
 Only providers which report the CreateRenderer capability will return a 2D renderer. Other
 providers will return ``None``.
 %End
-
 
     SIP_PYOBJECT metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
 %Docstring
@@ -238,6 +270,7 @@ Returns the map of LAS data format ID to translated string value.
 %Docstring
 Emitted when point cloud generation state is changed
 %End
+
 };
 
 /************************************************************************

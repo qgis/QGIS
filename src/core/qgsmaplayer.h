@@ -62,7 +62,7 @@ class QPainter;
 
 /**
  * \ingroup core
- * Types of layers that can be added to a map
+ * \brief Types of layers that can be added to a map
  * \since QGIS 3.8
  */
 enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
@@ -78,7 +78,7 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
 
 /**
  * \ingroup core
- * Base class for all map layer types.
+ * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
 class CORE_EXPORT QgsMapLayer : public QObject
@@ -183,8 +183,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
       Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
       Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
+      Notes              = 1 << 17, //!< Layer user notes (since QGIS 3.20)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -513,6 +514,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Returns the extent of the layer.
     virtual QgsRectangle extent() const;
+
+    /**
+     * Returns the WGS84 extent (EPSG:4326) of the layer according to
+     * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
+     * WGS84 extent read in the qgs project is returned. Otherwise, the actual
+     * WGS84 extent is returned.
+     * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
+     * \since QGIS 3.20
+     */
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
@@ -1335,6 +1346,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     % End
 #endif
 
+    /**
+     * Returns the parent project if this map layer is added to a project.
+     * Otherwise returns NULLPTR
+     *
+     * \since QGIS 3.18
+     */
+    QgsProject *project() const;
+
   signals:
 
     /**
@@ -1493,7 +1512,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   private slots:
 
-    void onNotifiedTriggerRepaint( const QString &message );
+    void onNotified( const QString &message );
 
   protected:
 
@@ -1594,8 +1613,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
-    //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    /**
+     * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+     * the extent is not invalidated because we want to trust metadata whatever
+     * happens.
+     * \since QGIS 3.20
+     */
+    void invalidateWgs84Extent();
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
@@ -1677,6 +1701,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
+    // const method because extents are mutable
+    void updateExtent( const QgsRectangle &extent ) const;
+
     /**
      * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1734,6 +1761,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
+    //! Extent of the layer
+    mutable QgsRectangle mExtent;
+
+    //! Extent of the layer in EPSG:4326
+    mutable QgsRectangle mWgs84Extent;
+
     /**
      * Stores the original XML properties of the layer when loaded from the project
      *
@@ -1743,6 +1776,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class QgsVectorLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

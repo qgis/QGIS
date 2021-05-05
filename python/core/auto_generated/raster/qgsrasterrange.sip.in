@@ -14,7 +14,7 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 
 class QgsRasterRange
 {
-%Docstring
+%Docstring(signature="appended")
 Raster values range container. Represents range of values between min and max
 including min and max value.
 %End

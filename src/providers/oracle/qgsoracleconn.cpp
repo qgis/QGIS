@@ -23,6 +23,7 @@
 #include "qgsfields.h"
 #include "qgsoracletablemodel.h"
 #include "qgssettings.h"
+#include "qgsoracleconnpool.h"
 
 #include <QSqlError>
 
@@ -295,17 +296,15 @@ bool QgsOracleConn::tableInfo( const QString &schema, bool geometryColumnsOnly, 
 
   if ( allowGeometrylessTables )
   {
-
     // also here!
     sql += QStringLiteral( " UNION SELECT %1,object_name,NULL AS column_name,NULL AS srid,object_type AS type"
-                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') %3" )
+                           " FROM %2_objects c WHERE c.object_type IN ('TABLE','VIEW','SYNONYM') "
+                           // get only geometry table without geometry column
+                           " AND NOT EXISTS( SELECT 1 FROM %2_tab_columns cols WHERE cols.table_name=c.object_name AND cols.data_type='SDO_GEOMETRY') %3" )
            .arg( owner,
                  prefix,
                  userTablesOnly || schema.isEmpty() ? QString() : QStringLiteral( " AND c.owner=%1" ).arg( quotedValue( schema ) ) );
   }
-
-  // sql = "SELECT * FROM (" + sql + ")";
-  // sql += " ORDER BY owner,isview,table_name,column_name";
 
   QSqlQuery qry( mDatabase );
   if ( !exec( qry, sql, QVariantList() ) )
@@ -628,7 +627,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   if ( !onlyExistingTypes )
   {
     layerProperty.types << QgsWkbTypes::Unknown;
-    layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
+    layerProperty.srids << ( detectedSrid > 0 ? detectedSrid : ( srids.size() == 1 ? *srids.constBegin() : 0 ) );
   }
 }
 
@@ -961,6 +960,141 @@ QString QgsOracleConn::currentUser()
   }
 
   return mCurrentUser;
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsOracleConn::nativeTypes()
+{
+  return QList<QgsVectorDataProvider::NativeType>()
+         // integer types
+         << QgsVectorDataProvider::NativeType( tr( "Whole number" ), "number(10,0)", QVariant::Int )
+         << QgsVectorDataProvider::NativeType( tr( "Whole big number" ), "number(20,0)", QVariant::LongLong )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "number", QVariant::Double, 1, 38, 0, 38 )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "double precision", QVariant::Double )
+
+         // floating point
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "binary_float", QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "binary_double", QVariant::Double )
+
+         // string types
+         << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "CHAR", QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar2)" ), "VARCHAR2", QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (long)" ), "LONG", QVariant::String )
+
+         // date type
+         << QgsVectorDataProvider::NativeType( tr( "Date" ), "DATE", QVariant::Date, 38, 38, 0, 0 )
+         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "TIMESTAMP(6)", QVariant::DateTime, 38, 38, 6, 6 );
+}
+
+QString QgsOracleConn::getSpatialIndexName( const QString &ownerName, const QString &tableName, const QString &geometryColumn, bool &isValid )
+{
+  QString name;
+
+  QSqlQuery qry( mDatabase );
+  if ( exec( qry, QString( "SELECT i.index_name,i.domidx_opstatus"
+                           " FROM all_indexes i"
+                           " JOIN all_ind_columns c ON i.owner=c.index_owner AND i.index_name=c.index_name AND c.column_name=?"
+                           " WHERE i.table_owner=? AND i.table_name=? AND i.ityp_owner='MDSYS' AND i.ityp_name='SPATIAL_INDEX'" ),
+             QVariantList() << geometryColumn << ownerName << tableName ) )
+  {
+    if ( qry.next() )
+    {
+      name = qry.value( 0 ).toString();
+      if ( qry.value( 1 ).toString() != "VALID" )
+      {
+        QgsMessageLog::logMessage( tr( "Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance." )
+                                   .arg( name )
+                                   .arg( ownerName )
+                                   .arg( tableName )
+                                   .arg( geometryColumn ),
+                                   tr( "Oracle" ) );
+        isValid = false;
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Valid spatial index %1 found" ).arg( name ), 2 );
+        isValid = true;
+      }
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Probing for spatial index on column %1.%2.%3 failed [%4]" )
+                               .arg( ownerName )
+                               .arg( tableName )
+                               .arg( geometryColumn )
+                               .arg( qry.lastError().text() ),
+                               tr( "Oracle" ) );
+
+    isValid = false;
+  }
+
+  return name;
+}
+
+QString QgsOracleConn::createSpatialIndex( const QString &ownerName, const QString &tableName, const QString &geometryColumn )
+{
+  QSqlQuery qry( mDatabase );
+
+  int n = 0;
+  if ( exec( qry, QString( "SELECT coalesce(substr(max(index_name),10),'0') FROM all_indexes WHERE index_name LIKE 'QGIS_IDX_%' ESCAPE '#' ORDER BY index_name" ), QVariantList() ) &&
+       qry.next() )
+  {
+    n = qry.value( 0 ).toInt() + 1;
+  }
+
+  if ( !exec( qry, QString( "CREATE INDEX QGIS_IDX_%1 ON %2.%3(%4) INDEXTYPE IS MDSYS.SPATIAL_INDEX PARALLEL" )
+              .arg( n, 10, 10, QChar( '0' ) )
+              .arg( quotedIdentifier( ownerName ) )
+              .arg( quotedIdentifier( tableName ) )
+              .arg( quotedIdentifier( geometryColumn ) ), QVariantList() ) )
+  {
+    QgsMessageLog::logMessage( tr( "Creation spatial index failed.\nSQL: %1\nError: %2" )
+                               .arg( qry.lastQuery() )
+                               .arg( qry.lastError().text() ),
+                               tr( "Oracle" ) );
+    return QString();
+  }
+
+  return QString( "QGIS_IDX_%1" ).arg( n, 10, 10, QChar( '0' ) );
+}
+
+QStringList QgsOracleConn::getPrimaryKeys( const QString &ownerName, const QString &tableName )
+{
+  QSqlQuery qry( mDatabase );
+
+  QStringList result;
+
+  if ( !exec( qry, QString( "SELECT column_name"
+                            " FROM all_cons_columns a"
+                            " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
+                            " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
+              QVariantList() << ownerName << tableName ) )
+  {
+    QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                               .arg( qry.lastError().text() )
+                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+    return result;
+  }
+
+  while ( qry.next() )
+  {
+    QString name = qry.value( 0 ).toString();
+    result << name;
+  }
+
+  return result;
+}
+
+
+QgsPoolOracleConn::QgsPoolOracleConn( const QString &connInfo )
+  : mConn( QgsOracleConnPool::instance()->acquireConnection( connInfo ) )
+{
+}
+
+QgsPoolOracleConn::~QgsPoolOracleConn()
+{
+  if ( mConn )
+    QgsOracleConnPool::instance()->releaseConnection( mConn );
 }
 
 // vim: sw=2 :

@@ -184,48 +184,32 @@ set(QGIS_3D_PRIVATE_HDRS
 
 set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
-# install headers
-
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/chunks
-  ${CMAKE_CURRENT_SOURCE_DIR}/materials
-  ${CMAKE_CURRENT_SOURCE_DIR}/mesh
-  ${CMAKE_CURRENT_SOURCE_DIR}/symbols
-  ${CMAKE_CURRENT_SOURCE_DIR}/terrain
-  ${CMAKE_SOURCE_DIR}/src/core/
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/3d
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/3d
-)
-include_directories(SYSTEM
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${QT5_3DEXTRA_INCLUDE_DIR}
-)
 
 #############################################################
 # qgis_3d library
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+
+# require c++17
+target_compile_features(qgis_3d PRIVATE cxx_std_17)
+
+target_include_directories(qgis_3d SYSTEM PUBLIC
+  ${QT5_3DEXTRA_INCLUDE_DIR}
+)
+
+target_include_directories(qgis_3d PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/materials
+  ${CMAKE_CURRENT_SOURCE_DIR}/mesh
+  ${CMAKE_CURRENT_SOURCE_DIR}/processing
+  ${CMAKE_CURRENT_SOURCE_DIR}/shaders
+  ${CMAKE_CURRENT_SOURCE_DIR}/symbols
+  ${CMAKE_CURRENT_SOURCE_DIR}/terrain
+
+  ${CMAKE_BINARY_DIR}/src/3d
+)
 
 target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 
@@ -234,13 +218,10 @@ GENERATE_EXPORT_HEADER(
    BASE_NAME 3D
    EXPORT_FILE_NAME qgis_3d.h
 )
-if(MSVC)
-  set_target_properties(qgis_3d PROPERTIES LINK_FLAGS "/FORCE:MULTIPLE")
-endif()
 
 set(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
 
-if(NOT APPLE)
+if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
   install(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 else()
   set_target_properties(qgis_3d PROPERTIES

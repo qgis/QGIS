@@ -723,6 +723,23 @@ class CORE_EXPORT QgsStyle : public QObject
     QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
 
     /**
+     * Text format context.
+     *
+     * \since QGIS 3.20
+     */
+    enum class TextFormatContext : int
+    {
+      Labeling, //!< Text format used in labeling
+    };
+
+    /**
+     * Returns the default text format to use for new text based objects in the specified \a context.
+     *
+     * \since QGIS 3.20
+     */
+    QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
+
+    /**
      * Adds a 3d \a symbol to the database.
      *
      * \param name is the name of the 3d symbol
@@ -1139,6 +1156,7 @@ class CORE_EXPORT QgsStyle : public QObject
     static QString tagmapEntityIdFieldName( StyleEntity type );
 
     friend class Qgs3D;
+    friend class TestStyle;
 
     Q_DISABLE_COPY( QgsStyle )
 };
@@ -1146,7 +1164,7 @@ class CORE_EXPORT QgsStyle : public QObject
 /**
  * \class QgsStyleEntityInterface
  * \ingroup core
- * An interface for entities which can be placed in a QgsStyle database.
+ * \brief An interface for entities which can be placed in a QgsStyle database.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleEntityInterface
@@ -1194,7 +1212,7 @@ class CORE_EXPORT QgsStyleEntityInterface
 /**
  * \class QgsStyleSymbolEntity
  * \ingroup core
- * A symbol entity for QgsStyle databases.
+ * \brief A symbol entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
@@ -1226,7 +1244,7 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleColorRampEntity
  * \ingroup core
- * A color ramp entity for QgsStyle databases.
+ * \brief A color ramp entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
@@ -1257,7 +1275,7 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleTextFormatEntity
  * \ingroup core
- * A text format entity for QgsStyle databases.
+ * \brief A text format entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
@@ -1287,7 +1305,7 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleLabelSettingsEntity
  * \ingroup core
- * A label settings entity for QgsStyle databases.
+ * \brief A label settings entity for QgsStyle databases.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
@@ -1317,7 +1335,7 @@ class CORE_EXPORT QgsStyleLabelSettingsEntity : public QgsStyleEntityInterface
 /**
  * \class QgsStyleLegendPatchShapeEntity
  * \ingroup core
- * A legend patch shape entity for QgsStyle databases.
+ * \brief A legend patch shape entity for QgsStyle databases.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterface
@@ -1347,7 +1365,7 @@ class CORE_EXPORT QgsStyleLegendPatchShapeEntity : public QgsStyleEntityInterfac
 /**
  * \class QgsStyleSymbol3DEntity
  * \ingroup core
- * A 3d symbol entity for QgsStyle databases.
+ * \brief A 3d symbol entity for QgsStyle databases.
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface

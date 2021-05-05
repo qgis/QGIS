@@ -27,6 +27,7 @@
 #include "qgsfontutils.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 class TestQgsMapToolLabel : public QObject
 {
@@ -53,7 +54,7 @@ class TestQgsMapToolLabel : public QObject
 
     void testSelectLabel()
     {
-      std::unique_ptr< QgsVectorLayer > vl1 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      std::unique_ptr< QgsVectorLayer > vl1 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl1->isValid() );
       QgsFeature f1;
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -63,7 +64,7 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "l" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=text:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
       QVERIFY( vl2->isValid() );
       f1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 1 ) ) );
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label" ) );
@@ -75,9 +76,10 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "label3" ) );
       QVERIFY( vl2->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
+      std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1.get() << vl2.get() );
+      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -94,7 +96,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get() ) );
+      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
 
       // no labels yet
       QgsPointXY pt;
@@ -132,7 +134,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -141,7 +143,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "l" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -158,7 +160,7 @@ class TestQgsMapToolLabel : public QObject
       // should prioritize current layer
       canvas->setCurrentLayer( vl1.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -167,7 +169,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -177,7 +179,7 @@ class TestQgsMapToolLabel : public QObject
 
       //... but fallback to any labels if nothing in current layer
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -187,7 +189,7 @@ class TestQgsMapToolLabel : public QObject
 
       canvas->setCurrentLayer( vl2.get() );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -196,7 +198,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.labelText, QStringLiteral( "label" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -204,7 +206,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( pos.layerID, vl2->id() );
       QCOMPARE( pos.labelText, QStringLiteral( "label2" ) );
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -216,7 +218,7 @@ class TestQgsMapToolLabel : public QObject
 
       // when multiple candidates exist, pick the smallest
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -238,9 +240,10 @@ class TestQgsMapToolLabel : public QObject
       f1.setAttributes( QgsAttributes() << QStringLiteral( "center" ) << QStringLiteral( "base" ) );
       QVERIFY( vl1->dataProvider()->addFeature( f1 ) );
 
-      std::unique_ptr< QgsMapCanvas > canvas = qgis::make_unique< QgsMapCanvas >();
+      std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
       canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
       canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
+      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 500, 500 ) );
@@ -257,7 +260,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( canvas->mapSettings().outputSize(), QSize( 500, 500 ) );
       QCOMPARE( canvas->mapSettings().visibleExtent(), QgsRectangle( -1, -1, 4, 4 ) );
 
-      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get() ) );
+      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
 
       // add some labels
       QgsPalLayerSettings pls1;
@@ -318,7 +321,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( vali, QStringLiteral( "top" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -342,7 +345,7 @@ class TestQgsMapToolLabel : public QObject
       loop.exec();
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 1 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );
@@ -357,7 +360,7 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( vali, QStringLiteral( "cap" ) );
 
       pt = tool->canvas()->mapSettings().mapToPixel().transform( 3, 3 );
-      event = qgis::make_unique< QMouseEvent >(
+      event = std::make_unique< QMouseEvent >(
                 QEvent::MouseButtonPress,
                 QPoint( std::round( pt.x() ), std::round( pt.y() ) ), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier
               );

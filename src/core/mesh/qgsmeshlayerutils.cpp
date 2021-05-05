@@ -245,23 +245,28 @@ static void lamTol( double &lam )
 static bool E3T_physicalToBarycentric( const QgsPointXY &pA, const QgsPointXY &pB, const QgsPointXY &pC, const QgsPointXY &pP,
                                        double &lam1, double &lam2, double &lam3 )
 {
-  if ( pA == pB || pA == pC || pB == pC )
-    return false; // this is not a valid triangle!
-
   // Compute vectors
-  QgsVector v0( pC - pA );
-  QgsVector v1( pB - pA );
-  QgsVector v2( pP - pA );
+  double xa = pA.x();
+  double ya = pA.y();
+  double v0x = pC.x() - xa ;
+  double v0y = pC.y() - ya ;
+  double v1x = pB.x() - xa ;
+  double v1y = pB.y() - ya ;
+  double v2x = pP.x() - xa ;
+  double v2y = pP.y() - ya ;
 
   // Compute dot products
-  double dot00 = v0 * v0;
-  double dot01 = v0 * v1;
-  double dot02 = v0 * v2;
-  double dot11 = v1 * v1;
-  double dot12 = v1 * v2;
+  double dot00 = v0x * v0x + v0y * v0y;
+  double dot01 = v0x * v1x + v0y * v1y;
+  double dot02 = v0x * v2x + v0y * v2y;
+  double dot11 = v1x * v1x + v1y * v1y;
+  double dot12 = v1x * v2x + v1y * v2y;
 
   // Compute barycentric coordinates
-  double invDenom = 1.0 / ( dot00 * dot11 - dot01 * dot01 );
+  double invDenom =  dot00 * dot11 - dot01 * dot01;
+  if ( invDenom == 0 )
+    return false;
+  invDenom = 1.0 / invDenom;
   lam1 = ( dot11 * dot02 - dot01 * dot12 ) * invDenom;
   lam2 = ( dot00 * dot12 - dot01 * dot02 ) * invDenom;
   lam3 = 1.0 - lam1 - lam2;
@@ -345,7 +350,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
 {
   assert( nativeMesh );
   Q_UNUSED( method );
-
+  Q_UNUSED( triangularMesh );
 
   // assuming that native vertex count = triangular vertex count
   assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
@@ -358,7 +363,24 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<doubl
     QgsMeshDataBlock *active,
     QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
+
+  QgsMeshDataBlock activeFace;
+  if ( active )
+    activeFace = *active;
+  else
+  {
+    activeFace = QgsMeshDataBlock( QgsMeshDataBlock::ActiveFlagInteger, nativeMesh.faceCount() );
+    activeFace.setValid( true );
+  }
+
+  return interpolateFromFacesData( valuesOnFaces, nativeMesh, activeFace, method );
+
+}
+
+QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<double> &valuesOnFaces, const QgsMesh &nativeMesh, const QgsMeshDataBlock &active, QgsMeshRendererScalarSettings::DataResamplingMethod method )
+{
   int vertexCount = nativeMesh.vertexCount();
+  Q_UNUSED( method );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   QVector<double> res( vertexCount, 0.0 );
@@ -367,7 +389,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<doubl
 
   for ( int i = 0; i < nativeMesh.faceCount(); ++i )
   {
-    if ( !active || active->active( i ) )
+    if ( active.active( i ) )
     {
       double val = valuesOnFaces[ i ];
       if ( !std::isnan( val ) )
@@ -459,13 +481,22 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
                             0,
                             datacount );
 
-  return calculateMagnitudeOnVertices( *nativeMesh, metadata, vals, *activeFaceFlagValues, method );
+  QgsMeshDataBlock activeFace;
+  if ( !activeFaceFlagValues )
+  {
+    activeFace = QgsMeshDataBlock( QgsMeshDataBlock::ActiveFlagInteger, 0 );
+    activeFace.setValid( true );
+  }
+  else
+    activeFace = *activeFaceFlagValues;
+
+  return calculateMagnitudeOnVertices( *nativeMesh, metadata, vals, activeFace, method );
 }
 
 QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMesh &nativeMesh,
     const QgsMeshDatasetGroupMetadata &groupMetadata,
     const QgsMeshDataBlock &datasetValues,
-    QgsMeshDataBlock &activeFaceFlagValues,
+    const QgsMeshDataBlock &activeFaceFlagValues,
     const QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   QVector<double> ret;
@@ -481,7 +512,7 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMesh &
       ret = QgsMeshLayerUtils::interpolateFromFacesData(
               ret,
               nativeMesh,
-              &activeFaceFlagValues,
+              activeFaceFlagValues,
               method );
     }
   }

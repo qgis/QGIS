@@ -28,7 +28,7 @@
 QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add rectangle" );
 
@@ -98,7 +98,7 @@ void QgsMapToolAddRectangle::deactivate( )
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
-  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )

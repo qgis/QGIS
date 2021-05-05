@@ -32,14 +32,15 @@ class QgsMapCanvas;
 
 /**
  * \ingroup gui
-  Base class for renderer settings widgets
-
-WORKFLOW:
-- open renderer dialog with some RENDERER  (never null!)
-- find out which widget to use
-- instantiate it and set in stacked widget
-- on any change of renderer type, create some default (dummy?) version and change the stacked widget
-- when clicked OK/Apply, get the renderer from active widget and clone it for the layer
+ * \brief Base class for renderer settings widgets.
+ *
+ * WORKFLOW:
+ *
+ * - open renderer dialog with some RENDERER  (never null!)
+ * - find out which widget to use
+ * - instantiate it and set in stacked widget
+ * - on any change of renderer type, create some default (dummy?) version and change the stacked widget
+ * - when clicked OK/Apply, get the renderer from active widget and clone it for the layer
 */
 class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {
@@ -187,8 +188,8 @@ class QgsFields;
 
 /**
  * \ingroup gui
-Utility classes for "en masse" size definition
-*/
+ * \brief Utility classes for "en masse" size definition.
+ */
 class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueBaseDialog, private QgsExpressionContextGenerator
 {
 

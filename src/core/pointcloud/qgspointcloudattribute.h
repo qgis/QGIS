@@ -20,13 +20,18 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsfields.h"
 #include <QString>
 #include <QVector>
+
+#include "qgsvector3d.h"
+
+class QgsPointCloudAttributeCollection;
 
 /**
  * \ingroup core
  *
- * Attribute for point cloud data
+ * \brief Attribute for point cloud data
  * pair of name and size in bytes
  *
  * \since QGIS 3.18
@@ -56,8 +61,19 @@ class CORE_EXPORT QgsPointCloudAttribute
     //! Returns size of the attribute in bytes
     int size() const { return mSize; }
 
-    //! Returns the data type
+    /**
+     * Returns the data type
+     *
+     * \see variantType()
+     */
     DataType type() const { return mType; }
+
+    /**
+     * Returns the most suitable equivalent QVariant data type to this attribute type.
+     *
+     * \see type()
+     */
+    QVariant::Type variantType() const;
 
     /**
      * Returns the type to use when displaying this field.
@@ -81,6 +97,19 @@ class CORE_EXPORT QgsPointCloudAttribute
     % End
 #endif
 
+    /**
+    * Retrieves the x, y, z values for the point at index \a i.
+    */
+    static void getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
+                             int yOffset, QgsPointCloudAttribute::DataType yType,
+                             int zOffset, QgsPointCloudAttribute::DataType zType,
+                             const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z ) SIP_SKIP;
+
+    /**
+    * Retrieves all the attributes of a point
+    */
+    static QVariantMap getAttributeMap( const char *data, std::size_t recordOffset, const QgsPointCloudAttributeCollection &attributeCollection ) SIP_SKIP;
+
   private:
     void updateSize();
 
@@ -92,7 +121,7 @@ class CORE_EXPORT QgsPointCloudAttribute
 /**
  * \ingroup core
  *
- * Collection of point cloud attributes
+ * \brief Collection of point cloud attributes
  *
  * \since QGIS 3.18
  */
@@ -135,6 +164,11 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
 
     //! Returns total size of record
     int pointRecordSize() const { return mSize; }
+
+    /**
+     * Converts the attribute collection to an equivalent QgsFields collection.
+     */
+    QgsFields toFields() const;
 
   private:
     int mSize = 0;

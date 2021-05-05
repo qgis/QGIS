@@ -11,9 +11,9 @@
 
 class QgsDetailedItemData
 {
-%Docstring
+%Docstring(signature="appended")
 This class is the data only representation of a
-QgsDetailedItemWidget, designed to be used in custom views.
+:py:class:`QgsDetailedItemWidget`, designed to be used in custom views.
 %End
 
 %TypeHeaderCode

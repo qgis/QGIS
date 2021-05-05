@@ -17,7 +17,7 @@
 
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 
@@ -72,13 +72,15 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
 
-    QgsSettings s;
-
-    QColor color = s.value( QStringLiteral( "/qgis/digitizing/snap_color" ), QColor( Qt::magenta ) ).value<QColor>();
+    QColor color = QgsSettingsRegistryCore::settingsDigitizingSnapColor.value();
     mSnappingMarker->setColor( color );
 
     int iconType;
-    if ( match.hasVertex() )
+    if ( match.hasLineEndpoint() )
+    {
+      iconType = QgsVertexMarker::ICON_INVERTED_TRIANGLE; // line endpoint snap
+    }
+    else if ( match.hasVertex() )
     {
       if ( match.layer() )
         iconType = QgsVertexMarker::ICON_BOX;  // vertex snap
@@ -107,7 +109,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     mSnappingMarker->setCenter( match.point() );
 
     // tooltip
-    if ( s.value( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), false ).toBool() )
+    if ( QgsSettingsRegistryCore::settingsDigitizingSnapTooltip.value() )
     {
       QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
       QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );

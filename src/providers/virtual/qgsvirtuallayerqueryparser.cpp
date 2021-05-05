@@ -20,7 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "sqlite3.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 
 namespace QgsVirtualLayerQueryParser
@@ -72,17 +72,18 @@ namespace QgsVirtualLayerQueryParser
 
     // look for special comments in SQL
     // a column name followed by /*:type*/
-    QRegExp rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", Qt::CaseInsensitive );
+    QRegularExpression rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption );
     int pos = 0;
 
-    while ( ( pos = rx.indexIn( query, pos ) ) != -1 )
+    QRegularExpressionMatch match = rx.match( query, pos );
+    while ( match.hasMatch() )
     {
-      QString column = rx.cap( 1 );
-      QString type = rx.cap( 2 );
+      QString column = match.captured( 1 );
+      QString type = match.captured( 2 );
       ColumnDef def;
       def.setName( column );
       if ( type == QLatin1String( "int" ) )
-        def.setScalarType( QVariant::Int );
+        def.setScalarType( QVariant::LongLong );
       else if ( type == QLatin1String( "real" ) )
         def.setScalarType( QVariant::Double );
       else if ( type == QLatin1String( "text" ) )
@@ -90,12 +91,13 @@ namespace QgsVirtualLayerQueryParser
       else
       {
         // there should be 2 more captures
-        def.setGeometry( QgsWkbTypes::parseType( rx.cap( 3 ) ) );
-        def.setSrid( static_cast<QgsWkbTypes::Type>( rx.cap( 4 ).toLong() ) );
+        def.setGeometry( QgsWkbTypes::parseType( match.captured( 3 ) ) );
+        def.setSrid( static_cast<QgsWkbTypes::Type>( match.captured( 4 ).toLong() ) );
       }
       defs[column] = def;
 
-      pos += rx.matchedLength();
+      pos += match.capturedLength();
+      match = rx.match( query, pos );
     }
     return defs;
   }
@@ -104,14 +106,14 @@ namespace QgsVirtualLayerQueryParser
   void setColumnDefType( const QString &columnType, ColumnDef &d )
   {
     // geometry type
-    QRegExp geometryTypeRx( "\\(([0-9]+),([0-9]+)\\)" );
+    const QRegularExpression geometryTypeRx( "\\(([0-9]+),([0-9]+)\\)" );
 
     // see qgsvirtuallayersqlitemodule for possible declared types
     // the type returned by PRAGMA table_info will be either
     // the type declared by one of the virtual tables
     // or null
     if ( columnType == QLatin1String( "int" ) )
-      d.setScalarType( QVariant::Int );
+      d.setScalarType( QVariant::LongLong );
     else if ( columnType == QLatin1String( "real" ) )
       d.setScalarType( QVariant::Double );
     else if ( columnType == QLatin1String( "text" ) )
@@ -120,11 +122,11 @@ namespace QgsVirtualLayerQueryParser
     {
       // parse the geometry type and srid
       // geometry(type,srid)
-      int pos = geometryTypeRx.indexIn( columnType, 0 );
-      if ( pos != -1 )
+      const QRegularExpressionMatch match = geometryTypeRx.match( columnType );
+      if ( match.hasMatch() )
       {
-        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toLong() );
-        long srid = geometryTypeRx.cap( 2 ).toLong();
+        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( match.captured( 1 ).toLong() );
+        long srid = match.captured( 2 ).toLong();
         d.setGeometry( type );
         d.setSrid( srid );
       }
@@ -223,7 +225,7 @@ namespace QgsVirtualLayerQueryParser
           switch ( type )
           {
             case SQLITE_INTEGER:
-              tableDef[colIdx].setScalarType( QVariant::Int );
+              tableDef[colIdx].setScalarType( QVariant::LongLong );
               break;
             case SQLITE_FLOAT:
               tableDef[colIdx].setScalarType( QVariant::Double );

@@ -12,11 +12,12 @@
 
 class QgsLayoutTableColumn
 {
-%Docstring
-Stores properties of a column for a QgsLayoutTable.
-Some properties of a QgsLayoutTableColumn are applicable only in certain contexts.
+%Docstring(signature="appended")
+Stores properties of a column for a :py:class:`QgsLayoutTable`.
+
+Some properties of a :py:class:`QgsLayoutTableColumn` are applicable only in certain contexts.
 For instance, the attribute and setAttribute methods only have an effect
-for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
+for :py:class:`QgsLayoutItemAttributeTables`, and have no effect for :py:class:`QgsLayoutItemTextTables`.
 
 .. versionadded:: 3.0
 %End
@@ -150,7 +151,7 @@ is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable
     Qt::SortOrder sortOrder() const;
 %Docstring
 Returns the sort order for the column. This property is only used when the column
-is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
+is part of a :py:class:`QgsLayoutItemAttributeTable` and when sortByRank is > 0.
 
 .. note::
 
@@ -164,7 +165,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
     void setSortOrder( Qt::SortOrder order );
 %Docstring
 Sets the sort ``order`` for the column. This property is only used when the column
-is part of a QgsLayoutItemAttributeTable and when :py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
+is part of a :py:class:`QgsLayoutItemAttributeTable` and when :py:func:`~QgsLayoutTableColumn.sortByRank` is > 0.
 
 .. note::
 

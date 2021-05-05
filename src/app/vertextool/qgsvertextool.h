@@ -24,7 +24,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
 #include "qgspointlocator.h"
-
+#include "qobjectuniqueptr.h"
 
 class QRubberBand;
 
@@ -152,8 +152,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     /**
      * Temporarily override snapping config and snap to vertices and edges
-     of any editable vector layer, to allow selection of vertex for editing
-     (if snapped to edge, it would offer creation of a new vertex there).
+    * of any editable vector layer, to allow selection of vertex for editing
+    * (if snapped to edge, it would offer creation of a new vertex there).
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
 
@@ -408,9 +408,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     // members for rectangle for selection
 
-    //! the rubberband for rectangle selection visualization
+    //! the rubberband for rectangle/polygon selection visualization
     std::unique_ptr<QgsRubberBand> mSelectionRubberBand;
-    //! Initial point (in screen coordinates) when using rectangle selection
+    //! Initial point (in screen coordinates) when using rectangle/polygon selection
     std::unique_ptr<QPoint> mSelectionRubberBandStartPos;
 
     // members for addition of vertices at the end of a curve
@@ -444,7 +444,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     // support for vertex editor
 
     //! Locked feature for the vertex editor
-    std::unique_ptr<QgsLockedFeature> mLockedFeature;
+    QObjectUniquePtr<QgsLockedFeature> mLockedFeature;
     //! Dock widget which allows editing vertices
     QPointer<QgsVertexEditor> mVertexEditor;
 
@@ -487,6 +487,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     {
       SelectionNormal,   //!< Default selection: clicking vertex starts move, ctrl+click selects vertex, dragging rectangle select multiple vertices
       SelectionRange,    //!< Range selection: clicking selects start vertex, next click select final vertex, vertices in the range get selected
+      SelectionPolygon,  //!< Polygon selection: alt+click starts digitizing a polygon, subsequent clicks add vertices, right click selects vertices within the polygon
     };
 
     //! Current vertex selection method

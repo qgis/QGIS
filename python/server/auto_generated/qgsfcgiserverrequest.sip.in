@@ -12,7 +12,7 @@
 
 class QgsFcgiServerRequest: QgsServerRequest
 {
-%Docstring
+%Docstring(signature="appended")
 Class defining fcgi request
 
 .. versionadded:: 3.0
@@ -30,6 +30,18 @@ Class defining fcgi request
     bool hasError() const;
 %Docstring
 Returns ``True`` if an error occurred during initialization
+%End
+
+    virtual QString header( const QString &name ) const;
+
+%Docstring
+Returns the header value
+
+:param name: of the header
+
+:return: the header value or an empty string
+
+.. versionadded:: 3.20
 %End
 
 };

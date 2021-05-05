@@ -8,7 +8,7 @@ Content-Type: application/geo+json
     ],
     "type": "Point"
   },
-  "id": 0,
+  "id": "0",
   "links": [
     {
       "href": "http://server.qgis.org/wfs3/collections/exclude_attribute/items/0.geojson",

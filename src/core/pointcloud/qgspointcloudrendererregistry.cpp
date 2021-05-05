@@ -96,9 +96,9 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   const QgsPointCloudAttributeCollection attributes = provider->attributes();
 
   //if red/green/blue attributes are present, then default to a RGB renderer
-  if ( attributes.indexOf( QStringLiteral( "Red" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Green" ) ) >= 0 && attributes.indexOf( QStringLiteral( "Blue" ) ) >= 0 )
+  if ( attributes.indexOf( QLatin1String( "Red" ) ) >= 0 && attributes.indexOf( QLatin1String( "Green" ) ) >= 0 && attributes.indexOf( QLatin1String( "Blue" ) ) >= 0 )
   {
-    std::unique_ptr< QgsPointCloudRgbRenderer > renderer = qgis::make_unique< QgsPointCloudRgbRenderer >();
+    std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
 
     // set initial guess for rgb ranges
     const QVariant redMax = provider->metadataStatistic( QStringLiteral( "Red" ), QgsStatisticalSummary::Max );
@@ -139,7 +139,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   }
 
   // otherwise try a classified renderer...
-  if ( attributes.indexOf( QStringLiteral( "Classification" ) ) >= 0 )
+  if ( attributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     // are any classifications present?
     QVariantList classes = provider->metadataClasses( QStringLiteral( "Classification" ) );
@@ -148,14 +148,14 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     classes.removeAll( 1 );
     if ( !classes.empty() )
     {
-      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = std::make_unique< QgsPointCloudClassifiedRenderer >();
       renderer->setAttribute( QStringLiteral( "Classification" ) );
       return renderer.release();
     }
   }
 
   // fallback to shading by Z
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( QStringLiteral( "Z" ) );
 
   // set initial range for z values if possible

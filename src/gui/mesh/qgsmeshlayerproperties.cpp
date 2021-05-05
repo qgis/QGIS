@@ -107,6 +107,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   metadataFrame->setLayout( layout );
   mOptsPage_Metadata->setContentsMargins( 0, 0, 0, 0 );
 
+  mTemporalDateTimeStart->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mTemporalDateTimeEnd->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mTemporalDateTimeReference->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+
   // update based on lyr's current state
   syncToLayer();
 
@@ -151,7 +155,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   restoreOptionsBaseUi( title );
 }
 
-void QgsMeshLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+void QgsMeshLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory )
 {
   if ( !factory->supportsLayer( mMeshLayer ) || !factory->supportLayerPropertiesDialog() )
   {

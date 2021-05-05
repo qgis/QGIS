@@ -11,13 +11,13 @@
 
 class QgsProcessingRecentAlgorithmLog : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A log for tracking recently used processing algorithms.
 
-QgsProcessingRecentAlgorithmLog is not usually directly created, instead
+:py:class:`QgsProcessingRecentAlgorithmLog` is not usually directly created, instead
 use the instance accessible through :py:func:`QgsGui.processingRecentAlgorithmLog()`.
 
-The log contents are saved and restored via QgsSettings.
+The log contents are saved and restored via :py:class:`QgsSettings`.
 
 .. note::
 

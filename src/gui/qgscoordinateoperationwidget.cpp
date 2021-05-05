@@ -28,11 +28,10 @@
 
 #include <QDir>
 #include <QPushButton>
+#include <QRegularExpression>
 
-#if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
-#endif
 
 QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   : QWidget( parent )
@@ -43,7 +42,6 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   mLabelSrcDescription->setOpenExternalLinks( true );
   mInstallGridButton->hide();
 
-#if PROJ_VERSION_MAJOR>=6
   connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
   connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [ = ]
   {
@@ -51,33 +49,14 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
       emit operationChanged();
   } );
   mCoordinateOperationTableWidget->setColumnCount( 3 );
-#else
-  mCoordinateOperationTableWidget->setColumnCount( 2 );
-#endif
 
   QStringList headers;
-#if PROJ_VERSION_MAJOR>=6
   headers << tr( "Transformation" ) << tr( "Accuracy (meters)" ) << tr( "Area of Use" );
-#else
-  headers << tr( "Source Transform" ) << tr( "Destination Transform" ) ;
-#endif
   mCoordinateOperationTableWidget->setHorizontalHeaderLabels( headers );
 
-#if PROJ_VERSION_MAJOR<6
-  mAreaCanvas->hide();
-#endif
-
-#if PROJ_VERSION_MAJOR>=6
-  // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
   mShowSupersededCheckBox->setVisible( true );
   mLabelDstDescription->hide();
-#else
-  mShowSupersededCheckBox->setVisible( false );
-  mAllowFallbackCheckBox->setVisible( false );
-  QgsSettings settings;
-  mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
-#endif
 
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { loadAvailableOperations(); } );
   connect( mShowSupersededCheckBox, &QCheckBox::toggled, this, &QgsCoordinateOperationWidget::showSupersededToggled );
@@ -90,9 +69,6 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 
 void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
-#if PROJ_VERSION_MAJOR<6
-  ( void )canvas;
-#else
   if ( canvas )
   {
     // show canvas extent in preview widget
@@ -118,7 +94,6 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
     }
     mAreaCanvas->setCanvasRect( g.boundingBox() );
   }
-#endif
 }
 
 void QgsCoordinateOperationWidget::setShowMakeDefault( bool show )
@@ -140,7 +115,6 @@ QList<QgsCoordinateOperationWidget::OperationDetails> QgsCoordinateOperationWidg
 {
   QList<QgsCoordinateOperationWidget::OperationDetails> res;
   res.reserve( mDatumTransforms.size() );
-#if PROJ_VERSION_MAJOR>=6
   for ( const QgsDatumTransform::TransformDetails &details : mDatumTransforms )
   {
     OperationDetails op;
@@ -150,15 +124,6 @@ QList<QgsCoordinateOperationWidget::OperationDetails> QgsCoordinateOperationWidg
     op.isAvailable = details.isAvailable;
     res << op;
   }
-#else
-  for ( const QgsDatumTransform::TransformPair &details : mDatumTransforms )
-  {
-    OperationDetails op;
-    op.sourceTransformId = details.sourceTransformId;
-    op.destinationTransformId = details.destinationTransformId;
-    res << op;
-  }
-#endif
   return res;
 }
 
@@ -168,10 +133,10 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
   int row = 0;
   int preferredInitialRow = -1;
-#if PROJ_VERSION_MAJOR>=6
-  for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
+
+  for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
-    std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
+    std::unique_ptr< QTableWidgetItem > item = std::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
     item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
@@ -334,7 +299,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
     mCoordinateOperationTableWidget->setItem( row, 0, item.release() );
 
-    item = qgis::make_unique< QTableWidgetItem >();
+    item = std::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
     item->setToolTip( toolTipString );
@@ -344,9 +309,8 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     }
     mCoordinateOperationTableWidget->setItem( row, 1, item.release() );
 
-#if PROJ_VERSION_MAJOR>=6
     // area of use column
-    item = qgis::make_unique< QTableWidgetItem >();
+    item = std::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( areasOfUse.join( QLatin1String( ", " ) ) );
     item->setToolTip( toolTipString );
@@ -355,97 +319,9 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       item->setForeground( QBrush( palette().color( QPalette::Disabled, QPalette::Text ) ) );
     }
     mCoordinateOperationTableWidget->setItem( row, 2, item.release() );
-#endif
 
     row++;
   }
-#else
-  Q_NOWARN_DEPRECATED_PUSH
-  for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
-  {
-    bool itemDisabled = false;
-    bool itemHidden = false;
-
-    if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
-      continue;
-
-    QgsDatumTransform::TransformInfo srcInfo = QgsDatumTransform::datumTransformInfo( transform.sourceTransformId );
-    QgsDatumTransform::TransformInfo destInfo = QgsDatumTransform::datumTransformInfo( transform.destinationTransformId );
-    for ( int i = 0; i < 2; ++i )
-    {
-      std::unique_ptr< QTableWidgetItem > item = qgis::make_unique< QTableWidgetItem >();
-      int nr = i == 0 ? transform.sourceTransformId : transform.destinationTransformId;
-      item->setData( TransformIdRole, nr );
-      item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-
-      item->setText( QgsDatumTransform::datumTransformToProj( nr ) );
-
-      //Describe datums in a tooltip
-      QgsDatumTransform::TransformInfo info = i == 0 ? srcInfo : destInfo;
-      if ( info.datumTransformId == -1 )
-        continue;
-
-      if ( info.deprecated )
-      {
-        itemHidden = mHideDeprecatedCheckBox->isChecked();
-        item->setForeground( QBrush( QColor( 255, 0, 0 ) ) );
-      }
-
-      if ( ( srcInfo.preferred && !srcInfo.deprecated ) || ( destInfo.preferred && !destInfo.deprecated ) )
-      {
-        QFont f = item->font();
-        f.setBold( true );
-        item->setFont( f );
-        item->setForeground( QBrush( QColor( 0, 120, 0 ) ) );
-      }
-
-      if ( info.preferred && !info.deprecated && preferredInitialRow < 0 )
-      {
-        // try to select a "preferred" entry by default
-        preferredInitialRow = row;
-      }
-
-      QString toolTipString;
-      if ( gridShiftTransformation( item->text() ) )
-      {
-        toolTipString.append( QStringLiteral( "<p><b>NTv2</b></p>" ) );
-      }
-
-      if ( info.epsgCode > 0 )
-        toolTipString.append( QStringLiteral( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( info.epsgCode ) );
-
-      toolTipString.append( QStringLiteral( "<p><b>Source CRS:</b> %1</p><p><b>Destination CRS:</b> %2</p>" ).arg( info.sourceCrsDescription, info.destinationCrsDescription ) );
-
-      if ( !info.remarks.isEmpty() )
-        toolTipString.append( QStringLiteral( "<p><b>Remarks:</b> %1</p>" ).arg( info.remarks ) );
-      if ( !info.scope.isEmpty() )
-        toolTipString.append( QStringLiteral( "<p><b>Scope:</b> %1</p>" ).arg( info.scope ) );
-      if ( info.preferred )
-        toolTipString.append( "<p><b>Preferred transformation</b></p>" );
-      if ( info.deprecated )
-        toolTipString.append( "<p><b>Deprecated transformation</b></p>" );
-
-      item->setToolTip( toolTipString );
-
-      if ( gridShiftTransformation( item->text() ) && !testGridShiftFileAvailability( item.get() ) )
-      {
-        itemDisabled = true;
-      }
-
-      if ( !itemHidden )
-      {
-        if ( itemDisabled )
-        {
-          item->setFlags( Qt::NoItemFlags );
-        }
-        mCoordinateOperationTableWidget->setRowCount( row + 1 );
-        mCoordinateOperationTableWidget->setItem( row, i, item.release() );
-      }
-    }
-    row++;
-  }
-  Q_NOWARN_DEPRECATED_POP
-#endif
 
   if ( mCoordinateOperationTableWidget->currentRow() < 0 )
     mCoordinateOperationTableWidget->selectRow( preferredInitialRow >= 0 ? preferredInitialRow : 0 );
@@ -470,9 +346,8 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::def
 {
   OperationDetails preferred;
 
-#if PROJ_VERSION_MAJOR>=6
   // for proj 6, return the first available transform -- they are sorted by preference by proj already
-  for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
+  for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
     if ( transform.isAvailable )
     {
@@ -482,61 +357,6 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::def
     }
   }
   return preferred;
-#else
-  OperationDetails preferredNonDeprecated;
-  bool foundPreferredNonDeprecated = false;
-  bool foundPreferred  = false;
-  OperationDetails nonDeprecated;
-  bool foundNonDeprecated = false;
-  OperationDetails fallback;
-  bool foundFallback = false;
-
-  Q_NOWARN_DEPRECATED_PUSH
-  for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
-  {
-    if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
-      continue;
-
-    const QgsDatumTransform::TransformInfo srcInfo = QgsDatumTransform::datumTransformInfo( transform.sourceTransformId );
-    const QgsDatumTransform::TransformInfo destInfo = QgsDatumTransform::datumTransformInfo( transform.destinationTransformId );
-    if ( !foundPreferredNonDeprecated && ( ( srcInfo.preferred && !srcInfo.deprecated ) || transform.sourceTransformId == -1 )
-         && ( ( destInfo.preferred && !destInfo.deprecated ) || transform.destinationTransformId == -1 ) )
-    {
-      preferredNonDeprecated.sourceTransformId = transform.sourceTransformId;
-      preferredNonDeprecated.destinationTransformId = transform.destinationTransformId;
-      foundPreferredNonDeprecated = true;
-    }
-    else if ( !foundPreferred && ( srcInfo.preferred || transform.sourceTransformId == -1 ) &&
-              ( destInfo.preferred || transform.destinationTransformId == -1 ) )
-    {
-      preferred.sourceTransformId = transform.sourceTransformId;
-      preferred.destinationTransformId = transform.destinationTransformId;
-      foundPreferred = true;
-    }
-    else if ( !foundNonDeprecated && ( !srcInfo.deprecated || transform.sourceTransformId == -1 )
-              && ( !destInfo.deprecated || transform.destinationTransformId == -1 ) )
-    {
-      nonDeprecated.sourceTransformId = transform.sourceTransformId;
-      nonDeprecated.destinationTransformId = transform.destinationTransformId;
-      foundNonDeprecated = true;
-    }
-    else if ( !foundFallback )
-    {
-      fallback.sourceTransformId = transform.sourceTransformId;
-      fallback.destinationTransformId = transform.destinationTransformId;
-      foundFallback = true;
-    }
-  }
-  Q_NOWARN_DEPRECATED_POP
-  if ( foundPreferredNonDeprecated )
-    return preferredNonDeprecated;
-  else if ( foundPreferred )
-    return preferred;
-  else if ( foundNonDeprecated )
-    return nonDeprecated;
-  else
-    return fallback;
-#endif
 }
 
 QString QgsCoordinateOperationWidget::formatScope( const QString &s )
@@ -583,34 +403,11 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
   for ( int row = 0; row < mCoordinateOperationTableWidget->rowCount(); ++row )
   {
     QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
-#if PROJ_VERSION_MAJOR>=6
     if ( srcItem && srcItem->data( ProjRole ).toString() == operation.proj )
     {
       mCoordinateOperationTableWidget->selectRow( row );
       break;
     }
-#else
-    QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
-
-    // eww, gross logic. Ah well, it's of extremely limited lifespan anyway... it'll be ripped out as soon as we can drop proj < 6 support
-    if ( ( srcItem && destItem && operation.sourceTransformId == srcItem->data( TransformIdRole ).toInt() &&
-           operation.destinationTransformId == destItem->data( TransformIdRole ).toInt() )
-         || ( srcItem && destItem && operation.destinationTransformId == srcItem->data( TransformIdRole ).toInt() &&
-              operation.sourceTransformId == destItem->data( TransformIdRole ).toInt() )
-         || ( srcItem && !destItem && operation.sourceTransformId == srcItem->data( TransformIdRole ).toInt() &&
-              operation.destinationTransformId == -1 )
-         || ( !srcItem && destItem && operation.destinationTransformId == destItem->data( TransformIdRole ).toInt() &&
-              operation.sourceTransformId == -1 )
-         || ( srcItem && !destItem && operation.destinationTransformId == srcItem->data( TransformIdRole ).toInt() &&
-              operation.sourceTransformId == -1 )
-         || ( !srcItem && destItem && operation.sourceTransformId == destItem->data( TransformIdRole ).toInt() &&
-              operation.destinationTransformId == -1 )
-       )
-    {
-      mCoordinateOperationTableWidget->selectRow( row );
-      break;
-    }
-#endif
   }
 
   bool fallbackChanged = mAllowFallbackCheckBox->isChecked() != operation.allowFallback;
@@ -623,7 +420,6 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
 
 void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context )
 {
-#if PROJ_VERSION_MAJOR>=6
   const QString op = context.calculateCoordinateOperation( mSourceCrs, mDestinationCrs );
   if ( !op.isEmpty() )
   {
@@ -636,23 +432,6 @@ void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCo
   {
     setSelectedOperation( defaultOperation() );
   }
-
-#else
-  if ( context.hasTransform( mSourceCrs, mDestinationCrs ) )
-  {
-    Q_NOWARN_DEPRECATED_PUSH
-    const QgsDatumTransform::TransformPair op = context.calculateDatumTransforms( mSourceCrs, mDestinationCrs );
-    Q_NOWARN_DEPRECATED_POP
-    OperationDetails deets;
-    deets.sourceTransformId = op.sourceTransformId;
-    deets.destinationTransformId = op.destinationTransformId;
-    setSelectedOperation( deets );
-  }
-  else
-  {
-    setSelectedOperation( defaultOperation() );
-  }
-#endif
 }
 
 void QgsCoordinateOperationWidget::setShowFallbackOption( bool visible )
@@ -725,10 +504,8 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
   {
     mLabelSrcDescription->clear();
     mLabelDstDescription->clear();
-#if PROJ_VERSION_MAJOR>=6
     mAreaCanvas->hide();
     mInstallGridButton->hide();
-#endif
   }
   else
   {
@@ -745,7 +522,6 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       rect = rect.intersect( destRect );
 
       mAreaCanvas->setPreviewRect( rect );
-#if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->show();
 
       const QStringList missingGrids = srcItem->data( MissingGridsRole ).toStringList();
@@ -754,72 +530,44 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       {
         mInstallGridButton->setText( tr( "Install “%1” Grid…" ).arg( missingGrids.at( 0 ) ) );
       }
-#endif
     }
     else
     {
       mAreaCanvas->setPreviewRect( QgsRectangle() );
-#if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->hide();
       mInstallGridButton->hide();
-#endif
     }
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
     mLabelDstDescription->setText( destItem ? destItem->toolTip() : QString() );
   }
   OperationDetails newOp = selectedOperation();
-#if PROJ_VERSION_MAJOR>=6
   if ( newOp.proj != mPreviousOp.proj && !mBlockSignals )
     emit operationChanged();
-#else
-  if ( newOp.sourceTransformId != mPreviousOp.sourceTransformId ||
-       newOp.destinationTransformId != mPreviousOp.destinationTransformId )
-    emit operationChanged();
-#endif
   mPreviousOp = newOp;
 }
 
 void QgsCoordinateOperationWidget::setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs )
 {
   mSourceCrs = sourceCrs;
-#if PROJ_VERSION_MAJOR>=6
   mDatumTransforms = QgsDatumTransform::operations( mSourceCrs, mDestinationCrs, mShowSupersededCheckBox->isChecked() );
-#else
-  Q_NOWARN_DEPRECATED_PUSH
-  mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
-  Q_NOWARN_DEPRECATED_POP
-#endif
   loadAvailableOperations();
 }
 
 void QgsCoordinateOperationWidget::setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs )
 {
   mDestinationCrs = destinationCrs;
-#if PROJ_VERSION_MAJOR>=6
   mDatumTransforms = QgsDatumTransform::operations( mSourceCrs, mDestinationCrs, mShowSupersededCheckBox->isChecked() );
-#else
-  Q_NOWARN_DEPRECATED_PUSH
-  mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
-  Q_NOWARN_DEPRECATED_POP
-#endif
   loadAvailableOperations();
 }
 
 void QgsCoordinateOperationWidget::showSupersededToggled( bool )
 {
-#if PROJ_VERSION_MAJOR>=6
   mDatumTransforms = QgsDatumTransform::operations( mSourceCrs, mDestinationCrs, mShowSupersededCheckBox->isChecked() );
-#else
-  Q_NOWARN_DEPRECATED_PUSH
-  mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
-  Q_NOWARN_DEPRECATED_POP
-#endif
   loadAvailableOperations();
 }
 
 void QgsCoordinateOperationWidget::installGrid()
 {
-#if PROJ_VERSION_MAJOR>=6
   int row = mCoordinateOperationTableWidget->currentRow();
   QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
   if ( !srcItem )
@@ -852,6 +600,4 @@ void QgsCoordinateOperationWidget::installGrid()
   dlg->setDescription( longMessage );
   dlg->setDownloadMessage( downloadMessage );
   dlg->exec();
-
-#endif
 }

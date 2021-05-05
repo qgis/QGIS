@@ -41,6 +41,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
+#include "qgspointcloudlayer.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -269,4 +270,16 @@ void QgsMapToolIdentifyAction::keyReleaseEvent( QKeyEvent *e )
     return;
 
   QgsMapTool::keyReleaseEvent( e );
+}
+
+
+void QgsMapToolIdentifyAction::showIdentifyResults( const QList<IdentifyResult> &identifyResults )
+{
+  for ( const IdentifyResult &res : identifyResults )
+  {
+    resultsDialog()->addFeature( res );
+  }
+  resultsDialog()->show();
+  // update possible view modes
+  resultsDialog()->updateViewModes();
 }

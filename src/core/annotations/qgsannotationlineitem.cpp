@@ -22,7 +22,7 @@
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
   , mCurve( curve )
-  , mSymbol( qgis::make_unique< QgsLineSymbol >() )
+  , mSymbol( std::make_unique< QgsLineSymbol >() )
 {
 
 }
@@ -107,7 +107,7 @@ QgsRectangle QgsAnnotationLineItem::boundingBox() const
 
 QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
 {
-  std::unique_ptr< QgsAnnotationLineItem > item = qgis::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
+  std::unique_ptr< QgsAnnotationLineItem > item = std::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();

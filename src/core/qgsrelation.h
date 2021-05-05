@@ -33,6 +33,7 @@ class QgsFeatureRequest;
 class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
+class QgsPolymorphicRelation;
 
 /**
  * \ingroup core
@@ -47,13 +48,25 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
+    Q_PROPERTY( QString polymorphicRelationId READ polymorphicRelationId WRITE setPolymorphicRelationId )
+    Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
 
     /**
-     * enum for the relation strength
-     * Association, Composition
+     * Enum holding the relations type
      */
+    enum RelationType
+    {
+      Normal, //!< A normal relation
+      Generated, //!< A generated relation is a child of a polymorphic relation
+    };
+    Q_ENUM( RelationType )
+
+    /**
+    * enum for the relation strength
+    * Association, Composition
+    */
     enum RelationStrength
     {
       Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
@@ -65,7 +78,8 @@ class CORE_EXPORT QgsRelation
 
     /**
      * \ingroup core
-     * Defines a relation between matching fields of the two involved tables of a relation.
+     * \brief Defines a relation between matching fields of the two involved tables of a relation.
+     *
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
      * column of the referencing (child) table as first element and the name of the primary key column
      * of the referenced (parent) table as the second element.
@@ -161,7 +175,7 @@ class CORE_EXPORT QgsRelation
     void setReferencedLayer( const QString &id );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
@@ -171,7 +185,7 @@ class CORE_EXPORT QgsRelation
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
-     * Add a field pairs which is part of this relation
+     * Add a field pair which is part of this relation
      * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
@@ -380,6 +394,30 @@ class CORE_EXPORT QgsRelation
      * \since QGIS 3.6
      */
     void updateRelationStatus();
+
+    /**
+     * Sets the parent polymorphic relation id.
+     * \since QGIS 3.18
+     */
+    void setPolymorphicRelationId( const QString &polymorphicRelationId );
+
+    /**
+     * Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
+     * \since QGIS 3.18
+     */
+    QString polymorphicRelationId() const;
+
+    /**
+     * Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+     * \since QGIS 3.18
+     */
+    QgsPolymorphicRelation polymorphicRelation() const;
+
+    /**
+     * Returns the type of the relation
+     * \since QGIS 3.18
+     */
+    RelationType type() const;
 
   private:
 

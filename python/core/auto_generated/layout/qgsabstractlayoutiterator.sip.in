@@ -10,8 +10,8 @@
 
 class QgsAbstractLayoutIterator
 {
-%Docstring
-An abstract base class for QgsLayout based classes which can be exported by QgsLayoutExporter.
+%Docstring(signature="appended")
+An abstract base class for :py:class:`QgsLayout` based classes which can be exported by :py:class:`QgsLayoutExporter`.
 
 .. versionadded:: 3.0
 %End

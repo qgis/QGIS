@@ -11,7 +11,7 @@
 
 class QgsTriangle : QgsPolygon
 {
-%Docstring
+%Docstring(signature="appended")
 Triangle geometry type.
 
 .. versionadded:: 3.0
@@ -29,7 +29,7 @@ Constructor for an empty triangle geometry.
 
     QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 ) /HoldGIL/;
 %Docstring
-Construct a QgsTriangle from three :py:class:`QgsPointV2`.
+Construct a QgsTriangle from three :py:class:`QgsPoint`.
 
 :param p1: first point
 :param p2: second point
@@ -38,7 +38,7 @@ Construct a QgsTriangle from three :py:class:`QgsPointV2`.
 
     explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 ) /HoldGIL/;
 %Docstring
-Construct a QgsTriangle from three :py:class:`QgsPoint`.
+Construct a QgsTriangle from three :py:class:`QgsPointXY`.
 
 :param p1: first point
 :param p2: second point
@@ -111,7 +111,7 @@ Returns coordinates of a vertex.
 
 :param atVertex: index of the vertex
 
-:return: Coordinates of the vertex or empty :py:class:`QgsPoint`() on error (``atVertex`` < 0 or > 3).
+:return: Coordinates of the vertex or empty :py:class:`QgsPoint` on error (``atVertex`` < 0 or > 3).
 %End
 
     QVector<double> lengths() const /HoldGIL/;

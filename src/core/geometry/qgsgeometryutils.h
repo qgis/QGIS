@@ -302,6 +302,35 @@ class CORE_EXPORT QgsGeometryUtils
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
 
     /**
+     * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
+     * offset from the segment by the specified \a offset amount.
+     *
+     * \param x1 x-coordinate of start of segment
+     * \param y1 y-coordinate of start of segment
+     * \param x2 x-coordinate of end of segment
+     * \param y2 y-coordinate of end of segment
+     * \param proportion proportion of the segment's length at which to place the point (between 0.0 and 1.0)
+     * \param offset perpendicular offset from segment to apply to point. A negative \a offset shifts the point to the left of the segment, while a positive \a offset will shift it to the right of the segment.
+     * \param x calculated point x-coordinate
+     * \param y calculated point y-coordinate
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # Offset point at center of segment by 2 units to the right
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
+     *   # (6.0, 3.0)
+     *
+     *   # Offset point at center of segment by 2 units to the left
+     *   x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
+     *   # (6.0, 7.0)
+     * \endcode
+     *
+     * \since QGIS 3.20
+     */
+    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x SIP_OUT, double *y  SIP_OUT );
+
+    /**
      * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
      * interpolated by the specified \a distance from \a pt1.
      *
@@ -519,6 +548,30 @@ class CORE_EXPORT QgsGeometryUtils
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = QString() ) SIP_SKIP;
 
     /**
+     * Returns a number representing the closest side of a rectangle defined by /a right,
+     * \a bottom, \a left, \a top to the point at (\a x, \a y), where
+     * the point may be in the interior of the rectangle or outside it.
+     *
+     * The returned value may be:
+     *
+     * 1. Point is closest to top side of rectangle
+     * 2. Point is located on the top-right diagonal of rectangle, equally close to the top and right sides
+     * 3. Point is closest to right side of rectangle
+     * 4. Point is located on the bottom-right diagonal of rectangle, equally close to the bottom and right sides
+     * 5. Point is closest to bottom side of rectangle
+     * 6. Point is located on the bottom-left diagonal of rectangle, equally close to the bottom and left sides
+     * 7. Point is closest to left side of rectangle
+     * 8. Point is located on the top-left diagonal of rectangle, equally close to the top and left sides
+     *
+     * \note This method effectively partitions the space outside of the rectangle into Voronoi cells, so a point
+     * to the top left of the rectangle may be assigned to the left or top sides based on its position relative
+     * to the diagonal line extended from the rectangle's top-left corner.
+     *
+     * \since QGIS 3.20
+     */
+    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y );
+
+    /**
      * Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.
      * M value is computed if one of this point have M.
@@ -717,15 +770,58 @@ class CORE_EXPORT QgsGeometryUtils
 
     /**
      * A Z dimension is added to \a point if one of the point in the list
-     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     * \a points is in 3D. Moreover, the Z value of \a point is updated
+     * with the first Z value found in list \a points even if \a point
+     * already contains a Z value.
      *
      * \param points List of points in which a 3D point is searched.
      * \param point The point to update with Z dimension and value.
      * \returns TRUE if the point is updated, FALSE otherwise
      *
+     * \warning This method does not copy the z value of the coordinate from the
+     * points whose z value is closest to the original x/y point, but only the first one found.
+     *
      * \since QGIS 3.0
+     * \deprecated since QGIS 3.20 use transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point ) instead
      */
-    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+    Q_DECL_DEPRECATED static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) SIP_DEPRECATED
+    {
+      return transferFirstZValueToPoint( points, point );
+    }
+
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated
+     * with the first Z value found in list \a points even if \a point
+     * already contains a Z value.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \warning This method does not copy the z value of the coordinate from the
+     * points whose z value is closest to the original x/y point, but only the first one found.
+     *
+     * \since QGIS 3.20
+     */
+    static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );
+
+    /**
+     * A M dimension is added to \a point if one of the points in the list
+     * \a points contains an M value. Moreover, the M value of \a point is
+     * updated with the first M value found in list \a points even if \a point
+     * already contains a M value.
+     *
+     * \param points List of points in which a M point is searched.
+     * \param point The point to update with M dimension and value.
+     * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \warning This method does not copy the m value of the coordinate from the
+     * points whose m value is closest to the original x/y point, but only the first one found.
+     *
+     * \since QGIS 3.20
+     */
+    static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
 
     /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)

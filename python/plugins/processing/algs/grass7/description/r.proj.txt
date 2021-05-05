@@ -1,5 +1,5 @@
 r.proj
-Re-projects a vector map from one location to the current location
+Re-projects a raster layer to another coordinate reference system
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input raster to reproject|None|False
 QgsProcessingParameterCrs|crs|New coordinate reference system|None|False

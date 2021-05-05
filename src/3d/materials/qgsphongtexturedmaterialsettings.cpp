@@ -19,11 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#else
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
-#endif
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
@@ -113,14 +109,6 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       if ( !textureSourceImage.isNull() )
       {
         QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-        Qt3DExtras::QDiffuseMapMaterial *material = new Qt3DExtras::QDiffuseMapMaterial;
-        material->diffuse()->addTextureImage( textureImage );
-
-        material->diffuse()->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
-        material->diffuse()->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-        material->diffuse()->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
-#else
         Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial;
 
         Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
@@ -137,7 +125,6 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
         texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
         material->setDiffuse( QVariant::fromValue( texture ) );
-#endif
 
         material->setSpecular( mSpecular );
         material->setAmbient( mAmbient );

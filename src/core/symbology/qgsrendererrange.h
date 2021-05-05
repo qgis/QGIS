@@ -83,7 +83,7 @@ class CORE_EXPORT QgsRendererRange
      * \param firstRange set to TRUE if the range is the first range, where the lower value uses a <= test
      * rather than a < test.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
 
   protected:
     double mLowerValue = 0, mUpperValue = 0;
@@ -104,7 +104,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
  * \since QGIS 2.6
  * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
-class Q_DECL_DEPRECATED CORE_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
+class CORE_EXPORT Q_DECL_DEPRECATED QgsRendererRangeLabelFormat SIP_DEPRECATED
 {
   public:
     QgsRendererRangeLabelFormat();

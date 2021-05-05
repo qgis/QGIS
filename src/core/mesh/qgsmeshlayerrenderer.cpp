@@ -20,6 +20,7 @@
 #include <QPair>
 #include <QLinearGradient>
 #include <QBrush>
+#include <QPointer>
 #include <algorithm>
 
 #include "qgsmeshlayerrenderer.h"
@@ -59,6 +60,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   Q_ASSERT( layer->rendererCache() );
   // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->dataProvider() );
+
+  mReadyToCompose = false;
 
   // copy native mesh
   mNativeMesh = *( layer->nativeMesh() );
@@ -287,6 +290,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  mReadyToCompose = false;
   QgsScopedQPainterState painterState( renderContext()->painter() );
   if ( !mClippingRegions.empty() )
   {
@@ -297,10 +301,11 @@ bool QgsMeshLayerRenderer::render()
   }
 
   renderScalarDataset();
+  mReadyToCompose = true;
   renderMesh();
   renderVectorDataset();
 
-  return true;
+  return !renderContext()->renderingStopped();
 }
 
 bool QgsMeshLayerRenderer::forceRasterRender() const
@@ -357,8 +362,7 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
 
-  double penWidth = context.convertToPainterUnits( settings.lineWidth(),
-                    QgsUnitTypes::RenderUnit::RenderMillimeters );
+  double penWidth = context.convertToPainterUnits( settings.lineWidth(), settings.lineWidthUnit() );
   pen.setWidthF( penWidth );
   pen.setColor( settings.color() );
   painter->setPen( pen );

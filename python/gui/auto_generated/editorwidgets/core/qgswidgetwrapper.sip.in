@@ -20,7 +20,7 @@
 
 class QgsWidgetWrapper : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Manages an editor widget
 Widget and wrapper share the same parent
 
@@ -178,7 +178,7 @@ might be lost.
 
     void contextChanged();
 %Docstring
-Signal when QgsAttributeEditorContext mContext changed
+Signal when :py:class:`QgsAttributeEditorContext` mContext changed
 
 .. versionadded:: 3.4
 %End

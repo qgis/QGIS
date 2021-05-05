@@ -170,13 +170,13 @@ typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutIte
 typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
 
 //! Layout item added to layout callback
-typedef std::function<void ( QgsLayoutItem * )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
+typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
 /**
  * \ingroup gui
- * Convenience metadata class that uses static functions to handle layout item GUI behavior.
+ * \brief Convenience metadata class that uses static functions to handle layout item GUI behavior.
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
@@ -272,8 +272,22 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
     QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
+
     QgsLayoutItem *createItem( QgsLayout *layout ) override;
     void newItemAddedToLayout( QgsLayoutItem *item ) override;
+
+    /**
+     * Called when a newly created item of the associated type has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     *
+     * The \a properties map will be filled with any custom properties which were specified during
+     * the item creation.
+     *
+     * \since QGIS 3.18
+     */
+    void newItemAddedToLayout( QgsLayoutItem *item, const QVariantMap &properties );
 
   protected:
     QIcon mIcon;
@@ -371,6 +385,18 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 
     /**
+     * Returns the GUI item metadata ID which corresponds to the specified layout item \a type.
+     *
+     * In the case that multiple GUI metadata classes exist for a single layout item \a type then
+     * only the first encountered GUI metadata ID will be returned.
+     *
+     * Returns -1 if no matching metadata is found in the GUI registry.
+     *
+     * \since QGIS 3.18
+     */
+    int metadataIdForItemType( int type ) const;
+
+    /**
      * Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
      */
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata SIP_TRANSFER );
@@ -417,8 +443,11 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      *
      * This is only called for additions which result from GUI operations - i.e. it is not
      * called for items added from templates.
+     *
+     * Since QGIS 3.18 the optional \a properties argument can be used to pass custom properties to the
+     * QgsLayoutItemGuiMetadata::newItemAddedToLayout() function.
      */
-    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item, const QVariantMap &properties = QVariantMap() );
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not

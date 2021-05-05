@@ -24,8 +24,12 @@
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgssymbollayerwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
@@ -213,19 +217,25 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 
 ///@endcond
 
+
+
+
+QgsSvgSelectorFilterModel::QgsSvgSelectorFilterModel( QObject *parent, const QString &path, int iconSize )
+  : QSortFilterProxyModel( parent )
+{
+  mModel = new QgsSvgSelectorListModel( parent, path, iconSize );
+  setFilterCaseSensitivity( Qt::CaseInsensitive );
+  setSourceModel( mModel );
+  setFilterRole( Qt::UserRole );
+}
+
 //,
 // QgsSvgSelectorListModel
 //
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, int iconSize )
-  : QAbstractListModel( parent )
-  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
-  , mIconSize( iconSize )
-{
-  mSvgLoader->setPath( QString() );
-  connect( mSvgLoader, &QgsSvgSelectorLoader::foundSvgs, this, &QgsSvgSelectorListModel::addSvgs );
-  mSvgLoader->start();
-}
+  : QgsSvgSelectorListModel( parent, QString(), iconSize )
+{}
 
 QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path, int iconSize )
   : QAbstractListModel( parent )
@@ -385,21 +395,52 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
-#else
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
-#endif
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
   mImagesListView->setUniformItemSizes( false );
 
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
-           this, &QgsSvgSelectorWidget::svgSelectionChanged );
-  connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
-           this, &QgsSvgSelectorWidget::populateIcons );
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
+  {
+    if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
+    {
+      disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+      mImagesListView->selectionModel()->clearSelection();
+      connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+    }
+    qobject_cast<QgsSvgSelectorFilterModel *>( mImagesListView->model() )->setFilterFixedString( filterText );
+  } );
+
+
+  mParametersModel = new QgsSvgParametersModel( this );
+  mParametersTreeView->setModel( mParametersModel );
+  mParametersGroupBox->setVisible( mAllowParameters );
+
+  mParametersTreeView->setItemDelegateForColumn( static_cast<int>( QgsSvgParametersModel::Column::ExpressionColumn ), new QgsSvgParameterValueDelegate( this ) );
+  mParametersTreeView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+  mParametersTreeView->header()->setStretchLastSection( true );
+  mParametersTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mParametersTreeView->setSelectionMode( QAbstractItemView::MultiSelection );
+  mParametersTreeView->setEditTriggers( QAbstractItemView::DoubleClicked );
+
+  connect( mParametersModel, &QgsSvgParametersModel::parametersChanged, this, &QgsSvgSelectorWidget::svgParametersChanged );
+  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
+  connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::populateIcons );
+  connect( mAddParameterButton, &QToolButton::clicked, mParametersModel, &QgsSvgParametersModel::addParameter );
+  connect( mRemoveParameterButton, &QToolButton::clicked, this, [ = ]()
+  {
+    const QModelIndexList selectedRows = mParametersTreeView->selectionModel()->selectedRows();
+    if ( selectedRows.count() > 0 )
+      mParametersModel->removeParameters( selectedRows );
+  } );
+}
+
+void QgsSvgSelectorWidget::initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer )
+{
+  mParametersModel->setExpressionContextGenerator( generator );
+  mParametersModel->setLayer( layer );
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
@@ -425,9 +466,23 @@ void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
   mImagesListView->selectionModel()->blockSignals( false );
 }
 
+void QgsSvgSelectorWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  mParametersModel->setParameters( parameters );
+}
+
 QString QgsSvgSelectorWidget::currentSvgPath() const
 {
   return mCurrentSvgPath;
+}
+
+void QgsSvgSelectorWidget::setAllowParameters( bool allow )
+{
+  if ( mAllowParameters == allow )
+    return;
+
+  mAllowParameters = allow;
+  mParametersGroupBox->setVisible( allow );
 }
 
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
@@ -448,8 +503,9 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path, mIconSize );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView, path, mIconSize );
   mImagesListView->setModel( m );
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -477,7 +533,7 @@ void QgsSvgSelectorWidget::populateList()
 
   // Initially load the icons in the List view without any grouping
   QAbstractItemModel *oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView );
+  QgsSvgSelectorFilterModel *m = new QgsSvgSelectorFilterModel( mImagesListView );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 }
@@ -507,4 +563,199 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   mLayout->addWidget( mButtonBox );
   setLayout( mLayout );
 }
+
+
+///@cond PRIVATE
+
+
+QgsSvgParametersModel::QgsSvgParametersModel( QObject *parent )
+  : QAbstractTableModel( parent )
+{
+  connect( this, &QAbstractTableModel::rowsInserted, this, [ = ]() {emit parametersChanged( parameters() );} );
+  connect( this, &QAbstractTableModel::rowsRemoved, this, [ = ]() {emit parametersChanged( parameters() );} );
+  connect( this, &QAbstractTableModel::dataChanged, this, [ = ]() {emit parametersChanged( parameters() );} );
+}
+
+void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  beginResetModel();
+  mParameters.clear();
+  QMap<QString, QgsProperty>::const_iterator paramIt = parameters.constBegin();
+  for ( ; paramIt != parameters.constEnd(); ++paramIt )
+  {
+    mParameters << Parameter( paramIt.key(), paramIt.value() );
+  }
+  endResetModel();
+}
+
+QMap<QString, QgsProperty> QgsSvgParametersModel::parameters() const
+{
+  QMap<QString, QgsProperty> params;
+  for ( const Parameter &param : std::as_const( mParameters ) )
+  {
+    if ( !param.name.isEmpty() )
+      params.insert( param.name, param.property );
+  }
+  return params;
+}
+
+void QgsSvgParametersModel::removeParameters( const QModelIndexList &indexList )
+{
+  if ( !indexList.count() )
+    return;
+
+  auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex & i1, const QModelIndex & i2 ) {return i1.row() < i2.row();} );
+
+  beginRemoveRows( QModelIndex(), ( *mm.first ).row(), ( *mm.second ).row() );
+  for ( const QModelIndex &index : indexList )
+    mParameters.removeAt( index.row() );
+  endRemoveRows();
+}
+
+void QgsSvgParametersModel::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+}
+
+void QgsSvgParametersModel::setExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+}
+
+int QgsSvgParametersModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent )
+  return mParameters.count();
+}
+
+int QgsSvgParametersModel::columnCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent )
+  return 2;
+}
+
+QVariant QgsSvgParametersModel::data( const QModelIndex &index, int role ) const
+{
+  QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( index.column() );
+  if ( role == Qt::DisplayRole )
+  {
+    switch ( col )
+    {
+      case QgsSvgParametersModel::Column::NameColumn:
+        return mParameters.at( index.row() ).name;
+      case QgsSvgParametersModel::Column::ExpressionColumn:
+        return mParameters.at( index.row() ).property.expressionString();
+    }
+  }
+
+  return QVariant();
+}
+
+bool QgsSvgParametersModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() || role != Qt::EditRole )
+    return false;
+
+  QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( index.column() );
+  switch ( col )
+  {
+    case QgsSvgParametersModel::Column::NameColumn:
+    {
+      QString oldName = mParameters.at( index.row() ).name;
+      QString newName = value.toString();
+      for ( const Parameter &param : std::as_const( mParameters ) )
+      {
+        if ( param.name == newName && param.name != oldName )
+        {
+          // names must be unique!
+          return false;
+        }
+      }
+      mParameters[index.row()].name = newName;
+      emit dataChanged( index, index );
+      return true;
+    }
+
+    case QgsSvgParametersModel::Column::ExpressionColumn:
+      mParameters[index.row()].property = QgsProperty::fromExpression( value.toString() );
+      emit dataChanged( index, index );
+      return true;
+  }
+
+  return false;
+}
+
+QVariant QgsSvgParametersModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( role == Qt::DisplayRole && orientation == Qt::Horizontal )
+  {
+    QgsSvgParametersModel::Column col = static_cast<QgsSvgParametersModel::Column>( section );
+    switch ( col )
+    {
+      case QgsSvgParametersModel::Column::NameColumn:
+        return tr( "Name" );
+      case QgsSvgParametersModel::Column::ExpressionColumn:
+        return tr( "Expression" );
+    }
+  }
+
+  return QVariant();
+}
+
+void QgsSvgParametersModel::addParameter()
+{
+  int c = rowCount( QModelIndex() );
+  beginInsertRows( QModelIndex(), c, c );
+  int i = 1;
+  QStringList currentNames;
+  std::transform( mParameters.begin(), mParameters.end(), std::back_inserter( currentNames ), []( const Parameter & parameter ) {return parameter.name;} );
+  while ( currentNames.contains( QStringLiteral( "param%1" ).arg( i ) ) )
+    i++;
+  mParameters.append( Parameter( QStringLiteral( "param%1" ).arg( i ), QgsProperty() ) );
+  endResetModel();
+}
+
+
+Qt::ItemFlags QgsSvgParametersModel::flags( const QModelIndex &index ) const
+{
+  Q_UNUSED( index )
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+
+QWidget *QgsSvgParameterValueDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option )
+  QgsFieldExpressionWidget *w = new QgsFieldExpressionWidget( parent );
+  const QgsSvgParametersModel *model = qobject_cast<const QgsSvgParametersModel *>( index.model() );
+  w->registerExpressionContextGenerator( model->expressionContextGenerator() );
+  w->setLayer( model->layer() );
+  return w;
+}
+
+void QgsSvgParameterValueDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( editor );
+  if ( !w )
+    return;
+
+  w->setExpression( index.model()->data( index ).toString() );
+}
+
+void QgsSvgParameterValueDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( editor );
+  if ( !w )
+    return;
+  model->setData( index, w->currentField() );
+}
+
+void QgsSvgParameterValueDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index )
+  editor->setGeometry( option.rect );
+}
+
+///@endcond
+
 

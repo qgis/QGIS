@@ -18,8 +18,9 @@
 #include "qgscoloreffect.h"
 #include "qgsimageoperation.h"
 #include "qgssymbollayerutils.h"
+#include <algorithm>
 
-QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 {
   QgsColorEffect *newEffect = new QgsColorEffect();
   newEffect->readProperties( map );
@@ -56,9 +57,9 @@ void QgsColorEffect::draw( QgsRenderContext &context )
 }
 
 
-QgsStringMap QgsColorEffect::properties() const
+QVariantMap QgsColorEffect::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
@@ -74,7 +75,7 @@ QgsStringMap QgsColorEffect::properties() const
   return props;
 }
 
-void QgsColorEffect::readProperties( const QgsStringMap &props )
+void QgsColorEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
   QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
@@ -108,7 +109,7 @@ void QgsColorEffect::readProperties( const QgsStringMap &props )
   mColorizeOn = props.value( QStringLiteral( "colorize" ), QStringLiteral( "0" ) ).toInt();
   if ( props.contains( QStringLiteral( "colorize_color" ) ) )
   {
-    setColorizeColor( QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "colorize_color" ) ) ) );
+    setColorizeColor( QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "colorize_color" ) ).toString() ) );
   }
   mColorizeStrength = props.value( QStringLiteral( "colorize_strength" ), QStringLiteral( "100" ) ).toInt();
 }
@@ -117,6 +118,16 @@ QgsColorEffect *QgsColorEffect::clone() const
 {
   QgsColorEffect *newEffect = new QgsColorEffect( *this );
   return newEffect;
+}
+
+void QgsColorEffect::setBrightness( int brightness )
+{
+  mBrightness = std::clamp( brightness, -255, 255 );
+}
+
+void QgsColorEffect::setContrast( int contrast )
+{
+  mContrast = std::clamp( contrast, -100, 100 );
 }
 
 void QgsColorEffect::setColorizeColor( const QColor &colorizeColor )

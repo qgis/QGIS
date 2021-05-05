@@ -9,9 +9,11 @@
 
 
 
+
+
 class QgsPointCloudAttribute
 {
-%Docstring
+%Docstring(signature="appended")
 
 Attribute for point cloud data
 pair of name and size in bytes
@@ -55,6 +57,15 @@ Returns size of the attribute in bytes
     DataType type() const;
 %Docstring
 Returns the data type
+
+.. seealso:: :py:func:`variantType`
+%End
+
+    QVariant::Type variantType() const;
+%Docstring
+Returns the most suitable equivalent QVariant data type to this attribute type.
+
+.. seealso:: :py:func:`type`
 %End
 
     QString displayType() const;
@@ -77,11 +88,13 @@ Returns ``True`` if the specified data ``type`` is numeric.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+
+
 };
 
 class QgsPointCloudAttributeCollection
 {
-%Docstring
+%Docstring(signature="appended")
 
 Collection of point cloud attributes
 
@@ -137,6 +150,11 @@ Returns -1 if a matching attribute was not found.
     int pointRecordSize() const;
 %Docstring
 Returns total size of record
+%End
+
+    QgsFields toFields() const;
+%Docstring
+Converts the attribute collection to an equivalent :py:class:`QgsFields` collection.
 %End
 
 };

@@ -28,6 +28,7 @@
 //
 
 #include <Qt3DCore/QEntity>
+#include <numeric>
 
 #define SIP_NO_FILE
 
@@ -54,7 +55,7 @@ namespace Qt3DRender
 
 /**
  * \ingroup 3d
- * Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
+ * \brief Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
  * based on data error and unloading of data when data are not necessary anymore
  * \since QGIS 3.0
  */
@@ -63,7 +64,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
@@ -191,6 +192,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     bool mAdditiveStrategy = false;
 
     bool mIsValid = true;
+
+    int mPrimitivesBudget = std::numeric_limits<int>::max();
 };
 
 /// @endcond

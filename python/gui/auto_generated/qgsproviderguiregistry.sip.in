@@ -14,10 +14,10 @@
 
 class QgsProviderGuiRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry / canonical manager of GUI parts of data providers.
 
-QgsProviderGuiRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsProviderGuiRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsGui.providerGuiRegistry()`.
 
 :py:func:`~setPluginPath` should be called (once) to load dynamic providers. Static providers are
@@ -90,6 +90,26 @@ Returns all subset string editor providers registered in provider with ``provide
    Ownership of providers is passed to the caller.
 
 .. versionadded:: 3.18
+%End
+
+    virtual QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders( const QString &providerKey ) /Factory/;
+%Docstring
+Returns all source widget providers registered in provider with ``providerKey``
+
+.. note::
+
+   Ownership of providers is passed to the caller.
+
+.. versionadded:: 3.18
+%End
+
+    virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories( QgsMapLayer *layer = 0 );
+%Docstring
+Returns all map layer config widget factories associated with the registered providers.
+
+The optional ``layer`` argument can be used to only return factories which support the specified layer.
+
+.. versionadded:: 3.20
 %End
 
 

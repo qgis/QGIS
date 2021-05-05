@@ -19,6 +19,7 @@
 #define QGSPROCESSING_H
 
 #include "qgis_core.h"
+#include "qgssettingsentry.h"
 #include <QString>
 
 //
@@ -29,7 +30,7 @@
  * \class QgsProcessing
  * \ingroup core
  *
- * Contains enumerations and other constants for use in processing algorithms
+ * \brief Contains enumerations and other constants for use in processing algorithms
  * and parameters.
  *
  * \since QGIS 3.0
@@ -97,6 +98,17 @@ class CORE_EXPORT QgsProcessing
      * \since QGIS 3.6
      */
     static const QString TEMPORARY_OUTPUT;
+
+#ifndef SIP_RUN
+    //! Settings entry prefer filename as layer name
+    static const inline QgsSettingsEntryBool settingsPreferFilenameAsLayerName = QgsSettingsEntryBool( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), QgsSettings::NoSection, true, QObject::tr( "Prefer filename as layer name" ) );
+    //! Settings entry temp path
+    static const inline QgsSettingsEntryString settingsTempPath = QgsSettingsEntryString( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QgsSettings::NoSection, QString() );
+    //! Settings entry default output vector layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputVectorLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsSettings::NoSection, -1 );
+    //! Settings entry default output raster layer ext
+    static const inline QgsSettingsEntryInteger settingsDefaultOutputRasterLayerExt = QgsSettingsEntryInteger( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsSettings::NoSection, -1 );
+#endif
 };
 
 #endif // QGSPROCESSING_H

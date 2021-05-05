@@ -16,6 +16,8 @@
 #include "qgsrendererrange.h"
 #include "qgsclassificationmethod.h"
 
+#include <QLocale>
+
 
 QgsRendererRange::QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol, bool render )
   : mLowerValue( range.lowerBound() )
@@ -120,12 +122,12 @@ QString QgsRendererRange::dump() const
   return QStringLiteral( "%1 - %2::%3::%4\n" ).arg( mLowerValue ).arg( mUpperValue ).arg( mLabel, mSymbol ? mSymbol->dump() : QStringLiteral( "(no symbol)" ) );
 }
 
-void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange ) const
+void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange ) const
 {
-  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QString() ).isEmpty() )
+  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QString() ).toString().isEmpty() )
     return;
 
-  QString attrName = props[ QStringLiteral( "attribute" )];
+  QString attrName = props[ QStringLiteral( "attribute" )].toString();
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
@@ -191,7 +193,7 @@ bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat 
 void QgsRendererRangeLabelFormat::setPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
+  precision = std::clamp( precision, MIN_PRECISION, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
   mNumberSuffix.clear();

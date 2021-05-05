@@ -110,7 +110,7 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
 {
-  std::unique_ptr< QgsPhongMaterialSettings > m = qgis::make_unique< QgsPhongMaterialSettings >();
+  std::unique_ptr< QgsPhongMaterialSettings > m = std::make_unique< QgsPhongMaterialSettings >();
   m->setDiffuse( btnDiffuse->color() );
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );

@@ -12,9 +12,9 @@
 
 class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 A class that implements a custom filter and can be used
-as a proxy for QgsDbTableModel
+as a proxy for :py:class:`QgsDbTableModel`
 
 .. versionadded:: 3.0
 %End

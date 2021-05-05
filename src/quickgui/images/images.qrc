@@ -14,5 +14,6 @@
         <file>ic_today.svg</file>
         <file>ic_back.svg</file>
         <file>ic_angle_right.svg</file>
+        <file>ic_angle_down.svg</file>
     </qresource>
 </RCC>

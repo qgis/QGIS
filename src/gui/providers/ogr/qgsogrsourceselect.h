@@ -51,13 +51,13 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
 
   public:
     QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    //! Opens a dialog to select a file datasource*/
+    //! Opens a dialog to select a file datasource
     QStringList openFile();
-    //! Opens a dialog to select a directory datasource*/
+    //! Opens a dialog to select a directory datasource
     QString openDirectory();
-    //! Returns a list of selected datasources*/
+    //! Returns a list of selected datasources
     QStringList dataSources();
-    //! Returns the encoding selected for user*/
+    //! Returns the encoding selected for user
     QString encoding();
     //! Returns the connection type
     QString dataSourceType();
@@ -65,9 +65,9 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     bool isProtocolCloudType();
 
   private:
-    //! Stores the file vector filters */
+    //! Stores the file vector filters
     QString mVectorFileFilter;
-    //! Stores the selected datasources */
+    //! Stores the selected datasources
     QStringList mDataSources;
     //! Stores the user selected encoding
     QString mEnc;

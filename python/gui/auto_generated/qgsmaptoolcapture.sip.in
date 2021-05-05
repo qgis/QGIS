@@ -29,6 +29,13 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePolygon
     };
 
+    enum CaptureTechnique
+    {
+      StraightSegments,
+      CircularString,
+      Streaming,
+    };
+
     enum Capability
     {
       NoCapabilities,
@@ -48,6 +55,13 @@ constructor
     virtual QgsMapToolCapture::Capabilities capabilities() const;
 %Docstring
 Returns flags containing the supported capabilities
+%End
+
+    virtual bool supportsTechnique( CaptureTechnique technique ) const;
+%Docstring
+Returns ``True`` if the tool supports the specified capture ``technique``.
+
+.. versionadded:: 3.20
 %End
 
     virtual void activate();
@@ -124,6 +138,13 @@ transfers ownership to the caller.
 Enable the digitizing with curve
 %End
 
+    void setStreamDigitizingEnabled( bool enable );
+%Docstring
+Toggles the stream digitizing mode.
+
+.. versionadded:: 3.20
+%End
+
   protected:
 
 
@@ -168,7 +189,7 @@ CRS as the current layer.
 
     QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
 %Docstring
-Creates a QgsPoint with ZM support if necessary (according to the
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
 WkbType of the current layer). If the point is snapped, then the Z
 value is took from the snapped point.
 
@@ -182,7 +203,7 @@ value is took from the snapped point.
 
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 %Docstring
-Creates a QgsPoint with ZM support if necessary (according to the
+Creates a :py:class:`QgsPoint` with ZM support if necessary (according to the
 WkbType of the current layer).
 
 :param point: A point in 2D
@@ -211,9 +232,12 @@ Variant to supply more information in the case of snapping
 .. versionadded:: 2.14
 %End
 
-    void undo();
+    void undo( bool isAutoRepeat = false );
 %Docstring
-Removes the last vertex from mRubberBand and mCaptureList
+Removes the last vertex from mRubberBand and mCaptureList.
+
+Since QGIS 3.20, if ``isAutoRepeat`` is set to ``True`` then the undo operation will be treated
+as a auto repeated undo as if the user has held down the undo key for an extended period of time.
 %End
 
     void startCapturing();
@@ -242,7 +266,7 @@ List of digitized points
 :return: List of points
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant returns :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
 
@@ -262,7 +286,7 @@ Set the points on which to work
 :param pointList: A list of points
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     void setPoints( const QgsPointSequence &pointList );

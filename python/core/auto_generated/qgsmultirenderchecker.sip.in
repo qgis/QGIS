@@ -12,8 +12,9 @@
 
 class QgsMultiRenderChecker
 {
-%Docstring
+%Docstring(signature="appended")
 This class allows checking rendered images against comparison images.
+
 Its main purpose is for the unit testing framework.
 
 It will either
@@ -138,7 +139,7 @@ without requiring a transparent background for the image
 
 class QgsLayoutChecker : QgsMultiRenderChecker
 {
-%Docstring
+%Docstring(signature="appended")
 Renders a layout to an image and compares with an expected output
 
 .. versionadded:: 3.0

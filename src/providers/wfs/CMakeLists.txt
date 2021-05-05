@@ -43,33 +43,8 @@ endif()
 # Build
 
 include_directories (
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
-  ${CMAKE_SOURCE_DIR}/src/core/effects    # needed by qgssymbollayer.h
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
-)
-include_directories(SYSTEM
-  ${EXPAT_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
-  ${SQLITE3_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
 )
 
 if (WITH_GUI)
@@ -79,6 +54,9 @@ if (WITH_GUI)
 endif()
 
 add_library (wfsprovider MODULE ${WFS_SRCS})
+
+# require c++17
+target_compile_features(wfsprovider PRIVATE cxx_std_17)
 
 target_link_libraries (wfsprovider
   ${EXPAT_LIBRARY}

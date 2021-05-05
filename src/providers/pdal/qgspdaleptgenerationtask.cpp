@@ -28,8 +28,8 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir )
-  : QgsTask( tr( "Generate EPT Index" ) )
+QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputDir, const QString &name )
+  : QgsTask( tr( "Indexing Point Cloud (%1)" ).arg( name ) )
   , mOutputDir( outputDir )
   , mFile( file )
 {
@@ -77,8 +77,13 @@ bool QgsPdalEptGenerationTask::runUntwine()
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
 
+  untwine::QgisUntwine::Options options;
+  // By default Untwine does not calculate stats for attributes, but they are very useful for us:
+  // we can use them to set automatically set valid range for the data without having to scan the points again.
+  options.push_back( { "stats", std::string() } );
+
   std::vector<std::string> files = {mFile.toStdString()};
-  untwineProcess.start( files, mOutputDir.toStdString() );
+  untwineProcess.start( files, mOutputDir.toStdString(), options );
   int lastPercent = 0;
   while ( true )
   {

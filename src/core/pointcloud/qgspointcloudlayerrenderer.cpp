@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <QElapsedTimer>
+#include <QPointer>
 
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayer.h"
@@ -30,11 +31,15 @@
 #include "qgslogger.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmessagelog.h"
+#include "qgscircle.h"
+#include "qgsmapclippingutils.h"
+#include "qgspointcloudblockrequest.h"
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
   , mLayerAttributes( layer->attributes() )
+  , mFeedback( new QgsFeedback )
 {
   // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
   // or use some locking to prevent read/write from multiple threads
@@ -49,18 +54,22 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
     mOffset = mLayer->dataProvider()->index()->offset();
   }
 
-  if ( const QgsPointCloudLayerElevationProperties *elevationProps = dynamic_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
+  if ( const QgsPointCloudLayerElevationProperties *elevationProps = qobject_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() ) )
   {
     mZOffset = elevationProps->zOffset();
     mZScale = elevationProps->zScale();
   }
 
   mCloudExtent = mLayer->dataProvider()->polygonBounds();
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  mReadyToCompose = false;
 }
 
 bool QgsPointCloudLayerRenderer::render()
 {
-  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset );
+  QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset, mFeedback.get() );
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
@@ -68,19 +77,39 @@ bool QgsPointCloudLayerRenderer::render()
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
 
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::VectorTileLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
+
   if ( mRenderer->type() == QLatin1String( "extent" ) )
   {
     // special case for extent only renderer!
     mRenderer->startRender( context );
     static_cast< QgsPointCloudExtentRenderer * >( mRenderer.get() )->renderExtent( mCloudExtent, context );
     mRenderer->stopRender( context );
+    mReadyToCompose = true;
     return true;
   }
 
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
   if ( !pc || !pc->isValid() )
+  {
+    mReadyToCompose = true;
     return false;
+  }
+
+  // if the previous layer render was relatively quick (e.g. less than 3 seconds), the we show any previously
+  // cached version of the layer during rendering instead of the usual progressive updates
+  if ( mRenderTimeHint > 0 && mRenderTimeHint <= MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+  {
+    mBlockRenderUpdates = true;
+    mElapsedTimer.start();
+  }
 
   mRenderer->startRender( context );
 
@@ -93,7 +122,7 @@ bool QgsPointCloudLayerRenderer::render()
   if ( !context.renderContext().zRange().isInfinite() )
     rendererAttributes.insert( QStringLiteral( "Z" ) );
 
-  for ( const QString &attribute : qgis::as_const( rendererAttributes ) )
+  for ( const QString &attribute : std::as_const( rendererAttributes ) )
   {
     if ( mAttributes.indexOf( attribute ) >= 0 )
       continue; // don't re-add attributes we are already going to fetch
@@ -117,7 +146,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   const IndexedPointCloudNode root = pc->root();
 
-  const float maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
+  const double maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
 
   const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
   QgsRectangle rootNodeExtentMapCoords;
@@ -131,27 +160,55 @@ bool QgsPointCloudLayerRenderer::render()
     rootNodeExtentMapCoords = rootNodeExtentLayerCoords;
   }
 
-  const float rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
+  const double rootErrorInMapCoordinates = rootNodeExtentMapCoords.width() / pc->span(); // in map coords
 
   double mapUnitsPerPixel = context.renderContext().mapToPixel().mapUnitsPerPixel();
   if ( ( rootErrorInMapCoordinates < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
   {
     QgsDebugMsg( QStringLiteral( "invalid screen error" ) );
+    mReadyToCompose = true;
     return false;
   }
-  float rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
+  double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
+  const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   QgsPointCloudRequest request;
   request.setAttributes( mAttributes );
 
   // drawing
   int nodesDrawn = 0;
+  bool canceled = false;
+
+  if ( pc->accessType() == QgsPointCloudIndex::AccessType::Local )
+  {
+    nodesDrawn += renderNodesSync( nodes, pc, context, request, canceled );
+  }
+  else if ( pc->accessType() == QgsPointCloudIndex::AccessType::Remote )
+  {
+    nodesDrawn += renderNodesAsync( nodes, pc, context, request, canceled );
+  }
+
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
+                    .arg( context.pointsRendered() )
+                    .arg( t.elapsed() ), 2 );
+#endif
+
+  mRenderer->stopRender( context );
+
+  mReadyToCompose = true;
+  return !canceled;
+}
+
+int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+{
+  int nodesDrawn = 0;
   for ( const IndexedPointCloudNode &n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
       QgsDebugMsgLevel( "canceled", 2 );
+      canceled = true;
       break;
     }
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
@@ -159,19 +216,130 @@ bool QgsPointCloudLayerRenderer::render()
     if ( !block )
       continue;
 
+    QgsVector3D contextScale = context.scale();
+    QgsVector3D contextOffset = context.offset();
+
+    context.setScale( block->scale() );
+    context.setOffset( block->offset() );
+
     context.setAttributes( block->attributes() );
 
     mRenderer->renderBlock( block.get(), context );
+
+    context.setScale( contextScale );
+    context.setOffset( contextOffset );
+
     ++nodesDrawn;
+
+    // as soon as first block is rendered, we can start showing layer updates.
+    // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+    // at most e.g. 3 seconds before we start forcing progressive updates.
+    if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+    {
+      mReadyToCompose = true;
+    }
+  }
+  return nodesDrawn;
+}
+
+int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+{
+  int nodesDrawn = 0;
+
+  QElapsedTimer downloadTimer;
+  downloadTimer.start();
+
+  // Instead of loading all point blocks in parallel and then rendering the one by one,
+  // we split the processing into groups of size groupSize where we load the blocks of the group
+  // in parallel and then render the group's blocks sequentially.
+  // This way helps QGIS stay responsive if the nodes vector size is big
+  const int groupSize = 4;
+  for ( int groupIndex = 0; groupIndex < nodes.size(); groupIndex += groupSize )
+  {
+    if ( context.feedback() && context.feedback()->isCanceled() )
+      break;
+    // Async loading of nodes
+    const int currentGroupSize = std::min( std::max( nodes.size() - groupIndex, 0 ), groupSize );
+    QVector<QgsPointCloudBlockRequest *> blockRequests( currentGroupSize, nullptr );
+    QVector<bool> finishedLoadingBlock( currentGroupSize, false );
+    QEventLoop loop;
+    if ( context.feedback() )
+      QObject::connect( context.feedback(), &QgsFeedback::canceled, &loop, &QEventLoop::quit );
+    // Note: All capture by reference warnings here shouldn't be an issue since we have an event loop, so locals won't be deallocated
+    for ( int i = 0; i < blockRequests.size(); ++i )
+    {
+      int nodeIndex = groupIndex + i;
+      const IndexedPointCloudNode &n = nodes[nodeIndex];
+      const QString nStr = n.toString();
+      QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
+      blockRequests[ i ] = blockRequest;
+      QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop, [ &, i, nStr, blockRequest ]()
+      {
+        if ( !blockRequest->block() )
+        {
+          QgsDebugMsg( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+        }
+        finishedLoadingBlock[ i ] = true;
+        // If all blocks are loaded, exit the event loop
+        if ( !finishedLoadingBlock.contains( false ) ) loop.exit();
+      } );
+    }
+    // Wait for all point cloud nodes to finish loading
+    loop.exec();
+
+    QgsDebugMsg( QStringLiteral( "Downloaded in : %1ms" ).arg( downloadTimer.elapsed() ) );
+    if ( !context.feedback()->isCanceled() )
+    {
+      // Render all the point cloud blocks sequentially
+      for ( int i = 0; i < blockRequests.size(); ++i )
+      {
+        if ( context.renderContext().renderingStopped() )
+        {
+          QgsDebugMsgLevel( "canceled", 2 );
+          canceled = true;
+          break;
+        }
+
+        if ( !blockRequests[ i ]->block() )
+          continue;
+
+        QgsVector3D contextScale = context.scale();
+        QgsVector3D contextOffset = context.offset();
+
+        context.setScale( blockRequests[ i ]->block()->scale() );
+        context.setOffset( blockRequests[ i ]->block()->offset() );
+
+        context.setAttributes( blockRequests[ i ]->block()->attributes() );
+
+        mRenderer->renderBlock( blockRequests[ i ]->block(), context );
+
+        context.setScale( contextScale );
+        context.setOffset( contextOffset );
+
+        ++nodesDrawn;
+
+        // as soon as first block is rendered, we can start showing layer updates.
+        // but if we are blocking render updates (so that a previously cached image is being shown), we wait
+        // at most e.g. 3 seconds before we start forcing progressive updates.
+        if ( !mBlockRenderUpdates || mElapsedTimer.elapsed() > MAX_TIME_TO_USE_CACHED_PREVIEW_IMAGE )
+        {
+          mReadyToCompose = true;
+        }
+      }
+    }
+
+    for ( int i = 0; i < blockRequests.size(); ++i )
+    {
+      if ( blockRequests[ i ] )
+      {
+        if ( blockRequests[ i ]->block() )
+          delete blockRequests[ i ]->block();
+        blockRequests[ i ]->deleteLater();
+      }
+    }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "totals: %1 nodes | %2 points | %3ms" ).arg( nodesDrawn )
-                    .arg( context.pointsRendered() )
-                    .arg( t.elapsed() ), 2 );
-
-  mRenderer->stopRender( context );
-
-  return true;
+  return nodesDrawn;
 }
 
 bool QgsPointCloudLayerRenderer::forceRasterRender() const
@@ -181,13 +349,18 @@ bool QgsPointCloudLayerRenderer::forceRasterRender() const
   return mRenderer ? mRenderer->type() != QLatin1String( "extent" ) : false;
 }
 
-QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
+void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time )
+{
+  mRenderTimeHint = time;
+}
+
+QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
     const QgsRenderContext &context,
     IndexedPointCloudNode n,
-    float maxErrorPixels,
-    float nodeErrorPixels )
+    double maxErrorPixels,
+    double nodeErrorPixels )
 {
-  QList<IndexedPointCloudNode> nodes;
+  QVector<IndexedPointCloudNode> nodes;
 
   if ( context.renderingStopped() )
   {
@@ -205,7 +378,7 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
 
   nodes.append( n );
 
-  float childrenErrorPixels = nodeErrorPixels / 2.0f;
+  double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
@@ -219,4 +392,3 @@ QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Qgs
 }
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-

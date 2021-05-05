@@ -41,8 +41,11 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
     /**
      * Constructor for expression compiler.
      * \param fields fields from provider
+     * \param ignoreStaticNodes If an expression has been partially precalculated due to static nodes in the expression, setting this argument to FALSE
+     * will prevent these precalculated values from being utilized during compilation of the expression. This flag significantly limits the effectiveness
+     * of compilation and should be used for debugging purposes only. (Since QGIS 3.18)
      */
-    explicit QgsSQLiteExpressionCompiler( const QgsFields &fields );
+    explicit QgsSQLiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes = false );
 
   protected:
 

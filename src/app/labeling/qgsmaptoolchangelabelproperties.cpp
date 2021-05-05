@@ -24,7 +24,8 @@
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
 
-QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
+QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+  : QgsMapToolLabel( canvas, cadDock )
 {
   mPalProperties << QgsPalLayerSettings::PositionX;
   mPalProperties << QgsPalLayerSettings::PositionY;
@@ -121,6 +122,11 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     deleteRubberBands();
   }
+}
+
+void QgsMapToolChangeLabelProperties::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+{
+  updateHoveredLabel( e );
 }
 
 void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &changes )

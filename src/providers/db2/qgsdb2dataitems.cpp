@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 
 #include <QMessageBox>
+#include <QSqlError>
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 
@@ -493,7 +494,9 @@ QgsDataItem *QgsDb2DataItemProvider::createDataItem( const QString &pathIn, QgsD
 {
   Q_UNUSED( pathIn );
   QgsDebugMsgLevel( QStringLiteral( "DB2: Browser Panel; data item detected." ), 2 );
-  return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
+  return new QgsDb2RootItem( parentItem,
+                             QObject::tr( "DB2 (deprecated)" ),
+                             QStringLiteral( "DB2:" ) );
 }
 
 

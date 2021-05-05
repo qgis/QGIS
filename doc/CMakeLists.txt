@@ -71,10 +71,12 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/locator
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/mesh
+      ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+      ${CMAKE_SOURCE_DIR}/src/core/project
       ${CMAKE_SOURCE_DIR}/src/core/providers
       ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
       ${CMAKE_SOURCE_DIR}/src/core/providers/memory
@@ -83,6 +85,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/validity
+      ${CMAKE_SOURCE_DIR}/src/core/vector
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
@@ -107,6 +110,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/mesh
+      ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
       ${CMAKE_SOURCE_DIR}/src/analysis/network
       ${CMAKE_SOURCE_DIR}/src/analysis/processing
@@ -145,6 +149,9 @@ if(WITH_APIDOC)
     endforeach(_dir)
 
     string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
+
+    # Doxyfile requires comma separated list of patterns for FILE_PATTERNS option
+    string(REPLACE ";" "," DOXYGEN_FILE_PATTERNS "${DOXYGEN_FILE_PATTERNS}")
 
     if(WERROR)
       set (DOXYGEN_WARN_AS_ERROR "YES")

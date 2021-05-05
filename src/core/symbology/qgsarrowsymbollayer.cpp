@@ -22,7 +22,7 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   setOffset( 0.0 );
   setOffsetUnit( QgsUnitTypes::RenderMillimeters );
 
-  mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QgsStringMap() ) ) );
+  mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
 }
 
 bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -36,7 +36,7 @@ bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol *symbol )
   return false;
 }
 
-QgsSymbolLayer *QgsArrowSymbolLayer::create( const QgsStringMap &props )
+QgsSymbolLayer *QgsArrowSymbolLayer::create( const QVariantMap &props )
 {
   QgsArrowSymbolLayer *l = new QgsArrowSymbolLayer();
 
@@ -44,19 +44,19 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QgsStringMap &props )
     l->setArrowWidth( props[QStringLiteral( "arrow_width" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "arrow_width_unit" ) ) )
-    l->setArrowWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "arrow_width_unit" )] ) );
+    l->setArrowWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "arrow_width_unit" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "arrow_width_unit_scale" ) ) )
-    l->setArrowWidthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "arrow_width_unit_scale" )] ) );
+    l->setArrowWidthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "arrow_width_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "arrow_start_width" ) ) )
     l->setArrowStartWidth( props[QStringLiteral( "arrow_start_width" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "arrow_start_width_unit" ) ) )
-    l->setArrowStartWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "arrow_start_width_unit" )] ) );
+    l->setArrowStartWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "arrow_start_width_unit" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "arrow_start_width_unit_scale" ) ) )
-    l->setArrowStartWidthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "arrow_start_width_unit_scale" )] ) );
+    l->setArrowStartWidthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "arrow_start_width_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "is_curved" ) ) )
     l->setIsCurved( props[QStringLiteral( "is_curved" )].toInt() == 1 );
@@ -68,19 +68,19 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QgsStringMap &props )
     l->setHeadLength( props[QStringLiteral( "head_length" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "head_length_unit" ) ) )
-    l->setHeadLengthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "head_length_unit" )] ) );
+    l->setHeadLengthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "head_length_unit" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "head_length_unit_scale" ) ) )
-    l->setHeadLengthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "head_length_unit_scale" )] ) );
+    l->setHeadLengthUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "head_length_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "head_thickness" ) ) )
     l->setHeadThickness( props[QStringLiteral( "head_thickness" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "head_thickness_unit" ) ) )
-    l->setHeadThicknessUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "head_thickness_unit" )] ) );
+    l->setHeadThicknessUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "head_thickness_unit" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "head_thickness_unit_scale" ) ) )
-    l->setHeadThicknessUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "head_thickness_unit_scale" )] ) );
+    l->setHeadThicknessUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "head_thickness_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "head_type" ) ) )
     l->setHeadType( static_cast<HeadType>( props[QStringLiteral( "head_type" )].toInt() ) );
@@ -92,10 +92,10 @@ QgsSymbolLayer *QgsArrowSymbolLayer::create( const QgsStringMap &props )
     l->setOffset( props[QStringLiteral( "offset" )].toDouble() );
 
   if ( props.contains( QStringLiteral( "offset_unit" ) ) )
-    l->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )] ) );
+    l->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "offset_unit_scale" ) ) )
-    l->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_unit_scale" )] ) );
+    l->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_unit_scale" )].toString() ) );
 
   if ( props.contains( QStringLiteral( "ring_filter" ) ) )
     l->setRingFilter( static_cast< RenderRingFilter>( props[QStringLiteral( "ring_filter" )].toInt() ) );
@@ -121,9 +121,9 @@ QString QgsArrowSymbolLayer::layerType() const
   return QStringLiteral( "ArrowLine" );
 }
 
-QgsStringMap QgsArrowSymbolLayer::properties() const
+QVariantMap QgsArrowSymbolLayer::properties() const
 {
-  QgsStringMap map;
+  QVariantMap map;
 
   map[QStringLiteral( "arrow_width" )] = QString::number( arrowWidth() );
   map[QStringLiteral( "arrow_width_unit" )] = QgsUnitTypes::encodeUnit( arrowWidthUnit() );
@@ -828,5 +828,10 @@ void QgsArrowSymbolLayer::setColor( const QColor &c )
 QColor QgsArrowSymbolLayer::color() const
 {
   return mSymbol.get() ? mSymbol->color() : mColor;
+}
+
+bool QgsArrowSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
+{
+  return true;
 }
 

@@ -28,12 +28,13 @@
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
+class QgsPointCloudLayer;
 
 /**
  * \ingroup core
  * \class QgsPointCloudRenderContext
  *
- * Encapsulates the render context for a 2D point cloud rendering operation.
+ * \brief Encapsulates the render context for a 2D point cloud rendering operation.
  *
  * \since QGIS 3.18
  */
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * taken from the point cloud index.
      */
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset );
+                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = nullptr );
 
     //! QgsPointCloudRenderContext cannot be copied.
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh ) = delete;
@@ -79,9 +80,21 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QgsVector3D scale() const { return mScale; }
 
     /**
+     * Sets the scale of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
+     */
+    void setScale( const QgsVector3D &scale ) { mScale = scale; }
+
+    /**
      * Returns the offset of the layer's int32 coordinates compared to CRS coords.
      */
     QgsVector3D offset() const { return mOffset; }
+
+    /**
+     * Sets the offset of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
+     */
+    void setOffset( const QgsVector3D &offset ) { mOffset = offset; }
 
     /**
      * Returns the total number of points rendered.
@@ -153,6 +166,13 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     double zValueFixedOffset() const { return mZValueFixedOffset; }
 
+    /**
+     * Returns the feedback object used to cancel rendering
+     *
+     * \since QGIS 3.20
+     */
+    QgsFeedback *feedback() const { return mFeedback; }
+
 #ifndef SIP_RUN
 
     /**
@@ -208,6 +228,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
 
+    QgsFeedback *mFeedback = nullptr;
 };
 
 
@@ -215,7 +236,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
  * \ingroup core
  * \class QgsPointCloudRenderer
  *
- * Abstract base class for 2d point cloud renderers.
+ * \brief Abstract base class for 2d point cloud renderers.
  *
  * \since QGIS 3.18
  */
@@ -279,6 +300,28 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Renders a \a block of point cloud data using the specified render \a context.
      */
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) = 0;
+
+    /**
+     * Returns the list of visible points of the point cloud layer \a layer and an extent defined by
+     * a geometry in the 2D plane \a geometry.
+     *
+     * The \a toleranceForPointIdentification argument can be used to specify a minimum tolerance allowable when
+     * identify from a point \a geometry value. This must be specified in the map units associated with the render \a context.
+     *
+     * \warning The \a geometry value must be specified in the render context's destination CRS, not the layer's native CRS!
+     */
+    QVector<QVariantMap> identify( QgsPointCloudLayer *layer, const QgsRenderContext &context, const QgsGeometry &geometry, double toleranceForPointIdentification = 0 ) SIP_SKIP;
+
+    /**
+     * Checks whether the point holding \a pointAttributes attributes will be rendered
+     * By default if not overridden in the subclass renderer will return true
+     * ( the renderer is responsible for the filtering behavior )
+     */
+    virtual bool willRenderPoint( const QMap<QString, QVariant> &pointAttributes )
+    {
+      Q_UNUSED( pointAttributes );
+      return true;
+    }
 
     /**
      * Creates a renderer from an XML \a element.
@@ -464,6 +507,8 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y )
     {
+      // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
+      // situations these may be floats or doubles!
       const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
       const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
       x = context.offset().x() + context.scale().x() * ix;
@@ -475,6 +520,8 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     static double pointZ( QgsPointCloudRenderContext &context, const char *ptr, int i )
     {
+      // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
+      // situations these may be floats or doubles!
       const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
       return ( context.offset().z() + context.scale().z() * iz ) * context.zValueScale() + context.zValueFixedOffset();
     }
@@ -484,6 +531,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     void drawPoint( double x, double y, const QColor &color, QgsPointCloudRenderContext &context ) const
     {
+      QPointF originalXY( x, y );
       context.renderContext().mapToPixel().transformInPlace( x, y );
       QPainter *painter = context.renderContext().painter();
       switch ( mPointSymbol )

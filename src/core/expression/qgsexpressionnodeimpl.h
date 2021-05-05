@@ -22,7 +22,7 @@
 
 /**
  * \ingroup core
- * A unary node is either negative as in boolean (not) or as in numbers (minus).
+ * \brief A unary node is either negative as in boolean (not) or as in numbers (minus).
  */
 class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 {
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 };
 
 /**
- * A binary expression operator, which operates on two values.
+ * \brief A binary expression operator, which operates on two values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 };
 
 /**
- * A indexing expression operator, which allows use of square brackets [] to reference map and array items.
+ * \brief A indexing expression operator, which allows use of square brackets [] to reference map and array items.
  * \ingroup core
  * \since QGIS 3.6
  */
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsExpressionNodeIndexOperator : public QgsExpressionNode
 };
 
 /**
- * An expression node for value IN or NOT IN clauses.
+ * \brief An expression node for value IN or NOT IN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
 };
 
 /**
- * An expression node for expression functions.
+ * \brief An expression node for expression functions.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 };
 
 /**
- * An expression node for literal values.
+ * \brief An expression node for literal values.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 };
 
 /**
- * An expression node which takes it value from a feature's field.
+ * \brief An expression node which takes it value from a feature's field.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 };
 
 /**
- * An expression node for CASE WHEN clauses.
+ * \brief An expression node for CASE WHEN clauses.
  * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
@@ -442,7 +442,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
   public:
 
     /**
-     * Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
+     * \brief Represents a "WHEN... THEN..." portation of a CASE WHEN clause in an expression.
      * \ingroup core
      */
     class CORE_EXPORT WhenThen

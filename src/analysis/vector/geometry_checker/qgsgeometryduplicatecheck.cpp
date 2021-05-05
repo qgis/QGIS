@@ -71,7 +71,7 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
       QString errMsg;
       QgsGeometry geomB = layerFeatureB.geometry();
       std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngineA->symDifference( geomB.constGet(), &errMsg ) );
-      if ( errMsg.isEmpty() && diffGeom && diffGeom->isEmpty() )
+      if ( errMsg.isEmpty() && ( !diffGeom || diffGeom->isEmpty() ) )
       {
         duplicates[layerFeatureB.layer()->id()].append( layerFeatureB.feature().id() );
       }
@@ -121,14 +121,12 @@ void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> 
           continue;
         }
         QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
-        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry().constGet() );
-        if ( diffGeom && diffGeom->isEmpty() )
+        std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngineA->symDifference( layerFeatureB.geometry().constGet() ) );
+        if ( !diffGeom || diffGeom->isEmpty() )
         {
           featurePoolB->deleteFeature( featureB.id() );
           changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
         }
-
-        delete diffGeom;
       }
     }
     error->setFixed( method );

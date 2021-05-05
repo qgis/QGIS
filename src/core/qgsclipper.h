@@ -34,7 +34,8 @@ SIP_FEATURE( ARM ) // Some parts are not available in sip bindings on ARM becaus
 
 /**
  * \ingroup core
- * A class to trim lines and polygons to within a rectangular region.
+ * \brief A class to trim lines and polygons to within a rectangular region.
+ *
  * The functions in this class are likely to be called from within a
  * render loop and hence need to as CPU efficient as possible.
  * The main purpose of the functions in this class are to trim lines

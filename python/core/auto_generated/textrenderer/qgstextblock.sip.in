@@ -10,9 +10,9 @@
 
 class QgsTextBlock
 {
-%Docstring
+%Docstring(signature="appended")
 
-Represents a block of text consisting of one or more QgsTextFragment objects.
+Represents a block of text consisting of one or more :py:class:`QgsTextFragment` objects.
 
 .. warning::
 

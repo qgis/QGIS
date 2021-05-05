@@ -12,9 +12,10 @@
 
 class QgsFieldFormatterRegistry : QObject
 {
-%Docstring
-The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
-A reference to the QgsFieldFormatterRegistry can be obtained from
+%Docstring(signature="appended")
+The :py:class:`QgsFieldFormatterRegistry` manages registered classes of :py:class:`QgsFieldFormatter`.
+
+A reference to the :py:class:`QgsFieldFormatterRegistry` can be obtained from
 :py:func:`QgsApplication.fieldFormatterRegistry()`.
 
 .. versionadded:: 3.0
@@ -55,7 +56,7 @@ Remove the field formatter with the specified id.
     QgsFieldFormatter *fieldFormatter( const QString &id ) const;
 %Docstring
 Gets a field formatter by its id. If there is no such id registered,
-a default QgsFallbackFieldFormatter with a null id will be returned instead.
+a default :py:class:`QgsFallbackFieldFormatter` with a null id will be returned instead.
 %End
 
     QgsFieldFormatter *fallbackFieldFormatter() const;

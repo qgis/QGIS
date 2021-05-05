@@ -345,10 +345,9 @@ void QgsStatusBarCoordinatesWidget::showExtent()
     return;
   }
 
-  // update the statusbar with the current extents.
-  QgsRectangle myExtents = mMapCanvas->extent();
   mLabel->setText( tr( "Extents" ) );
-  mLineEdit->setText( myExtents.toString( true ) );
+  mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(),
+                      mMousePrecisionDecimalPlaces ) );
 
   ensureCoordinatesVisible();
 }

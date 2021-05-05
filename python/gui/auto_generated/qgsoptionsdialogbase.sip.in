@@ -16,7 +16,7 @@
 
 class QgsOptionsDialogBase : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A base dialog for options and properties dialogs that offers vertical tabs.
 It handles saving/restoring of geometry, splitter and current tab states,
 switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -42,10 +42,10 @@ To use:
 %Docstring
 Constructor
 
-:param settingsKey: QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+:param settingsKey: :py:class:`QgsSettings` subgroup key for saving/restore ui states, e.g. "ProjectProperties".
 :param parent: parent object (owner)
 :param fl: widget flags
-:param settings: custom QgsSettings pointer
+:param settings: custom :py:class:`QgsSettings` pointer
 %End
     ~QgsOptionsDialogBase();
 

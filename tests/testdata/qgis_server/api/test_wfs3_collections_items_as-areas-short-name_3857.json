@@ -172,7 +172,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 1,
+      "id": "1",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -247,7 +247,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 2,
+      "id": "2",
       "properties": {
         "bearbeiter": "",
         "bemerkung": "",
@@ -314,7 +314,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 3,
+      "id": "3",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": null,
@@ -393,7 +393,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 4,
+      "id": "4",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -456,7 +456,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 5,
+      "id": "5",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -531,7 +531,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 6,
+      "id": "6",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -626,7 +626,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 7,
+      "id": "7",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -705,7 +705,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 8,
+      "id": "8",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": null,
@@ -768,7 +768,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 9,
+      "id": "9",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": null,
@@ -943,7 +943,7 @@ Content-Type: application/geo+json
         ],
         "type": "MultiPolygon"
       },
-      "id": 10,
+      "id": "10",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": null,

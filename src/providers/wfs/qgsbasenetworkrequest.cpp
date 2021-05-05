@@ -31,7 +31,7 @@ QgsBaseNetworkRequest::QgsBaseNetworkRequest( const QgsAuthorizationSettings &au
   : mAuth( auth )
   , mTranslatedComponent( translatedComponent )
 {
-  connect( QgsNetworkAccessManager::instance(), qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBaseNetworkRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBaseNetworkRequest::requestTimedOut );
 }
 
 QgsBaseNetworkRequest::~QgsBaseNetworkRequest()
@@ -208,7 +208,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
-    std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
+    std::unique_ptr<DownloaderThread> downloaderThread = std::make_unique<DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
     while ( true )

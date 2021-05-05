@@ -106,12 +106,12 @@ void QgsGpsDetector::advance()
 
       Q_ASSERT( gpsParams.size() >= 3 );
 
-      mConn = qgis::make_unique< QgsGpsdConnection >( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
+      mConn = std::make_unique< QgsGpsdConnection >( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
     else if ( mPortList.at( mPortIndex ).first.contains( QLatin1String( "internalGPS" ) ) )
     {
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
-      mConn = qgis::make_unique< QgsQtLocationConnection >();
+      mConn = std::make_unique< QgsQtLocationConnection >();
 #else
       qWarning( "QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen" );
 #endif
@@ -119,7 +119,7 @@ void QgsGpsDetector::advance()
     else
     {
 #if defined( HAVE_QT5SERIALPORT )
-      std::unique_ptr< QSerialPort > serial = qgis::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
+      std::unique_ptr< QSerialPort > serial = std::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
 
@@ -130,7 +130,7 @@ void QgsGpsDetector::advance()
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {
-        mConn = qgis::make_unique< QgsNmeaConnection >( serial.release() );
+        mConn = std::make_unique< QgsNmeaConnection >( serial.release() );
       }
 #else
       qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );

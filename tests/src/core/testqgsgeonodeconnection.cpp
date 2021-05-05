@@ -13,7 +13,7 @@
  *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"
@@ -95,7 +95,7 @@ void TestQgsGeoNodeConnection::initTestCase()
 // Test the creation of geonode connection
 void TestQgsGeoNodeConnection::testCreation()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -124,7 +124,7 @@ void TestQgsGeoNodeConnection::testCreation()
 // Test Layer API
 void TestQgsGeoNodeConnection::testLayerAPI()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -139,7 +139,7 @@ void TestQgsGeoNodeConnection::testLayerAPI()
 // Test Style API
 void TestQgsGeoNodeConnection::testStyleAPI()
 {
-  if ( QgsTest::isTravis() )
+  if ( QgsTest::isCIRun() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }

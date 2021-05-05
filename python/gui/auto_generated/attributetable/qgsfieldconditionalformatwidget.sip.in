@@ -10,7 +10,7 @@
 
 class QgsFieldConditionalFormatWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for customizing conditional formatting options.
 
 .. versionadded:: 2.12
@@ -51,7 +51,7 @@ and ``style`` is the initial definition of the style.
 %Docstring
 
 .. deprecated::
-   no longer used, use QgsEditConditionalFormatRuleWidget.loadStyle instead.
+   no longer used, use :py:class:`QgsEditConditionalFormatRuleWidget`.loadStyle instead.
 %End
 
  void reset() /Deprecated/;
@@ -88,7 +88,7 @@ rule was updated.
 
 class QgsEditConditionalFormatRuleWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for customizing an individual conditional formatting rule.
 
 .. versionadded:: 3.10

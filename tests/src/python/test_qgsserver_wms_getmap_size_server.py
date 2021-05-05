@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer MaxHeight and MaxWidth Override Options.
 
-From build dir, run: ctest -R PyQgsServerGetMapSize -V
+From build dir, run: ctest -R PyQgsServerWMSGetMapSizeServer -V
 
 .. note:: This test needs env vars to be set before the server is
           configured for the first time, for this

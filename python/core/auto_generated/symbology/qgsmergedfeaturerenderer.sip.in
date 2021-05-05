@@ -1,0 +1,146 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmergedfeaturerenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsMergedFeatureRenderer : QgsFeatureRenderer
+{
+%Docstring(signature="appended")
+:py:class:`QgsMergedFeatureRenderer` is a polygon or line-only feature renderer used to
+renderer a set of features merged (or dissolved) into a single geometry.
+
+It is designed on top of another feature renderer, which is called "embedded"
+Most of the methods are then only proxies to the embedded renderer. E.g. if
+the embedded renderer is a categorized renderer, then all the matching features
+for each categorized class will be dissolved together. Features from different
+classes will NOT be dissolved together.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsmergedfeaturerenderer.h"
+%End
+  public:
+
+    QgsMergedFeatureRenderer( QgsFeatureRenderer *embeddedRenderer /Transfer/ );
+%Docstring
+Constructor for QgsMergedFeatureRenderer.
+
+:param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
+%End
+
+
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer out of an XML, for loading
+%End
+
+    virtual QgsMergedFeatureRenderer *clone() const /Factory/;
+
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
+
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+
+%Docstring
+Renders a given feature.
+This will here collect features. The actual rendering will be postponed to :py:func:`~QgsMergedFeatureRenderer.stopRender`
+
+:param feature: the feature to render
+:param context: the rendering context
+:param layer: the symbol layer to render, if that makes sense
+:param selected: whether this feature has been selected (this will add decorations)
+:param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
+
+:return: ``True`` if the rendering was OK
+%End
+
+    virtual void stopRender( QgsRenderContext &context );
+
+%Docstring
+The actual rendering will take place here.
+Features collected during :py:func:`~QgsMergedFeatureRenderer.renderFeature` are rendered using the embedded feature renderer
+%End
+
+    virtual QString dump() const;
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    virtual bool filterNeedsGeometry() const;
+
+    virtual QgsFeatureRenderer::Capabilities capabilities();
+
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+
+    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QgsLegendSymbolList legendSymbolItems() const;
+
+    virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
+
+    virtual const QgsFeatureRenderer *embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
+
+    virtual bool legendSymbolItemsCheckable() const;
+
+    virtual bool legendSymbolItemChecked( const QString &key );
+
+    virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
+    virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+
+    static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
+
+:return: a new renderer if the conversion was possible, otherwise ``None``.
+%End
+
+  protected:
+
+    QgsMergedFeatureRenderer( const QString &type, QgsFeatureRenderer *embeddedRenderer /Transfer/ );
+%Docstring
+Constructor for QgsMergedFeatureRenderer.
+
+:param type: renderer ID string
+:param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
+%End
+
+    enum GeometryOperation
+    {
+      Merge,
+      InvertOnly,
+      MergeAndInvert,
+    };
+
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmergedfeaturerenderer.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

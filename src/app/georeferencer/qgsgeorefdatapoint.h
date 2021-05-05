@@ -43,6 +43,9 @@ class QgsGeorefDataPoint : public QObject
     QgsPointXY transCoords() const;
     void setTransCoords( const QgsPointXY &p );
 
+    QgsPointXY canvasCoords() const;
+    void setCanvasCoords( const QgsPointXY &p );
+
     bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
 
@@ -71,6 +74,7 @@ class QgsGeorefDataPoint : public QObject
     QgsPointXY mPixelCoords;
     QgsPointXY mMapCoords;
     QgsPointXY mTransCoords;
+    QgsPointXY mCanvasCoords;
 
     int mId;
     QgsCoordinateReferenceSystem mCrs;

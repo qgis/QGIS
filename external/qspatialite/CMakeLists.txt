@@ -3,7 +3,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR
 
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 
 include_directories(SYSTEM

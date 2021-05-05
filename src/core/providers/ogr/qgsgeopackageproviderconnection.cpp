@@ -220,8 +220,8 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  const auto res { executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                          QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows() };
+  const QList<QList<QVariant> > res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                      QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -238,35 +238,43 @@ void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema,
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
-// List of GPKG quoted system and dummy tables names to be excluded from the tables listing
+
+  // List of GPKG quoted system and dummy tables names to be excluded from the tables listing
   static const QStringList excludedTableNames { { QStringLiteral( "\"ogr_empty_table\"" ) } };
 
   checkCapability( Capability::Tables );
+
   if ( ! schema.isEmpty() )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
+
   QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;
   QString errCause;
   QList<QVariantList> results;
+
   try
   {
-    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
+    const QString sql = QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
                                         "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
+                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) );
     results = executeSql( sql );
-    for ( const auto &row : qgis::as_const( results ) )
+
+    for ( const auto &row : std::as_const( results ) )
     {
+
       if ( row.size() != 6 )
       {
         throw QgsProviderConnectionException( QObject::tr( "Error listing tables from %1: wrong number of columns returned by query" ).arg( uri() ) );
       }
+
       QgsGeoPackageProviderConnection::TableProperty property;
       property.setTableName( row.at( 0 ).toString() );
       property.setPrimaryKeyColumns( { QStringLiteral( "fid" ) } );
       property.setGeometryColumnCount( 0 );
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
       const QString dataType = row.at( 1 ).toString();
+
       // Table type
       if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
       {
@@ -278,6 +286,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
         property.setGeometryColumn( row.at( 5 ).toString() );
         property.setGeometryColumnCount( 1 );
       }
+
       if ( aspatialTypes.contains( dataType ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Aspatial );
@@ -287,13 +296,16 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       {
         bool ok;
         int srid = row.at( 3 ).toInt( &ok );
+
         if ( !ok )
         {
           throw QgsProviderConnectionException( QObject::tr( "Error fetching srs_id table information: %1" ).arg( row.at( 3 ).toString() ) );
         }
+
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( srid );
         property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
       }
+
       property.setComment( row.at( 4 ).toString() );
       tableInfo.push_back( property );
     }
@@ -340,11 +352,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::SpatialIndexExists,
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
-    Capability::AddField
+    Capability::AddField,
+    Capability::DropRasterTable
   };
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  mCapabilities |= Capability::DropRasterTable;
-#endif
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z,
@@ -380,10 +390,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
       auto iterator = std::make_shared<QgsGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
-      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
-      //       be returned indicating that the count isn’t know.
-      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* bForce=false: do not scan the whole layer */ ) );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
@@ -392,7 +398,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
@@ -425,14 +431,14 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRow()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
 {
-  const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
+  const QVariantList currentRow = mNextRow;
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
+QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -443,10 +449,10 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
       if ( ! mFields.isEmpty() )
       {
         QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
-        const QgsAttributes &constAttrs { f.attributes() };
-        for ( int i = 0; i < constAttrs.length(); i++ )
+        const QgsAttributes constAttrs  = f.attributes();
+        for ( const QVariant &attribute : constAttrs )
         {
-          row.push_back( constAttrs.at( i ) );
+          row.push_back( attribute );
         }
       }
       else // Fallback to strings
@@ -457,11 +463,17 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsGeoPackageProviderResultIterator::hasNextRow() const
+bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -478,9 +490,9 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
   const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
   if ( ! vl.isValid() || ! vl.dataProvider() )
   {
-    const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
+    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
                                vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" ) };
+                               QObject::tr( "unknown error" );
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
@@ -488,5 +500,8 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
 
 QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }

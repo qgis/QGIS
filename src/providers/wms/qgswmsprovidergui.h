@@ -20,6 +20,7 @@
 #include <QMainWindow>
 
 #include "qgsproviderguimetadata.h"
+#include <memory>
 
 class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
@@ -28,8 +29,15 @@ class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
 
     void registerGui( QMainWindow *widget ) override;
+    QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories() override;
+
+  private:
+
+    std::unique_ptr< QgsMapLayerConfigWidgetFactory > mWmstConfigWidgetFactory;
+
 };
 
 #endif // QGSWMSPROVIDERGUI_H

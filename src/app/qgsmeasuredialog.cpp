@@ -143,7 +143,7 @@ void QgsMeasureDialog::updateSettings()
 {
   QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   mCanvasUnits = mCanvas->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
@@ -461,12 +461,12 @@ void QgsMeasureDialog::updateUi()
       toolTip += "<br> * ";
       if ( mCartesian->isChecked() )
       {
-        toolTip += tr( "Cartesian calculation selected, so area is calculated using Cartesian calculations." );
+        toolTip += tr( "Cartesian calculation selected, so distance is calculated using Cartesian calculations." );
         mConvertToDisplayUnits = true;
       }
       else
       {
-        toolTip += tr( "No map projection set, so area is calculated using Cartesian calculations." );
+        toolTip += tr( "No map projection set, so distance is calculated using Cartesian calculations." );
         toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }

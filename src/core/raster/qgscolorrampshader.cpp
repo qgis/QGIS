@@ -37,7 +37,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
-  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
   QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
@@ -135,6 +135,50 @@ QgsColorRamp *QgsColorRampShader::sourceColorRamp() const
   return mSourceColorRamp.get();
 }
 
+QgsColorRamp *QgsColorRampShader::createColorRamp() const
+{
+  std::unique_ptr<QgsGradientColorRamp> ramp = std::make_unique< QgsGradientColorRamp >();
+  int count = mColorRampItemList.size();
+  if ( count == 0 )
+  {
+    const QColor none( 0, 0, 0, 0 );
+    ramp->setColor1( none );
+    ramp->setColor2( none );
+  }
+  else if ( count == 1 )
+  {
+    ramp->setColor1( mColorRampItemList[0].color );
+    ramp->setColor2( mColorRampItemList[0].color );
+  }
+  else
+  {
+    QgsGradientStopsList stops;
+    // minimum and maximum values can fall outside the range of the item list
+    const double min = minimumValue();
+    const double max = maximumValue();
+    for ( int i = 0; i < count; i++ )
+    {
+      double offset = ( mColorRampItemList[i].value - min ) / ( max - min );
+      if ( i == 0 )
+      {
+        ramp->setColor1( mColorRampItemList[i].color );
+        if ( offset <= 0.0 )
+          continue;
+      }
+      else if ( i == count - 1 )
+      {
+        ramp->setColor2( mColorRampItemList[i].color );
+        if ( offset >= 1.0 )
+          continue;
+      }
+      stops << QgsGradientStop( offset, mColorRampItemList[i].color );
+    }
+    ramp->setStops( stops );
+  }
+
+  return ramp.release();
+}
+
 void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp )
 {
   mSourceColorRamp.reset( colorramp );
@@ -142,10 +186,8 @@ void QgsColorRampShader::setSourceColorRamp( QgsColorRamp *colorramp )
 
 void QgsColorRampShader::classifyColorRamp( const int classes, const int band, const QgsRectangle &extent, QgsRasterInterface *input )
 {
-  if ( minimumValue() >= maximumValue() )
-  {
+  if ( minimumValue() > maximumValue() )
     return;
-  }
 
   bool discrete = colorRampType() == Discrete;
 
@@ -155,7 +197,18 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
   double min = minimumValue();
   double max = maximumValue();
 
-  if ( classificationMode() == Continuous )
+  if ( minimumValue() == maximumValue() )
+  {
+    if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
+    {
+      entryValues.push_back( min );
+      if ( discrete )
+        entryValues.push_back( std::numeric_limits<double>::infinity() );
+      for ( int i = 0; i < entryValues.size(); ++i )
+        entryColors.push_back( sourceColorRamp()->color( sourceColorRamp()->value( i ) ) );
+    }
+  }
+  else if ( classificationMode() == Continuous )
   {
     if ( sourceColorRamp() &&  sourceColorRamp()->count() > 1 )
     {
@@ -580,7 +633,7 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem, const 
   setColorRampItemList( itemList );
 
   if ( !mLegendSettings )
-    mLegendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+    mLegendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
 
   mLegendSettings->readXml( colorRampShaderElem, context );
 }

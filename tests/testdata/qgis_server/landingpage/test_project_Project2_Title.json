@@ -20,9 +20,9 @@ Content-Type: application/json
       "owsServiceOnlineResource": "Service Capabilities Oline Resource",
       "owsServiceTitle": "Service Capabilities Title",
       "wcsLayerIds": [],
-      "wcsServiceUrl": "",
+      "wcsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfsLayerIds": [],
-      "wfsServiceUrl": "",
+      "wfsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfstDeleteLayerIds": [],
       "wfstInsertLayerIds": [],
       "wfstUpdateLayerIds": [],
@@ -54,10 +54,10 @@ Content-Type: application/json
         "points restricted"
       ],
       "wmsRootName": "ShortNameForRootLayer",
-      "wmsServiceUrl": "",
+      "wmsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wmsTileBuffer": 0,
       "wmsUseLayerIds": true,
-      "wmtsServiceUrl": ""
+      "wmtsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
     },
     "crs": "EPSG:4326",
     "description": "Metadata abstract lorem ipsum...",
@@ -73,7 +73,7 @@ Content-Type: application/json
       38.23087034040887,
       55.95129087846767
     ],
-    "id": "59bff15bb762688fe12d953a76449ad6",
+    "id": "d9f865dd172a471f5565af21f98e138a",
     "initial_extent": [
       -4.550318430316912,
       41.98773931833632,

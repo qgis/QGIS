@@ -22,8 +22,11 @@
 #include "qgslogger.h"
 
 #include <algorithm>
+#include <random>
 
 #include <QTime>
+#include <QDir>
+#include <QFileInfo>
 
 //////////////
 
@@ -50,21 +53,21 @@ QgsGradientColorRamp::QgsGradientColorRamp( const QColor &color1, const QColor &
 {
 }
 
-QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
+QgsColorRamp *QgsGradientColorRamp::create( const QVariantMap &props )
 {
   // color1 and color2
   QColor color1 = DEFAULT_GRADIENT_COLOR1;
   QColor color2 = DEFAULT_GRADIENT_COLOR2;
   if ( props.contains( QStringLiteral( "color1" ) ) )
-    color1 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color1" )] );
+    color1 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color1" )].toString() );
   if ( props.contains( QStringLiteral( "color2" ) ) )
-    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color2" )] );
+    color2 = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color2" )].toString() );
 
   //stops
   QgsGradientStopsList stops;
   if ( props.contains( QStringLiteral( "stops" ) ) )
   {
-    const auto constSplit = props["stops"].split( ':' );
+    const auto constSplit = props["stops"].toString().split( ':' );
     for ( const QString &stop : constSplit )
     {
       int i = stop.indexOf( ';' );
@@ -72,7 +75,11 @@ QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
         continue;
 
       QColor c = QgsSymbolLayerUtils::decodeColor( stop.mid( i + 1 ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       stops.append( QgsGradientStop( stop.leftRef( i ).toDouble(), c ) );
+#else
+      stops.append( QgsGradientStop( QStringView {stop}.left( i ).toDouble(), c ) );
+#endif
     }
   }
 
@@ -86,11 +93,11 @@ QgsColorRamp *QgsGradientColorRamp::create( const QgsStringMap &props )
 
   // search for information keys starting with "info_"
   QgsStringMap info;
-  for ( QgsStringMap::const_iterator it = props.constBegin();
+  for ( QVariantMap::const_iterator it = props.constBegin();
         it != props.constEnd(); ++it )
   {
     if ( it.key().startsWith( QLatin1String( "info_" ) ) )
-      info[ it.key().mid( 5 )] = it.value();
+      info[ it.key().mid( 5 )] = it.value().toString();
   }
 
   QgsGradientColorRamp *r = new QgsGradientColorRamp( color1, color2, discrete, stops );
@@ -200,9 +207,9 @@ QgsGradientColorRamp *QgsGradientColorRamp::clone() const
   return r;
 }
 
-QgsStringMap QgsGradientColorRamp::properties() const
+QVariantMap QgsGradientColorRamp::properties() const
 {
-  QgsStringMap map;
+  QVariantMap map;
   map[QStringLiteral( "color1" )] = QgsSymbolLayerUtils::encodeColor( mColor1 );
   map[QStringLiteral( "color2" )] = QgsSymbolLayerUtils::encodeColor( mColor2 );
   if ( !mStops.isEmpty() )
@@ -320,7 +327,7 @@ QgsLimitedRandomColorRamp::QgsLimitedRandomColorRamp( int count, int hueMin, int
   updateColors();
 }
 
-QgsColorRamp *QgsLimitedRandomColorRamp::create( const QgsStringMap &props )
+QgsColorRamp *QgsLimitedRandomColorRamp::create( const QVariantMap &props )
 {
   int count = DEFAULT_RANDOM_COUNT;
   int hueMin = DEFAULT_RANDOM_HUE_MIN, hueMax = DEFAULT_RANDOM_HUE_MAX;
@@ -369,9 +376,9 @@ QgsLimitedRandomColorRamp *QgsLimitedRandomColorRamp::clone() const
   return new QgsLimitedRandomColorRamp( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax );
 }
 
-QgsStringMap QgsLimitedRandomColorRamp::properties() const
+QVariantMap QgsLimitedRandomColorRamp::properties() const
 {
-  QgsStringMap map;
+  QVariantMap map;
   map[QStringLiteral( "count" )] = QString::number( mCount );
   map[QStringLiteral( "hueMin" )] = QString::number( mHueMin );
   map[QStringLiteral( "hueMax" )] = QString::number( mHueMax );
@@ -398,7 +405,7 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
   int safeValMin = std::min( valMin, valMax );
 
   //start hue at random angle
-  double currentHueAngle = 360.0 * static_cast< double >( qrand() ) / RAND_MAX;
+  double currentHueAngle = 360.0 * static_cast< double >( std::rand() ) / RAND_MAX;
 
   colors.reserve( count );
   for ( int i = 0; i < count; ++i )
@@ -408,9 +415,9 @@ QList<QColor> QgsLimitedRandomColorRamp::randomColors( int count,
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
-    h = qBound( 0.0, std::round( ( std::fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359.0 );
-    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
-    v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
+    h = std::clamp( std::round( ( std::fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 0.0, 359.0 );
+    s = std::clamp( ( static_cast<int>( std::rand() ) % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 0, 255 );
+    v = std::clamp( ( static_cast<int>( std::rand() ) % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 0, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
   return colors;
@@ -448,9 +455,9 @@ QColor QgsRandomColorRamp::color( double value ) const
   }
 
   //can't use precalculated hues, use a totally random hue
-  int h = static_cast< int >( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
-  int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
-  int v = ( qrand() % ( maxVal - minVal + 1 ) ) + minVal;
+  int h = static_cast< int >( 360.0 * std::rand() / ( RAND_MAX + 1.0 ) );
+  int s = ( std::rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
+  int v = ( std::rand() % ( maxVal - minVal + 1 ) ) + minVal;
   return QColor::fromHsv( h, s, v );
 }
 
@@ -464,7 +471,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   //similar colors being picked. TODO - investigate alternative "n-visually distinct color" routines
 
   //random offsets
-  double hueOffset = ( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  double hueOffset = ( 360.0 * std::rand() / ( RAND_MAX + 1.0 ) );
 
   //try to maximise difference between hues. this is not an ideal implementation, as constant steps
   //through the hue wheel are not visually perceived as constant changes in hue
@@ -476,14 +483,16 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   for ( int idx = 0; idx < colorCount; ++ idx )
   {
     int h = static_cast< int >( std::round( currentHue ) ) % 360;
-    int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
-    int v = ( qrand() % ( DEFAULT_RANDOM_VAL_MAX - DEFAULT_RANDOM_VAL_MIN + 1 ) ) + DEFAULT_RANDOM_VAL_MIN;
+    int s = ( std::rand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
+    int v = ( std::rand() % ( DEFAULT_RANDOM_VAL_MAX - DEFAULT_RANDOM_VAL_MIN + 1 ) ) + DEFAULT_RANDOM_VAL_MIN;
     mPrecalculatedColors << QColor::fromHsv( h, s, v );
     currentHue += hueStep;
   }
 
   //lastly, shuffle color list
-  std::random_shuffle( mPrecalculatedColors.begin(), mPrecalculatedColors.end() );
+  std::random_device rd;
+  std::mt19937 g( rd() );
+  std::shuffle( mPrecalculatedColors.begin(), mPrecalculatedColors.end(), g );
 }
 
 QString QgsRandomColorRamp::type() const
@@ -496,9 +505,9 @@ QgsRandomColorRamp *QgsRandomColorRamp::clone() const
   return new QgsRandomColorRamp();
 }
 
-QgsStringMap QgsRandomColorRamp::properties() const
+QVariantMap QgsRandomColorRamp::properties() const
 {
-  return QgsStringMap();
+  return QVariantMap();
 }
 
 ////////////
@@ -511,14 +520,14 @@ QgsColorBrewerColorRamp::QgsColorBrewerColorRamp( const QString &schemeName, int
   loadPalette();
 }
 
-QgsColorRamp *QgsColorBrewerColorRamp::create( const QgsStringMap &props )
+QgsColorRamp *QgsColorBrewerColorRamp::create( const QVariantMap &props )
 {
   QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME;
   int colors = DEFAULT_COLORBREWER_COLORS;
   bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )];
+    schemeName = props[QStringLiteral( "schemeName" )].toString();
   if ( props.contains( QStringLiteral( "colors" ) ) )
     colors = props[QStringLiteral( "colors" )].toInt();
   if ( props.contains( QStringLiteral( "inverted" ) ) )
@@ -582,9 +591,9 @@ QgsColorBrewerColorRamp *QgsColorBrewerColorRamp::clone() const
   return new QgsColorBrewerColorRamp( mSchemeName, mColors, mInverted );
 }
 
-QgsStringMap QgsColorBrewerColorRamp::properties() const
+QVariantMap QgsColorBrewerColorRamp::properties() const
 {
-  QgsStringMap map;
+  QVariantMap map;
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "colors" )] = QString::number( mColors );
   map[QStringLiteral( "inverted" )] = QString::number( mInverted );
@@ -625,16 +634,16 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
     loadFile();
 }
 
-QgsColorRamp *QgsCptCityColorRamp::create( const QgsStringMap &props )
+QgsColorRamp *QgsCptCityColorRamp::create( const QVariantMap &props )
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
   bool inverted = false;
 
   if ( props.contains( QStringLiteral( "schemeName" ) ) )
-    schemeName = props[QStringLiteral( "schemeName" )];
+    schemeName = props[QStringLiteral( "schemeName" )].toString();
   if ( props.contains( QStringLiteral( "variantName" ) ) )
-    variantName = props[QStringLiteral( "variantName" )];
+    variantName = props[QStringLiteral( "variantName" )].toString();
   if ( props.contains( QStringLiteral( "inverted" ) ) )
     inverted = props[QStringLiteral( "inverted" )].toInt();
 
@@ -690,9 +699,9 @@ QgsGradientColorRamp *QgsCptCityColorRamp::cloneGradientRamp() const
 }
 
 
-QgsStringMap QgsCptCityColorRamp::properties() const
+QVariantMap QgsCptCityColorRamp::properties() const
 {
-  QgsStringMap map;
+  QVariantMap map;
   map[QStringLiteral( "schemeName" )] = mSchemeName;
   map[QStringLiteral( "variantName" )] = mVariantName;
   map[QStringLiteral( "inverted" )] = QString::number( mInverted );
@@ -843,19 +852,19 @@ QgsPresetSchemeColorRamp::QgsPresetSchemeColorRamp( const QgsNamedColorList &col
     mColors << qMakePair( QColor( 250, 75, 60 ), QStringLiteral( "#fa4b3c" ) );
 }
 
-QgsColorRamp *QgsPresetSchemeColorRamp::create( const QgsStringMap &properties )
+QgsColorRamp *QgsPresetSchemeColorRamp::create( const QVariantMap &properties )
 {
   QgsNamedColorList colors;
 
   int i = 0;
-  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
-  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
+  QString colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
+  QString colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
   while ( !colorString.isEmpty() )
   {
     colors << qMakePair( QgsSymbolLayerUtils::decodeColor( colorString ), colorName );
     i++;
-    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() );
-    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() );
+    colorString = properties.value( QStringLiteral( "preset_color_%1" ).arg( i ), QString() ).toString();
+    colorName = properties.value( QStringLiteral( "preset_color_name_%1" ).arg( i ), QString() ).toString();
   }
 
   return new QgsPresetSchemeColorRamp( colors );
@@ -914,9 +923,9 @@ QgsPresetSchemeColorRamp *QgsPresetSchemeColorRamp::clone() const
   return new QgsPresetSchemeColorRamp( *this );
 }
 
-QgsStringMap QgsPresetSchemeColorRamp::properties() const
+QVariantMap QgsPresetSchemeColorRamp::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   for ( int i = 0; i < mColors.count(); ++i )
   {
     props.insert( QStringLiteral( "preset_color_%1" ).arg( i ), QgsSymbolLayerUtils::encodeColor( mColors.at( i ).first ) );

@@ -30,7 +30,7 @@ class QgsPropertyCollection;
 /**
  * \class QgsTextShadowSettings
   * \ingroup core
-  * Container for settings relating to a text shadow.
+  * \brief Container for settings relating to a text shadow.
   * \note QgsTextShadowSettings objects are implicitly shared.
   * \since QGIS 3.0
  */

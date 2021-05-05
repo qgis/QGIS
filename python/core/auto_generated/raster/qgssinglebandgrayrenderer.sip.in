@@ -13,7 +13,7 @@
 
 class QgsSingleBandGrayRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer pipe for single band gray.
 %End
 
@@ -63,7 +63,7 @@ Takes ownership
     virtual QList<int> usesBands() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     const QgsColorRampLegendNodeSettings *legendSettings() const;

@@ -218,6 +218,16 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
+void QgsAttributeTypeDialog::setReuseLastValues( bool reuse )
+{
+  reuseLastValuesCheckBox->setChecked( reuse );
+}
+
+bool QgsAttributeTypeDialog::reuseLastValues() const
+{
+  return reuseLastValuesCheckBox->isChecked();
+}
+
 void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
 {
   leConstraintExpressionDescription->setText( desc );

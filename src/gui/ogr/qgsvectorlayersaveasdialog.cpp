@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
+#include <QRegularExpression>
 #include "gdal.h"
 
 static const int COLUMN_IDX_NAME = 0;
@@ -48,13 +49,13 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *par
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options, QWidget *parent, Qt::WindowFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
-  , mOptions( static_cast< Options >( options ) )
+  , mOptions( options )
 {
   if ( layer )
   {
@@ -90,6 +91,12 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 
   if ( !( mOptions & Extent ) )
     mExtentGroupBox->hide();
+
+  if ( !( mOptions & Metadata ) )
+  {
+    mCheckPersistMetadata->setChecked( false );
+    mCheckPersistMetadata->hide();
+  }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
   mButtonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
@@ -189,7 +196,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     if ( !filePath.isEmpty() && leLayername->isEnabled() )
     {
       QFileInfo fileInfo( filePath );
-      leLayername->setText( fileInfo.baseName() );
+      leLayername->setText( fileInfo.completeBaseName() );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
@@ -227,7 +234,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QComboBox *cb = new QComboBox();
           cb->setObjectName( it.key() );
-          for ( const QString &val : qgis::as_const( opt->values ) )
+          for ( const QString &val : std::as_const( opt->values ) )
           {
             cb->addItem( val, val );
           }
@@ -581,7 +588,6 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     delete item;
   }
 
-  // workaround so the Q_FOREACH macro does not get confused by the ','
   typedef QPair<QLabel *, QWidget *> LabelControlPair;
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
@@ -973,6 +979,11 @@ bool QgsVectorLayerSaveAsDialog::onlySelected() const
   return mSelectedOnly->isChecked();
 }
 
+bool QgsVectorLayerSaveAsDialog::persistMetadata() const
+{
+  return mCheckPersistMetadata->isChecked();
+}
+
 QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
 {
   int currentIndexData = mGeometryTypeComboBox->currentData().toInt();
@@ -1094,5 +1105,5 @@ void QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 
 void QgsVectorLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
 }

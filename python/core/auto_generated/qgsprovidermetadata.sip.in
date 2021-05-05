@@ -16,7 +16,7 @@
 
 class QgsMeshDriverMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Holds metadata about mesh driver
 
 .. versionadded:: 3.12
@@ -86,7 +86,7 @@ QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetad
 
 class QgsProviderMetadata : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Holds data provider key, description, and associated shared library file or function pointer information.
 
 Provider metadata refers either to providers which are loaded via libraries or
@@ -97,7 +97,7 @@ For library based providers, the metadata class is used in a lazy load
 implementation in :py:class:`QgsProviderRegistry`.  To save memory, data providers
 are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
 iteratively loaded once to get their metadata information, and then
-unloaded when the QgsProviderRegistry is created.)  :py:class:`QgsProviderMetadata`
+unloaded when the :py:class:`QgsProviderRegistry` is created.)  :py:class:`QgsProviderMetadata`
 supplies enough information to be able to later load the associated shared
 library object.
 %End
@@ -113,6 +113,14 @@ library object.
       LayerTypesForUri,
     };
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
+
+
+    enum ProviderCapability
+    {
+      FileBasedUris,
+      SaveLayerMetadata,
+    };
+    typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
 
 
 
@@ -147,6 +155,13 @@ This is used to provide a descriptive list of available data providers.
 Returns the provider metadata capabilities.
 
 .. versionadded:: 3.18
+%End
+
+    virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
+%Docstring
+Returns the provider's capabilities.
+
+.. versionadded:: 3.18.1
 %End
 
  QString library() const /Deprecated/;
@@ -256,7 +271,7 @@ The default method returns ``False`` for all URIs.
         const QgsDataProvider::ProviderOptions &options,
         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
 %Docstring
-Class factory to return a pointer to a newly created QgsDataProvider object
+Class factory to return a pointer to a newly created :py:class:`QgsDataProvider` object
 
 :param uri: the datasource uri
 :param options: creation options
@@ -330,7 +345,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
          - "url": base URL, for online services
          - "referer": referrer string, for HTTP requests
          - "host": hostname, for database services
-         - "bounds": hardcoded layer bounds (as a QgsRectangle)
+         - "bounds": hardcoded layer bounds (as a :py:class:`QgsRectangle`)
          - "crs": CRS definition
          - "authcfg": authentication configuration ID
 
@@ -411,6 +426,24 @@ Loads a layer style defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.20
+%End
+
     virtual bool createDb( const QString &dbPath, QString &errCause );
 %Docstring
 Creates database by the provider on the path
@@ -430,7 +463,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 Returns a dictionary of stored provider connections,
 the dictionary key is the connection identifier.
 Ownership is not transferred.
-Raises a QgsProviderConnectionException if any errors are encountered.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param cached: if ``False`` connections will be re-read from the settings
 
@@ -444,7 +477,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 Returns a dictionary of database provider connections,
 the dictionary key is the connection identifier.
 Ownership is not transferred.
-Raises a QgsProviderConnectionException if any errors are encountered.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param cached: if ``False`` connections will be re-read from the settings
 
@@ -457,7 +490,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %Docstring
 Searches and returns a (possibly NULL) connection from the stored provider connections.
 Ownership is not transferred.
-Raises a QgsProviderConnectionException if any errors are encountered.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param name: the connection name
 :param cached: if ``False`` connections will be re-read from the settings
@@ -482,7 +515,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.
@@ -495,7 +528,7 @@ Ownership is transferred to the caller.
     virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
 Removes the connection with the given ``name`` from the settings.
-Raises a QgsProviderConnectionException if any errors are encountered.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
 
@@ -563,6 +596,7 @@ relating to the connection have been updated.
 
 QFlags<QgsProviderMetadata::ProviderMetadataCapability> operator|(QgsProviderMetadata::ProviderMetadataCapability f1, QFlags<QgsProviderMetadata::ProviderMetadataCapability> f2);
 
+QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::ProviderCapability f1, QFlags<QgsProviderMetadata::ProviderCapability> f2);
 
 
 /************************************************************************

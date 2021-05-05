@@ -27,7 +27,7 @@
 /**
  * \class QgsTemporalProperty
  * \ingroup core
- * Base class for temporal property.
+ * \brief Base class for temporal property.
  *
  * \since QGIS 3.14
  */

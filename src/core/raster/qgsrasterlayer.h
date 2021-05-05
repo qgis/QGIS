@@ -53,7 +53,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 /**
  * \ingroup core
  *
- * Represents a raster layer.
+ * \brief Represents a raster layer.
  *
  * A QgsRasterLayer is instantiated by specifying the name of a data provider,
  * such as "gdal" or "wms", and a url defining the specific data set to connect to.
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \returns TRUE in case of success
      * \since QGIS 3.6
      */
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
+    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 
     /**
      * If the ignoreExtent flag is set, the layer will also render outside the

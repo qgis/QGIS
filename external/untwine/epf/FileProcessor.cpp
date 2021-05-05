@@ -50,7 +50,11 @@ void FileProcessor::run()
     // This is some random cell that ultimately won't get used, but it contains a buffer
     // into which we can write data.
     Cell *cell = m_cellMgr.get(VoxelKey());
+#ifdef _MSC_VER
+    f.setCallback([this, &CountIncrement, &count, &limit, &cell](pdal::PointRef& point)
+#else
     f.setCallback([this, &count, &limit, &cell](pdal::PointRef& point)
+#endif
         {
             // Write the data into the point buffer in the cell.  This is the *last*
             // cell buffer that we used. We're hoping that it's the right one.

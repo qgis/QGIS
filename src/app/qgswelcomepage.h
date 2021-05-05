@@ -68,8 +68,6 @@ class QgsWelcomePage : public QWidget
     void updateNewsFeedVisibility();
 
   private:
-    void updateRecentProjectsVisibility();
-
     QgsRecentProjectItemsModel *mRecentProjectsModel = nullptr;
     QTextBrowser *mVersionInformation = nullptr;
     QgsVersionInfo *mVersionInfo = nullptr;

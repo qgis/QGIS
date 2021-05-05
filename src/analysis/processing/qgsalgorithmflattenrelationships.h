@@ -22,6 +22,7 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsrelation.h"
 
 class QgsVectorLayerFeatureSource;
 

@@ -25,16 +25,16 @@
 
 /**
  * \ingroup core
- * Holds data auth method key, description, and associated shared library file information.
-
-   The metadata class is used in a lazy load implementation in
-   QgsAuthMethodRegistry.  To save memory, auth methods are only actually
-   loaded via QLibrary calls if they're to be used.  (Though they're all
-   iteratively loaded once to get their metadata information, and then
-   unloaded when the QgsAuthMethodRegistry is created.)  QgsProviderMetadata
-   supplies enough information to be able to later load the associated shared
-   library object.
- * \note Culled from QgsProviderMetadata
+ * \brief Holds data auth method key, description, and associated shared library file information.
+ *
+ * The metadata class is used in a lazy load implementation in
+ * QgsAuthMethodRegistry.  To save memory, auth methods are only actually
+ * loaded via QLibrary calls if they're to be used.  (Though they're all
+ * iteratively loaded once to get their metadata information, and then
+ * unloaded when the QgsAuthMethodRegistry is created.)  QgsProviderMetadata
+ * supplies enough information to be able to later load the associated shared
+ * library object.
+ *
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsAuthMethodMetadata
@@ -50,23 +50,23 @@ class CORE_EXPORT QgsAuthMethodMetadata
     QgsAuthMethodMetadata( const QString &_key, const QString &_description, const QString &_library );
 
     /**
-     * This returns the unique key associated with the method
-
-        This key string is used for the associative container in QgsAtuhMethodRegistry
+     * Returns the unique key associated with the method
+     *
+     * This key string is used for the associative container in QgsAtuhMethodRegistry
      */
     QString key() const;
 
     /**
-     * This returns descriptive text for the method
-
-        This is used to provide a descriptive list of available data methods.
+     * Returns descriptive text for the method.
+     *
+     * This is used to provide a descriptive list of available data methods.
      */
     QString description() const;
 
     /**
-     * This returns the library file name
-
-        This is used to QLibrary calls to load the method.
+     * Returns the library file name.
+     *
+     * This is used to QLibrary calls to load the method.
      */
     QString library() const;
 

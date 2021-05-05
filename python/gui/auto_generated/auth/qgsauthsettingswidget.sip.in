@@ -11,7 +11,7 @@
 
 class QgsAuthSettingsWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for entering authentication credentials both in the form username/password
 and by using QGIS Authentication Database and its authentication configurations.
 

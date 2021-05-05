@@ -19,10 +19,12 @@
 #include <limits>
 
 #include <QUuid>
+#include <QUrl>
 
 #include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerfactory.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
 #include "qgsmeshlayer.h"
@@ -63,9 +65,9 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
     ok = setDataProvider( providerKey, providerOptions, flags );
   }
 
+  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   if ( ok )
   {
-    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
     setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
     if ( mDataProvider )
@@ -537,6 +539,7 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const
@@ -975,7 +978,7 @@ static QgsColorRamp *_createDefaultColorRamp()
     return ramp;
 
   // definition of "Plasma" color ramp (in case it is not available in the style for some reason)
-  QgsStringMap props;
+  QVariantMap props;
   props["color1"] = "13,8,135,255";
   props["color2"] = "240,249,33,255";
   props["stops"] =
@@ -1233,7 +1236,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "mesh" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::MeshLayer ) );
 
   // add provider node
   if ( mDataProvider )

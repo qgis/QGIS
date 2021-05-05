@@ -37,6 +37,7 @@
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
+#include "qgstextrendererutils.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -44,45 +45,13 @@
 
 /**
  * \ingroup core
+ * \brief pal labeling engine
  * \class pal::LabelInfo
  * \note not available in Python bindings
  */
 
 namespace pal
 {
-  //! Optional additional info about label (for curved labels)
-  class CORE_EXPORT LabelInfo
-  {
-    public:
-      struct CharacterInfo
-      {
-        double width;
-      };
-
-      LabelInfo( int num, double height, double maxinangle = 20.0, double maxoutangle = -20.0 )
-      {
-        max_char_angle_inside = maxinangle;
-        // outside angle should be negative
-        max_char_angle_outside = maxoutangle > 0 ? -maxoutangle : maxoutangle;
-        label_height = height;
-        char_num = num;
-        char_info = new CharacterInfo[num];
-      }
-      ~LabelInfo() { delete [] char_info; }
-
-      //! LabelInfo cannot be copied
-      LabelInfo( const LabelInfo &rh ) = delete;
-      //! LabelInfo cannot be copied
-      LabelInfo &operator=( const LabelInfo &rh ) = delete;
-
-      double max_char_angle_inside;
-      double max_char_angle_outside;
-      double label_height;
-      int char_num;
-      CharacterInfo *char_info = nullptr;
-
-  };
-
   class LabelPosition;
   class FeaturePart;
 
@@ -97,6 +66,14 @@ namespace pal
 
     public:
 
+      //! Path offset variances used in curved placement.
+      enum PathOffset
+      {
+        NoOffset,
+        PositiveOffset,
+        NegativeOffset
+      };
+
       /**
        * Creates a new generic feature.
         * \param lf a pointer for a feature which contains the spatial entites
@@ -107,7 +84,7 @@ namespace pal
       FeaturePart( const FeaturePart &other );
 
       /**
-       * Delete the feature
+       * Deletes the feature.
        */
       ~FeaturePart() override;
 
@@ -237,17 +214,16 @@ namespace pal
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
-       * \param path_positions line path to place label on
-       * \param path_distances array of distances to each segment on path
-       * \param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
+       * \param mapShape line path to place label on
+       * \param pathDistances array of distances to each segment on path
+       * \param direction either RespectPainterOrientation or FollowLineDirection
        * \param distance distance to offset label along curve by
-       * \param reversed if TRUE label is reversed from lefttoright to righttoleft
-       * \param flip if TRUE label is placed on the other side of the line
+       * \param labeledLineSegmentIsRightToLeft if TRUE label is reversed from lefttoright to righttoleft
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
-          int &orientation, double distance, bool &reversed, bool &flip, bool applyAngleConstraints );
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
+          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints );
 
       /**
        * Generate curved candidates for line features.
@@ -353,11 +329,7 @@ namespace pal
       double calculatePriority() const;
 
       //! Returns TRUE if feature's label must be displayed upright
-      bool showUprightLabels() const;
-
-      //! Returns TRUE if the next char position is found. The referenced parameters are updated.
-      bool nextCharPosition( double charWidth, double segmentLength, PointSet *path_positions, int &index, double &currentDistanceAlongSegment,
-                             double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY ) const;
+      bool onlyShowUprightLabels() const;
 
       /**
        * Returns the total number of repeating labels associated with this label.

@@ -34,13 +34,10 @@ namespace QgsWfs
     return QStringLiteral( "1.1.0" );
   }
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     QUrl href;
-    if ( project )
-    {
-      href.setUrl( QgsServerProjectUtils::wfsServiceUrl( *project ) );
-    }
+    href.setUrl( QgsServerProjectUtils::wfsServiceUrl( project ? *project : *QgsProject::instance(), request, settings ) );
 
     // Build default url
     if ( href.isEmpty() )
@@ -56,7 +53,8 @@ namespace QgsWfs
       href = request.originalUrl();
       QUrlQuery q( href );
 
-      for ( auto param : q.queryItems() )
+      const auto constQueryItems = q.queryItems();
+      for ( const auto &param : constQueryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
           q.removeAllQueryItems( param.first );
@@ -73,14 +71,14 @@ namespace QgsWfs
     QString name = layer->name();
     if ( !layer->shortName().isEmpty() )
       name = layer->shortName();
-    name = name.replace( ' ', '_' );
+    name = name.replace( ' ', '_' ).replace( ':', '-' );
     return name;
   }
 
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
   {
     QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-    for ( const QString &layerId : layerIds )
+    for ( const QString &layerId : std::as_const( layerIds ) )
     {
       QgsMapLayer *layer = project->mapLayer( layerId );
       if ( !layer )

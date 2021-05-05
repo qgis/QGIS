@@ -64,7 +64,7 @@ void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRe
 
   QString expression;
 
-  if ( mResolved && mFilterFeaturesExpressions.keys().contains( layer->id() ) )
+  if ( mResolved && mFilterFeaturesExpressions.contains( layer->id() ) )
   {
     expression = mFilterFeaturesExpressions[layer->id()];
   }
@@ -190,12 +190,11 @@ bool QgsAccessControl::fillCacheKey( QStringList &cacheKey ) const
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     QString newKey = acIterator.value()->cacheKey();
-    if ( newKey.length() == 0 )
+    if ( ! newKey.isEmpty() )
     {
       cacheKey.clear();
       return false;
     }
-    cacheKey << newKey;
   }
   return true;
 }

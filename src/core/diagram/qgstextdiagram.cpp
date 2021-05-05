@@ -221,11 +221,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
     QString val = expression->evaluate( &expressionContext ).toString();
 
     //find out dimensions
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-    double textWidth = fontMetrics.width( val );
-#else
     double textWidth = fontMetrics.horizontalAdvance( val );
-#endif
     double textHeight = fontMetrics.height();
 
     mPen.setColor( s.categoryColors.at( i ) );

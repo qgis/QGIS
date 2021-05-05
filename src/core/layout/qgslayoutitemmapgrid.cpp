@@ -212,7 +212,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 
 void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
@@ -221,7 +221,7 @@ void QgsLayoutItemMapGrid::createDefaultGridLineSymbol()
 
 void QgsLayoutItemMapGrid::createDefaultGridMarkerSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "2.0" ) );
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
@@ -372,7 +372,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   else
   {
     //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
-    mGridLineSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+    mGridLineSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
     mGridLineSymbol->setWidth( itemElem.attribute( QStringLiteral( "penWidth" ), QStringLiteral( "0" ) ).toDouble() );
     mGridLineSymbol->setColor( QColor( itemElem.attribute( QStringLiteral( "penColorRed" ), QStringLiteral( "0" ) ).toInt(),
                                        itemElem.attribute( QStringLiteral( "penColorGreen" ), QStringLiteral( "0" ) ).toInt(),

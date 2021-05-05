@@ -39,6 +39,7 @@
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
+#include "qgsgeos.h"
 #include "qgsvectordataproviderfeaturepool.h"
 #include "qgsmultilinestring.h"
 #include "qgslinestring.h"
@@ -571,7 +572,7 @@ void TestQgsGeometryChecks::testAllowedGaps()
   auto testContext = createTestContext( dir, layers );
 
   // Allowed gaps layer
-  std::unique_ptr<QgsVectorLayer> allowedGaps = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> allowedGaps = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( allowedGaps.get(), true, false );
 
   // Test detection
@@ -603,7 +604,15 @@ void TestQgsGeometryChecks::testAllowedGaps()
   QgsFeatureIterator it = allowedGaps->getFeatures();
   QVERIFY( it.nextFeature( f ) );
 
-  QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.393901 -0.769953, 0.25997 -0.88388, 0.26997 -0.99981, 0.24598 -0.865897, 0.3939 -0.76995))" ).asWkt( 4 ) );
+  qDebug() << GEOSversion() << "\n";
+  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
+  {
+    QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.393901 -0.769953, 0.25997 -0.88388, 0.26997 -0.99981, 0.24598 -0.865897, 0.3939 -0.76995))" ).asWkt( 4 ) );
+  }
+  else
+  {
+    QCOMPARE( f.geometry().asWkt( 4 ), QgsGeometry::fromWkt( "Polygon ((0.246 -0.8659, 0.3939 -0.77, 0.26 -0.8839, 0.27 -0.9998, 0.246 -0.8659))" ).asWkt( 4 ) );
+  }
 
   // Run check again after adding the gap geometry to the allowed gaps layer: one less error
   check.prepare( testContext.first, configuration );
@@ -1261,9 +1270,23 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   // Ensure it actually worked
   testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
   QVERIFY( f.geometry().area() < areaOld );
-  // And that we don't have unexpected changes on unaffected points
-  QCOMPARE( f.geometry().vertexAt( 1 ), pointOld_1 );
-  QCOMPARE( f.geometry().vertexAt( 2 ), pointOld_2 );
+  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
+  {
+    // And that we don't have unexpected changes on unaffected points
+    QCOMPARE( f.geometry().vertexAt( 1 ), pointOld_1 );
+    QCOMPARE( f.geometry().vertexAt( 2 ), pointOld_2 );
+  }
+  else
+  {
+    /* For reference
+    qDebug() << f.geometry().vertexAt( 1 ).asWkt() << "\n"; // "Point (2537366.84566075634211302 1152360.28978145681321621)"
+    qDebug() << pointOld_1.asWkt() << "\n"; // "Point (2537221.53079314017668366 1152360.02460834058001637)"
+    qDebug() << f.geometry().vertexAt( 2 ).asWkt() << "\n"; // "Point (2537297.08237999258562922 1152290.78251273254863918)"
+    qDebug() << pointOld_2.asWkt() << "\n"; //  "Point (2537366.84566075634211302 1152360.28978145681321621)"
+    */
+    QCOMPARE( f.geometry().vertexAt( 1 ).asWkt( 4 ), QStringLiteral( "Point (2537366.8457 1152360.2898)" ) );
+    QCOMPARE( f.geometry().vertexAt( 2 ).asWkt( 4 ), QStringLiteral( "Point (2537297.0824 1152290.7825)" ) );
+  }
 
   cleanupTestContext( testContext );
 }

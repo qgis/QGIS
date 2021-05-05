@@ -442,7 +442,7 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
   connect( radioButtonDefinedDateTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
   connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
   connect( dateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
-  connect( comboBoxDatasetTimeStep, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( comboBoxDatasetTimeStep, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
 
   updateWidget();
@@ -493,21 +493,21 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
   QString type = mValue.value( QStringLiteral( "type" ) ).toString();
 
   setEnabled( true );
-  if ( type == QStringLiteral( "static" ) )
+  if ( type == QLatin1String( "static" ) )
   {
     setEnabled( false );
   }
-  else if ( type == QStringLiteral( "dataset-time-step" ) )
+  else if ( type == QLatin1String( "dataset-time-step" ) )
   {
     whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
     whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( mValue.value( QStringLiteral( "value" ) ) ) );
   }
-  else if ( type == QStringLiteral( "dataset-time-step" ) )
+  else if ( type == QLatin1String( "dataset-time-step" ) )
   {
     radioButtonDefinedDateTime->setChecked( true );
     whileBlocking( dateTimeEdit )->setDate( mValue.value( QStringLiteral( "value" ) ).toDate() );
   }
-  else if ( type == QStringLiteral( "current-context-time" ) )
+  else if ( type == QLatin1String( "current-context-time" ) )
   {
     whileBlocking( radioButtonCurrentCanvasTime )->setChecked( true );
   }

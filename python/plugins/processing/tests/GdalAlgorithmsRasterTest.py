@@ -30,7 +30,9 @@ from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
                        QgsRectangle,
                        QgsRasterLayer,
-                       QgsProject)
+                       QgsProject,
+                       QgsProjUtils,
+                       QgsCoordinateReferenceSystem)
 
 from qgis.testing import (start_app,
                           unittest)
@@ -94,6 +96,12 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
     def test_definition_file(self):
         return 'gdal_algorithm_raster_tests.yaml'
 
+    @staticmethod
+    def get_param_value_and_expected_string_for_custom_crs(proj_def):
+        crs = QgsCoordinateReferenceSystem.fromProj(proj_def)
+        custom_crs = f'proj4: {proj_def}'
+        return custom_crs, crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL).replace('"', '"""')
+
     def testAssignProjection(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -119,12 +127,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
              source])
 
         # with target using custom projection
-        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs(
+            '+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'CRS': custom_crs}, context, feedback),
             ['gdal_edit.py',
-             '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+             f'-a_srs "{expected_crs_string}" ' +
              source])
 
         # with non-EPSG crs code
@@ -250,13 +259,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/check.jpg'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 translate_alg.getConsoleCommands({'INPUT': source,
                                                   'TARGET_CRS': custom_crs,
                                                   'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdal_translate',
-                 '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+                 f'-a_srs "{expected_crs_string}" ' +
                  '-of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -393,7 +402,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'MASK': mask,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with NODATA value
@@ -403,7 +412,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 9999,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value
@@ -413,7 +422,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'NODATA': 0,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with "0" NODATA value and custom data type
@@ -424,7 +433,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'DATA_TYPE': 6,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-ot Float32 -of JPEG -cutline ' +
+                 '-overwrite -ot Float32 -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
                  outdir + '/check.jpg'])
             # with creation options
@@ -434,7 +443,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -446,7 +455,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '-nosrcalpha -wm 2048 -nomd',
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-of JPEG -cutline ' +
+                 '-overwrite -of JPEG -cutline ' +
                  mask + ' -cl polys2 -crop_to_cutline -multi -nosrcalpha -wm 2048 -nomd ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
@@ -612,13 +621,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs,
                                         'OUTPUT': outdir + '/'}, context, feedback),
                 ['gdal2tiles.py',
-                 '-p mercator -w all -r average -s "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
+                 f'-p mercator -w all -r average -s "{expected_crs_string}" ' +
                  source + ' ' +
                  outdir + '/'])
 
@@ -650,7 +659,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
             # check that formula is not escaped and formula is returned as it is
             formula = 'A * 2'  # <--- add spaces in the formula
@@ -660,7 +669,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'FORMULA': formula,
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
 
             # additional creation options
             formula = 'A*2'
@@ -671,7 +680,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OPTIONS': 'COMPRESS=JPEG|JPEG_QUALITY=75',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --co COMPRESS=JPEG --co JPEG_QUALITY=75 --outfile {}'.format(formula, source, output)])
 
             # additional parameters
             formula = 'A*2'
@@ -682,7 +691,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'EXTRA': '--debug --quiet',
                                         'OUTPUT': output}, context, feedback),
                 ['gdal_calc.py',
-                 '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --debug --quiet --outfile {}'.format(formula, source, output)])
+                 '--overwrite --calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --debug --quiet --outfile {}'.format(formula, source, output)])
 
     def testGdalInfo(self):
         context = QgsProcessingContext()
@@ -791,13 +800,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             self.assertIn('--optfile ', commands[1])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             commands = alg.getConsoleCommands({'LAYERS': [source],
                                                'TARGET_CRS': custom_crs,
                                                'OUTPUT': outdir + '/test.shp'}, context, feedback)
             self.assertEqual(len(commands), 2)
             self.assertEqual(commands[0], 'gdaltindex')
-            self.assertIn('-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
+            self.assertIn(f'-tileindex location -t_srs "{expected_crs_string}" -f "ESRI Shapefile" ' + outdir + '/test.shp', commands[1])
             self.assertIn('--optfile ', commands[1])
 
             # with non-EPSG crs code
@@ -1529,6 +1538,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         source = os.path.join(testDataPath, 'polys.gml')
+        sourceZ = os.path.join(testDataPath, 'pointsz.gml')
         alg = rasterize()
         alg.initAlgorithm()
 
@@ -1581,6 +1591,27 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_rasterize',
                  '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add ' +
                  source + ' ' +
+                 outdir + '/check.jpg'])
+
+            # use_Z selected with no field
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+                 sourceZ + ' ' +
+                 outdir + '/check.jpg'])
+
+            # use_Z selected with field indicated (should prefer use_Z)
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': sourceZ,
+                                        'FIELD': 'elev',
+                                        'USE_Z': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l pointsz -3d -ts 0.0 0.0 -ot Float32 -of JPEG ' +
+                 sourceZ + ' ' +
                  outdir + '/check.jpg'])
 
     def testRasterizeOver(self):
@@ -1688,13 +1719,13 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  ])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': [source],
                                         'SOURCE_CRS': custom_crs,
                                         'OUTPUT': outdir}, context, feedback),
                 ['gdal_retile.py',
-                 '-ps 256 256 -overlap 0 -levels 1 -s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
+                 f'-ps 256 256 -overlap 0 -levels 1 -s_srs "{expected_crs_string}" -r near -ot Float32 -targetDir {outdir} {source}'
                  ])
 
             # with non-EPSG crs code
@@ -1705,6 +1736,24 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                 ['gdal_retile.py',
                  '-ps 256 256 -overlap 0 -levels 1 -s_srs EPSG:3111 -r near -ot Float32 -targetDir {} {}'.format(outdir, source)
                  ])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': '',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -targetDir {} '.format(outdir) +
+                 source])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': [source],
+                                        'OUTPUT_CSV': 'out.csv',
+                                        'DELIMITER': ';',
+                                        'OUTPUT': outdir}, context, feedback),
+                ['gdal_retile.py',
+                 '-ps 256 256 -overlap 0 -levels 1 -r near -ot Float32 -csv out.csv -csvDelim ";" -targetDir {} '.format(outdir) +
+                 source])
 
             # additional parameters
             self.assertEqual(
@@ -1798,19 +1847,19 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  outdir + '/check.jpg'])
 
             # with target using custom projection
-            custom_crs = 'proj4: +proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+            custom_crs, expected_crs_string = self.get_param_value_and_expected_string_for_custom_crs('+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs,
                                         'TARGET_CRS': custom_crs,
                                         'OUTPUT': outdir + '/check.jpg'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -of JPEG ' +
+                 f'-s_srs "{expected_crs_string}" -t_srs "{expected_crs_string}" -r near -of JPEG ' +
                  source + ' ' +
                  outdir + '/check.jpg'])
 
             # with target using custom projection and user-defined extent
-            custom_crs2 = 'proj4: +proj=longlat +a=6378388 +b=6356912 +no_defs'
+            custom_crs2, expected_crs_string2 = self.get_param_value_and_expected_string_for_custom_crs('+proj=longlat +a=6378388 +b=6356912 +no_defs')
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
                                         'SOURCE_CRS': custom_crs2,
@@ -1819,7 +1868,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'TARGET_EXTENT_CRS': custom_crs2,
                                         'OUTPUT': outdir + '/check.tif'}, context, feedback),
                 ['gdalwarp',
-                 '-s_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -t_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -r near -te 18.67 45.78 18.7 45.81 -te_srs "+proj=longlat +a=6378388 +b=6356912 +no_defs" -of GTiff ' +
+                 f'-s_srs "{expected_crs_string2}" -t_srs "{expected_crs_string2}" -r near -te 18.67 45.78 18.7 45.81 -te_srs "{expected_crs_string2}" -of GTiff ' +
                  source + ' ' +
                  outdir + '/check.tif'])
 
@@ -2501,7 +2550,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest ' +
+                              '-overwrite -resolution average -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # custom resolution
@@ -2512,7 +2561,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution lowest -separate -r nearest ' +
+                              '-overwrite -resolution lowest -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # single layer
@@ -2523,7 +2572,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -r nearest ' +
+                              '-overwrite -resolution average -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # projection difference
@@ -2534,7 +2583,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -allow_projection_difference -r nearest ' +
+                              '-overwrite -resolution average -separate -allow_projection_difference -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # add alpha band
@@ -2545,7 +2594,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -addalpha -r nearest ' +
+                              '-overwrite -resolution average -separate -addalpha -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # assign CRS
@@ -2556,7 +2605,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -a_srs EPSG:3111 -r nearest ' +
+                              '-overwrite -resolution average -separate -a_srs EPSG:3111 -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2568,7 +2617,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -a_srs EPSG:20936 -r nearest ' +
+                              '-overwrite -resolution average -separate -a_srs EPSG:20936 -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # source NODATA
@@ -2579,7 +2628,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata "-9999" ' +
+                              '-overwrite -resolution average -separate -r nearest -srcnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2590,7 +2639,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -srcnodata "-9999 9999" ' +
+                              '-overwrite -resolution average -separate -r nearest -srcnodata "-9999 9999" ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 
@@ -2601,7 +2650,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest ' +
+                              '-overwrite -resolution average -separate -r nearest ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
             # additional parameters
@@ -2612,7 +2661,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             cmd[1] = t[:t.find('-input_file_list') + 17] + t[t.find('buildvrtInputFiles.txt'):]
             self.assertEqual(cmd,
                              ['gdalbuildvrt',
-                              '-resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
+                              '-overwrite -resolution average -separate -r nearest -overwrite -optim RASTER -vrtnodata -9999 ' +
                               '-input_file_list buildvrtInputFiles.txt ' +
                               outdir + '/check.vrt'])
 

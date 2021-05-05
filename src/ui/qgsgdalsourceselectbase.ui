@@ -207,6 +207,29 @@
        </layout>
       </widget>
      </item>
+     <item>
+      <widget class="QgsCollapsibleGroupBox" name="mOpenOptionsGroupBox">
+       <property name="title">
+        <string>Options</string>
+       </property>
+       <layout class="QVBoxLayout" name="openOptionsVBoxLayout">
+         <item>
+           <widget class="QLabel" name="mOpenOptionsLabel">
+            <property name="text">
+             <string></string>
+            </property>
+           </widget>
+         </item>
+         <item>
+            <layout class="QFormLayout" name="mOpenOptionsLayout">
+                <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                </property>
+            </layout>
+         </item>
+       </layout>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">
@@ -246,6 +269,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mOpenOptionsGroupBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

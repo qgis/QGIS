@@ -9,13 +9,14 @@
 
 class QgsActionScopeRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 The action scope registry is an application wide registry that
 contains a list of available action scopes.
+
 Some scopes are available by default, additional ones can be registered
 at runtime by plugins or custom applications.
 
-To get access use the QgsApplication:
+To get access use the :py:class:`QgsApplication`:
 
 .. code-block:: python
 

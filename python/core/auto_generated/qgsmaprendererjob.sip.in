@@ -15,7 +15,7 @@
 
 class QgsMapRendererJob : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for map rendering implementations.
 
 The API is designed in a way that rendering is done asynchronously, therefore
@@ -25,8 +25,8 @@ amount of time.
 
 Common use case:
 
-1. Prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
-2. Create QgsMapRendererJob subclass with QgsMapSettings instance
+1. Prepare :py:class:`QgsMapSettings` with rendering configuration (extent, layer, map size, ...)
+2. Create :py:class:`QgsMapRendererJob` subclass with :py:class:`QgsMapSettings` instance
 3. Connect to job's :py:func:`~finished` signal
 4. Call :py:func:`~start`. Map rendering will start in background, the function immediately returns
 5. At some point, slot connected to :py:func:`~finished` signal is called, map rendering is done
@@ -35,9 +35,9 @@ It is possible to cancel the rendering job while it is active by calling :py:fun
 
 The following subclasses are available:
 
-- QgsMapRendererSequentialJob - renders map in one background thread to an image
-- QgsMapRendererParallelJob - renders map in multiple background threads to an image
-- QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
+- :py:class:`QgsMapRendererSequentialJob` - renders map in one background thread to an image
+- :py:class:`QgsMapRendererParallelJob` - renders map in multiple background threads to an image
+- :py:class:`QgsMapRendererCustomPainterJob` - renders map with given QPainter in one background thread
 
 .. versionadded:: 2.4
 %End
@@ -99,7 +99,7 @@ This should not be used if cached labeling was redrawn - see :py:func:`~QgsMapRe
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
 %Docstring
-Set the feature filter provider used by the QgsRenderContext of
+Set the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
 Ownership is not transferred and the provider must not be deleted
 before the render job.
@@ -109,7 +109,7 @@ before the render job.
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-Returns the feature filter provider used by the QgsRenderContext of
+Returns the feature filter provider used by the :py:class:`QgsRenderContext` of
 each LayerRenderJob.
 
 .. versionadded:: 3.0
@@ -145,14 +145,17 @@ Returns the total time it took to finish the job (in milliseconds).
 %End
 
 
+
     const QgsMapSettings &mapSettings() const;
 %Docstring
 Returns map settings with which this job was started.
 
-:return: A QgsMapSettings instance with render settings
+:return: A :py:class:`QgsMapSettings` instance with render settings
 
 .. versionadded:: 2.8
 %End
+
+
 
 
   signals:
@@ -190,13 +193,16 @@ emitted when asynchronous rendering is finished (or canceled).
 
 
 
+
+
 };
 
 
 class QgsMapRendererQImageJob : QgsMapRendererJob
 {
-%Docstring
+%Docstring(signature="appended")
 Intermediate base class adding functionality that allows client to query the rendered image.
+
 The image can be queried even while the rendering is still in progress to get intermediate result
 
 .. versionadded:: 2.4

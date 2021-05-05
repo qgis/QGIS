@@ -57,6 +57,11 @@ bool QgsQuickAttributeFormModel::constraintsSoftValid() const
   return mSourceModel->constraintsSoftValid();
 }
 
+bool QgsQuickAttributeFormModel::rememberValuesAllowed() const
+{
+  return mSourceModel->rememberValuesAllowed();
+}
+
 void QgsQuickAttributeFormModel::save()
 {
   mSourceModel->save();
@@ -75,6 +80,11 @@ QVariant QgsQuickAttributeFormModel::attribute( const QString &name ) const
 void QgsQuickAttributeFormModel::forceClean()
 {
   mSourceModel->forceClean();
+}
+
+void QgsQuickAttributeFormModel::setRememberValuesAllowed( bool rememberValuesAllowed )
+{
+  mSourceModel->setRememberValuesAllowed( rememberValuesAllowed );
 }
 
 bool QgsQuickAttributeFormModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const

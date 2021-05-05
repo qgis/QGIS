@@ -10,8 +10,8 @@
 
 class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 {
-%Docstring
-A widget used represent options of a QgsInvertedPolygonRenderer
+%Docstring(signature="appended")
+A widget used represent options of a :py:class:`QgsInvertedPolygonRenderer`
 
 .. versionadded:: 2.4
 %End

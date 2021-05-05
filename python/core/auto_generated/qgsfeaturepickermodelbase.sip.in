@@ -10,8 +10,9 @@
 
 class QgsFeaturePickerModelBase : QAbstractItemModel /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Provides a list of features based on filter conditions.
+
 Features are fetched asynchronously.
 
 .. versionadded:: 3.14
@@ -152,6 +153,15 @@ If set to 0, no limit is applied when fetching
 %End
 
   signals:
+
+    void currentFeatureChanged();
+%Docstring
+Emitted when the current feature in the model has changed
+This emitted both when the extra value changes and when the extra value status changes.
+It allows being notified when the feature is fetched after the extra value has been set.
+
+.. versionadded:: 3.16.5
+%End
 
     void sourceLayerChanged();
 %Docstring

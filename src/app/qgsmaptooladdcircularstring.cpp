@@ -29,7 +29,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Add circular string" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
@@ -144,8 +144,8 @@ void QgsMapToolAddCircularString::activate()
         {
           //mParentTool->captureCurve() is in layer coordinates, but we need map coordinates
           QgsPoint endPointLayerCoord = curve->endPoint();
-          QgsPointXY mapPoint = toMapCoordinates( mCanvas->currentLayer(), QgsPointXY( endPointLayerCoord.x(), endPointLayerCoord.y() ) );
-          mPoints.append( QgsPoint( mapPoint ) );
+          QgsPoint mapPoint = toMapCoordinates( mCanvas->currentLayer(),  endPointLayerCoord );
+          mPoints.append( mapPoint );
           if ( !mTempRubberBand )
           {
             mTempRubberBand = createGeometryRubberBand( mLayerType, true );

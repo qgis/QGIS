@@ -21,6 +21,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsgeometry.h>
@@ -73,6 +74,7 @@ class TestQgsVectorLayer : public QObject
     void uniqueValues();
     void minimumValue();
     void maximumValue();
+    void minimumAndMaximumValue();
     void isSpatial();
     void testAddTopologicalPoints();
     void testCopyPasteFieldConfiguration();
@@ -304,6 +306,16 @@ void TestQgsVectorLayer::maximumValue()
 {
   //test with invalid field
   QCOMPARE( mpPointsLayer->maximumValue( 1000 ), QVariant() );
+}
+
+void TestQgsVectorLayer::minimumAndMaximumValue()
+{
+  //test with invalid field
+  QVariant min;
+  QVariant max;
+  mpPointsLayer->minimumAndMaximumValue( 1000, min, max );
+  QCOMPARE( min, QVariant() );
+  QCOMPARE( max, QVariant() );
 }
 
 void TestQgsVectorLayer::isSpatial()

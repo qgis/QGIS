@@ -35,7 +35,7 @@ class QgsLocaleAwareNumericLineEditDelegate;
  * \ingroup gui
  * \class QgsColorRampShaderWidget
  *
- * It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
+ * \brief It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
  * the Quantile classification mode can be used and the LoadFromBandButton is visible.
  *
  * The other mode is used to style mesh layer contours (scalar datasets)
@@ -134,6 +134,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
   private slots:
 
     void applyColorRamp();
+    void updateColorRamp();
     void mAddEntryButton_clicked();
     void mDeleteEntryButton_clicked();
     void mLoadFromBandButton_clicked();

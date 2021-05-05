@@ -29,7 +29,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * A widget that allows the selection of a list of symbol layers from a layer.
+ * \brief A widget that allows the selection of a list of symbol layers from a layer.
  * A tree shows a list of selectable symbol layers.
  *
  * \since QGIS 3.14

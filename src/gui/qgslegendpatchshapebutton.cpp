@@ -18,13 +18,14 @@
 #include "qgis.h"
 #include "qgsguiutils.h"
 #include <QMenu>
+#include <QBuffer>
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mShape( QgsStyle::defaultStyle()->defaultPatch( QgsSymbol::Fill, QSizeF( 10, 5 ) ) )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Legend Patch Shape" ) : dialogTitle )
 {
-  mPreviewSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+  mPreviewSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
 
   connect( this, &QAbstractButton::clicked, this, &QgsLegendPatchShapeButton::showSettingsDialog );
 
@@ -57,15 +58,15 @@ void QgsLegendPatchShapeButton::setSymbolType( QgsSymbol::SymbolType type )
     switch ( type )
     {
       case QgsSymbol::Marker:
-        mPreviewSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+        mPreviewSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
         break;
 
       case QgsSymbol::Line:
-        mPreviewSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+        mPreviewSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
         break;
 
       case QgsSymbol::Fill:
-        mPreviewSymbol.reset( QgsFillSymbol::createSimple( QgsStringMap() ) );
+        mPreviewSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
         break;
 
       case QgsSymbol::Hybrid:
@@ -193,7 +194,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
   QStringList patchNames = QgsStyle::defaultStyle()->symbolsOfFavorite( QgsStyle::LegendPatchShapeEntity );
   patchNames.sort();
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-  for ( const QString &name : qgis::as_const( patchNames ) )
+  for ( const QString &name : std::as_const( patchNames ) )
   {
     const QgsLegendPatchShape shape = QgsStyle::defaultStyle()->legendPatchShape( name );
     if ( shape.symbolType() == mType )
@@ -287,11 +288,7 @@ void QgsLegendPatchShapeButton::updatePreview()
   // set tooltip
   // create very large preview image
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
-#else
   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-#endif
   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( mPreviewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, &mShape );

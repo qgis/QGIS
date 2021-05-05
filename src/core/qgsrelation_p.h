@@ -52,13 +52,15 @@ class QgsRelationPrivate : public QSharedData
     QString mReferencedLayerId;
     //! The parent layer
     QPointer<QgsVectorLayer> mReferencedLayer;
-
+    //! The relation strength: Association, Composition
     QgsRelation::RelationStrength mRelationStrength = QgsRelation::Association;
+    //! The parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
+    QString mPolymorphicRelationId;
 
     /**
      * A list of fields which define the relation.
      * In most cases there will be only one value, but multiple values
-     * are supported for composited foreign keys.
+     * are supported for composite foreign keys.
      * The first field is on the referencing layer, the second on the referenced
     */
     QList< QgsRelation::FieldPair > mFieldPairs;

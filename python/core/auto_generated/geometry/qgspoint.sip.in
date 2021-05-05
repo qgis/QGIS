@@ -12,7 +12,7 @@
 
 class QgsPoint: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 3.0
@@ -349,6 +349,7 @@ Example
 
     QgsPoint operator-( QgsVector v ) const /HoldGIL/;
 
+    void normalize() final /HoldGIL/;
     virtual bool isEmpty() const /HoldGIL/;
 
     virtual QgsRectangle boundingBox() const /HoldGIL/;
@@ -436,6 +437,8 @@ Angle undefined. Always returns 0.0
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     virtual bool addZValue( double zValue = 0 );
 
@@ -450,6 +453,9 @@ Angle undefined. Always returns 0.0
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+
 
     virtual QgsPoint *createEmptyWithSameType() const /Factory/;
 
@@ -462,6 +468,7 @@ Angle undefined. Always returns 0.0
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual int childCount() const;
 
     virtual QgsPoint childPoint( int index ) const;

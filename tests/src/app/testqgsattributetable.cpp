@@ -165,7 +165,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
-  double expected = 1005721496.78008;
+  double expected = 1005755617.819130;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
@@ -177,7 +177,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
-  expected = 388.311240;
+  expected = 388.324420;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
@@ -378,7 +378,7 @@ void TestQgsAttributeTable::testRegression15974()
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = QStringLiteral( "system" );
   saveOptions.driverName = QStringLiteral( "ESRI Shapefile" );
-  QgsVectorFileWriter::writeAsVectorFormatV2( tempLayer.get(), path, tempLayer->transformContext(), saveOptions );
+  QgsVectorFileWriter::writeAsVectorFormatV3( tempLayer.get(), path, tempLayer->transformContext(), saveOptions );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;

@@ -13,7 +13,7 @@
 
 class QgsServerSettingsEnv : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Provides some enum describing the environment currently supported for configuration.
 
 .. versionadded:: 3.0
@@ -39,7 +39,6 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_LOG_FILE,
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
-      MAX_CACHE_LAYERS,
       QGIS_SERVER_IGNORE_BAD_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
@@ -54,12 +53,17 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
       QGIS_SERVER_LOG_PROFILE,
+      QGIS_SERVER_SERVICE_URL,
+      QGIS_SERVER_WMS_SERVICE_URL,
+      QGIS_SERVER_WFS_SERVICE_URL,
+      QGIS_SERVER_WCS_SERVICE_URL,
+      QGIS_SERVER_WMTS_SERVICE_URL,
     };
 };
 
 class QgsServerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
 
 .. versionadded:: 3.0
@@ -111,13 +115,6 @@ Returns parallel rendering setting.
 Returns the maximum number of threads to use.
 
 :return: the number of threads.
-%End
-
-    int maxCacheLayers() const;
-%Docstring
-Returns the maximum number of cached layers.
-
-:return: the number of cached layers.
 %End
 
     Qgis::MessageLevel logLevel() const;
@@ -275,12 +272,19 @@ variable QGIS_SERVER_TRUST_LAYER_METADATA.
     bool getPrintDisabled() const;
 %Docstring
 Returns ``True`` if WMS GetPrint request is disabled and the project's
-reading flag QgsProject.ReadFlag.FlagDontLoadLayouts is activated.
+reading flag :py:class:`QgsProject`.ReadFlag.FlagDontLoadLayouts is activated.
 
 The default value is ``False``, this value can be changed by setting the environment
 variable QGIS_SERVER_DISABLE_GETPRINT.
 
 .. versionadded:: 3.16
+%End
+
+    QString serviceUrl( const QString &service ) const;
+%Docstring
+Returns the service URL from the setting.
+
+.. versionadded:: 3.20
 %End
 
     static QString name( QgsServerSettingsEnv::EnvVar env );

@@ -212,8 +212,8 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
 
 /**
  * \ingroup core
- * Internal use.
- *  \note not available in Python bindings
+ * \brief Internal use.
+ * \note not available in Python bindings
  */
 class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
 {
@@ -256,7 +256,7 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
   QgsSQLStatementCollectTableNames v;
   mRootNode->accept( v );
 
-  for ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair : qgis::as_const( v.tableNamesReferenced ) )
+  for ( const QgsSQLStatementCollectTableNames::TableColumnPair &pair : std::as_const( v.tableNamesReferenced ) )
   {
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {

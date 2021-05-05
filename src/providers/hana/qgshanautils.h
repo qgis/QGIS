@@ -1,0 +1,76 @@
+/***************************************************************************
+   qgshanautils.h
+   --------------------------------------
+   Date      : 31-05-2019
+   Copyright : (C) SAP SE
+   Author    : Maxim Rylov
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ ***************************************************************************/
+#ifndef QGSHANAUTILS_H
+#define QGSHANAUTILS_H
+
+#include "qgsdatasourceuri.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+#include <qgsunittypes.h>
+#include <qgswkbtypes.h>
+#include <qstring.h>
+
+#include <QVariant>
+#include <QVersionNumber>
+
+#include "odbc/Types.h"
+
+class QgsHanaUtils
+{
+  public:
+    QgsHanaUtils() = delete;
+
+    static QString connectionInfo( const QgsDataSourceUri &uri );
+
+    static QString quotedIdentifier( const QString &str );
+    static QString quotedString( const QString &str );
+    static QString quotedValue( const QVariant &value );
+
+    static QString toConstant( const QVariant &value, QVariant::Type type );
+
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
+
+    static QString toQString( const odbc::NString &str );
+    static QString toQString( const odbc::String &str );
+    static QVariant toVariant( const odbc::Boolean &value );
+    static QVariant toVariant( const odbc::Byte &value );
+    static QVariant toVariant( const odbc::UByte &value );
+    static QVariant toVariant( const odbc::Short &value );
+    static QVariant toVariant( const odbc::UShort &value );
+    static QVariant toVariant( const odbc::Int &value );
+    static QVariant toVariant( const odbc::UInt &value );
+    static QVariant toVariant( const odbc::Long &value );
+    static QVariant toVariant( const odbc::ULong &value );
+    static QVariant toVariant( const odbc::Float &value );
+    static QVariant toVariant( const odbc::Double &value );
+    static QVariant toVariant( const odbc::Date &value );
+    static QVariant toVariant( const odbc::Time &value );
+    static QVariant toVariant( const odbc::Timestamp &value );
+    static QVariant toVariant( const odbc::String &value );
+    static QVariant toVariant( const odbc::NString &value );
+    static QVariant toVariant( const odbc::Binary &value );
+
+    static const char16_t *toUtf16( const QString &sql );
+    static QgsWkbTypes::Type toWkbType( const odbc::String &type, const odbc::Int &hasZ, const odbc::Int &hasM );
+    static QVersionNumber toHANAVersion( const QString &dbVersion );
+    static int toPlanarSRID( int srid );
+    static bool convertField( QgsField &field );
+    static int countFieldsWithFirstLetterInUppercase( const QgsFields &fields );
+    static QString formatErrorMessage( const char *message, bool withPrefix = false );
+};
+
+#endif // QGSHANAUTILS_H

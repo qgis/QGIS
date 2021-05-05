@@ -70,6 +70,8 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
            this, &QgsMesh3dSymbolWidget::changed );
 
   connect( mArrowsFixedSizeCheckBox, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
+
+  connect( mGroupBoxTextureSettings, &QgsCollapsibleGroupBox::collapsedStateChanged, this,  &QgsMesh3dSymbolWidget::onTextureSettingsCollapseStateChanged );
 }
 
 void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
@@ -79,7 +81,7 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
   mGroupBoxWireframe->setChecked( symbol->wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol->wireframeLineColor() );
   mSpinBoxWireframeLineWidth->setValue( symbol->wireframeLineWidth() );
-  if ( mLayer )
+  if ( mLayer && mLayer->meshSimplificationSettings().isEnabled() )
     mLodSlider->setValue( mLayer->triangularMeshLevelOfDetailCount() - symbol->levelOfDetailIndex() - 1 );
   else
     mLodSlider->setValue( mLodSlider->maximum() );
@@ -126,16 +128,15 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
 
   if ( meshLayer && meshLayer->meshSimplificationSettings().isEnabled() )
   {
-    mLodSlider->setVisible( true );
-    mLabelLod->setVisible( true );
+    mLodSlider->setEnabled( true );
     int lodCount = meshLayer->triangularMeshLevelOfDetailCount();
     mLodSlider->setTickInterval( 1 );
     mLodSlider->setMaximum( lodCount - 1 );
   }
   else
   {
-    mLodSlider->setVisible( false );
-    mLabelLod->setVisible( false );
+    mLodSlider->setValue( mLodSlider->maximum() );
+    mLodSlider->setEnabled( false );
   }
 
   if ( !updateSymbol )
@@ -155,7 +156,7 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     }
   }
 
-  std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = qgis::make_unique< QgsMesh3DSymbol >();
+  std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = std::make_unique< QgsMesh3DSymbol >();
   // set symbol does not take ownership!
   setSymbol( defaultSymbol.get() );
 
@@ -240,6 +241,14 @@ void QgsMesh3dSymbolWidget::onColoringTypeChanged()
 {
   mGroupBoxColorRampShader->setVisible( mComboBoxTextureType->currentData() == QgsMesh3DSymbol::ColorRamp );
   mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentData()  == QgsMesh3DSymbol::SingleColor );
+}
+
+void QgsMesh3dSymbolWidget::onTextureSettingsCollapseStateChanged( bool collapsed )
+{
+  if ( !collapsed )
+  {
+    onColoringTypeChanged();
+  }
 }
 
 void QgsMesh3dSymbolWidget::setColorRampMinMax( double min, double max )

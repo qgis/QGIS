@@ -27,6 +27,8 @@
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 
+#include <QMimeData>
+
 ///@cond PRIVATE
 
 QgsPointCloudClassifiedRendererModel::QgsPointCloudClassifiedRendererModel( QObject *parent )
@@ -420,7 +422,7 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = qgis::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = std::make_unique< QgsPointCloudClassifiedRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
   renderer->setCategories( mModel->categories() );
 

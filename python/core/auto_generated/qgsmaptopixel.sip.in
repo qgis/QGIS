@@ -9,9 +9,10 @@
 
 
 
+
 class QgsMapToPixel
 {
-%Docstring
+%Docstring(signature="appended")
 Perform transforms between map coordinates and device coordinates.
 
 This class can convert device coordinates to map coordinates and vice versa.
@@ -65,14 +66,17 @@ Use setParameters to fill
 
     QgsPointXY transform( const QgsPointXY &p ) const;
 %Docstring
-Transform the point from map (world) coordinates to device coordinates
+Transform the point ``p`` from map (world) coordinates to device coordinates.
 
 :param p: Point to transform
 
-:return: QgsPointXY in device coordinates
+:return: :py:class:`QgsPointXY` in device coordinates
 %End
 
     void transform( QgsPointXY *p ) const;
+%Docstring
+Transform the point ``p`` from map (world) coordinates to device coordinates in place.
+%End
 
     QgsPointXY transform( qreal x, qreal y ) const;
 %Docstring
@@ -82,12 +86,12 @@ coordinates to device coordinates
 :param x: x coordinate o point to transform
 :param y: y coordinate of point to transform
 
-:return: QgsPointXY in device coordinates
+:return: :py:class:`QgsPointXY` in device coordinates
 %End
 
     void transformInPlace( double &x, double &y ) const;
 %Docstring
-Transform device coordinates to map coordinates. Modifies the
+Transforms device coordinates to map coordinates. Modifies the
 given coordinates in place. Intended as a fast way to do the
 transform.
 %End
@@ -110,7 +114,7 @@ Transform device coordinates to map (world) coordinates
 
 :param p: Point to be converted to map cooordinates
 
-:return: QgsPointXY in map coorndiates
+:return: :py:class:`QgsPointXY` in map coorndiates
 %End
 
  QgsPointXY toMapPoint( double x, double y ) const /Deprecated/;
@@ -186,6 +190,9 @@ String representation of the parameters used in the transform
 %End
 
     QTransform transform() const;
+%Docstring
+Returns a QTransform encapsulating the map to pixel conversion.
+%End
 
     double xCenter() const;
 %Docstring
@@ -204,6 +211,10 @@ Returns the center y-coordinate for the transform.
 
 .. versionadded:: 3.0
 %End
+
+    bool operator==( const QgsMapToPixel &other ) const;
+
+    bool operator!=( const QgsMapToPixel &other ) const;
 
 };
 

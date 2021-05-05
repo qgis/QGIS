@@ -18,6 +18,9 @@ from qgis.core import (QgsSettings,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsField,
+                       QgsFields,
+                       QgsDataSourceUri,
                        QgsWkbTypes,
                        QgsGeometry,
                        QgsPointXY,
@@ -60,7 +63,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             del cls.getEditableLayer
 
         # Use connections API
@@ -130,6 +133,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         filters = set([
             'name ILIKE \'QGIS\'',
             'name = \'Apple\'',
+            '\"NaMe\" = \'Apple\'',
             'name = \'apple\'',
             'name LIKE \'Apple\'',
             'name LIKE \'aPple\'',
@@ -212,22 +216,22 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         return filters
 
     def testGetFeaturesUncompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesUncompiled()
 
     def testGetFeaturesExp(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testGetFeaturesExp()
 
     def testOrderBy(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderBy()
 
     def testOrderByCompiled(self):
-        if os.environ.get('TRAVIS', '') == 'true':
+        if os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'):
             return
         super().testOrderByCompiled()
 
@@ -287,7 +291,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[dec_idx], float)
         self.assertEqual(f.attributes()[dec_idx], 1.123)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayer(self):
         layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -323,7 +327,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCreateLayerMultiPoint(self):
         layer = QgsVectorLayer("MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
@@ -356,7 +360,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Failing on Travis')
     def testCurveGeometries(self):
         geomtypes = ['CompoundCurveM', 'CurvePolygonM', 'CircularStringM', 'CompoundCurveZM', 'CurvePolygonZM',
                      'CircularStringZM', 'CompoundCurveZ', 'CurvePolygonZ', 'CircularStringZ', 'CompoundCurve',
@@ -678,6 +682,71 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
     def getSubsetStringNoMatching(self):
         return '[name]=\'AppleBearOrangePear\''
+
+    def testExtentFromGeometryTable(self):
+        """
+        Check if the behavior of the mssql provider if extent is defined in the geometry_column table
+        """
+        # Create a layer
+        layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+                               "layer", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature()
+        f1.setAttributes([1, "test", 1])
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+        f2 = QgsFeature()
+        f2.setAttributes([2, "test2", 3])
+        f3 = QgsFeature()
+        f3.setAttributes([3, "test2", NULL])
+        f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
+        f4 = QgsFeature()
+        f4.setAttributes([4, NULL, 3])
+        f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
+        pr.addFeatures([f1, f2, f3, f4])
+        uri = '{} table="qgis_test"."layer_extent_in_geometry_table" sql='.format(self.dbconn)
+        QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+
+        layerUri = QgsDataSourceUri(uri)
+        # Load and check if the layer is valid
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "valid", "mssql")
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
+
+        # Load with flag extent in geometry_columns table and check if the layer is still valid and extent doesn't change
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
+
+        md = QgsProviderRegistry.instance().providerMetadata('mssql')
+        conn = md.createConnection(self.dbconn, {})
+        conn.addField(QgsField('qgis_xmin', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_xmax', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_ymin', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+        conn.addField(QgsField('qgis_ymax', QVariant.Double, 'FLOAT(24)'), 'dbo', 'geometry_columns')
+
+        # try with empty attribute
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "invalid", "mssql")
+        self.assertTrue(loadedLayer.isValid())
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(1.0, 2.0, 4.0, 3.0).toString(1))
+
+        conn.execSql('UPDATE dbo.geometry_columns SET qgis_xmin=0, qgis_xmax=5.5, qgis_ymin=0.5, qgis_ymax=6 WHERE f_table_name=\'layer_extent_in_geometry_table\'')
+
+        # try with valid attribute
+        layerUri.setParam('extentInGeometryColumns', '1')
+        loadedLayer = QgsVectorLayer(layerUri.uri(), "valid", "mssql")
+        self.assertTrue(loadedLayer.isValid())
+        extent = loadedLayer.extent()
+        self.assertEqual(extent.toString(1),
+                         QgsRectangle(0.0, 0.5, 5.5, 6.0).toString(1))
 
 
 if __name__ == '__main__':

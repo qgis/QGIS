@@ -29,12 +29,13 @@
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
+#include "qgssettingsentry.h"
 
 
 /**
  * \class QgsLocator
  * \ingroup core
- * Handles the management of QgsLocatorFilter objects and async collection of search results from them.
+ * \brief Handles the management of QgsLocatorFilter objects and async collection of search results from them.
  *
  * QgsLocator acts as both a registry for QgsLocatorFilter objects and a means of firing up
  * asynchronous queries against these filter objects.
@@ -151,6 +152,15 @@ class CORE_EXPORT QgsLocator : public QObject
      * \since QGIS 3.16
      */
     QStringList completionList() const {return mAutocompletionList;}
+
+#ifndef SIP_RUN
+    //! Settings entry locator filter enabled
+    static const inline QgsSettingsEntryBool settingsLocatorFilterEnabled = QgsSettingsEntryBool( QStringLiteral( "locator_filters/enabled_%1" ), QgsSettings::Gui, true, "Locator filter enabled" );
+    //! Settings entry locator filter default value
+    static const inline QgsSettingsEntryBool settingsLocatorFilterDefault = QgsSettingsEntryBool( QStringLiteral( "locator_filters/default_%1" ), QgsSettings::Gui, false, "Locator filter default value" );
+    //! Settings entry locator filter prefix
+    static const inline QgsSettingsEntryString settingsLocatorFilterPrefix = QgsSettingsEntryString( QStringLiteral( "locator_filters/prefix_%1" ), QgsSettings::Gui, QString(), "Locator filter prefix" );
+#endif
 
   signals:
 

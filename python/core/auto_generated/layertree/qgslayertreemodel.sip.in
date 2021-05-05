@@ -12,10 +12,11 @@
 
 class QgsLayerTreeModel : QAbstractItemModel
 {
-%Docstring
-The QgsLayerTreeModel class is model implementation for Qt item views framework.
+%Docstring(signature="appended")
+The :py:class:`QgsLayerTreeModel` class is model implementation for Qt item views framework.
+
 The model can be used in any QTreeView, it is however recommended to use it
-with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
+with :py:class:`QgsLayerTreeView` which brings additional functionality specific to layer tree handling.
 
 The model listens to the changes in the layer tree and signals the changes as appropriate,
 so that any view that uses the model is updated accordingly.
@@ -180,7 +181,7 @@ and rule key.
 :param layerId: map layer ID
 :param ruleKey: legend node rule key
 
-:return: QgsLayerTreeModelLegendNode if found
+:return: :py:class:`QgsLayerTreeModelLegendNode` if found
 
 .. versionadded:: 2.14
 %End
@@ -214,11 +215,11 @@ Sets index of the current item. May be used by view. Item marked as current is u
 
     void setLayerTreeNodeFont( int nodeType, const QFont &font );
 %Docstring
-Sets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
+Sets font for a particular type of layer tree node. nodeType should come from :py:class:`QgsLayerTreeNode`.NodeType enumeration
 %End
     QFont layerTreeNodeFont( int nodeType ) const;
 %Docstring
-Gets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
+Gets font for a particular type of layer tree node. nodeType should come from :py:class:`QgsLayerTreeNode`.NodeType enumeration
 %End
 
     void setAutoCollapseLegendNodes( int nodeCount );
@@ -393,7 +394,7 @@ Emits :py:func:`~QgsLayerTreeModel.dataChanged` for all scale dependent layers.
 
     QList<QgsLayerTreeModelLegendNode *> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
-Filter nodes from QgsMapLayerLegend according to the current filtering rules
+Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filtering rules
 %End
 
     QModelIndex indexOfParentLayerTreeNode( QgsLayerTreeNode *parentNode ) const;

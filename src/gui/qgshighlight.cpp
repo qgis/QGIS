@@ -30,6 +30,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgspointcloudlayerrenderer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -49,9 +52,10 @@
 
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
+  , mGeometry( geom )
   , mLayer( layer )
+
 {
-  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
 }
 
@@ -65,31 +69,56 @@ QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, 
 
 void QgsHighlight::init()
 {
+  mOriginalGeometry = mGeometry.isNull() ? mFeature.geometry() : mGeometry;
+  setColor( QColor( Qt::lightGray ) );
+
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsHighlight::updateTransformedGeometry );
+  updateTransformedGeometry();
+
+  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  {
+    mRenderContext = createRenderContext();
+  }
+}
+
+void QgsHighlight::updateTransformedGeometry()
+{
   QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( mLayer );
   if ( ct.isValid() )
   {
-    if ( mGeometry )
+    // reset to original geometry and transform
+    if ( !mGeometry.isNull() )
     {
-      mGeometry->transform( ct );
+      mGeometry = mOriginalGeometry;
+      try
+      {
+        mGeometry.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
+      }
     }
     else if ( mFeature.hasGeometry() )
     {
+      mFeature.setGeometry( mOriginalGeometry );
       QgsGeometry g = mFeature.geometry();
-      g.transform( ct );
-      mFeature.setGeometry( g );
+      try
+      {
+        g.transform( ct );
+        mFeature.setGeometry( g );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not transform highlight geometry to canvas CRS" ) );
+      }
     }
   }
-
   updateRect();
   update();
-  setColor( QColor( Qt::lightGray ) );
 }
 
-QgsHighlight::~QgsHighlight()
-{
-  delete mGeometry;
-}
-
+QgsHighlight::~QgsHighlight() = default;
 
 void QgsHighlight::setColor( const QColor &color )
 {
@@ -117,10 +146,11 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
   }
   if ( renderer )
   {
-    const auto constSymbols = renderer->symbols( context );
-    for ( QgsSymbol *symbol : constSymbols )
+    const QgsSymbolList symbols = renderer->symbols( context );
+    for ( QgsSymbol *symbol : symbols )
     {
-      if ( !symbol ) continue;
+      if ( !symbol )
+        continue;
       setSymbol( symbol, context, color, fillColor );
     }
   }
@@ -129,13 +159,14 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
 
 void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context,   const QColor &color, const QColor &fillColor )
 {
-  if ( !symbol ) return;
-
+  if ( !symbol )
+    return;
 
   for ( int i = symbol->symbolLayerCount() - 1; i >= 0;  i-- )
   {
     QgsSymbolLayer *symbolLayer = symbol->symbolLayer( i );
-    if ( !symbolLayer ) continue;
+    if ( !symbolLayer )
+      continue;
 
     if ( symbolLayer->subSymbol() )
     {
@@ -187,18 +218,37 @@ void QgsHighlight::setWidth( int width )
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QPainter *p, const QgsPointXY &point )
+void QgsHighlight::paintPoint( QgsRenderContext &context, const QgsPoint *point, double size, QgsUnitTypes::RenderUnit sizeUnit, PointSymbol symbol )
 {
-  QPolygonF r( 5 );
+  if ( !point )
+    return;
 
-  double d = mMapCanvas->extent().width() * 0.005;
-  r[0] = toCanvasCoordinates( point + QgsVector( -d, -d ) ) - pos();
-  r[1] = toCanvasCoordinates( point + QgsVector( d, -d ) ) - pos();
-  r[2] = toCanvasCoordinates( point + QgsVector( d, d ) ) - pos();
-  r[3] = toCanvasCoordinates( point + QgsVector( -d, d ) ) - pos();
-  r[4] = r[0];
+  const double radius = context.convertToPainterUnits( size, sizeUnit );
+  const double xMin = toCanvasCoordinates( *point ).x() - radius - pos().x();
+  const double yMin = toCanvasCoordinates( *point ).y() - radius - pos().y();
 
-  p->drawPolygon( r );
+  switch ( symbol )
+  {
+    case QgsHighlight::Square:
+    {
+      const double xMax = xMin + 2 * radius;
+      const double yMax = yMin + 2 * radius;
+      QPolygonF r( QVector<QPointF> { QPointF( xMin, yMin ),
+                                      QPointF( xMax, yMin ),
+                                      QPointF( xMax, yMax ),
+                                      QPointF( xMin, yMax ),
+                                      QPointF( xMin, yMin )
+                                    } );
+      context.painter()->drawPolygon( r );
+      break;
+    }
+
+    case QgsHighlight::Circle:
+    {
+      context.painter()->drawEllipse( QRectF( xMin, yMin, radius * 2, radius * 2 ) );
+      break;
+    }
+  }
 }
 
 void QgsHighlight::paintLine( QPainter *p, QgsPolylineXY line )
@@ -249,86 +299,36 @@ void QgsHighlight::paintPolygon( QPainter *p, const QgsPolygonXY &polygon )
   p->drawPath( path );
 }
 
+QgsRenderContext QgsHighlight::createRenderContext()
+{
+  QgsMapSettings mapSettings = mMapCanvas->mapSettings();
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+  return context;
+}
+
 void QgsHighlight::updatePosition()
 {
-  if ( isVisible() ) updateRect();
+  if ( !isVisible() )
+    return;
+
+  if ( mGeometry.type() == QgsWkbTypes::PointGeometry )
+  {
+    mRenderContext = createRenderContext();
+  }
+
+  updateRect();
 }
 
 void QgsHighlight::paint( QPainter *p )
 {
-  if ( mGeometry )
+  if ( mFeature.hasGeometry() )
   {
-    p->setPen( mPen );
-    p->setBrush( mBrush );
-
-    switch ( mGeometry->type() )
-    {
-      case QgsWkbTypes::PointGeometry:
-      {
-        if ( !mGeometry->isMultipart() )
-        {
-          paintPoint( p, mGeometry->asPoint() );
-        }
-        else
-        {
-          QgsMultiPointXY m = mGeometry->asMultiPoint();
-          for ( int i = 0; i < m.size(); i++ )
-          {
-            paintPoint( p, m[i] );
-          }
-        }
-      }
-      break;
-
-      case QgsWkbTypes::LineGeometry:
-      {
-        if ( !mGeometry->isMultipart() )
-        {
-          paintLine( p, mGeometry->asPolyline() );
-        }
-        else
-        {
-          QgsMultiPolylineXY m = mGeometry->asMultiPolyline();
-
-          for ( int i = 0; i < m.size(); i++ )
-          {
-            paintLine( p, m[i] );
-          }
-        }
-        break;
-      }
-
-      case QgsWkbTypes::PolygonGeometry:
-      {
-        if ( !mGeometry->isMultipart() )
-        {
-          paintPolygon( p, mGeometry->asPolygon() );
-        }
-        else
-        {
-          QgsMultiPolygonXY m = mGeometry->asMultiPolygon();
-          for ( int i = 0; i < m.size(); i++ )
-          {
-            paintPolygon( p, m[i] );
-          }
-        }
-        break;
-      }
-
-      case QgsWkbTypes::UnknownGeometry:
-      case QgsWkbTypes::NullGeometry:
-        return;
-    }
-  }
-  else if ( mFeature.hasGeometry() )
-  {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
-    if ( !layer )
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+    if ( !vlayer )
       return;
-    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
-    QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
 
+    QgsRenderContext context = createRenderContext();
 
     // Because lower level outlines must be covered by upper level fill color
     // we render first with temporary opaque color, which is then replaced
@@ -337,7 +337,7 @@ void QgsHighlight::paint( QPainter *p )
     QColor tmpFillColor( 0, 255, 0, 255 );
 
     std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
-    if ( layer && renderer )
+    if ( renderer )
     {
 
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
@@ -347,8 +347,7 @@ void QgsHighlight::paint( QPainter *p )
       imagePainter.setRenderHint( QPainter::Antialiasing, true );
 
       context.setPainter( &imagePainter );
-
-      renderer->startRender( context, layer->fields() );
+      renderer->startRender( context, mFeature.fields() );
       context.expressionContext().setFeature( mFeature );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
@@ -373,7 +372,7 @@ void QgsHighlight::paint( QPainter *p )
           if ( alpha > 0 )
           {
             int green = qGreen( line[c] );
-            line[c] = qRgba( penRed, penGreen, penBlue, qBound<int>( 0, alpha - ( green * k ), 255 ) );
+            line[c] = qRgba( penRed, penGreen, penBlue, std::clamp( static_cast< int >( alpha - ( green * k ) ), 0, 255 ) );
           }
         }
       }
@@ -381,27 +380,93 @@ void QgsHighlight::paint( QPainter *p )
       p->drawImage( 0, 0, image );
     }
   }
+  else if ( !mGeometry.isNull() )
+  {
+    p->setPen( mPen );
+    p->setBrush( mBrush );
+
+    switch ( mGeometry.type() )
+    {
+      case QgsWkbTypes::PointGeometry:
+      {
+        setRenderContextVariables( p, mRenderContext );
+
+        // default to 1.5 mm radius square points
+        double pointSizeRadius = 1.5;
+        QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
+        PointSymbol symbol = Square;
+
+        // but for point clouds, use actual sizes (+a little margin!)
+        if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer ) )
+        {
+          if ( QgsPointCloudRenderer *pcRenderer = pcLayer->renderer() )
+          {
+            pointSizeRadius = 1.2 * 0.5 * mRenderContext.convertToPainterUnits( pcRenderer->pointSize(), pcRenderer->pointSizeUnit(), pcRenderer->pointSizeMapUnitScale() );
+            sizeUnit = QgsUnitTypes::RenderPixels;
+            switch ( pcRenderer->pointSymbol() )
+            {
+              case QgsPointCloudRenderer::PointSymbol::Circle:
+                symbol = Circle;
+                break;
+              case QgsPointCloudRenderer::PointSymbol::Square:
+                symbol = Square;
+                break;
+            }
+          }
+        }
+
+        for ( auto it = mGeometry.const_parts_begin(); it != mGeometry.const_parts_end(); ++it )
+        {
+          paintPoint( mRenderContext, qgsgeometry_cast< const QgsPoint *>( *it ), pointSizeRadius, sizeUnit, symbol );
+        }
+      }
+      break;
+
+      case QgsWkbTypes::LineGeometry:
+      {
+        if ( !mGeometry.isMultipart() )
+        {
+          paintLine( p, mGeometry.asPolyline() );
+        }
+        else
+        {
+          QgsMultiPolylineXY m = mGeometry.asMultiPolyline();
+
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintLine( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::PolygonGeometry:
+      {
+        if ( !mGeometry.isMultipart() )
+        {
+          paintPolygon( p, mGeometry.asPolygon() );
+        }
+        else
+        {
+          QgsMultiPolygonXY m = mGeometry.asMultiPolygon();
+          for ( int i = 0; i < m.size(); i++ )
+          {
+            paintPolygon( p, m[i] );
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        return;
+    }
+  }
 }
 
 void QgsHighlight::updateRect()
 {
-  if ( mGeometry )
-  {
-    QgsRectangle r = mGeometry->boundingBox();
-
-    if ( r.isEmpty() )
-    {
-      double d = mMapCanvas->extent().width() * 0.005;
-      r.setXMinimum( r.xMinimum() - d );
-      r.setYMinimum( r.yMinimum() - d );
-      r.setXMaximum( r.xMaximum() + d );
-      r.setYMaximum( r.yMaximum() + d );
-    }
-
-    setRect( r );
-    setVisible( mGeometry );
-  }
-  else if ( mFeature.hasGeometry() )
+  if ( qobject_cast<QgsPointCloudLayer *>( mLayer ) || mFeature.hasGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
     // 1) currently there is no method in QgsFeatureRenderer to get rendered feature
@@ -417,6 +482,22 @@ void QgsHighlight::updateRect()
     QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );
     setRect( rect );
 
+    setVisible( true );
+  }
+  else if ( !mGeometry.isNull() )
+  {
+    QgsRectangle r = mGeometry.boundingBox();
+
+    if ( r.isEmpty() )
+    {
+      double d = mMapCanvas->extent().width() * 0.005;
+      r.setXMinimum( r.xMinimum() - d );
+      r.setYMinimum( r.yMinimum() - d );
+      r.setXMaximum( r.xMaximum() + d );
+      r.setYMaximum( r.yMaximum() + d );
+    }
+
+    setRect( r );
     setVisible( true );
   }
   else

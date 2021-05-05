@@ -173,7 +173,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
   }
 
-  for ( int i : qgis::as_const( attrs ) )
+  for ( int i : std::as_const( attrs ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
@@ -330,27 +330,20 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
-      QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
-      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
-      {
-        mFallbackStatement = mStatement;
-        if ( !filterAdded )
-          mStatement += " WHERE (" + compiler.result() + ')';
-        else
-          mStatement += " AND (" + compiler.result() + ')';
-
-        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
-        limitAtProvider = mExpressionCompiled;
-      }
+      mFallbackStatement = mStatement;
+      if ( !filterAdded )
+        mStatement += " WHERE (" + compiler.result() + ')';
       else
-      {
-        limitAtProvider = false;
-      }
+        mStatement += " AND (" + compiler.result() + ')';
+
+      //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+      mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+      mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+      limitAtProvider = mExpressionCompiled;
     }
     else
     {
@@ -361,41 +354,34 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   QStringList orderByParts;
   mOrderByCompiled = true;
 
-  if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+  const auto constOrderBy = request.orderBy();
+  for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
   {
-    const auto constOrderBy = request.orderBy();
-    for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
+    if ( ( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
     {
-      if ( ( clause.ascending() && !clause.nullsFirst() ) || ( !clause.ascending() && clause.nullsFirst() ) )
-      {
-        //not supported by SQL Server
-        mOrderByCompiled = false;
-        break;
-      }
-
-      QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource );
-      QgsExpression expression = clause.expression();
-      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
-      {
-        QString part;
-        part = compiler.result();
-        part += clause.ascending() ? QStringLiteral( " ASC" ) : QStringLiteral( " DESC" );
-        orderByParts << part;
-      }
-      else
-      {
-        // Bail out on first non-complete compilation.
-        // Most important clauses at the beginning of the list
-        // will still be sent and used to pre-sort so the local
-        // CPU can use its cycles for fine-tuning.
-        mOrderByCompiled = false;
-        break;
-      }
+      //not supported by SQL Server
+      mOrderByCompiled = false;
+      break;
     }
-  }
-  else
-  {
-    mOrderByCompiled = false;
+
+    QgsMssqlExpressionCompiler compiler = QgsMssqlExpressionCompiler( mSource, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsExpression expression = clause.expression();
+    if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+    {
+      QString part;
+      part = compiler.result();
+      part += clause.ascending() ? QStringLiteral( " ASC" ) : QStringLiteral( " DESC" );
+      orderByParts << part;
+    }
+    else
+    {
+      // Bail out on first non-complete compilation.
+      // Most important clauses at the beginning of the list
+      // will still be sent and used to pre-sort so the local
+      // CPU can use its cycles for fine-tuning.
+      mOrderByCompiled = false;
+      break;
+    }
   }
 
   if ( !mOrderByCompiled && !request.orderBy().isEmpty() )
@@ -512,7 +498,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : mSource->mPrimaryKeyAttrs )
         {
           QgsField fld = mSource->mFields.at( idx );
 

@@ -59,6 +59,8 @@
 #include "qgsnumericformatguiregistry.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgssubsetstringeditorproviderregistry.h"
+#include "qgsprovidersourcewidgetproviderregistry.h"
+#include "qgsrelationwidgetregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -76,6 +78,11 @@ QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
   return instance()->mEditorWidgetRegistry;
 }
 
+QgsRelationWidgetRegistry *QgsGui::relationWidgetRegistry()
+{
+  return instance()->mRelationEditorRegistry;
+}
+
 QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
 {
   return instance()->mSourceSelectProviderRegistry;
@@ -84,6 +91,11 @@ QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
 QgsSubsetStringEditorProviderRegistry *QgsGui::subsetStringEditorProviderRegistry()
 {
   return instance()->mSubsetStringEditorProviderRegistry;
+}
+
+QgsProviderSourceWidgetProviderRegistry *QgsGui::sourceWidgetProviderRegistry()
+{
+  return instance()->mProviderSourceWidgetProviderRegistry;
 }
 
 QgsShortcutsManager *QgsGui::shortcutsManager()
@@ -162,8 +174,7 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 
 QgsGui::HigFlags QgsGui::higFlags()
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString().startsWith( QLatin1String( "en" ) ) )
+  if ( QgsApplication::settingsLocaleUserLocale.value().startsWith( QLatin1String( "en" ) ) )
   {
     return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
   }
@@ -191,6 +202,8 @@ QgsGui::~QgsGui()
   delete mProviderGuiRegistry;
   delete mCodeEditorColorSchemeRegistry;
   delete mSubsetStringEditorProviderRegistry;
+  delete mProviderSourceWidgetProviderRegistry;
+  delete mRelationEditorRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -245,13 +258,16 @@ QgsGui::QgsGui()
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mNumericFormatGuiRegistry = new QgsNumericFormatGuiRegistry();
   mSubsetStringEditorProviderRegistry = new QgsSubsetStringEditorProviderRegistry();
+  mProviderSourceWidgetProviderRegistry = new QgsProviderSourceWidgetProviderRegistry();
 
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
+  mRelationEditorRegistry = new QgsRelationWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();

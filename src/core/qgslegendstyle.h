@@ -30,7 +30,7 @@
 
 /**
  * \ingroup core
- * Contains detailed styling information relating to how a layout legend should be rendered.
+ * \brief Contains detailed styling information relating to how a layout legend should be rendered.
  */
 class CORE_EXPORT QgsLegendStyle
 {

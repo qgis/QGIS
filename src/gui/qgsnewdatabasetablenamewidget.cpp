@@ -25,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 
+#include <QRegularExpression>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
@@ -205,7 +206,7 @@ void QgsNewDatabaseTableNameWidget::updateUri()
     QgsAbstractProviderConnection *conn { dataProviderMetadata->findConnection( mConnectionName ) };
     if ( conn )
     {
-      QVariantMap uriParts { dataProviderMetadata->decodeUri( conn->uri() ) };
+      QVariantMap uriParts = dataProviderMetadata->decodeUri( conn->uri() );
       uriParts[ QStringLiteral( "layerName" ) ] = mTableName;
       uriParts[ QStringLiteral( "schema" ) ] = mSchemaName;
       uriParts[ QStringLiteral( "table" ) ] = mTableName;

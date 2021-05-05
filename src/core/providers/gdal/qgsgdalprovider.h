@@ -45,7 +45,7 @@ class QgsRasterPyramid;
 
 /**
  * \ingroup core
- * A call back function for showing progress of gdal operations.
+ * \brief A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
@@ -189,7 +189,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
                            QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
                            const QStringList &createOptions = QStringList(),
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
-    QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
+    QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() ) override;
 
     static QMap<QString, QString> supportedMimes();
 
@@ -235,7 +235,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QAtomicInt *mpRefCounter = nullptr;
 
     // mutex to protect access to mGdalDataset among main and shared provider instances
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex *mpMutex = nullptr;
+#else
+    QRecursiveMutex *mpMutex = nullptr;
+#endif
+
 
     // pointer to a QgsGdalProvider* that is the parent. Note when *mpParent == this, we are the parent.
     QgsGdalProvider **mpParent = nullptr;
@@ -245,11 +250,6 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     // update mode
     bool mUpdate;
-
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
-    // initialize CRS from wkt
-    bool crsFromWkt( const char *wkt );
-#endif
 
     //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
@@ -382,6 +382,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond

@@ -40,7 +40,7 @@ class QgsLayoutReportSectionLabel;
 
 /**
  * \ingroup gui
- * A graphical widget to display and interact with QgsLayouts.
+ * \brief A graphical widget to display and interact with QgsLayouts.
  *
  * QgsLayoutView manages the layout interaction tools and mouse/key events.
  *
@@ -588,7 +588,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 /**
  * \ingroup gui
  *
- * Interface for a QgsLayoutView context menu.
+ * \brief Interface for a QgsLayoutView context menu.
  *
  * Implementations of this interface can be made to allow QgsLayoutView
  * instances to provide custom context menus (opened upon right-click).
@@ -612,7 +612,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
 
 /**
  * \ingroup gui
- * A simple graphics item rendered as an 'x'.
+ * \brief A simple graphics item rendered as an 'x'.
  */
 class GUI_EXPORT QgsLayoutViewSnapMarker : public QGraphicsRectItem
 {

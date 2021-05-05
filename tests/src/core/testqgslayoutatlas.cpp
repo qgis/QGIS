@@ -128,7 +128,7 @@ void TestQgsLayoutAtlas::init()
   mLayout->initializeDefaults();
 
   // fix the renderer, fill with green
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "0,127,0" ) );
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
   QgsFillSymbol *fillSymbol = QgsFillSymbol::createSimple( props );
@@ -156,7 +156,7 @@ void TestQgsLayoutAtlas::init()
   mOverview->setExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
   // set the fill symbol of the overview map
-  QgsStringMap props2;
+  QVariantMap props2;
   props2.insert( QStringLiteral( "color" ), QStringLiteral( "127,0,0,127" ) );
   props2.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
   QgsFillSymbol *fillSymbol2 = QgsFillSymbol::createSimple( props2 );

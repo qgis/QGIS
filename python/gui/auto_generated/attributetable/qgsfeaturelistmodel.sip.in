@@ -83,7 +83,7 @@ Returns the current state of null value injection
     bool setDisplayExpression( const QString &expression );
 %Docstring
 
-:param expression: A QgsExpression compatible string.
+:param expression: A :py:class:`QgsExpression` compatible string.
 
 :return: ``True`` if the expression could be set, ``False`` if there was a parse error.
          If it fails, the old expression will still be applied. Call :py:func:`~QgsFeatureListModel.parserErrorString`
@@ -162,7 +162,7 @@ Sort this model by its display expression.
 Does nothing except for calling :py:func:`~QgsFeatureListModel.beginRemoveRows`
 
 .. deprecated::
-   Use beginRemoveRows() instead
+   Use :py:func:`~QgsFeatureListModel.beginRemoveRows` instead
 %End
 
  void onEndRemoveRows( const QModelIndex &parent, int first, int last );
@@ -170,7 +170,7 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.beginRemoveRows`
 Does nothing except for calling :py:func:`~QgsFeatureListModel.endRemoveRows`
 
 .. deprecated::
-   Use endRemoveRows() instead
+   Use :py:func:`~QgsFeatureListModel.endRemoveRows` instead
 %End
 
  void onBeginInsertRows( const QModelIndex &parent, int first, int last );
@@ -178,7 +178,7 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.endRemoveRows`
 Does nothing except for calling :py:func:`~QgsFeatureListModel.beginInsertRows`
 
 .. deprecated::
-   use beginInsertRows() instead
+   use :py:func:`~QgsFeatureListModel.beginInsertRows` instead
 %End
 
  void onEndInsertRows( const QModelIndex &parent, int first, int last );
@@ -186,7 +186,7 @@ Does nothing except for calling :py:func:`~QgsFeatureListModel.beginInsertRows`
 Does nothing except for calling :py:func:`~QgsFeatureListModel.endInsertRows`
 
 .. deprecated::
-   use endInsertRows() instead
+   use :py:func:`~QgsFeatureListModel.endInsertRows` instead
 %End
 
 };

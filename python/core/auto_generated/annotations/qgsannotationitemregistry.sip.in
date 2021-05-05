@@ -10,15 +10,15 @@
 
 class QgsAnnotationItemAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one annotation item class.
 
-A companion class, QgsAnnotationItemAbstractGuiMetadata, handles the
-GUI behavior of QgsAnnotationItems.
+A companion class, :py:class:`QgsAnnotationItemAbstractGuiMetadata`, handles the
+GUI behavior of :py:class:`QgsAnnotationItems`.
 
 .. note::
 
-   In C++ you can use QgsAnnotationItemMetadata convenience class.
+   In C++ you can use :py:class:`QgsAnnotationItemMetadata` convenience class.
 
 .. versionadded:: 3.16
 %End
@@ -67,10 +67,10 @@ Creates a new, default, annotation item of this class.
 
 class QgsAnnotationItemRegistry : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available annotation item types.
 
-QgsAnnotationItemRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsAnnotationItemRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.annotationItemRegistry()`.
 
 A companion class, :py:class:`QgsAnnotationItemGuiRegistry`, handles the GUI behavior

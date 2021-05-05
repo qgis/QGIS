@@ -30,7 +30,7 @@ class QgsProject;
 
 /**
  * \ingroup quick
- * The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
+ * \brief The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
  * settings of configuration of map rendering via QML properties.
  *
  * On top of QgsMapSettings functionality, when QgsProject is attached,
@@ -79,7 +79,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     /**
      * The background color used to render the map
      *
-     * The value is set to the project's bacckground color setting on QgsProject::readProject
+     * The value is set to the project's background color setting on QgsProject::readProject
      */
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
 
@@ -180,10 +180,18 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     //! \copydoc QgsQuickMapSettings::backgroundColor
     void setBackgroundColor( const QColor &color );
 
-    //! \copydoc QgsMapSettings::outputSize()
+    /**
+     * Returns the size of the resulting map image, in pixels.
+     *
+     * \see setOutputSize()
+     */
     QSize outputSize() const;
 
-    //! \copydoc QgsMapSettings::setOutputSize()
+    /**
+     * Sets the size of the resulting map image, in pixels.
+     *
+     * \see outputSize()
+     */
     void setOutputSize( const QSize &outputSize );
 
     //! \copydoc QgsMapSettings::outputDpi()
@@ -198,10 +206,24 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
     //! \copydoc QgsMapSettings::setDestinationCrs()
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
-    //! \copydoc QgsMapSettings::layers()
+    /**
+     * Returns the list of layers which will be rendered in the map.
+     *
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \see setLayers()
+     */
     QList<QgsMapLayer *> layers() const;
 
-    //! \copydoc QgsMapSettings::setLayers()
+    /**
+     * Sets the list of \a layers to render in the map.
+     *
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \note Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
+     *
+     * \see layers()
+     */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
   signals:

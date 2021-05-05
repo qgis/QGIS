@@ -12,7 +12,7 @@
 
 class QgsRelationManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class manages a set of relations between layers.
 %End
 
@@ -128,6 +128,32 @@ Discover all the relations available from the current layers.
 :return: the list of discovered relations
 
 .. versionadded:: 3.0
+%End
+
+    QMap<QString, QgsPolymorphicRelation> polymorphicRelations() const;
+%Docstring
+Returns all the polymorphic relations
+%End
+
+    QgsPolymorphicRelation polymorphicRelation( const QString &polymorphicRelationId ) const;
+%Docstring
+Returns the list of relations associated with a polymorphic relation
+%End
+
+    void addPolymorphicRelation( const QgsPolymorphicRelation &polymorphicRelation );
+%Docstring
+Adds a new polymorphic relation. The generated relations are not available, they will be created automatically.
+%End
+
+    void removePolymorphicRelation( const QString &polymorphicRelationId );
+%Docstring
+Removes an existing polymorphic relation and it's generated relations.
+%End
+
+    void setPolymorphicRelations( const QList<QgsPolymorphicRelation> &relations );
+%Docstring
+Sets the specified polymorphic ``relations`` and removes any polymorphic relations currently set.
+Will remove any generated relations and recreate them.
 %End
 
   signals:

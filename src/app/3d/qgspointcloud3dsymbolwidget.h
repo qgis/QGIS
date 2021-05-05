@@ -38,8 +38,14 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
 
     void setMaximumScreenError( double maxScreenError );
     double maximumScreenError() const;
+
     void setShowBoundingBoxes( bool showBoundingBoxes );
     double showBoundingBoxes() const;
+
+    void setPointBudget( double budget );
+    double pointBudget() const;
+
+    void setPointCloudSize( int size );
 
     void connectChildPanels( QgsPanelWidget *parent );
 
@@ -61,6 +67,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void greenAttributeChanged();
     void blueAttributeChanged();
 
+
   signals:
     void changed();
 
@@ -74,6 +81,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     QgsPointCloudLayer *mLayer = nullptr;
 
     bool mBlockMinMaxChanged = false;
+    bool mBlockSetMinMaxFromLayer = false;
 
     double mProviderMin = std::numeric_limits< double >::quiet_NaN();
     double mProviderMax = std::numeric_limits< double >::quiet_NaN();
@@ -83,6 +91,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void minMaxModified();
     void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
 
+    double mPointBudget = 1000000;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

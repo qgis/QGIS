@@ -37,7 +37,7 @@ std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVe
 {
   if ( fromVersion == 20000 && toVersion >= 29900 )
   {
-    return qgis::make_unique< Qgs2To3Migration >();
+    return std::make_unique< Qgs2To3Migration >();
   }
   return nullptr;
 }

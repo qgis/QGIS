@@ -26,7 +26,7 @@
 
 /**
  * \ingroup server
- * QgsServerRequest
+ * \brief QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
  *
  * \since QGIS 3.0
@@ -58,6 +58,34 @@ class SERVER_EXPORT QgsServerRequest
     };
     Q_ENUM( Method )
 
+    /**
+     * The internal HTTP Header used for the request as enum
+     */
+    enum RequestHeader
+    {
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+      HOST,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
+      // https://tools.ietf.org/html/rfc7239
+      FORWARDED,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
+      X_FORWARDED_FOR,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Host
+      X_FORWARDED_HOST,
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-Proto
+      X_FORWARDED_PROTO,
+      // The QGIS service URL
+      X_QGIS_SERVICE_URL,
+      // The QGIS WMS service URL
+      X_QGIS_WMS_SERVICE_URL,
+      // The QGIS WFS service URL
+      X_QGIS_WFS_SERVICE_URL,
+      // The QGIS WCS service URL
+      X_QGIS_WCS_SERVICE_URL,
+      // The QGIS WMTS service URL
+      X_QGIS_WMTS_SERVICE_URL,
+    };
+    Q_ENUM( RequestHeader )
 
     /**
      * Constructor
@@ -81,6 +109,13 @@ class SERVER_EXPORT QgsServerRequest
      * \param headers
      */
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
+
+    /**
+     * Copy constructor.
+     */
+    QgsServerRequest( const QgsServerRequest &other );
+
+    QgsServerRequest &operator=( const QgsServerRequest & ) = default;
 
     //! destructor
     virtual ~QgsServerRequest() = default;
@@ -119,7 +154,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set a parameter
      */
-    void setParameter( const QString &key, const QString &value );
+    virtual void setParameter( const QString &key, const QString &value );
 
     /**
      * Gets a parameter value
@@ -129,14 +164,21 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Remove a parameter
      */
-    void removeParameter( const QString &key );
+    virtual void removeParameter( const QString &key );
 
     /**
      * Returns the header value
      * \param name of the header
      * \return the header value or an empty string
      */
-    QString header( const QString &name ) const;
+    virtual QString header( const QString &name ) const;
+
+    /**
+     * Returns the header value
+     * \param headerEnum of the header
+     * \return the header value or an empty string
+     */
+    virtual QString header( const RequestHeader &headerEnum ) const;
 
     /**
      * Set an header
@@ -152,9 +194,10 @@ class SERVER_EXPORT QgsServerRequest
     QMap<QString, QString> headers() const;
 
     /**
-    * Remove an header
-    * \param name
-    */
+     * Remove an header
+     * \param name
+     * \since QGIS 3.20
+     */
     void removeHeader( const QString &name );
 
     /**
@@ -167,7 +210,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set the request url
      */
-    void setUrl( const QUrl &url );
+    virtual void setUrl( const QUrl &url );
 
     /**
      * Returns the request url as seen by the web server,
@@ -177,6 +220,16 @@ class SERVER_EXPORT QgsServerRequest
      * \since QGIS 3.6
      */
     QUrl originalUrl() const;
+
+    /**
+     * Returns the base URL of QGIS server
+     *
+     * E.g. if we call QGIS server with 'http://example.com/folder?REQUEST=WMS&...'
+     * the base URL will be 'http://example.com/folder'
+     *
+     * \since QGIS 3.20
+     */
+    QUrl baseUrl() const;
 
     /**
      * Set the request method
@@ -199,17 +252,25 @@ class SERVER_EXPORT QgsServerRequest
      */
     void setOriginalUrl( const QUrl &url );
 
+    /**
+     * Set the base URL of QGIS server
+     *
+     * \since QGIS 3.20
+     */
+    void setBaseUrl( const QUrl &url );
 
   private:
     // Url as seen by QGIS server after web server rewrite
     QUrl       mUrl;
     // Unrewritten url as seen by the web server
     QUrl       mOriginalUrl;
+    QUrl       mBaseUrl;
     Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
     mutable Headers mHeaders;
     QgsServerParameters mParams;
+    QMap<RequestHeader, QString> mRequestHeaderConv;
 };
 
 #endif

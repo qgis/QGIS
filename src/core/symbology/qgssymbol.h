@@ -26,6 +26,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerreference.h"
 #include "qgspropertycollection.h"
+#include "qgswkbtypes.h"
 
 class QColor;
 class QImage;
@@ -59,7 +60,7 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
  * \ingroup core
  * \class QgsSymbol
  *
- * Abstract base class for all rendered symbols.
+ * \brief Abstract base class for all rendered symbols.
  */
 class CORE_EXPORT QgsSymbol
 {
@@ -90,6 +91,20 @@ class CORE_EXPORT QgsSymbol
       Fill,   //!< Fill symbol
       Hybrid  //!< Hybrid symbol
     };
+
+    /**
+     * Returns a translated string version of the specified symbol \a type.
+     *
+     * \since QGIS 3.20
+     */
+    static QString symbolTypeToString( SymbolType type );
+
+    /**
+     * Returns the default symbol type required for the specified geometry \a type.
+     *
+     * \since QGIS 3.20
+     */
+    static SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
 
     /**
      * Scale method
@@ -423,7 +438,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Converts the symbol to a SLD representation.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
     /**
      * Returns the units to use for sizes and widths within the symbol. Individual
@@ -589,6 +604,17 @@ class CORE_EXPORT QgsSymbol
     bool hasDataDefinedProperties() const;
 
     /**
+     * Returns TRUE if the symbol rendering can cause visible artifacts across a single feature
+     * when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+     *
+     * Internally this calls QgsSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() for all symbol layers in the symbol
+     * and returns TRUE if any of the layers returned TRUE.
+     *
+     * \since QGIS 3.18
+     */
+    bool canCauseArtifactsBetweenAdjacentTiles() const;
+
+    /**
      * \note the layer will be NULLPTR after stopRender
      * \deprecated Will be removed in QGIS 4.0
      */
@@ -611,6 +637,32 @@ class CORE_EXPORT QgsSymbol
      * \returns The symbol render context
      */
     QgsSymbolRenderContext *symbolRenderContext();
+
+    /**
+     * Called before symbol layers will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * Internally, this notifies all symbol layers which will be used via a call to
+     * QgsSymbolLayer::startFeatureRender().
+     *
+     * \since QGIS 3.20
+     */
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
+    /**
+     * Called after symbol layers have been rendered for a particular \a feature.
+     *
+     * This is always preceded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * Internally, this notifies all symbol layers which were used via a call to
+     * QgsSymbolLayer::stopFeatureRender().
+     *
+     * \since QGIS 3.20
+     */
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
   protected:
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
@@ -714,32 +766,6 @@ class CORE_EXPORT QgsSymbol
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
     QgsPropertyCollection mDataDefinedProperties;
-
-    /**
-     * Called before symbol layers will be rendered for a particular \a feature.
-     *
-     * This is always followed by a call to stopFeatureRender() after the feature
-     * has been completely rendered (i.e. all parts have been rendered).
-     *
-     * Internally, this notifies all symbol layers which will be used via a call to
-     * QgsSymbolLayer::startFeatureRender().
-     *
-     * \since QGIS 3.12
-     */
-    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
-
-    /**
-     * Called after symbol layers have been rendered for a particular \a feature.
-     *
-     * This is always preceded by a call to startFeatureRender() just before the feature
-     * will be rendered.
-     *
-     * Internally, this notifies all symbol layers which were used via a call to
-     * QgsSymbolLayer::stopFeatureRender().
-     *
-     * \since QGIS 3.12
-     */
-    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
     Q_DISABLE_COPY( QgsSymbol )
 
@@ -987,7 +1013,7 @@ class CORE_EXPORT QgsSymbolRenderContext
  * \ingroup core
  * \class QgsMarkerSymbol
  *
- * A marker symbol type, for rendering Point and MultiPoint geometries.
+ * \brief A marker symbol type, for rendering Point and MultiPoint geometries.
  */
 class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 {
@@ -997,7 +1023,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsMarkerSymbol, with the specified list of initial symbol \a layers.
@@ -1187,7 +1213,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
  * \ingroup core
  * \class QgsLineSymbol
  *
- * A line symbol type, for rendering LineString and MultiLineString geometries.
+ * \brief A line symbol type, for rendering LineString and MultiLineString geometries.
  */
 class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
@@ -1197,7 +1223,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsLineSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsLineSymbol, with the specified list of initial symbol \a layers.
@@ -1290,7 +1316,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
  * \ingroup core
  * \class QgsFillSymbol
  *
- * A fill symbol type, for rendering Polygon and MultiPolygon geometries.
+ * \brief A fill symbol type, for rendering Polygon and MultiPolygon geometries.
  */
 class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {
@@ -1300,7 +1326,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
+    static QgsFillSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
 
     /**
      * Constructor for QgsFillSymbol, with the specified list of initial symbol \a layers.

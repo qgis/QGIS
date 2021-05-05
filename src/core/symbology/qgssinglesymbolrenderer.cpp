@@ -118,9 +118,9 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
   return r;
 }
 
-void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QgsStringMap newProps = props;
+  QVariantMap newProps = props;
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
@@ -251,15 +251,15 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
-      symbol = qgis::make_unique< QgsLineSymbol >( layers );
+      symbol = std::make_unique< QgsLineSymbol >( layers );
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      symbol = qgis::make_unique< QgsFillSymbol >( layers );
+      symbol = std::make_unique< QgsFillSymbol >( layers );
       break;
 
     case QgsWkbTypes::PointGeometry:
-      symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
+      symbol = std::make_unique< QgsMarkerSymbol >( layers );
       break;
 
     default:

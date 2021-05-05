@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer Landing Page Plugin.
 
+From build dir, run: ctest -R PyQgsServerLandingPage -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -121,6 +123,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         """Test landing page in JSON format"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        request.setBaseUrl(QtCore.QUrl('http://server.qgis.org/'))
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
         j_actual = 'Content-Type: application/json\n\n'

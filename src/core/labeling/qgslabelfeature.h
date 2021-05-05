@@ -27,7 +27,6 @@
 
 namespace pal
 {
-  class LabelInfo;
   class Layer;
 }
 
@@ -344,11 +343,6 @@ class CORE_EXPORT QgsLabelFeature
     //! Sets text of the label
     void setLabelText( const QString &text ) { mLabelText = text; }
 
-    //! Gets additional info required for curved label placement. Returns NULLPTR if not set
-    pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
-    //! takes ownership of the instance
-    void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
-
     //! Gets PAL layer of the label feature. Should be only used internally in PAL
     pal::Layer *layer() const { return mLayer; }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
@@ -514,6 +508,40 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setObstacleSettings( const QgsLabelObstacleSettings &settings );
 
+    /**
+     * Returns the original layer CRS of the feature associated with the label.
+     *
+     * \see setOriginalFeatureCrs()
+     * \since QGIS 3.20
+     */
+    QgsCoordinateReferenceSystem originalFeatureCrs() const;
+
+    /**
+     * Sets the original layer \a crs of the feature associated with the label.
+     *
+     * \see originalFeatureCrs()
+     * \since QGIS 3.20
+     */
+    void setOriginalFeatureCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the minimum size (in map unit) for a feature to be labelled.
+     *
+     * \note At the moment this is only used when labeling merged lines
+     * \see minimumSize()
+     * \since QGIS 3.20
+     */
+    double minimumSize() const { return mMinimumSize; }
+
+    /**
+     * Sets the minimum \a size (in map unit) for a feature to be labelled.
+     *
+     * \note At the moment this is only used when labeling merged lines
+     * \see setMinimumSize()
+     * \since QGIS 3.20
+     */
+    void setMinimumSize( double size ) { mMinimumSize = size; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -562,8 +590,6 @@ class CORE_EXPORT QgsLabelFeature
     bool mAlwaysShow = false;
     //! text of the label
     QString mLabelText;
-    //! extra information for curved labels (may be NULLPTR)
-    pal::LabelInfo *mInfo = nullptr;
 
     //! Distance to allow label to overrun linear features
     double mOverrunDistance = 0;
@@ -593,6 +619,11 @@ class CORE_EXPORT QgsLabelFeature
 
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
+
+    QgsCoordinateReferenceSystem mOriginalFeatureCrs;
+
+    double mMinimumSize = 0.0;
+
 };
 
 #endif // QGSLABELFEATURE_H

@@ -24,7 +24,7 @@ class QgsPdalEptGenerationTask: public QgsTask
     Q_OBJECT
 
   public:
-    QgsPdalEptGenerationTask( const QString &file, const QString &outputDir );
+    QgsPdalEptGenerationTask( const QString &file, const QString &outputDir, const QString &name = QString() );
     bool run() override;
 
     QString untwineExecutableBinary() const;

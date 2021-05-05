@@ -17,13 +17,14 @@
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
-
+#include "qgsguiutils.h"
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
 {
   setEditTriggers( QAbstractItemView::EditKeyPressed );
+  setIndentation( QgsGuiUtils::scaleIconSize( 16 ) );
 }
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )

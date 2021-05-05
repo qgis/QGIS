@@ -17,7 +17,10 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties ) /Factory/;
+%Docstring
+Creates the symbol layer
+%End
 
     virtual QString layerType() const;
 
@@ -52,7 +55,7 @@ that is created by this generator.
     virtual QgsSymbolLayer *clone() const /Factory/;
 
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
@@ -91,7 +94,7 @@ care about the geometry of its parents.
 Will render this symbol layer using the context.
 In comparison to other symbols there is no geometry passed in, since
 the geometry will be created based on information from the context
-which contains a QgsRenderContext which in turn contains an expression
+which contains a :py:class:`QgsRenderContext` which in turn contains an expression
 context which is available to the evaluated expression.
 
 :param context: The rendering context which will be used to render and to

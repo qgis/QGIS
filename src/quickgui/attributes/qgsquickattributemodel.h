@@ -33,10 +33,10 @@
  * related to layer and feature pair.
  *
  * On top of the QgsFeature attributes, support for "remember"
- * attribute is added. Remember attribute is used for
- * quick addition of the multiple features to the same layer.
- * A new feature can use "remembered" attribute values from
- * the last feature added.
+ * values is added. When model is allowed to remember values, it reuses
+ * values for last created features. However, this only work for attributes
+ * that passes filter (\see RememberedValues struct). This feature is used for quick addition
+ * of multiple features to the same layer.
  *
  *
  * \note QML Type: AttributeModel
@@ -65,6 +65,13 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
       AttributeValue,                    //!< Value of the feature's attribute
       Field,                             //!< Field definition (QgsField)
       RememberAttribute                  //!< Remember attribute value for next feature
+    };
+
+    //! Remembered values struct contains last created feature instance and a boolean vector masking attributes that should be remembered
+    struct RememberedValues
+    {
+      QgsFeature feature;
+      QVector<bool> attributeFilter;
     };
 
     //! Creates a new feature attribute model
@@ -105,6 +112,9 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Adds feature from featureLayerPair to the layer
     Q_INVOKABLE void create();
 
+    //! Returns true if a current feature is new or has uncommitted attribute changes. Geometry change is omitted.
+    Q_INVOKABLE bool hasAnyChanges();
+
     /**
      * Suppress layer's QgsEditFormConfig
      *
@@ -115,8 +125,15 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Resets remembered attributes
     Q_INVOKABLE virtual void resetAttributes();
 
-    //! Gets remembered attributes
-    QVector<bool> rememberedAttributes() const;
+    /**
+     * Updates attributes according their default value definition.
+     * Only for attributes with defined default value definition and flag `applyOnUpdate`.
+     * @param editedField QgsField reference of last edited field which triggers update attributes.
+     */
+    Q_INVOKABLE void updateDefaultValuesAttributes( const QgsField &editedField );
+
+    //! Gives information whether field with given index is remembered or not
+    bool isFieldRemembered( const int fieldIndex ) const;
 
     //! Gets current featureLayerPair
     QgsQuickFeatureLayerPair featureLayerPair() const;
@@ -127,7 +144,19 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Resets the model
     Q_INVOKABLE void forceClean();
 
+    //! Allows or forbids model to reuse last entered values
+    void setRememberValuesAllowed( bool allowed );
+
+    //! Returns whether model is remembering last entered values
+    bool rememberValuesAllowed() const;
+
   public slots:
+
+    //! Handles feature creation
+    void onFeatureCreated( const QgsFeature &feature );
+
+    //! Handles changing allowance of reusing last entered values
+    void onRememberValuesAllowChanged();
 
   signals:
     //! Feature or layer changed in feature layer pair
@@ -139,6 +168,15 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     //! Layer changed, feature is the same
     void layerChanged();
 
+    //! Feature has been created
+    void featureCreated( const QgsFeature &feature );
+
+    //! Emitted when user allows reusing last entered values
+    void rememberValuesAllowChanged();
+
+    //! Emitted when setData failed
+    void dataChangedFailed( const QString &message );
+
   protected:
     //! Commits model changes
     bool commit();
@@ -146,10 +184,18 @@ class QUICK_EXPORT QgsQuickAttributeModel : public QAbstractListModel
     bool startEditing();
 
     QgsQuickFeatureLayerPair mFeatureLayerPair;
-    QVector<bool> mRememberedAttributes;
+
   private:
     void setFeature( const QgsFeature &feature );
     void setVectorLayer( QgsVectorLayer *layer );
+
+    //! Fills remembered attributes from last created feature (mRememberedValues) to current feature (mFeatureLayerPair)
+    void prefillRememberedValues();
+
+    //! Remembered last created feature for each layer (key)
+    QHash<QString, RememberedValues> mRememberedValues;
+
+    bool mRememberValuesAllowed;
 };
 
 #endif // QGSQUICKATTRIBUTEMODEL_H

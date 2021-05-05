@@ -170,6 +170,9 @@
 %Include auto_generated/qgsproviderconnectioncombobox.sip
 %Include auto_generated/qgsproviderguimetadata.sip
 %Include auto_generated/qgsproviderguiregistry.sip
+%Include auto_generated/qgsprovidersourcewidget.sip
+%Include auto_generated/qgsprovidersourcewidgetprovider.sip
+%Include auto_generated/qgsprovidersourcewidgetproviderregistry.sip
 %Include auto_generated/qgsproxystyle.sip
 %Include auto_generated/qgsquerybuilder.sip
 %Include auto_generated/qgsrangeslider.sip
@@ -178,6 +181,9 @@
 %Include auto_generated/qgsrasterpyramidsoptionswidget.sip
 %Include auto_generated/qgsratiolockbutton.sip
 %Include auto_generated/qgsrelationeditorwidget.sip
+%Include auto_generated/qgsabstractrelationeditorwidget.sip
+%Include auto_generated/qgsrelationwidgetregistry.sip
+%Include auto_generated/qgsrichtexteditor.sip
 %Include auto_generated/qgsrubberband.sip
 %Include auto_generated/qgsscalecombobox.sip
 %Include auto_generated/qgsscalerangewidget.sip
@@ -385,11 +391,14 @@
 %Include auto_generated/symbology/qgsdashspacedialog.sip
 %Include auto_generated/symbology/qgsdatadefinedsizelegendwidget.sip
 %Include auto_generated/symbology/qgsellipsesymbollayerwidget.sip
+%Include auto_generated/symbology/qgsembeddedsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsgraduatedhistogramwidget.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsheatmaprendererwidget.sip
+%Include auto_generated/symbology/qgsinterpolatedlinesymbollayerwidget.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrendererwidget.sip
 %Include auto_generated/symbology/qgslayerpropertieswidget.sip
+%Include auto_generated/symbology/qgsmergedfeaturerendererwidget.sip
 %Include auto_generated/symbology/qgsnullsymbolrendererwidget.sip
 %Include auto_generated/symbology/qgsmasksymbollayerwidget.sip
 %Include auto_generated/symbology/qgspenstylecombobox.sip

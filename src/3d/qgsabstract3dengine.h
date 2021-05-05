@@ -38,9 +38,11 @@ namespace Qt3DRender
   class QFrameGraphNode;
 }
 
+class QgsShadowRenderingFrameGraph;
+
 /**
  * \ingroup 3d
- * Base class for 3D engine implementation. A 3D engine is responsible for setting up
+ * \brief Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
  *
  * - creating Qt3D aspect engine and registering rendering aspect
@@ -77,13 +79,15 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     virtual Qt3DRender::QCamera *camera() = 0;
     //! Returns size of the engine's rendering area in pixels
     virtual QSize size() const = 0;
+    //! Sets the size of the rendering area (in pixels)
+    virtual void setSize( QSize s ) = 0;
 
     /**
      * Starts a request for an image rendered by the engine.
      * The function does not block - when the rendered image is captured, it is returned in imageCaptured() signal.
      * Only one image request can be active at a time.
      */
-    virtual void requestCaptureImage() = 0;
+    void requestCaptureImage();
 
     /**
      * Returns the surface of the engine
@@ -92,9 +96,33 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      */
     virtual QSurface *surface() const = 0;
 
+    /**
+     * Returns the shadow rendering frame graph object used to render the scene
+     *
+     * \since QGIS 3.18
+     */
+    QgsShadowRenderingFrameGraph *frameGraph() { return mFrameGraph; }
+
+    /**
+     * Sets whether it will be possible to render to an image
+     *
+     * \note for QgsWindow3DEngine render capture will be disabled by default
+     *  and for QgsOffscreen3DEngine it is enabled by default
+     * \since QGIS 3.18
+     */
+    void setRenderCaptureEnabled( bool enabled );
+
+    /**
+     * Returns whether it will be possible to render to an image
+     * \since QGIS 3.18
+     */
+    bool renderCaptureEnabled() const;
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.
     void imageCaptured( const QImage &image );
+
+  protected:
+    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
 };
 
 

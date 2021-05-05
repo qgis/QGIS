@@ -27,7 +27,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Layer tree node points to a map layer.
+ * \brief Layer tree node points to a map layer.
  *
  * The node can exist also without a valid instance of a layer (just ID). That
  * means the referenced layer does not need to be loaded in order to use it

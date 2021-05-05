@@ -11,7 +11,7 @@
 
 class QgsBlurEffect : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which blurs a source picture, using a number of different blur
 methods.
 
@@ -29,7 +29,7 @@ methods.
       GaussianBlur
     };
 
-    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsBlurEffect effect from a properties string map.
 
@@ -44,9 +44,9 @@ Constructor for QgsBlurEffect.
 %End
 
     virtual QString type() const;
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QgsStringMap &props );
+    virtual void readProperties( const QVariantMap &props );
 
     virtual QgsBlurEffect *clone() const /Factory/;
 

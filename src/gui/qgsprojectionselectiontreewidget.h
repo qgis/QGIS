@@ -25,7 +25,7 @@ class QResizeEvent;
 /**
  * \class QgsProjectionSelectionTreeWidget
  * \ingroup gui
- * A widget for selecting a coordinate reference system from a tree.
+ * \brief A widget for selecting a coordinate reference system from a tree.
  *
  * This widget implements a tree view of projections, as seen in the
  * QgsProjectionSelectionDialog dialog. In most cases it is more
@@ -161,6 +161,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \since QGIS 2.14
      */
     void projectionDoubleClicked();
+
+    /**
+     * Emitted when the selection in the tree is changed from a valid selection to an invalid selection, or vice-versa.
+     *
+     * \since QGIS 3.18
+     */
+    void hasValidSelectionChanged( bool isValid );
 
   protected:
     // Used to ensure the projection list view is actually populated

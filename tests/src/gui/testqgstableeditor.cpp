@@ -19,6 +19,7 @@
 #include "qgstableeditorwidget.h"
 #include "qgscurrencynumericformat.h"
 #include "qgsbearingnumericformat.h"
+#include <QSignalSpy>
 
 class TestQgsTableEditor: public QObject
 {
@@ -77,7 +78,7 @@ void TestQgsTableEditor::testData()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -128,7 +129,7 @@ void TestQgsTableEditor::insertRowsBelow()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -238,7 +239,7 @@ void TestQgsTableEditor::insertRowsAbove()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -348,7 +349,7 @@ void TestQgsTableEditor::insertColumnsBefore()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -430,7 +431,7 @@ void TestQgsTableEditor::insertColumnsAfter()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -512,7 +513,7 @@ void TestQgsTableEditor::deleteRows()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );
@@ -579,7 +580,7 @@ void TestQgsTableEditor::deleteColumns()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );
@@ -755,7 +756,7 @@ void TestQgsTableEditor::foregroundColor()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -820,7 +821,7 @@ void TestQgsTableEditor::backgroundColor()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -883,7 +884,7 @@ void TestQgsTableEditor::alignment()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -951,7 +952,7 @@ void TestQgsTableEditor::properties()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -1059,7 +1060,7 @@ void TestQgsTableEditor::numericFormat()
   QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = qgis::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );

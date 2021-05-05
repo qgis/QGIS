@@ -30,7 +30,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup gui
- * The QgsLayerTreeViewDefaultActions class serves as a factory of actions
+ * \brief The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  * that can be used together with a layer tree view.
  *
  * \see QgsLayerTreeView
@@ -57,7 +57,17 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     //! Action to check a group and all its parents
     QAction *actionCheckAndAllParents( QObject *parent = nullptr );
 
-    QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
+    /**
+     * Action to zoom to the active layer from the layer tree.
+     * \deprecated since QGIS 3.18, use actionZoomToLayers()
+     */
+    Q_DECL_DEPRECATED QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY SIP_DEPRECATED;
+
+    /**
+     * Action to zoom to all the selected layer(s) in the layer tree
+     * \since QGIS 3.18
+     */
+    QAction *actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent = nullptr ) SIP_FACTORY;
 
     /**
      * Action to zoom to selected features of a vector layer
@@ -96,7 +106,18 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
-    void zoomToLayer( QgsMapCanvas *canvas );
+    /**
+    * Zooms a map \a canvas to the extent of the active layer in the layer tree.
+    * \deprecated since QGIS 3.18, use zoomToLayers()
+    */
+    Q_DECL_DEPRECATED void zoomToLayer( QgsMapCanvas *canvas ) SIP_DEPRECATED;
+
+    /**
+     * Zooms a map \a canvas to all the selected layer(s) in the layer tree
+     * \see zoomToLayers()
+     * \since QGIS 3.18
+     */
+    void zoomToLayers( QgsMapCanvas *canvas );
 
     /**
      * \see zoomToSelection()
@@ -113,10 +134,21 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void removeGroupOrLayer();
     void renameGroupOrLayer();
     void showFeatureCount();
-    void zoomToLayer();
 
     /**
-     * Slot to zoom to selected features of a vector layer
+     * Zooms to the extent of the active layer in the layer tree.
+     * \deprecated since QGIS 3.18, use zoomToLayers()
+     */
+    Q_DECL_DEPRECATED void zoomToLayer() SIP_DEPRECATED;
+
+    /**
+     * Zooms to the combined extent of all the selected layer(s) in the layer tree.
+     * \since QGIS 3.18
+     */
+    void zoomToLayers();
+
+    /**
+     * Zooms to the bounding box of all selected features of a vector layer.
      * \since QGIS 3.2
      */
     void zoomToSelection();
@@ -125,7 +157,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     /**
      * \deprecated since QGIS 3.2, use moveOutOfGroup()
      */
-    Q_DECL_DEPRECATED void makeTopLevel();
+    Q_DECL_DEPRECATED void makeTopLevel() SIP_DEPRECATED;
 
     /**
      * Moves selected layer(s) out of the group(s) and places this/these above the group(s)

@@ -11,6 +11,9 @@
 
 class QgsHillshadeFilter: QgsDerivativeFilter
 {
+%Docstring(signature="appended")
+A hillshade filter.
+%End
 
 %TypeHeaderCode
 #include "qgshillshadefilter.h"

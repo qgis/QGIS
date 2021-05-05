@@ -28,6 +28,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QMessageBox>
+#include <QUrl>
 
 QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

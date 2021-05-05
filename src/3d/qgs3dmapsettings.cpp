@@ -55,6 +55,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDirectionalLights( other.mDirectionalLights )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
+  , mCameraNavigationMode( other.mCameraNavigationMode )
+  , mCameraMovementSpeed( other.mCameraMovementSpeed )
   , mLayers( other.mLayers )
   , mTerrainLayers( other.mTerrainLayers )
   , mRenderers() // initialized in body
@@ -76,7 +78,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
 {
-  Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
+  for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
     mRenderers << renderer->clone();
   }
@@ -100,6 +102,12 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   {
     mFieldOfView = elemCamera.attribute( QStringLiteral( "field-of-view" ), QStringLiteral( "45" ) ).toFloat();
     mProjectionType = static_cast< Qt3DRender::QCameraLens::ProjectionType >( elemCamera.attribute( QStringLiteral( "projection-type" ), QStringLiteral( "1" ) ).toInt() );
+    QString cameraNavigationMode = elemCamera.attribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "basic-navigation" ) );
+    if ( cameraNavigationMode == QLatin1String( "terrain-based-navigation" ) )
+      mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
+    else if ( cameraNavigationMode == QLatin1String( "walk-navigation" ) )
+      mCameraNavigationMode = QgsCameraController::NavigationMode::WalkNavigation;
+    mCameraMovementSpeed = elemCamera.attribute( QStringLiteral( "camera-movement-speed" ), QStringLiteral( "5.0" ) ).toDouble();
   }
 
   QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
@@ -293,6 +301,16 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "field-of-view" ), mFieldOfView );
   elemCamera.setAttribute( QStringLiteral( "projection-type" ), static_cast< int >( mProjectionType ) );
+  switch ( mCameraNavigationMode )
+  {
+    case QgsCameraController::TerrainBasedNavigation:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "terrain-based-navigation" ) );
+      break;
+    case QgsCameraController::WalkNavigation:
+      elemCamera.setAttribute( QStringLiteral( "camera-navigation-mode" ), QStringLiteral( "walk-navigation" ) );
+      break;
+  }
+  elemCamera.setAttribute( QStringLiteral( "camera-movement-speed" ), mCameraMovementSpeed );
   elem.appendChild( elemCamera );
 
   QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
@@ -319,7 +337,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
 
   QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
-  for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
+  for ( const QgsPointLightSettings &pointLight : std::as_const( mPointLights ) )
   {
     QDomElement elemPointLight = pointLight.writeXml( doc );
     elemPointLights.appendChild( elemPointLight );
@@ -327,7 +345,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemPointLights );
 
   QDomElement elemDirectionalLights = doc.createElement( QStringLiteral( "directional-lights" ) );
-  for ( const QgsDirectionalLightSettings &directionalLight : qgis::as_const( mDirectionalLights ) )
+  for ( const QgsDirectionalLightSettings &directionalLight : std::as_const( mDirectionalLights ) )
   {
     QDomElement elemDirectionalLight = directionalLight.writeXml( doc );
     elemDirectionalLights.appendChild( elemDirectionalLight );
@@ -335,7 +353,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemDirectionalLights );
 
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
-  Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
+  for ( const QgsMapLayerRef &layerRef : mLayers )
   {
     QDomElement elemMapLayer = doc.createElement( QStringLiteral( "layer" ) );
     elemMapLayer.setAttribute( QStringLiteral( "id" ), layerRef.layerId );
@@ -344,7 +362,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemMapLayers );
 
   QDomElement elemTerrainMapLayers = doc.createElement( QStringLiteral( "terrainLayers" ) );
-  Q_FOREACH ( const QgsMapLayerRef &layerRef, mTerrainLayers )
+  for ( const QgsMapLayerRef &layerRef : mTerrainLayers )
   {
     QDomElement elemMapLayer = doc.createElement( QStringLiteral( "layer" ) );
     elemMapLayer.setAttribute( QStringLiteral( "id" ), layerRef.layerId );
@@ -359,7 +377,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemTerrain );
 
   QDomElement elemRenderers = doc.createElement( QStringLiteral( "renderers" ) );
-  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, mRenderers )
+  for ( const QgsAbstract3DRenderer *renderer : mRenderers )
   {
     QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
     elemRenderer.setAttribute( QStringLiteral( "type" ), renderer->type() );
@@ -501,7 +519,7 @@ void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   QList<QgsMapLayerRef> lst;
   lst.reserve( layers.count() );
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : layers )
   {
     lst.append( layer );
   }
@@ -517,7 +535,7 @@ QList<QgsMapLayer *> Qgs3DMapSettings::layers() const
 {
   QList<QgsMapLayer *> lst;
   lst.reserve( mLayers.count() );
-  Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
+  for ( const QgsMapLayerRef &layerRef : mLayers )
   {
     if ( layerRef.layer )
       lst.append( layerRef.layer );
@@ -529,7 +547,7 @@ void Qgs3DMapSettings::setTerrainLayers( const QList<QgsMapLayer *> &layers )
 {
   QList<QgsMapLayerRef> lst;
   lst.reserve( layers.count() );
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : layers )
   {
     lst.append( layer );
   }
@@ -545,7 +563,7 @@ QList<QgsMapLayer *> Qgs3DMapSettings::terrainLayers() const
 {
   QList<QgsMapLayer *> lst;
   lst.reserve( mTerrainLayers.count() );
-  Q_FOREACH ( const QgsMapLayerRef &layerRef, mTerrainLayers )
+  for ( const QgsMapLayerRef &layerRef : mTerrainLayers )
   {
     if ( layerRef.layer )
       lst.append( layerRef.layer );
@@ -755,6 +773,24 @@ void Qgs3DMapSettings::setProjectionType( const Qt3DRender::QCameraLens::Project
 
   mProjectionType = projectionType;
   emit projectionTypeChanged();
+}
+
+void Qgs3DMapSettings::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
+{
+  if ( mCameraNavigationMode == navigationMode )
+    return;
+
+  mCameraNavigationMode = navigationMode;
+  emit cameraNavigationModeChanged();
+}
+
+void Qgs3DMapSettings::setCameraMovementSpeed( double movementSpeed )
+{
+  if ( mCameraMovementSpeed == movementSpeed )
+    return;
+
+  mCameraMovementSpeed = movementSpeed;
+  emit cameraMovementSpeedChanged();
 }
 
 void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )

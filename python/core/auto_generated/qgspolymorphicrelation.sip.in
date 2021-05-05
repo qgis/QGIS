@@ -1,0 +1,252 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspolymorphicrelation.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPolymorphicRelation
+{
+%Docstring(signature="appended")
+A polymorphic relation consists of the same properties like a normal relation except for the referenced layer which is calculated based on one or several fields of the referencing layer.
+
+In its most simple form, the referencing layer will just insert the layer name of the referenced layer into this field.
+To be more precise, a polymorphic relation is a set of normal relations having the same referencing layer but having the referenced layer dynamically defined.
+The polymorphic setting of the layer is solved by using an expression which has to match some properties of the the referenced layer like the table name, schema, uri, layer id, ...
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspolymorphicrelation.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    QgsPolymorphicRelation();
+%Docstring
+Default constructor. Creates an invalid relation.
+%End
+    ~QgsPolymorphicRelation();
+
+    QgsPolymorphicRelation( const QgsRelationContext &context );
+%Docstring
+Constructor with context. Creates an invalid relation.
+%End
+
+    QgsPolymorphicRelation( const QgsPolymorphicRelation &other );
+%Docstring
+Copies a relation.
+This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+changed.
+%End
+
+
+    static QgsPolymorphicRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext = QgsRelationContext() );
+%Docstring
+Creates a relation from an XML structure. Used for reading .qgs projects.
+
+:param node: The dom node containing the relation information
+:param context: to pass project translator
+:param relationContext: a relation context
+
+:return: A relation
+%End
+
+    void writeXml( QDomNode &node, QDomDocument &doc ) const;
+%Docstring
+Writes a relation to an XML structure. Used for saving .qgs projects
+
+:param node: The parent node in which the relation will be created
+:param doc: The document in which the relation will be saved
+%End
+
+    void setId( const QString &id );
+%Docstring
+Set an id for this relation
+%End
+
+    void setName( const QString &name );
+%Docstring
+Set a name for this relation
+%End
+
+    void setReferencingLayer( const QString &id );
+%Docstring
+Set the referencing (child) layer id. This layer will be searched in the registry.
+%End
+
+    void addFieldPair( const QString &referencingField, const QString &referencedField );
+%Docstring
+Add a field pair which is part of this relation
+The first element of each pair are the field names of the foreign key.
+The second element of each pair are the field names of the matching primary key.
+
+:param referencingField: The field name on the referencing (child) layer (FK)
+:param referencedField: The field name on the referenced (parent) layer  (PK)
+%End
+
+
+    QString name() const;
+%Docstring
+Returns a human readable name for this relation. Mostly used as title for the children.
+
+.. seealso:: :py:func:`id`
+
+:return: A name
+%End
+
+    QString id() const;
+%Docstring
+A (project-wide) unique id for this relation
+
+:return: The id
+%End
+
+    void generateId();
+%Docstring
+Generate a (project-wide) unique id for this relation
+
+.. versionadded:: 3.0
+%End
+
+    QString referencingLayerId() const;
+%Docstring
+Access the referencing (child) layer's id
+This is the layer which has the field(s) which point to another layer
+
+:return: The id of the referencing layer
+%End
+
+    QgsVectorLayer *referencingLayer() const;
+%Docstring
+Access the referencing (child) layer
+This is the layer which has the field(s) which point to another layer
+
+:return: The referencing layer
+%End
+
+    QMap< QString, QString > fieldPairs() const;
+%Docstring
+Returns the field pairs which form this relation
+The first element of each pair are the field names of the foreign key.
+The second element of each pair are the field names of the matching primary key.
+
+:return: The fields forming the relation
+%End
+%MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+    sipRes = new QMap< QString, QString >();
+    for ( const QgsRelation::FieldPair &pair : pairs )
+    {
+      sipRes->insert( pair.first, pair.second );
+    }
+%End
+
+    QgsAttributeList referencedFields( const QString &layerId ) const;
+%Docstring
+Returns a list of attributes used to form the referenced fields
+(most likely primary key) on the referenced (parent) layer.
+
+:return: A list of attributes
+%End
+
+    QgsAttributeList referencingFields() const;
+%Docstring
+Returns a list of attributes used to form the referencing fields
+(foreign key) on the referencing (child) layer.
+
+:return: A list of attributes
+%End
+
+    bool isValid() const;
+%Docstring
+Returns the validity of this relation. Don't use the information if it's not valid.
+A relation is considered valid if both referenced and referencig layers are valid.
+
+:return: ``True`` if the relation is valid
+%End
+
+    bool hasEqualDefinition( const QgsPolymorphicRelation &other ) const;
+%Docstring
+Compares the two :py:class:`QgsRelation`, ignoring the name and the ID.
+
+:param other: The other relation
+
+:return: ``True`` if they are similar
+%End
+
+    void updateRelationStatus();
+%Docstring
+Updates the validity status of this relation.
+Will be called internally whenever a member is changed.
+%End
+
+    void setReferencedLayerField( const QString &referencedLayerField );
+%Docstring
+Sets the field in the referencing layer where the referenced layer identifier is stored
+%End
+
+    QString referencedLayerField() const;
+%Docstring
+Returns the field in the referencing layer where the referenced layer identifier is stored
+%End
+
+    void setReferencedLayerExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` to identify the parent layer
+%End
+
+    QString referencedLayerExpression() const;
+%Docstring
+Returns the expression to identify the parent layer
+%End
+
+    void setReferencedLayerIds( const QStringList &childRelationIds );
+%Docstring
+Sets a list of layer ids to be used as potential referenced layers
+%End
+
+    QStringList referencedLayerIds() const;
+%Docstring
+Returns a list of layer ids to be used as potential referenced layers
+%End
+
+    QList<QgsRelation> generateRelations() const;
+%Docstring
+Returns a list of generated relations, based on the currently set :py:func:`~QgsPolymorphicRelation.referencedLayerIds`
+%End
+
+    QString layerRepresentation( const QgsVectorLayer *layer ) const;
+%Docstring
+Returns layer representation as evaluated string
+%End
+
+    QgsRelation::RelationStrength strength() const;
+%Docstring
+Returns the relation strength for all the generated normal relations
+%End
+
+    void setRelationStrength( QgsRelation::RelationStrength relationStrength );
+%Docstring
+Sets the relation strength for all the generated normal relations
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspolymorphicrelation.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

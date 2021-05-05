@@ -31,7 +31,7 @@ class QgsLayoutTableColumn;
 
 /**
  * \ingroup core
- * List of QVariants, representing a the contents of a single row in
+ * \brief List of QVariants, representing a the contents of a single row in
  * a QgsLayoutTable
  * \since QGIS 3.0
 */
@@ -39,7 +39,7 @@ typedef QVector< QVariant > QgsLayoutTableRow;
 
 /**
  * \ingroup core
- * List of QgsLayoutTableRows, representing rows and column cell contents
+ * \brief List of QgsLayoutTableRows, representing rows and column cell contents
  * for a QgsLayoutTable
  * \since QGIS 3.0
 */
@@ -52,14 +52,14 @@ typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
 
 /**
  * \ingroup core
- * List of column definitions for a QgsLayoutTable
+ * \brief List of column definitions for a QgsLayoutTable
  * \since QGIS 3.0
 */
 typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
 
 /**
  * \ingroup core
- * List of column definitions for sorting a QgsLayoutTable
+ * \brief List of column definitions for sorting a QgsLayoutTable
  * \since QGIS 3.14
 */
 typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayoutTableStyle
 };
 
 /**
- * A class to display a table in the print layout, and allow
+ * \brief A class to display a table in the print layout, and allow
  * the table to span over multiple frames
  * \ingroup core
  * \since QGIS 3.0

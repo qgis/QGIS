@@ -217,8 +217,13 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
 
 void QgsRasterFormatSaveOptionsWidget::updateOptions()
 {
+  mBlockOptionUpdates++;
   QString myOptions = mOptionsMap.value( currentProfileKey() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList myOptionsList = myOptions.trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList myOptionsList = myOptions.trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
 
   // If the default JPEG compression profile was selected, remove PHOTOMETRIC_OVERVIEW=YCBCR
   // if the raster is not RGB. Otherwise this is bound to fail afterwards.
@@ -248,6 +253,7 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
     mOptionsLineEdit->setCursorPosition( 0 );
   }
 
+  mBlockOptionUpdates--;
   emit optionsChanged();
 }
 
@@ -363,6 +369,9 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
 
 void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
 {
+  if ( mBlockOptionUpdates )
+    return;
+
   QTableWidgetItem *key, *value;
   QString options;
   for ( int i = 0; i < mOptionsTable->rowCount(); i++ )
@@ -468,7 +477,11 @@ QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
 
 QStringList QgsRasterFormatSaveOptionsWidget::options() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
 }
 
 QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString &profileName ) const
@@ -591,30 +604,36 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 
 void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
 {
-  mOptionsTable->blockSignals( true );
+  mBlockOptionUpdates++;
   mOptionsTable->clearContents();
 
-  QStringList values;
-  QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
-  const auto constOptionsList = optionsList;
-  for ( const QString &opt : constOptionsList )
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  const QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+  const QStringList optionsList = options.trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
+  for ( const QString &opt : optionsList )
   {
     int rowCount = mOptionsTable->rowCount();
     mOptionsTable->insertRow( rowCount );
 
-    values = opt.split( '=' );
+    const QStringList values = opt.split( '=' );
     if ( values.count() == 2 )
     {
       QTableWidgetItem *nameItem = new QTableWidgetItem( values.at( 0 ) );
       mOptionsTable->setItem( rowCount, 0, nameItem );
       QTableWidgetItem *valueItem = new QTableWidgetItem( values.at( 1 ) );
-      mOptionsTable->setItem( rowCount, 0, valueItem );
+      mOptionsTable->setItem( rowCount, 1, valueItem );
     }
   }
+
+  // reset to no profile index, otherwise we are changing the definition of whichever profile
+  // is currently selected...
+  mProfileComboBox->setCurrentIndex( 0 );
 
   mOptionsMap[ currentProfileKey()] = options.trimmed();
   mOptionsLineEdit->setText( options.trimmed() );
   mOptionsLineEdit->setCursorPosition( 0 );
 
-  mOptionsTable->blockSignals( false );
+  mBlockOptionUpdates--;
 }

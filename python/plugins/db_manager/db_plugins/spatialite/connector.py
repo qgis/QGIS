@@ -343,9 +343,10 @@ class SpatiaLiteDBConnector(DBConnector):
             self._execute(c, sql)
 
             idx = [num, name, unique]
-            cols = []
-            for seq, cid, cname in c.fetchall():
-                cols.append(cid)
+            cols = [
+                cid
+                for seq, cid, cname in c.fetchall()
+            ]
             idx.append(cols)
             indexes[i] = idx
 

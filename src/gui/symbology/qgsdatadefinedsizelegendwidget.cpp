@@ -39,6 +39,8 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   setupUi( this );
   setPanelTitle( tr( "Data-defined Size Legend" ) );
 
+  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+
   QgsMarkerSymbol *symbol = nullptr;
 
   if ( !ddsLegend )
@@ -57,6 +59,9 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     else
       cboAlignSymbols->setCurrentIndex( 1 );
 
+    if ( ddsLegend->lineSymbol() )
+      mLineSymbolButton->setSymbol( ddsLegend->lineSymbol()->clone() );
+
     symbol = ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr;  // may be null (undefined)
   }
 
@@ -68,7 +73,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
 
   if ( !symbol )
   {
-    symbol = QgsMarkerSymbol::createSimple( QgsStringMap() );
+    symbol = QgsMarkerSymbol::createSimple( QVariantMap() );
   }
   mSourceSymbol.reset( symbol );
 
@@ -120,6 +125,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
   connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mLineSymbolButton, &QgsSymbolButton::changed, this, &QgsPanelWidget::widgetChanged );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   updatePreview();
 }
@@ -157,6 +163,8 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend(
     }
     ddsLegend->setClasses( classes );
   }
+
+  ddsLegend->setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
   return ddsLegend;
 }
 
@@ -188,7 +196,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
 
   QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr<QgsVectorLayer> layer = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=%1" ).arg( crsAuthId ),
                                           QStringLiteral( "tmp" ),
                                           QStringLiteral( "memory" ),
                                           options ) ;

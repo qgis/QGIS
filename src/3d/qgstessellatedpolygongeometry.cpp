@@ -32,11 +32,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
     mAddBackFaces( _addBackFaces ),
     mAddTextureCoords( _addTextureCoords )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-#else
   mVertexBuffer = new Qt3DRender::QBuffer( this );
-#endif
 
   QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
   const int stride = tmpTess.stride();

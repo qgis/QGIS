@@ -24,7 +24,7 @@ class QByteArray;
 
 /**
  * \ingroup core
- * Keeps track of raw tile data that need to be decoded
+ * \brief Keeps track of raw tile data that need to be decoded
  *
  * \since QGIS 3.14
  */
@@ -47,9 +47,11 @@ class QEventLoop;
 
 class QgsMbTiles;
 
+class QgsTileDownloadManagerReply;
+
 /**
  * \ingroup core
- * The loader class takes care of loading raw vector tile data from a tile source.
+ * \brief The loader class takes care of loading raw vector tile data from a tile source.
  *
  * \since QGIS 3.14
  */
@@ -109,7 +111,7 @@ class QgsVectorTileLoader : public QObject
     QString mReferer;
 
     //! Running tile requests
-    QList<QNetworkReply *> mReplies;
+    QList<QgsTileDownloadManagerReply *> mReplies;
 
 };
 

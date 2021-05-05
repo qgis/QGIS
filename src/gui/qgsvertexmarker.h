@@ -31,7 +31,7 @@ class QPainter;
 
 /**
  * \ingroup gui
- * A class for marking vertices of features using e.g. circles or 'x'.
+ * \brief A class for marking vertices of features using e.g. circles or 'x'.
  */
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
@@ -57,11 +57,25 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
       ICON_TRIANGLE,  //!< Added in QGIS 3.12
       ICON_RHOMBUS,  //!< Added in QGIS 3.12
+      ICON_INVERTED_TRIANGLE, //!< Added in QGIS 3.20
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
+    /**
+     * Sets the center \a point of the marker, in map coordinates.
+     *
+     * \see center()
+     */
     void setCenter( const QgsPointXY &point );
+
+    /**
+     * Returns the center point of the marker, in map coordinates.
+     *
+     * \see setCenter()
+     * \since QGIS 3.18
+     */
+    QgsPointXY center() const { return mCenter; }
 
     void setIconType( int iconType );
 
@@ -110,8 +124,12 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
   private:
 
+    void updatePath();
+
     //! icon to be shown
     int mIconType = ICON_X;
+
+    QPainterPath mPath;
 
     //! size
     int mIconSize = 10;

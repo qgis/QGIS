@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolShowHideLabels( QgsMapCanvas *canvas );
+    QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolShowHideLabels() override;
 
     //! Overridden mouse move event

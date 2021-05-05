@@ -32,7 +32,6 @@
 
 #include <QDateTime>
 #include <QInputDialog>
-#include <QDesktopServices>
 #include <QDir>
 #include <QEventLoop>
 #include <QPointer>
@@ -180,8 +179,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkedChanged, this, &QgsAuthOAuth2Method::onLinkedChanged, Qt::UniqueConnection );
     connect( o2, &QgsO2::linkingFailed, this, &QgsAuthOAuth2Method::onLinkingFailed, Qt::UniqueConnection );
     connect( o2, &QgsO2::linkingSucceeded, this, &QgsAuthOAuth2Method::onLinkingSucceeded, Qt::UniqueConnection );
-    connect( o2, &QgsO2::openBrowser, this, &QgsAuthOAuth2Method::onOpenBrowser, Qt::UniqueConnection );
-    connect( o2, &QgsO2::closeBrowser, this, &QgsAuthOAuth2Method::onCloseBrowser, Qt::UniqueConnection );
     connect( o2, &QgsO2::getAuthCode, this, &QgsAuthOAuth2Method::onAuthCode, Qt::UniqueConnection );
     connect( this, &QgsAuthOAuth2Method::setAuthCode, o2,  &QgsO2::onSetAuthCode, Qt::UniqueConnection );
     //qRegisterMetaType<QNetworkReply::NetworkError>( QStringLiteral( "QNetworkReply::NetworkError" )) // for Qt::QueuedConnection, if needed;
@@ -328,7 +325,7 @@ void QgsAuthOAuth2Method::onLinkedChanged()
 {
   // Linking (login) state has changed.
   // Use o2->linked() to get the actual state
-  QgsDebugMsg( QStringLiteral( "Link state changed" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Link state changed" ), 2 );
 }
 
 void QgsAuthOAuth2Method::onLinkingFailed()
@@ -371,40 +368,7 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
       // don't expose the values in a log (unless they are only 3 chars long, of course)
       msg += QStringLiteral( "    %1:%2…\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
     }
-    QgsDebugMsg( msg );
-  }
-}
-
-void QgsAuthOAuth2Method::onOpenBrowser( const QUrl &url )
-{
-  // Open a web browser or a web view with the given URL.
-  // The user will interact with this browser window to
-  // enter login name, password, and authorize your application
-  // to access the Twitter account
-  QgsMessageLog::logMessage( tr( "Open browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
-
-  QDesktopServices::openUrl( url );
-}
-
-void QgsAuthOAuth2Method::onCloseBrowser()
-{
-  // Close the browser window opened in openBrowser()
-  QgsMessageLog::logMessage( tr( "Close browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
-
-  // Bring focus back to QGIS app
-  if ( qApp )
-  {
-    const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
-    for ( QWidget *topwdgt : widgets )
-    {
-      if ( topwdgt->objectName() == QLatin1String( "MainWindow" ) )
-      {
-        topwdgt->raise();
-        topwdgt->activateWindow();
-        topwdgt->show();
-        break;
-      }
-    }
+    QgsDebugMsgLevel( msg, 2 );
   }
 }
 
@@ -537,7 +501,7 @@ void QgsAuthOAuth2Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
-    QgsDebugMsg( QStringLiteral( "Updating old style auth method config" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Updating old style auth method config" ), 2 );
   }
 
   // NOTE: add updates as method version() increases due to config storage changes
@@ -555,7 +519,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   // check if it is cached
   if ( sOAuth2ConfigCache.contains( authcfg ) )
   {
-    QgsDebugMsg( QStringLiteral( "Retrieving OAuth bundle for authcfg: %1" ).arg( authcfg ) );
+    QgsDebugMsgLevel( QStringLiteral( "Retrieving OAuth bundle for authcfg: %1" ).arg( authcfg ), 2 );
     return sOAuth2ConfigCache.value( authcfg );
   }
 
@@ -662,8 +626,8 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
 
   // TODO: instantiate particular QgsO2 subclassed authenticators relative to config ???
 
-  QgsDebugMsg( QStringLiteral( "Loading authenticator object with %1 flow properties of OAuth2 config: %2" )
-               .arg( QgsAuthOAuth2Config::grantFlowString( config->grantFlow() ), authcfg ) );
+  QgsDebugMsgLevel( QStringLiteral( "Loading authenticator object with %1 flow properties of OAuth2 config: %2" )
+                    .arg( QgsAuthOAuth2Config::grantFlowString( config->grantFlow() ), authcfg ), 2 );
 
   QgsO2 *o2 = new QgsO2( authcfg, config, nullptr, QgsNetworkAccessManager::instance() );
 
@@ -675,7 +639,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
 
 void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle )
 {
-  QgsDebugMsg( QStringLiteral( "Putting oauth2 bundle for authcfg: %1" ).arg( authcfg ) );
+  QgsDebugMsgLevel( QStringLiteral( "Putting oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
   sOAuth2ConfigCache.insert( authcfg, bundle );
 }
 
@@ -685,7 +649,7 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
   {
     sOAuth2ConfigCache.value( authcfg )->deleteLater();
     sOAuth2ConfigCache.remove( authcfg );
-    QgsDebugMsg( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ) );
+    QgsDebugMsgLevel( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
   }
 }
 

@@ -10,7 +10,7 @@
 
 class QgsLayoutRenderContext : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Stores information relating to the current rendering settings for a layout.
 
 .. versionadded:: 3.0
@@ -187,7 +187,7 @@ whether they will be rendered in layout exports.
 
  void setCurrentExportLayer( int layer = -1 ) /Deprecated/;
 %Docstring
-Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
+Sets the current item ``layer`` to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check the :py:func:`~QgsLayoutRenderContext.currentExportLayer`
 and customize their rendering based on the layer.
 
@@ -196,12 +196,12 @@ If ``layer`` is -1, all item layers will be rendered.
 .. seealso:: :py:func:`currentExportLayer`
 
 .. deprecated::
-   Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart().
+   Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
  int currentExportLayer() const /Deprecated/;
 %Docstring
-Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
+Returns the current item layer to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check this
 and customize their rendering based on the layer.
 
@@ -210,7 +210,7 @@ If ``layer`` is -1, all item layers should be rendered.
 .. seealso:: :py:func:`setCurrentExportLayer`
 
 .. deprecated::
-   Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart().
+   Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
     QgsRenderContext::TextRenderFormat textRenderFormat() const;
@@ -311,6 +311,26 @@ Returns the current list of predefined scales for use with the layout.
 .. seealso:: :py:func:`setPredefinedScales`
 
 .. versionadded:: 3.10
+%End
+
+    QgsFeatureFilterProvider *featureFilterProvider() const;
+%Docstring
+Returns the possibly NULL feature filter provider.
+
+A feature filter provider for filtering visible features or attributes.
+It is currently used by QGIS Server Access Control Plugins.
+
+.. versionadded:: 3.18
+%End
+
+    void setFeatureFilterProvider( QgsFeatureFilterProvider *featureFilterProvider );
+%Docstring
+Sets feature filter provider to ``featureFilterProvider``.
+
+A feature filter provider for filtering visible features or attributes.
+It is currently used by QGIS Server Access Control Plugins.
+
+.. versionadded:: 3.18
 %End
 
   signals:

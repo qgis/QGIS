@@ -695,11 +695,13 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
     switch ( v.type() )
     {
       case QVariant::Int:
-      case QVariant::UInt:
       case QVariant::Bool:
+        // read signed integer
         sqlite3_result_int( ctxt, v.toInt() );
         break;
+      case QVariant::UInt:
       case QVariant::LongLong:
+        // read 64 bits signed integer (or 32 bits unsigned one)
         sqlite3_result_int64( ctxt, v.toLongLong() );
         break;
       case QVariant::Double:
@@ -861,7 +863,8 @@ void registerQgisFunctions( sqlite3 *db )
   QStringList reservedFunctions;
   reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
-  Q_FOREACH ( QgsExpressionFunction *foo, QgsExpression::Functions() )
+  const QList<QgsExpressionFunction *> functions = QgsExpression::Functions();
+  for ( QgsExpressionFunction *foo : functions )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
@@ -883,7 +886,7 @@ void registerQgisFunctions( sqlite3 *db )
       params = -1;
     }
 
-    Q_FOREACH ( QString name, names ) // for each alias
+    for ( QString name : std::as_const( names ) ) // for each alias
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
         name = "_" + name;

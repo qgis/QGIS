@@ -23,13 +23,14 @@
 #include <QDomDocument>
 
 #include "qgsrelation.h"
+#include "qgspolymorphicrelation.h"
 
 class QgsProject;
 class QgsVectorLayer;
 
 /**
  * \ingroup core
- * This class manages a set of relations between layers.
+ * \brief This class manages a set of relations between layers.
  */
 class CORE_EXPORT QgsRelationManager : public QObject
 {
@@ -138,6 +139,32 @@ class CORE_EXPORT QgsRelationManager : public QObject
      */
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 
+    /**
+     * Returns all the polymorphic relations
+     */
+    QMap<QString, QgsPolymorphicRelation> polymorphicRelations() const;
+
+    /**
+     * Returns the list of relations associated with a polymorphic relation
+     */
+    QgsPolymorphicRelation polymorphicRelation( const QString &polymorphicRelationId ) const;
+
+    /**
+     * Adds a new polymorphic relation. The generated relations are not available, they will be created automatically.
+     */
+    void addPolymorphicRelation( const QgsPolymorphicRelation &polymorphicRelation );
+
+    /**
+     * Removes an existing polymorphic relation and it's generated relations.
+     */
+    void removePolymorphicRelation( const QString &polymorphicRelationId );
+
+    /**
+     * Sets the specified polymorphic \a relations and removes any polymorphic relations currently set.
+     * Will remove any generated relations and recreate them.
+     */
+    void setPolymorphicRelations( const QList<QgsPolymorphicRelation> &relations );
+
   signals:
     //! Emitted when the relations were loaded after reading a project
     void relationsLoaded();
@@ -163,6 +190,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
   private:
     //! The references
     QMap<QString, QgsRelation> mRelations;
+    QMap<QString, QgsPolymorphicRelation> mPolymorphicRelations;
 
     QgsProject *mProject = nullptr;
 };

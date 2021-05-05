@@ -33,8 +33,8 @@ close I;
 
 die "no dists" unless @dists;
 
-open I, "doc/INSTALL.md";
-open O, ">doc/INSTALL.md.new";
+open I, "INSTALL.md";
+open O, ">INSTALL.md.new";
 while(<I>) {
 	last if /^\|Distribution\|Install command for packages\|\n$/;
 	print O;
@@ -85,7 +85,8 @@ for my $dist (@dists) {
 
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
-	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl,flip,python3-autopep8";
+	$deps .= ",cmake-curses-gui,ccache,expect,libyaml-tiny-perl,flip,python3-autopep8,pandoc";
+	$deps .= ",qt5-default" if $dist =~ /^(buster|bionic|focal|groovy)$/;
 
 	my @deps;
 	my %deps;
@@ -128,5 +129,5 @@ while(<I>) {
 close O;
 close I;
 
-rename "doc/INSTALL.md", "doc/INSTALL.md.orig";
-rename "doc/INSTALL.md.new", "doc/INSTALL.md";
+rename "INSTALL.md", "INSTALL.md.orig";
+rename "INSTALL.md.new", "INSTALL.md";

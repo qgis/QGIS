@@ -136,7 +136,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
     QgsLayout *layout = designer->currentLayout();
     QList< QgsLayoutItemMap * > maps;
     layout->layoutItems( maps );
-    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
+    for ( const QgsLayoutItemMap *map : std::as_const( maps ) )
     {
       QPolygonF extent = map->visibleExtentPolygon();
       QPointF labelPoint = extent.at( 1 );

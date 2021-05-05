@@ -34,7 +34,7 @@
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer( std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }
@@ -43,7 +43,7 @@ QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
@@ -468,7 +468,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
 {
   QList<QgsMapLayer *> res = layers;
   res.reserve( layers.count() + mItems.count() );
-  for ( QgsLayoutItemMapItem  *item : qgis::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem  *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;

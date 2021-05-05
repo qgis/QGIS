@@ -22,6 +22,7 @@
 #include "qgshelp.h"
 #include <QApplication>
 #include "qgsgui.h"
+#include <QPushButton>
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
@@ -75,6 +76,16 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
 void QgsProjectionSelectionDialog::setNotSetText( const QString &text )
 {
   projectionSelector->setNotSetText( text );
+}
+
+void QgsProjectionSelectionDialog::setRequireValidSelection()
+{
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( projectionSelector->hasValidSelection() );
+
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [ = ]( bool isValid )
+  {
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
+  } );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const

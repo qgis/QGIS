@@ -23,8 +23,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
-#include <QtSql>
 #include <QMutex>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "qgsprovidermetadata.h"
 
@@ -131,7 +132,11 @@ class QgsDb2Provider final: public QgsVectorDataProvider
        */
     static QString dbConnectionName( const QString &name );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMutex;
+#else
+    static QRecursiveMutex sMutex;
+#endif
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;

@@ -11,7 +11,9 @@ __date__ = '09/11/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-
+from qgis.PyQt.QtCore import QDir, QSize
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsProviderRegistry,
     QgsPointCloudLayer,
@@ -28,14 +30,12 @@ from qgis.core import (
     QgsMapUnitScale,
     QgsCoordinateReferenceSystem,
     QgsDoubleRange,
-    QgsPointCloudRenderer
+    QgsPointCloudRenderer,
+    QgsMapClippingRegion,
+    QgsGeometry
 )
-
-from qgis.PyQt.QtCore import QDir, QSize
-from qgis.PyQt.QtGui import QPainter
-from qgis.PyQt.QtXml import QDomDocument
-
 from qgis.testing import start_app, unittest
+
 from utilities import unitTestDataPath
 
 start_app()
@@ -77,13 +77,16 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         # for this point cloud, we should default to 0-65024 ranges with contrast enhancement
         self.assertEqual(layer.renderer().redContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().redContrastEnhancement().maximumValue(), 65535.0)
-        self.assertEqual(layer.renderer().redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(layer.renderer().redContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchToMinimumMaximum)
         self.assertEqual(layer.renderer().greenContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().greenContrastEnhancement().maximumValue(), 65535.0)
-        self.assertEqual(layer.renderer().greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(layer.renderer().greenContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchToMinimumMaximum)
         self.assertEqual(layer.renderer().blueContrastEnhancement().minimumValue(), 0)
         self.assertEqual(layer.renderer().blueContrastEnhancement().maximumValue(), 65535.0)
-        self.assertEqual(layer.renderer().blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(layer.renderer().blueContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchToMinimumMaximum)
 
     def testBasic(self):
         renderer = QgsPointCloudRgbRenderer()
@@ -131,13 +134,16 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         self.assertEqual(rr.redAttribute(), 'r')
         self.assertEqual(rr.redContrastEnhancement().minimumValue(), 100)
         self.assertEqual(rr.redContrastEnhancement().maximumValue(), 120)
-        self.assertEqual(rr.redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        self.assertEqual(rr.redContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
         self.assertEqual(rr.greenContrastEnhancement().minimumValue(), 130)
         self.assertEqual(rr.greenContrastEnhancement().maximumValue(), 150)
-        self.assertEqual(rr.greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(rr.greenContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchToMinimumMaximum)
         self.assertEqual(rr.blueContrastEnhancement().minimumValue(), 170)
         self.assertEqual(rr.blueContrastEnhancement().maximumValue(), 190)
-        self.assertEqual(rr.blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.ClipToMinimumMaximum)
+        self.assertEqual(rr.blueContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.ClipToMinimumMaximum)
 
         doc = QDomDocument("testdoc")
         elem = renderer.save(doc, QgsReadWriteContext())
@@ -155,13 +161,16 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         self.assertEqual(r2.redAttribute(), 'r')
         self.assertEqual(r2.redContrastEnhancement().minimumValue(), 100)
         self.assertEqual(r2.redContrastEnhancement().maximumValue(), 120)
-        self.assertEqual(r2.redContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
+        self.assertEqual(r2.redContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchAndClipToMinimumMaximum)
         self.assertEqual(r2.greenContrastEnhancement().minimumValue(), 130)
         self.assertEqual(r2.greenContrastEnhancement().maximumValue(), 150)
-        self.assertEqual(r2.greenContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.StretchToMinimumMaximum)
+        self.assertEqual(r2.greenContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.StretchToMinimumMaximum)
         self.assertEqual(r2.blueContrastEnhancement().minimumValue(), 170)
         self.assertEqual(r2.blueContrastEnhancement().maximumValue(), 190)
-        self.assertEqual(r2.blueContrastEnhancement().contrastEnhancementAlgorithm(), QgsContrastEnhancement.ClipToMinimumMaximum)
+        self.assertEqual(r2.blueContrastEnhancement().contrastEnhancementAlgorithm(),
+                         QgsContrastEnhancement.ClipToMinimumMaximum)
 
     def testUsedAttributes(self):
         renderer = QgsPointCloudRgbRenderer()
@@ -378,6 +387,38 @@ class TestQgsPointCloudRgbRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('pointcloudrenderer')
         renderchecker.setControlName('expected_zfilter')
         result = renderchecker.runTest('expected_zfilter')
+        TestQgsPointCloudRgbRenderer.report += renderchecker.report()
+        self.assertTrue(result)
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def testRenderClipRegion(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapsettings.setExtent(QgsRectangle(152.977434544, -26.663017454, 152.977424882, -26.663009624))
+        mapsettings.setLayers([layer])
+
+        region = QgsMapClippingRegion(QgsGeometry.fromWkt(
+            'Polygon ((152.97742833685992991 -26.66301088198133584, 152.97742694456141521 -26.66301085776744983, 152.97742676295726483 -26.66301358182974468, 152.97742895431403554 -26.66301349708113833, 152.97742833685992991 -26.66301088198133584))'))
+        region.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
+        region2 = QgsMapClippingRegion(QgsGeometry.fromWkt(
+            'Polygon ((152.97743215054714483 -26.66301111201326535, 152.97742715037946937 -26.66301116044103736, 152.97742754990858316 -26.66301436878107367, 152.97743264693181686 -26.66301491359353193, 152.97743215054714483 -26.66301111201326535))'))
+        region2.setFeatureClip(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+        mapsettings.addClippingRegion(region)
+        mapsettings.addClippingRegion(region2)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('pointcloudrenderer')
+        renderchecker.setControlName('expected_clip_region')
+        result = renderchecker.runTest('expected_clip_region')
         TestQgsPointCloudRgbRenderer.report += renderchecker.report()
         self.assertTrue(result)
 

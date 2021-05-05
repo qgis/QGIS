@@ -12,7 +12,7 @@
 
 class QgsMaskMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Special symbol layer that uses its sub symbol as a selective mask
 
 .. versionadded:: 3.12
@@ -27,7 +27,7 @@ Special symbol layer that uses its sub symbol as a selective mask
 Simple constructor
 %End
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 
@@ -46,7 +46,7 @@ Create a new QgsMaskMarkerSymbolLayer
     virtual bool hasDataDefinedProperties() const;
 
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual QString layerType() const;

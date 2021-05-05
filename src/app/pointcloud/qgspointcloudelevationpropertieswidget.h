@@ -38,7 +38,7 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
   private slots:
 
     void onChanged();
-
+    void shiftPointCloudZAxis();
   private:
 
     QgsPointCloudLayer *mLayer = nullptr;

@@ -46,6 +46,7 @@
 #include "qgslabelthinningsettings.h"
 #include "qgslabellinesettings.h"
 #include "qgslabeling.h"
+#include "qgslabelposition.h"
 
 class QgsTextDocument;
 
@@ -81,127 +82,8 @@ class QgsCallout;
 
 /**
  * \ingroup core
- * \class QgsLabelPosition
- */
-class CORE_EXPORT QgsLabelPosition
-{
-  public:
-
-    /**
-     * Constructor for QgsLabelPosition.
-     * \param id associated feature ID
-     * \param r label rotation in degrees clockwise
-     * \param corners corner points of label bounding box, in map units
-     * \param rect label bounding box, in map units
-     * \param w width of label, in map units
-     * \param h height of label, in map units
-     * \param layer ID of associated map layer
-     * \param labeltext text rendered for label
-     * \param labelfont font used to render label
-     * \param upside_down TRUE if label is upside down
-     * \param diagram TRUE if label is a diagram
-     * \param pinned TRUE if label has pinned placement
-     * \param providerId ID of associated label provider
-     * \param labelGeometry polygon geometry of label boundary
-     * \param isUnplaced set to TRUE if label was unplaced (e.g. due to collisions with other labels)
-     */
-    QgsLabelPosition( QgsFeatureId id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString(),
-                      const QgsGeometry &labelGeometry = QgsGeometry(), bool isUnplaced = false )
-      : featureId( id )
-      , rotation( r )
-      , cornerPoints( corners )
-      , labelRect( rect )
-      , labelGeometry( labelGeometry )
-      , width( w )
-      , height( h )
-      , layerID( layer )
-      , labelText( labeltext )
-      , labelFont( labelfont )
-      , upsideDown( upside_down )
-      , isDiagram( diagram )
-      , isPinned( pinned )
-      , providerID( providerId )
-      , isUnplaced( isUnplaced )
-    {}
-
-    //! Constructor for QgsLabelPosition
-    QgsLabelPosition() = default;
-
-    /**
-     * ID of feature associated with this label.
-     */
-    QgsFeatureId featureId = FID_NULL;
-
-    /**
-     * Rotation of label, in degrees clockwise.
-     */
-    double rotation = 0;
-
-    QVector< QgsPointXY > cornerPoints;
-    QgsRectangle labelRect;
-
-    /**
-     * A polygon geometry representing the label's bounds in map coordinates.
-     * \since QGIS 3.4.9
-     */
-    QgsGeometry labelGeometry;
-
-    /**
-     * Width of label bounding box, in map units.
-     */
-    double width = 0;
-
-    /**
-     * Heeght of label bounding box, in map units.
-     */
-    double height = 0;
-
-    /**
-     * ID of associated map layer.
-     */
-    QString layerID;
-
-    /**
-     * String shown in label.
-     */
-    QString labelText;
-
-    /**
-     * Font which the label is rendered using.
-     */
-    QFont labelFont;
-
-    /**
-     * TRUE if label is upside down.
-     */
-    bool upsideDown = false;
-
-    /**
-     * TRUE if label is a diagram.
-     */
-    bool isDiagram = false;
-
-    /**
-     * TRUE if label position has been pinned.
-     */
-    bool isPinned = false;
-
-    /**
-     * ID of the associated label provider.
-     * \since QGIS 2.14
-     */
-    QString providerID;
-
-    /**
-     * TRUE if label position corresponds to an unplaced label.
-     * \since QGIS 3.10
-     */
-    bool isUnplaced = false;
-};
-
-/**
- * \ingroup core
  * \class QgsPalLayerSettings
+ * \brief Contains settings for how a map layer will be labeled.
  */
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -454,6 +336,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
+      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
 
       // rendering
       ScaleVisibility = 23,
@@ -512,6 +395,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.10
      */
     void stopRender( QgsRenderContext &context );
+
+    /**
+     * Returns TRUE if any component of the label settings requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     * \since QGIS 3.20
+     */
+    bool containsAdvancedEffects() const;
 
     /**
      * Returns the labeling property definitions.
@@ -1181,7 +1071,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsExpression *expression = nullptr;
 
-    QFontDatabase mFontDB;
+    std::unique_ptr< QFontDatabase > mFontDB;
 
     QgsTextFormat mFormat;
 
@@ -1202,6 +1092,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
 /**
  * \ingroup core
+ * \brief Represents a label candidate.
  */
 class CORE_EXPORT QgsLabelCandidate
 {
@@ -1212,51 +1103,10 @@ class CORE_EXPORT QgsLabelCandidate
     double cost;
 };
 
-
-
-
-/**
- * \ingroup core
- * Class that stores computed placement from labeling engine.
- * \since QGIS 2.4
- */
-class CORE_EXPORT QgsLabelingResults
-{
-  public:
-    QgsLabelingResults();
-    ~QgsLabelingResults();
-
-    //! QgsLabelingResults cannot be copied.
-    QgsLabelingResults( const QgsLabelingResults & ) = delete;
-    //! QgsLabelingResults cannot be copied.
-    QgsLabelingResults &operator=( const QgsLabelingResults &rh ) = delete;
-
-    //! Returns infos about labels at a given (map) position
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-    //! Returns infos about labels within a given (map) rectangle
-    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
-
-    /**
-     * Sets the map \a settings associated with the labeling run.
-     * \since QGIS 3.4.8
-     */
-    void setMapSettings( const QgsMapSettings &settings );
-
-  private:
-#ifdef SIP_RUN
-    QgsLabelingResults( const QgsLabelingResults & );
-#endif
-
-    std::unique_ptr< QgsLabelSearchTree > mLabelSearchTree;
-
-    friend class QgsPalLabeling;
-    friend class QgsVectorLayerLabelProvider;
-    friend class QgsVectorLayerDiagramProvider;
-};
-
 /**
  * \ingroup core
  * \class QgsPalLabeling
+ * \brief PAL labeling utilities.
  */
 class CORE_EXPORT QgsPalLabeling
 {

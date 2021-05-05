@@ -19,6 +19,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QSignalSpy>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -61,6 +62,7 @@ class TestQgsMapLayer : public QObject
 
     void styleCategories();
 
+    void notify();
 
   private:
     QgsVectorLayer *mpLayer = nullptr;
@@ -353,6 +355,36 @@ void TestQgsMapLayer::styleCategories()
 
     QVERIFY( allStyleCategories.testFlag( category ) );
   }
+}
+
+void TestQgsMapLayer::notify()
+{
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->dataProvider() );
+
+  QSignalSpy spyRepaint( vl, &QgsMapLayer::repaintRequested );
+  QSignalSpy spyDataChanged( vl, &QgsMapLayer::dataChanged );
+
+  vl->setRefreshOnNotifyEnabled( true );
+  emit vl->dataProvider()->notify( "test" );
+  QCOMPARE( spyRepaint.count(), 1 );
+  QCOMPARE( spyDataChanged.count(), 1 );
+
+  vl->setRefreshOnNotifyEnabled( false );
+  emit vl->dataProvider()->notify( "test" );
+  QCOMPARE( spyRepaint.count(), 1 );
+  QCOMPARE( spyDataChanged.count(), 1 );
+
+  vl->setRefreshOnNotifyEnabled( true );
+  vl->setRefreshOnNofifyMessage( "test" );
+  emit vl->dataProvider()->notify( "test" );
+  QCOMPARE( spyRepaint.count(), 2 );
+  QCOMPARE( spyDataChanged.count(), 2 );
+
+  vl->setRefreshOnNofifyMessage( "test" );
+  emit vl->dataProvider()->notify( "nottest" );
+  QCOMPARE( spyRepaint.count(), 2 );
+  QCOMPARE( spyDataChanged.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )

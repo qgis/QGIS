@@ -73,9 +73,9 @@ class ProcessingLog:
                 # try old format log separator
                 tokens = line.split('|')
 
-            text = ''
-            for i in range(2, len(tokens)):
-                text += tokens[i] + LOG_SEPARATOR
+            text = ''.join(
+                tokens[i] + LOG_SEPARATOR for i in range(2, len(tokens))
+            )
             if line.startswith('ALGORITHM'):
                 entries.append(LogEntry(tokens[1], tokens[2]))
 

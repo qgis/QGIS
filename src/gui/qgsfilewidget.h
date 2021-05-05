@@ -248,7 +248,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
 /**
  * \ingroup gui
- * A line edit for capturing file names that can have files dropped onto
+ * \brief A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  *
  * Dropping can be limited to files only, files with a specific extension

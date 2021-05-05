@@ -18,7 +18,7 @@ ProgressWriter::ProgressWriter(int fd) : m_progressFd(fd), m_percent(0.0), m_inc
 
 void ProgressWriter::setIncrement(double increment)
 {
-    if (!m_progressFd)
+    if (m_progressFd < 0)
         return;
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -27,7 +27,7 @@ void ProgressWriter::setIncrement(double increment)
 
 void ProgressWriter::setPercent(double percent)
 {
-    if (!m_progressFd)
+    if (m_progressFd < 0)
         return;
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -36,7 +36,7 @@ void ProgressWriter::setPercent(double percent)
 
 void ProgressWriter::writeIncrement(const std::string& message)
 {
-    if (!m_progressFd)
+    if (m_progressFd < 0)
         return;
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -49,7 +49,7 @@ void ProgressWriter::writeIncrement(const std::string& message)
 
 void ProgressWriter::write(double percent, const std::string& message)
 {
-    if (!m_progressFd)
+    if (m_progressFd < 0)
         return;
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -62,10 +62,16 @@ void ProgressWriter::write(double percent, const std::string& message)
 void ProgressWriter::writeMessage(uint32_t percent, const std::string& message)
 {
 #ifndef _WIN32
-    ::write(m_progressFd, &percent, sizeof(percent));
+    bool err = false;
+    err = (::write(m_progressFd, &percent, sizeof(percent)) == -1);
     uint32_t ssize = (uint32_t)message.size();
-    ::write(m_progressFd, &ssize, sizeof(ssize));
-    ::write(m_progressFd, message.data(), ssize);
+    err |= (::write(m_progressFd, &ssize, sizeof(ssize)) == -1);
+    err |= (::write(m_progressFd, message.data(), ssize) == -1);
+    if (err)
+    {
+        ::close(m_progressFd);
+        m_progressFd = -1;
+    }
 #else
     DWORD numWritten;
     HANDLE h = reinterpret_cast<HANDLE>((intptr_t)m_progressFd);

@@ -51,8 +51,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect() override;
 
-    QgsStringMap properties() const override;
-    void readProperties( const QgsStringMap &props ) override;
+    QVariantMap properties() const override;
+    void readProperties( const QVariantMap &props ) override;
 
     /**
      * Sets the spread distance for drawing the glow effect.
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsOuterGlowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
+    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     QgsOuterGlowEffect();
 
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsInnerGlowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
+    static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     QgsInnerGlowEffect();
 

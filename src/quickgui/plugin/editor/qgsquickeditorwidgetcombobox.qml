@@ -26,7 +26,10 @@ ComboBox {
   id: comboBox
 
   property var comboStyle
+  property bool readOnly: false
+  property real iconSize
   signal itemClicked( var index )
+
   anchors { left: parent.left; right: parent.right }
 
   MouseArea {
@@ -47,20 +50,20 @@ ComboBox {
     height: comboBox.height * 0.8
     text: model.display
     font.weight: comboBox.currentIndex === index ? Font.DemiBold : Font.Normal
-    font.pixelSize: comboStyle.fontPixelSize
+    font.pointSize: customStyle.fields.fontPointSize
     highlighted: comboBox.highlightedIndex === index
-    leftPadding: 5 * QgsQuick.Utils.dp
+    leftPadding: customStyle.fields.sideMargin
     onClicked: comboBox.itemClicked( model.FeatureId ? model.FeatureId : index )
   }
 
   contentItem: Text {
     height: comboBox.height * 0.8
     text: comboBox.displayText
-    font.pixelSize: comboStyle.fontPixelSize
+    font.pointSize: customStyle.fields.fontPointSize
     horizontalAlignment: Text.AlignLeft
     verticalAlignment: Text.AlignVCenter
     elide: Text.ElideRight
-    leftPadding: 5 * QgsQuick.Utils.dp
+    leftPadding: customStyle.fields.sideMargin
     color: comboStyle.fontColor
   }
 
@@ -78,4 +81,28 @@ ComboBox {
     }
   }
   // [/hidpi fixes]
+
+  indicator: Item {
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+    Image {
+      id: comboboxIndicatorIcon
+      source: customStyle.icons.combobox
+      height: iconSize ? iconSize : parent.height * 0.4
+      width: height / 2
+      anchors.right: parent.right
+      anchors.rightMargin: customStyle.fields.sideMargin
+      anchors.verticalCenter: parent.verticalCenter
+      fillMode: Image.PreserveAspectFit
+      autoTransform: true
+      visible: false
+    }
+
+    ColorOverlay {
+      anchors.fill: comboboxIndicatorIcon
+      source: comboboxIndicatorIcon
+      color: readOnly ? customStyle.toolbutton.backgroundColorInvalid : customStyle.toolbutton.activeButtonColor
+    }
+  }
 }

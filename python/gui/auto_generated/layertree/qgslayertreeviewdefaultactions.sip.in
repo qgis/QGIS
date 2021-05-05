@@ -13,8 +13,8 @@
 
 class QgsLayerTreeViewDefaultActions : QObject
 {
-%Docstring
-The QgsLayerTreeViewDefaultActions class serves as a factory of actions
+%Docstring(signature="appended")
+The :py:class:`QgsLayerTreeViewDefaultActions` class serves as a factory of actions
 that can be used together with a layer tree view.
 
 .. seealso:: :py:class:`QgsLayerTreeView`
@@ -49,7 +49,20 @@ Action to uncheck a group and all its children
 Action to check a group and all its parents
 %End
 
-    QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
+ QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated/;
+%Docstring
+Action to zoom to the active layer from the layer tree.
+
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsLayerTreeViewDefaultActions.actionZoomToLayers`
+%End
+
+    QAction *actionZoomToLayers( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
+%Docstring
+Action to zoom to all the selected layer(s) in the layer tree
+
+.. versionadded:: 3.18
+%End
 
     QAction *actionZoomToSelection( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
 %Docstring
@@ -63,7 +76,7 @@ Action to zoom to selected features of a vector layer
 %Docstring
 
 .. deprecated:: QGIS 3.2
-  use actionMoveOutOfGroup()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.actionMoveOutOfGroup`
 %End
 
     QAction *actionMoveOutOfGroup( QObject *parent = 0 ) /Factory/;
@@ -98,7 +111,22 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
 .. versionadded:: 2.12
 %End
 
-    void zoomToLayer( QgsMapCanvas *canvas );
+ void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated/;
+%Docstring
+Zooms a map ``canvas`` to the extent of the active layer in the layer tree.
+
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsLayerTreeViewDefaultActions.zoomToLayers`
+%End
+
+    void zoomToLayers( QgsMapCanvas *canvas );
+%Docstring
+Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
+
+.. seealso:: :py:func:`zoomToLayers`
+
+.. versionadded:: 3.18
+%End
 
     void zoomToSelection( QgsMapCanvas *canvas );
 %Docstring
@@ -117,21 +145,35 @@ Action to enable/disable mutually exclusive flag of a group (only one child node
     void removeGroupOrLayer();
     void renameGroupOrLayer();
     void showFeatureCount();
-    void zoomToLayer();
+
+ void zoomToLayer() /Deprecated/;
+%Docstring
+Zooms to the extent of the active layer in the layer tree.
+
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsLayerTreeViewDefaultActions.zoomToLayers`
+%End
+
+    void zoomToLayers();
+%Docstring
+Zooms to the combined extent of all the selected layer(s) in the layer tree.
+
+.. versionadded:: 3.18
+%End
 
     void zoomToSelection();
 %Docstring
-Slot to zoom to selected features of a vector layer
+Zooms to the bounding box of all selected features of a vector layer.
 
 .. versionadded:: 3.2
 %End
     void zoomToGroup();
 
- void makeTopLevel();
+ void makeTopLevel() /Deprecated/;
 %Docstring
 
 .. deprecated:: QGIS 3.2
-  use moveOutOfGroup()
+  use :py:func:`~QgsLayerTreeViewDefaultActions.moveOutOfGroup`
 %End
 
     void moveOutOfGroup();

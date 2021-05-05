@@ -112,7 +112,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     QgsProcessingFeedback *feedback )
 {
   if ( intersectSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
-    feedback->reportError( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
+    feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
 
   QgsFeatureIds foundSet;
   QgsFeatureRequest request = QgsFeatureRequest();
@@ -277,9 +277,10 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
         engine->prepareGeometry();
       }
 
-      for ( Predicate predicate : qgis::as_const( predicates ) )
+      bool isMatch = false;
+
+      for ( Predicate predicate : std::as_const( predicates ) )
       {
-        bool isMatch = false;
         switch ( predicate )
         {
           case Intersects:
@@ -311,10 +312,13 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
             break;
         }
         if ( isMatch )
-        {
-          foundSet.insert( testFeature.id() );
-          handleFeatureFunction( testFeature );
-        }
+          break;
+      }
+
+      if ( isMatch )
+      {
+        foundSet.insert( testFeature.id() );
+        handleFeatureFunction( testFeature );
       }
 
     }
@@ -513,6 +517,5 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
 }
 
 ///@endcond
-
 
 

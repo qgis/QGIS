@@ -42,7 +42,7 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
              << QObject::tr( "within" )
              << QObject::tr( "crosses" );
 
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Geometric predicate" ), predicates, true, 0 );
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Geometric predicate" ), predicates, true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
@@ -369,7 +369,7 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverJoinedSource( Qg
 void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   if ( mJoinSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
-    feedback->reportError( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
+    feedback->pushWarning( QObject::tr( "No spatial index exists for join layer, performance will be severely degraded" ) );
 
   QgsFeatureIterator it = mBaseSource->getFeatures();
   QgsFeature f;
@@ -454,7 +454,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
     {
       engine.reset( QgsGeometry::createGeometryEngine( featGeom.constGet() ) );
       engine->prepareGeometry();
-      for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+      for ( int ix : std::as_const( mJoinedFieldIndices ) )
       {
         joinAttributes.append( joinFeature.attribute( ix ) );
       }
@@ -535,7 +535,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
           {
             QgsAttributes joinAttributes = baseFeature.attributes();
             joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
-            for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+            for ( int ix : std::as_const( mJoinedFieldIndices ) )
             {
               joinAttributes.append( joinFeature.attribute( ix ) );
             }
@@ -598,7 +598,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
         {
           QgsAttributes joinAttributes = baseFeature.attributes();
           joinAttributes.reserve( joinAttributes.size() + mJoinedFieldIndices.size() );
-          for ( int ix : qgis::as_const( mJoinedFieldIndices ) )
+          for ( int ix : std::as_const( mJoinedFieldIndices ) )
           {
             joinAttributes.append( bestMatch.attribute( ix ) );
           }

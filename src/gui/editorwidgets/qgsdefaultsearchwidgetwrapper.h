@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * Wraps a search widget. Default form is just a QgsLineFilterEdit
+ * \brief Wraps a search widget. Default form is just a QgsLineFilterEdit
  */
 
 class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper

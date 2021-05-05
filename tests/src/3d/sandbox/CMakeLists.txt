@@ -3,35 +3,10 @@ if(WIN32)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
-  ${CMAKE_SOURCE_DIR}/src/3d
-  ${CMAKE_SOURCE_DIR}/src/3d/chunks
-  ${CMAKE_SOURCE_DIR}/src/3d/materials
-  ${CMAKE_SOURCE_DIR}/src/3d/mesh
-  ${CMAKE_SOURCE_DIR}/src/3d/symbols
-  ${CMAKE_SOURCE_DIR}/src/3d/terrain
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/3d
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
@@ -52,6 +27,9 @@ add_executable(qgis_3d_sandbox
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dmapcanvas.cpp
   ${CMAKE_SOURCE_DIR}/src/app/3d/qgs3dnavigationwidget.cpp
 )
+# require c++17
+target_compile_features(qgis_3d_sandbox PRIVATE cxx_std_17)
+
 set_target_properties(qgis_3d_sandbox PROPERTIES AUTORCC TRUE)
 target_link_libraries(qgis_3d_sandbox
   ${Qt5Xml_LIBRARIES}

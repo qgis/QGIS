@@ -102,15 +102,30 @@ namespace std
 {
     template<> struct hash<untwine::VoxelKey>
     {
-        std::size_t operator()(const untwine::VoxelKey& k) const noexcept
+        size_t operator()(const untwine::VoxelKey& k) const noexcept
         {
-            static_assert(sizeof(size_t) > sizeof(int), "wrong assumption that size_t is 64 bits");
+            size_t t;
 
-            // For this to work well we just assume that the values are no more than than 16 bits.
-            size_t t = size_t(k.x()) << 48;
-            t |= size_t(k.y()) << 32;
-            t |= size_t(k.z()) << 16;
-            t |= size_t(k.level());
+            static_assert(sizeof(size_t) == sizeof(uint64_t) ||
+                sizeof(size_t) == sizeof(uint32_t),
+                "Only systems with 32 and 64 bit size_t are currently supported.");
+
+            // Counting on the compiler to optimize away the wrong branch.
+            if (sizeof(size_t) == sizeof(uint64_t))
+            {
+                // For this to work well we just assume that the values are no more than 16 bits.
+                t = size_t(k.x()) << 48;
+                t |= size_t(k.y()) << 32;
+                t |= size_t(k.z()) << 16;
+                t |= size_t(k.level());
+            }
+            else if (sizeof(size_t) == sizeof(uint32_t))
+            {
+                t = size_t((k.x() << 24) | 0xFF000000);
+                t |= size_t((k.y() << 16) | 0xFF0000);
+                t |= size_t((k.z() << 8) | 0xFF00);
+                t |= size_t(k.level() | 0xFF);
+            }
             return t;
         }
     };

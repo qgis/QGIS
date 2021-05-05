@@ -24,7 +24,7 @@
 
 /**
  * \ingroup gui
- * Layout view tool for adding items to a layout.
+ * \brief Layout view tool for adding items to a layout.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
@@ -56,7 +56,27 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void activate() override;
     void deactivate() override;
+
+    /**
+     * Returns any custom properties set for the tool.
+     *
+     *\see setCustomProperties()
+     * \since QGIS 3.18
+     */
+    QVariantMap customProperties() const;
+
+    /**
+     * Sets custom \a properties for the tool.
+     *
+     * These properties are transient, and are cleared whenever the tool is activated. Callers must ensure
+     * that the properties are set only after the tool is activated.
+     *
+     *\see customProperties()
+     * \since QGIS 3.18
+     */
+    void setCustomProperties( const QVariantMap &properties );
 
   signals:
 
@@ -82,6 +102,8 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
+
+    QVariantMap mCustomProperties;
 
 };
 

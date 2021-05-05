@@ -108,7 +108,7 @@ Session::Session(QObject* parent) :
     connect( _emulation,&Emulation::lockPtyRequest,_shellProcess,&Pty::lockPty );
     connect( _emulation,&Emulation::useUtf8Request,_shellProcess,&Pty::setUtf8Mode );
 
-    connect( _shellProcess,static_cast<void ( QProcess::* )( int )>( &QProcess::finished ), this, &Session::done );
+    connect( _shellProcess,static_cast<void ( QProcess::* )( int,  QProcess::ExitStatus)>( &QProcess::finished ), this, &Session::done );
     // not in kprocess anymore connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
@@ -485,8 +485,7 @@ void Session::monitorTimerDone()
 void Session::activityStateSet(int state)
 {
     if (state==NOTIFYBELL) {
-        QString s;
-        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().constData());
+        QString s = QStringLiteral("Bell in session '%1'").arg(_nameTitle);
 
         emit bellRequest( s );
     } else if (state==NOTIFYACTIVITY) {
@@ -619,7 +618,7 @@ QString Session::profileKey() const
     return _profileKey;
 }
 
-void Session::done(int exitStatus)
+void Session::done(int exitCode, QProcess::ExitStatus exitStatus)
 {
     if (!_autoClose) {
         _userTitle = ("This session is done. Finished");
@@ -628,20 +627,17 @@ void Session::done(int exitStatus)
     }
 
     QString message;
-    if (!_wantedClose || exitStatus != 0) {
+    if (!_wantedClose || exitCode != 0) {
 
-        if (_shellProcess->exitStatus() == QProcess::NormalExit) {
-            message.sprintf("Session '%s' exited with status %d.",
-                          _nameTitle.toUtf8().constData(), exitStatus);
+        if (exitStatus == QProcess::NormalExit) {
+            message = QStringLiteral("Session '%1' exited with code %2.").arg(_nameTitle).arg(exitCode);
         } else {
-            message.sprintf("Session '%s' crashed.",
-                          _nameTitle.toUtf8().constData());
+            message = QStringLiteral("Session '%1' crashed.").arg(_nameTitle);
         }
     }
 
-    if ( !_wantedClose && _shellProcess->exitStatus() != QProcess::NormalExit )
-        message.sprintf("Session '%s' exited unexpectedly.",
-                        _nameTitle.toUtf8().constData());
+    if ( !_wantedClose && exitStatus != QProcess::NormalExit )
+        message = QStringLiteral("Session '%1' exited unexpectedly.").arg(_nameTitle);
     else
         emit finished();
 

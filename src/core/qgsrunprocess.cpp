@@ -22,9 +22,13 @@
 
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsfeedback.h"
+#include "qgsapplication.h"
+#include "qgis.h"
 #include <QProcess>
 #include <QTextCodec>
 #include <QMessageBox>
+#include <QApplication>
 
 #if QT_CONFIG(process)
 QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
@@ -35,6 +39,13 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
   QgsDebugMsg( "Running command: " + action );
 
   mCommand = action;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  QStringList arguments = QProcess::splitCommand( action );
+  const QString command = arguments.value( 0 );
+  if ( !arguments.isEmpty() )
+    arguments.removeFirst();
+#endif
 
   mProcess = new QProcess;
 
@@ -63,11 +74,19 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
     }
 
     // start the process!
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     mProcess->start( action );
+#else
+    mProcess->start( command, arguments );
+#endif
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
+#else
+    if ( ! mProcess->startDetached( command, arguments ) ) // let the program run by itself
+#endif
     {
       QMessageBox::critical( nullptr, tr( "Action" ),
                              tr( "Unable to run command\n%1" ).arg( action ),
@@ -163,6 +182,59 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
     QgsDebugMsg( "Got error: " + QString( "%d" ).arg( err ) );
   }
 }
+
+QStringList QgsRunProcess::splitCommand( const QString &command )
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  return QProcess::splitCommand( command );
+#else
+  // taken from Qt 5.15's implementation
+  QStringList args;
+  QString tmp;
+  int quoteCount = 0;
+  bool inQuote = false;
+
+  // handle quoting. tokens can be surrounded by double quotes
+  // "hello world". three consecutive double quotes represent
+  // the quote character itself.
+  for ( int i = 0; i < command.size(); ++i )
+  {
+    if ( command.at( i ) == QLatin1Char( '"' ) )
+    {
+      ++quoteCount;
+      if ( quoteCount == 3 )
+      {
+        // third consecutive quote
+        quoteCount = 0;
+        tmp += command.at( i );
+      }
+      continue;
+    }
+    if ( quoteCount )
+    {
+      if ( quoteCount == 1 )
+        inQuote = !inQuote;
+      quoteCount = 0;
+    }
+    if ( !inQuote && command.at( i ).isSpace() )
+    {
+      if ( !tmp.isEmpty() )
+      {
+        args += tmp;
+        tmp.clear();
+      }
+    }
+    else
+    {
+      tmp += command.at( i );
+    }
+  }
+  if ( !tmp.isEmpty() )
+    args += tmp;
+
+  return args;
+#endif
+}
 #else
 QgsRunProcess::QgsRunProcess( const QString &action, bool )
 {
@@ -173,4 +245,120 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool )
 QgsRunProcess::~QgsRunProcess()
 {
 }
+
+QStringList QgsRunProcess::splitCommand( const QString & )
+{
+  return QStringList();
+}
 #endif
+
+
+//
+// QgsBlockingProcess
+//
+
+#if QT_CONFIG(process)
+QgsBlockingProcess::QgsBlockingProcess( const QString &process, const QStringList &arguments )
+  : QObject()
+  , mProcess( process )
+  , mArguments( arguments )
+{
+
+}
+
+int QgsBlockingProcess::run( QgsFeedback *feedback )
+{
+  const bool requestMadeFromMainThread = QThread::currentThread() == QCoreApplication::instance()->thread();
+
+  int result = 0;
+  QProcess::ExitStatus exitStatus = QProcess::NormalExit;
+  QProcess::ProcessError error = QProcess::UnknownError;
+
+  std::function<void()> runFunction = [ this, &result, &exitStatus, &error, feedback]()
+  {
+    // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
+    // or the blocking call has been made from the main thread and we've fired up a new thread for this function
+    Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
+
+    QProcess p;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    p.setProcessEnvironment( env );
+
+    QEventLoop loop;
+    // connecting to aboutToQuit avoids an on-going process to remain stalled
+    // when QThreadPool::globalInstance()->waitForDone()
+    // is called at process termination
+    connect( qApp, &QCoreApplication::aboutToQuit, &loop, &QEventLoop::quit, Qt::DirectConnection );
+
+    if ( feedback )
+      QObject::connect( feedback, &QgsFeedback::canceled, &p, [ &p]
+    {
+#ifdef Q_OS_WIN
+      // From the qt docs:
+      // "Console applications on Windows that do not run an event loop, or whose
+      // event loop does not handle the WM_CLOSE message, can only be terminated by calling kill()."
+      p.kill();
+#else
+      p.terminate();
+#endif
+    } );
+    connect( &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
+    {
+      result = res;
+      exitStatus = st;
+      loop.quit();
+    }, Qt::DirectConnection );
+
+    connect( &p, &QProcess::readyReadStandardOutput, &p, [&p, this]
+    {
+      QByteArray ba = p.readAllStandardOutput();
+      mStdoutHandler( ba );
+    } );
+    connect( &p, &QProcess::readyReadStandardError, &p, [&p, this]
+    {
+      QByteArray ba = p.readAllStandardError();
+      mStderrHandler( ba );
+    } );
+    p.start( mProcess, mArguments, QProcess::Unbuffered | QProcess::ReadWrite );
+    if ( !p.waitForStarted() )
+    {
+      result = 1;
+      exitStatus = QProcess::NormalExit;
+      error = p.error();
+    }
+    else
+    {
+      loop.exec();
+    }
+
+    mStdoutHandler( p.readAllStandardOutput() );
+    mStderrHandler( p.readAllStandardError() );
+  };
+
+  if ( requestMadeFromMainThread )
+  {
+    std::unique_ptr<ProcessThread> processThread = std::make_unique<ProcessThread>( runFunction );
+    processThread->start();
+    // wait for thread to gracefully exit
+    processThread->wait();
+  }
+  else
+  {
+    runFunction();
+  }
+
+  mExitStatus = exitStatus;
+  mProcessError = error;
+  return result;
+}
+
+QProcess::ExitStatus QgsBlockingProcess::exitStatus() const
+{
+  return mExitStatus;
+};
+
+QProcess::ProcessError QgsBlockingProcess::processError() const
+{
+  return mProcessError;
+};
+#endif // QT_CONFIG(process)

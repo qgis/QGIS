@@ -209,8 +209,13 @@ QgsLabelingResults *QgsMapRendererParallelJob::takeLabelingResults()
 
 QImage QgsMapRendererParallelJob::renderedImage()
 {
-  if ( mStatus == RenderingLayers )
-    return composeImage( mSettings, mLayerJobs, mLabelJob );
+  // if status == Idle we are either waiting for the render to start, OR have finished the render completely.
+  // We can differentiate between those states by checking whether mFinalImage is null -- at the "waiting for
+  // render to start" state mFinalImage has not yet been created.
+  const bool jobIsComplete = mStatus == Idle && !mFinalImage.isNull();
+
+  if ( !jobIsComplete )
+    return composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   else
     return mFinalImage; // when rendering labels or idle
 }
@@ -231,7 +236,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image for labeling
   if ( mSecondPassLayerJobs.isEmpty() )
   {
-    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
@@ -331,6 +336,12 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
   emit finished();
 }
 
+/*
+ * See section "Smarter Map Redraws"
+ * in https://github.com/qgis/QGIS-Enhancement-Proposals/issues/181
+ */
+// #define SIMULATE_SLOW_RENDERER
+
 void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 {
   if ( job.context.renderingStopped() )
@@ -350,7 +361,10 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
   {
-    job.renderer->render();
+#ifdef SIMULATE_SLOW_RENDERER
+    QThread::sleep( 1 );
+#endif
+    job.completed = job.renderer->render();
   }
   catch ( QgsException &e )
   {

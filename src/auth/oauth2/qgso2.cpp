@@ -68,7 +68,7 @@ void QgsO2::initOAuthConfig()
 
   // common properties to all grant flows
   QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
-  QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ), 2 );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
   mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
@@ -208,7 +208,7 @@ void QgsO2::link()
     query.setQueryItems( parameters );
     url.setQuery( query );
     QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Emit openBrowser %1" ).arg( url.toString() ), 4 );
-    emit openBrowser( url );
+    QgsNetworkAccessManager::instance()->requestAuthOpenBrowser( url );
     if ( !mIsLocalHost )
     {
       emit getAuthCode();
@@ -259,7 +259,7 @@ void QgsO2::setState( const QString & )
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Emitting closeBrowser()" ), 4 );
-  emit closeBrowser();
+  QgsNetworkAccessManager::instance()->requestAuthCloseBrowser();
 
   if ( mIsLocalHost )
   {
@@ -312,7 +312,11 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
-    connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+#else
+    connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+#endif
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {

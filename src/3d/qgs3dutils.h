@@ -35,6 +35,9 @@ namespace Qt3DExtras
 #include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
+#include "qgsray3d.h"
+
+#include <Qt3DRender/QCamera>
 
 #include <memory>
 
@@ -42,7 +45,7 @@ namespace Qt3DExtras
 
 /**
  * \ingroup 3d
- * Miscellaneous utility functions used from 3D code.
+ * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
@@ -122,8 +125,8 @@ class _3D_EXPORT Qgs3DUtils
     static void extractPointPositions( const QgsFeature &f, const Qgs3DMapSettings &map, Qgs3DTypes::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
-        Returns true if bbox is completely outside the current viewing volume.
-        This is used to perform object culling checks.
+     * Returns TRUE if bbox is completely outside the current viewing volume.
+     * This is used to perform object culling checks.
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
@@ -174,6 +177,9 @@ class _3D_EXPORT Qgs3DUtils
 
     //! Returns phong material settings object based on the Qt3D material
     static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
+
+    //! Convert from clicked point on the screen to a ray in world coordinates
+    static QgsRay3D rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera );
 };
 
 #endif // QGS3DUTILS_H

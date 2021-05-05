@@ -46,6 +46,139 @@ QString QgsInternalGeometryEngine::lastError() const
   return mLastError;
 }
 
+
+enum class Direction
+{
+  Up,
+  Right,
+  Down,
+  Left,
+  None
+};
+
+/**
+ * Determines the direction of an edge from p1 to p2. maxDev is the tangent of
+ * the maximum allowed edge deviation angle. If the edge deviates more than
+ * the allowed angle, Direction::None will be returned.
+ */
+Direction getEdgeDirection( const QgsPoint &p1, const QgsPoint &p2, double maxDev )
+{
+  double dx = p2.x() - p1.x();
+  double dy = p2.y() - p1.y();
+  if ( ( dx == 0.0 ) && ( dy == 0.0 ) )
+    return Direction::None;
+  if ( fabs( dx ) >= fabs( dy ) )
+  {
+    double dev = fabs( dy ) / fabs( dx );
+    if ( dev > maxDev )
+      return Direction::None;
+    return dx > 0.0 ? Direction::Right : Direction::Left;
+  }
+  else
+  {
+    double dev = fabs( dx ) / fabs( dy );
+    if ( dev > maxDev )
+      return Direction::None;
+    return dy > 0.0 ? Direction::Up : Direction::Down;
+  }
+}
+
+/**
+ * Checks whether the polygon consists of four nearly axis-parallel sides. All
+ * consecutive edges having the same direction are considered to belong to the
+ * same side.
+ */
+std::pair<bool, std::array<Direction, 4>> getEdgeDirections( const QgsPolygon *g, double maxDev )
+{
+  std::pair<bool, std::array<Direction, 4>> ret = { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
+  // The polygon might start in the middle of a side. Hence, we need a fifth
+  // direction to record the beginning of the side when we went around the
+  // polygon.
+  std::array<Direction, 5> dirs;
+
+  int idx = 0;
+  QgsAbstractGeometry::vertex_iterator previous = g->vertices_begin();
+  QgsAbstractGeometry::vertex_iterator current = previous;
+  ++current;
+  QgsAbstractGeometry::vertex_iterator end = g->vertices_end();
+  while ( current != end )
+  {
+    Direction dir = getEdgeDirection( *previous, *current, maxDev );
+    if ( dir == Direction::None )
+      return ret;
+    if ( idx == 0 )
+    {
+      dirs[0] = dir;
+      ++idx;
+    }
+    else if ( dir != dirs[idx - 1] )
+    {
+      if ( idx == 5 )
+        return ret;
+      dirs[idx] = dir;
+      ++idx;
+    }
+    previous = current;
+    ++current;
+  }
+  ret.first = ( idx == 5 ) ? ( dirs[0] == dirs[4] ) : ( idx == 4 );
+  std::copy( dirs.begin(), dirs.begin() + 4, ret.second.begin() );
+  return ret;
+}
+
+bool matchesOrientation( std::array<Direction, 4> dirs, std::array<Direction, 4> oriented )
+{
+  int idx = std::find( oriented.begin(), oriented.end(), dirs[0] ) - oriented.begin();
+  for ( int i = 1; i < 4; ++i )
+  {
+    if ( dirs[i] != oriented[( idx + i ) % 4] )
+      return false;
+  }
+  return true;
+}
+
+/**
+ * Checks whether the 4 directions in dirs make up a clockwise rectangle.
+ */
+bool isClockwise( std::array<Direction, 4> dirs )
+{
+  const std::array<Direction, 4> cwdirs = { Direction::Up, Direction::Right, Direction::Down, Direction::Left };
+  return matchesOrientation( dirs, cwdirs );
+}
+
+/**
+ * Checks whether the 4 directions in dirs make up a counter-clockwise
+ * rectangle.
+ */
+bool isCounterClockwise( std::array<Direction, 4> dirs )
+{
+  const std::array<Direction, 4> ccwdirs = { Direction::Right, Direction::Up, Direction::Left, Direction::Down };
+  return matchesOrientation( dirs, ccwdirs );
+}
+
+
+bool QgsInternalGeometryEngine::isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly ) const
+{
+  if ( QgsWkbTypes::flatType( mGeometry->wkbType() ) != QgsWkbTypes::Polygon )
+    return false;
+
+  const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( mGeometry );
+  if ( !polygon->exteriorRing() || polygon->numInteriorRings() > 0 )
+    return false;
+
+  const int vertexCount = polygon->exteriorRing()->numPoints();
+  if ( vertexCount < 4 )
+    return false;
+  else if ( simpleRectanglesOnly && ( vertexCount != 5 || !polygon->exteriorRing()->isClosed() ) )
+    return false;
+
+  bool found4Dirs;
+  std::array<Direction, 4> dirs;
+  std::tie( found4Dirs, dirs ) = getEdgeDirections( polygon, std::tan( maximumDeviation * M_PI / 180 ) );
+
+  return found4Dirs && ( isCounterClockwise( dirs ) || isClockwise( dirs ) );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -79,7 +212,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
   if ( !linesToProcess.empty() )
   {
     std::unique_ptr< QgsLineString > secondline;
-    for ( QgsLineString *line : qgis::as_const( linesToProcess ) )
+    for ( QgsLineString *line : std::as_const( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
@@ -260,14 +393,12 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     int numGeom = gc->numGeometries();
     double maxDist = 0;
     QgsPoint bestPoint;
-    bool found = false;
     for ( int i = 0; i < numGeom; ++i )
     {
       const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( gc->geometryN( i ) );
       if ( !surface )
         continue;
 
-      found = true;
       double dist = std::numeric_limits<double>::max();
       QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
       if ( dist > maxDist )
@@ -277,7 +408,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
       }
     }
 
-    if ( !found )
+    if ( bestPoint.isEmpty() )
       return QgsGeometry();
 
     if ( distanceFromBoundary )
@@ -292,6 +423,9 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
     double dist = std::numeric_limits<double>::max();
     QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
+    if ( p.isEmpty() )
+      return QgsGeometry();
+
     if ( distanceFromBoundary )
       *distanceFromBoundary = dist;
     return QgsGeometry( new QgsPoint( p ) );
@@ -522,7 +656,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -681,7 +815,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -717,7 +851,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -988,7 +1122,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
             // close ring
             points.append( points.at( 0 ) );
 
-            std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
+            std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
             poly->setExteriorRing( new QgsLineString( points ) );
             if ( poly->area() > 0 )
               parts << QgsGeometry( std::move( poly ) );
@@ -1200,7 +1334,7 @@ QVector<QgsPointXY> QgsInternalGeometryEngine::randomPointsInPolygon( const QgsG
 std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString, double distanceTolerance,
     double pointSpacingAngleTolerance )
 {
-  std::unique_ptr< QgsCompoundCurve > out = qgis::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
 
   /* Minimum number of edges, per quadrant, required to define an arc */
   const unsigned int minQuadEdges = 2;
@@ -1348,7 +1482,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       {
         points.append( lineString->pointN( j ) );
       }
-      std::unique_ptr< QgsCurve > straightSegment = qgis::make_unique< QgsLineString >( points );
+      std::unique_ptr< QgsCurve > straightSegment = std::make_unique< QgsLineString >( points );
       out->addCurve( straightSegment.release() );
     }
     else
@@ -1358,7 +1492,7 @@ std::unique_ptr< QgsCompoundCurve > lineToCurve( const QgsLineString *lineString
       points.append( lineString->pointN( start ) );
       points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
       points.append( lineString->pointN( end + 1 ) );
-      std::unique_ptr< QgsCircularString > curvedSegment = qgis::make_unique< QgsCircularString >();
+      std::unique_ptr< QgsCircularString > curvedSegment = std::make_unique< QgsCircularString >();
       curvedSegment->setPoints( points );
       out->addCurve( curvedSegment.release() );
     }
@@ -1392,7 +1526,7 @@ std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstrac
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsCurvePolygon > result = qgis::make_unique< QgsCurvePolygon>();
+    std::unique_ptr< QgsCurvePolygon > result = std::make_unique< QgsCurvePolygon>();
 
     result->setExteriorRing( lineToCurve( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                                           distanceTolerance, angleTolerance ).release() );
@@ -1437,7 +1571,7 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
+    for ( QgsAbstractGeometry *g : std::as_const( geometryList ) )
     {
       first.addPart( g );
     }

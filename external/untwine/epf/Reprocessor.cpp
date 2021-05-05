@@ -11,6 +11,9 @@
  ****************************************************************************/
 
 
+// This include is necessary for released PDAL 2.0 and earlier, as it wasn't included in
+// FileUtils.hpp.
+#include <vector>
 #include <pdal/util/FileUtils.hpp>
 
 #include "Reprocessor.hpp"

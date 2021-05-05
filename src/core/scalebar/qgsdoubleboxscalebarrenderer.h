@@ -24,7 +24,7 @@
 /**
  * \class QgsDoubleBoxScaleBarRenderer
  * \ingroup core
- * Double box with alternating colors.
+ * \brief Double box with alternating colors.
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer

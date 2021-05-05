@@ -19,6 +19,7 @@
 #define QGSFEATUREFILTERPROVIDER_H
 
 #include <QtGlobal>
+#include <QStringList>
 #include "qgis_sip.h"
 
 #include "qgis_core.h"
@@ -31,9 +32,11 @@ class QgsFeatureRequest;
 /**
  * \ingroup core
  * \class QgsFeatureFilterProvider
- * Abstract interface for use by classes that filter the features of a layer.
+ * \brief Abstract interface for use by classes that filter the features or attributes of a layer.
+ *
  * A QgsFeatureFilterProvider provides a method for modifying a QgsFeatureRequest in place to apply
- * additional filters to the request.
+ * additional filters to the request, since QGIS 3.18 a method to filter allowed attributes is also available.
+ *
  * \since QGIS 2.14
  */
 
@@ -57,6 +60,12 @@ class CORE_EXPORT QgsFeatureFilterProvider
      * \param featureRequest the feature request to update
      */
     virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
+
+    /**
+     * Returns the list of visible attribute names from a list of \a attributes names for the given \a layer
+     * \since QGIS 3.18
+     */
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const = 0;
 
     /**
      * Create a clone of the feature filter provider

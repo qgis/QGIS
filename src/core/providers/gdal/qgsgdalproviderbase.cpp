@@ -20,6 +20,7 @@
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <cpl_conv.h>
+#include <cpl_string.h>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -27,6 +28,8 @@
 #include "qgssettings.h"
 
 #include <mutex>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
@@ -254,14 +257,28 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   return extent;
 }
 
-GDALDatasetH QgsGdalProviderBase::gdalOpen( const char *pszFilename, GDALAccess eAccess )
+GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOpenFlags )
 {
+  QVariantMap parts = decodeGdalUri( uri );
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  parts.remove( QStringLiteral( "openOptions" ) );
+
+  char **papszOpenOptions = nullptr;
+  for ( const QString &option : openOptions )
+  {
+    papszOpenOptions = CSLAddString( papszOpenOptions,
+                                     option.toUtf8().constData() );
+  }
+
   bool modify_OGR_GPKG_FOREIGN_KEY_CHECK = !CPLGetConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
   }
-  GDALDatasetH hDS = GDALOpen( pszFilename, eAccess );
+
+  GDALDatasetH hDS = GDALOpenEx( encodeGdalUri( parts ).toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+  CSLDestroy( papszOpenOptions );
+
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
   {
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", nullptr );
@@ -302,6 +319,103 @@ int QgsGdalProviderBase::gdalGetOverviewCount( GDALRasterBandH hBand )
 {
   int count = GDALGetOverviewCount( hBand );
   return count;
+}
+
+QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
+{
+  QString path = uri;
+  QString layerName;
+  QStringList openOptions;
+
+  QString vsiPrefix = qgsVsiPrefix( path );
+  QString vsiSuffix;
+  if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
+  {
+    path = path.mid( vsiPrefix.count() );
+    if ( vsiPrefix == QLatin1String( "/vsizip/" ) )
+    {
+      const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]*)" ) );
+      QRegularExpressionMatch match = vsiRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        vsiSuffix = match.captured( 1 );
+        path = path.remove( match.capturedStart( 1 ), match.capturedLength( 1 ) );
+      }
+    }
+  }
+  else
+  {
+    vsiPrefix.clear();
+  }
+
+  if ( path.indexOf( ':' ) != -1 )
+  {
+    QStringList parts = path.split( ':' );
+    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
+    {
+      parts.removeFirst();
+      // Handle windows paths - which has an extra colon - and unix paths
+      if ( ( parts[0].length() > 1 && parts.count() > 1 ) || parts.count() > 2 )
+      {
+        layerName = parts[parts.length() - 1];
+        parts.removeLast();
+      }
+      path  = parts.join( ':' );
+    }
+  }
+
+  if ( path.contains( '|' ) )
+  {
+    const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
+    while ( true )
+    {
+      QRegularExpressionMatch match = openOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
+  if ( !openOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
+  if ( !vsiPrefix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
+  if ( !vsiSuffix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiSuffix" ), vsiSuffix );
+  return uriComponents;
+}
+
+QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
+{
+  const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+  const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+
+  QString uri = vsiPrefix + path + vsiSuffix;
+  if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
+    uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
+  else if ( !layerName.isEmpty() )
+    uri = uri + QStringLiteral( "|%1" ).arg( layerName );
+
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+
+  for ( const QString &openOption : openOptions )
+  {
+    uri += QLatin1String( "|option:" );
+    uri += openOption;
+  }
+
+  return uri;
 }
 
 ///@endcond

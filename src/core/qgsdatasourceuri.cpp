@@ -565,7 +565,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QLatin1String( " selectatid=false" );
   }
 
-  for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
     if ( it.key().contains( '=' ) || it.key().contains( ' ' ) )
     {
@@ -584,7 +584,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
   {
     uri += QStringLiteral( " table=%1%2" )
            .arg( quotedTablename(),
-                 mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
+                 mGeometryColumn.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
   }
   else if ( !mSchema.isEmpty() )
   {

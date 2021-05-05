@@ -12,7 +12,7 @@
 
 class QgsMapToolIdentify : QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 Map tool for identifying features in layers
 
 after selecting a point, performs the identification:
@@ -42,6 +42,7 @@ after selecting a point, performs the identification:
       RasterLayer,
       MeshLayer,
       VectorTileLayer,
+      PointCloudLayer,
       AllLayers
     };
     typedef QFlags<QgsMapToolIdentify::Type> LayerType;
@@ -128,6 +129,7 @@ Performs identification based on a geometry (in map coordinates)
 Returns a pointer to the identify menu which will be used in layer selection mode
 this menu can also be customized
 %End
+
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );

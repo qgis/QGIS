@@ -50,10 +50,10 @@ class BaseTableModel(QAbstractTableModel):
         return sep.join(header)
 
     def rowToString(self, row, sep=u"\t"):
-        text = u""
-        for col in range(self.columnCount()):
-            text += u"%s" % self.getData(row, col) + sep
-        return text[:-1]
+        return sep.join(
+            str(self.getData(row, col))
+            for col in range(self.columnCount())
+        )
 
     def getData(self, row, col):
         return self.resdata[row][col]
@@ -305,10 +305,10 @@ class TableFieldsModel(SimpleTableModel):
         return fld
 
     def getFields(self):
-        flds = []
-        for fld in self.getObjectIter():
-            flds.append(fld)
-        return flds
+        return [
+            fld
+            for fld in self.getObjectIter()
+        ]
 
 
 class TableConstraintsModel(SimpleTableModel):
@@ -342,10 +342,10 @@ class TableConstraintsModel(SimpleTableModel):
         return constr
 
     def getConstraints(self):
-        constrs = []
-        for constr in self.getObjectIter():
-            constrs.append(constr)
-        return constrs
+        return [
+            constr
+            for constr in self.getObjectIter()
+        ]
 
 
 class TableIndexesModel(SimpleTableModel):
@@ -376,7 +376,7 @@ class TableIndexesModel(SimpleTableModel):
         return idx
 
     def getIndexes(self):
-        idxs = []
-        for idx in self.getObjectIter():
-            idxs.append(idx)
-        return idxs
+        return [
+            idx
+            for idx in self.getObjectIter()
+        ]

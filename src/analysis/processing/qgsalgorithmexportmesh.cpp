@@ -27,6 +27,8 @@
 #include "qgsrasterfilewriter.h"
 #include "qgslinestring.h"
 
+#include <QTextStream>
+
 ///@cond PRIVATE
 
 
@@ -227,18 +229,18 @@ static QgsInterval datasetRelativetime( const QVariant parameterTimeVariant, Qgs
   QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
   QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
 
-  if ( timeType == QStringLiteral( "dataset-time-step" ) )
+  if ( timeType == QLatin1String( "dataset-time-step" ) )
   {
     QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
     relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
   }
-  else if ( timeType == QStringLiteral( "defined-date-time" ) )
+  else if ( timeType == QLatin1String( "defined-date-time" ) )
   {
     QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
     if ( dateTime.isValid() )
       relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
   }
-  else if ( timeType == QStringLiteral( "current-context-time" ) )
+  else if ( timeType == QLatin1String( "current-context-time" ) )
   {
     QDateTime dateTime = context.currentTimeRange().begin();
     if ( dateTime.isValid() )
@@ -414,7 +416,7 @@ QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
   QVector<QgsPoint> vertices( face.size() );
   for ( int i = 0; i < face.size(); ++i )
     vertices[i] = mNativeMesh.vertex( face.at( i ) );
-  std::unique_ptr<QgsPolygon> polygon = qgis::make_unique<QgsPolygon>();
+  std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
   polygon->setExteriorRing( new QgsLineString( vertices ) );
   return QgsGeometry( polygon.release() );
 }
@@ -1371,7 +1373,7 @@ QString QgsMeshExportTimeSeries::name() const
 
 QString QgsMeshExportTimeSeries::displayName() const
 {
-  return QObject::tr( "Export dataset values time series values on points from mesh" );
+  return QObject::tr( "Export time series values from points of a mesh dataset" );
 }
 
 QString QgsMeshExportTimeSeries::group() const

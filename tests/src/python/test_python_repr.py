@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for core additions
 
+From build dir, run: ctest -R PyPythonRepr -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -182,6 +184,8 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
 
     def testQgsCoordinateReferenceSystem(self):
+        crs = QgsCoordinateReferenceSystem()
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: invalid>')
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
         crs = QgsCoordinateReferenceSystem('EPSG:3111')

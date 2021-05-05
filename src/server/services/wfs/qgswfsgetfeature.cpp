@@ -72,11 +72,11 @@ namespace QgsWfs
     QDomElement createFeatureGML3( const QgsFeature &feature, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes );
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
-                        QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames );
+                        QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *serverSettings );
 
     void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
                           QgsWfsParameters::Format format, int prec, QgsCoordinateReferenceSystem &crs,
-                          QgsRectangle *rect, const QStringList &typeNames );
+                          QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings );
 
     void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx,
                         const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes = QgsAttributeList() );
@@ -201,7 +201,7 @@ namespace QgsWfs
       getFeatureQuery &query = *qIt;
       QString typeName = query.typeName;
 
-      if ( !mapLayerMap.keys().contains( typeName ) )
+      if ( !mapLayerMap.contains( typeName ) )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "TypeName '%1' unknown" ).arg( typeName ) );
       }
@@ -333,7 +333,7 @@ namespace QgsWfs
         accessControl->filterFeatures( vlayer, featureRequest );
 
         QStringList attributes = QStringList();
-        for ( int idx : attrIndexes )
+        for ( int idx : std::as_const( attrIndexes ) )
         {
           attributes.append( vlayer->fields().field( idx ).name() );
         }
@@ -436,7 +436,7 @@ namespace QgsWfs
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
           if ( iteratedFeatures == aRequest.startIndex )
-            startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList );
+            startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
 
           if ( iteratedFeatures >= aRequest.startIndex )
           {
@@ -455,13 +455,13 @@ namespace QgsWfs
 
     if ( mWfsParameters.resultType() == QgsWfsParameters::ResultType::HITS )
     {
-      hitGetFeature( request, response, project, aRequest.outputFormat, sentFeatures, typeNameList );
+      hitGetFeature( request, response, project, aRequest.outputFormat, sentFeatures, typeNameList, serverIface->serverSettings() );
     }
     else
     {
       // End of GetFeature
       if ( iteratedFeatures <= aRequest.startIndex )
-        startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList );
+        startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
       endGetFeature( response, aRequest.outputFormat );
     }
 
@@ -544,7 +544,7 @@ namespace QgsWfs
         }
 
         // each Feature requested by FEATUREID can have each own property list
-        QString key = QStringLiteral( "%1(%2)" ).arg( typeName ).arg( propertyName );
+        QString key = QStringLiteral( "%1(%2)" ).arg( typeName, propertyName );
         QStringList fids;
         if ( fidsMap.contains( key ) )
         {
@@ -734,12 +734,15 @@ namespace QgsWfs
       // get bbox extent
       QgsRectangle extent = mWfsParameters.bboxAsRectangle();
 
+      QString extentSrsName { mWfsParameters.srsName() };
+
       // handle WFS 1.1.0 optional CRS
       if ( mWfsParameters.bbox().split( ',' ).size() == 5 && ! mWfsParameters.srsName().isEmpty() )
       {
         QString crs( mWfsParameters.bbox().split( ',' )[4] );
         if ( crs != mWfsParameters.srsName() )
         {
+          extentSrsName = crs;
           QgsCoordinateReferenceSystem sourceCrs( crs );
           QgsCoordinateReferenceSystem destinationCrs( mWfsParameters.srsName() );
           if ( sourceCrs.isValid() && destinationCrs.isValid( ) )
@@ -761,6 +764,17 @@ namespace QgsWfs
             }
           }
         }
+      }
+
+      // Follow GeoServer conventions and handle axis order
+      // See: https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html#wfs-basics-axis
+      QgsCoordinateReferenceSystem extentCrs;
+      extentCrs.createFromUserInput( extentSrsName );
+      if ( extentCrs.isValid() && extentCrs.hasAxisInverted() && ! extentSrsName.startsWith( QLatin1String( "EPSG:" ) ) )
+      {
+        QgsGeometry geom { QgsGeometry::fromRect( extent ) };
+        geom.get()->swapXy();
+        extent = geom.boundingBox();
       }
 
       // set feature request filter rectangle
@@ -999,7 +1013,7 @@ namespace QgsWfs
 
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
-                        int numberOfFeatures, const QStringList &typeNames )
+                        int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings )
     {
       QDateTime now = QDateTime::currentDateTime();
       QString fcString;
@@ -1020,7 +1034,7 @@ namespace QgsWfs
           response.setHeader( "Content-Type", "text/xml; subtype=gml/3.1.1; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, project );
+        QString hrefString = serviceUrl( request, project, *settings );
 
         QUrl mapUrl( hrefString );
 
@@ -1077,7 +1091,7 @@ namespace QgsWfs
     }
 
     void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
-                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames )
+                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings )
     {
       QString fcString;
 
@@ -1122,7 +1136,7 @@ namespace QgsWfs
           response.setHeader( "Content-Type", "text/xml; subtype=gml/3.1.1; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, project );
+        QString hrefString = serviceUrl( request, project, *settings );
 
         QUrl mapUrl( hrefString );
 

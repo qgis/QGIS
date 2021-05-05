@@ -21,16 +21,9 @@
 
 #include "Json.h"
 
-// Qt version specific includes
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
 #include <QJsonDocument>
 #include <QMetaProperty>
 #include <QVariantHash>
-#else
-#include <qjson/parser.h>
-#include <qjson/qobjecthelper.h>
-#include <qjson/serializer.h>
-#endif
 
 namespace QJsonWrapper
 {
@@ -38,7 +31,6 @@ namespace QJsonWrapper
   QVariantMap
   qobject2qvariant( const QObject *object )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     QVariantMap map;
     if ( !object )
     {
@@ -55,16 +47,12 @@ namespace QJsonWrapper
       }
     }
     return map;
-#else
-    return QJson::QObjectHelper::qobject2qvariant( object );
-#endif
   }
 
 
   void
   qvariant2qobject( const QVariantMap &variant, QObject *object )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     for ( QVariantMap::const_iterator iter = variant.begin(); iter != variant.end(); ++iter )
     {
       QVariant property = object->property( iter.key().toLatin1() );
@@ -83,16 +71,12 @@ namespace QJsonWrapper
         }
       }
     }
-#else
-    QJson::QObjectHelper::qvariant2qobject( variant, object );
-#endif
   }
 
 
   QVariant
   parseJson( const QByteArray &jsonData, bool *ok, QByteArray *errorString )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson( jsonData, &error );
     if ( ok )
@@ -104,22 +88,12 @@ namespace QJsonWrapper
       *errorString = error.errorString().toUtf8();
     }
     return doc.toVariant();
-#else
-    QJson::Parser p;
-    QVariant variant = p.parse( jsonData, ok );
-    if ( errorString && !ok )
-    {
-      *errorString = p.errorString().toUtf8();
-    }
-    return variant;
-#endif
   }
 
 
   QByteArray
   toJson( const QVariant &variant, bool *ok, QByteArray *errorString, bool indented )
   {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     QVariant _variant = variant;
     if ( variant.type() == QVariant::Hash )
     {
@@ -145,16 +119,6 @@ namespace QJsonWrapper
       *errorString = QByteArray( "Failed to convert from variant" );
     }
     return doc.toJson( indented ? QJsonDocument::Indented : QJsonDocument::Compact );
-#else
-    QJson::Serializer serializer;
-    serializer.setIndentMode( indented ? QJson::IndentFull : QJson::IndentCompact );
-    QByteArray jsondata = serializer.serialize( variant, ok );
-    if ( errorString && !ok )
-    {
-      *errorString = serializer.errorMessage().toUtf8();
-    }
-    return jsondata;
-#endif
   }
 
 }

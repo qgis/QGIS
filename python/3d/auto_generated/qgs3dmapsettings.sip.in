@@ -17,8 +17,8 @@
 
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
-%Docstring
-Definition of the world
+%Docstring(signature="appended")
+Definition of the world.
 
 .. versionadded:: 3.0
 %End
@@ -554,6 +554,21 @@ Sets the camera lens' field of view
 
 
 
+
+    double cameraMovementSpeed() const;
+%Docstring
+Returns the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
+    void setCameraMovementSpeed( double movementSpeed );
+%Docstring
+Sets the camera movement speed
+
+.. versionadded:: 3.18
+%End
+
     void setOutputDpi( const double dpi );
 %Docstring
 Sets DPI used for conversion between real world units (e.g. mm) and pixels
@@ -782,6 +797,20 @@ Emitted when the camera lens field of view changes
     void projectionTypeChanged();
 %Docstring
 Emitted when the camera lens projection type changes
+
+.. versionadded:: 3.18
+%End
+
+    void cameraNavigationModeChanged();
+%Docstring
+Emitted when the camera navigation mode was changed
+
+.. versionadded:: 3.18
+%End
+
+    void cameraMovementSpeedChanged();
+%Docstring
+Emitted when the camera movement speed was changed
 
 .. versionadded:: 3.18
 %End

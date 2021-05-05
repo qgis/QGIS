@@ -127,7 +127,7 @@ void TestQgsFileWidget::testDroppedFiles()
   QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.txt" ) ) );
 
   // plain text should also be permitted
-  mime = qgis::make_unique< QMimeData >();
+  mime = std::make_unique< QMimeData >();
   mime->setText( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
   event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
   qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );

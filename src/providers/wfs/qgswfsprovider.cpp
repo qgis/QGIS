@@ -46,6 +46,8 @@
 #include <QWidget>
 #include <QPair>
 #include <QTimer>
+#include <QUrlQuery>
+#include <QRegularExpression>
 
 #include <cfloat>
 
@@ -122,10 +124,10 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
-    auto downloader = qgis::make_unique<QgsFeatureDownloader>();
-    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
+    auto downloader = std::make_unique<QgsFeatureDownloader>();
+    downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
-             qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
+             qOverload < QVector<QgsFeatureUniqueIdPair> >( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
     if ( requestMadeFromMainThread )
     {
@@ -426,7 +428,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QString concatenatedTypenames;
-  for ( const QString &typeName : qgis::as_const( typenameList ) )
+  for ( const QString &typeName : std::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
       concatenatedTypenames += QLatin1Char( ',' );
@@ -458,7 +460,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
-  for ( const QString &typeName : qgis::as_const( typenameList ) )
+  for ( const QString &typeName : std::as_const( typenameList ) )
   {
     QString geometryAttribute;
     QgsFields fields;
@@ -1526,8 +1528,8 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     // attribute ref
     QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
 
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
-    QRegExp gmlRefProperty( "gml:(.*)Property" );
+    const QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
+    const QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
@@ -1559,7 +1561,10 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
-        geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+      {
+        const QRegularExpressionMatch match = gmlPT.match( type );
+        geomType = geomTypeFromPropertyType( geometryAttribute, match.captured( 1 ) );
+      }
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
@@ -1567,7 +1572,9 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
-      QString propertyType( gmlRefProperty.cap( 1 ) );
+
+      const QRegularExpressionMatch match = gmlRefProperty.match( ref );
+      QString propertyType( match.captured( 1 ) );
       // Set the first character in upper case
       propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
@@ -1636,7 +1643,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
   const QString WfsVersion = mShared->mWFSVersion;
   // only 1.1.0 and 1.0.0 are supported
-  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) )
   {
     transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
   }
@@ -1689,7 +1696,7 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
 
   const QString WfsVersion = mShared->mWFSVersion;
 
-  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  if ( WfsVersion == QLatin1String( "1.1.0" ) )
   {
     const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
     if ( transactionSummaryList.size() < 1 )
@@ -1769,7 +1776,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
 
   // Handles WFS 1.1.0
   QString insertResultTagName;
-  if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+  if ( mShared->mWFSVersion == QLatin1String( "1.1.0" ) )
   {
     insertResultTagName = QStringLiteral( "InsertResults" );
   }

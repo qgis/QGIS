@@ -66,6 +66,9 @@ QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, cons
     }
   }
 
+  if ( inputUri.hasParam( QStringLiteral( "excludedSchemas" ) ) )
+    currentUri.setParam( QStringLiteral( "excludedSchemas" ), inputUri.param( QStringLiteral( "excludedSchemas" ) ) );
+
   setUri( currentUri.uri() );
   setDefaultCapabilities();
 }
@@ -264,7 +267,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       const int numCols { rec.count() };
       auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      results.setRowCount( q.size() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );
@@ -278,19 +280,19 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 }
 
 
-QVariantList QgssMssqlProviderResultIterator::nextRow()
+QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {
-  const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
+  const QVariantList currentRow = mNextRow;
+  mNextRow = nextRowInternal();
   return currentRow;
 }
 
-bool QgssMssqlProviderResultIterator::hasNextRow() const
+bool QgssMssqlProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
 
-QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
+QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mQuery.next() )
@@ -306,6 +308,10 @@ QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
         row.push_back( mQuery.value( col ).toString() );
       }
     }
+  }
+  else
+  {
+    mQuery.finish();
   }
   return row;
 }
@@ -393,8 +399,8 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     table.setSchema( row[0].toString() );
     table.setTableName( row[1].toString() );
     table.setGeometryColumn( row[2].toString() );
-    //const QVariant srid { row[3] };
-    //const QVariant type { row[4] }; // GEOMETRY|GEOGRAPHY
+    //const QVariant srid = row[3];
+    //const QVariant type = row[4]; // GEOMETRY|GEOGRAPHY
     if ( row[5].toBool() )
       table.setFlag( QgsMssqlProviderConnection::TableFlag::View );
 
@@ -456,9 +462,14 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;
+
+  QgsDataSourceUri connUri( uri() );
+
   const QgsDataSourceUri dsUri { uri() };
-  const QString sql { QStringLiteral(
-                        R"raw(
+  const QString sql
+  {
+    QStringLiteral(
+      R"raw(
     SELECT s.name AS schema_name,
         s.schema_id,
         u.name AS schema_owner
@@ -467,12 +478,22 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
             ON u.uid = s.principal_id
      WHERE u.issqluser = 1
         AND u.name NOT IN ('sys', 'guest', 'INFORMATION_SCHEMA')
-    )raw" )};
+    )raw" )
+  };
+
   const QList<QVariantList> result { executeSqlPrivate( sql, false ).rows() };
+
+  QStringList excludedSchemaList;
+  if ( connUri.hasParam( QStringLiteral( "excludedSchemas" ) ) )
+    excludedSchemaList = QgsDataSourceUri( uri() ).param( QStringLiteral( "excludedSchemas" ) ).split( ',' );
   for ( const auto &row : result )
   {
     if ( row.size() > 0 )
-      schemas.push_back( row.at( 0 ).toString() );
+    {
+      QString schema = row.at( 0 ).toString();
+      if ( !excludedSchemaList.contains( schema ) )
+        schemas.push_back( schema );
+    }
   }
   return schemas;
 }
@@ -498,13 +519,14 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
   settings.setValue( "password", dsUri.password() );
   settings.setValue( "estimatedMetadata", dsUri.useEstimatedMetadata() );
 
+  QgsMssqlConnection::setExcludedSchemasList( name, dsUri.database(), dsUri.param( QStringLiteral( "excludedSchemas" ) ).split( ',' ) );
+
   for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
   {
     if ( dsUri.hasParam( param ) )
     {
       settings.setValue( param, dsUri.param( param ) == QStringLiteral( "true" )
                          || dsUri.param( param ) == '1' );
-
     }
   }
 

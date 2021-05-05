@@ -20,6 +20,7 @@ import QgsQuick 0.1 as QgsQuick
 QtObject {
   property color backgroundColor: "white"
   property real backgroundOpacity: 1
+  property real titleLabelPointSize: 16
 
   property QtObject group: QtObject {
     property color backgroundColor: "lightGray"
@@ -45,6 +46,9 @@ QtObject {
     property real height: 48 * QgsQuick.Utils.dp
     property real buttonHeight: height * 0.8
     property real spacing: 0
+    property int tabLabelPointSize: 14
+    property real borderWidth: 0 * QgsQuick.Utils.dp
+    property color borderColor: "#999999"
   }
 
   property QtObject constraint: QtObject {
@@ -70,7 +74,10 @@ QtObject {
       property real height: 48 * QgsQuick.Utils.dp
       property real cornerRadius: 0 * QgsQuick.Utils.dp
       property int fontPixelSize: 48 * QgsQuick.Utils.dp
-
+      property real sideMargin: 12 * QgsQuick.Utils.dp // left or right margin for a field's content
+      property real outerMargin: 20 * QgsQuick.Utils.dp // left or right margin for a whole field component
+      property int fontPointSize: 16
+      property int labelPointSize: 14
     }
 
   property QtObject icons: QtObject {
@@ -81,6 +88,12 @@ QtObject {
     property var notAvailable: QgsQuick.Utils.getThemeIcon("ic_photo_notavailable_white")
     property var today: QgsQuick.Utils.getThemeIcon("ic_today")
     property var back: QgsQuick.Utils.getThemeIcon("ic_back")
+    property var importData: QgsQuick.Utils.getThemeIcon("ic_camera")
+    property var combobox: QgsQuick.Utils.getThemeIcon("ic_angle_down")
+    property var valueRelationMore: QgsQuick.Utils.getThemeIcon("ic_angle_right")
   }
 
+  property QtObject checkboxComponent: QtObject {
+    property color baseColor: "black"
+  }
 }

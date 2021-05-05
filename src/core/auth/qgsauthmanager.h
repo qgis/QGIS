@@ -20,7 +20,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QObject>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSqlDatabase>
@@ -55,7 +59,7 @@ class QTimer;
 
 /**
  * \ingroup core
- * Singleton offering an interface to manage the authentication configuration database
+ * \brief Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  *
  * QgsAuthManager should not usually be directly created, but rather accessed through
@@ -752,7 +756,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     static QgsAuthManager *instance() SIP_SKIP;
 
+
+#ifdef Q_OS_WIN
+  public:
     explicit QgsAuthManager() SIP_SKIP;
+#else
+  protected:
+    explicit QgsAuthManager() SIP_SKIP;
+#endif
 
   private:
 
@@ -863,9 +874,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     std::unique_ptr<QMutex> mMutex;
     std::unique_ptr<QMutex> mMasterPasswordMutex;
-
+#else
+    std::unique_ptr<QRecursiveMutex> mMutex;
+    std::unique_ptr<QRecursiveMutex> mMasterPasswordMutex;
+#endif
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
     // appending removes duplicates

@@ -23,8 +23,10 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QPushButton>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QtEndian>
+#include <QUrlQuery>
 
 QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *parent, const QString &baseKey, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -37,16 +39,17 @@ QgsNewArcGisRestConnectionDialog::QgsNewArcGisRestConnectionDialog( QWidget *par
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewArcGisRestConnectionDialog::showHelp );
 
-  QRegExp rx( "/connections-([^/]+)/" );
-  if ( rx.indexIn( baseKey ) != -1 )
+  const QRegularExpression rx( QStringLiteral( "/connections-([^/]+)/" ) );
+  const QRegularExpressionMatch match = rx.match( baseKey );
+  if ( match.hasMatch() )
   {
-    QString connectionType( rx.cap( 1 ).toUpper() );
+    QString connectionType( match.captured( 1 ).toUpper() );
     setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
   }
 
   mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
 
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]+" ) ), txtName ) );
 
   if ( !connectionName.isEmpty() )
   {

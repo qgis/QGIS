@@ -178,6 +178,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
   mLabelFpsCounter = new QLabel( this );
+  mLabelNavigationSpeed = new QLabel( this );
 
   mAnimationWidget = new Qgs3DAnimationWidget( this );
   mAnimationWidget->setVisible( false );
@@ -189,7 +190,17 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   topLayout->addStretch( 1 );
   topLayout->addWidget( mLabelPendingJobs );
   topLayout->addWidget( mProgressPendingJobs );
+  topLayout->addWidget( mLabelNavigationSpeed );
+  mLabelNavigationSpeed->hide();
   topLayout->addWidget( mLabelFpsCounter );
+
+  mLabelNavSpeedHideTimeout = new QTimer( this );
+  mLabelNavSpeedHideTimeout->setInterval( 1000 );
+  connect( mLabelNavSpeedHideTimeout, &QTimer::timeout, this, [ = ]
+  {
+    mLabelNavigationSpeed->hide();
+    mLabelNavSpeedHideTimeout->stop();
+  } );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -283,6 +294,8 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
   // Disable button for switching the map theme if the terrain generator is a mesh
   mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
+
+  connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasDockWidget::cameraNavigationSpeedChanged );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -307,7 +320,7 @@ void Qgs3DMapCanvasDockWidget::configure()
   QgsGui::instance()->enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
 
   auto applyConfig = [ = ]()
@@ -410,6 +423,13 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 void Qgs3DMapCanvasDockWidget::updateFpsCount( float fpsCount )
 {
   mLabelFpsCounter->setText( QStringLiteral( "%1 fps" ).arg( fpsCount, 10, 'f', 2, QLatin1Char( ' ' ) ) );
+}
+
+void Qgs3DMapCanvasDockWidget::cameraNavigationSpeedChanged( double speed )
+{
+  mLabelNavigationSpeed->setText( QStringLiteral( "Speed: %1 ×" ).arg( QString::number( speed, 'f', 2 ) ) );
+  mLabelNavigationSpeed->show();
+  mLabelNavSpeedHideTimeout->start();
 }
 
 void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()

@@ -21,7 +21,7 @@
 
 /**
  * \ingroup gui
- * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
+ * \brief The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
  * \since QGIS 3.0

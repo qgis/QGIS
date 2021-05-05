@@ -47,6 +47,8 @@
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QClipboard>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -172,6 +174,14 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
 
+  QPushButton *downloadButton = buttonBox->addButton( tr( "Browse Online Styles" ), QDialogButtonBox::ResetRole );
+  downloadButton->setToolTip( tr( "Download new styles from the online QGIS style repository" ) );
+  downloadButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFindReplace.svg" ) ) );
+  connect( downloadButton, &QPushButton::clicked, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl( QStringLiteral( "https://plugins.qgis.org/styles" ) ) );
+  } );
+
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   mVerticalLayout->insertWidget( 0,  mMessageBar );
@@ -249,17 +259,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
   btnShare->setMenu( shareMenu );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
-#else
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
-#endif
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
-#else
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
-#endif
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
@@ -584,13 +586,17 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     if ( !ok )
       return;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
+#else
+    const QStringList parts = tags.split( ',', Qt::SkipEmptyParts );
+#endif
     QStringList additionalTags;
     additionalTags.reserve( parts.count() );
     for ( const QString &tag : parts )
       additionalTags << tag.trimmed();
 
-    auto cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+    auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     const int count = copyItems( items, mStyle, QgsStyle::defaultStyle(), this, cursorOverride, true, additionalTags, false, false );
     cursorOverride.reset();
     if ( count > 0 )
@@ -801,7 +807,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -854,7 +860,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A color ramp with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -905,7 +911,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A text format with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -955,7 +961,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Label settings with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1005,7 +1011,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "Legend patch shape with the name “%1” already exist.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -1057,7 +1063,7 @@ int QgsStyleManagerDialog::copyItems( const QList<QgsStyleManagerDialog::ItemDet
                                           tr( "A 3D symbol with the name “%1” already exists.\nOverwrite?" )
                                           .arg( details.name ),
                                           QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
-          cursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+          cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
           switch ( res )
           {
             case QMessageBox::Cancel:
@@ -2156,7 +2162,7 @@ void QgsStyleManagerDialog::populateGroups()
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();
   tags.sort();
-  for ( const QString &tag : qgis::as_const( tags ) )
+  for ( const QString &tag : std::as_const( tags ) )
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
@@ -2594,7 +2600,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
     QAction *a = nullptr;
     QStringList tags = mStyle->tags();
     tags.sort();
-    for ( const QString &tag : qgis::as_const( tags ) )
+    for ( const QString &tag : std::as_const( tags ) )
     {
       a = new QAction( tag, mGroupListMenu );
       a->setData( tag );

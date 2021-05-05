@@ -70,7 +70,7 @@ Hides the button box (OK/Cancel) and enables auto-commit
 
 .. note::
 
-   set Embed in QgsAttributeEditorContext in constructor instead
+   set Embed in :py:class:`QgsAttributeEditorContext` in constructor instead
 %End
 
 
@@ -80,7 +80,7 @@ Shows the button box (OK/Cancel) and disables auto-commit
 
 .. note::
 
-   set Embed in QgsAttributeEditorContext in constructor instead
+   set Embed in :py:class:`QgsAttributeEditorContext` in constructor instead
 %End
 
 
@@ -277,6 +277,18 @@ Update all editors to correspond to a different feature.
 Save all the values from the editors to the layer.
 
 :return: ``True`` if successful
+%End
+
+    bool saveWithDetails( QString *error /Out/ = 0 );
+%Docstring
+Save all the values from the editors to the layer.
+
+
+:return: - ``True`` if save was successful
+         - error: will be set to an explanatory error message if an error occurs while saving the form.
+
+
+.. versionadded:: 3.18
 %End
 
     void resetValues();

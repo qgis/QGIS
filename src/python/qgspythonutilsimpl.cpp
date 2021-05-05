@@ -73,7 +73,8 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  Q_FOREACH ( QString p, extraPluginsPaths() )
+  const QStringList extraPaths = extraPluginsPaths();
+  for ( QString p : extraPaths )
   {
     if ( !QDir( p ).exists() )
     {
@@ -109,9 +110,16 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   }
 
   // set PyQt api versions
-  QStringList apiV2classes;
-  apiV2classes << QStringLiteral( "QDate" ) << QStringLiteral( "QDateTime" ) << QStringLiteral( "QString" ) << QStringLiteral( "QTextStream" ) << QStringLiteral( "QTime" ) << QStringLiteral( "QUrl" ) << QStringLiteral( "QVariant" );
-  Q_FOREACH ( const QString &clsName, apiV2classes )
+  for ( const QString &clsName :
+        {
+          QStringLiteral( "QDate" ),
+          QStringLiteral( "QDateTime" ),
+          QStringLiteral( "QString" ),
+          QStringLiteral( "QTextStream" ),
+          QStringLiteral( "QTime" ),
+          QStringLiteral( "QUrl" ),
+          QStringLiteral( "QVariant" )
+        } )
   {
     if ( !runString( QStringLiteral( "sip.setapi('%1', 2)" ).arg( clsName ),
                      QObject::tr( "Couldn't set SIP API versions." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
@@ -156,8 +164,6 @@ void QgsPythonUtilsImpl::init()
 {
   // initialize python
   Py_Initialize();
-  // initialize threading AND acquire GIL
-  PyEval_InitThreads();
 
   mPythonEnabled = true;
 
@@ -583,10 +589,18 @@ QStringList QgsPythonUtilsImpl::extraPluginsPaths() const
   QString paths = QString::fromLocal8Bit( cpaths );
 #ifndef Q_OS_WIN
   if ( paths.contains( ':' ) )
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     return paths.split( ':', QString::SkipEmptyParts );
+#else
+    return paths.split( ':', Qt::SkipEmptyParts );
+#endif
 #endif
   if ( paths.contains( ';' ) )
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     return paths.split( ';', QString::SkipEmptyParts );
+#else
+    return paths.split( ';', Qt::SkipEmptyParts );
+#endif
   else
     return QStringList( paths );
 }
@@ -598,7 +612,11 @@ QStringList QgsPythonUtilsImpl::pluginList()
 
   QString output;
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.available_plugins)" ), output );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   return output.split( QChar( '\n' ), QString::SkipEmptyParts );
+#else
+  return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
+#endif
 }
 
 QString QgsPythonUtilsImpl::getPluginMetadata( const QString &pluginName, const QString &function )
@@ -666,5 +684,9 @@ QStringList QgsPythonUtilsImpl::listActivePlugins()
 {
   QString output;
   evalString( QStringLiteral( "'\\n'.join(qgis.utils.active_plugins)" ), output );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   return output.split( QChar( '\n' ), QString::SkipEmptyParts );
+#else
+  return output.split( QChar( '\n' ), Qt::SkipEmptyParts );
+#endif
 }

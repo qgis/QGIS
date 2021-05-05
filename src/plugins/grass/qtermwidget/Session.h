@@ -25,6 +25,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#include <QProcess>
 #include <QStringList>
 #include <QWidget>
 
@@ -478,7 +479,7 @@ signals:
     void activity();
 
 private slots:
-    void done(int);
+    void done(int, QProcess::ExitStatus );
 
 //  void fireZModemDetected();
 

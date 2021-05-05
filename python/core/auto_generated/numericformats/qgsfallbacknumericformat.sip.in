@@ -9,7 +9,7 @@
 
 class QgsFallbackNumericFormat : QgsNumericFormat
 {
-%Docstring
+%Docstring(signature="appended")
 A basic numeric formatter which returns a simple text representation of a value.
 
 .. versionadded:: 3.12

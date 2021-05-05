@@ -31,14 +31,12 @@ class Qgs3DNavigationWidget : public QWidget
   public:
     Qgs3DNavigationWidget( Qgs3DMapCanvas *parent = nullptr );
 
+  public slots:
+
     /**
      * Update the state of navigation widget from camera's state
      */
     void updateFromCamera();
-
-  signals:
-
-  public slots:
 
   private:
     Qgs3DMapCanvas *mParent3DMapCanvas = nullptr;

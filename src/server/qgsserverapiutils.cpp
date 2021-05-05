@@ -28,12 +28,17 @@
 #include "nlohmann/json.hpp"
 
 #include <QUrl>
+#include <QUrlQuery>
 
 QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 {
-  const auto parts { bbox.split( ',', QString::SplitBehavior::SkipEmptyParts ) };
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  const QStringList parts { bbox.split( ',', QString::SplitBehavior::SkipEmptyParts ) };
+#else
+  const QStringList parts { bbox.split( ',', Qt::SplitBehaviorFlags::SkipEmptyParts ) };
+#endif
   // Note: Z is ignored
-  auto ok { true };
+  bool ok { true };
   if ( parts.count() == 4 ||  parts.count() == 6 )
   {
     const auto hasZ { parts.count() == 6 };
@@ -280,7 +285,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     {
       QgsDateRange dateInterval { QgsServerApiUtils::parseTemporalDateInterval( interval ) };
 
-      for ( const auto &dimension : qgis::as_const( dimensions ) )
+      for ( const auto &dimension : std::as_const( dimensions ) )
       {
 
         // Determine the field type from the dimension name "time"/"date"
@@ -316,7 +321,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     else // try datetime
     {
       QgsDateTimeRange dateTimeInterval { QgsServerApiUtils::parseTemporalDateTimeInterval( interval ) };
-      for ( const auto &dimension : qgis::as_const( dimensions ) )
+      for ( const auto &dimension : std::as_const( dimensions ) )
       {
 
         // Determine the field type from the dimension name "time"/"date"
@@ -365,7 +370,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   else // single value
   {
 
-    for ( const auto &dimension : qgis::as_const( dimensions ) )
+    for ( const auto &dimension : std::as_const( dimensions ) )
     {
       // Determine the field type from the dimension name "time"/"date"
       const bool fieldIsDateTime { dimension.name.toLower() == QLatin1String( "time" ) };
@@ -459,22 +464,31 @@ json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
     {
       return result;
     }
-    QDateTime min { layer->minimumValue( fieldIdx ).toDateTime() };
-    QDateTime max { layer->maximumValue( fieldIdx ).toDateTime() };
+
+    QVariant minVal;
+    QVariant maxVal;
+    layer->minimumAndMaximumValue( fieldIdx, minVal, maxVal );
+
+    QDateTime min { minVal.toDateTime() };
+    QDateTime max { maxVal.toDateTime() };
     if ( ! dimInfo.endFieldName.isEmpty() )
     {
       fieldIdx = layer->fields().lookupField( dimInfo.endFieldName );
       if ( fieldIdx >= 0 )
       {
-        QDateTime minEnd { layer->minimumValue( fieldIdx ).toDateTime() };
-        QDateTime maxEnd { layer->maximumValue( fieldIdx ).toDateTime() };
+        QVariant minVal;
+        QVariant maxVal;
+        layer->minimumAndMaximumValue( fieldIdx, minVal, maxVal );
+
+        QDateTime minEnd { minVal.toDateTime() };
+        QDateTime maxEnd { maxVal.toDateTime() };
         if ( minEnd.isValid() )
         {
-          min = std::min<QDateTime>( min, layer->minimumValue( fieldIdx ).toDateTime() );
+          min = std::min<QDateTime>( min, minEnd );
         }
         if ( maxEnd.isValid() )
         {
-          max = std::max<QDateTime>( max, layer->maximumValue( fieldIdx ).toDateTime() );
+          max = std::max<QDateTime>( max, maxEnd );
         }
       }
     }

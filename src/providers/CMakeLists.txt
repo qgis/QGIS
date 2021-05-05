@@ -26,6 +26,10 @@ if (NOT FORCE_STATIC_PROVIDERS)
     add_subdirectory(oracle)
   endif()
 
+  if (WITH_HANA)
+    add_subdirectory(hana)
+  endif()
+
   if (WITH_PDAL)
     add_subdirectory(pdal)
   endif()

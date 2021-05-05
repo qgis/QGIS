@@ -32,7 +32,7 @@ class QAction;
 
 /**
  * \ingroup gui
- * Widget for viewing and editing authentication identities database
+ * \brief Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthAuthoritiesEditor
 {

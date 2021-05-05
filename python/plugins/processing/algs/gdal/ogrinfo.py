@@ -85,11 +85,11 @@ class ogrinfo(GdalAlgorithm):
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
-        GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)
+        console_output = GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         with open(output, 'w') as f:
             f.write('<pre>')
-            for s in GdalUtils.getConsoleOutput()[1:]:
+            for s in console_output[1:]:
                 f.write(str(s))
             f.write('</pre>')
 

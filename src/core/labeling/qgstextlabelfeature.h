@@ -19,12 +19,14 @@
 
 #include "qgslabelfeature.h"
 #include "qgstextdocument.h"
+#include "qgstextmetrics.h"
+#include <optional>
 
 class QgsTextCharacterFormat;
 
 /**
  * \ingroup core
- * Class that adds extra information to QgsLabelFeature for text labels
+ * \brief Class that adds extra information to QgsLabelFeature for text labels
  *
  * \note not part of public API
  */
@@ -62,9 +64,6 @@ class QgsTextLabelFeature : public QgsLabelFeature
      */
     bool hasCharacterFormat( int partId ) const;
 
-    //! calculate data for info(). setDefinedFont() must have been called already.
-    void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle, QgsTextDocument *document = nullptr );
-
     //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
     //! Sets data-defined values
@@ -75,8 +74,43 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }
 
-    //! Metrics of the font for rendering
-    QFontMetricsF *labelFontMetrics() { return mFontMetrics; }
+    /**
+     * Metrics of the font for rendering.
+     *
+     * May be NULLPTR.
+     */
+    QFontMetricsF *labelFontMetrics() { return mFontMetrics.has_value() ? &mFontMetrics.value() : nullptr; }
+
+    /**
+     * Sets the font \a metrics.
+     */
+    void setFontMetrics( const QFontMetricsF &metrics );
+
+    /**
+     * Returns additional info required for curved label placement.
+     *
+     * Returns NULLPTR if not set.
+     *
+     * \see setTextMetrics()
+     * \since QGIS 3.20
+     */
+    const QgsPrecalculatedTextMetrics *textMetrics() const { return mTextMetrics.has_value() ? &mTextMetrics.value() : nullptr; }
+
+    /**
+     * Sets additional text \a metrics required for curved label placement.
+     *
+     * \see textMetrics()
+     * \since QGIS 3.20
+     */
+    void setTextMetrics( const QgsPrecalculatedTextMetrics &metrics ) { mTextMetrics = metrics; }
+
+    /**
+     * Calculate text metrics for later retrieval via textMetrics().
+     *
+     * \since QGIS 3.20
+     */
+    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QFontMetricsF &fontMetrics, double letterSpacing,
+        double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr );
 
     /**
      * Returns the document for the label.
@@ -92,20 +126,55 @@ class QgsTextLabelFeature : public QgsLabelFeature
      */
     void setDocument( const QgsTextDocument &document );
 
-  protected:
-    //! List of graphemes (used for curved labels)
-    QStringList mClusters;
+    /**
+     * Sets the maximum \a angle (in radians) between inside curved label characters.
+     * \see maximumCharacterAngleInside()
+     * \see setMaximumCharacterAngleOutside()
+     * \since QGIS 3.20
+     */
+    void setMaximumCharacterAngleInside( double angle ) { mMaximumCharacterAngleInside = angle; }
 
-    QList< QgsTextCharacterFormat > mCharacterFormats;
+    /**
+     * Returns the maximum angle (in radians) between inside curved label characters.
+     * \see setMaximumCharacterAngleInside()
+     * \see maximumCharacterAngleOutside()
+     * \since QGIS 3.20
+     */
+    double maximumCharacterAngleInside() const { return mMaximumCharacterAngleInside; }
+
+    /**
+     * Sets the maximum \a angle (in radians) between outside curved label characters.
+     * \see maximumCharacterAngleOutside()
+     * \see setMaximumCharacterAngleInside()
+     * \since QGIS 3.20
+     */
+    void setMaximumCharacterAngleOutside( double angle ) { mMaximumCharacterAngleOutside = angle; }
+
+    /**
+     * Returns the maximum angle (in radians) between outside curved label characters.
+     * \see setMaximumCharacterAngleOutside()
+     * \see maximumCharacterAngleInside()
+     * \since QGIS 3.20
+     */
+    double maximumCharacterAngleOutside() const { return mMaximumCharacterAngleOutside; }
+
+  protected:
 
     //! Font for rendering
     QFont mDefinedFont;
+
     //! Metrics of the font for rendering
-    QFontMetricsF *mFontMetrics = nullptr;
+    std::optional< QFontMetricsF > mFontMetrics;
+
     //! Stores attribute values for data defined properties
     QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
 
     QgsTextDocument mDocument;
+
+    double mMaximumCharacterAngleInside = 0;
+    double mMaximumCharacterAngleOutside = 0;
+
+    std::optional< QgsPrecalculatedTextMetrics > mTextMetrics;
 
 };
 

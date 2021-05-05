@@ -67,7 +67,8 @@ QgsServerOgcApiHandler::~QgsServerOgcApiHandler()
 
 QgsServerOgcApi::ContentType QgsServerOgcApiHandler::defaultContentType() const
 {
-  return contentTypes().size() > 0 ? contentTypes().first() : QgsServerOgcApi::ContentType::JSON;
+  const auto constContentTypes( contentTypes() );
+  return constContentTypes.size() > 0 ? constContentTypes.first() : QgsServerOgcApi::ContentType::JSON;
 }
 
 QList<QgsServerOgcApi::ContentType> QgsServerOgcApiHandler::contentTypes() const
@@ -83,8 +84,9 @@ void QgsServerOgcApiHandler::handleRequest( const QgsServerApiContext &context )
 
 QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) const
 {
-  for ( auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
-        it != QgsServerOgcApi::contentTypeMimes().constEnd(); ++it )
+  const auto constContentTypes( QgsServerOgcApi::contentTypeMimes() );
+  for ( auto it = constContentTypes.constBegin();
+        it != constContentTypes.constEnd(); ++it )
   {
     const auto constValues = it.value();
     for ( const auto &value : constValues )
@@ -311,7 +313,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       {
         fName.chop( 1 );
       }
-      fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
+      fName += '/' + QString::fromStdString( args.at( 0 )->get<std::string>( ) );
       if ( !suffix.isEmpty() )
       {
         fName += '.' + suffix;
@@ -452,8 +454,9 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     const QString ctFromAccept { contentTypeForAccept( accept ) };
     if ( ! ctFromAccept.isEmpty() )
     {
-      auto it = QgsServerOgcApi::contentTypeMimes().constBegin();
-      while ( ! found && it != QgsServerOgcApi::contentTypeMimes().constEnd() )
+      const auto constContentTypes( QgsServerOgcApi::contentTypeMimes() );
+      auto it = constContentTypes.constBegin();
+      while ( ! found && it != constContentTypes.constEnd() )
       {
         int idx = it.value().indexOf( ctFromAccept );
         if ( idx >= 0 )
@@ -474,7 +477,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   {
     // Check aliases
     bool found { false };
-    if ( QgsServerOgcApi::contentTypeAliases().keys().contains( result ) )
+    if ( QgsServerOgcApi::contentTypeAliases().contains( result ) )
     {
       const QList<QgsServerOgcApi::ContentType> constCt { contentTypes() };
       for ( const auto &ct : constCt )
@@ -587,7 +590,7 @@ json QgsServerOgcApiHandler::jsonTags() const
 void QgsServerOgcApiHandler::setContentTypesInt( const QList<int> &contentTypes )
 {
   mContentTypes.clear();
-  for ( const int &i : qgis::as_const( contentTypes ) )
+  for ( const int &i : std::as_const( contentTypes ) )
   {
     mContentTypes.push_back( static_cast<QgsServerOgcApi::ContentType>( i ) );
   }

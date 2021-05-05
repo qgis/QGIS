@@ -287,10 +287,18 @@ namespace pal
       int getPartId() const { return partId; }
       void setPartId( int id ) { partId = id; }
 
-      //! Increases the count of upside down characters for this label position
-      int incrementUpsideDownCharCount() { return ++mUpsideDownCharCount; }
+      /**
+       * Sets the \a count of upside down characters for this label position.
+       *
+       * \see upsideDownCharCount()
+       */
+      void setUpsideDownCharCount( int count ) { mUpsideDownCharCount = count ; }
 
-      //! Returns the number of upside down characters for this label position
+      /**
+       * Returns the number of upside down characters for this label position.
+       *
+       * \see setUpsideDownCharCount()
+       */
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
       /**
@@ -302,6 +310,36 @@ namespace pal
        * Inserts the label position into the specified \a index.
        */
       void insertIntoIndex( PalRtree<LabelPosition> &index );
+
+      /**
+       * Returns a prepared GEOS representation of all label parts as a multipolygon.
+       *
+       * \since QGIS 3.20
+       */
+      const GEOSPreparedGeometry *preparedMultiPartGeom() const;
+
+      /**
+       * Returns the global ID for the candidate, which is unique for a single run of the pal
+       * labelling engine.
+       *
+       * A return value of 0 means that the ID has not been assigned.
+       *
+       * \see setGlobalId()
+       */
+      unsigned int globalId() const { return mGlobalId; }
+
+      /**
+       * Sets the global \a id for the candidate, which is unique for a single run of the pal
+       * labelling engine.
+       *
+       * \see globalId()
+       */
+      void setGlobalId( unsigned int id ) { mGlobalId = id; }
+
+      /**
+       * Returns the angle differential of all LabelPosition parts
+       */
+      double angleDifferential();
 
     protected:
 
@@ -331,6 +369,7 @@ namespace pal
 
     private:
 
+      unsigned int mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;
 
       double mCost;
@@ -349,7 +388,11 @@ namespace pal
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;
 
-      bool isInConflictSinglePart( const LabelPosition *lp ) const;
+      /**
+       * Creates a GEOS representation of all label parts as a multipolygon.
+       */
+      void createMultiPartGeosGeom() const;
+
       bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
       LabelPosition &operator=( const LabelPosition & ) = delete;

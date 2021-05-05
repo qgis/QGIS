@@ -23,7 +23,12 @@
 #include <QNetworkRequest>
 #include <QStringList>
 #include <QUrl>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
+
 
 #include "qgis_core.h"
 
@@ -31,7 +36,7 @@ class QgsAuthMethodConfig;
 
 /**
  * \ingroup core
- * Abstract base class for authentication method plugins
+ * \brief Abstract base class for authentication method plugins
  */
 class CORE_EXPORT QgsAuthMethod : public QObject
 {
@@ -172,10 +177,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * Construct a default authentication method
      * \note Non-public since this is an abstract base class
      */
-    explicit QgsAuthMethod()
-      : mMutex( QMutex::RecursionMode::Recursive )
-    {}
-
+    explicit QgsAuthMethod();
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
     static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
@@ -191,8 +193,11 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QgsAuthMethod::Expansions mExpansions = QgsAuthMethod::Expansions();
     QStringList mDataProviders;
     int mVersion = 0;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex mMutex;
-
+#else
+    QRecursiveMutex mMutex;
+#endif
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

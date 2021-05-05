@@ -23,17 +23,20 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
-#include "qgsmaplayerlistutils.h"
 #include "qgsexception.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
+
+
+#include <QThread>
+#include <QPointer>
 
 class QgsProcessingLayerPostProcessorInterface;
 
 /**
  * \class QgsProcessingContext
  * \ingroup core
- * Contains information about the context in which a processing algorithm is executed.
+ * \brief Contains information about the context in which a processing algorithm is executed.
  *
  * Contextual information includes settings such as the associated project, and
  * expression context.
@@ -50,6 +53,17 @@ class CORE_EXPORT QgsProcessingContext
       // UseSelectionIfPresent = 1 << 0,
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
+     * Logging level for algorithms to use when pushing feedback messages.
+     *
+     * \since QGIS 3.20
+     */
+    enum LogLevel
+    {
+      DefaultLevel = 0, //!< Default logging level
+      Verbose, //!< Verbose logging
+    };
 
     /**
      * Constructor for QgsProcessingContext.
@@ -84,6 +98,7 @@ class CORE_EXPORT QgsProcessingContext
       mEllipsoid = other.mEllipsoid;
       mDistanceUnit = other.mDistanceUnit;
       mAreaUnit = other.mAreaUnit;
+      mLogLevel = other.mLogLevel;
     }
 
     /**
@@ -239,7 +254,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
-     * Details for layers to load into projects.
+     * \brief Details for layers to load into projects.
      * \ingroup core
      * \since QGIS 3.0
      */
@@ -625,6 +640,22 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setPreferredRasterFormat( const QString &format ) { mPreferredRasterFormat = format; }
 
+    /**
+     * Returns the logging level for algorithms to use when pushing feedback messages to users.
+     *
+     * \see setLogLevel()
+     * \since QGIS 3.20
+     */
+    LogLevel logLevel() const;
+
+    /**
+     * Sets the logging \a level for algorithms to use when pushing feedback messages to users.
+     *
+     * \see logLevel()
+     * \since QGIS 3.20
+     */
+    void setLogLevel( LogLevel level );
+
   private:
 
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
@@ -654,6 +685,8 @@ class CORE_EXPORT QgsProcessingContext
     QString mPreferredVectorFormat;
     QString mPreferredRasterFormat;
 
+    LogLevel mLogLevel = DefaultLevel;
+
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
@@ -663,7 +696,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 
 /**
- * An interface for layer post-processing handlers for execution following a processing algorithm operation.
+ * \brief An interface for layer post-processing handlers for execution following a processing algorithm operation.
  *
  * Note that post-processing of a layer will ONLY occur if that layer is set to be loaded into a QGIS project
  * on algorithm completion. See QgsProcessingContext::layersToLoadOnCompletion().

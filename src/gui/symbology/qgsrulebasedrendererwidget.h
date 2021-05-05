@@ -38,12 +38,12 @@ struct QgsRuleBasedRendererCount SIP_SKIP
 
 /**
  * \ingroup gui
-Tree model for the rules:
-
-(invalid)  == root node
- +--- top level rule
- +--- top level rule
-*/
+ * \brief Tree model for the rules:
+ *
+ * (invalid)  == root node
+ * +--- top level rule
+ * +--- top level rule
+ */
 class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 {
     Q_OBJECT

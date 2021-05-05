@@ -365,7 +365,7 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Left )
         offsetDiff *= -1;
 
-      mStops[ mSelectedStop - 1 ].offset = qBound( 0.0, mStops[ mSelectedStop - 1 ].offset + offsetDiff, 1.0 );
+      mStops[ mSelectedStop - 1 ].offset = std::clamp( mStops[ mSelectedStop - 1 ].offset + offsetDiff, 0.0, 1.0 );
       mGradient.setStops( mStops );
       update();
       e->accept();

@@ -11,8 +11,8 @@
 
 class QgsRendererCategory
 {
-%Docstring
-Represents an individual category (class) from a QgsCategorizedSymbolRenderer.
+%Docstring(signature="appended")
+Represents an individual category (class) from a :py:class:`QgsCategorizedSymbolRenderer`.
 %End
 
 %TypeHeaderCode
@@ -117,7 +117,7 @@ Sets whether the category is currently enabled and should be rendered.
 Returns a string representing the categories settings, used for debugging purposes only.
 %End
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 %Docstring
 Converts the category to a matching SLD rule, within the specified DOM document and ``element``.
 %End
@@ -164,7 +164,7 @@ can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategor
 
     virtual QgsCategorizedSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -390,11 +390,13 @@ Update the color ramp used and all symbols colors.
 
     virtual QString legendClassificationAttribute() const;
 
-    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
-creates a QgsCategorizedSymbolRenderer from an existing renderer.
+Creates a new QgsCategorizedSymbolRenderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
+
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

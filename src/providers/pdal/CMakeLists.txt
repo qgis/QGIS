@@ -1,6 +1,9 @@
 ########################################################
 # Files
 
+if(MSVC)
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
+endif(MSVC)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -35,6 +38,7 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.cpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Cell.cpp
@@ -52,12 +56,12 @@ set(UNTWINE_SRCS
 
 set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuPyramid.hpp
-  ${CMAKE_SOURCE_DIR}/external/untwine/bu/BuTypes.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/FileInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/OctantInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PointAccessor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/Processor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/PyramidManager.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/bu/Stats.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/bu/VoxelInfo.hpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/BufferCache.hpp
@@ -93,25 +97,7 @@ set(UNTWINE_INCLUDE_DIRS
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/providers/ept
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/untwine/api
-
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
-  ${CMAKE_BINARY_DIR}/src/ui
 )
 
 include_directories(SYSTEM
@@ -119,6 +105,8 @@ include_directories(SYSTEM
 )
 
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
+target_compile_features(untwine PRIVATE cxx_std_17)
+
 set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
 )
@@ -130,7 +118,11 @@ target_link_libraries (untwine
 target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
 add_library (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+
+target_compile_features(pdalprovider PRIVATE cxx_std_17)
+
 target_link_libraries (pdalprovider
+  qgis_core
   ${PDAL_LIBRARIES}
   Threads::Threads
 )
@@ -144,13 +136,17 @@ if (WITH_GUI)
     ${Qt5Network_LIBRARIES}
     ${Qt5Sql_LIBRARIES}
     ${Qt5Concurrent_LIBRARIES}
+    qgis_gui
   )
-  target_link_libraries(pdalprovider qgis_gui)
   add_dependencies(pdalprovider ui)
 endif()
 
 # static library
 add_library (pdalprovider_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
+
+# require c++17
+target_compile_features(pdalprovider_a PRIVATE cxx_std_17)
+
 target_link_libraries (pdalprovider_a
   ${PDAL_LIBRARIES}
   ${Qt5Xml_LIBRARIES}
@@ -159,10 +155,15 @@ target_link_libraries (pdalprovider_a
   ${Qt5Network_LIBRARIES}
   ${Qt5Sql_LIBRARIES}
   ${Qt5Concurrent_LIBRARIES}
+  qgis_core
 )
 
 if (WITH_GUI)
   add_library (pdalprovider_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
+
+  # require c++17
+  target_compile_features(pdalprovider_gui_a PRIVATE cxx_std_17)
+
   target_link_libraries (pdalprovider_gui_a
     ${PDAL_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
@@ -171,8 +172,8 @@ if (WITH_GUI)
     ${Qt5Network_LIBRARIES}
     ${Qt5Sql_LIBRARIES}
     ${Qt5Concurrent_LIBRARIES}
+    qgis_gui
   )
-  target_link_libraries(pdalprovider_gui_a qgis_gui)
   add_dependencies(pdalprovider_gui_a ui)
 endif()
 

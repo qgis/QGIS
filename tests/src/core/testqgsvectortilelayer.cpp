@@ -250,7 +250,7 @@ void TestQgsVectorTileLayer::test_polygonWithLineStyle()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr< QgsVectorTileLayer > layer = qgis::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );

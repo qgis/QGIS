@@ -34,12 +34,33 @@
 #include <QTextEdit>
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &,
-    const QgsProcessingParameterWidgetContext &,
+    const QgsProcessingParameterWidgetContext &context,
     const QgsProcessingParameterDefinition *,
     const QgsProcessingAlgorithm *, QWidget *parent )
   : QWidget( parent )
+  , mWidgetContext( context )
 {
 
+}
+
+void QgsProcessingAbstractParameterDefinitionWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mWidgetContext = context;
+}
+
+const QgsProcessingParameterWidgetContext &QgsProcessingAbstractParameterDefinitionWidget::widgetContext() const
+{
+  return mWidgetContext;
+}
+
+void QgsProcessingAbstractParameterDefinitionWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  mContextGenerator = generator;
+}
+
+QgsExpressionContext QgsProcessingAbstractParameterDefinitionWidget::createExpressionContext() const
+{
+  return QgsProcessingGuiUtils::createExpressionContext( mContextGenerator, mWidgetContext, nullptr, nullptr );
 }
 
 //
@@ -118,6 +139,14 @@ QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::create
   }
 
   return param.release();
+}
+
+void QgsProcessingParameterDefinitionWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  if ( mDefinitionWidget )
+  {
+    mDefinitionWidget->registerProcessingContextGenerator( generator );
+  }
 }
 
 //
@@ -208,6 +237,14 @@ void QgsProcessingParameterDefinitionDialog::switchToCommentTab()
   mTabWidget->setCurrentIndex( 1 );
   mCommentEdit->setFocus();
   mCommentEdit->selectAll();
+}
+
+void QgsProcessingParameterDefinitionDialog::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  if ( mWidget )
+  {
+    mWidget->registerProcessingContextGenerator( generator );
+  }
 }
 
 void QgsProcessingParameterDefinitionDialog::accept()

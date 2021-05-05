@@ -167,8 +167,8 @@ void QgsAuthConfigEdit::loadConfig()
 
   QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
 
-  QgsDebugMsg( QStringLiteral( "Loading authcfg: %1" ).arg( mAuthCfg ) );
-  QgsDebugMsg( QStringLiteral( "Loading auth method: %1" ).arg( authMethodKey ) );
+  QgsDebugMsgLevel( QStringLiteral( "Loading authcfg: %1" ).arg( mAuthCfg ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Loading auth method: %1" ).arg( authMethodKey ), 2 );
 
   if ( authMethodKey.isEmpty() )
   {

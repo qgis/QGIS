@@ -25,7 +25,12 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
                        QgsFillSymbol,
                        QgsCoordinateReferenceSystem,
-                       QgsRuleBasedRenderer
+                       QgsRuleBasedRenderer,
+                       QgsFeatureRendererGenerator,
+                       QgsCategorizedSymbolRenderer,
+                       QgsRendererCategory,
+                       QgsCentroidFillSymbolLayer,
+                       QgsMarkerSymbol
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -266,6 +271,398 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('vectorlayerrenderer')
         renderchecker.setControlName('expected_painterclip_region_multi')
         result = renderchecker.runTest('expected_painterclip_region_multi')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def testRenderMultipleRenderersBelow(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffaaff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        # add secondary renderer, for rendering below
+        class Gen1(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen1'
+
+            def level(self):
+                return -2
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Name')
+
+                sym1 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#33aa33', 'outline_width': '3'})
+                sym2 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#aa33aa', 'outline_width': '3'})
+
+                renderer.addCategory(QgsRendererCategory('Dam', sym1, 'Dam'))
+                renderer.addCategory(QgsRendererCategory('Lake', sym2, 'Lake'))
+                return renderer
+
+        # add secondary renderer, for rendering below
+        class Gen2(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen2'
+
+            def level(self):
+                return -3
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Value < 12')
+
+                sym1 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#aa1111', 'outline_width': '5'})
+                sym2 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#1111dd', 'outline_width': '5'})
+
+                renderer.addCategory(QgsRendererCategory('1', sym1, '1'))
+                renderer.addCategory(QgsRendererCategory('0', sym2, '0'))
+                return renderer
+
+        poly_layer.addFeatureRendererGenerator(Gen1())
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen1'])
+        poly_layer.addFeatureRendererGenerator(Gen2())
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen1', 'Gen2'])
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_below')
+        result = renderchecker.runTest('expected_multiple_renderers_below')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_below')
+        result = renderchecker.runTest('expected_multiple_renderers_below')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        poly_layer.removeFeatureRendererGenerator('Gen3')
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen1', 'Gen2'])
+        poly_layer.removeFeatureRendererGenerator('Gen1')
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen2'])
+        poly_layer.removeFeatureRendererGenerator('Gen1')
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen2'])
+        poly_layer.removeFeatureRendererGenerator('Gen2')
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], [])
+        poly_layer.removeFeatureRendererGenerator('Gen1')
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], [])
+
+    def testRenderMultipleRenderersAbove(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffaaff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        # add secondary renderer, for rendering below
+        class Gen1(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen1'
+
+            def level(self):
+                return 3
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Name')
+
+                cf1 = QgsCentroidFillSymbolLayer()
+                cf1.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#33aa33', 'outline_style': 'no', 'size': '5'}))
+                sym1 = QgsFillSymbol([cf1])
+
+                cf2 = QgsCentroidFillSymbolLayer()
+                cf2.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#aa33aa', 'outline_style': 'no', 'size': '5'}))
+                sym2 = QgsFillSymbol([cf2])
+
+                renderer.addCategory(QgsRendererCategory('Dam', sym1, 'Dam'))
+                renderer.addCategory(QgsRendererCategory('Lake', sym2, 'Lake'))
+                return renderer
+
+        # add secondary renderer, for rendering below
+        class Gen2(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen2'
+
+            def level(self):
+                return 2
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Value < 12')
+
+                cf1 = QgsCentroidFillSymbolLayer()
+                cf1.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#aa1111', 'outline_style': 'no', 'size': '8'}))
+                sym1 = QgsFillSymbol([cf1])
+
+                cf2 = QgsCentroidFillSymbolLayer()
+                cf2.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#1111dd', 'outline_style': 'no', 'size': '8'}))
+                sym2 = QgsFillSymbol([cf2])
+
+                renderer.addCategory(QgsRendererCategory('1', sym1, '1'))
+                renderer.addCategory(QgsRendererCategory('0', sym2, '0'))
+                return renderer
+
+        poly_layer.addFeatureRendererGenerator(Gen1())
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen1'])
+        poly_layer.addFeatureRendererGenerator(Gen2())
+        self.assertEqual([g.id() for g in poly_layer.featureRendererGenerators()], ['Gen1', 'Gen2'])
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_above')
+        result = renderchecker.runTest('expected_multiple_renderers_above')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_above')
+        result = renderchecker.runTest('expected_multiple_renderers_above')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def testRenderMultipleRenderersAboveAndBelow(self):
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffaaff', 'outline_color': '#000000', 'outline_width': '1'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        # add secondary renderer, for rendering below
+        class Gen1(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen1'
+
+            def level(self):
+                return 3
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Name')
+
+                cf1 = QgsCentroidFillSymbolLayer()
+                cf1.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#33aa33', 'outline_style': 'no', 'size': '5'}))
+                sym1 = QgsFillSymbol([cf1])
+
+                cf2 = QgsCentroidFillSymbolLayer()
+                cf2.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#aa33aa', 'outline_style': 'no', 'size': '5'}))
+                sym2 = QgsFillSymbol([cf2])
+
+                renderer.addCategory(QgsRendererCategory('Dam', sym1, 'Dam'))
+                renderer.addCategory(QgsRendererCategory('Lake', sym2, 'Lake'))
+                return renderer
+
+        # add secondary renderer, for rendering below
+        class Gen2(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen2'
+
+            def level(self):
+                return 2
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Value < 12')
+
+                cf1 = QgsCentroidFillSymbolLayer()
+                cf1.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#aa1111', 'outline_style': 'no', 'size': '8'}))
+                sym1 = QgsFillSymbol([cf1])
+
+                cf2 = QgsCentroidFillSymbolLayer()
+                cf2.setSubSymbol(QgsMarkerSymbol.createSimple(
+                    {'color': '#1111dd', 'outline_style': 'no', 'size': '8'}))
+                sym2 = QgsFillSymbol([cf2])
+
+                renderer.addCategory(QgsRendererCategory('1', sym1, '1'))
+                renderer.addCategory(QgsRendererCategory('0', sym2, '0'))
+                return renderer
+
+        # add secondary renderer, for rendering below
+
+        class Gen1b(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen1b'
+
+            def level(self):
+                return -2
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Name')
+
+                sym1 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#33aa33', 'outline_width': '3'})
+                sym2 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#aa33aa', 'outline_width': '3'})
+
+                renderer.addCategory(QgsRendererCategory('Dam', sym1, 'Dam'))
+                renderer.addCategory(QgsRendererCategory('Lake', sym2, 'Lake'))
+                return renderer
+
+        # add secondary renderer, for rendering below
+        class Gen2b(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen2b'
+
+            def level(self):
+                return -3
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Value < 12')
+
+                sym1 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#aa1111', 'outline_width': '5'})
+                sym2 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#1111dd', 'outline_width': '5'})
+
+                renderer.addCategory(QgsRendererCategory('1', sym1, '1'))
+                renderer.addCategory(QgsRendererCategory('0', sym2, '0'))
+                return renderer
+
+        poly_layer.addFeatureRendererGenerator(Gen1())
+        poly_layer.addFeatureRendererGenerator(Gen2())
+        poly_layer.addFeatureRendererGenerator(Gen1b())
+        poly_layer.addFeatureRendererGenerator(Gen2b())
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_both_above_below')
+        result = renderchecker.runTest('expected_multiple_renderers_both_above_below')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_both_above_below')
+        result = renderchecker.runTest('expected_multiple_renderers_both_above_below')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def testRenderMultipleRenderersSelection(self):
+        """
+        Test that selection colors only apply to main renderer
+        :return:
+        """
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        self.assertTrue(poly_layer.isValid())
+        poly_layer.selectAll()
+
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffaaff', 'outline_color': '#000000', 'outline_style': 'no'})
+        renderer = QgsSingleSymbolRenderer(sym1)
+        poly_layer.setRenderer(renderer)
+
+        # add secondary renderer, for rendering below
+        class Gen1(QgsFeatureRendererGenerator):
+
+            def id(self):
+                return 'Gen1'
+
+            def level(self):
+                return -2
+
+            def createRenderer(self):
+                renderer = QgsCategorizedSymbolRenderer()
+                renderer.setClassAttribute('Name')
+
+                sym1 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#33aa33', 'outline_width': '3'})
+                sym2 = QgsFillSymbol.createSimple(
+                    {'color': '#ffaaff', 'outline_color': '#aa33aa', 'outline_width': '3'})
+
+                renderer.addCategory(QgsRendererCategory('Dam', sym1, 'Dam'))
+                renderer.addCategory(QgsRendererCategory('Lake', sym2, 'Lake'))
+                return renderer
+
+        poly_layer.addFeatureRendererGenerator(Gen1())
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setLayers([poly_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_selection')
+        result = renderchecker.runTest('expected_multiple_renderers_selection')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # also try with symbol levels
+        renderer.setUsingSymbolLevels(True)
+        poly_layer.setRenderer(renderer)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_multiple_renderers_selection')
+        result = renderchecker.runTest('expected_multiple_renderers_selection')
         self.report += renderchecker.report()
         self.assertTrue(result)
 

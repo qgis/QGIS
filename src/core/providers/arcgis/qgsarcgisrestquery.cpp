@@ -25,6 +25,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QImageReader>
+#include <QRegularExpression>
 
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsStringMap &requestHeaders )
 {
@@ -285,7 +286,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   }
 }
 
-void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, const QString &, const ServiceTypeFilter )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -300,10 +301,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
     if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "ImageServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
       continue;
 
-    // If the requested service type is raster, do not show vector-only services
     const ServiceTypeFilter type = serviceType == QLatin1String( "FeatureServer" ) ? Vector : Raster;
-    if ( type == Raster && ( filter != Raster && filter != AllTypes ) )
-      continue;
 
     const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
     QString displayName = serviceName.split( '/' ).last();
@@ -313,18 +311,18 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
       baseChecked = true;
     }
 
-    visitor( displayName, base + serviceName + '/' + serviceType, type );
+    visitor( displayName, base + serviceName + '/' + serviceType, serviceType, type );
   }
 }
 
-void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, QgsWkbTypes::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
 {
   const QString authid = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
 
-  QString format = QStringLiteral( "jpg" );
   bool found = false;
   const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().isEmpty() ? parentSupportedFormats.split( ',' ) : serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  QString format = supportedImageFormatTypes.value( 0 );
   for ( const QString &encoding : supportedImageFormatTypes )
   {
     for ( const QByteArray &fmt : supportedFormats )
@@ -373,11 +371,22 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
     if ( serviceMayHaveQueryCapability && ( filter == Vector || filter == AllTypes ) )
     {
       const QString geometryType = layerInfoMap.value( QStringLiteral( "geometryType" ) ).toString();
+#if 0
+      // we have a choice here -- if geometryType is unknown and the service reflects that it supports Map capabilities,
+      // then we can't be sure whether or not the individual sublayers support Query or Map requests only. So we either:
+      // 1. Send off additional requests for each individual layer's capabilities (too expensive)
+      // 2. Err on the side of only showing services we KNOW will work for layer -- but this has the side effect that layers
+      //    which ARE available as feature services will only show as raster mapserver layers, which is VERY bad/restrictive
+      // 3. Err on the side of showing services we THINK may work, even though some of them may or may not work depending on the actual
+      //    server configuration
+      // We opt for 3, because otherwise we're making it impossible for users to load valid vector layers into QGIS
+
       if ( serviceMayRenderMaps )
       {
         if ( geometryType.isEmpty() )
           continue;
       }
+#endif
 
       const QgsWkbTypes::Type wkbType = QgsArcGisRestUtils::convertGeometryType( geometryType );
 

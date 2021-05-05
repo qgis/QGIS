@@ -25,6 +25,9 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QUrl>
+#include <QTimer>
+#include <QStandardPaths>
+#include <QUuid>
 
 #include <sqlite3.h>
 
@@ -53,8 +56,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsprovidermetadata.h"
+#include "qgslayernotesutils.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -298,11 +304,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     }
   }
 
-  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
-  setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
-  setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
-  setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
-
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
   mne = mnl.toElement();
@@ -389,6 +390,19 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
+  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
+  setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
+  setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
+  setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
+
+  // geographic extent is read only if necessary
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+  {
+    const QDomNode wgs84ExtentNode = layerElement.namedItem( QStringLiteral( "wgs84extent" ) );
+    if ( !wgs84ExtentNode.isNull() )
+      mWgs84Extent = QgsXmlUtils::readRectangle( wgs84ExtentNode.toElement() );
+  }
+
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
@@ -408,6 +422,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
+    layerElement.appendChild( QgsXmlUtils::writeRectangle( wgs84Extent( true ), document, QStringLiteral( "wgs84extent" ) ) );
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
@@ -607,6 +622,12 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
       properties->writeXml( layerElement, document, context );
   }
 
+  if ( categories.testFlag( Notes ) && QgsLayerNotesUtils::layerHasNotes( this ) )
+  {
+    QDomElement notesElem = document.createElement( QStringLiteral( "userNotes" ) );
+    notesElem.setAttribute( QStringLiteral( "value" ), QgsLayerNotesUtils::layerNotes( this ) );
+    layerElement.appendChild( notesElem );
+  }
 
   // custom properties
   if ( categories.testFlag( CustomProperties ) )
@@ -867,6 +888,28 @@ QString QgsMapLayer::metadataUri() const
 
 QString QgsMapLayer::saveDefaultMetadata( bool &resultFlag )
 {
+  if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( providerType() ) )
+  {
+    if ( metadata->providerCapabilities() & QgsProviderMetadata::SaveLayerMetadata )
+    {
+      try
+      {
+        QString errorMessage;
+        resultFlag = QgsProviderRegistry::instance()->saveLayerMetadata( providerType(), mDataSource, mMetadata, errorMessage );
+        if ( resultFlag )
+          return tr( "Successfully saved default layer metadata" );
+        else
+          return errorMessage;
+      }
+      catch ( QgsNotSupportedException &e )
+      {
+        resultFlag = false;
+        return e.what();
+      }
+    }
+  }
+
+  // fallback default metadata saving method, for providers which don't support (or implement) saveLayerMetadata
   return saveNamedMetadata( metadataUri(), resultFlag );
 }
 
@@ -1453,7 +1496,7 @@ void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const
     root.appendChild( layerNode );
   }
 
-  QgsStringMap props;
+  QVariantMap props;
   if ( hasScaleBasedVisibility() )
   {
     props[ QStringLiteral( "scaleMinDenom" ) ] = QString::number( mMinScale );
@@ -1714,6 +1757,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
       properties->readXml( layerElement.toElement(), context );
   }
+
+  if ( categories.testFlag( Notes ) )
+  {
+    const QDomElement notesElem = layerElement.firstChildElement( QStringLiteral( "userNotes" ) );
+    if ( !notesElem.isNull() )
+    {
+      const QString notes = notesElem.attribute( QStringLiteral( "value" ) );
+      QgsLayerNotesUtils::setLayerNotes( this, notes );
+    }
+  }
 }
 
 QUndoStack *QgsMapLayer::undoStack()
@@ -1896,9 +1949,9 @@ void QgsMapLayer::emitStyleChanged()
   emit styleChanged();
 }
 
-void QgsMapLayer::setExtent( const QgsRectangle &r )
+void QgsMapLayer::setExtent( const QgsRectangle &extent )
 {
-  mExtent = r;
+  updateExtent( extent );
 }
 
 bool QgsMapLayer::isReadOnly() const
@@ -1965,24 +2018,84 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
 {
   QgsDataProvider *lDataProvider = dataProvider();
+
   if ( !lDataProvider )
     return;
 
   if ( enabled && !isRefreshOnNotifyEnabled() )
   {
     lDataProvider->setListening( enabled );
-    connect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    connect( lDataProvider, &QgsDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   else if ( !enabled && isRefreshOnNotifyEnabled() )
   {
     // we don't want to disable provider listening because someone else could need it (e.g. actions)
-    disconnect( lDataProvider, &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+    disconnect( lDataProvider, &QgsDataProvider::notify, this, &QgsMapLayer::onNotified );
   }
   mIsRefreshOnNofifyEnabled = enabled;
 }
 
-void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
+QgsProject *QgsMapLayer::project() const
+{
+  if ( QgsMapLayerStore *store = qobject_cast<QgsMapLayerStore *>( parent() ) )
+  {
+    return qobject_cast<QgsProject *>( store->parent() );
+  }
+  return nullptr;
+}
+
+void QgsMapLayer::onNotified( const QString &message )
 {
   if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
+  {
     triggerRepaint();
+    emit dataChanged();
+  }
+}
+
+QgsRectangle QgsMapLayer::wgs84Extent( bool forceRecalculate ) const
+{
+  QgsRectangle wgs84Extent;
+
+  if ( ! forceRecalculate && ! mWgs84Extent.isNull() )
+  {
+    wgs84Extent = mWgs84Extent;
+  }
+  else if ( ! mExtent.isNull() )
+  {
+    const QgsCoordinateTransform transformer { crs(), QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() ), transformContext() };
+    try
+    {
+      wgs84Extent = transformer.transformBoundingBox( mExtent );
+    }
+    catch ( const QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( tr( "Error transforming extent: %1" ).arg( cse.what() ) );
+      wgs84Extent = QgsRectangle();
+    }
+  }
+  return wgs84Extent;
+}
+
+void QgsMapLayer::updateExtent( const QgsRectangle &extent ) const
+{
+  if ( extent == mExtent )
+    return;
+
+  mExtent = extent;
+
+  // do not update the wgs84 extent if we trust layer metadata
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+    return;
+
+  mWgs84Extent = wgs84Extent( true );
+}
+
+void QgsMapLayer::invalidateWgs84Extent()
+{
+  // do not update the wgs84 extent if we trust layer metadata
+  if ( mReadFlags & QgsMapLayer::ReadFlag::FlagTrustLayerMetadata )
+    return;
+
+  mWgs84Extent = QgsRectangle();
 }

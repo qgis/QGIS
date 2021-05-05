@@ -28,7 +28,7 @@ class QgsAnnotationLayer;
 
 /**
  * \ingroup core
- * Implementation of threaded rendering for annotation layers.
+ * \brief Implementation of threaded rendering for annotation layers.
  *
  * \note not available in Python bindings
  * \since QGIS 3.16

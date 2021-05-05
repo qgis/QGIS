@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>271</width>
-    <height>326</height>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,26 +26,23 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="2" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Label Anchoring</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
+      <item row="2" column="1">
+       <widget class="QComboBox" name="mClippingComboBox"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Clipping</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>&lt;b&gt;Controls the position along the line which labels will be placed close to.&lt;/b&gt;</string>
@@ -55,7 +52,14 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="2" column="2">
+       <widget class="QgsPropertyOverrideButton" name="mLineClippingDDBtn">
+        <property name="text">
+         <string>…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
        <layout class="QGridLayout" name="gridLayout_2">
         <property name="topMargin">
          <number>10</number>
@@ -107,9 +111,27 @@
      </layout>
     </widget>
    </item>
+   <item row="2" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
@@ -121,12 +143,13 @@
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mPercentPlacementComboBox</tabstop>
+  <tabstop>mLinePlacementDDBtn</tabstop>
+  <tabstop>mCustomPlacementSpinBox</tabstop>
+  <tabstop>mAnchorTypeComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

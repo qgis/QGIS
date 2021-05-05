@@ -10,7 +10,7 @@
 
 class QgsGmlFeatureClass
 {
-%Docstring
+%Docstring(signature="appended")
 Description of feature class in GML
 %End
 

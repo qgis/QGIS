@@ -32,7 +32,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * Implements a temporal controller based on a frame by frame navigation and animation.
+ * \brief Implements a temporal controller based on a frame by frame navigation and animation.
  *
  * \since QGIS 3.14
  */
@@ -110,6 +110,28 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     QgsDateTimeRange temporalExtents() const;
 
     /**
+     * Sets the list of all available temporal \a ranges which have data available.
+     *
+     * The \a ranges list can be a list of non-contiguous ranges (i.e. containing gaps)
+     * which together describe the complete range of times which contain data.
+     *
+     * \see availableTemporalRanges()
+     * \since QGIS 3.20
+     */
+    void setAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
+
+    /**
+     * Returns the list of all available temporal ranges which have data available.
+     *
+     * The ranges list can be a list of non-contiguous ranges (i.e. containing gaps)
+     * which together describe the complete range of times which contain data.
+     *
+     * \see setAvailableTemporalRanges()
+     * \since QGIS 3.20
+     */
+    QList< QgsDateTimeRange > availableTemporalRanges() const;
+
+    /**
      * Sets the current animation \a frame number.
      *
      * Caling this method will change the controllers current datetime range to match, based on the
@@ -133,7 +155,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see frameDuration()
      */
-    void setFrameDuration( QgsInterval duration );
+    void setFrameDuration( const QgsInterval &duration );
 
     /**
      * Returns the current set frame duration, which dictates the temporal length of each frame in the animation.
@@ -206,7 +228,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Returns the best suited frame number for the specified datetime, based on the start of the corresponding temporal range.
      */
-    long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
+    long long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
 
     QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
@@ -298,13 +320,16 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     //! The controller temporal navigation extent range.
     QgsDateTimeRange mTemporalExtents;
 
+    //! Complete list of time ranges with data available
+    QList< QgsDateTimeRange > mAllRanges;
+
     NavigationMode mNavigationMode = NavigationOff;
 
     //! The current set frame value
     long long mCurrentFrameNumber = 0;
 
     //! Frame duration
-    QgsInterval mFrameDuration;
+    QgsInterval mFrameDuration = QgsInterval( 1.0, QgsUnitTypes::TemporalUnit::TemporalHours );
 
     //! Member for frame rate
     double mFramesPerSecond = 1;

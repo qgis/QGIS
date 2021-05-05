@@ -30,7 +30,7 @@ class QgsRasterShaderFunction;
 
 /**
  * \ingroup core
- * Interface for all raster shaders.
+ * \brief Interface for all raster shaders.
  */
 class CORE_EXPORT QgsRasterShader
 {

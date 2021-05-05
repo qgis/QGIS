@@ -31,7 +31,7 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
   setupUi( this );
 
   mAttributeComboBox->setAllowEmptyAttributeName( false );
-  mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Numeric );
+  mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::AllTypes );
 
   mMinSpin->setShowClearButton( false );
   mMaxSpin->setShowClearButton( false );
@@ -45,13 +45,11 @@ QgsPointCloudAttributeByRampRendererWidget::QgsPointCloudAttributeByRampRenderer
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
            this, &QgsPointCloudAttributeByRampRendererWidget::attributeChanged );
-  connect( mMinSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
-  connect( mMaxSpin, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+  connect( mMinSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
+  connect( mMaxSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudAttributeByRampRendererWidget::minMaxChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloudAttributeByRampRendererWidget::emitWidgetChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloudAttributeByRampRendererWidget::setMinMaxFromLayer );
-
-  attributeChanged();
 }
 
 QgsPointCloudRendererWidget *QgsPointCloudAttributeByRampRendererWidget::create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * )
@@ -66,7 +64,7 @@ QgsPointCloudRenderer *QgsPointCloudAttributeByRampRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = qgis::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
   renderer->setAttribute( mAttributeComboBox->currentAttribute() );
 
   renderer->setMinimum( mMinSpin->value() );
@@ -117,6 +115,9 @@ void QgsPointCloudAttributeByRampRendererWidget::attributeChanged()
     }
 
   }
+  if ( !mBlockSetMinMaxFromLayer )
+    setMinMaxFromLayer();
+
   mScalarRecalculateMinMaxButton->setEnabled( !std::isnan( mProviderMin ) && !std::isnan( mProviderMax ) );
   emitWidgetChanged();
 }
@@ -140,6 +141,9 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
   const QgsPointCloudAttributeByRampRenderer *mbcr = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( r );
   if ( mbcr )
   {
+    // we will be restoring the existing ramp classes -- we don't want to regenerate any automatically!
+    mBlockSetMinMaxFromLayer = true;
+
     mAttributeComboBox->setAttribute( mbcr->attribute() );
 
     mMinSpin->setValue( mbcr->minimum() );
@@ -161,6 +165,7 @@ void QgsPointCloudAttributeByRampRendererWidget::setFromRenderer( const QgsPoint
   }
   attributeChanged();
   mBlockChangedSignal = false;
+  mBlockSetMinMaxFromLayer = false;
 }
 
 ///@endcond

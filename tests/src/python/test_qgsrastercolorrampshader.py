@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtGui import QColor
 
-from qgis.core import (QgsColorRampShader)
+from qgis.core import (QgsColorRampShader, QgsGradientColorRamp, QgsGradientStop)
 from qgis.testing import unittest
 
 
@@ -30,6 +30,21 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         shader.setColorRampItemList([item1, item2])
         self.assertFalse(shader.shade(float('NaN'))[0])
         self.assertFalse(shader.shade(float("inf"))[0])
+
+    def testCreateColorRamp(self):
+        shader = QgsColorRampShader(1, 3)
+
+        item1 = QgsColorRampShader.ColorRampItem(1, QColor(255, 0, 0))
+        item2 = QgsColorRampShader.ColorRampItem(2, QColor(255, 255, 0))
+        item3 = QgsColorRampShader.ColorRampItem(3, QColor(255, 255, 255))
+        shader.setColorRampItemList([item1, item2, item3])
+        shaderRamp = shader.createColorRamp()
+
+        gradientRamp = QgsGradientColorRamp(QColor(255, 0, 0), QColor(255, 255, 255), False, [QgsGradientStop(0.5, QColor(255, 255, 0))])
+
+        self.assertEqual(shaderRamp.color1(), gradientRamp.color1())
+        self.assertEqual(shaderRamp.color2(), gradientRamp.color2())
+        self.assertEqual(shaderRamp.stops(), gradientRamp.stops())
 
 
 if __name__ == '__main__':

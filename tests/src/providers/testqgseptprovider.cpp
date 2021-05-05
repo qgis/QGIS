@@ -57,6 +57,7 @@ class TestQgsEptProvider : public QObject
     void validLayerWithEptHierarchy();
     void attributes();
     void calculateZRange();
+    void testIdentify();
 
   private:
     QString mTestDataDir;
@@ -157,13 +158,13 @@ void TestQgsEptProvider::uriIsBlocklisted()
 void TestQgsEptProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsEptProvider::validLayer()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
@@ -183,7 +184,7 @@ void TestQgsEptProvider::validLayer()
 
 void TestQgsEptProvider::validLayerWithEptHierarchy()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/lone-star-laszip/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QGSCOMPARENEAR( layer->extent().xMinimum(), 515368.000000, 0.1 );
@@ -199,7 +200,7 @@ void TestQgsEptProvider::validLayerWithEptHierarchy()
 
 void TestQgsEptProvider::attributes()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -240,7 +241,7 @@ void TestQgsEptProvider::attributes()
 
 void TestQgsEptProvider::calculateZRange()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
   QVERIFY( layer->isValid() );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
@@ -253,6 +254,138 @@ void TestQgsEptProvider::calculateZRange()
   range = layer->elevationProperties()->calculateZRange( layer.get() );
   QGSCOMPARENEAR( range.lower(), 149.18, 0.01 );
   QGSCOMPARENEAR( range.upper(), 160.54, 0.01 );
+}
+
+void TestQgsEptProvider::testIdentify()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+
+  // identify 1 point click (rectangular point shape)
+  {
+    QgsPolygonXY polygon;
+    QVector<QgsPointXY> ring;
+    ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.5845294082537 ) );
+    ring.push_back( QgsPointXY( 498062.5405028705718, 7050996.5845294082537 ) );
+    ring.push_back( QgsPointXY( 498062.5405028705718, 7050996.6248482363299 ) );
+    ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.6248482363299 ) );
+    ring.push_back( QgsPointXY( 498062.50018404237926, 7050996.5845294082537 ) );
+    polygon.push_back( ring );
+    float maxErrorInMapCoords = 0.0022857920266687870026;
+    QVector<QMap<QString, QVariant>> points = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromPolygonXY( polygon ) );
+    QCOMPARE( points.size(), 1 );
+    QMap<QString, QVariant> identifiedPoint = points[0];
+    QMap<QString, QVariant> expected;
+
+    expected[ QStringLiteral( "Blue" ) ] = 0;
+    expected[ QStringLiteral( "Classification" ) ] = 2;
+    expected[ QStringLiteral( "EdgeOfFlightLine" ) ] = 0;
+    expected[ QStringLiteral( "GpsTime" ) ] = 268793.37257748609409;
+    expected[ QStringLiteral( "Green" ) ] = 0;
+    expected[ QStringLiteral( "Intensity" ) ] = 1765;
+    expected[ QStringLiteral( "NumberOfReturns" ) ] = 1;
+    expected[ QStringLiteral( "PointSourceId" ) ] = 7041;
+    expected[ QStringLiteral( "Red" ) ] = 0;
+    expected[ QStringLiteral( "ReturnNumber" ) ] = 1;
+    expected[ QStringLiteral( "ScanAngleRank" ) ] = -28;
+    expected[ QStringLiteral( "ScanDirectionFlag" ) ] = 1;
+    expected[ QStringLiteral( "UserData" ) ] = 17;
+    expected[ QStringLiteral( "X" ) ] = 498062.52;
+    expected[ QStringLiteral( "Y" ) ] = 7050996.61;
+    expected[ QStringLiteral( "Z" ) ] = 75.0;
+    QVERIFY( identifiedPoint == expected );
+  }
+
+  // identify 1 point (circular point shape)
+  {
+    QPolygonF polygon;
+    polygon.push_back( QPointF( 498066.28873652569018,  7050994.9709538575262 ) );
+    polygon.push_back( QPointF( 498066.21890226693358,  7050995.0112726856023 ) );
+    polygon.push_back( QPointF( 498066.21890226693358,  7050995.0919103417546 ) );
+    polygon.push_back( QPointF( 498066.28873652569018,  7050995.1322291698307 ) );
+    polygon.push_back( QPointF( 498066.35857078444678,  7050995.0919103417546 ) );
+    polygon.push_back( QPointF( 498066.35857078444678,  7050995.0112726856023 ) );
+    polygon.push_back( QPointF( 498066.28873652569018,  7050994.9709538575262 ) );
+    float maxErrorInMapCoords =  0.0091431681066751480103;
+    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    QVector<QMap<QString, QVariant>> expected;
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Blue" ) ] =  "0" ;
+      point[ QStringLiteral( "Classification" ) ] =  "2" ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
+      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3373408913" ;
+      point[ QStringLiteral( "Green" ) ] =  "0" ;
+      point[ QStringLiteral( "Intensity" ) ] =  "278" ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
+      point[ QStringLiteral( "PointSourceId" ) ] =  "7041" ;
+      point[ QStringLiteral( "Red" ) ] =  "0" ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28" ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
+      point[ QStringLiteral( "UserData" ) ] =  "17" ;
+      point[ QStringLiteral( "X" ) ] =  "498066.27" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050995.06" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.60" ;
+      expected.push_back( point );
+    }
+    QVERIFY( identifiedPoints == expected );
+  }
+
+  // test rectangle selection
+  {
+    QPolygonF polygon;
+    polygon.push_back( QPointF( 498063.24382022250211, 7050996.8638040581718 ) );
+    polygon.push_back( QPointF( 498063.02206666755956, 7050996.8638040581718 ) );
+    polygon.push_back( QPointF( 498063.02206666755956, 7050996.6360026793554 ) );
+    polygon.push_back( QPointF( 498063.24382022250211, 7050996.6360026793554 ) );
+    polygon.push_back( QPointF( 498063.24382022250211, 7050996.8638040581718 ) );
+
+    float maxErrorInMapCoords = 0.0022857920266687870026;
+    QVector<QMap<QString, QVariant>> identifiedPoints = layer->dataProvider()->identify( maxErrorInMapCoords, QgsGeometry::fromQPolygonF( polygon ) );
+    QVector<QMap<QString, QVariant>> expected;
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Blue" ) ] =  "0" ;
+      point[ QStringLiteral( "Classification" ) ] =  "2" ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
+      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3813974548" ;
+      point[ QStringLiteral( "Green" ) ] =  "0" ;
+      point[ QStringLiteral( "Intensity" ) ] =  "1142" ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
+      point[ QStringLiteral( "PointSourceId" ) ] =  "7041" ;
+      point[ QStringLiteral( "Red" ) ] =  "0" ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28" ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
+      point[ QStringLiteral( "UserData" ) ] =  "17" ;
+      point[ QStringLiteral( "X" ) ] =  "498063.14" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050996.79" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.89" ;
+      expected.push_back( point );
+    }
+    {
+      QMap<QString, QVariant> point;
+      point[ QStringLiteral( "Blue" ) ] =  "0" ;
+      point[ QStringLiteral( "Classification" ) ] =  "3" ;
+      point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
+      point[ QStringLiteral( "GpsTime" ) ] =  "269160.5176644815" ;
+      point[ QStringLiteral( "Green" ) ] =  "0" ;
+      point[ QStringLiteral( "Intensity" ) ] =  "1631" ;
+      point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
+      point[ QStringLiteral( "PointSourceId" ) ] =  "7042" ;
+      point[ QStringLiteral( "Red" ) ] =  "0" ;
+      point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-12" ;
+      point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
+      point[ QStringLiteral( "UserData" ) ] =  "17" ;
+      point[ QStringLiteral( "X" ) ] =  "498063.11" ;
+      point[ QStringLiteral( "Y" ) ] =  "7050996.75" ;
+      point[ QStringLiteral( "Z" ) ] =  "74.90" ;
+      expected.push_back( point );
+    }
+
+    QVERIFY( identifiedPoints == expected );
+  }
 }
 
 

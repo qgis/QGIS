@@ -14,8 +14,9 @@
 
 class QgsRenderContext : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context of a rendering operation.
+
 The context of a rendering operation defines properties such as
 the conversion ratio between screen and map units, the extents
 to be rendered etc.
@@ -279,6 +280,15 @@ per millimeter.
 .. seealso:: :py:func:`setScaleFactor`
 %End
 
+    double dpiTarget() const;
+%Docstring
+Returns the targeted DPI for rendering.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
     bool renderingStopped() const;
 %Docstring
 Returns ``True`` if the rendering operation has been stopped and any ongoing
@@ -353,7 +363,7 @@ Sets the current coordinate transform for the context.
 This represents the coordinate transform required to transform the layer
 which is being rendered back to the CRS of the rendered map.
 
-Set to an invalid QgsCoordinateTransform to indicate that no transformation is required.
+Set to an invalid :py:class:`QgsCoordinateTransform` to indicate that no transformation is required.
 
 .. seealso:: :py:func:`coordinateTransform`
 %End
@@ -412,7 +422,7 @@ rendering should be canceled immediately.
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
 A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+Will be used to convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
 
 .. versionadded:: 3.0
 %End
@@ -424,6 +434,15 @@ to physical sizes. This should usually be equal to the number of pixels
 per millimeter.
 
 .. seealso:: :py:func:`scaleFactor`
+%End
+
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the targeted ``dpi`` for rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
 %End
 
     void setRendererScale( double scale );
@@ -656,7 +675,7 @@ Converts a size from map units to the specified units.
 
     double convertMetersToMapUnits( double meters ) const;
 %Docstring
-Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+Convert meter distances to active MapUnit values for :py:class:`QgsUnitTypes`.RenderMetersInMapUnits
 \note
 When the :py:func:`~QgsRenderContext.sourceCrs` is geographic, the center of the Extent will be used
 
@@ -838,7 +857,7 @@ Sets a ``geometry`` to use to clip features at render time.
 
 .. note::
 
-   This is not usually set directly, but rather specified by calling QgsMapSettings::py:func:`~QgsRenderContext.addClippingRegion`
+   This is not usually set directly, but rather specified by calling :py:class:`QgsMapSettings`::py:func:`~QgsRenderContext.addClippingRegion`
    prior to constructing a QgsRenderContext.
 
 .. seealso:: :py:func:`featureClipGeometry`

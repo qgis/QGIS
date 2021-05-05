@@ -29,6 +29,7 @@
 #include "qgis_gui.h"
 
 class QTreeWidgetItem;
+class QgsAbstractRelationEditorConfigWidget;
 
 /**
  * Widget to edit the configuration (tab or group box, any field or relation, QML, …) of a form item
@@ -69,9 +70,15 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
 
     static QString title() { return tr( "Relation" ); }
 
+  private slots:
+    void relationCardinalityComboCurrentIndexChanged( int index );
+
   private:
     void setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData = QVariant() );
     void setNmRelationId( const QVariant &auserData = QVariant() );
+
+    QMetaObject::Connection mWidgetTypeComboBoxConnection;
+    QgsAbstractRelationEditorConfigWidget *mConfigWidget = nullptr;
 };
 
 #endif // QGSATTRIBUTEWIDGETEDIT_H

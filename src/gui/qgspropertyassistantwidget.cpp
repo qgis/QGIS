@@ -309,12 +309,16 @@ bool QgsPropertyAssistantWidget::computeValuesFromField( const QString &fieldNam
     return false;
   }
 
+  QVariant min;
+  QVariant max;
+  mLayer->minimumAndMaximumValue( fieldIndex, min, max );
+
   bool ok = false;
-  double minDouble = mLayer->minimumValue( fieldIndex ).toDouble( &ok );
+  double minDouble = min.toDouble( &ok );
   if ( !ok )
     return false;
 
-  double maxDouble = mLayer->maximumValue( fieldIndex ).toDouble( &ok );
+  double maxDouble = max.toDouble( &ok );
   if ( !ok )
     return false;
 
@@ -401,11 +405,11 @@ QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews(
   {
     if ( mDefinition.standardTemplate() == QgsPropertyDefinition::Size )
     {
-      tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+      tempSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
     }
     else if ( mDefinition.standardTemplate() == QgsPropertyDefinition::StrokeWidth )
     {
-      tempSymbol.reset( QgsLineSymbol::createSimple( QgsStringMap() ) );
+      tempSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
     }
     legendSymbol = tempSymbol.get();
   }
@@ -498,7 +502,7 @@ QList<QgsSymbolLegendNode *> QgsPropertyColorAssistantWidget::generatePreviews( 
 
   if ( !legendSymbol )
   {
-    tempSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+    tempSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
     legendSymbol = tempSymbol.get();
   }
   if ( !legendSymbol )

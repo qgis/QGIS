@@ -480,6 +480,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
+    void normalize() final SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
     QgsRectangle boundingBox() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
@@ -529,6 +530,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
     double segmentLength( QgsVertexId startVertex ) const override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -536,6 +538,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
+
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
 #ifndef SIP_RUN
 
@@ -569,6 +573,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 

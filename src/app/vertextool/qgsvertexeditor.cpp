@@ -25,6 +25,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdoublevalidator.h"
 
 #include <QLabel>
 #include <QTableWidget>
@@ -237,13 +238,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
   }
 
   // Get double value wrt current locale.
-  bool ok;
-  double doubleValue = QLocale().toDouble( value.toString(), &ok );
-  // If not valid and locale's decimal point is not '.' let's try with english locale
-  if ( ! ok && QLocale().decimalPoint() != '.' )
-  {
-    doubleValue = QLocale( QLocale::English ).toDouble( value.toString() );
-  }
+  const double doubleValue { QgsDoubleValidator::toDouble( value.toString() ) };
 
   double x = ( index.column() == 0 ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().x() );
   double y = ( index.column() == 1 ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().y() );
@@ -267,8 +262,8 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
       y = result.y();
     }
   }
-  double z = ( index.column() == mZCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().z() );
-  double m = ( index.column() == mMCol ? value.toDouble() : mLockedFeature->vertexMap().at( index.row() )->point().m() );
+  double z = ( index.column() == mZCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().z() );
+  double m = ( index.column() == mMCol ? doubleValue : mLockedFeature->vertexMap().at( index.row() )->point().m() );
   QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLockedFeature->layer()->beginEditCommand( QObject::tr( "Moved vertices" ) );
@@ -489,7 +484,7 @@ QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocal
 QWidget *CoordinateItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
 {
   QLineEdit *lineEdit = new QLineEdit( parent );
-  QDoubleValidator *validator = new QDoubleValidator();
+  QgsDoubleValidator *validator = new QgsDoubleValidator( lineEdit );
   if ( !index.data( MIN_RADIUS_ROLE ).isNull() )
     validator->setBottom( index.data( MIN_RADIUS_ROLE ).toDouble() );
   lineEdit->setValidator( validator );
@@ -510,7 +505,7 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', displayDecimalPlaces() ) );
+    lineEdit->setText( displayText( index.data( ).toDouble( ), QLocale() ) );
   }
 }
 

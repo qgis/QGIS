@@ -26,15 +26,19 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertree.h"
 
+#include "qgswmsrequest.h"
+
 namespace QgsWms
 {
 
   /**
    * Create element for get capabilities document
    */
-  QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc, QgsServerInterface *serverIface,
-      const QgsProject *project, const QString &version,
-      const QgsServerRequest &request, bool projectSettings );
+  QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      bool projectSettings );
 
   /**
    * Create WFSLayers element for get capabilities document
@@ -54,34 +58,35 @@ namespace QgsWms
   /**
    * Create Capability element for get capabilities document
    */
-  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QString &version,
-                                    const QgsServerRequest &request, bool projectSettings,
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project,
+                                    const QgsWmsRequest &request, bool projectSettings,
                                     QgsServerInterface *serverIface );
 
   /**
    * Create Service element for get capabilities document
    */
-  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
-                                 const QgsServerRequest &request );
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project,
+                                 const QgsWmsRequest &request, const QgsServerSettings *serverSettings );
 
   /**
    * Output GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
-                             const QString &version, const QgsServerRequest &request,
-                             QgsServerResponse &response, bool projectSettings = false );
+  void writeGetCapabilities( QgsServerInterface *serverIface,
+                             const QgsProject *project,
+                             const QgsWmsRequest &request,
+                             QgsServerResponse &response,
+                             bool projectSettings = false );
 
   /**
    * Creates the WMS GetCapabilities XML document.
    * \param serverIface Interface for plugins
    * \param project Project
-   * \param version WMS version
    * \param request WMS request
    * \param projectSettings If TRUE, adds extended project information (does not validate against WMS schema)
    * \returns GetCapabilities XML document
    */
   QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
-                                const QString &version, const QgsServerRequest &request,
+                                const QgsWmsRequest &request,
                                 bool projectSettings );
 
   bool hasQueryableChildren( const QgsLayerTreeNode *childNode, const QStringList &wmsRestrictedLayers );

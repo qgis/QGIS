@@ -22,6 +22,12 @@ class QgsRelation
 
   public:
 
+    enum RelationType
+    {
+      Normal,
+      Generated,
+    };
+
     enum RelationStrength
     {
       Association,
@@ -96,7 +102,7 @@ Set the referenced (parent) layer id. This layer will be searched in the registr
 
     void addFieldPair( const QString &referencingField, const QString &referencedField );
 %Docstring
-Add a field pairs which is part of this relation
+Add a field pair which is part of this relation
 The first element of each pair are the field names of the foreign key.
 The second element of each pair are the field names of the matching primary key.
 
@@ -313,6 +319,34 @@ Updates the validity status of this relation.
 Will be called internally whenever a member is changed.
 
 .. versionadded:: 3.6
+%End
+
+    void setPolymorphicRelationId( const QString &polymorphicRelationId );
+%Docstring
+Sets the parent polymorphic relation id.
+
+.. versionadded:: 3.18
+%End
+
+    QString polymorphicRelationId() const;
+%Docstring
+Returns the parent polymorphic relation id. If the relation is a normal relation, a null string is returned.
+
+.. versionadded:: 3.18
+%End
+
+    QgsPolymorphicRelation polymorphicRelation() const;
+%Docstring
+Returns the parent polymorphic relation. If the relation is a normal relation, an invalid polymorphic relation is returned.
+
+.. versionadded:: 3.18
+%End
+
+    RelationType type() const;
+%Docstring
+Returns the type of the relation
+
+.. versionadded:: 3.18
 %End
 
 };

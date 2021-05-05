@@ -53,7 +53,7 @@ typedef long long          I64;
 typedef float              F32;
 typedef double             F64;
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined (__MINGW32__)
 typedef int                BOOL;
 #else
 typedef bool               BOOL;

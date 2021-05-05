@@ -15,12 +15,6 @@ include_directories (
   ../../core/auth
   ../../core/geometry
   ../../core/metadata
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
-)
-include_directories (SYSTEM
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 include_directories (
   ../../gui
@@ -31,6 +25,9 @@ include_directories (
 QT5_WRAP_UI (AUTH_ESRI_TOKEN_UIS_H ${AUTH_ESRI_TOKEN_UIS})
 
 add_library (esritokenauthmethod MODULE ${AUTH_ESRI_TOKEN_SRCS} ${AUTH_ESRI_TOKEN_HDRS} ${AUTH_ESRI_TOKEN_UIS_H})
+
+# require c++17
+target_compile_features(esritokenauthmethod PRIVATE cxx_std_17)
 
 target_link_libraries (esritokenauthmethod
   qgis_core

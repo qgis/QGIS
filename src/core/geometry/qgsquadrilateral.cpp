@@ -368,7 +368,7 @@ QgsPointSequence QgsQuadrilateral::points() const
 
 QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 {
-  std::unique_ptr<QgsPolygon> polygon = qgis::make_unique< QgsPolygon >();
+  std::unique_ptr<QgsPolygon> polygon = std::make_unique< QgsPolygon >();
   if ( !isValid() )
   {
     return polygon.release();
@@ -381,7 +381,7 @@ QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 
 QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 {
-  std::unique_ptr<QgsLineString> ext = qgis::make_unique< QgsLineString>();
+  std::unique_ptr<QgsLineString> ext = std::make_unique< QgsLineString>();
   if ( !isValid() )
   {
     return ext.release();

@@ -33,7 +33,7 @@ class QgsTaskManagerModel;
 /**
  * \ingroup gui
  * \class QgsTaskManagerWidget
- * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
+ * \brief A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
  * \see QgsTaskManager
  * \since QGIS 3.0
  */
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsTaskManagerFloatingWidget
- * A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
+ * \brief A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
  * \see QgsTaskManager
  * \since QGIS 3.0
  */
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 /**
  * \ingroup gui
  * \class QgsTaskManagerModel
- * A model representing a QgsTaskManager.
+ * \brief A model representing a QgsTaskManager.
  * \see QgsTaskManager
  * \since QGIS 3.0
  */
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 /**
  * \ingroup gui
  * \class QgsTaskStatusWidget
- * A widget for showing task status within a view. Clicks on the widget will cause the task to be canceled (via the model).
+ * \brief A widget for showing task status within a view. Clicks on the widget will cause the task to be canceled (via the model).
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTaskStatusWidget : public QWidget

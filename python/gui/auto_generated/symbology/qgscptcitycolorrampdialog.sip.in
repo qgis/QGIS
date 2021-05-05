@@ -14,8 +14,8 @@
 
 class QgsCptCityColorRampDialog : QDialog
 {
-%Docstring
-A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+%Docstring(signature="appended")
+A dialog which allows users to modify the properties of a :py:class:`QgsCptCityColorRamp`.
 
 .. versionadded:: 3.0
 %End

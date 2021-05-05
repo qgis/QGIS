@@ -24,7 +24,6 @@
 
 class QDomElement;
 class QDomDocument;
-class QStringList;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -34,7 +33,7 @@ class QgsProject;
 
 /**
  * \ingroup core
- * Assorted functions for dealing with layer trees.
+ * \brief Assorted functions for dealing with layer trees.
  *
  * \since QGIS 2.4
  */

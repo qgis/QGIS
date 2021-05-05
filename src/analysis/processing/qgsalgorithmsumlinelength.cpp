@@ -106,14 +106,26 @@ QString QgsSumLineLengthAlgorithm::outputName() const
   return QObject::tr( "Line length" );
 }
 
-void QgsSumLineLengthAlgorithm::initParameters( const QVariantMap & )
+void QgsSumLineLengthAlgorithm::initParameters( const QVariantMap &configuration )
 {
+  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
                 QObject::tr( "Lines" ), QList< int > () << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "LEN_FIELD" ),
-                QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ) ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "COUNT_FIELD" ),
-                QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ) ) );
+  if ( mIsInPlace )
+  {
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "LEN_FIELD" ),
+                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), QgsProcessingParameterField::Any, false, true ) );
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "COUNT_FIELD" ),
+                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), QgsProcessingParameterField::Any, false, true ) );
+  }
+  else
+  {
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "LEN_FIELD" ),
+                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ) ) );
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "COUNT_FIELD" ),
+                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ) ) );
+  }
 }
 
 bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -126,7 +138,7 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "LINES" ) ) );
 
   if ( mLinesSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
-    feedback->reportError( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );
+    feedback->pushWarning( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );
 
   mDa.setEllipsoid( context.ellipsoid() );
   mTransformContext = context.transformContext();
@@ -136,17 +148,35 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
 
 QgsFields QgsSumLineLengthAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields outFields = inputFields;
-  mLengthFieldIndex = inputFields.lookupField( mLengthFieldName );
-  if ( mLengthFieldIndex < 0 )
-    outFields.append( QgsField( mLengthFieldName, QVariant::Double ) );
+  if ( mIsInPlace )
+  {
+    mLengthFieldIndex = mLengthFieldName.isEmpty() ? -1 : inputFields.lookupField( mLengthFieldName );
+    mCountFieldIndex = mCountFieldName.isEmpty() ? -1 :  inputFields.lookupField( mCountFieldName );
+    return inputFields;
+  }
+  else
+  {
+    QgsFields outFields = inputFields;
+    mLengthFieldIndex = inputFields.lookupField( mLengthFieldName );
+    if ( mLengthFieldIndex < 0 )
+      outFields.append( QgsField( mLengthFieldName, QVariant::Double ) );
 
-  mCountFieldIndex = inputFields.lookupField( mCountFieldName );
-  if ( mCountFieldIndex < 0 )
-    outFields.append( QgsField( mCountFieldName, QVariant::Double ) );
+    mCountFieldIndex = inputFields.lookupField( mCountFieldName );
+    if ( mCountFieldIndex < 0 )
+      outFields.append( QgsField( mCountFieldName, QVariant::Double ) );
 
-  mFields = outFields;
-  return outFields;
+    mFields = outFields;
+    return outFields;
+  }
+}
+
+bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  {
+    return vl->geometryType() == QgsWkbTypes::PolygonGeometry;
+  }
+  return false;
 }
 
 QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -155,14 +185,14 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
   if ( !feature.hasGeometry() )
   {
     QgsAttributes attrs = feature.attributes();
-    if ( mLengthFieldIndex < 0 )
+    if ( !mIsInPlace && mLengthFieldIndex < 0 )
       attrs.append( 0 );
-    else
+    else if ( mLengthFieldIndex >= 0 )
       attrs[mLengthFieldIndex] = 0;
 
-    if ( mCountFieldIndex < 0 )
+    if ( !mIsInPlace && mCountFieldIndex < 0 )
       attrs.append( 0 );
-    else
+    else if ( mCountFieldIndex >= 0 )
       attrs[mCountFieldIndex] = 0;
 
     outputFeature.setAttributes( attrs );
@@ -196,14 +226,14 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
     }
 
     QgsAttributes attrs = feature.attributes();
-    if ( mLengthFieldIndex < 0 )
+    if ( !mIsInPlace && mLengthFieldIndex < 0 )
       attrs.append( length );
-    else
+    else if ( mLengthFieldIndex >= 0 )
       attrs[mLengthFieldIndex] = length;
 
-    if ( mCountFieldIndex < 0 )
+    if ( !mIsInPlace && mCountFieldIndex < 0 )
       attrs.append( count );
-    else
+    else if ( mCountFieldIndex >= 0 )
       attrs[mCountFieldIndex] = count;
 
     outputFeature.setAttributes( attrs );

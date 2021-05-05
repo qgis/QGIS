@@ -30,6 +30,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <vector>
+#include <memory>
+
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -39,7 +42,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
-  * A registry / canonical manager of data providers.
+  * \brief A registry / canonical manager of data providers.
   *
   * This is a Singleton class that manages data provider access.
   *
@@ -111,6 +114,23 @@ class CORE_EXPORT QgsProviderRegistry
     //! Sets library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
+     * the case.
+     * Paraphrasing Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by by the python function
+     * creating the provider subclass.
+     *
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on createProvider() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a new instance of a provider.
      * \param providerKey identifier of the provider
@@ -124,7 +144,7 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
                                      const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
-                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_TRANSFERBACK;
 
     /**
      * Returns the provider capabilities
@@ -242,6 +262,23 @@ class CORE_EXPORT QgsProviderRegistry
     QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
 
     /**
+     * Saves \a metadata to the layer corresponding to the specified \a uri.
+     *
+     * \param providerKey identifier of the provider
+     * \param uri uri of layer to store metadata for
+     * \param metadata layer metadata
+     * \param errorMessage descriptive string of error if encountered
+     *
+     * \returns TRUE if the metadata was successfully saved.
+     *
+     * \throws QgsNotSupportedException if the provider does not support saving layer metadata for the
+     * specified \a uri.
+     *
+     * \since QGIS 3.20
+     */
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage SIP_OUT ) SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Creates database by the provider on the path
      * \since QGIS 3.10
      */
@@ -285,7 +322,7 @@ class CORE_EXPORT QgsProviderRegistry
     /**
      * \ingroup core
      *
-     * Contains information pertaining to a candidate provider.
+     * \brief Contains information pertaining to a candidate provider.
      *
      * \since QGIS 3.18
      */
@@ -345,6 +382,132 @@ class CORE_EXPORT QgsProviderRegistry
      * \since QGIS 3.18
      */
     QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
+
+    /**
+     * \ingroup core
+     *
+     * \brief Contains information about unusable URIs which aren't handled by any registered providers.
+     *
+     * For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+     * This class can then be used to construct friendly warnings to users advising them why the las/laz
+     * files cannot be used on their QGIS build.
+     *
+     * \since QGIS 3.18.1
+     */
+    class CORE_EXPORT UnusableUriDetails
+    {
+      public:
+
+        /**
+         * Constructor for UnusableUriDetails for the given \a uri, with the specified user-friendly, translated \a warning.
+         *
+         * The optional \a layerTypes argument can be used to specify layer types which are usually valid
+         * options for opening the URI.
+         */
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() )
+          : uri( uri )
+          , warning( warning )
+          , layerTypes( layerTypes )
+        {}
+
+        /**
+         * URI which could not be handled.
+         */
+        QString uri;
+
+        /**
+         * Contains a short, user-friendly, translated message advising why the URI is not usable.
+         */
+        QString warning;
+
+        /**
+         * Contains a longer, user-friendly, translated message advising why the URI is not usable.
+         */
+        QString detailedWarning;
+
+        /**
+         * Contains a list of map layer types which are usually valid options for opening the
+         * target URI.
+         */
+        QList<QgsMapLayerType> layerTypes;
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+    };
+
+    /**
+     * \ingroup core
+     *
+     * \brief An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
+     * user-friendly warnings as to why the URI is unusable.
+     *
+     * For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+     * This class can then be used to construct friendly warnings to users advising them why the las/laz
+     * files cannot be used on their QGIS build.
+     *
+     * \since QGIS 3.18.1
+     */
+    class CORE_EXPORT UnusableUriHandlerInterface
+    {
+
+      public:
+
+        virtual ~UnusableUriHandlerInterface() = default;
+
+        /**
+         * Returns TRUE if the handle is an unusable URI handler for the specified \a uri.
+         */
+        virtual bool matchesUri( const QString &uri ) const = 0;
+
+        /**
+         * Returns the details for advising the user why the \a uri is not usable.
+         */
+        virtual UnusableUriDetails details( const QString &uri ) const = 0;
+
+    };
+
+    /**
+     * \brief Registers an unusable URI \a handler, used to handle unusable URIs which aren't
+     * handled by any registered providers, and construct user-friendly warnings as to why the URI is unusable.
+     *
+     * \return TRUE on success
+     *
+     * \note ownership of the UnusableUriHandlerInterface instance is transferred to the registry
+     *
+     * \since QGIS 3.18.1
+     */
+    bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler SIP_TRANSFER );
+
+    /**
+     * Returns TRUE if the specified \a uri can potentially be handled by QGIS, if additional
+     * dependencies or build-time requirements are present.
+     *
+     * This can be used to show user-friendly warning messages advising them why a particular
+     * \a uri cannot be opened on their QGIS install. For example, if a QGIS install is built
+     * without the PDAL library then las/laz files are unusable, and this method can be used
+     * to retrieve a user-friendly warning as to why the las/laz files cannot be used on their
+     * QGIS build.
+     *
+     * \warning This method does not perform the test to actually determine if the given \a uri
+     * can be handled by any registered provider. It is assumed that prior to calling this method
+     * the caller has already determined in advance that the \a uri could not be handled.
+     *
+     * \param uri URI to test
+     * \param details will be populated with details allowing construction of a user-friendly
+     * warning message
+     *
+     * \returns TRUE if the \a uri was matched to a registered QgsProviderRegistry::UnusableUriHandlerInterface.
+     *
+     * \see registerUnusableUriHandler()
+     * \since QGIS 3.18.1
+     */
+    bool handleUnusableUri( const QString &uri, UnusableUriDetails &details SIP_OUT ) const;
 
     /**
      * Returns TRUE if the provider with matching \a providerKey should defer handling of
@@ -539,6 +702,8 @@ class CORE_EXPORT QgsProviderRegistry
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mProtocolDrivers;
+
+    QList< UnusableUriHandlerInterface * > mUnusableUriHandlers;
 
     /**
      * Returns TRUE if registry instance exists.

@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 
 #include <QDomElement>
-
+#include <QTextStream>
 
 static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup *parent );
 static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup *parent );

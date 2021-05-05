@@ -127,6 +127,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
     SIP_END
@@ -213,6 +215,14 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
+     * Returns TRUE if the renderer uses embedded symbols for features.
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool usesEmbeddedSymbols() const;
+
+    /**
      * Returns TRUE if this renderer requires the geometry to apply the filter.
      */
     virtual bool filterNeedsGeometry() const;
@@ -234,7 +244,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Returns TRUE if the feature has been returned (this is used for example
      * to determine whether the feature may be labelled).
      *
-     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * If layer is not -1, the renderer should draw only a particular layer from symbols
      * (in order to support symbol level rendering).
      *
      * \see startRender()
@@ -293,7 +303,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * create the SLD UserStyle element following the SLD v1.1 specs with the given name
      * \since QGIS 2.8
      */
-    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
 
     /**
      * Create a new renderer according to the information contained in
@@ -309,7 +319,7 @@ class CORE_EXPORT QgsFeatureRenderer
     static QgsFeatureRenderer *loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const
     {
       element.appendChild( doc.createComment( QStringLiteral( "FeatureRenderer %1 not implemented yet" ).arg( type() ) ) );
       ( void ) props; // warning avoidance

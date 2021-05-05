@@ -78,19 +78,10 @@ include_directories (
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
 include_directories (SYSTEM
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
   ${O2_INCLUDE_DIR}
 )
 include_directories (
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/auth/oauth2
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/ui/auth
   ${CMAKE_BINARY_DIR}/src/auth/oauth2
@@ -126,6 +117,10 @@ add_library (oauth2authmethod_static STATIC
   ${OAUTH2_RCCS}
   ${OAUTH2_UIS_H}
 )
+
+# require c++17
+target_compile_features(oauth2authmethod PRIVATE cxx_std_17)
+target_compile_features(oauth2authmethod_static PRIVATE cxx_std_17)
 
 # Common linked libs
 set(OAUTH2_TARGET_LIBS ${QTKEYCHAIN_LIBRARY})

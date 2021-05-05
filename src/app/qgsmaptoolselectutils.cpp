@@ -33,6 +33,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -242,6 +243,8 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   {
     // a zero width buffer is safer than calling make valid here!
     selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
+    if ( selectGeomTrans.isEmpty() )
+      return newSelectedFeatures;
   }
 
   std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );
@@ -257,6 +260,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     r->startRender( context, vlayer->fields() );
   }
 
+  QString temporalFilter;
+  if ( canvas->mapSettings().isTemporal() )
+  {
+    if ( !vlayer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
+      return newSelectedFeatures;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( vlayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( vlayer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
+  }
+
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -264,6 +278,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
     request.setNoAttributes();
+
+  if ( !temporalFilter.isEmpty() )
+    request.setFilterExpression( temporalFilter );
+  if ( r )
+  {
+    const QString filterExpression = r->filter( vlayer->fields() );
+    if ( !filterExpression.isEmpty() )
+    {
+      request.combineFilterExpression( filterExpression );
+    }
+  }
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
@@ -365,7 +390,8 @@ QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions(
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions()
 {
   removeHighlight();
-  mJobData->isCanceled = true;
+  if ( mJobData )
+    mJobData->isCanceled = true;
   if ( mFutureWatcher )
     mFutureWatcher->waitForFinished();
 }
@@ -384,13 +410,26 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *me
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 {
+  QString temporalFilter;
+  if ( mCanvas->mapSettings().isTemporal() )
+  {
+    if ( !mVectorLayer->temporalProperties()->isVisibleInTemporalRange( mCanvas->temporalRange() ) )
+      return;
+
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( mVectorLayer );
+    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( mVectorLayer->temporalProperties() )->createFilterString( temporalContext, mCanvas->temporalRange() );
+  }
+
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
   mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  mJobData->filterString = temporalFilter;
   mJobData->ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mVectorLayer->crs(), mJobData->context.transformContext() );
   mJobData->featureRenderer.reset( mVectorLayer->renderer()->clone() );
+
   mJobData->context.expressionContext() << QgsExpressionContextUtils::layerScope( mVectorLayer );
   mJobData->selectBehavior = mBehavior;
   if ( mBehavior != QgsVectorLayer::SetSelection )
@@ -410,7 +449,6 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
 
   if ( ! transformSelectGeometry( data->selectGeometry, selectGeomTrans, data->ct ) )
     return newSelectedFeatures;
-
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid( ) )
@@ -434,8 +472,18 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
 
+  if ( !data->filterString.isEmpty() )
+    request.setFilterExpression( data->filterString );
+
   if ( r )
+  {
     request.setSubsetOfAttributes( r->usedAttributes( data->context ), data->source->fields() );
+    const QString filterExpression = r->filter( data->source->fields() );
+    if ( !filterExpression.isEmpty() )
+    {
+      request.combineFilterExpression( filterExpression );
+    }
+  }
 
   QgsFeatureIterator fit = data->source->getFeatures( request );
 

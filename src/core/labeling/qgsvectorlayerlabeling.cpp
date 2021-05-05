@@ -94,7 +94,7 @@ bool QgsVectorLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visit
 
 bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 {
-  return mSettings->format().containsAdvancedEffects();
+  return mSettings->containsAdvancedEffects();
 }
 
 QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
@@ -249,7 +249,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
   return layer;
 }
 
-void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const
+void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const
 {
   QDomDocument doc = parent.ownerDocument();
 
@@ -561,7 +561,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
 }
 
 
-void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) const
+void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
 {
 
   if ( mSettings->drawLabels )
@@ -574,7 +574,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
     // scale dependencies
     if ( mSettings->scaleVisibility )
     {
-      QgsStringMap scaleProps = QgsStringMap();
+      QVariantMap scaleProps = QVariantMap();
       // tricky here, the max scale is expressed as its denominator, but it's still the max scale
       // in other words, the smallest scale denominator....
       scaleProps.insert( "scaleMinDenom", qgsDoubleToString( mSettings->maximumScale ) );

@@ -169,23 +169,14 @@ endif()
 ########################################################
 
 include_directories (
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
 add_library (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
+
+# require c++17
+target_compile_features(mdalprovider PRIVATE cxx_std_17)
 
 target_link_libraries (mdalprovider
   qgis_core
@@ -206,6 +197,7 @@ endif()
 if (HDF5_FOUND)
   target_include_directories(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
   target_link_libraries(mdalprovider ${HDF5_C_LIBRARIES} )
+  target_compile_definitions(mdalprovider PRIVATE ${HDF5_DEFINITIONS})
 endif()
 
 if (GDAL_FOUND)

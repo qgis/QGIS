@@ -1,0 +1,133 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorelement.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsAttributeEditorElement /Abstract/
+{
+%Docstring(signature="appended")
+This is an abstract base class for any elements of a drag and drop form.
+
+This can either be a container which will be represented on the screen
+as a tab widget or a collapsible group box. Or it can be a field which will
+then be represented based on the :py:class:`QgsEditorWidget` type and configuration.
+Or it can be a relation and embed the form of several children of another
+layer.
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer:
+        sipType = sipType_QgsAttributeEditorContainer;
+        break;
+      case QgsAttributeEditorElement::AeTypeField:
+        sipType = sipType_QgsAttributeEditorField;
+        break;
+      case QgsAttributeEditorElement::AeTypeRelation:
+        sipType = sipType_QgsAttributeEditorRelation;
+        break;
+      default:
+        sipType = nullptr;
+        break;
+    }
+%End
+  public:
+    enum AttributeEditorType
+    {
+      AeTypeContainer,
+      AeTypeField,
+      AeTypeRelation,
+      AeTypeInvalid,
+      AeTypeQmlElement,
+      AeTypeHtmlElement
+    };
+
+    QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
+%Docstring
+Constructor
+
+:param type: The type of the new element.
+:param name:
+:param parent:
+%End
+
+    virtual ~QgsAttributeEditorElement();
+
+    static QgsAttributeEditorElement *create( const QDomElement &element, const QString &layerId, const QgsFields &fields, const QgsReadWriteContext &context, QgsAttributeEditorElement *parent = 0 ) /Factory/;
+%Docstring
+Constructs the editor element from the given element
+
+.. versionadded:: 3.18
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of this element
+
+:return: The name for this element
+%End
+
+    AttributeEditorType type() const;
+%Docstring
+The type of this element
+
+:return: The type
+%End
+
+    QgsAttributeEditorElement *parent() const;
+%Docstring
+Gets the parent of this element.
+
+.. versionadded:: 3.0
+%End
+
+    QDomElement toDomElement( QDomDocument &doc ) const;
+%Docstring
+Gets the XML Dom element to save this element.
+
+:param doc: The QDomDocument which is used to create new XML elements
+
+:return: A DOM element to serialize this element
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 /Factory/;
+%Docstring
+Returns a clone of this element. To be implemented by subclasses.
+
+.. versionadded:: 3.0
+%End
+
+    bool showLabel() const;
+%Docstring
+Controls if this element should be labeled with a title (field, relation or groupname).
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Controls if this element should be labeled with a title (field, relation or groupname).
+
+.. versionadded:: 2.18
+%End
+
+  protected:
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/editform/qgsattributeeditorelement.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

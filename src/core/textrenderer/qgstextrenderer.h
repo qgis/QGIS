@@ -29,7 +29,7 @@ class QgsTextDocument;
 /**
  * \class QgsTextRenderer
   * \ingroup core
-  * Handles rendering text using rich formatting options, including drop shadows, buffers
+  * \brief Handles rendering text using rich formatting options, including drop shadows, buffers
   * and background shapes.
   * \since QGIS 3.0
  */
@@ -385,6 +385,5 @@ class CORE_EXPORT QgsTextRenderer
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
 
 };
-
 
 #endif // QGSTEXTRENDERER_H

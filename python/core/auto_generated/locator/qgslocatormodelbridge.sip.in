@@ -15,8 +15,8 @@
 
 class QgsLocatorModelBridge : QObject
 {
-%Docstring
-The QgsLocatorModelBridge class provides the core functionality
+%Docstring(signature="appended")
+The :py:class:`QgsLocatorModelBridge` class provides the core functionality
 to be used in a locator widget.
 
 .. versionadded:: 3.6

@@ -31,6 +31,8 @@
 #include <QAction>
 #include <mutex>
 #include <QMessageBox>
+#include <QUrlQuery>
+#include <QUrl>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -84,25 +86,10 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
     QgsDebugMsgLevel( QStringLiteral( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
-      QString name = mSublayers[i];
-      // if netcdf/hdf use all text after filename
-      // for hdf4 it would be best to get description, because the subdataset_index is not very practical
-      if ( name.startsWith( QLatin1String( "netcdf" ), Qt::CaseInsensitive ) ||
-           name.startsWith( QLatin1String( "hdf" ), Qt::CaseInsensitive ) )
-        name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
-      else
-      {
-        // remove driver name and file name and initial ':'
-        name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] + ':' );
-        name.remove( mPath );
-      }
-      // remove any : or " left over
-      if ( name.startsWith( ':' ) ) name.remove( 0, 1 );
-      if ( name.startsWith( '\"' ) ) name.remove( 0, 1 );
-      if ( name.endsWith( ':' ) ) name.chop( 1 );
-      if ( name.endsWith( '\"' ) ) name.chop( 1 );
-
-      childItem = new QgsGdalLayerItem( this, name, mSublayers[i], mSublayers[i] );
+      const QStringList parts = mSublayers[i].split( QgsDataProvider::sublayerSeparator() );
+      const QString path = parts[0];
+      const QString desc = parts[1];
+      childItem = new QgsGdalLayerItem( this, desc, path, path );
       if ( childItem )
       {
         children.append( childItem );
@@ -196,6 +183,14 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
+
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
   // extract basename with extension
   info.setFile( path );
   QString name = info.fileName();

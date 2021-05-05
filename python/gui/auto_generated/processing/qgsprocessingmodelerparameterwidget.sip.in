@@ -14,7 +14,7 @@
 
 class QgsProcessingModelerParameterWidget : QWidget, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 
 A widget for customising the value of Processing algorithm parameter inside
 a Processing model.
@@ -85,7 +85,7 @@ various available values for :py:func:`QgsProcessingParameterDefinition.type()` 
 (for ``compatibleOutputTypes``).
 
 The ``compatibleDataTypes`` list corresponds to the compatible data types
-from QgsProcessing.SourceType.
+from :py:class:`QgsProcessing`.SourceType.
 %End
 
     void setExpressionHelpText( const QString &text );

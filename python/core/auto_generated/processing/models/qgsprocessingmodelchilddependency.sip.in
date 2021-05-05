@@ -13,7 +13,7 @@
 
 class QgsProcessingModelChildDependency
 {
-%Docstring
+%Docstring(signature="appended")
 Contains details of a child algorithm dependency.
 
 .. versionadded:: 3.14

@@ -52,7 +52,7 @@ bool QgsRelationEditorWidgetPlugin::isContainer() const
 
 QWidget *QgsRelationEditorWidgetPlugin::createWidget( QWidget *parent )
 {
-  return new QgsRelationEditorWidget( parent );
+  return new QgsRelationEditorWidget( QVariantMap(), parent );
 }
 
 bool QgsRelationEditorWidgetPlugin::isInitialized() const

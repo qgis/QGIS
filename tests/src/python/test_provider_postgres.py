@@ -31,6 +31,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorLayerExporter,
     QgsFeatureRequest,
+    QgsFeatureSource,
     QgsFeature,
     QgsFieldConstraints,
     QgsDataProvider,
@@ -2045,13 +2046,23 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl1.extent(), originalExtent)
 
         # read xml with custom extent with readExtent option. Extent read from
-        # xml document should NOT be used because we don't have a view or a
+        # xml document should be used even if we don't have a view or a
         # materialized view
         vl2 = QgsVectorLayer()
         vl2.setReadExtentFromXml(True)
         vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertTrue(vl2.isValid())
 
+        self.assertEqual(vl2.extent(), customExtent)
+
+        # but a force update on extent should allow retrieveing the data
+        # provider extent
+        vl2.updateExtents()
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), customExtent)
+
+        vl2.updateExtents(force=True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertEqual(vl2.extent(), originalExtent)
 
     def testDeterminePkey(self):
@@ -2272,6 +2283,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         _test(vl, [1, 3])
 
     def testValidLayerDiscoverRelationsNone(self):
+        """
+        Test checks that discover relation feature can be used on a layer that has no relation.
+        """
         vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
@@ -2280,10 +2294,42 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
 
     def testInvalidLayerDiscoverRelations(self):
+        """
+        Test that discover relations feature can be used on invalid layer.
+        """
         vl = QgsVectorLayer('{} table="qgis_test"."invalid_layer" sql='.format(self.dbconn), "invalid_layer",
                             "postgres")
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.dataProvider().discoverRelations(vl, []), [])
+
+    def testValidLayerDiscoverRelations(self):
+        """
+        Test implicit relations that can be discovers between tables, based on declared foreign keys.
+        The test also checks that two distinct relations can be discovered when two foreign keys are declared (see #41138).
+        """
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referencing_layer"',
+            'referencing_layer', 'postgres')
+        vls = [
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_1\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_1"',
+                'referenced_layer_1', 'postgres'),
+            QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'pk_ref_2\' checkPrimaryKeyUnicity=\'1\' table="qgis_test"."referenced_layer_2"',
+                'referenced_layer_2', 'postgres'),
+            vl
+        ]
+
+        for lyr in vls:
+            self.assertTrue(lyr.isValid())
+            QgsProject.instance().addMapLayer(lyr)
+        relations = vl.dataProvider().discoverRelations(vl, vls)
+        self.assertEqual(len(relations), 2)
+        for i, r in enumerate(relations):
+            self.assertEqual(r.referencedLayer(), vls[i])
 
     def testCheckTidPkOnViews(self):
         """Test vector layer based on a view with `ctid` as a key"""
@@ -2348,7 +2394,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature = next(vl.getFeatures())
         self.assertIsNotNone(feature.id())
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):
         """Test whether default values like CURRENT_TIMESTAMP or
         now() they are respected. See GH #33383"""
@@ -2514,6 +2560,52 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             'table': 'my_pg_vector',
             'username': 'my username',
         })
+
+    def testHasSpatialIndex(self):
+        for layer_name in ('hspi_table', 'hspi_materialized_view'):
+            columns = {'geom_without_index': QgsFeatureSource.SpatialIndexNotPresent, 'geom_with_index': QgsFeatureSource.SpatialIndexPresent}
+            for (geometry_column, spatial_index) in columns.items():
+                conn = 'service=\'qgis_test\''
+                if 'QGIS_PGTEST_DB' in os.environ:
+                    conn = os.environ['QGIS_PGTEST_DB']
+                vl = QgsVectorLayer(
+                    conn +
+                    ' sslmode=disable key=\'id\' srid=4326 type=\'Polygon\' table="qgis_test"."{n}" ({c}) sql='.format(n=layer_name, c=geometry_column),
+                    'test', 'postgres')
+                self.assertTrue(vl.isValid())
+                self.assertEqual(vl.hasSpatialIndex(), spatial_index)
+
+    def testBBoxFilterOnGeographyType(self):
+        """Test bounding box filter on geography type"""
+
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."testgeog" (geog) sql=',
+            'test', 'postgres')
+
+        self.assertTrue(vl.isValid())
+
+        def _test(vl, extent, ids):
+            request = QgsFeatureRequest().setFilterRect(extent)
+            values = {feat['pk']: 'x' for feat in vl.getFeatures(request)}
+            expected = {x: 'x' for x in ids}
+            self.assertEqual(values, expected)
+
+        _test(vl, QgsRectangle(40 - 0.01, -0.01, 40 + 0.01, 0.01), [1])
+        _test(vl, QgsRectangle(40 - 5, -5, 40 + 5, 5), [1])
+        _test(vl, QgsRectangle(40 - 5, 0, 40 + 5, 5), [1])
+        _test(vl, QgsRectangle(40 - 10, -10, 40 + 10, 10), [1])  # no use of spatial index currently
+        _test(vl, QgsRectangle(40 - 5, 0.01, 40 + 5, 5), [])  # no match
+
+        _test(vl, QgsRectangle(40 - 0.01, 60 - 0.01, 40 + 0.01, 60 + 0.01), [2])
+        _test(vl, QgsRectangle(40 - 5, 60 - 5, 40 + 5, 60 + 5), [2])
+        _test(vl, QgsRectangle(40 - 5, 60 - 0.01, 40 + 5, 60 + 9.99), [2])
+
+        _test(vl, QgsRectangle(40 - 0.01, -60 - 0.01, 40 + 0.01, -60 + 0.01), [3])
+        _test(vl, QgsRectangle(40 - 5, -60 - 5, 40 + 5, -60 + 5), [3])
+        _test(vl, QgsRectangle(40 - 5, -60 - 9.99, 40 + 5, -60 + 0.01), [3])
+
+        _test(vl, QgsRectangle(-181, -90, 181, 90), [1, 2, 3])  # no use of spatial index currently
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
@@ -3050,6 +3142,38 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         l = _get_layer('SELECT 1 as id, 2 as id')
         self.assertEqual(l.fields().count(), 3)
         self.assertEqual([f.name() for f in l.fields()], ['__rid__', 'id', 'id (2)'])
+
+    def testInsertOnlyFieldIsEditable(self):
+        """Test issue #40922 when an INSERT only use cannot insert a new feature"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.insert_only_points')
+        conn.executeSql('DROP USER IF EXISTS insert_only_user')
+        conn.executeSql('CREATE USER insert_only_user WITH PASSWORD \'insert_only_user\'')
+        conn.executeSql('CREATE TABLE insert_only_points (id SERIAL PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("SELECT AddGeometryColumn('public', 'insert_only_points', 'geom', 4326, 'POINT', 2 )")
+        conn.executeSql('GRANT SELECT ON "public"."insert_only_points" TO insert_only_user')
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\'srid=4326 type=POINT table="public"."insert_only_points" (geom) sql=')
+        uri.setUsername('insert_only_user')
+        uri.setPassword('insert_only_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.startEditing())
+
+        feature = QgsFeature(vl.fields())
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+
+        conn.executeSql('GRANT INSERT ON "public"."insert_only_points" TO insert_only_user')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+
+        feature = QgsFeature(vl.fields())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
+        self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
 
 
 if __name__ == '__main__':

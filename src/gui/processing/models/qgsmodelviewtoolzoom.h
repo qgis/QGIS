@@ -26,7 +26,7 @@
 
 /**
  * \ingroup gui
- * Model view tool for zooming into and out of the model.
+ * \brief Model view tool for zooming into and out of the model.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsModelViewToolZoom : public QgsModelViewTool

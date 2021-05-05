@@ -16,6 +16,8 @@ SCRIPTS="
   tests/testdata/provider/testdata_pg_json.sql
   tests/testdata/provider/testdata_pg_pointcloud.sql
   tests/testdata/provider/testdata_pg_bigint_pk.sql
+  tests/testdata/provider/testdata_pg_hasspatialindex.sql
+  tests/testdata/provider/testdata_pg_geography.sql
 "
 
 SCRIPTS12="

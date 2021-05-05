@@ -12,7 +12,7 @@
 
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renderer for multiband images with the color components
 %End
 
@@ -124,7 +124,7 @@ Ownership of the enhancement is transferred.
     virtual QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
   private:

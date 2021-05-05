@@ -14,7 +14,7 @@
 
 class QgsServerApi
 {
-%Docstring
+%Docstring(signature="appended")
 Server generic API endpoint abstract base class.
 
 .. seealso:: :py:class:`QgsServerOgcApi`

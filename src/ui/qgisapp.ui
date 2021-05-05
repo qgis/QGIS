@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -91,7 +91,7 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuMeasure">
+    <widget class="QMenu" name="mMenuMeasure">
      <property name="title">
       <string>Measure</string>
      </property>
@@ -99,7 +99,7 @@
      <addaction name="mActionMeasureArea"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
-    <widget class="QMenu" name="menuDecorations">
+    <widget class="QMenu" name="mMenuDecorations">
      <property name="title">
       <string>&amp;Decorations</string>
      </property>
@@ -122,6 +122,18 @@
      <addaction name="mActionPreviewDeuteranope"/>
      <addaction name="mActionPreviewTritanope"/>
     </widget>
+    <widget class="QMenu" name="mMenuLayerVisibility">
+     <property name="title">
+      <string>Layer Visibility</string>
+     </property>
+     <addaction name="mActionShowAllLayers"/>
+     <addaction name="mActionHideAllLayers"/>
+     <addaction name="mActionShowSelectedLayers"/>
+     <addaction name="mActionHideSelectedLayers"/>
+     <addaction name="mActionToggleSelectedLayers"/>
+     <addaction name="mActionToggleSelectedLayersIndependently"/>
+     <addaction name="mActionHideDeselectedLayers"/>
+    </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
     <addaction name="mActionPan"/>
@@ -130,17 +142,17 @@
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
     <addaction name="mActionIdentify"/>
-    <addaction name="menuMeasure"/>
+    <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
-    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomToLayers"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="mActionZoomLast"/>
     <addaction name="mActionZoomNext"/>
     <addaction name="separator"/>
-    <addaction name="menuDecorations"/>
+    <addaction name="mMenuDecorations"/>
     <addaction name="mMenuPreviewMode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
@@ -148,14 +160,7 @@
     <addaction name="mActionShowBookmarkManager"/>
     <addaction name="mActionDraw"/>
     <addaction name="separator"/>
-    <addaction name="mActionShowAllLayers"/>
-    <addaction name="mActionHideAllLayers"/>
-    <addaction name="mActionShowSelectedLayers"/>
-    <addaction name="mActionHideSelectedLayers"/>
-    <addaction name="mActionToggleSelectedLayers"/>
-    <addaction name="mActionToggleSelectedLayersIndependently"/>
-    <addaction name="mActionHideDeselectedLayers"/>
-    <addaction name="separator"/>
+    <addaction name="mMenuLayerVisibility"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -185,10 +190,10 @@
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddXyzLayer"/>
-     <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
@@ -209,6 +214,8 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
+    <addaction name="mActionOpenTableSelected"/>
+    <addaction name="mActionOpenTableVisible"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -288,7 +295,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <widget class="QMenu" name="menuSelect">
+    <widget class="QMenu" name="mMenuSelect">
      <property name="title">
       <string>Select</string>
      </property>
@@ -356,6 +363,36 @@
      <addaction name="mActionHtmlAnnotation"/>
      <addaction name="mActionSvgAnnotation"/>
     </widget>
+    <widget class="QMenu" name="mMenuEditAttributes">
+     <property name="title">
+      <string>Edit Attributes</string>
+     </property>
+     <addaction name="mActionMultiEditAttributes"/>
+     <addaction name="mActionMergeFeatureAttributes"/>
+    </widget>
+    <widget class="QMenu" name="mMenuEditGeometry">
+     <property name="title">
+      <string>Edit Geometry</string>
+     </property>
+     <addaction name="mActionMoveFeature"/>
+     <addaction name="mActionMoveFeatureCopy"/>
+     <addaction name="mActionRotateFeature"/>
+     <addaction name="mActionScaleFeature"/>
+     <addaction name="mActionSimplifyFeature"/>
+     <addaction name="mActionAddRing"/>
+     <addaction name="mActionAddPart"/>
+     <addaction name="mActionFillRing"/>
+     <addaction name="mActionDeleteRing"/>
+     <addaction name="mActionDeletePart"/>
+     <addaction name="mActionReshapeFeatures"/>
+     <addaction name="mActionOffsetCurve"/>
+     <addaction name="mActionSplitFeatures"/>
+     <addaction name="mActionSplitParts"/>
+     <addaction name="mActionMergeFeatures"/>
+     <addaction name="mActionVertexTool"/>
+     <addaction name="mActionReverseLine"/>
+     <addaction name="mActionTrimExtendFeature"/>
+    </widget>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
@@ -363,7 +400,8 @@
     <addaction name="mActionCopyFeatures"/>
     <addaction name="mActionPasteFeatures"/>
     <addaction name="mMenuPasteAs"/>
-    <addaction name="menuSelect"/>
+    <addaction name="mActionDeleteSelected"/>
+    <addaction name="mMenuSelect"/>
     <addaction name="separator"/>
     <addaction name="mActionAddFeature"/>
     <addaction name="mActionCircularStringCurvePoint"/>
@@ -373,29 +411,11 @@
     <addaction name="mMenuRegularPolygon"/>
     <addaction name="mMenuEllipse"/>
     <addaction name="mMenuAnnotation"/>
-    <addaction name="mActionMoveFeature"/>
-    <addaction name="mActionMoveFeatureCopy"/>
-    <addaction name="mActionDeleteSelected"/>
-    <addaction name="mActionMultiEditAttributes"/>
     <addaction name="separator"/>
-    <addaction name="mActionRotateFeature"/>
-    <addaction name="mActionSimplifyFeature"/>
-    <addaction name="mActionAddRing"/>
-    <addaction name="mActionAddPart"/>
-    <addaction name="mActionFillRing"/>
-    <addaction name="mActionDeleteRing"/>
-    <addaction name="mActionDeletePart"/>
-    <addaction name="mActionReshapeFeatures"/>
-    <addaction name="mActionOffsetCurve"/>
-    <addaction name="mActionSplitFeatures"/>
-    <addaction name="mActionSplitParts"/>
-    <addaction name="mActionMergeFeatures"/>
-    <addaction name="mActionMergeFeatureAttributes"/>
-    <addaction name="mActionVertexTool"/>
+    <addaction name="mMenuEditAttributes"/>
+    <addaction name="mMenuEditGeometry"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
-    <addaction name="mActionReverseLine"/>
-    <addaction name="mActionTrimExtendFeature"/>
    </widget>
    <widget class="QMenu" name="mMeshMenu">
     <property name="title">
@@ -501,8 +521,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
+   <addaction name="mActionScaleFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
@@ -537,7 +557,7 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomFullExtent"/>
    <addaction name="mActionZoomToSelected"/>
-   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomToLayers"/>
    <addaction name="mActionZoomActualSize"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
@@ -562,7 +582,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
@@ -1079,7 +1098,14 @@
     <string>&amp;Vertex Tool (All Layers)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (All Layers)</string>
+    <string>Vertex Tool — All Layers
+Manipulate vertices on any editable layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
@@ -1354,6 +1380,15 @@
     <string>Zoom to &amp;Layer</string>
    </property>
   </action>
+  <action name="mActionZoomToLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Layer(s)</string>
+   </property>
+  </action>
   <action name="mActionZoomToSelected">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1615,6 +1650,18 @@
     <string>Ctrl+Shift+O</string>
    </property>
   </action>
+  <action name="mActionAddHanaLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddHanaLayer.svg</normaloff>:/images/themes/default/mActionAddHanaLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add SAP HANA Spatial Layer…</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
   <action name="mActionAddWmsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1639,6 +1686,30 @@
     <string>F6</string>
    </property>
   </action>
+  <action name="mActionOpenTableSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Selected items)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableVisible">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Visible items)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F6</string>
+   </property>
+  </action>
   <action name="mActionToggleEditing">
    <property name="checkable">
     <bool>true</bool>
@@ -1648,7 +1719,7 @@
      <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
    </property>
    <property name="text">
-    <string>Toggle Editing</string>
+    <string>Toggle &amp;Editing</string>
    </property>
    <property name="statusTip">
     <string>Toggles the editing state of the current layer</string>
@@ -1933,10 +2004,10 @@
      <normaloff>:/images/themes/default/mActionMoveLabel.svg</normaloff>:/images/themes/default/mActionMoveLabel.svg</iconset>
    </property>
    <property name="text">
-    <string>Move Label and Diagram</string>
+    <string>Move Label, Diagram or Callout</string>
    </property>
    <property name="toolTip">
-    <string>Moves a Label or Diagram
+    <string>Move a Label, Diagram or Callout
 Acts on all layers.</string>
    </property>
   </action>
@@ -1952,7 +2023,7 @@ Acts on all layers.</string>
     <string>Rotate Label</string>
    </property>
    <property name="toolTip">
-    <string>Rotates a Label
+    <string>Rotate a Label
 Holding Ctrl (Cmd) while rotating increments by 15 deg.
 Acts on all layers.</string>
    </property>
@@ -2240,7 +2311,7 @@ Acts on all layers.</string>
    <property name="toolTip">
     <string>Pin/Unpin Labels and Diagrams
 Click or marquee on label/diagram to pin.
-Shift clicking or marqueeing unpins labels, while Ctrl (Cmd) toggles label state.
+Shift clicking or marqueeing unpins labels and diagrams, while Ctrl (Cmd) toggles their state.
 Acts on all layers.</string>
    </property>
   </action>
@@ -2253,11 +2324,11 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels and Diagrams</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels and Diagrams
-Shows highlight rectangles around labels which are fixed in place, e.g. due to manual placement.</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts
+Shows highlight rectangles around labels, diagrams and callout points which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2455,6 +2526,22 @@ Acts on the currently active layer only.</string>
     <string>Save Layer Edits</string>
    </property>
   </action>
+  <action name="mActionScaleFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleFeature.svg</normaloff>:/images/themes/default/mActionScaleFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Scale Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Scale Feature(s)
+Ctrl+click to set the base point.</string>
+   </property>
+  </action>
   <action name="mActionRotateFeature">
    <property name="checkable">
     <bool>true</bool>
@@ -2467,7 +2554,9 @@ Acts on the currently active layer only.</string>
     <string>Rotate Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Feature(s)</string>
+    <string>Rotate Feature(s)
+Ctrl+click to set the center of rotation.
+Shift+click to snap rotation to 45 degree steps.</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
@@ -2837,28 +2926,16 @@ Acts on the currently active layer only.</string>
     <string>Modify the Attributes of all Selected Features Simultaneously</string>
    </property>
   </action>
-  <action name="mActionAddAmsLayer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Arc&amp;GIS Map Service Layer…</string>
-   </property>
-   <property name="toolTip">
-    <string>Add ArcGIS Map Service Layer</string>
-   </property>
-  </action>
   <action name="mActionAddAfsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Ar&amp;cGIS Feature Service Layer…</string>
+    <string>Add Ar&amp;cGIS REST Server Layer…</string>
    </property>
    <property name="toolTip">
-    <string>Add ArcGIS Feature Service Layer</string>
+    <string>Add ArcGIS REST Server Layer</string>
    </property>
   </action>
   <action name="mActionSelectByForm">
@@ -3246,7 +3323,14 @@ Acts on the currently active layer only.</string>
     <string>&amp;Vertex Tool (Current Layer)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (Current Layer)</string>
+    <string>Vertex Tool — Current Layer
+Manipulate vertices on the active layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsProjected">
@@ -3306,7 +3390,7 @@ Acts on the currently active layer only.</string>
     <string>Show Unplaced Labels</string>
    </property>
    <property name="toolTip">
-    <string>Toggles Display of Unplaced Labels
+    <string>Toggle Display of Unplaced Labels
 Shows placeholders for labels which could not be placed, e.g. due to overlaps with other map labels.</string>
    </property>
   </action>
@@ -3400,7 +3484,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Digitize with curve</string>
+    <string>Digitize with Curve</string>
    </property>
    <property name="toolTip">
     <string>Digitize with curve</string>
@@ -3416,6 +3500,24 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Add Point Cloud Layer...</string>
+   </property>
+  </action>
+  <action name="mActionStreamDigitize">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionStreamingDigitize.svg</normaloff>:/images/themes/default/mActionStreamingDigitize.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stream Digitizing</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles stream digitizing mode</string>
    </property>
   </action>
  </widget>

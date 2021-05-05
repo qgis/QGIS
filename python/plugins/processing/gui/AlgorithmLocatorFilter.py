@@ -87,7 +87,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
 
             string = string.lower()
             tagScore = 0
-            tags = [*a.tags(), a.provider().name(), a.group()]
+            tags = [*a.tags(), a.provider().name()]
+            if a.group():
+                tags.append(a.group())
 
             for t in tags:
                 if string in t.lower():
@@ -176,7 +178,9 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
 
             string = string.lower()
             tagScore = 0
-            tags = [*a.tags(), a.provider().name(), a.group()]
+            tags = [*a.tags(), a.provider().name()]
+            if a.group():
+                tags.append(a.group())
 
             for t in tags:
                 if string in t.lower():
@@ -189,7 +193,8 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):
-        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)
+        config = {'IN_PLACE': True}
+        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData, config)
         if alg:
             ok, message = alg.canExecute()
             if not ok:
@@ -199,8 +204,12 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.exec_()
                 return
 
+            in_place_input_parameter_name = 'INPUT'
+            if hasattr(alg, 'inputParameterName'):
+                in_place_input_parameter_name = alg.inputParameterName()
+
             if [d for d in alg.parameterDefinitions() if
-                    d.name() not in ('INPUT', 'OUTPUT')]:
+                    d.name() not in (in_place_input_parameter_name, 'OUTPUT')]:
                 dlg = alg.createCustomParametersWidget(parent=iface.mainWindow())
                 if not dlg:
                     dlg = AlgorithmDialog(alg, True, parent=iface.mainWindow())
@@ -218,3 +227,4 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 feedback = MessageBarProgress(algname=alg.displayName())
                 parameters = {}
                 execute_in_place(alg, parameters, feedback=feedback)
+                feedback.close()

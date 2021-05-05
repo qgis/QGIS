@@ -137,7 +137,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) override;
     void removeDockWidget( QDockWidget *dockwidget ) override;
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
-    void showLayerProperties( QgsMapLayer *l ) override;
+    void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) override;
     QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) override;
     void addWindow( QAction *action ) override;
     void removeWindow( QAction *action ) override;
@@ -232,6 +232,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionMeasureArea() override;
     QAction *actionZoomFullExtent() override;
     QAction *actionZoomToLayer() override;
+    QAction *actionZoomToLayers() override;
     QAction *actionZoomToSelected() override;
     QAction *actionZoomLast() override;
     QAction *actionZoomNext() override;

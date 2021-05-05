@@ -10,10 +10,11 @@
 
 class QgsRendererWidget : QgsPanelWidget
 {
-%Docstring
-Base class for renderer settings widgets
+%Docstring(signature="appended")
+Base class for renderer settings widgets.
 
 WORKFLOW:
+
 - open renderer dialog with some RENDERER  (never null!)
 - find out which widget to use
 - instantiate it and set in stacked widget
@@ -160,8 +161,8 @@ This can be overwritten in subclasses.
 
 class QgsDataDefinedValueDialog : QDialog
 {
-%Docstring
-Utility classes for "en masse" size definition
+%Docstring(signature="appended")
+Utility classes for "en masse" size definition.
 %End
 
 %TypeHeaderCode

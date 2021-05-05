@@ -69,7 +69,7 @@ void QgsFlattenRelationshipsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), QgsProcessing::TypeVectorAnyGeometry ) );
 }
 
 QgsFlattenRelationshipsAlgorithm *QgsFlattenRelationshipsAlgorithm::createInstance() const
@@ -99,7 +99,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
   if ( !referencingLayer )
     throw QgsProcessingException( QObject::tr( "Could not resolved referenced layer." ) );
 
-  mReferencingSource = qgis::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
+  mReferencingSource = std::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
   mReferencingFields = referencingLayer->fields();
 
   return true;

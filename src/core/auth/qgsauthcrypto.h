@@ -26,7 +26,7 @@
 
 /**
  * \ingroup core
- * Functions for hashing/checking master password and encrypt/decrypting data with password
+ * \brief Functions for hashing/checking master password and encrypt/decrypting data with password
  * \note not available in Python bindings
  * \since 2.8
  */

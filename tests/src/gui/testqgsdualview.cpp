@@ -47,6 +47,7 @@ class TestQgsDualView : public QObject
     void testColumnHeaders();
 
     void testData();
+    void testAttributeTableConfig();
     void testFilterSelected();
 
     void testSelectAll();
@@ -130,6 +131,11 @@ void TestQgsDualView::testData()
     QModelIndex index = mDualView->tableView()->model()->index( 0, i );
     QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( i ) ) );
   }
+}
+
+void TestQgsDualView::testAttributeTableConfig()
+{
+  QCOMPARE( mDualView->attributeTableConfig().columns().count(), mPointsLayer->attributeTableConfig().columns().count() );
 }
 
 void TestQgsDualView::testFilterSelected()

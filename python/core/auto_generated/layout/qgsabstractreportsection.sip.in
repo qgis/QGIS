@@ -12,7 +12,7 @@
 
 class QgsReportSectionContext
 {
-%Docstring
+%Docstring(signature="appended")
 Current context for a report section.
 
 .. warning::
@@ -37,8 +37,8 @@ Current context for a report section.
 
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
 {
-%Docstring
-An abstract base class for QgsReport subsections.
+%Docstring(signature="appended")
+An abstract base class for :py:class:`QgsReport` subsections.
 
 .. warning::
 

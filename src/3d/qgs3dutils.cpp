@@ -38,11 +38,15 @@
 #include "qgspolygon3dsymbol.h"
 
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QRenderSettings>
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
 {
   QImage resImage;
   QEventLoop evLoop;
+
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   auto requestImageFcn = [&engine, scene]
   {
@@ -77,6 +81,7 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   if ( conn2 )
     QObject::disconnect( conn2 );
 
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
   return resImage;
 }
 
@@ -94,6 +99,8 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
   engine.setSize( outputSize );
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   if ( animationSettings.keyFrames().size() < 2 )
   {
@@ -153,10 +160,6 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( outputDirectory ).filePath( fileName );
 
-    // It would initially return empty rendered image.
-    // Capturing the initial image and throwing it away fixes that.
-    // Hopefully we will find a better fix in the future.
-    Qgs3DUtils::captureSceneImage( engine, scene );
     QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
     img.save( path );
@@ -565,4 +568,30 @@ QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras:
   settings.setSpecular( material->specular() );
   settings.setShininess( material->shininess() );
   return settings;
+}
+
+QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windowSize, Qt3DRender::QCamera *camera )
+{
+  QVector3D deviceCoords( point.x(), point.y(), 0.0 );
+  // normalized device coordinates
+  QVector3D normDeviceCoords( 2.0 * deviceCoords.x() / windowSize.width() - 1.0f, 1.0f - 2.0 * deviceCoords.y() / windowSize.height(), camera->nearPlane() );
+  // clip coordinates
+  QVector4D rayClip( normDeviceCoords.x(), normDeviceCoords.y(), -1.0, 0.0 );
+
+  QMatrix4x4 invertedProjMatrix = camera->projectionMatrix().inverted();
+  QMatrix4x4 invertedViewMatrix = camera->viewMatrix().inverted();
+
+  // ray direction in view coordinates
+  QVector4D rayDirView = invertedProjMatrix * rayClip;
+  // ray origin in world coordinates
+  QVector4D rayOriginWorld = invertedViewMatrix * QVector4D( 0.0f, 0.0f, 0.0f, 1.0f );
+
+  // ray direction in world coordinates
+  rayDirView.setZ( -1.0f );
+  rayDirView.setW( 0.0f );
+  QVector4D rayDirWorld4D = invertedViewMatrix * rayDirView;
+  QVector3D rayDirWorld( rayDirWorld4D.x(), rayDirWorld4D.y(), rayDirWorld4D.z() );
+  rayDirWorld = rayDirWorld.normalized();
+
+  return QgsRay3D( QVector3D( rayOriginWorld ), rayDirWorld );
 }

@@ -88,6 +88,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsSimpleLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
+        else if ( sipCpp->layerType() == "InterpolatedLine" )
+          sipType = sipType_QgsInterpolatedLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -188,7 +190,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
-      PropertyDashPatternOffset, //!< Dash pattern offset
+      PropertyDashPatternOffset, //!< Dash pattern offset,
+      PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
+      PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
     };
 
     /**
@@ -333,7 +337,8 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    //! Saves the symbol layer as SLD
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
     { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
@@ -343,7 +348,7 @@ class CORE_EXPORT QgsSymbolLayer
      * contains the configuration information for the symbol layer. This
      * is used to serialize a symbol layer perstistently.
      */
-    virtual QgsStringMap properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
@@ -359,6 +364,16 @@ class CORE_EXPORT QgsSymbolLayer
 
     //! Returns if the layer can be used below the specified symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+    /**
+     * Returns TRUE if the symbol layer rendering can cause visible artifacts across a single feature
+     * when the feature is rendered as a series of adjacent map tiles each containing a portion of the feature's geometry.
+     *
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
@@ -551,7 +566,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Restores older data defined properties from string map.
      * \since QGIS 3.0
      */
-    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
+    void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 
     /**
      * Copies all data defined properties of this layer to another symbol layer.
@@ -801,7 +816,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
@@ -809,7 +824,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param element parent XML element
      * \param props symbol layer definition (see properties())
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
     { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;

@@ -12,9 +12,11 @@
 
 class QgsMapLayerRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for utility classes that encapsulate information necessary
-for rendering of map layers. The rendering is typically done in a background
+for rendering of map layers.
+
+The rendering is typically done in a background
 thread, so it is necessary to keep all structures required for rendering away
 from the original map layer because it may change any time.
 
@@ -28,7 +30,7 @@ The scenario will be:
 # renderer job (doing preparation in the GUI thread) calls
   :py:func:`QgsMapLayer.createMapRenderer()` and gets instance of this class.
   The instance is initialized at that point and should not need
-  additional calls to QgsVectorLayer.
+  additional calls to :py:class:`QgsVectorLayer`.
 # renderer job (still in GUI thread) stores the renderer for later use.
 # renderer job (in worker thread) calls :py:func:`QgsMapLayerRenderer.render()`
 # renderer job (again in GUI thread) will check :py:func:`~errors` and report them
@@ -50,7 +52,10 @@ Constructor for QgsMapLayerRenderer, with the associated ``layerID`` and render 
 
     virtual bool render() = 0;
 %Docstring
-Do the rendering (based on data stored in the class)
+Do the rendering (based on data stored in the class).
+
+Returns ``True`` if the layer was completely rendered successfully (i.e. the render
+was not canceled early).
 %End
 
     virtual bool forceRasterRender() const;
@@ -96,7 +101,19 @@ Returns the render context associated with the renderer.
 %End
 
 
+    bool isReadyToCompose() const;
+%Docstring
+Returns whether the renderer has already drawn (at
+least partially) some data
+
+.. versionadded:: 3.18
+%End
+
+
   protected:
+
+
+
 
 };
 

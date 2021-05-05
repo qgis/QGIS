@@ -46,6 +46,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationmanager.h"
+#include "qgsattributeeditorrelation.h"
+
 
 class QgsAttributesDnDTree;
 class QgsAttributeFormContainerEdit;
@@ -62,12 +64,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     {
       DnDTreeRole = Qt::UserRole,
       FieldConfigRole,
-      FieldNameRole
+      FieldNameRole,
     };
 
     struct RelationEditorConfiguration
     {
+      operator QVariant();
+
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
+      QString mRelationWidgetType;
+      QVariantMap mRelationWidgetConfig;
       QVariant nmRelationId;
       bool forceSuppressFormPopup = false;
       QString label;
@@ -164,9 +170,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       FieldConfig() = default;
       FieldConfig( QgsVectorLayer *layer, int idx );
 
-      bool mEditable =  true ;
-      bool mEditableEnabled =  true ;
-      bool mLabelOnTop =  false ;
+      bool mEditable = true;
+      bool mEditableEnabled = true;
+      bool mLabelOnTop = false;
+      bool mReuseLastValues = false;
       QgsFieldConstraints mFieldConstraints;
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;
@@ -310,6 +317,7 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
 };
 
 
+Q_DECLARE_METATYPE( QgsAttributesFormProperties::RelationEditorConfiguration )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 

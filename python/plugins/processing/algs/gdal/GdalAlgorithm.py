@@ -63,9 +63,6 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self, parent=parent)
 
-    def flags(self):
-        return QgsProcessingAlgorithm.FlagSupportsBatch  # cannot cancel!
-
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
@@ -148,9 +145,10 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         return results
 
     def commandName(self):
-        parameters = {}
-        for param in self.parameterDefinitions():
-            parameters[param.name()] = "1"
+        parameters = {
+            param.name(): "1"
+            for param in self.parameterDefinitions()
+        }
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         name = self.getConsoleCommands(parameters, context, feedback, executing=False)[0]

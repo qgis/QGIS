@@ -6,16 +6,8 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
-  ${CMAKE_BINARY_DIR}/src/core
-)
-
-
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
 )
 
 if(APPLE)
@@ -61,6 +53,7 @@ macro (ADD_QGIS_TEST testname testsrc)
   set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   set(qgis_${testname}_MOC_CPPS ${testsrc})
   add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   target_link_libraries(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}

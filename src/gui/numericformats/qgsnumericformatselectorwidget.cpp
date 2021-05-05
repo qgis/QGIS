@@ -33,7 +33,7 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
 
   mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
 
-  mPreviewFormat = qgis::make_unique< QgsBasicNumericFormat >();
+  mPreviewFormat = std::make_unique< QgsBasicNumericFormat >();
   mPreviewFormat->setShowThousandsSeparator( false );
   mPreviewFormat->setShowPlusSign( false );
   mPreviewFormat->setShowTrailingZeros( false );
@@ -122,7 +122,7 @@ void QgsNumericFormatSelectorWidget::populateTypes()
     return false;
   } );
 
-  for ( const QString &id : qgis::as_const( ids ) )
+  for ( const QString &id : std::as_const( ids ) )
     mCategoryCombo->addItem( QgsApplication::numericFormatRegistry()->visibleName( id ), id );
 }
 

@@ -22,12 +22,16 @@
 #include "qgscolorrampshader.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgsunittypes.h"
+#include "qgssymbollayer.h"
+
+class QgsLayerTreeLayer;
 
 /**
  * \ingroup core
  *
- * Class defining color to render mesh datasets. The color can vary depending on the dataset value.
+ * \brief Class defining color to render mesh datasets. The color can vary depending on the dataset value.
  *
  * \since QGIS 3.14
  */
@@ -47,7 +51,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
     };
 
     //! Default constructor
-    QgsInterpolatedLineColor() = default;
+    QgsInterpolatedLineColor();
     //! Constructor  with variable color depending on magnitude
     QgsInterpolatedLineColor( const QgsColorRampShader &colorRampShader );
     //! Constructor  with fixed color
@@ -62,11 +66,23 @@ class CORE_EXPORT QgsInterpolatedLineColor
     //! Returns the color corresponding to the magnitude
     QColor color( double magnitude ) const;
 
+    /**
+     *  Sets the coloring method used
+     *  \since QGIS 3.20
+     */
+    void setColoringMethod( const QgsInterpolatedLineColor::ColoringMethod &coloringMethod );
+
     //! Returns the coloring method used
     QgsInterpolatedLineColor::ColoringMethod coloringMethod() const;
 
     //! Returns the color ramp shader
     QgsColorRampShader colorRampShader() const;
+
+    /**
+     *  Returns the single color that is used if SingleColor coloring mode is set
+     *  \since QGIS 3.20
+     */
+    QColor singleColor() const;
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -104,7 +120,7 @@ class CORE_EXPORT QgsInterpolatedLineColor
  * \ingroup core
  *
  * \class QgsInterpolatedLineWidth
- * Represents a width than can vary depending on values
+ * \brief Represents a width than can vary depending on values
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineWidth
@@ -178,34 +194,170 @@ class CORE_EXPORT QgsInterpolatedLineWidth
 /**
  * \ingroup core
  * \class QgsInterpolatedLineRenderer
- * Represents a line with width and color varying depending on values.
+ * \brief Represents a simple line renderer with width and color varying depending on values.
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsInterpolatedLineRenderer
 {
   public:
-    //! Sets the stroke width used to plot
+
+    //! Sets the stroke width used to render
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
+
+    /**
+    *  Returns the stroke width used to render
+    *  \since QGIS 3.20
+    */
+    QgsInterpolatedLineWidth interpolatedLineWidth() const;
 
     //! Sets the unit of the stroke width
     void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
 
-    //! Sets the stroke color used to plot
+    /**
+    *   Returns the unit of the stroke width
+    *  \since QGIS 3.20
+    */
+    QgsUnitTypes::RenderUnit widthUnit() const;
+
+    //! Sets the stroke color used to render
     void setInterpolatedColor( const QgsInterpolatedLineColor &strokeColoring );
 
     /**
-     * Render a line in the \a context between \a point1 and \a point2
+    *  Returns the stroke color used to render
+    *  \since QGIS 3.20
+    */
+    QgsInterpolatedLineColor interpolatedColor() const;
+
+    /**
+     * Renders a line in the \a context between \a point1 and \a point2
      * with color and width that vary depending on \a value1 and \a value2
      */
-    void render( double value1, double value2, QgsPointXY point1, QgsPointXY point2, QgsRenderContext &context ) const;
+    void render( double value1, double value2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+
+    /**
+     * Renders a line in the \a context between \a point1 and \a point2
+     * with color that varies depending on \a valueColor1 and \a valueColor2 and and width that varies between \a valueWidth1 and \a valueWidth2
+     *
+     * \since QGIS 3.20
+     */
+    void render( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QgsPointXY &point1, const QgsPointXY &point2, QgsRenderContext &context ) const;
+
+    /**
+     * Sets if the rendering must be done as the element is selected
+     *
+     * \since QGIS 3.20
+     */
+    void setSelected( bool selected );
 
   private:
+
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
     QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
-
-    QPolygonF varyingWidthLine( double value1, double value2, QPointF point1, QPointF point2, QgsRenderContext &context ) const;
     void adjustLine( const double &value, const double &value1, const double &value2, double &width, double &adjusting ) const;
+    bool mSelected = false;
+
+    /**
+     * Renders a line in the \a context between \a point1 and \a point2 in device coordinates
+     * with color and width that vary depending on \a value1 and \a value2
+     */
+    void renderInDeviceCoordinate( double valueColor1, double valueColor2, double valueWidth1, double valueWidth2, const QPointF &p1, const QPointF &p2, QgsRenderContext &context ) const;
+
+    friend class QgsInterpolatedLineSymbolLayer;
 };
+
+/**
+ * \ingroup core
+ * \class QgsInterpolatedLineSymbolLayer
+ * \brief A symbol layer that represents vector layer line feature as interpolated line
+ * The interpolation is done between two values defined at the extremities
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
+{
+  public:
+
+    //! Constructor
+    QgsInterpolatedLineSymbolLayer();
+
+    //! Creates the symbol layer
+    static QgsSymbolLayer *create( const QVariantMap &properties ) SIP_FACTORY;
+
+    QString layerType() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    QgsInterpolatedLineSymbolLayer *clone() const override SIP_FACTORY;
+    QVariantMap properties() const override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool canCauseArtifactsBetweenAdjacentTiles() const override;
+
+    //! Sets the expressions (as string) that define the extremety values af the line feature for width
+    void setExpressionsStringForWidth( QString start, QString end );
+
+    //! Returns the epression related to the start extremity value for width
+    QString startValueExpressionForWidth() const;
+
+    //! Returns the expression related to the end extremity value for width
+    QString endValueExpressionForWidth() const;
+
+    //! Sets the width unit
+    void setWidthUnit( const QgsUnitTypes::RenderUnit &strokeWidthUnit );
+
+    //! Returns the width unit
+    QgsUnitTypes::RenderUnit widthUnit() const;
+
+    //! Sets the interpolated width used to render the width of lines, \a see QgsInterpolatedLineWidth
+    void setInterpolatedWidth( const QgsInterpolatedLineWidth &interpolatedLineWidth );
+
+    //! Returns the interpolated width used to render the width of lines, see \a QgsInterpolatedLineWidth
+    QgsInterpolatedLineWidth interpolatedWidth() const;
+
+    //! Sets the expressions (as string) that define the extremety values af the line feature for color
+    void setExpressionsStringForColor( QString start, QString end );
+
+    //! Returns the epression related to the start extremity value for width for color
+    QString startValueExpressionForColor() const;
+
+    //! Returns the expression related to the end extremity value for width for color
+    QString endValueExpressionForColor() const;
+
+    //! Sets the interpolated color used to render the colors of lines, \a see QgsInterpolatedLineColor
+    void setInterpolatedColor( const QgsInterpolatedLineColor &interpolatedLineColor );
+
+    //! Returns the interpolated color used to render the colors of lines, see \a QgsInterpolatedLineColor
+    QgsInterpolatedLineColor interpolatedColor() const;
+
+  private:
+#ifdef SIP_RUN
+    QgsInterpolatedLineSymbolLayer( const QgsInterpolatedLineSymbolLayer &copy );
+#endif
+
+    QgsInterpolatedLineRenderer mLineRender;
+    QString mStartWidthExpressionString;
+    QString mEndWidthExpressionString;
+    QString mStartColorExpressionString;
+    QString mEndColorExpressionString;
+
+    int mStartWidthAttributeIndex = -1;
+    int mEndWidthAttributeIndex = -1;
+    int mStartColorAttributeIndex = -1;
+    int mEndColorAttributeIndex = -1;
+
+    std::unique_ptr<QgsExpression> mStartWidthExpression;
+    std::unique_ptr<QgsExpression> mEndWithExpression;
+    std::unique_ptr<QgsExpression> mStartColorExpression;
+    std::unique_ptr<QgsExpression> mEndColorExpression;
+    QgsFeature mFeature;
+
+    QVariant colorRampShaderProperties() const;
+    static QgsColorRampShader createColorRampShaderFromProperties( const QVariant &properties );
+};
+
 
 #endif // QGSINTERPOLATEDLINERENDERER_H

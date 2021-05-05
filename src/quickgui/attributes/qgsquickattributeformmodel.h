@@ -51,8 +51,12 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
     //! Returns TRUE if all hard constraints defined on fields are satisfied with the current attribute values
     Q_PROPERTY( bool constraintsHardValid READ constraintsHardValid NOTIFY constraintsHardValidChanged )
+
     //! Returns TRUE if all soft constraints defined on fields are satisfied with the current attribute values
     Q_PROPERTY( bool constraintsSoftValid READ constraintsSoftValid NOTIFY constraintsSoftValidChanged )
+
+    //! Returns TRUE if remembering values is allowed
+    Q_PROPERTY( bool rememberValuesAllowed READ rememberValuesAllowed WRITE setRememberValuesAllowed )
 
   public:
 
@@ -99,6 +103,9 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     //! \copydoc QgsQuickAttributeFormModel::constraintsSoftValid
     bool constraintsSoftValid() const;
 
+    //! Whether attribute models remembers or not last entered values
+    bool rememberValuesAllowed() const;
+
     //! Updates QgsFeature based on changes
     Q_INVOKABLE void save();
 
@@ -110,6 +117,10 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
 
     //! Resets the model
     Q_INVOKABLE void forceClean();
+
+  public slots:
+    //! Allows or forbids attribute model to reuse last entered values
+    void setRememberValuesAllowed( bool rememberValuesAllowed );
 
   signals:
     //! \copydoc QgsQuickAttributeFormModel::attributeModel

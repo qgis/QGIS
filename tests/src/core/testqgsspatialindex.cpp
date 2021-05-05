@@ -71,7 +71,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      for ( const QgsFeature &f : _pointFeatures() )
       {
         QgsFeature indexFeature( f );
         index.addFeature( indexFeature );
@@ -114,7 +114,7 @@ class TestQgsSpatialIndex : public QObject
     void testCopy()
     {
       QgsSpatialIndex *index = new QgsSpatialIndex;
-      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
+      for ( const QgsFeature &f : _pointFeatures() )
       {
         QgsFeature indexFeature( f );
         index->addFeature( indexFeature );
@@ -237,7 +237,7 @@ class TestQgsSpatialIndex : public QObject
 
     void bulkLoadWithCallback()
     {
-      std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QList< QgsFeatureId >  addedIds;
       for ( int i = 0; i < 10; ++i )
       {
@@ -290,7 +290,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int y = 100; y < 110; ++y )
         {
           QgsFeature f( fid++ );
-          f.setGeometry( qgis::make_unique< QgsLineString >( QgsPoint( x, y ), QgsPoint( x + 0.5, y - 0.5 ) ) );
+          f.setGeometry( std::make_unique< QgsLineString >( QgsPoint( x, y ), QgsPoint( x + 0.5, y - 0.5 ) ) );
           flist << f;
         }
         vl->dataProvider()->addFeatures( flist );

@@ -146,6 +146,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
     QgsSimpleLineSymbolLayer *mLayer = nullptr;
@@ -232,6 +233,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
+    void penCapStyleChanged();
 
   private:
 
@@ -485,6 +487,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
 
@@ -515,7 +518,7 @@ class QgsHashedLineSymbolLayer;
 /**
  * \ingroup gui
  * \class QgsHashedLineSymbolLayerWidget
- * Widget for controlling the properties of a QgsHashedLineSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsHashedLineSymbolLayer.
  * \since QGIS 3.8
  */
 class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
@@ -540,6 +543,7 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private slots:
 
@@ -601,6 +605,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   public slots:
     //! Sets the SVG path
     void setSvgPath( const QString &name );
+    //! Sets the dynamic SVG parameters
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
 
 
   protected:
@@ -800,6 +806,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     void mTextureWidthSpinBox_valueChanged( double d );
     void svgSourceChanged( const QString &text );
     void setFile( const QString &name );
+    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
     void mRotationSpinBox_valueChanged( double d );
     void mChangeColorButton_colorChanged( const QColor &color );
     void mChangeStrokeColorButton_colorChanged( const QColor &color );
@@ -912,7 +919,7 @@ class QgsRandomMarkerFillSymbolLayer;
  * \ingroup gui
  * \class QgsRandomMarkerFillSymbolLayerWidget
  *
- * Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
+ * \brief Widget for controlling the properties of a QgsRandomMarkerFillSymbolLayer.
  *
  * \since QGIS 3.12
  */

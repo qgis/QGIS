@@ -11,7 +11,7 @@
 
 class QgsLayerTreeEmbeddedConfigWidget : QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 A widget to configure layer tree embedded widgets for a particular map layer.
 
 .. versionadded:: 2.16

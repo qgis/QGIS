@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QDesktopServices>
 #include <QSvgGenerator>
+#include <QBuffer>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -134,7 +135,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 {
   mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -149,7 +150,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 {
   mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -195,7 +196,7 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
 {
   mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -222,7 +223,7 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
 {
   mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -251,7 +252,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 {
   mReport += QLatin1String( "<h2>Point pattern symbol data defined sub symbol test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -267,7 +268,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
 {
   mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
@@ -286,7 +287,7 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 {
   mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
 
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );

@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
+#include <QUrl>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QTextStream>

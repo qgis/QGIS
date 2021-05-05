@@ -55,7 +55,7 @@ Creates a renderer symbol range
 
     QString dump() const;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
 %Docstring
 Creates a DOM element representing the range in SLD format.
 
@@ -76,12 +76,12 @@ typedef QList<QgsRendererRange> QgsRangeList;
 
 class QgsRendererRangeLabelFormat /Deprecated/
 {
-%Docstring
+%Docstring(signature="appended")
 
 .. versionadded:: 2.6
 
 .. deprecated:: QGIS 3.10
-  use QgsClassificationMethod instead
+  use :py:class:`QgsClassificationMethod` instead
 %End
 
 %TypeHeaderCode

@@ -17,6 +17,7 @@
 #include <QStringList>
 #include <QApplication>
 #include <QFileInfo>
+#include <QSignalSpy>
 
 // clazy:excludeall=qcolor-from-literal
 
@@ -74,6 +75,24 @@ class TestStyle : public QObject
     bool testValidColor( QgsColorRamp *ramp, double value, const QColor &expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
+    static bool compareItemLists( QList<QgsColorRampShader::ColorRampItem> &itemsList1, QList<QgsColorRampShader::ColorRampItem> &itemsList2 )
+    {
+      if ( itemsList1.size() != itemsList2.size() ) return false;
+      for ( int i = 0; i < itemsList1.size(); ++i )
+      {
+        if ( itemsList1[i].value != itemsList2[i].value )
+          return false;
+        if ( itemsList1[i].color.red() != itemsList2[i].color.red() )
+          return false;
+        if ( itemsList1[i].color.green() != itemsList2[i].color.green() )
+          return false;
+        if ( itemsList1[i].color.blue() != itemsList2[i].color.blue() )
+          return false;
+        if ( itemsList1[i].color.alpha() != itemsList2[i].color.alpha() )
+          return false;
+      }
+      return true;
+    }
   private slots:
 
     // init / cleanup
@@ -96,7 +115,9 @@ class TestStyle : public QObject
     void testSmartGroup();
     void testIsStyleXml();
     void testVisitor();
-
+    void testColorRampShaderClassificationEqualInterval();
+    void testColorRampShaderClassificationContinius();
+    void testDefaultLabelTextFormat();
 };
 
 
@@ -138,6 +159,9 @@ void TestStyle::initTestCase()
   mStyle = new QgsStyle();
   mStyle->createMemoryDatabase();
 
+  // now cheat!
+  QgsStyle::sDefaultStyle = mStyle;
+
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
 
@@ -151,7 +175,9 @@ void TestStyle::cleanupTestCase()
 {
   // don't save
   // mStyle->save();
-  delete mStyle;
+
+  // don't delete -- it's handled by exitQgis, cos we've set mStyle as the static default style instance
+  // delete mStyle;
 
   QgsCptCityArchive::clearArchives();
   QgsApplication::exitQgis();
@@ -173,10 +199,10 @@ void TestStyle::testCreateSymbols()
   QgsStyle s;
   s.createMemoryDatabase();
 
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym4( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   s.addSymbol( QStringLiteral( "symbolA" ), sym1.release(), true );
   s.addSymbol( QStringLiteral( "symbolB" ), sym2.release(), true );
   s.addSymbol( QStringLiteral( "symbolC" ), sym3.release(), true );
@@ -252,7 +278,7 @@ void TestStyle::testCreateColorRamps()
             << QStringLiteral( "test_gradient" )
             << QStringLiteral( "test_random" ) );
 
-  std::unique_ptr< QgsCptCityColorRamp > cc4Ramp = qgis::make_unique< QgsCptCityColorRamp >( QStringLiteral( "grass/byr" ), QString() );
+  std::unique_ptr< QgsCptCityColorRamp > cc4Ramp = std::make_unique< QgsCptCityColorRamp >( QStringLiteral( "grass/byr" ), QString() );
   QgsStyleColorRampEntity entity( cc4Ramp.get() );
   QVERIFY( mStyle->addEntity( "test_cc4", &entity, true ) );
 
@@ -533,7 +559,7 @@ void TestStyle::testLoadColorRamps()
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
-  Q_FOREACH ( const QString &name, colorRampsTest )
+  for ( const QString &name : colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -561,7 +587,7 @@ void TestStyle::testSaveLoad()
 
   QStringList colorRampsTest = QStringList() << QStringLiteral( "test_gradient" );
 
-  Q_FOREACH ( const QString &name, colorRampsTest )
+  for ( const QString &name : colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -589,9 +615,9 @@ void TestStyle::testFavorites()
   QVERIFY( !mStyle->isFavorite( QgsStyle::Symbol3DEntity, QStringLiteral( "AaaaaaaaaA" ) ) );
 
   // add some symbols to favorites
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   mStyle->saveSymbol( QStringLiteral( "symbolA" ), sym1.get(), true, QStringList() );
   mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
   mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
@@ -814,10 +840,10 @@ void TestStyle::testTags()
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
-  std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol> sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym4( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get(), false, QStringList() << "red" << "starry" ) );
   mStyle->addSymbol( QStringLiteral( "blue starry" ), sym2.release(), true );
   mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
@@ -1276,9 +1302,9 @@ void TestStyle::testSmartGroup()
 
   QSignalSpy groupModifiedSpy( &style, &QgsStyle::groupsModified );
 
-  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QVariantMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QVariantMap() ) );
   style.addSymbol( QStringLiteral( "symbolA" ), sym1->clone(), true );
   style.addSymbol( QStringLiteral( "symbolB" ), sym2->clone(), true );
   style.addSymbol( QStringLiteral( "symbolC" ), sym3->clone(), true );
@@ -1663,6 +1689,154 @@ void TestStyle::testVisitor()
             << QStringLiteral( "symbol: Fill fill #c8c800" )
             << QStringLiteral( "exit: annotation Annotation" )
             << QStringLiteral( "exit: annotations Annotations" ) );
+}
+
+void TestStyle::testColorRampShaderClassificationEqualInterval()
+{
+  // Test Type::Interpolated and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 191.25, QColor( 0,  64,  191 ),  "191" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test Type::Exact and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 63.75, QColor( 0,  191,  64 ),  "63.8" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  128,  128 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 191.25, QColor( 0,  64,  191 ),  "191" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test Type::Discrete and ClassificationMode::EqualInterval
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 51, QColor( 0,  255,  0 ),  "51" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 102, QColor( 0,  191,  64 ),  "102" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 153, QColor( 0,  128,  128 ),  "153" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 204, QColor( 0,  64,  191 ),  "204" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test when min == max for EqualInterval mode
+  for ( int i = 0; i < 3; ++i )
+  {
+    QgsColorRampShader::Type type = static_cast<QgsColorRampShader::Type>( i );
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::EqualInterval ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    if ( type == QgsColorRampShader::Type::Discrete )
+      itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+}
+
+void TestStyle::testColorRampShaderClassificationContinius()
+{
+  // Test Type::Interpolated and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test Type::Exact and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Exact, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 255, QColor( 0,  0,  255 ),  "255" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test Type::Discrete and ClassificationMode::Continuous
+  {
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 255.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 127.5, QColor( 0,  255,  0 ),  "128" ) );
+    itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+
+  // Test when min == max for Continuous mode
+  for ( int i = 0; i < 3; ++i )
+  {
+    QgsColorRampShader::Type type = static_cast<QgsColorRampShader::Type>( i );
+    std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( 0.0, 0.0, new QgsGradientColorRamp( Qt::green, Qt::blue ), type, QgsColorRampShader::ClassificationMode::Continuous ) );
+    shader->classifyColorRamp( 5, -1 );
+
+    QList<QgsColorRampShader::ColorRampItem> itemsList = shader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> itemsList2;
+    itemsList2.append( QgsColorRampShader::ColorRampItem( 0, QColor( 0,  255,  0 ),  "0" ) );
+    if ( type == QgsColorRampShader::Type::Discrete )
+      itemsList2.append( QgsColorRampShader::ColorRampItem( qInf(), QColor( 0,  0,  255 ),  "inf" ) );
+
+    QVERIFY( compareItemLists( itemsList, itemsList2 ) );
+  }
+}
+
+void TestStyle::testDefaultLabelTextFormat()
+{
+  // no "Default" text format yet
+  QVERIFY( !QgsStyle::defaultStyle()->textFormat( QStringLiteral( "Default" ) ).isValid() );
+
+  QgsPalLayerSettings settings;
+  // should be app-wide default font (gross!)
+  QCOMPARE( settings.format().font().family(), QFont().family() );
+
+  // now add a default text format
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont() );
+  format.buffer().setEnabled( true );
+  QVERIFY( QgsStyle::defaultStyle()->addTextFormat( QStringLiteral( "Default" ), format ) );
+
+  // re-create default label settings
+  QgsPalLayerSettings settings2;
+  // should be default text format now, not app default font
+  QCOMPARE( settings2.format().font().family(),  QgsFontUtils::getStandardTestFont().family() );
+  QVERIFY( settings2.format().buffer().enabled() );
 }
 
 QGSTEST_MAIN( TestStyle )

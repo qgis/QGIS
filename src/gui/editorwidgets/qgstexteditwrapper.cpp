@@ -195,7 +195,6 @@ bool QgsTextEditWrapper::valid() const
 
 void QgsTextEditWrapper::showIndeterminateState()
 {
-  //note - this is deliberately a zero length string, not a null string!
   if ( mTextEdit )
     mTextEdit->blockSignals( true );
   if ( mPlainTextEdit )
@@ -208,7 +207,8 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->setPlaceholderText( QString() );
   }
 
-  setWidgetValue( QString() );
+  //note - this is deliberately a zero length string, not a null string!
+  setWidgetValue( QStringLiteral( "" ) );  // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
@@ -328,7 +328,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     v = v.remove( QLocale().groupSeparator() );
   }
 
-  const QVariant currentValue { value( ) };
+  const QVariant currentValue = value( );
   // Note: comparing QVariants leads to funny (and wrong) results:
   // QVariant(0.0) == QVariant(QVariant.Double) -> True
   const bool changed { val != currentValue || val.isNull() != currentValue.isNull() };

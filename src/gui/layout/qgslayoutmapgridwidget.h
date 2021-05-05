@@ -28,7 +28,7 @@
 
 /**
  * \ingroup gui
- * A widget for configuring layout map grid items.
+ * \brief A widget for configuring layout map grid items.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12

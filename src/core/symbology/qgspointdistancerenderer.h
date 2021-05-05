@@ -28,7 +28,7 @@ class QgsSpatialIndex;
 /**
  * \class QgsPointDistanceRenderer
  * \ingroup core
- * An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+ * \brief An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
     bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override SIP_THROW( QgsCsException );
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool filterNeedsGeometry() const override;

@@ -13,7 +13,9 @@
 
 class QgsRuleBasedRenderer : QgsFeatureRenderer
 {
-%Docstring
+%Docstring(signature="appended")
+Rule based renderer.
+
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
 %End
@@ -70,8 +72,9 @@ Feature to render
 
     class Rule
 {
-%Docstring
+%Docstring(signature="appended")
 This class keeps data about a rules for rule-based renderer.
+
 A rule consists of a symbol, filter expression and range of scales.
 If filter is empty, it matches all features.
 If scale range has both values zero, it matches all scales.
@@ -278,7 +281,10 @@ Sets if this rule is active
 clone this rule, return new instance
 %End
 
-        void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+%Docstring
+Saves the symbol layer as SLD
+%End
 
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
@@ -488,7 +494,7 @@ Returns symbol for current feature. Should not be used individually: there could
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
@@ -540,11 +546,13 @@ take a rule and create a list of new rules based on the ranges from graduated sy
 take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
 %End
 
-    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer, QgsVectorLayer *layer = 0 ) /Factory/;
 %Docstring
-creates a QgsRuleBasedRenderer from an existing renderer.
+Creates a new QgsRuleBasedRenderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise 0.
+Since QGIS 3.20, the optional ``layer`` parameter is required for conversions of some renderer types.
+
+:return: a new renderer if the conversion was possible, otherwise ``None``.
 
 .. versionadded:: 2.5
 %End

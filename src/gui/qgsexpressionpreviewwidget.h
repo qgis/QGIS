@@ -28,7 +28,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * QgsExpressionPreviewWidget is a widget to preview an expression result.
+ * \brief QgsExpressionPreviewWidget is a widget to preview an expression result.
  * If the layer is set, one can browse across features to see the different outputs.
  * \since QGIS 3.14
  */

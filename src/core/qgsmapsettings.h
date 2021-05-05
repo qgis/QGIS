@@ -46,7 +46,7 @@ class QgsRenderedFeatureHandlerInterface;
  * \class QgsLabelBlockingRegion
  * \ingroup core
  *
- * Label blocking region (in map coordinates and CRS).
+ * \brief Label blocking region (in map coordinates and CRS).
  *
  * \since QGIS 3.6
 */
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
 /**
  * \ingroup core
- * The QgsMapSettings class contains configuration for rendering of the map.
+ * \brief The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
  * In order to set up QgsMapSettings instance, it is necessary to set at least
@@ -91,17 +91,25 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     /**
      * Returns geographical coordinates of the rectangle that should be rendered.
-     * The actual visible extent used for rendering could be slightly different
-     * since the given extent may be expanded in order to fit the aspect ratio
-     * of output size. Use visibleExtent() to get the resulting extent.
+     *
+     * \warning The actual visible extent used for rendering can be significantly different from this
+     * value, since the given extent may be expanded in order to fit the aspect ratio
+     * of the outputSize(). Use visibleExtent() to get the actual extent which will be rendered.
+     *
+     * \see visibleExtent()
+     * \see setExtent()
      */
     QgsRectangle extent() const;
 
     /**
-     * Set coordinates of the rectangle which should be rendered.
-     * The actual visible extent used for rendering could be slightly different
-     * since the given extent may be expanded in order to fit the aspect ratio
-     * of output size. Use visibleExtent() to get the resulting extent.
+     * Sets the coordinates of the rectangle which should be rendered.
+     *
+     * \warning The actual visible extent used for rendering can be significantly different
+     * from the specified extent, since the given extent may be expanded in order to match the
+     * aspect ratio of outputSize(). Use visibleExtent() to retrieve the actual extent to be rendered.
+     *
+     * \see visibleExtent()
+     * \see extent()
      */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 
@@ -121,29 +129,47 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setExtentBuffer( double buffer );
 
-    //! Returns the size of the resulting map image
+    /**
+     * Returns the size of the resulting map image, in pixels.
+     *
+     * \see deviceOutputSize()
+     * \see setOutputSize()
+     */
     QSize outputSize() const;
-    //! Sets the size of the resulting map image
+
+    /**
+     * Sets the \a size of the resulting map image, in pixels.
+     *
+     * \see outputSize()
+     */
     void setOutputSize( QSize size );
 
     /**
-     * Returns device pixel ratio
+     * Returns the device pixel ratio.
+     *
      * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
      * \since QGIS 3.4
      */
     float devicePixelRatio() const;
 
     /**
-     * Sets the device pixel ratio
+     * Sets the device pixel ratio.
+     *
      * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
      * \since QGIS 3.4
      */
     void setDevicePixelRatio( float dpr );
 
     /**
-     * Returns the device output size of the map canvas
+     * Returns the device output size of the map render.
+     *
      * This is equivalent to the output size multiplicated
      * by the device pixel ratio.
+     *
+     * \see outputSize()
+     * \see devicePixelRatio()
+     * \see setOutputSize()
+     *
      * \since QGIS 3.4
      */
     QSize deviceOutputSize() const;
@@ -163,12 +189,38 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void setRotation( double rotation );
 
     /**
-     * Returns DPI used for conversion between real world units (e.g. mm) and pixels
-     * Default value is 96
+     * Returns the DPI (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+     *
+     * The default value is 96 dpi.
+     *
+     * \see setOutputDpi()
      */
     double outputDpi() const;
-    //! Sets DPI used for conversion between real world units (e.g. mm) and pixels
+
+    /**
+     * Sets the \a dpi (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
+     *
+     * \see outputDpi()
+     */
     void setOutputDpi( double dpi );
+
+    /**
+     * Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+     *
+     * The default value is -1, which states no DPI target is provided.
+     *
+     * \see setDpiTarget()
+     * \since QGIS 3.20
+     */
+    double dpiTarget() const;
+
+    /**
+     * Sets the target \a dpi (dots per inch) to be taken into consideration when rendering.
+     *
+     * \see dpiTarget()
+     * \since QGIS 3.20
+     */
+    void setDpiTarget( double dpi );
 
     /**
      * Set the magnification factor.
@@ -187,39 +239,55 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     double magnificationFactor() const;
 
     /**
-     * Gets list of layer IDs for map rendering
-     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     * Returns the list of layer IDs which will be rendered in the map.
+     *
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top).
+     *
+     * \see layers()
+     * \see setLayers()
      */
     QStringList layerIds() const;
 
     /**
-     * Gets list of layers for map rendering
+     * Returns the list of layers which will be rendered in the map.
+     *
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \see setLayers()
+     * \see layerIds()
      */
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Set list of layers for map rendering. The layers must be registered in QgsProject.
+     * Sets the list of \a layers to render in the map.
+     *
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
      *
      * \note Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
+     *
+     * \see layers()
+     * \see layerIds()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Returns the map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
+     *
+     * \see setLayerStyleOverrides()
      * \since QGIS 2.8
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
     /**
-     * Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Sets the map of map layer style \a overrides (key: layer ID, value: style name) where a different style should be used instead of the current one.
+     *
+     * \see layerStyleOverrides()
      * \since QGIS 2.8
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /**
-     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * Returns custom rendering flags. Layers might honour these to alter their rendering.
      * \returns custom flags strings, separated by ';'
      * \see setCustomRenderFlags()
      * \since QGIS 2.16
@@ -237,7 +305,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     Q_DECL_DEPRECATED void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
     /**
-     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * Returns any custom rendering flags. Layers might honour these to alter their rendering.
      * \returns a map of custom flags
      * \see setCustomRenderingFlag()
      * \since QGIS 3.12
@@ -245,7 +313,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
 
     /**
-     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * Sets a custom rendering \a flag. Layers might honour these to alter their rendering.
      * \param flag the flag name
      * \param value the flag value
      * \see customRenderingFlags()
@@ -254,19 +322,30 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
 
     /**
-     * Clears the specified custom rendering flag.
+     * Clears the specified custom rendering \a flag.
      * \param flag the flag name
      * \see setCustomRenderingFlag()
      * \since QGIS 3.12
      */
     void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
-    //! sets destination coordinate reference system
+    /**
+     * Sets the destination \a crs (coordinate reference system) for the map render.
+     *
+     * \see destinationCrs()
+     */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
-    //! returns CRS of destination coordinate reference system
+
+    /**
+     * Returns the destination coordinate reference system for the map render.
+     *
+     * \see setDestinationCrs()
+     */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! Gets units of map's geographical coordinates - used for scale calculation
+    /**
+     * Returns the units of the map's geographical coordinates - used for scale calculation.
+     */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
@@ -287,14 +366,32 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     QString ellipsoid() const { return mEllipsoid; }
 
-    //! Sets the background color of the map
+    /**
+     * Sets the background \a color of the map.
+     *
+     * \see backgroundColor()
+     */
     void setBackgroundColor( const QColor &color ) { mBackgroundColor = color; }
-    //! Gets the background color of the map
+
+    /**
+     * Returns the background color of the map.
+     *
+     * \see setBackgroundColor()
+     */
     QColor backgroundColor() const { return mBackgroundColor; }
 
-    //! Sets color that is used for drawing of selected vector features
+    /**
+     * Sets the \a color that is used for drawing of selected vector features.
+     *
+     * \see selectionColor()
+     */
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
-    //! Gets color that is used for drawing of selected vector features
+
+    /**
+     * Returns the color that is used for drawing of selected vector features.
+     *
+     * \see setSelectionColor()
+     */
     QColor selectionColor() const { return mSelectionColor; }
 
     //! Enumeration of flags that adjust the way the map is rendered
@@ -694,7 +791,8 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
   protected:
 
-    double mDpi;
+    double mDpi = 96.0;
+    double mDpiTarget = -1;
 
     QSize mSize;
     float mDevicePixelRatio = 1.0;

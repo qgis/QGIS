@@ -56,6 +56,11 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilit
   return QgsProviderMetadata::ProviderMetadataCapabilities();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapabilities();
+}
+
 QString QgsProviderMetadata::library() const
 {
   return mLibrary;
@@ -225,6 +230,11 @@ QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 {
   errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
   return QString();
+}
+
+bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMetadata &, QString & )
+{
+  throw QgsNotSupportedException( QObject::tr( "Provider %1 does not support writing layer metadata" ).arg( key() ) );
 }
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )

@@ -253,7 +253,9 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
   // z support for intersection point
-  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
+  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, intersection );
+  // m support for intersection point
+  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -631,6 +633,23 @@ void QgsGeometryUtils::pointOnLineWithDistance( double x1, double y1, double x2,
   }
 }
 
+void QgsGeometryUtils::perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x, double *y )
+{
+  // calculate point along segment
+  const double mX = x1 + ( x2 - x1 ) * proportion;
+  const double mY = y1 + ( y2 - y1 ) * proportion;
+  const double pX = x1 - x2;
+  const double pY = y1 - y2;
+  double normalX = -pY;
+  double normalY = pX;  //#spellok
+  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );  //#spellok
+  normalX /= normalLength;
+  normalY /= normalLength;  //#spellok
+
+  *x = mX + offset * normalX;
+  *y = mY + offset * normalY;  //#spellok
+}
+
 QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance )
 {
   double centerX, centerY, radius;
@@ -836,7 +855,9 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   result = possibleMidPoints.at( minDistIndex );
 
   // add z support if necessary
-  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, result );
+  QgsGeometryUtils::transferFirstZValueToPoint( QgsPointSequence() << p1 << p2, result );
+  // add m support if necessary
+  QgsGeometryUtils::transferFirstMValueToPoint( QgsPointSequence() << p1 << p2, result );
 
   return true;
 }
@@ -1101,7 +1122,11 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
+#else
+  const QStringList coordList = wktCoordinateList.split( ',', Qt::SkipEmptyParts );
+#endif
 
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
@@ -1110,7 +1135,11 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
+#else
+    QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
+#endif
 
     // exit with an empty set if one list contains invalid value.
     if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
@@ -1133,7 +1162,11 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 
   for ( const QString &pointCoordinates : coordList )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
+#else
+    QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
+#endif
     if ( coordinates.size() < dim )
       continue;
 
@@ -1371,6 +1404,83 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
     blocks.append( block );
   }
   return blocks;
+}
+
+int QgsGeometryUtils::closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y )
+{
+  // point outside rectangle
+  if ( x <= left && y <= bottom )
+  {
+    const double dx = left - x;
+    const double dy = bottom - y;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 6;
+    else if ( dx < dy )
+      return 5;
+    else
+      return 7;
+  }
+  else if ( x >= right && y >= top )
+  {
+    const double dx = x - right;
+    const double dy = y - top;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 2;
+    else if ( dx < dy )
+      return 1;
+    else
+      return 3;
+  }
+  else if ( x >= right && y <= bottom )
+  {
+    const double dx = x - right;
+    const double dy = bottom - y;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 4;
+    else if ( dx < dy )
+      return 5;
+    else
+      return 3;
+  }
+  else if ( x <= left && y >= top )
+  {
+    const double dx = left - x;
+    const double dy = y - top;
+    if ( qgsDoubleNear( dx, dy ) )
+      return 8;
+    else if ( dx < dy )
+      return 1;
+    else
+      return 7;
+  }
+  else if ( x <= left )
+    return 7;
+  else if ( x >= right )
+    return 3;
+  else if ( y <= bottom )
+    return 5;
+  else if ( y >= top )
+    return 1;
+
+  // point is inside rectangle
+  const double smallestX = std::min( right - x, x - left );
+  const double smallestY = std::min( top - y, y - bottom );
+  if ( smallestX < smallestY )
+  {
+    // closer to left/right side
+    if ( right - x < x - left )
+      return 3; // closest to right side
+    else
+      return 7;
+  }
+  else
+  {
+    // closer to top/bottom side
+    if ( top - y < y - bottom )
+      return 1; // closest to top side
+    else
+      return 5;
+  }
 }
 
 QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
@@ -1700,7 +1810,25 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
   pointY = rBy + rCy + aY;
 }
 
-bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
+{
+  bool rc = false;
+
+  for ( const QgsPoint &pt : points )
+  {
+    if ( pt.isMeasure() )
+    {
+      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
+      point.setM( pt.m() );
+      rc = true;
+      break;
+    }
+  }
+
+  return rc;
+}
+
+bool QgsGeometryUtils::transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;
 

@@ -927,7 +927,6 @@ void QSpatiaLiteDriver::handleNotification( const QString &tableName, qint64 row
   Q_D( const QSpatiaLiteDriver );
   if ( d->notificationid.contains( tableName ) )
   {
-    emit notification( tableName );
     emit notification( tableName, QSqlDriver::UnknownSource, QVariant( rowid ) );
   }
 }

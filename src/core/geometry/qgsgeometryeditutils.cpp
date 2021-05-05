@@ -125,11 +125,11 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       std::unique_ptr<QgsCurvePolygon> poly;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
-        poly = qgis::make_unique< QgsPolygon >();
+        poly = std::make_unique< QgsPolygon >();
       }
       else
       {
-        poly = qgis::make_unique< QgsCurvePolygon >();
+        poly = std::make_unique< QgsCurvePolygon >();
       }
       // Ownership is still with part, curve points to the same object and is transferred
       // to poly here.
@@ -224,8 +224,12 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
     const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+    bool &haveInvalidGeometry,
+    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures
+                                                                             )
 {
+
+  haveInvalidGeometry = false;
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
   {
@@ -264,6 +268,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
 
       if ( !f.hasGeometry() )
         continue;
+
+      if ( !f.geometry().isGeosValid() )
+        haveInvalidGeometry = true;
 
       nearGeometries << f.geometry();
     }

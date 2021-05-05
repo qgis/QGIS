@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
+#include <QRegularExpression>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -316,7 +317,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         QgsSpatiaLiteProviderConnection::TableProperty property;
         property.setTableName( tableName );
         // Create a layer and get information from it
-        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
+        std::unique_ptr< QgsVectorLayer > vl = std::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
         if ( vl->isValid() )
         {
           if ( vl->isSpatial() )
@@ -421,10 +422,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
       auto iterator = std::make_shared<QgsSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
-      // Note: Returns the number of features in the layer. For dynamic databases the count may not be exact.
-      //       If bForce is FALSE, and it would be expensive to establish the feature count a value of -1 may
-      //       be returned indicating that the count isn’t know.
-      results.setRowCount( OGR_L_GetFeatureCount( ogrLayer, 0 /* force=false: do not scan the whole layer */ ) );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
@@ -433,7 +430,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
@@ -474,17 +471,20 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 
 QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
 {
-  GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
-}
-
-QVariantList QgsSpatialiteProviderResultIterator::nextRow()
-{
-  const QVariantList currentRow { mNextRow };
-  mNextRow = nextRowPrivate();
-  return currentRow;
+  if ( mHDS )
+  {
+    GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+  }
 }
 
 QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
+{
+  const QVariantList currentRow = mNextRow;
+  mNextRow = nextRowInternal();
+  return currentRow;
+}
+
+QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
   if ( mHDS && mOgrLayer )
@@ -495,10 +495,10 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
       if ( ! mFields.isEmpty() )
       {
         QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
-        const QgsAttributes &constAttrs { f.attributes() };
-        for ( int i = 0; i < constAttrs.length(); i++ )
+        const QgsAttributes constAttrs  = f.attributes();
+        for ( const QVariant &attribute : constAttrs )
         {
-          row.push_back( constAttrs.at( i ) );
+          row.push_back( attribute );
         }
       }
       else // Fallback to strings
@@ -509,11 +509,17 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowPrivate()
         }
       }
     }
+    else
+    {
+      // Release the resources
+      GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
+      mHDS.release();
+    }
   }
   return row;
 }
 
-bool QgsSpatialiteProviderResultIterator::hasNextRow() const
+bool QgsSpatialiteProviderResultIterator::hasNextRowPrivate() const
 {
   return ! mNextRow.isEmpty();
 }
@@ -524,14 +530,14 @@ bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) con
   int result = database.open( pathFromUri() );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( database.errorMessage() ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, database.errorMessage() ) );
   }
 
   QString errorMessage;
   result = database.exec( sql, errorMessage );
   if ( result != SQLITE_OK )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errorMessage ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errorMessage ) );
   }
   return true;
 }
@@ -547,7 +553,7 @@ void QgsSpatiaLiteProviderConnection::deleteField( const QString &fieldName, con
 {
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl { qgis::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( pathFromUri(), tableName ), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options ) };
+  std::unique_ptr<QgsVectorLayer> vl { std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( pathFromUri(), tableName ), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options ) };
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a valid layer for table '%1'" ).arg( tableName ) );

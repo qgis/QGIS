@@ -20,19 +20,12 @@
 #include "qgssqliteutils.h"
 #include <sqlite3.h>
 
-#if PROJ_VERSION_MAJOR>=6
 #include "qgsprojutils.h"
 #include <proj.h>
-#endif
 
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {
   QList< QgsDatumTransform::TransformDetails > res;
-#if PROJ_VERSION_MAJOR<6
-  Q_UNUSED( source )
-  Q_UNUSED( destination )
-  Q_UNUSED( includeSuperseded )
-#else
   if ( !source.projObject() || !destination.projObject() )
     return res;
 
@@ -66,7 +59,6 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
     proj_list_destroy( ops );
   }
   proj_operation_factory_context_destroy( operationContext );
-#endif
   return res;
 }
 
@@ -112,20 +104,20 @@ QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformation
                         destToWgs84 );
 
   //add direct datum transformations
-  for ( int transform : qgis::as_const( directTransforms ) )
+  for ( int transform : std::as_const( directTransforms ) )
   {
     transformations.push_back( QgsDatumTransform::TransformPair( transform, -1 ) );
   }
 
   //add direct datum transformations
-  for ( int transform : qgis::as_const( reverseDirectTransforms ) )
+  for ( int transform : std::as_const( reverseDirectTransforms ) )
   {
     transformations.push_back( QgsDatumTransform::TransformPair( -1, transform ) );
   }
 
-  for ( int srcTransform : qgis::as_const( srcToWgs84 ) )
+  for ( int srcTransform : std::as_const( srcToWgs84 ) )
   {
-    for ( int destTransform : qgis::as_const( destToWgs84 ) )
+    for ( int destTransform : std::as_const( destToWgs84 ) )
     {
       transformations.push_back( QgsDatumTransform::TransformPair( srcTransform, destTransform ) );
     }
@@ -312,7 +304,6 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
   return info;
 }
 
-#if PROJ_VERSION_MAJOR>=6
 QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( PJ *op )
 {
   PJ_CONTEXT *pjContext = QgsProjContext::get();
@@ -417,4 +408,3 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
 
   return details;
 }
-#endif

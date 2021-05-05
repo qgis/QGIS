@@ -67,7 +67,7 @@ tests:
         type: raster
     results:
       output:
-        name: expected/grass7/v_rast_stats.shp
+        name: expected/grass7/v_rast_stats2.gml
         type: vector
 
   - algorithm: grass7:v.voronoi
@@ -334,7 +334,9 @@ tests:
       solver: 0
     results:
       raster_output:
-        hash: 7aa8e68b697e1558e6621fa23b5f1f01a5826649ffc31fd255e709a1
+        hash:
+        - 7aa8e68b697e1558e6621fa23b5f1f01a5826649ffc31fd255e709a1
+        - 84a3682119141e3b27725773ebe5b6b6a55305a1f7a3095ee8582851
         type: rasterhash
 
   - algorithm: grass7:v.buffer
@@ -365,6 +367,8 @@ tests:
       output:
         name: expected/grass7/buffer_polys_layer3.shp
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: grass7:v.buffer
     name: Buffer with layername 2
@@ -394,6 +398,8 @@ tests:
       output:
         name: expected/grass7/buffer_polys_layer2.shp
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: grass7:v.buffer
     name: Buffer using value from field

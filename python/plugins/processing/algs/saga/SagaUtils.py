@@ -65,8 +65,12 @@ def findSagaFolder():
             if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
                 folder = testfolder
     elif isWindows():
-        folders = []
-        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga-ltr'))
+        folders = [
+            os.path.join(
+                os.path.dirname(QgsApplication.prefixPath()), 'saga-ltr'
+            )
+        ]
+
         folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga'))
         if "OSGEO4W_ROOT" in os.environ:
             folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga-ltr"))
@@ -81,7 +85,7 @@ def findSagaFolder():
 
 
 def sagaPath():
-    if not isWindows() and not isMac() and not platform.system() == 'FreeBSD':
+    if not isWindows() and not isMac() and platform.system() != 'FreeBSD':
         return ''
 
     folder = findSagaFolder()
@@ -101,8 +105,6 @@ def createSagaBatchJobFileFromSagaCommands(commands):
         elif isMac() or platform.system() == 'FreeBSD':
             fout.write('export SAGA_MLB=' + os.path.join(sagaPath(), '../lib/saga') + '\n')
             fout.write('export PATH=' + sagaPath() + ':$PATH\n')
-        else:
-            pass
         for command in commands:
             if isWindows():
                 fout.write('call saga_cmd ' + command + '\n')
@@ -164,8 +166,12 @@ def executeSaga(feedback):
         os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
                  stat.S_IREAD | stat.S_IWRITE)
         command = ["'" + sagaBatchJobFilename() + "'"]
-    loglines = []
-    loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
+    loglines = [
+        QCoreApplication.translate(
+            'SagaUtils', 'SAGA execution console output'
+        )
+    ]
+
     with subprocess.Popen(
         command,
         shell=True,
@@ -177,14 +183,14 @@ def executeSaga(feedback):
         try:
             for line in iter(proc.stdout.readline, ''):
                 if '%' in line:
-                    s = ''.join([x for x in line if x.isdigit()])
+                    s = ''.join(x for x in line if x.isdigit())
                     try:
                         feedback.setProgress(int(s))
                     except:
                         pass
                 else:
                     line = line.strip()
-                    if line != '/' and line != '-' and line != '\\' and line != '|':
+                    if line not in ['/', '-', '\\', '|']:
                         loglines.append(line)
                         feedback.pushConsoleInfo(line)
         except:

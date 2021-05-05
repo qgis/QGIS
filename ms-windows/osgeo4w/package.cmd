@@ -120,11 +120,13 @@ cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
 	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+	-D SUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" ^
 	-D BUILDNAME="%BUILDNAME%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
+	-D WITH_HANA=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
 	-D WITH_3D=TRUE ^
@@ -140,7 +142,7 @@ cmake -G "%CMAKEGEN%" ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python3.exe ^
 	-D SIP_BINARY_PATH=%PYTHONHOME:\=/%/sip.exe ^
-	-D PYTHON_INCLUDE_PATH=%PYTHONHOME:\=/%/include ^
+	-D PYTHON_INCLUDE_DIR=%PYTHONHOME:\=/%/include ^
 	-D PYTHON_LIBRARY=%PYTHONHOME:\=/%/libs/%PYVER%.lib ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/apps/qt5/include ^
@@ -310,6 +312,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^

@@ -497,11 +497,11 @@ QgsAdvancedDigitizingDockWidget *QgisAppInterface::cadDockWidget()
   return qgis->cadDockWidget();
 }
 
-void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
+void QgisAppInterface::showLayerProperties( QgsMapLayer *l, const QString &page )
 {
   if ( l && qgis )
   {
-    qgis->showLayerProperties( l );
+    qgis->showLayerProperties( l, page );
   }
 }
 
@@ -701,6 +701,7 @@ QAction *QgisAppInterface::actionMeasure() { return qgis->actionMeasure(); }
 QAction *QgisAppInterface::actionMeasureArea() { return qgis->actionMeasureArea(); }
 QAction *QgisAppInterface::actionZoomFullExtent() { return qgis->actionZoomFullExtent(); }
 QAction *QgisAppInterface::actionZoomToLayer() { return qgis->actionZoomToLayer(); }
+QAction *QgisAppInterface::actionZoomToLayers() { return qgis->actionZoomToLayers(); }
 QAction *QgisAppInterface::actionZoomToSelected() { return qgis->actionZoomToSelected(); }
 QAction *QgisAppInterface::actionZoomLast() { return qgis->actionZoomLast(); }
 QAction *QgisAppInterface::actionZoomNext() { return qgis->actionZoomNext(); }
@@ -735,7 +736,7 @@ QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(
 QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
 QAction *QgisAppInterface::actionAddPointCloudLayer() { return qgis->actionAddPointCloudLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
-QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
+QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }
 QAction *QgisAppInterface::actionPasteLayerStyle() { return qgis->actionPasteLayerStyle(); }
 QAction *QgisAppInterface::actionOpenTable() { return qgis->actionOpenTable(); }

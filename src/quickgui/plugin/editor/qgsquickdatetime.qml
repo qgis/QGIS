@@ -35,7 +35,6 @@ Item {
     anchors {
       left: parent.left
       right: parent.right
-      rightMargin: 10 * QgsQuick.Utils.dp
     }
 
     property var timeToString: function timeToString(attrValue) {
@@ -67,11 +66,12 @@ Item {
 
                 anchors.fill: parent
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: customStyle.fields.fontPixelSize
+                font.pointSize: customStyle.fields.fontPointSize
                 color: customStyle.fields.fontColor
                 padding: 0
                 topPadding: 10 * QgsQuick.Utils.dp
                 bottomPadding: 10 * QgsQuick.Utils.dp
+                leftPadding: customStyle.fields.sideMargin
                 background: Rectangle {
                     radius: customStyle.fields.cornerRadius
 
@@ -140,7 +140,7 @@ Item {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 visible: fieldItem.enabled
-                anchors.rightMargin: fieldItem.anchors.rightMargin
+                anchors.rightMargin: customStyle.fields.sideMargin
 
                 MouseArea {
                     anchors.fill: parent
@@ -155,7 +155,7 @@ Item {
             ColorOverlay {
                 anchors.fill: todayBtn
                 source: todayBtn
-                color: customStyle.fields.fontColor
+                color: customStyle.toolbutton.activeButtonColor
                 visible: todayBtn.visible
             }
         }

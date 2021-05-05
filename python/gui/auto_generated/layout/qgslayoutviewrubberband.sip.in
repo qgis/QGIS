@@ -11,9 +11,9 @@
 
 class QgsLayoutViewRubberBand : QObject
 {
-%Docstring
-QgsLayoutViewRubberBand is an abstract base class for temporary rubber band items
-in various shapes, for use within QgsLayoutView widgets.
+%Docstring(signature="appended")
+:py:class:`QgsLayoutViewRubberBand` is an abstract base class for temporary rubber band items
+in various shapes, for use within :py:class:`QgsLayoutView` widgets.
 
 .. versionadded:: 3.0
 %End
@@ -135,8 +135,8 @@ position will form the center point of the returned rectangle.
 
 class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 {
-%Docstring
-QgsLayoutViewRectangularRubberBand is rectangular rubber band for use within QgsLayoutView widgets.
+%Docstring(signature="appended")
+:py:class:`QgsLayoutViewRectangularRubberBand` is rectangular rubber band for use within :py:class:`QgsLayoutView` widgets.
 
 .. versionadded:: 3.0
 %End
@@ -166,8 +166,8 @@ Constructor for QgsLayoutViewRectangularRubberBand.
 
 class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 {
-%Docstring
-QgsLayoutViewEllipseRubberBand is elliptical rubber band for use within QgsLayoutView widgets.
+%Docstring(signature="appended")
+:py:class:`QgsLayoutViewEllipseRubberBand` is elliptical rubber band for use within :py:class:`QgsLayoutView` widgets.
 
 .. versionadded:: 3.0
 %End
@@ -197,8 +197,8 @@ Constructor for QgsLayoutViewEllipticalRubberBand.
 
 class QgsLayoutViewTriangleRubberBand : QgsLayoutViewRubberBand
 {
-%Docstring
-QgsLayoutViewTriangleRubberBand is triangular rubber band for use within QgsLayoutView widgets.
+%Docstring(signature="appended")
+:py:class:`QgsLayoutViewTriangleRubberBand` is triangular rubber band for use within :py:class:`QgsLayoutView` widgets.
 
 .. versionadded:: 3.0
 %End

@@ -174,7 +174,7 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
 
 void QgsLayoutMouseHandles::createItemCommand( QGraphicsItem *item )
 {
-  mItemCommand.reset( dynamic_cast< QgsLayoutItem * >( item )->createCommand( QString(), 0 ) );
+  mItemCommand.reset( qgis::down_cast< QgsLayoutItem * >( item )->createCommand( QString(), 0 ) );
   mItemCommand->saveBeforeState();
 }
 
@@ -222,7 +222,7 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QGraphicsItem *> &items,
 
 void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double deltaY )
 {
-  dynamic_cast< QgsLayoutItem * >( item )->attemptMoveBy( deltaX, deltaY );
+  qgis::down_cast< QgsLayoutItem * >( item )->attemptMoveBy( deltaX, deltaY );
 }
 
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )

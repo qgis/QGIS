@@ -64,45 +64,45 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsClipboard();
 
     /**
-     *  Place a copy of the selected features from the specified layer on
-     *  the internal clipboard, destroying the previous contents.
+     * Place a copy of the selected features from the specified layer on
+     * the internal clipboard, destroying the previous contents.
      */
     void replaceWithCopyOf( QgsVectorLayer *src );
 
     /**
-     *  Place a copy of features on the internal clipboard,
-     *  destroying the previous contents.
+     * Place a copy of features on the internal clipboard,
+     * destroying the previous contents.
      */
     void replaceWithCopyOf( QgsFeatureStore &featureStore );
 
     /**
-     *  Returns a copy of features on the internal clipboard.
+     * Returns a copy of features on the internal clipboard.
      */
     QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
 
     /**
-     *  Clears the internal clipboard.
+     * Clears the internal clipboard.
      */
     void clear();
 
     /**
-     *  Inserts a copy of the feature on the internal clipboard.
+     * Inserts a copy of the feature on the internal clipboard.
      */
     void insert( const QgsFeature &feature );
 
     /**
-     *  Returns TRUE if the internal clipboard is empty, else FALSE.
+     * Returns TRUE if the internal clipboard is empty, else FALSE.
      */
     bool isEmpty() const;
 
     /**
-     *  Returns a copy of features on the internal clipboard, transformed
-     *  from the clipboard CRS to the destCRS.
+     * Returns a copy of features on the internal clipboard, transformed
+     * from the clipboard CRS to the destCRS.
      */
     QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields = QgsFields() ) const;
 
     /**
-     *  Get the clipboard CRS
+     * Get the clipboard CRS
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -171,8 +171,8 @@ class APP_EXPORT QgsClipboard : public QObject
 
     /**
      * QGIS-internal vector feature clipboard.
-        Stored as values not pointers as each clipboard operation
-        involves a deep copy anyway.
+     * Stored as values not pointers as each clipboard operation
+     * involves a deep copy anyway.
      */
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;

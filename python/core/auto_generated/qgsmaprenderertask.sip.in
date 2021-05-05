@@ -13,8 +13,8 @@
 
 class QgsMapRendererTask : QgsTask
 {
-%Docstring
-QgsTask task which draws a map to an image file or a painter as a background
+%Docstring(signature="appended")
+:py:class:`QgsTask` task which draws a map to an image file or a painter as a background
 task. This can be used to draw maps without blocking the QGIS interface.
 
 .. versionadded:: 3.0

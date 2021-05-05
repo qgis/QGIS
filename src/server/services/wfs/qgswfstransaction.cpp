@@ -716,7 +716,7 @@ namespace QgsWfs
       catch ( QgsOgcServiceException &ex )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message() ).arg( typeName );
+        action.errorMsg = QStringLiteral( "%1 '%2'" ).arg( ex.message(), typeName );
         continue;
       }
 
@@ -776,7 +776,7 @@ namespace QgsWfs
 
       // Get the Feature Ids of the inserted feature
       QgsAttributeList pkAttributes = provider->pkAttributeIndexes();
-      for ( const QgsFeature &feat : qgis::as_const( featureList ) )
+      for ( const QgsFeature &feat : std::as_const( featureList ) )
       {
         action.insertFeatureIds << QStringLiteral( "%1.%2" ).arg( typeName, QgsServerFeatureId::getServerFid( feat, pkAttributes ) );
       }

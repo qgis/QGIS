@@ -34,7 +34,7 @@ class QgsStyleEntityVisitorInterface;
 
 /**
  * \ingroup core
- * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
+ * \brief Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
  * \since QGIS 3.0
  */
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     /**
      * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
      */
-    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const
     {
       Q_UNUSED( parent )
       Q_UNUSED( props )
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * \param settings the settings getting translated to a TextSymbolizer
      * \param props a open ended set of properties that can drive/inform the SLD encoding
      */
-    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const;
+    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
 
   private:
     Q_DISABLE_COPY( QgsAbstractVectorLayerLabeling )
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 
 /**
  * \ingroup core
- * Basic implementation of the labeling interface.
+ * \brief Basic implementation of the labeling interface.
  *
  * The configuration is kept in layer's custom properties for backward compatibility.
  *
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
     bool requiresAdvancedEffects() const override;
-    void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
+    void toSld( QDomNode &parent, const QVariantMap &props ) const override;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );

@@ -85,7 +85,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
       {
         mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
-        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(220, 125, 0, 255);" ) );
         return;
       }
     }
@@ -98,9 +98,10 @@ void QgsExpressionPreviewWidget::refreshPreview()
     }
 
     QVariant value = mExpression.evaluate( &mExpressionContext );
+    QString preview = QgsExpression::formatPreviewString( value );
     if ( !mExpression.hasEvalError() )
     {
-      mPreviewLabel->setText( QgsExpression::formatPreviewString( value ) );
+      mPreviewLabel->setText( preview );
     }
 
     if ( mExpression.hasParserError() || mExpression.hasEvalError() )
@@ -115,7 +116,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
         tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), mExpression.evalErrorString() );
 
       mPreviewLabel->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
-      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10, 255);" ) );
       setExpressionToolTip( tooltip );
       emit expressionParsed( false );
       setParserError( mExpression.hasParserError() );
@@ -124,7 +125,11 @@ void QgsExpressionPreviewWidget::refreshPreview()
     else
     {
       mPreviewLabel->setStyleSheet( QString() );
-      setExpressionToolTip( QString() );
+      QString longerPreview = QgsExpression::formatPreviewString( value, true, 255 );
+      if ( longerPreview != preview )
+        setExpressionToolTip( longerPreview );
+      else
+        setExpressionToolTip( QString() );
       emit expressionParsed( true );
       setParserError( false );
       setEvalError( false );

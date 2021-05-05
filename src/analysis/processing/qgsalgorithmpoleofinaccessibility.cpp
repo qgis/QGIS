@@ -104,7 +104,7 @@ QgsPoleOfInaccessibilityAlgorithm *QgsPoleOfInaccessibilityAlgorithm::createInst
 
 void QgsPoleOfInaccessibilityAlgorithm::initParameters( const QVariantMap & )
 {
-  auto toleranceParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), 0.0 );
+  auto toleranceParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), 0.0 );
   toleranceParam->setIsDynamic( true );
   toleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance" ), QgsPropertyDefinition::Double ) );
   toleranceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

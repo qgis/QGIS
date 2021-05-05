@@ -19,6 +19,7 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QPointer>
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
@@ -32,7 +33,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * An expression item that can be used in the QgsExpressionBuilderWidget tree.
+ * \brief An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class GUI_EXPORT QgsExpressionItem : public QStandardItem
 {
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsExpressionItem : public QStandardItem
 
 /**
  * \ingroup gui
- * Search proxy used to filter the QgsExpressionBuilderWidget tree.
+ * \brief Search proxy used to filter the QgsExpressionBuilderWidget tree.
   * The default search for a tree model only searches top level this will handle one
   * level down
   */
@@ -128,7 +129,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 /**
  * \ingroup gui
  * \class QgsExpressionTreeView
- * QgsExpressionTreeView is a tree view to list all expressions
+ * \brief QgsExpressionTreeView is a tree view to list all expressions
  * functions, variables and fields that can be used in an expression.
  * \see QgsExpressionBuilderWidget
  * \since QGIS 3.14
@@ -141,7 +142,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     /**
      * \ingroup gui
      * \class MenuProvider
-     * Implementation of this interface can be implemented to allow QgsExpressionTreeView
+     * \brief Implementation of this interface can be implemented to allow QgsExpressionTreeView
      * instance to provide custom context menus (opened upon right-click).
      * \since QGIS 3.14
      */

@@ -34,10 +34,12 @@ from .additions.qgsfeature import mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
 from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
 from .additions.qgssettings import _qgssettings_enum_value, _qgssettings_set_enum_value, _qgssettings_flag_value
+from .additions.qgssettingsentry import PyQgsSettingsEntryEnumFlag
 from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 from .additions.runtimeprofiler import ScopedRuntimeProfileContextManager
 from .additions.validitycheck import check
+from .additions.ranges import datetime_range_repr, date_range_repr
 
 # Injections into classes
 QgsFeature.__geo_interface__ = property(mapping_feature)
@@ -53,6 +55,11 @@ QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.setEnumValue = _qgssettings_set_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
 QgsTask.fromFunction = fromFunction
+QgsDateTimeRange.__repr__ = datetime_range_repr
+QgsDateRange.__repr__ = date_range_repr
+
+# Classes patched
+QgsSettingsEntryEnumFlag = PyQgsSettingsEntryEnumFlag
 
 # Classes patched using a derived class
 QgsProviderMetadata = PyProviderMetadata

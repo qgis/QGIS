@@ -37,15 +37,15 @@ class QgsWFSSharedData;
 /**
  * \ingroup WFSProvider
  *
- * A provider reading/write features from/into a WFS server.
+ * \brief A provider reading/write features from/into a WFS server.
  *
  * Below quick design notes on the whole provider.
  *
  * QgsWFSProvider class purpose:
  *
  * - in constructor, do a GetCapabilities request to determine server-side feature limit,
-     paging capabilities, WFS version, edition capabilities. Do a DescribeFeatureType request
-     to determine fields, geometry name and type.
+ *   paging capabilities, WFS version, edition capabilities. Do a DescribeFeatureType request
+ *   to determine fields, geometry name and type.
  * - in other methods, mostly WFS-T related operations.
  *
  * QgsWFSSharedData class purpose:

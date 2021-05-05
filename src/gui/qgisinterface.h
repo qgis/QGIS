@@ -72,7 +72,7 @@ class QgsAbstractMapToolHandler;
 
 /**
  * \ingroup gui
- * QgisInterface
+ * \brief QgisInterface
  * Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
  *
@@ -475,8 +475,20 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionMeasureArea() = 0;
     //! Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
     virtual QAction *actionZoomFullExtent() = 0;
-    //! Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
-    virtual QAction *actionZoomToLayer() = 0;
+
+    /**
+     *  Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+     *
+     *  \deprecated Use actionZoomToLayers() instead.
+     */
+    Q_DECL_DEPRECATED virtual QAction *actionZoomToLayer() = 0 SIP_DEPRECATED;
+
+    /**
+     * Returns the native zoom to layers action. Call trigger() on it to zoom to the selected layers.
+     * \since QGIS 3.18
+     */
+    virtual QAction *actionZoomToLayers() = 0;
+
     //! Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
     virtual QAction *actionZoomToSelected() = 0;
     //! Returns the native zoom last action. Call trigger() on it to zoom to last.
@@ -519,10 +531,12 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QAction *actionAddPointCloudLayer() = 0;
 
-    //! Returns the native Add ArcGIS FeatureServer action.
+    //! Returns the native Add ArcGIS REST Server action.
     virtual QAction *actionAddAfsLayer() = 0;
-    //! Returns the native Add ArcGIS MapServer action.
+
+    //! Returns the native Add ArcGIS REST Server action.
     virtual QAction *actionAddAmsLayer() = 0;
+
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
@@ -957,8 +971,39 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
-    //! Open layer properties dialog
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+    /**
+     * Opens layer properties dialog for the layer \a l.
+     * Optionally, a \a page to open can be specified (since QGIS 3.20).
+     * The list below contains valid page names:
+     *
+     * Vector Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Labels,
+     * mOptsPage_Masks, mOptsPage_Diagrams, mOptsPage_SourceFields, mOptsPage_AttributesForm,
+     * mOptsPage_Joins, mOptsPage_AuxiliaryStorage, mOptsPage_Actions, mOptsPage_Display,
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Metadata,
+     * mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
+     *
+     * Raster Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Transparency,
+     * mOptsPage_Histogram, mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Pyramids,
+     * mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
+     *
+     * Mesh Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent,
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
+     *
+     * Point Cloud Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+     *
+     * Vector Tile Layer:
+     * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
+     *
+     * \note Page names are subject to change without notice between QGIS versions,
+     * they are not considered part of the stable API.
+     *
+     * \note More strings may be available depending on the context, e.g. via plugins.
+     */
+    virtual void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) = 0;
 
     //! Open attribute table dialog
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;

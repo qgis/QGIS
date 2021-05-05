@@ -12,7 +12,7 @@
 
 class QgsExpressionStoreDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A generic dialog for editing expression text, label and help text.
 
 .. versionadded:: 3.12

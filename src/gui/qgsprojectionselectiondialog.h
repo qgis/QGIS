@@ -29,7 +29,7 @@
 /**
  * \class QgsProjectionSelectionDialog
  * \ingroup gui
- * A generic dialog to prompt the user for a Coordinate Reference System.
+ * \brief A generic dialog to prompt the user for a Coordinate Reference System.
  *
  * Typically you will use this when you want to prompt the user for
  * a coordinate system identifier e.g. from a plugin you might do this
@@ -105,6 +105,14 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * \since QGIS 3.16
      */
     void setNotSetText( const QString &text );
+
+    /**
+     * Sets the dialog to require a valid selection only, preventing users from accepting the
+     * dialog if no selection is present.
+     *
+     * \since QGIS 3.18
+     */
+    void setRequireValidSelection();
 
   public slots:
 

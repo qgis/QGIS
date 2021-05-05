@@ -12,9 +12,10 @@
 
 
 
-class QgsProcessingAbstractParameterDefinitionWidget : QWidget
+
+class QgsProcessingAbstractParameterDefinitionWidget : QWidget, QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for widgets which allow users to specify the properties of a
 Processing parameter.
 
@@ -53,12 +54,48 @@ Common properties for parameters, including the ``name``, ``description``, and p
 method. Subclass implementations must use these properties when crafting a parameter definition which
 also respects the additional properties specific to the parameter type handled by the widget subclass.
 %End
+
+    virtual void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the Processing definition widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+Subclasses should take care to call the base class method when reimplementing this method.
+
+.. seealso:: :py:func:`widgetContext`
+
+.. versionadded:: 3.18
+%End
+
+    const QgsProcessingParameterWidgetContext &widgetContext() const;
+%Docstring
+Returns the context in which the Processing definition widget is shown, e.g., the
+parent model algorithm, a linked map canvas, and other relevant information which allows the widget
+to fine-tune its behavior.
+
+.. seealso:: :py:func:`setWidgetContext`
+
+.. versionadded:: 3.18
+%End
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to retrieve
+a Processing context for the widget when required.
+
+.. versionadded:: 3.18
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
 };
 
 
 class QgsProcessingParameterDefinitionWidget: QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget which allow users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10
@@ -98,11 +135,19 @@ Returns a new instance of a parameter definition, using the current settings def
 The ``name`` parameter specifies the name for the newly created parameter.
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to retrieve
+a Processing context for the widget when required.
+
+.. versionadded:: 3.18
+%End
+
 };
 
 class QgsProcessingParameterDefinitionDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A dialog which allow users to specify the properties of a Processing parameter.
 
 .. versionadded:: 3.10
@@ -181,6 +226,14 @@ Returns the color for the comments for the parameter.
     void switchToCommentTab();
 %Docstring
 Switches the dialog to the comments tab.
+%End
+
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Registers a Processing context ``generator`` class that will be used to retrieve
+a Processing context for the widget when required.
+
+.. versionadded:: 3.18
 %End
 
   public slots:

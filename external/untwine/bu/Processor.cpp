@@ -124,7 +124,7 @@ std::cerr << m_vi.key() << " Accepted/Rejected/num points = " <<
 **/
 
     // If this is the final key, append any remaining file infos as accepted points and
-    // write the accepted points as binary.
+    // write the accepted points as compressed.
     if (m_vi.key() == VoxelKey(0, 0, 0, 0))
     {
         appendRemainder(accepted);
@@ -138,6 +138,9 @@ std::cerr << m_vi.key() << " Accepted/Rejected/num points = " <<
 
 bool Processor::acceptable(int pointId, GridKey key)
 {
+    //ABELL - Currently unused - see commented-out code.
+    (void)pointId;
+
     VoxelInfo::Grid& grid = m_vi.grid();
 
     auto it = grid.find(key);
@@ -258,6 +261,9 @@ void Processor::writeCompressedOutput(Index& index)
     std::sort(index.begin(), index.end());
 
     IndexIter pos = index.begin();
+
+    // If any of our octants has points, we have to write the parent octant, whether or not
+    // it contains points, in order to create a full tree.
     for (int octant = 0; octant < 8; ++octant)
         if (m_vi[octant].hasPoints() || m_vi[octant].mustWrite())
         {
@@ -267,26 +273,47 @@ void Processor::writeCompressedOutput(Index& index)
 }
 
 
+// o        Octant we're writing.
+// index    Index of all rejected points that were rejected and not hoisted into the parent.
+// pos      Start position of this octant's point in the index.
+// \return  Position of the first point in the next octant of our index.
 Processor::IndexIter
 Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter pos)
 {
     auto begin = pos;
     pdal::PointTable table;
+    IndexedStats stats;
+
     //ABELL - fixme
     // For now we copy the dimension list so we're sure that it matches the layout, though
     // there's no reason why it should change. We should modify things to use a single
     // layout.
     DimInfoList dims = m_b.dimInfo;
     for (FileDimInfo& fdi : dims)
+    {
         fdi.dim = table.layout()->registerOrAssignDim(fdi.name, fdi.type);
+        if (m_b.stats)
+        {
+            if (fdi.dim == pdal::Dimension::Id::Classification)
+                stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::Enumerate, false)});
+            else
+                stats.push_back({fdi.dim, Stats(fdi.name, Stats::EnumType::NoEnum, false)});
+        }
+    }
     table.finalize();
+
     pdal::PointViewPtr view(new pdal::PointView(table));
 
+    // The octant's points can came from one or more FileInfo.  The points are sorted such
+    // all the points that come from a single FileInfo are consecutive.
     auto fii = o.fileInfos().begin();
     auto fiiEnd = o.fileInfos().end();
     size_t count = 0;
     if (fii != fiiEnd)
     {
+        // We're trying to find the range of points that come from a single FileInfo.
+        // If pos is the end of the index of the the current file info, append the points
+        // to the view.  Otherwise, advance the position.
         while (true)
         {
             if (pos == index.end() || *pos >= fii->start() + fii->numPoints())
@@ -296,6 +323,9 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
                 if (pos == index.end())
                     break;
                 begin = pos;
+
+                // Advance through file infos as long as we don't have points that
+                // correspond to it.
                 do
                 {
                     fii++;
@@ -309,14 +339,14 @@ Processor::writeOctantCompressed(const OctantInfo& o, Index& index, IndexIter po
 flush:
     try
     {
-        flushCompressed(table, view, o);
+        flushCompressed(table, view, o, stats);
     }
     catch (pdal::pdal_error& err)
     {
         fatal(err.what());
     }
 
-    m_manager.logOctant(o.key(), count);
+    m_manager.logOctant(o.key(), count, stats);
     return pos;
 }
 
@@ -338,13 +368,25 @@ void Processor::appendCompressed(pdal::PointViewPtr view, const DimInfoList& dim
     }
 }
 
-
 void Processor::flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr view,
-    const OctantInfo& oi)
+    const OctantInfo& oi, IndexedStats& stats)
 {
     using namespace pdal;
 
     std::string filename = m_b.outputDir + "/ept-data/" + oi.key().toString() + ".laz";
+
+    if (m_b.stats)
+    {
+        for (PointId id = 0; id < view->size(); ++id)
+        {
+            for (auto& sp : stats)
+            {
+                Dimension::Id dim = sp.first;
+                Stats& s = sp.second;
+                s.insert(view->getFieldAs<double>(dim, id));
+            }
+        }
+    }
 
     StageFactory factory;
 
@@ -352,13 +394,14 @@ void Processor::flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr vi
     r.addView(view);
 
     Stage *prev = &r;
+
     if (table.layout()->hasDim(Dimension::Id::GpsTime))
     {
         Stage *f = factory.createStage("filters.sort");
         pdal::Options fopts;
         fopts.add("dimension", "gpstime");
         f->setOptions(fopts);
-        f->setInput(r);
+        f->setInput(*prev);
         prev = f;
     }
 
@@ -368,6 +411,12 @@ void Processor::flushCompressed(pdal::PointTableRef table, pdal::PointViewPtr vi
     wopts.add("software_id", "Entwine 1.0");
     wopts.add("compression", "laszip");
     wopts.add("filename", filename);
+    wopts.add("offset_x", m_b.offset[0]);
+    wopts.add("offset_y", m_b.offset[1]);
+    wopts.add("offset_z", m_b.offset[2]);
+    wopts.add("scale_x", m_b.scale[0]);
+    wopts.add("scale_y", m_b.scale[1]);
+    wopts.add("scale_z", m_b.scale[2]);
     w->setOptions(wopts);
     w->setInput(*prev);
     // Set dataformat ID based on time/rgb, but for now accept the default.

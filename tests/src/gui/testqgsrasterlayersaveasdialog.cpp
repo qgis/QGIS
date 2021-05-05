@@ -15,6 +15,7 @@
 
 
 #include "qgstest.h"
+#include <QTemporaryFile>
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterlayersaveasdialog.h"
@@ -131,14 +132,15 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   options.driverName = QStringLiteral( "GPKG" );
   options.layerName = QStringLiteral( "test_vector_layer" );
   QString errorMessage;
-  QgsVectorFileWriter::writeAsVectorFormatV2(
+  QgsVectorFileWriter::writeAsVectorFormatV3(
     &vl,
     fileName,
     vl.transformContext(),
     options,
+    &errorMessage,
     nullptr,
-    nullptr,
-    &errorMessage );
+    nullptr
+  );
   QgsVectorLayer vl2( QStringLiteral( "%1|layername=test_vector_layer" ).arg( fileName ), "test_vector_layer", "ogr" );
   Q_ASSERT( vl2.isValid() );
   return tmpFile.fileName( );

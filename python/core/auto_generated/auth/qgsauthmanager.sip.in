@@ -15,11 +15,11 @@
 
 class QgsAuthManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Singleton offering an interface to manage the authentication configuration database
 and to utilize configurations through various authentication method plugins
 
-QgsAuthManager should not usually be directly created, but rather accessed through
+:py:class:`QgsAuthManager` should not usually be directly created, but rather accessed through
 :py:func:`QgsApplication.authManager()`.
 %End
 
@@ -353,7 +353,7 @@ Provider call to update a QNetworkReply with an authentication config (used to s
     bool updateDataSourceUriItems( QStringList &connectionItems /In,Out/, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 %Docstring
-Provider call to update a QgsDataSourceUri with an authentication config
+Provider call to update a :py:class:`QgsDataSourceUri` with an authentication config
 
 :param connectionItems: The connection items, e.g. username=myname, of :py:class:`QgsDataSourceUri`
 :param authcfg: Associated authentication config id
@@ -818,6 +818,9 @@ Clear an authentication config from its associated authentication method cache
   protected:
 
 
+
+  public:
+  protected:
 
 };
 

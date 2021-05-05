@@ -32,7 +32,7 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input,
   , mGrayBand( grayBand )
   , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
-  , mLegendSettings( qgis::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
 {
 }
 
@@ -75,7 +75,7 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
     r->setContrastEnhancement( ce );
   }
 
-  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = qgis::make_unique< QgsColorRampLegendNodeSettings >();
+  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
   legendSettings->readXml( elem, QgsReadWriteContext() );
   r->setLegendSettings( legendSettings.release() );
 
@@ -256,7 +256,7 @@ QList<int> QgsSingleBandGrayRenderer::usesBands() const
   return bandList;
 }
 
-void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );

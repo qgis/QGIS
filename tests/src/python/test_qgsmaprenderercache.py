@@ -15,7 +15,8 @@ import qgis  # NOQA
 from qgis.core import (QgsMapRendererCache,
                        QgsRectangle,
                        QgsVectorLayer,
-                       QgsProject)
+                       QgsProject,
+                       QgsMapToPixel)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImage
@@ -281,9 +282,36 @@ class TestQgsMapRendererCache(unittest.TestCase):
 
         # wait a second...
         sleep(1)
-        QCoreApplication.processEvents()
+        for i in range(100):
+            QCoreApplication.processEvents()
         # cache should be cleared
         self.assertFalse(cache.hasCacheImage('l1'))
+
+    def testSetCacheImageDifferentParams(self):
+        """
+        Test setting cache image with different parameters
+        """
+        cache = QgsMapRendererCache()
+        cache.updateParameters(QgsRectangle(1, 1, 3, 3), QgsMapToPixel(5))
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('im1', im, [])
+
+        self.assertEqual(cache.cacheImage('im1').width(), 200)
+
+        # if existing cached image exists with matching parameters, we don't store a new image -- old
+        # one should still be retained
+        im = QImage(201, 201, QImage.Format_RGB32)
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 4), QgsMapToPixel(5), [])
+        self.assertEqual(cache.cacheImage('im1').width(), 200)
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(6), [])
+        self.assertEqual(cache.cacheImage('im1').width(), 200)
+
+        # replace with matching parameters
+        cache.setCacheImageWithParameters('im1', im, QgsRectangle(1, 1, 3, 3), QgsMapToPixel(5), [])
+        self.assertEqual(cache.cacheImage('im1').width(), 201)
+        im = QImage(202, 202, QImage.Format_RGB32)
+        cache.setCacheImage('im1', im, [])
+        self.assertEqual(cache.cacheImage('im1').width(), 202)
 
 
 if __name__ == '__main__':

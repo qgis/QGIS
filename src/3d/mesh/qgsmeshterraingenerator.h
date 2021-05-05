@@ -52,7 +52,7 @@ class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
 
 /**
  * \ingroup 3d
- * Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
+ * \brief Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
  * \since QGIS 3.12
  */
 class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator

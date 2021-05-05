@@ -22,12 +22,14 @@
 
 class QgsGeometry;
 class QgsRectangle;
+class QgsAbstractGeometry;
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
- * Abstract base class for simplify geometries using a specific algorithm
+ * \brief Abstract base class for simplify geometries using a specific algorithm
  */
 class CORE_EXPORT QgsAbstractGeometrySimplifier
 {
@@ -36,6 +38,17 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 
     //! Returns a simplified version the specified geometry
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
+
+    /**
+     * Returns a simplified version the specified \a geometry.
+     *
+     * Will return NULLPTR if no simplification is to be performed to the geometry.
+     *
+     * Caller takes ownership of the returned geometry.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const = 0 SIP_FACTORY;
 
     // MapToPixel simplification helper methods
   public:
@@ -49,7 +62,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 
 /**
  * \ingroup core
- * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
+ * \brief Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  *
  * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
  * The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
@@ -65,6 +78,7 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
     QgsTopologyPreservingSimplifier( double tolerance );
 
     QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
   protected:
     //! Distance tolerance for the simplification

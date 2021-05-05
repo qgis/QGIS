@@ -44,7 +44,11 @@
 #include "qgsxmlutils.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 
+#include <QMessageBox>
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -82,7 +86,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
 
-      menu->addAction( tr( "Copy Group" ), QgisApp::instance(), &QgisApp::copyLayer );
+      menu->addAction( tr( "Co&py Group" ), QgisApp::instance(), &QgisApp::copyLayer );
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
       {
         QAction *actionPasteLayerOrGroup = new QAction( tr( "Paste Layer/Group" ), menu );
@@ -99,8 +103,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator();
 
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
-                       tr( "&Set Group CRS…" ), QgisApp::instance(), &QgisApp::legendGroupSetCrs );
-      menu->addAction( tr( "&Set Group WMS Data…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
+                       tr( "Set Group &CRS…" ), QgisApp::instance(), &QgisApp::legendGroupSetCrs );
+      menu->addAction( tr( "Set Group &WMS Data…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
 
       menu->addSeparator();
 
@@ -134,8 +138,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      QMenu *menuExportGroup = new QMenu( tr( "Export" ), menu );
-      QAction *actionSaveAsDefinitionGroup = new QAction( tr( "Save as Layer Definition File…" ), menuExportGroup );
+      QMenu *menuExportGroup = new QMenu( tr( "E&xport" ), menu );
+      QAction *actionSaveAsDefinitionGroup = new QAction( tr( "Save as Layer &Definition File…" ), menuExportGroup );
       connect( actionSaveAsDefinitionGroup, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
       menuExportGroup->addAction( actionSaveAsDefinitionGroup );
 
@@ -150,13 +154,30 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->isSpatial() )
       {
-        QAction *zoomToLayer = actions->actionZoomToLayer( mCanvas, menu );
-        zoomToLayer->setEnabled( layer->isValid() );
-        menu->addAction( zoomToLayer );
+
+        QAction *zoomToLayers = actions->actionZoomToLayers( mCanvas, menu );
+        zoomToLayers->setEnabled( layer->isValid() );
+        menu->addAction( zoomToLayers );
         if ( vlayer )
         {
+          const QList<QgsMapLayer *> selectedLayers = mView->selectedLayers();
+          bool hasSelectedFeature = false;
+          for ( const QgsMapLayer *layer : selectedLayers )
+          {
+
+            if ( const QgsVectorLayer *vLayer = qobject_cast<const QgsVectorLayer *>( layer ) )
+            {
+
+              if ( vLayer->selectedFeatureCount() > 0 )
+              {
+                hasSelectedFeature = true;
+                break;
+              }
+            }
+
+          }
           QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );
-          actionZoomSelected->setEnabled( vlayer->isValid() && !vlayer->selectedFeatureIds().isEmpty() );
+          actionZoomSelected->setEnabled( vlayer->isValid() && hasSelectedFeature );
           menu->addAction( actionZoomSelected );
         }
         menu->addAction( actions->actionShowInOverview( menu ) );
@@ -167,6 +188,15 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *showFeatureCount = actions->actionShowFeatureCount( menu );
         menu->addAction( showFeatureCount );
         showFeatureCount->setEnabled( vlayer->isValid() );
+
+        const QString iconName = vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" )
+                                 ? QStringLiteral( "labelingRuleBased.svg" )
+                                 : QStringLiteral( "labelingSingle.svg" );
+        QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
+        actionShowLabels->setCheckable( true );
+        actionShowLabels->setChecked( vlayer->labelsEnabled() );
+        connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
+        menu->addAction( actionShowLabels );
       }
 
       QAction *actionCopyLayer = new QAction( tr( "Copy Layer" ), menu );
@@ -177,7 +207,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer )
       {
-        QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
+        QAction *zoomToNative = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "Zoom to Nat&ive Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
         zoomToNative->setEnabled( rlayer->isValid() );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
@@ -234,7 +264,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgsSettings settings;
         QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
         const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
-        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
+        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open &Attribute Table" ),
                                         QgisApp::instance(), lambdaOpenAttributeTable );
         attributeTableAction->setEnabled( vlayer->isValid() );
 
@@ -259,7 +289,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( provider && provider->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
         }
       }
@@ -268,14 +298,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
            rlayer->dataProvider() &&
            rlayer->dataProvider()->supportsSubsetString() )
       {
-        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
       }
 
       // change data source is only supported for vectors and rasters, point clouds
       if ( vlayer || rlayer || pcLayer )
       {
 
-        QAction *a = new QAction( layer->isValid() ? tr( "Change Data Source…" ) : tr( "Repair Data Source…" ), menu );
+        QAction *a = new QAction( layer->isValid() ? tr( "C&hange Data Source…" ) : tr( "Repair Data Source…" ), menu );
         if ( !layer->isValid() )
           a->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
         // Disable when layer is editable
@@ -326,7 +356,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->isSpatial() )
       {
         // set layer scale visibility
-        menu->addAction( tr( "&Set Layer Scale Visibility…" ), QgisApp::instance(), &QgisApp::setLayerScaleVisibility );
+        menu->addAction( tr( "Set Layer Scale &Visibility…" ), QgisApp::instance(), &QgisApp::setLayerScaleVisibility );
 
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
@@ -396,7 +426,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         // set layer crs
         menuSetCRS->addSeparator();
-        QAction *actionSetLayerCrs = new QAction( tr( "Set Layer CRS…" ), menuSetCRS );
+        QAction *actionSetLayerCrs = new QAction( tr( "Set &Layer CRS…" ), menuSetCRS );
         connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
         menuSetCRS->addAction( actionSetLayerCrs );
 
@@ -405,57 +435,90 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( vlayer )
+      // export menu
+      if ( layer )
       {
-        if ( vlayer->isTemporary() )
+        switch ( layer->type() )
         {
-          QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
-          connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
-          menu->addAction( actionMakePermanent );
-        }
-        // save as vector file
-        QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save Features As…" ), menuExportVector );
-        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
-        actionSaveAs->setEnabled( vlayer->isValid() );
-        menuExportVector->addAction( actionSaveAs );
-        QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features As…" ), menuExportVector );
-        connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
-        actionSaveSelectedFeaturesAs->setEnabled( vlayer->isValid() && vlayer->selectedFeatureCount() > 0 );
-        menuExportVector->addAction( actionSaveSelectedFeaturesAs );
-        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportVector );
-        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
-        menuExportVector->addAction( actionSaveAsDefinitionLayer );
-        if ( vlayer->isSpatial() )
-        {
-          QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportVector );
-          connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
-          menuExportVector->addAction( actionSaveStyle );
-        }
-        menu->addMenu( menuExportVector );
-      }
-      else if ( rlayer )
-      {
-        QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save As…" ), menuExportRaster );
-        QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
-        QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
-        connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
-        menuExportRaster->addAction( actionSaveAs );
-        actionSaveAs->setEnabled( rlayer->isValid() );
-        connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
-        menuExportRaster->addAction( actionSaveAsDefinitionLayer );
-        connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
-        menuExportRaster->addAction( actionSaveStyle );
-        menu->addMenu( menuExportRaster );
-      }
-      else if ( layer && layer->type() == QgsMapLayerType::PluginLayer && mView->selectedLayerNodes().count() == 1 )
-      {
-        // disable duplication of plugin layers
-        duplicateLayersAction->setEnabled( false );
-      }
+          case QgsMapLayerType::VectorLayer:
+            if ( vlayer )
+            {
+              if ( vlayer->isTemporary() )
+              {
+                QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
+                connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
+                menu->addAction( actionMakePermanent );
+              }
+              // save as vector file
+              QMenu *menuExportVector = new QMenu( tr( "E&xport" ), menu );
+              QAction *actionSaveAs = new QAction( tr( "Save Features &As…" ), menuExportVector );
+              connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+              actionSaveAs->setEnabled( vlayer->isValid() );
+              menuExportVector->addAction( actionSaveAs );
+              QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save &Selected Features As…" ), menuExportVector );
+              connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
+              actionSaveSelectedFeaturesAs->setEnabled( vlayer->isValid() && vlayer->selectedFeatureCount() > 0 );
+              menuExportVector->addAction( actionSaveSelectedFeaturesAs );
+              QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportVector );
+              connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+              menuExportVector->addAction( actionSaveAsDefinitionLayer );
+              if ( vlayer->isSpatial() )
+              {
+                QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportVector );
+                connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+                menuExportVector->addAction( actionSaveStyle );
+              }
+              menu->addMenu( menuExportVector );
+            }
+            break;
 
-      menu->addSeparator();
+          case QgsMapLayerType::RasterLayer:
+            if ( rlayer )
+            {
+              QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
+              QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
+              QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
+              QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
+              connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+              menuExportRaster->addAction( actionSaveAs );
+              actionSaveAs->setEnabled( rlayer->isValid() );
+              connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+              menuExportRaster->addAction( actionSaveAsDefinitionLayer );
+              connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+              menuExportRaster->addAction( actionSaveStyle );
+              menu->addMenu( menuExportRaster );
+            }
+            break;
+
+          case QgsMapLayerType::MeshLayer:
+          case QgsMapLayerType::VectorTileLayer:
+          case QgsMapLayerType::PointCloudLayer:
+          {
+            QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
+            QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
+            QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
+            connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
+            menuExportRaster->addAction( actionSaveAsDefinitionLayer );
+            connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
+            menuExportRaster->addAction( actionSaveStyle );
+            menu->addMenu( menuExportRaster );
+          }
+          break;
+
+          case QgsMapLayerType::AnnotationLayer:
+            break;
+
+          case QgsMapLayerType::PluginLayer:
+            if ( mView->selectedLayerNodes().count() == 1 )
+            {
+              // disable duplication of plugin layers
+              duplicateLayersAction->setEnabled( false );
+            }
+            break;
+
+        }
+        menu->addSeparator();
+      }
 
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
@@ -609,6 +672,26 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
         }
+      }
+
+      QAction *notes = new QAction( QgsLayerNotesUtils::layerHasNotes( layer ) ? tr( "Edit Layer Notes…" ) : tr( "Add Layer Notes…" ), menu );
+      connect( notes, &QAction::triggered, this, [layer ]
+      {
+        QgsLayerNotesManager::editLayerNotes( layer, QgisApp::instance() );
+      } );
+      menu->addAction( notes );
+      if ( QgsLayerNotesUtils::layerHasNotes( layer ) )
+      {
+        QAction *notes = new QAction( tr( "Remove Layer Notes" ), menu );
+        connect( notes, &QAction::triggered, this, [layer ]
+        {
+          if ( QMessageBox::question( QgisApp::instance(),
+                                      tr( "Remove Layer Notes" ),
+                                      tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+            QgsLayerNotesUtils::removeNotes( layer );
+        } );
+        menu->addAction( notes );
       }
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
@@ -1081,5 +1164,47 @@ void QgsAppLayerTreeViewMenuProvider::setLayerCrs( const QgsCoordinateReferenceS
         nodeLayer->layer()->triggerRepaint();
       }
     }
+  }
+}
+
+void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
+{
+  const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
+  for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+  {
+    QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( l->layer() );
+    if ( !vlayer || !vlayer->isSpatial() )
+      continue;
+
+    if ( enabled && !vlayer->labeling() )
+    {
+      // no labeling setup - create default labeling for layer
+      QgsPalLayerSettings settings;
+      settings.fieldName = vlayer->displayField();
+      switch ( vlayer->geometryType() )
+      {
+        case QgsWkbTypes::PointGeometry:
+        case QgsWkbTypes::PolygonGeometry:
+          settings.placement = QgsPalLayerSettings::AroundPoint;
+          break;
+
+        case QgsWkbTypes::LineGeometry:
+          settings.placement = QgsPalLayerSettings::Line;
+          break;
+
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          break;
+      }
+
+      vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+      vlayer->setLabelsEnabled( true );
+    }
+    else
+    {
+      vlayer->setLabelsEnabled( enabled );
+    }
+    vlayer->emitStyleChanged();
+    vlayer->triggerRepaint();
   }
 }

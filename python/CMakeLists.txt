@@ -25,7 +25,7 @@ endif()
 
 # Non-default/non-option-controlled target to stage and compile plugins and extras
 add_custom_target(staged-plugins-pyc DEPENDS staged-plugins
-  COMMAND ${PYTHON_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
+  COMMAND ${Python_EXECUTABLE} -m compileall -q "${PYTHON_OUTPUT_DIRECTORY}"
   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
   COMMENT "Byte-compiling build output/python directory..."
 )
@@ -40,7 +40,7 @@ macro(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
   if(WITH_PY_COMPILE)
     add_custom_command(TARGET ${TARGET_NAME}
       POST_BUILD
-      COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
+      COMMAND ${Python_EXECUTABLE} -m compileall -q ${RESOURCE_PATHS}
       WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
       COMMENT "Byte-compiling staged resource..."
     )
@@ -51,7 +51,7 @@ endmacro(PY_COMPILE)
 macro(PY_2TO3 TARGET_NAME RESOURCE_PATHS)
   add_custom_command(TARGET ${TARGET_NAME}
     POST_BUILD
-    COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/2to3" --no-diffs -w ${RESOURCE_PATHS}
+    COMMAND "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/2to3" --no-diffs -w ${RESOURCE_PATHS}
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Porting ${RESOURCE_PATHS} to Python 3 and Qt5"
   )
@@ -69,7 +69,7 @@ add_subdirectory(testing)
 add_subdirectory(processing)
 
 include_directories(SYSTEM
-  ${PYTHON_INCLUDE_PATH}
+  ${Python_INCLUDE_DIRS}
   ${SIP_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
   ${QT_QTGUI_INCLUDE_DIR}
@@ -98,78 +98,16 @@ if (WITH_GUI)
 endif()
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/3d
-  ${CMAKE_SOURCE_DIR}/src/core/annotations
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/callouts
-  ${CMAKE_SOURCE_DIR}/src/core/classification
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/pal
-  ${CMAKE_SOURCE_DIR}/src/core/diagram
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/geocms
-  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/geocoding
-  ${CMAKE_SOURCE_DIR}/src/core/gps
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/locator
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/numericformats
-  ${CMAKE_SOURCE_DIR}/src/core/processing
-  ${CMAKE_SOURCE_DIR}/src/core/processing/models
-  ${CMAKE_SOURCE_DIR}/src/core/providers
-  ${CMAKE_SOURCE_DIR}/src/core/providers/arcgis
-  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
-  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/core/validity
-  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/analysis
 )
 
 if (WITH_GUI)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/gui
-    ${CMAKE_SOURCE_DIR}/src/gui/callouts
-    ${CMAKE_SOURCE_DIR}/src/gui/symbology
-    ${CMAKE_SOURCE_DIR}/src/gui/raster
-    ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-    ${CMAKE_SOURCE_DIR}/src/gui/auth
-    ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-    ${CMAKE_SOURCE_DIR}/src/gui/devtools
-    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-    ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-    ${CMAKE_SOURCE_DIR}/src/gui/effects
-    ${CMAKE_SOURCE_DIR}/src/gui/labeling
-    ${CMAKE_SOURCE_DIR}/src/gui/layertree
-    ${CMAKE_SOURCE_DIR}/src/gui/layout
-    ${CMAKE_SOURCE_DIR}/src/gui/mesh
-    ${CMAKE_SOURCE_DIR}/src/gui/locator
-    ${CMAKE_SOURCE_DIR}/src/gui/numericformats
-    ${CMAKE_SOURCE_DIR}/src/gui/processing
-    ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
-    ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-    ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-    ${CMAKE_SOURCE_DIR}/src/gui/vector
 
-    ${CMAKE_BINARY_DIR}/src/gui
   )
 endif()
 
@@ -224,6 +162,12 @@ GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
+  # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
+  add_definitions(-std=c++14)
+endif()
+
 if(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
   set(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
   add_definitions(-Dprotected=public)
@@ -262,13 +206,6 @@ endif()
 # 3D module
 if (WITH_3D)
   include_directories(
-    ${CMAKE_SOURCE_DIR}/src/3d
-    ${CMAKE_SOURCE_DIR}/src/3d/chunks
-    ${CMAKE_SOURCE_DIR}/src/3d/materials
-    ${CMAKE_SOURCE_DIR}/src/3d/processing
-    ${CMAKE_SOURCE_DIR}/src/3d/symbols
-    ${CMAKE_SOURCE_DIR}/src/3d/terrain
-    ${CMAKE_BINARY_DIR}/src/3d
     ${QT5_3DEXTRA_INCLUDE_DIR}
   )
   set(PY_MODULES ${PY_MODULES} 3d)
@@ -292,7 +229,6 @@ if (WITH_SERVER AND WITH_SERVER_PLUGINS)
   include_directories(
     ../src/server
    ${CMAKE_BINARY_DIR}/src/server
-   ${CMAKE_SOURCE_DIR}/external
   )
 
   set(PY_MODULES ${PY_MODULES} server)
@@ -313,16 +249,9 @@ endif()
 # additional analysis includes
 if(WITH_ANALYSIS)
   include_directories(BEFORE
-    ${CMAKE_SOURCE_DIR}/src/analysis
-    ${CMAKE_SOURCE_DIR}/src/analysis/processing
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector
-    ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
-    ${CMAKE_SOURCE_DIR}/src/analysis/mesh
-    ${CMAKE_SOURCE_DIR}/src/analysis/raster
-    ${CMAKE_SOURCE_DIR}/src/analysis/network
-    ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
+    ${CMAKE_BINARY_DIR}/src/analysis/georeferencing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
     ${CMAKE_BINARY_DIR}/src/analysis/mesh
     ${CMAKE_BINARY_DIR}/src/analysis/raster
@@ -344,7 +273,7 @@ if(WITH_ANALYSIS)
   BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 endif()
 
-set(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
+set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
 
 if(WITH_QSCIAPI)
   # wait until after python module builds for api files to be available
@@ -374,7 +303,7 @@ if(WITH_QSCIAPI)
   set(PAP_NAME "pyqgis.pap")
   add_custom_command(TARGET qsci-pap-src
     POST_BUILD
-    COMMAND ${PYTHON_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${APIS_SRC_DIR}/${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
+    COMMAND ${Python_EXECUTABLE} "${APIS_SRC_DIR}/generate_console_pap.py" "${APIS_SRC_DIR}/${PAP_NAME}" "${APIS_SRC_DIR}" "${APIS_BIN_DIR}"
     WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     COMMENT "Generating ${PAP_NAME} for console auto-completion (MAY TAKE > 1 MINUTE!)" VERBATIM)
 endif()

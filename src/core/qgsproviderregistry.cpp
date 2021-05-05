@@ -68,11 +68,11 @@ QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
 
 /**
  * Convenience function for finding any existing data providers that match "providerKey"
-
-  Necessary because [] map operator will create a QgsProviderMetadata
-  instance.  Also you cannot use the map [] operator in const members for that
-  very reason.  So there needs to be a convenient way to find a data provider
-  without accidentally adding a null meta data item to the metadata map.
+ *
+ * Necessary because [] map operator will create a QgsProviderMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find a data provider
+ * without accidentally adding a null meta data item to the metadata map.
 */
 static
 QgsProviderMetadata *findMetadata_( const QgsProviderRegistry::Providers &metaData,
@@ -117,6 +117,38 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   init();
 }
 
+///@cond PRIVATE
+class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriHandlerInterface
+{
+  public:
+    bool matchesUri( const QString &uri ) const override
+    {
+      const QFileInfo fi( uri );
+      if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+        return true;
+
+      return false;
+    }
+
+    QgsProviderRegistry::UnusableUriDetails details( const QString &uri ) const override
+    {
+      QgsProviderRegistry::UnusableUriDetails res = QgsProviderRegistry::UnusableUriDetails( uri,
+          QObject::tr( "LAS and LAZ files cannot be opened by this QGIS install." ),
+          QList<QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer );
+
+#ifdef Q_OS_WIN
+      res.detailedWarning = QObject::tr( "The installer used to install this version of QGIS does "
+                                         "not include the PDAL library required for opening LAS and LAZ point clouds. Please "
+                                         "obtain one of the alternative installers from https://qgis.org which has point "
+                                         "cloud support enabled." );
+#else
+      res.detailedWarning = QObject::tr( "This QGIS build does not include the PDAL library dependency required for opening LAS or LAZ point clouds." );
+#endif
+      return res;
+    }
+};
+///@endcond
+
 void QgsProviderRegistry::init()
 {
   // add static providers
@@ -150,6 +182,9 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
+
+  registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
+
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
@@ -337,7 +372,7 @@ void QgsProviderRegistry::init()
   {
     pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
     pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
-    mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
+    mPointCloudFileFilters = pointCloudFilters.join( QLatin1String( ";;" ) );
   }
 
   // load database drivers (only OGR)
@@ -379,6 +414,8 @@ bool QgsProviderRegistry::exists()
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  qDeleteAll( mUnusableUriHandlers );
+
   clean();
   if ( sInstance == this )
     sInstance = nullptr;
@@ -624,6 +661,17 @@ QString QgsProviderRegistry::loadStyle( const QString &providerKey, const QStrin
   return ret;
 }
 
+bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  errorMessage.clear();
+  if ( QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey ) )
+    return meta->saveLayerMetadata( uri, metadata, errorMessage );
+  else
+  {
+    throw QgsNotSupportedException( QObject::tr( "Unable to load %1 provider" ).arg( providerKey ) );
+  }
+}
+
 bool QgsProviderRegistry::createDb( const QString &providerKey, const QString &dbPath, QString &errCause )
 {
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
@@ -805,6 +853,25 @@ QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::prefer
     }
   }
   return res;
+}
+
+bool QgsProviderRegistry::registerUnusableUriHandler( QgsProviderRegistry::UnusableUriHandlerInterface *handler )
+{
+  mUnusableUriHandlers << handler;
+  return true;
+}
+
+bool QgsProviderRegistry::handleUnusableUri( const QString &uri, UnusableUriDetails &details ) const
+{
+  for ( const QgsProviderRegistry::UnusableUriHandlerInterface *handler : mUnusableUriHandlers )
+  {
+    if ( handler->matchesUri( uri ) )
+    {
+      details = handler->details( uri );
+      return true;
+    }
+  }
+  return false;
 }
 
 bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const

@@ -29,6 +29,8 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsmaplayerfactory.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -41,6 +43,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QProgressDialog>
+#include <QUrlQuery>
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
@@ -78,9 +81,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   , mLayers( layers )
 {
   setupUi( this );
-
-  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
-  mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
   mBrowseButton = new QPushButton( tr( "Browse" ) );
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );
@@ -121,37 +121,44 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   {
     const QDomNode &node = mLayers[i];
 
-    QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
-    QString type = node.toElement().attribute( QStringLiteral( "type" ) );
-    QString id = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
-    QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
-    const QString basepath = QFileInfo( datasource ).absolutePath();
-    mOriginalFileBase[ node.namedItem( QStringLiteral( "id" ) ).toElement().text() ].append( basepath );
+    const QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
+    const QString type = node.toElement().attribute( QStringLiteral( "type" ) );
+    const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
+    const QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
+    const QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
 
-    QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
-                 .arg( name,
-                       type,
-                       vectorProvider,
-                       datasource ) );
+    bool providerFileBased = false;
+    if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider ) )
+      providerFileBased = metadata->providerCapabilities() & QgsProviderMetadata::FileBasedUris;
+
+    const QString basepath = QFileInfo( datasource ).absolutePath();
+    mOriginalFileBase[ layerId ].append( basepath );
+
+    QgsDebugMsgLevel( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
+                      .arg( name,
+                            type,
+                            provider,
+                            datasource ), 2 );
 
     mLayerList->setRowCount( j + 1 );
 
     QTableWidgetItem *item = nullptr;
 
+    bool ok = false;
     item = new QTableWidgetItem( name );
     item->setData( static_cast< int >( CustomRoles::Index ), i );
+    item->setData( static_cast< int >( CustomRoles::Provider ), provider );
+    item->setData( static_cast< int >( CustomRoles::ProviderIsFileBased ), providerFileBased );
+    item->setData( static_cast< int >( CustomRoles::LayerId ), layerId );
+    item->setData( static_cast< int >( CustomRoles::LayerType ), static_cast< int >( QgsMapLayerFactory::typeFromString( type, ok ) ) );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 0, item );
 
     item = new QTableWidgetItem( type );
-    item->setData( static_cast< int >( CustomRoles::ProviderIsFileBased ), providerFileBased );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 1, item );
 
-    item = new QTableWidgetItem( vectorProvider );
+    item = new QTableWidgetItem( provider );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     mLayerList->setItem( j, 2, item );
 
@@ -182,41 +189,20 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
 
 void QgsHandleBadLayers::selectionChanged()
 {
-
-  mRows.clear();
-
-  const auto constSelectedItems = mLayerList->selectedItems();
-  for ( QTableWidgetItem *item : constSelectedItems )
-  {
-    if ( item->column() != 0 )
-      continue;
-
-    const bool providerFileBased = mLayerList->item( item->row(), 1 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
-    if ( !providerFileBased )
-      continue;
-
-    mRows << item->row();
-  }
-
-  mBrowseButton->setEnabled( !mRows.isEmpty() );
+  mBrowseButton->setEnabled( !fileBasedRows( true ).isEmpty() );
 }
 
 QString QgsHandleBadLayers::filename( int row )
 {
-  QString type = mLayerList->item( row, 1 )->text();
-  QString provider = mLayerList->item( row, 2 )->text();
-  QString datasource = mLayerList->item( row, 4 )->text();
+  const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+  if ( !providerFileBased )
+    return QString();
 
-  if ( type == QLatin1String( "vector" ) )
-  {
-    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-    // if parts is empty then provider doesn't handle this method!
-    return parts.empty() ? datasource : parts.value( QStringLiteral( "path" ) ).toString();
-  }
-  else
-  {
-    return datasource;
-  }
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
+  const QString datasource = mLayerList->item( row, 4 )->text();
+
+  const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+  return parts.value( QStringLiteral( "path" ) ).toString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )
@@ -224,60 +210,95 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
   if ( !QFileInfo::exists( filename ) )
     return;
 
-  QString type = mLayerList->item( row, 1 )->text();
-  QString provider = mLayerList->item( row, 2 )->text();
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
   QTableWidgetItem *item = mLayerList->item( row, 4 );
 
-  QString datasource = item->text();
+  const QString datasource = item->text();
 
-  if ( type == QLatin1String( "vector" ) )
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+  parts.insert( QStringLiteral( "path" ), filename );
+
+  item->setText( QgsProviderRegistry::instance()->encodeUri( provider, parts ) );
+}
+
+QList< int > QgsHandleBadLayers::fileBasedRows( bool selectedOnly )
+{
+  QList< int > res;
+  if ( selectedOnly )
   {
-    if ( provider == QLatin1String( "spatialite" ) )
+    const QList<QTableWidgetItem *> selectedItems = mLayerList->selectedItems();
+
+    for ( QTableWidgetItem *item : selectedItems )
     {
-      QgsDataSourceUri uri( datasource );
-      uri.setDatabase( filename );
-      datasource = uri.uri();
+      if ( item->column() != 0 )
+        continue;
+
+      const bool providerFileBased = mLayerList->item( item->row(), 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+      if ( !providerFileBased )
+        continue;
+
+      res << item->row();
     }
-    else if ( provider == QLatin1String( "ogr" ) )
-    {
-      QStringList theURIParts = datasource.split( '|' );
-      theURIParts[0] = filename;
-      datasource = theURIParts.join( QLatin1Char( '|' ) );
-    }
-    else if ( provider == QLatin1String( "delimitedtext" ) )
-    {
-      QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
-      QUrl uriDest = QUrl::fromLocalFile( filename );
-      uriDest.setQuery( QUrlQuery( uriSource ) );
-      datasource = QString::fromLatin1( uriDest.toEncoded() );
-    }
+
   }
   else
   {
-    datasource = filename;
-  }
+    for ( int row = 0; row < mLayerList->rowCount(); row++ )
+    {
+      const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+      if ( !providerFileBased )
+        continue;
 
-  item->setText( datasource );
+      res << row;
+    }
+  }
+  return res;
 }
 
 void QgsHandleBadLayers::browseClicked()
 {
+  const QList< int > selectedRows = fileBasedRows( true );
 
-  if ( mRows.size() == 1 )
+  if ( selectedRows.empty() )
+    return;
+
+  if ( selectedRows.size() == 1 )
   {
-    int row = mRows.at( 0 );
-    QString type = mLayerList->item( row, 1 )->text();
+    int row = selectedRows.at( 0 );
 
-    QString memoryQualifier, fileFilter;
-    if ( type == QLatin1String( "vector" ) )
+    QString memoryQualifier;
+
+    const QgsMapLayerType layerType = static_cast< QgsMapLayerType >( mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::LayerType ) ).toInt() );
+    const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
+
+    QString fileFilter;
+    switch ( layerType )
     {
-      memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
-      fileFilter = mVectorFileFilter;
-    }
-    else
-    {
-      memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
-      fileFilter = mRasterFileFilter;
+      case QgsMapLayerType::VectorLayer:
+        memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterVector );
+        break;
+      case QgsMapLayerType::RasterLayer:
+        memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterRaster );
+        break;
+      case QgsMapLayerType::MeshLayer:
+        memoryQualifier = QStringLiteral( "lastMeshFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->fileMeshFilters();
+        break;
+      case QgsMapLayerType::VectorTileLayer:
+        memoryQualifier = QStringLiteral( "lastVectorTileFileFilter" );
+        // not quite right -- but currently there's no generic method to get vector tile filters...
+        fileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
+        break;
+      case QgsMapLayerType::PointCloudLayer:
+        memoryQualifier = QStringLiteral( "lastPointCloudFileFilter" );
+        fileFilter = QgsProviderRegistry::instance()->providerMetadata( provider )->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+        break;
+
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PluginLayer:
+        break;
     }
 
     QString fn = filename( row );
@@ -297,7 +318,7 @@ void QgsHandleBadLayers::browseClicked()
 
     setFilename( row, selectedFiles[0] );
   }
-  else if ( mRows.size() > 1 )
+  else
   {
     QString title = tr( "Select New Directory of Selected Files" );
 
@@ -315,9 +336,9 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    for ( int row : qgis::as_const( mRows ) )
+    for ( int row : selectedRows )
     {
-      const bool providerFileBased = mLayerList->item( row, 1 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+      const bool providerFileBased = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
       if ( !providerFileBased )
         continue;
 
@@ -351,9 +372,7 @@ void QgsHandleBadLayers::editAuthCfg()
   if ( row == -1 )
     return;
 
-  QString provider = mLayerList->item( row, 2 )->text();
-  if ( provider == QLatin1String( "none" ) )
-    provider.clear();
+  const QString provider = mLayerList->item( row, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
   QString prevuri = mLayerList->item( row, 4 )->text();
 
@@ -382,36 +401,26 @@ void QgsHandleBadLayers::apply()
 
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
-    QString fileName;
-    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString layerId = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::LayerId ) ).toString();
     const QString name { mLayerList->item( i, 0 )->text() };
-    const QFileInfo dataInfo = QFileInfo( datasource );
-    const QString basepath = dataInfo.absoluteDir().path();
-    const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    const QString fileType = mLayerList->item( i, 2 )->text();
-    if ( provider.toLower().toStdString() == "none" )
-    {
-      if ( fileType.toStdString() == "raster" )
-        provider = QStringLiteral( "gdal" );
-      else if ( fileType.toStdString() == "vector" )
-        provider = QStringLiteral( "ogr" );
-      else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
-        provider = QStringLiteral( "mdal" );
-    }
+    const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
-    QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) )
-      fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
-    else
+    const bool dataSourceWasAutoRepaired = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::DataSourceWasAutoRepaired ) ).toBool();
+    const bool providerFileBased = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::ProviderIsFileBased ) ).toBool();
+    if ( providerFileBased && !dataSourceWasAutoRepaired )
     {
-      fileName = longName;
-    }
+      QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+      const QString filePath = providerMap[ QStringLiteral( "path" ) ].toString();
+      const QFileInfo dataInfo = QFileInfo( filePath );
 
-    const QVariant dataSourceIsChanged = item->data( static_cast< int >( CustomRoles::DataSourceIsChanged ) );
-    if ( !( dataSourceIsChanged.isValid() && dataSourceIsChanged.toBool() ) )
-    {
-      datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ).replace( fileName, longName ) );
+      bool fixedPath = false;
+      const QString correctedPath = checkBasepath( layerId, dataInfo.absoluteDir().path(), dataInfo.fileName(), fixedPath );
+      if ( fixedPath && correctedPath != filePath )
+      {
+        // re-encode uri for provider
+        providerMap.insert( QStringLiteral( "path" ), correctedPath );
+        datasource = QgsProviderRegistry::instance()->encodeUri( provider, providerMap );
+      }
     }
 
     bool dataSourceChanged { false };
@@ -515,28 +524,34 @@ int QgsHandleBadLayers::layerCount()
   return mLayerList->rowCount();
 }
 
-QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName )
+QString QgsHandleBadLayers::checkBasepath( const QString &layerId, const QString &newPath, const QString &fileName, bool &foundPath )
 {
+  foundPath = false;
   const QString originalBase = mOriginalFileBase.value( layerId );
   const QDir newpathDir = QDir( newPath );
   bool exists = newpathDir.exists( fileName );
   if ( exists )
   {
+    foundPath = true;
     const QString newBasepath = newpathDir.absolutePath();
     if ( !mAlternativeBasepaths.value( originalBase ).contains( newBasepath ) )
       mAlternativeBasepaths[ originalBase ].append( newBasepath );
-    return ( newPath );
+    return newpathDir.filePath( fileName );
   }
   else if ( mAlternativeBasepaths.contains( originalBase ) )
   {
     const QStringList altPaths = mAlternativeBasepaths.value( originalBase );
     for ( const QString &altPath : altPaths )
     {
-      if ( QFileInfo::exists( altPath + fileName ) && QFileInfo( altPath + fileName ).isFile() )
-        return ( altPath + fileName );
+      QDir altDir( altPath );
+      if ( altDir.exists( fileName ) && QFileInfo( altDir.filePath( fileName ) ).isFile() )
+      {
+        foundPath = true;
+        return altDir.filePath( fileName );
+      }
     }
   }
-  return ( mOriginalFileBase.value( layerId ) );
+  return mOriginalFileBase.value( layerId );
 }
 
 void QgsHandleBadLayers::autoFind()
@@ -544,18 +559,11 @@ void QgsHandleBadLayers::autoFind()
   QDir::setCurrent( QgsProject::instance()->absolutePath() );
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
 
-  QList<int> layersToFind;
-  if ( mRows.size() > 0 )
-    layersToFind = mRows;
-  else
-  {
-    for ( int i = 0; i < mLayerList->rowCount(); i++ )
-      layersToFind.append( i );
-  }
+  const QList<int> layersToFind = fileBasedRows( !mLayerList->selectedItems().isEmpty() );
 
-  QProgressDialog progressDialog( QObject::tr( "Searching files" ), 0, 1, layersToFind.size(), this, Qt::Dialog );
+  QProgressDialog progressDialog( QObject::tr( "Searching files" ), QObject::tr( "Cancel" ), 1, layersToFind.size(), this, Qt::Dialog );
 
-  for ( int i : qgis::as_const( layersToFind ) )
+  for ( int i : std::as_const( layersToFind ) )
   {
     const int idx = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Index ) ).toInt();
     QDomNode &node = const_cast<QDomNode &>( mLayers[ idx ] );
@@ -563,13 +571,12 @@ void QgsHandleBadLayers::autoFind()
     QTableWidgetItem *item = mLayerList->item( i, 4 );
     QString datasource = item->text();
     QString fileName;
-    const QString layerId { node.namedItem( QStringLiteral( "id" ) ).toElement().text() };
+    const QString layerId = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::LayerId ) ).toString();
     const QString name { mLayerList->item( i, 0 )->text() };
     const QFileInfo dataInfo = QFileInfo( datasource );
     const QString basepath = dataInfo.absoluteDir().path();
     const QString longName = dataInfo.fileName();
-    QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
-    const QString fileType = mLayerList->item( i, 2 )->text();
+    const QString provider = mLayerList->item( i, 0 )->data( static_cast< int >( CustomRoles::Provider ) ).toString();
 
     progressDialog.setValue( i );
     QChar sentenceEnd = ( name.length() > 15 ) ? QChar( 0x2026 ) : '.';
@@ -577,15 +584,6 @@ void QgsHandleBadLayers::autoFind()
                                  QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
     progressDialog.open();
 
-    if ( provider.toLower() == QLatin1String( "none" ) )
-    {
-      if ( fileType == QLatin1String( "raster" ) )
-        provider = QStringLiteral( "gdal" );
-      else if ( fileType == QLatin1String( "vector" ) )
-        provider = QStringLiteral( "ogr" );
-      else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
-        provider = QStringLiteral( "mdal" );
-    }
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
     if ( providerMap.contains( QStringLiteral( "path" ) ) )
       fileName = QFileInfo( providerMap[ QStringLiteral( "path" ) ].toString() ).fileName();
@@ -595,7 +593,8 @@ void QgsHandleBadLayers::autoFind()
       continue;
     }
 
-    datasource = QDir::toNativeSeparators( checkBasepath( layerId, basepath, fileName ) );
+    bool fixedPath = false;
+    datasource = checkBasepath( layerId, basepath, fileName, fixedPath );
 
     bool dataSourceChanged { false };
 
@@ -629,7 +628,6 @@ void QgsHandleBadLayers::autoFind()
           datasource = tdatasource;
       }
 
-      datasource = QDir::toNativeSeparators( datasource );
       if ( QgsProject::instance()->mapLayer( layerId ) && !( datasource.isEmpty() ) )
       {
         QgsDataProvider::ProviderOptions options;
@@ -643,7 +641,7 @@ void QgsHandleBadLayers::autoFind()
       if ( dataSourceChanged )
       {
         QString cleanSrc = QFileInfo( datasource ).absoluteDir().absolutePath();
-        checkBasepath( layerId, cleanSrc, fileName );
+        checkBasepath( layerId, cleanSrc, fileName, fixedPath );
       }
     }
 
@@ -655,7 +653,7 @@ void QgsHandleBadLayers::autoFind()
       setFilename( i, datasource );
       item->setText( datasource );
       item->setForeground( QBrush( Qt::green ) );
-      item->setData( static_cast< int >( CustomRoles::DataSourceIsChanged ), QVariant( true ) );
+      mLayerList->item( i, 0 )->setData( static_cast< int >( CustomRoles::DataSourceWasAutoRepaired ), QVariant( true ) );
     }
     else
     {

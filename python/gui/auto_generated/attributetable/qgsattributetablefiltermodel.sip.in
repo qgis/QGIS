@@ -44,7 +44,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 Make sure, the master model is already loaded, so the selection will get synchronized.
 
 :param parent: parent object (owner)
-:param sourceModel: The QgsAttributeTableModel to use as source (mostly referred to as master model)
+:param sourceModel: The :py:class:`QgsAttributeTableModel` to use as source (mostly referred to as master model)
 :param canvas: The mapCanvas. Used to identify the currently visible features.
 %End
 
@@ -275,7 +275,7 @@ Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
 
 .. deprecated:: QGIS 3.10.3
-   - made private as reloadVisible()
+   - made private as :py:func:`~QgsAttributeTableFilterModel.reloadVisible`
 %End
 
     void filterFeatures();

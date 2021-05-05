@@ -21,11 +21,13 @@
 #include "qgis_core.h"
 #include "qgsrectangle.h"
 
+#include <QVector3D>
+
 class QgsPoint;
 
 /**
  * \ingroup core
- * A 3-dimensional box composed of x, y, z coordinates.
+ * \brief A 3-dimensional box composed of x, y, z coordinates.
  *
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.
@@ -202,6 +204,14 @@ class CORE_EXPORT QgsBox3d
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
+
+    /**
+     * Returns the smallest distance between the box and the point \a point
+     * (returns 0 if the point is inside the box)
+     *
+     * \since QGIS 3.18
+     */
+    double distanceTo( const  QVector3D &point ) const;
 
     bool operator==( const QgsBox3d &other ) const;
 

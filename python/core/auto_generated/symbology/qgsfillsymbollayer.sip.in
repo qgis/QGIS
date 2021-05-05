@@ -27,7 +27,7 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
                             );
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsSimpleFillSymbolLayer.properties`).
 
@@ -48,13 +48,13 @@ Caller takes ownership of the returned symbol layer.
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
@@ -235,7 +235,7 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
     ~QgsGradientFillSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsGradientFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsGradientFillSymbolLayer.properties`).
 
@@ -245,23 +245,19 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
-
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
-    virtual QgsStringMap properties() const;
-
+    virtual QVariantMap properties() const;
 
     virtual QgsGradientFillSymbolLayer *clone() const /Factory/;
 
-
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
     GradientType gradientType() const;
@@ -440,7 +436,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsShapeburstFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsShapeburstFillSymbolLayer.properties`).
 
@@ -450,23 +446,19 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
-
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
-    virtual QgsStringMap properties() const;
-
+    virtual QVariantMap properties() const;
 
     virtual QgsShapeburstFillSymbolLayer *clone() const /Factory/;
 
-
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
     void setBlurRadius( int blurRadius );
@@ -579,7 +571,7 @@ Returns the unit for the maximum distance to shade inside of the shape from the 
 
     void setColorType( ShapeburstColorType colorType );
 %Docstring
-Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
 
 :param colorType: color type to use for shapeburst fill
@@ -597,7 +589,7 @@ or by simply specificing a start and end color. setColorType is used to specify 
 
     ShapeburstColorType colorType() const;
 %Docstring
-Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a :py:class:`QgsColorRamp` color ramp
 or by simply specificing a start and end color.
 
 :return: current color mode used for the shapeburst fill
@@ -630,7 +622,7 @@ Ownership of ``ramp`` is transferred to the fill.
 %Docstring
 Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType.ColorRamp
 
-:return: a QgsColorRamp color ramp
+:return: a :py:class:`QgsColorRamp` color ramp
 
 .. seealso:: :py:func:`setColorRamp`
 
@@ -761,7 +753,7 @@ Returns the units used for the offset of the shapeburst fill.
 
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for polygon renderers generating texture images
 %End
 
@@ -859,7 +851,7 @@ Returns ``True`` if the image brush should be transformed using the render conte
 
 class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated raster image.
 
 .. versionadded:: 2.7
@@ -882,13 +874,13 @@ Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
 specified ``imageFilePath``.
 %End
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The caller takes
 ownership of the returned object.
 %End
 
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -904,7 +896,7 @@ Used internally when reading/writing symbols.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsRasterFillSymbolLayer *clone() const /Factory/;
 
@@ -1141,7 +1133,7 @@ Returns the map unit scale for the image's width.
 
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A class for filling symbols with a repeated SVG file.
 %End
 
@@ -1160,7 +1152,7 @@ Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified ab
 Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
 %End
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsSVGFillSymbolLayer from a ``properties`` map. The caller takes
 ownership of the returned object.
@@ -1172,7 +1164,7 @@ Creates a new QgsSVGFillSymbolLayer from a SLD ``element``. The caller takes
 ownership of the returned object.
 %End
 
-    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+    static void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
 Turns relative paths in properties map to absolute when reading and vice versa when writing.
 Used internally when reading/writing symbols.
@@ -1187,11 +1179,11 @@ Used internally when reading/writing symbols.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
 
@@ -1414,6 +1406,20 @@ Returns the map unit scale for the pattern's stroke.
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
+    QMap<QString, QgsProperty> parameters() const;
+%Docstring
+Returns the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
+    void setParameters( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Sets the dynamic SVG parameters
+
+.. versionadded:: 3.18
+%End
+
   protected:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
@@ -1423,7 +1429,7 @@ Returns the map unit scale for the pattern's stroke.
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol fill consisting of repeated parallel lines.
 %End
 
@@ -1434,7 +1440,7 @@ A symbol fill consisting of repeated parallel lines.
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsLinePatternFillSymbolLayer from a ``properties`` map. The caller takes
 ownership of the returned object.
@@ -1452,11 +1458,11 @@ ownership of the returned object.
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -1702,7 +1708,7 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsPointPatternFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsPointPatternFillSymbolLayer.properties`).
 
@@ -1720,13 +1726,13 @@ Caller takes ownership of the returned symbol layer.
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 
     virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
@@ -2016,7 +2022,7 @@ Returns the unit scale for the vertical offset between rows in the pattern.
 
 class QgsRandomMarkerFillSymbolLayer : QgsFillSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 A fill symbol layer which places markers at random locations within polygons.
 
@@ -2042,7 +2048,7 @@ Optionally a specific random number ``seed`` can be used when generating points.
 a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
 %End
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
 
@@ -2057,9 +2063,11 @@ Caller takes ownership of the returned symbol layer.
 
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
     virtual QgsRandomMarkerFillSymbolLayer *clone() const /Factory/;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
     virtual void setColor( const QColor &color );
@@ -2226,7 +2234,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     QgsCentroidFillSymbolLayer();
 
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsCentroidFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsCentroidFillSymbolLayer.properties`).
 
@@ -2237,34 +2245,25 @@ Caller takes ownership of the returned symbol layer.
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
-
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-
-    virtual QgsStringMap properties() const;
-
+    virtual QVariantMap properties() const;
 
     virtual QgsCentroidFillSymbolLayer *clone() const /Factory/;
 
-
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
-
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual void setColor( const QColor &color );
 
     virtual QColor color() const;
 
-
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
-
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -2272,15 +2271,15 @@ Caller takes ownership of the returned symbol layer.
 
     virtual bool usesMapUnits() const;
 
-
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     virtual bool hasDataDefinedProperties() const;
+
+    virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
     void setPointOnSurface( bool pointOnSurface );

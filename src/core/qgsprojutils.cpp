@@ -21,13 +21,9 @@
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
+#include <QDate>
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
-#else
-#include <proj_api.h>
-#endif
-
 
 #if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
 thread_local QgsProjContext QgsProjContext::sProjContext;
@@ -37,24 +33,16 @@ QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
 
 QgsProjContext::QgsProjContext()
 {
-#if PROJ_VERSION_MAJOR>=6
   mContext = proj_context_create();
-#else
-  mContext = pj_ctx_alloc();
-#endif
 }
 
 QgsProjContext::~QgsProjContext()
 {
-#if PROJ_VERSION_MAJOR>=6
   // Call removeFromCacheObjectsBelongingToCurrentThread() before
   // destroying the context
   QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
-#else
-  pj_ctx_free( mContext );
-#endif
 }
 
 PJ_CONTEXT *QgsProjContext::get()
@@ -76,7 +64,6 @@ PJ_CONTEXT *QgsProjContext::get()
 #endif
 }
 
-#if PROJ_VERSION_MAJOR>=6
 void QgsProjUtils::ProjPJDeleter::operator()( PJ *object )
 {
   proj_destroy( object );
@@ -256,10 +243,10 @@ bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
 
 QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
 {
-  static QRegularExpression sRegex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
+  const thread_local QRegularExpression regex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
 
   QList< QgsDatumTransform::GridDetails > grids;
-  QRegularExpressionMatchIterator matches = sRegex.globalMatch( proj );
+  QRegularExpressionMatchIterator matches = regex.globalMatch( proj );
   while ( matches.hasNext() )
   {
     const QRegularExpressionMatch match = matches.next();
@@ -308,11 +295,55 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 }
 #endif
 
-#endif
+int QgsProjUtils::projVersionMajor()
+{
+  return PROJ_VERSION_MAJOR;
+}
+
+QString QgsProjUtils::epsgRegistryVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "EPSG.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::epsgRegistryDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "EPSG.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::esriDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "ESRI.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::esriDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "ESRI.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::ignfDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "IGNF.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::ignfDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "IGNF.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
 
 QStringList QgsProjUtils::searchPaths()
 {
-#if PROJ_VERSION_MAJOR>=6
   const QString path( proj_info().searchpath );
   QStringList paths;
 #ifdef Q_OS_WIN
@@ -325,7 +356,7 @@ QStringList QgsProjUtils::searchPaths()
   // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
   QStringList res;
   res.reserve( paths.count() );
-  for ( const QString &p : qgis::as_const( paths ) )
+  for ( const QString &p : std::as_const( paths ) )
   {
     if ( existing.contains( p ) )
       continue;
@@ -334,7 +365,4 @@ QStringList QgsProjUtils::searchPaths()
     res << p;
   }
   return res;
-#else
-  return QStringList();
-#endif
 }

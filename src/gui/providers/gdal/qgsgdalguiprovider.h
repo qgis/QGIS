@@ -25,6 +25,7 @@ class QgsProviderMetadata;
 #include "qgsgdalsourceselect.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsproviderguiregistry.h"
+#include "qgsprovidersourcewidgetprovider.h"
 #include <QObject>
 #include <QPointer>
 
@@ -49,12 +50,22 @@ class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     void onDeleteLayer( QgsDataItemGuiContext context );
 };
 
+class QgsGdalSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+{
+  public:
+    QgsGdalSourceWidgetProvider();
+    QString providerKey() const override;
+    bool canHandleLayer( QgsMapLayer *layer ) const override;
+    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
+};
+
 class QgsGdalGuiProviderMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsGdalGuiProviderMetadata();
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
 };
 
 ///@endcond

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServerSettings.
 
+From build dir, run: ctest -R PyQgsServerSettings -V
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -83,20 +85,6 @@ class TestQgsServerSettings(unittest.TestCase):
         os.environ[env] = "/tmp/myproject2.qgs"
         self.settings.load()
         self.assertEqual(self.settings.projectFile(), "/tmp/myproject2.qgs")
-        os.environ.pop(env)
-
-    def test_env_max_cache_layers(self):
-        env = "MAX_CACHE_LAYERS"
-
-        # test parallel rendering value from environment variable
-        os.environ[env] = "3"
-        self.settings.load()
-        self.assertEqual(self.settings.maxCacheLayers(), 3)
-        os.environ.pop(env)
-
-        os.environ[env] = "100"
-        self.settings.load()
-        self.assertEqual(self.settings.maxCacheLayers(), 100)
         os.environ.pop(env)
 
     def test_env_max_threads(self):

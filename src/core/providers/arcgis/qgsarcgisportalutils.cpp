@@ -26,7 +26,7 @@ QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl,
     endPoint.chop( 1 );
 
   if ( user.isEmpty() )
-    endPoint += QStringLiteral( "/self" );
+    endPoint += QLatin1String( "/self" );
   else
     endPoint += QStringLiteral( "/users/" ) + user;
 

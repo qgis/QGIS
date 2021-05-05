@@ -182,7 +182,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -1127,7 +1127,7 @@
    </property>
   </action>
   <action name="mActionShowPage">
-   <property name="checkable">q
+   <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
@@ -1551,7 +1551,7 @@
   </action>
   <action name="mActionPageSetup">
    <property name="text">
-    <string>Pa&amp;ge Setup…</string>
+    <string>Printer Pa&amp;ge Setup…</string>
    </property>
    <property name="toolTip">
     <string>Page setup</string>
@@ -1577,34 +1577,6 @@
   </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

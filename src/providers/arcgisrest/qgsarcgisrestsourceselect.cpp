@@ -315,8 +315,8 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     try
     {
       extent = QgsCoordinateTransform( canvasCrs, pCrs, QgsProject::instance()->transformContext() ).transform( extent );
-      QgsDebugMsg( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
-                   .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
+      QgsDebugMsgLevel( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
+                        .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ), 3 );
     }
     catch ( const QgsCsException & )
     {
@@ -422,7 +422,7 @@ void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "treeWidget_currentRowChanged called" ), 3 );
   updateCrsLabel();
   updateImageEncodings();
 

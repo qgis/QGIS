@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>710</width>
                 <height>604</height>
                </rect>
               </property>
@@ -410,7 +410,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>710</width>
                 <height>604</height>
                </rect>
               </property>
@@ -494,8 +494,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>140</width>
-                <height>45</height>
+                <width>710</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -584,8 +584,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>201</width>
-                <height>161</height>
+                <width>710</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -614,16 +614,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" colspan="2">
-                   <widget class="QComboBox" name="cboCameraProjectionType"/>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="text">
-                     <string>Field of View</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="1" colspan="2">
                    <widget class="QgsSpinBox" name="spinCameraFieldOfView">
                     <property name="suffix">
@@ -631,6 +621,46 @@
                     </property>
                     <property name="maximum">
                      <number>180</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelFieldofView">
+                    <property name="text">
+                     <string>Field of View</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" colspan="2">
+                   <widget class="QComboBox" name="cboCameraProjectionType"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelCameraNavigationMode">
+                    <property name="text">
+                     <string>Navigation mode</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1" colspan="2">
+                   <widget class="QComboBox" name="mCameraNavigationModeCombo"/>
+                  </item>
+                  <item row="4" column="1" colspan="2">
+                   <widget class="QgsDoubleSpinBox" name="mCameraMovementSpeed">
+                    <property name="minimum">
+                     <double>0.010000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>1.000000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>5.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="labelMovementSpeed">
+                    <property name="text">
+                     <string>Movement speed</string>
                     </property>
                    </widget>
                   </item>
@@ -694,8 +724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>690</width>
-                <height>681</height>
+                <width>696</width>
+                <height>661</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -1011,19 +1041,30 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1033,32 +1074,32 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLightsWidget</class>
    <extends>QWidget</extends>
    <header>qgslightswidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsMessageBar</class>
-   <extends>QWidget</extends>
-   <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>spinCameraFieldOfView</tabstop>
+  <tabstop>m3DOptionsListWidget</tabstop>
+  <tabstop>scrollAreaTerrain</tabstop>
   <tabstop>cboTerrainType</tabstop>
   <tabstop>cboTerrainLayer</tabstop>
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
+  <tabstop>terrainElevationOffsetSpinBox</tabstop>
   <tabstop>groupTerrainShading</tabstop>
+  <tabstop>scrollAreaLight</tabstop>
+  <tabstop>scrollAreaShadow</tabstop>
+  <tabstop>groupShadowRendering</tabstop>
+  <tabstop>scrollAreaCameraSkybox</tabstop>
+  <tabstop>cboCameraProjectionType</tabstop>
+  <tabstop>spinCameraFieldOfView</tabstop>
+  <tabstop>mCameraNavigationModeCombo</tabstop>
+  <tabstop>mCameraMovementSpeed</tabstop>
   <tabstop>groupSkyboxSettings</tabstop>
+  <tabstop>scrollAreaAdvanced</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
   <tabstop>spinGroundError</tabstop>
@@ -1067,6 +1108,16 @@
   <tabstop>chkShowBoundingBoxes</tabstop>
   <tabstop>chkShowCameraViewCenter</tabstop>
   <tabstop>chkShowLightSourceOrigins</tabstop>
+  <tabstop>mFpsCounterCheckBox</tabstop>
+  <tabstop>edlGroupBox</tabstop>
+  <tabstop>edlStrengthSpinBox</tabstop>
+  <tabstop>edlDistanceSpinBox</tabstop>
+  <tabstop>mDebugShadowMapGroupBox</tabstop>
+  <tabstop>mDebugShadowMapCornerComboBox</tabstop>
+  <tabstop>mDebugShadowMapSizeSpinBox</tabstop>
+  <tabstop>mDebugDepthMapGroupBox</tabstop>
+  <tabstop>mDebugDepthMapCornerComboBox</tabstop>
+  <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

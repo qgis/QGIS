@@ -426,19 +426,11 @@ void TestQgsField::displayString()
   customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customEnglish );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
   QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
-#else
-  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
-#endif
   QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
   QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
-#else
-  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
-#endif
   QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999.123456" ) );
@@ -740,7 +732,7 @@ void TestQgsField::convertCompatible()
 
   // Test 0 on int fields
   intField = QgsField( QStringLiteral( "int" ), QVariant::Int, QStringLiteral( "Integer" ), 10 );
-  QVariant vZero { 0 };
+  QVariant vZero = 0;
   QVERIFY( intField.convertCompatible( vZero ) );
 }
 

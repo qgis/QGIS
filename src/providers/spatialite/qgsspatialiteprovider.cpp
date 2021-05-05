@@ -845,10 +845,18 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
 
   QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', Qt::SkipEmptyParts );
+#endif
 
   // Get major and minor version
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
+#else
+  QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', Qt::SkipEmptyParts );
+#endif
   if ( spatialiteVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse spatialite version string '%1'" ).arg( mSpatialiteVersionInfo ), tr( "SpatiaLite" ) );
@@ -874,10 +882,18 @@ bool QgsSpatiaLiteProvider::versionIsAbove( sqlite3 *sqlite_handle, int major, i
     if ( rows == 1 && columns == 1 )
     {
       QString version = QString::fromUtf8( results[1] );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       QStringList parts = version.split( ' ', QString::SkipEmptyParts );
+#else
+      QStringList parts = version.split( ' ', Qt::SkipEmptyParts );
+#endif
       if ( !parts.empty() )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QStringList verparts = parts.at( 0 ).split( '.', QString::SkipEmptyParts );
+#else
+        QStringList verparts = parts.at( 0 ).split( '.', Qt::SkipEmptyParts );
+#endif
         above = verparts.size() >= 2 && ( verparts.at( 0 ).toInt() > major || ( verparts.at( 0 ).toInt() == major && verparts.at( 1 ).toInt() >= minor ) );
       }
     }
@@ -972,7 +988,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   }
   sqlite3_free_table( results );
 
-  for ( const auto fieldIdx : qgis::as_const( mPrimaryKeyAttrs ) )
+  for ( const auto fieldIdx : std::as_const( mPrimaryKeyAttrs ) )
   {
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
@@ -1080,7 +1096,7 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
        providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
     QString errorMessage;
-    QVariant nextVal { QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage ) };
+    QVariant nextVal = QgsSqliteUtils::nextSequenceValue( sqliteHandle(), mTableName, errorMessage );
     if ( errorMessage.isEmpty() && nextVal != -1 )
     {
       resultVar = nextVal;
@@ -4974,13 +4990,13 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     // get a new alias for the subquery
     int index = 0;
     QString alias;
-    QRegExp regex;
+    QRegularExpression regex;
     do
     {
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegularExpression::escape( alias ) );
       regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
+      regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
     }
     while ( mQuery.contains( regex ) );
 
@@ -5029,7 +5045,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
         // Check if the whole sql is aliased i.e. '(SELECT * FROM \\"somedata\\" as my_alias\n)'
         if ( tableAlias.isEmpty() )
         {
-          regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
+          re.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
           match = re.match( mTableName );
           if ( match.hasMatch() )
           {
@@ -5886,6 +5902,11 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometryColumn" ) ).toString() );
   dsUri.setKeyColumn( parts.value( QStringLiteral( "keyColumn" ) ).toString() );
   return dsUri.uri();
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 

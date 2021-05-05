@@ -32,6 +32,7 @@
 
 #include "qgseditformconfig.h"
 #include "qgsexpressioncontext.h"
+#include "qgsattributeeditorcontainer.h"
 
 #include "qgis_quick.h"
 #include "qgsquickattributemodel.h"
@@ -91,6 +92,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
     bool constraintsSoftValid() const;
 
+    //! Attribute model remembers or not last entered values
+    bool rememberValuesAllowed() const;
+
     /**
      * Gets the value of attribute of the feature in the model
      *
@@ -107,6 +111,9 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     //! Resets the model
     Q_INVOKABLE void forceClean();
 
+    //! Allows or forbids attribute model to reuse last entered values
+    void setRememberValuesAllowed( bool rememberValuesAllowed );
+
   signals:
     //! \copydoc QgsQuickAttributeFormModelBase::attributeModel
     void attributeModelChanged();
@@ -116,6 +123,8 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     void constraintsHardValidChanged();
     //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
     void constraintsSoftValidChanged();
+    //! Emitted when setData failed
+    void dataChangedFailed( const QString &message );
 
   private slots:
     void onFeatureChanged();

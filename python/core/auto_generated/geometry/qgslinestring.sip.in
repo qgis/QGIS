@@ -15,7 +15,7 @@
 
 class QgsLineString: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Line string geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 2.10
@@ -55,6 +55,9 @@ be a LineStringZ(M) or LineString25D depending on the ``is25DType``
 argument. If ``is25DType`` is ``True`` (and the ``m`` vector is unfilled) then
 the created Linestring will be a LineString25D type. Otherwise, the
 LineString will be LineStringZ (or LineStringZM) type.
+
+If the sizes of ``x`` and ``y`` are non-equal then the resultant linestring
+will be created using the minimum size of these arrays.
 
 .. versionadded:: 3.0
 %End
@@ -123,9 +126,9 @@ corresponds to the last point in the line.
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else // negative index, count backwards from end
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
 %End
@@ -405,7 +408,6 @@ segment in the line.
 %End
 
 
-
     virtual QString geometryType() const /HoldGIL/;
 
     virtual int dimension() const /HoldGIL/;
@@ -416,11 +418,16 @@ segment in the line.
 
     virtual bool isEmpty() const /HoldGIL/;
 
+    int indexOf( const QgsPoint &point ) const final;
     virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool isClosed() const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
     QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
@@ -454,6 +461,7 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
 
 
     virtual double length() const /HoldGIL/;
+
 
 
     double length3D() const /HoldGIL/;
@@ -543,6 +551,10 @@ of the curve.
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+    virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
+
+    void scroll( int firstVertexIndex ) final;
+
 
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 
@@ -576,9 +588,9 @@ corresponds to the last point in the line.
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
 %End
@@ -638,6 +650,7 @@ corresponds to the last point in the line.
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

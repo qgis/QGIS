@@ -12,7 +12,7 @@
 
 class QgsNewAuxiliaryLayerDialog: QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 
 A dialog to create a new auxiliary layer
 

@@ -31,7 +31,8 @@ from qgis.gui import (
     QgsProcessingParameterWidgetContext,
     QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
-    QgsModelOutputGraphicItem
+    QgsModelOutputGraphicItem,
+    QgsProcessingContextGenerator
 )
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -49,6 +50,19 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
 
     def __init__(self, element, model):
         super().__init__(element, model, None)
+
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
 
     def create_widget_context(self):
         """
@@ -91,6 +105,8 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                                                          algorithm=self.model())
             dlg.setComments(comment)
             dlg.setCommentColor(comment_color)
+            dlg.registerProcessingContextGenerator(self.context_generator)
+
             if edit_comment:
                 dlg.switchToCommentTab()
 

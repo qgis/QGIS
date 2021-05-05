@@ -15,6 +15,7 @@
 
 #include "qgsattributewidgetedit.h"
 #include "qgsattributesformproperties.h"
+#include "qgsrelationwidgetregistry.h"
 
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent )
@@ -28,7 +29,6 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
 
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
-
 
   switch ( itemData.type() )
   {
@@ -92,28 +92,60 @@ QgsAttributeWidgetRelationEditWidget::QgsAttributeWidgetRelationEditWidget( QWid
   : QWidget( parent )
 {
   setupUi( this );
+
+  QMapIterator<QString, QgsAbstractRelationEditorWidgetFactory *> it( QgsGui::relationWidgetRegistry()->factories() );
+
+  while ( it.hasNext() )
+  {
+    it.next();
+    mWidgetTypeComboBox->addItem( it.value()->name(), it.key() );
+  }
+
+  connect( mRelationCardinalityCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeWidgetRelationEditWidget::relationCardinalityComboCurrentIndexChanged );
 }
 
 void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &config, const QString &relationId )
 {
-  mRelationShowLinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
-  mRelationShowUnlinkCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
-  mRelationShowAddChildCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
-  mRelationShowDuplicateChildFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
-  mRelationShowZoomToFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
-  mRelationDeleteChildFeatureCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
-  mRelationShowSaveChildEditsCheckBox->setChecked( config.buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
-
   //load the combo mRelationCardinalityCombo
+  mRelationCardinalityCombo->clear();
   setCardinalityCombo( tr( "Many to one relation" ) );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
-  for ( const QgsRelation &nmrel : relations )
+  if ( !relation.fieldPairs().isEmpty() )
   {
-    if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
-      setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+    const QgsRelation::FieldPair relationFirstFieldPair = relation.fieldPairs().at( 0 );
+    for ( const QgsRelation &nmrel : relations )
+    {
+      if ( !nmrel.fieldPairs().isEmpty() &&
+           nmrel.fieldPairs().at( 0 ).referencingField() != relationFirstFieldPair.referencingField() )
+      {
+        setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+      }
+    }
   }
+
+  int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
+  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0 ? widgetTypeIdx : 0 );
+
+  const QString widgetType = mWidgetTypeComboBox->currentData().toString();
+  mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetType, relation, this );
+  mConfigWidget->setConfig( config.mRelationWidgetConfig );
+  mWidgetTypePlaceholderLayout->addWidget( mConfigWidget );
+
+  disconnect( mWidgetTypeComboBoxConnection );
+
+  mWidgetTypeComboBoxConnection = connect( mWidgetTypeComboBox, &QComboBox::currentTextChanged, this, [ = ]()
+  {
+    const QString widgetId = mWidgetTypeComboBox->currentData().toString();
+
+    mWidgetTypePlaceholderLayout->removeWidget( mConfigWidget );
+    mConfigWidget->deleteLater();
+    mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetId, relation, this );
+    mConfigWidget->setConfig( config.mRelationWidgetConfig );
+    mWidgetTypePlaceholderLayout->addWidget( mConfigWidget );
+    update();
+  } );
 
   mRelationCardinalityCombo->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
   setNmRelationId( config.nmRelationId );
@@ -126,19 +158,24 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
 QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelationEditWidget::relationEditorConfiguration() const
 {
   QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-  QgsAttributeEditorRelation::Buttons buttons;
-  buttons.setFlag( QgsAttributeEditorRelation::Button::Link, mRelationShowLinkCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, mRelationShowUnlinkCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::AddChildFeature, mRelationShowAddChildCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature, mRelationShowDuplicateChildFeatureCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
-  buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
-  relEdCfg.buttons = buttons;
+  relEdCfg.mRelationWidgetType = mWidgetTypeComboBox->currentData().toString();
+  relEdCfg.mRelationWidgetConfig = mConfigWidget->config();
   relEdCfg.nmRelationId = mRelationCardinalityCombo->currentData();
   relEdCfg.forceSuppressFormPopup = mRelationForceSuppressFormPopupCheckBox->isChecked();
   relEdCfg.label = mRelationLabelEdit->text();
   return relEdCfg;
+}
+
+void QgsAttributeWidgetRelationEditWidget::relationCardinalityComboCurrentIndexChanged( int index )
+{
+  if ( index < 0 )
+    return;
+
+  if ( !mConfigWidget )
+    return;
+
+  QgsRelation nmRelation = QgsProject::instance()->relationManager()->relation( mRelationCardinalityCombo->currentData().toString() );
+  mConfigWidget->setNmRelation( nmRelation );
 }
 
 void QgsAttributeWidgetRelationEditWidget::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )

@@ -36,6 +36,11 @@ Item {
    */
   signal canceled
 
+  /**
+   * When any notification message has to be shown.
+   */
+  signal notify(var message)
+
    /**
     * A handler for extra events in externalSourceWidget.
     */
@@ -106,6 +111,30 @@ Item {
     property var getTypeOfWidget: function getTypeOfWidget( widget, valueRelationModel ) {
       return "combobox"
     }
+  }
+
+  /**
+   * A handler for extra events for a TextEdit widget .
+   */
+  property var importDataHandler: QtObject {
+
+    /**
+     * Suppose to set `supportsDataImport` variable of a feature form. If true, enables to set data by this handler.
+     * \param name "Name" property of field item. Expecting alias if defined, otherwise field name.
+     */
+    property var supportsDataImport: function supportsDataImport(name) { return false }
+
+    /**
+     * Suppose to be called to invoke a component to set data automatically (e.g. code scanner, sensor).
+     * \param itemWidget editorWidget for modified field to send valueChanged signal.
+     */
+    property var importData: function importData(itemWidget) {}
+
+    /**
+     * Suppose to be called after `importData` function as a callback to set the value to the widget.
+     * \param value Value to be set.
+     */
+    property var setValue: function setValue(value) {}
   }
 
   /**
@@ -193,6 +222,15 @@ Item {
     saved()
   }
 
+  function hasAnyChanges() {
+    return form.model.attributeModel.hasAnyChanges()
+  }
+
+  /**
+    * Forward change about remembering values to model
+    */
+  onAllowRememberAttributeChanged: form.model.rememberValuesAllowed = allowRememberAttribute
+
   /**
    * This is a relay to forward private signals to internal components.
    */
@@ -224,6 +262,8 @@ Item {
       anchors {
         left: parent.left
         right: parent.right
+        leftMargin: form.style.fields.outerMargin
+        rightMargin: form.style.fields.outerMargin
       }
       height: form.model.hasTabs ? tabRow.height : 0
 
@@ -274,7 +314,10 @@ Item {
               text: tabButton.text
               color: !tabButton.enabled ? form.style.tabs.disabledColor : tabButton.down ||
                                           tabButton.checked ? form.style.tabs.activeColor : form.style.tabs.normalColor
-              font.weight: tabButton.checked ? Font.DemiBold : Font.Normal
+              font.weight: Font.DemiBold
+              font.underline: tabButton.checked ? true : false
+              font.pointSize: form.style.tabs.tabLabelPointSize
+              opacity: tabButton.checked ? 1 : 0.5
 
               horizontalAlignment: Text.AlignHCenter
               verticalAlignment: Text.AlignVCenter
@@ -327,28 +370,35 @@ Item {
             section.labelPositioning: ViewSection.CurrentLabelAtStart | ViewSection.InlineLabels
             section.delegate: Component {
 
-            // section header: group box name
-            Rectangle {
+              // section header: group box name
+              Item {
+                id: headerContainer
                 width: parent.width
-                height: section === "" ? 0 : form.style.group.height
-                color: form.style.group.marginColor
+                height: section === "" ? 0 : form.style.group.height + form.style.group.spacing // add space after section header
 
                 Rectangle {
-                  anchors.fill: parent
-                  anchors {
-                    leftMargin: form.style.group.leftMargin
-                    rightMargin: form.style.group.rightMargin
-                    topMargin: form.style.group.topMargin
-                    bottomMargin: form.style.group.bottomMargin
-                  }
-                  color: form.style.group.backgroundColor
+                  width: parent.width
+                  height: section === "" ? 0 : form.style.group.height
+                  color: form.style.group.marginColor
+                  anchors.top: parent.top
 
-                  Text {
-                    anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
-                    font.bold: true
-                    font.pixelSize: form.style.group.fontPixelSize
-                    text: section
-                    color: form.style.group.fontColor
+                  Rectangle {
+                    anchors.fill: parent
+                    anchors {
+                      leftMargin: form.style.group.leftMargin
+                      rightMargin: form.style.group.rightMargin
+                      topMargin: form.style.group.topMargin
+                      bottomMargin: form.style.group.bottomMargin
+                    }
+                    color: form.style.group.backgroundColor
+
+                    Text {
+                      anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
+                      font.bold: true
+                      font.pixelSize: form.style.group.fontPixelSize
+                      text: section
+                      color: form.style.group.fontColor
+                    }
                   }
                 }
               }
@@ -366,9 +416,31 @@ Item {
             }
 
             delegate: fieldItem
+
+            header: Rectangle {
+              opacity: 1
+              height: form.style.group.spacing
+            }
           }
         }
       }
+    }
+
+    // Borders
+    Rectangle {
+      width: parent.width
+      height: form.style.tabs.borderWidth
+      anchors.top: flickable.top
+      color: form.style.tabs.borderColor
+      visible: flickable.height
+    }
+
+    Rectangle {
+      width: parent.width
+      height: form.style.tabs.borderWidth
+      anchors.bottom: flickable.bottom
+      color: form.style.tabs.borderColor
+      visible: flickable.height
     }
   }
 
@@ -381,41 +453,62 @@ Item {
     Item {
       id: fieldContainer
       visible: Type === 'field'
-      height: childrenRect.height
+      // We also need to set height to zero if Type is not field otherwise children created blank space in form
+      height: Type === 'field' ? childrenRect.height : 0
 
       anchors {
         left: parent.left
         right: parent.right
-        leftMargin: 12 * QgsQuick.Utils.dp
+        leftMargin: form.style.fields.outerMargin
+        rightMargin: form.style.fields.outerMargin
       }
 
-      Label {
-        id: fieldLabel
-
-        text: Name ? qsTr(Name) : ''
-        font.bold: true
-        color: ConstraintSoftValid && ConstraintHardValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
-      }
-
-      Label {
-        id: constraintDescriptionLabel
+      Item {
+        id: labelPlaceholder
+        height: fieldLabel.height + constraintDescriptionLabel.height + form.style.fields.sideMargin
         anchors {
           left: parent.left
           right: parent.right
-          top: fieldLabel.bottom
+          topMargin: form.style.fields.sideMargin
+          bottomMargin: form.style.fields.sideMargin
         }
 
-        text: ConstraintDescription ? qsTr(ConstraintDescription) : ''
-        visible: !ConstraintHardValid || !ConstraintSoftValid
-        height: visible ? undefined : 0
-        wrapMode: Text.WordWrap
-        color: form.style.constraint.descriptionColor
+        Label {
+          id: fieldLabel
+
+          text: Name ? qsTr(Name) : ''
+          color: ConstraintSoftValid && ConstraintHardValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
+          leftPadding: form.style.fields.sideMargin
+          font.pointSize: form.style.fields.labelPointSize
+          horizontalAlignment: Text.AlignLeft
+          verticalAlignment: Text.AlignVCenter
+          anchors.top: parent.top
+        }
+
+        Label {
+          id: constraintDescriptionLabel
+          anchors {
+            left: parent.left
+            right: parent.right
+            top: fieldLabel.bottom
+            leftMargin: form.style.fields.sideMargin
+          }
+
+          text: ConstraintDescription ? qsTr(ConstraintDescription) : ''
+          visible: (!ConstraintHardValid || !ConstraintSoftValid) && !!ConstraintDescription
+          height: visible ? undefined : 0
+          wrapMode: Text.WordWrap
+          color: form.style.constraint.descriptionColor
+          horizontalAlignment: Text.AlignLeft
+          verticalAlignment: Text.AlignVCenter
+        }
+
       }
 
       Item {
         id: placeholder
         height: childrenRect.height
-        anchors { left: parent.left; right: rememberCheckbox.left; top: constraintDescriptionLabel.bottom }
+        anchors { left: parent.left; right: rememberCheckboxContainer.left; top: labelPlaceholder.bottom }
 
         Loader {
           id: attributeEditorLoader
@@ -440,6 +533,7 @@ Item {
           property var featurePair: form.model.attributeModel.featureLayerPair
           property var activeProject: form.project
           property var customWidget: form.customWidgetCallback
+          property bool supportsDataImport: importDataHandler.supportsDataImport(Name)
 
           active: widget !== 'Hidden'
 
@@ -453,7 +547,20 @@ Item {
         Connections {
           target: attributeEditorLoader.item
           onValueChanged: {
+            var valueChanged = value != AttributeValue
             AttributeValue = isNull ? undefined : value
+            // updates other attributes if a user males a change
+            if (valueChanged) {
+              form.model.attributeModel.updateDefaultValuesAttributes(Field)
+            }
+          }
+        }
+
+        Connections {
+          target: attributeEditorLoader.item
+          ignoreUnknownSignals: true
+          onImportDataRequested: {
+           importDataHandler.importData(attributeEditorLoader.item)
           }
         }
 
@@ -465,6 +572,11 @@ Item {
               attributeEditorLoader.item.dataUpdated( form.model.attributeModel.featureLayerPair.feature )
             }
           }
+        }
+
+        Connections {
+          target: form.model.attributeModel
+          onDataChangedFailed: notify(message)
         }
 
         Connections {
@@ -488,17 +600,35 @@ Item {
         }
       }
 
-      CheckBox {
-        id: rememberCheckbox
-        checked: RememberValue ? true : false
-
+      Item {
+        id: rememberCheckboxContainer
         visible: form.allowRememberAttribute && form.state === "Add" && EditorWidget !== "Hidden"
-        width: visible ? undefined : 0
 
-        anchors { right: parent.right; top: fieldLabel.bottom }
+        implicitWidth: visible ? 35 * QgsQuick.Utils.dp : 0
+        implicitHeight: placeholder.height
 
-        onCheckedChanged: {
-          RememberValue = checked
+        anchors {
+          top: labelPlaceholder.bottom
+          right: parent.right
+        }
+
+        QgsQuick.CheckboxComponent {
+          id: rememberCheckbox
+          visible: rememberCheckboxContainer.visible
+          baseColor: form.style.checkboxComponent.baseColor
+
+          implicitWidth: 40 * QgsQuick.Utils.dp
+          implicitHeight: width
+          y: rememberCheckboxContainer.height/2 - rememberCheckbox.height/2
+          x: (parent.width + form.style.fields.outerMargin) / 7
+
+          onCheckboxClicked: RememberValue = buttonState
+          checked: RememberValue ? true : false
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: rememberCheckbox.checkboxClicked( !rememberCheckbox.checkState )
         }
       }
     }
@@ -587,7 +717,7 @@ Item {
             qsTr( 'View feature on <i>%1</i>' ).arg(layerName)
         }
         font.bold: true
-        font.pointSize: 16
+        font.pointSize:form.style.titleLabelPointSize
         elide: Label.ElideRight
         horizontalAlignment: Qt.AlignHCenter
         verticalAlignment: Qt.AlignVCenter
@@ -639,4 +769,3 @@ Item {
     }
   }
 }
-

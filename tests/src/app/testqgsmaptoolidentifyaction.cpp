@@ -348,7 +348,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QGSCOMPARENEAR( length, 26930.6, 0.1 );
 
   // LineString with Z
-  tempLayer = qgis::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  tempLayer = std::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( tempLayer->isValid() );
   f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ(2484588 2425722 10, 2482767 2398853 1000)" ) ) );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
@@ -474,7 +474,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 1005721496.780000, 1.0 );
+  QGSCOMPARENEAR( area, 1005755617.819000, 1.0 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 1005640568.0, 1.0 );
@@ -485,7 +485,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 388.311000, 0.001 );
+  QGSCOMPARENEAR( area, 388.324000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
@@ -497,7 +497,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal — WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 388.311000, 0.001 );
+  QGSCOMPARENEAR( area, 388.324000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.280000, 0.001 );

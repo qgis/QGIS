@@ -51,12 +51,13 @@ class QMenu;
 #include <qgsmaptoolpan.h>
 #include <qgsmaptoolemitpoint.h>
 #include <qgsmaptoolidentify.h>
+#include <qgsmaptooldigitizefeature.h>
 % End
 #endif
 
 /**
  * \ingroup gui
- * Abstract base class for all map tools.
+ * \brief Abstract base class for all map tools.
  * Map tools are user interactive tools for manipulating the
  * map canvas. For example map pan and zoom features are
  * implemented as map tools.
@@ -74,6 +75,8 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolEmitPoint;
     else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolIdentify;
+    else if ( dynamic_cast<QgsMapToolDigitizeFeature *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolDigitizeFeature;
     else
       sipType = NULL;
     SIP_END
@@ -254,52 +257,52 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   protected:
 
-    //! constructor takes map canvas as a parameter
+    //! Constructor takes a map canvas as a parameter.
     QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
 
-    //! transformation from screen coordinates to map coordinates
+    //! Transforms a \a point from screen coordinates to map coordinates.
     QgsPointXY toMapCoordinates( QPoint point );
 
-    //! transformation from screen coordinates to layer's coordinates
+    //! Transforms a \a point from screen coordinates to \a layer coordinates.
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 
-    //! transformation from map coordinates to layer's coordinates
+    //! Transforms a \a point from map coordinates to \a layer coordinates.
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
-    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    //! Transforms a \a point from \a layer coordinates to map coordinates (which is different in case reprojection is used).
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
     /**
-     * transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-     * \note available in Python bindings as toMapCoordinatesV2
+     * Transforms a \a point from \a layer coordinates to map coordinates (which is different in case reprojection is used).
+     * \note This method is available in the Python bindings as toMapCoordinatesV2.
      */
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
-    //! trnasformation of the rect from map coordinates to layer's coordinates
+    //! Transforms a \a rect from map coordinates to \a layer coordinates.
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
-    //! transformation from map coordinates to screen coordinates
+    //! Transforms a \a point from map coordinates to screen coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 
-    //! pointer to map canvas
+    //! The pointer to the map canvas
     QgsMapCanvas *mCanvas = nullptr;
 
-    //! cursor used in map tool
+    //! The cursor used in the map tool
     QCursor mCursor;
 
     /**
-     * optionally map tool can have pointer to action
-     * which will be used to set that action as active
+     * Optional pointer to an action that will be checked on map tool activation
+     * and unchecked on map tool deactivation.
      */
     QAction *mAction = nullptr;
 
     /**
-     * optionally map tool can have pointer to a button
-     * which will be used to set that action as active
+     * Optional pointer to a button that will be checked on map tool activation
+     * and unchecked on map tool deactivation.
      */
     QAbstractButton *mButton = nullptr;
 
-    //! translated name of the map tool
+    //! The translated name of the map tool
     QString mToolName;
 
 };

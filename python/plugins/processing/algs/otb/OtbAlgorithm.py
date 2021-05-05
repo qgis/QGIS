@@ -45,7 +45,10 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterEnum)
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterField,
+                       QgsProviderRegistry)
 
 from processing.core.parameters import getParameterFromString
 from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
@@ -188,7 +191,10 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             # - metadata without a 'group_key'
             # - metadata with 'group_key' and 'group_key' is not in list of parameters. see ParameterGroup in OTB
             # - metadata with 'group_key' and 'group_key' is a valid parameter and it's value == metadata()['group_value']
-            if 'group_key' in param.metadata() and not param.metadata()['group_key'] in parameters:
+            if (
+                'group_key' in param.metadata()
+                and param.metadata()['group_key'] not in parameters
+            ):
                 valid_params[k] = v
             elif 'group_key' not in param.metadata() or parameters[param.metadata()['group_key']] == param.metadata()[
                     'group_value']:
@@ -201,8 +207,8 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
         command = '"{}" {} {}'.format(app_launcher_path, self.name(), OtbUtils.appFolder())
         outputPixelType = None
         for k, v in parameters.items():
-            # if value is None for a parameter we don't have any businees with this key
-            if v is None:
+            # if value is None or en empty string for a parameter then we don't want to pass that value to OTB (see https://gitlab.orfeo-toolbox.org/orfeotoolbox/otb/-/issues/2130)
+            if v == '' or v is None:
                 continue
             # for 'outputpixeltype' parameter we find the pixeltype string from self.pixelTypes
             if k == 'outputpixeltype':
@@ -213,8 +219,19 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
             param = self.parameterDefinition(k)
             if param.isDestination():
                 continue
-            if isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(param, QgsProcessingParameterEnum) and param.name() == "outputpixeltype":
                 value = self.parameterAsEnum(parameters, param.name(), context)
+            elif isinstance(param, QgsProcessingParameterEnum):
+                value = " ".join(
+                    param.options()[i]
+                    for i in self.parameterAsEnums(
+                        parameters, param.name(), context
+                    )
+                    if i >= 0 and i < len(param.options())
+                )
+
+            elif isinstance(param, QgsProcessingParameterField):
+                value = " ".join(self.parameterAsFields(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 value = self.parameterAsBoolean(parameters, param.name(), context)
             elif isinstance(param, QgsProcessingParameterCrs):
@@ -233,7 +250,11 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 layers = self.parameterAsLayerList(parameters, param.name(), context)
                 if layers is None or len(layers) == 0:
                     continue
-                value = ' '.join(['"{}"'.format(self.getLayerSource(param.name(), layer)) for layer in layers])
+                value = ' '.join(
+                    '"{}"'.format(self.getLayerSource(param.name(), layer))
+                    for layer in layers
+                )
+
             elif isinstance(param, QgsProcessingParameterNumber):
                 if param.dataType() == QgsProcessingParameterNumber.Integer:
                     value = self.parameterAsInt(parameters, param.name(), context)
@@ -243,6 +264,14 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
                 value = '"{}"'.format(self.getLayerSource(param.name(), self.parameterAsLayer(parameters, param.name(), context)))
             elif isinstance(param, QgsProcessingParameterString):
                 value = '"{}"'.format(self.parameterAsString(parameters, param.name(), context))
+            elif isinstance(param, QgsProcessingParameterBand):
+                value = ' '.join(
+                    '"Channel{}"'.format(index)
+                    for index in self.parameterAsInts(
+                        parameters, param.name(), context
+                    )
+                )
+
             else:
                 # Use whatever is given
                 value = '"{}"'.format(parameters[param.name()])
@@ -264,17 +293,28 @@ class OtbAlgorithm(QgsProcessingAlgorithm):
 
         OtbUtils.executeOtb(command, feedback)
 
-        result = {}
-        for o in self.outputDefinitions():
-            if o.name() in output_files:
-                result[o.name()] = output_files[o.name()]
-        return result
+        return {
+            o.name(): output_files[o.name()]
+            for o in self.outputDefinitions()
+            if o.name() in output_files
+        }
 
     def getLayerSource(self, name, layer):
         providerName = layer.dataProvider().name()
+
         # TODO: add other provider support in OTB, eg: memory
-        if providerName in ['ogr', 'gdal']:
+        if providerName == 'gdal':
             return layer.source()
+        elif providerName == 'ogr':
+            # when a file contains several layer we pass only the file path to OTB
+            # TODO make OTB able to take a layer index in this case
+            uriElements = QgsProviderRegistry.instance().decodeUri("ogr", layer.source())
+
+            if 'path' not in uriElements:
+                raise QgsProcessingException(
+                    self.tr("Invalid layer source '{}'. Missing valid 'path' element".format(layer.source())))
+
+            return uriElements['path']
         else:
             raise QgsProcessingException(
                 self.tr("OTB currently support only gdal and ogr provider. Parameter '{}' uses '{}' provider".format(name, providerName)))

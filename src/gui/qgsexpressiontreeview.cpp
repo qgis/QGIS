@@ -15,6 +15,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QVersionNumber>
 
 #include "qgsexpressiontreeview.h"
 #include "qgis.h"
@@ -24,6 +25,7 @@
 #include "qgssettings.h"
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
+#include "qgsmaplayermodel.h"
 
 
 //! Returns a HTML formatted string for use as a \a relation item help.
@@ -110,8 +112,8 @@ QgsExpressionTreeView::QgsExpressionTreeView( QWidget *parent )
 {
   connect( this, &QTreeView::doubleClicked, this, &QgsExpressionTreeView::onDoubleClicked );
 
-  mModel = qgis::make_unique<QStandardItemModel>();
-  mProxyModel = qgis::make_unique<QgsExpressionItemSearchProxy>();
+  mModel = std::make_unique<QStandardItemModel>();
+  mProxyModel = std::make_unique<QgsExpressionItemSearchProxy>();
   mProxyModel->setDynamicSortFilter( true );
   mProxyModel->setSourceModel( mModel.get() );
   setModel( mProxyModel.get() );
@@ -410,7 +412,8 @@ void QgsExpressionTreeView::loadLayers()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    registerItemForAllGroups( QStringList() << tr( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ) );
+    QIcon icon = QgsMapLayerModel::iconForLayer( layerIt.value() );
+    registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
   }
 }
 
@@ -476,7 +479,9 @@ void QgsExpressionTreeView::loadRecent( const QString &collection )
   for ( const QString &expression : expressions )
   {
     QString help = formatRecentExpressionHelp( expression, expression );
-    registerItem( name, expression, expression, help, QgsExpressionItem::ExpressionNode, false, i );
+    QString label = expression;
+    label.replace( '\n', ' ' );
+    registerItem( name, label, expression, help, QgsExpressionItem::ExpressionNode, false, i );
     i++;
   }
 }
@@ -509,9 +514,7 @@ void QgsExpressionTreeView::saveToUserExpressions( const QString &label, const Q
   settings.setValue( QStringLiteral( "helpText" ), helpText );
   loadUserExpressions( );
   // Scroll
-  const QModelIndexList idxs { mModel->match( mModel->index( 0, 0 ),
-                               Qt::DisplayRole, label, 1,
-                               Qt::MatchFlag::MatchRecursive ) };
+  const QModelIndexList idxs { mModel->match( mModel->index( 0, 0 ), Qt::DisplayRole, label, 1, Qt::MatchFlag::MatchRecursive ) };
   if ( ! idxs.isEmpty() )
   {
     scrollTo( idxs.first() );
@@ -543,7 +546,7 @@ void QgsExpressionTreeView::loadUserExpressions( )
   QString expression;
   int i = 0;
   mUserExpressionLabels = settings.childGroups();
-  for ( const auto &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const auto &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
@@ -575,7 +578,7 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
 
   mUserExpressionLabels = settings.childGroups();
 
-  for ( const QString &label : qgis::as_const( mUserExpressionLabels ) )
+  for ( const QString &label : std::as_const( mUserExpressionLabels ) )
   {
     settings.beginGroup( label );
 
@@ -746,7 +749,7 @@ const QList<QgsExpressionItem *> QgsExpressionTreeView::findExpressions( const Q
 {
   QList<QgsExpressionItem *> result;
   const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
-  for ( const auto &item : qgis::as_const( found ) )
+  for ( const auto &item : std::as_const( found ) )
   {
     result.push_back( static_cast<QgsExpressionItem *>( item ) );
   }

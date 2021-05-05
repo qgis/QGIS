@@ -1,6 +1,6 @@
-name: Backport
+name: ♻ Backport
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
       - labeled
@@ -11,10 +11,8 @@ jobs:
     name: Backport
     steps:
       - name: Backport Bot
+        id: backport
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( join( github.event.pull_request.labels.*.name ), 'backport') ) || contains( github.event.label.name, 'backport' ) )
-        uses: Gaurav0/backport@v1.0.26
+        uses: m-kuhn/backport@v1.2.2
         with:
-          bot_username: qgis-bot
-          bot_token: ddbdec32940df79f1adf2369b4b10f10b5a66f65
-          bot_token_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN_BOT }}

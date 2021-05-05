@@ -16,7 +16,6 @@
 #include "../untwine/MapFile.hpp"
 #include "../untwine/Point.hpp"
 
-#include "BuTypes.hpp"
 #include "FileInfo.hpp"
 
 namespace untwine

@@ -14,7 +14,7 @@
 
 class QgsHillshadeRenderer : QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 A renderer for generating live hillshade models.
 
 .. versionadded:: 2.16
@@ -57,7 +57,7 @@ Factory method to create a new renderer
     virtual QList<int> usesBands() const;
 
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
     int band() const;

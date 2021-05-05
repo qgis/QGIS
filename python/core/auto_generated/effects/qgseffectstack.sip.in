@@ -11,7 +11,7 @@
 
 class QgsEffectStack : QgsPaintEffect /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which consists of a stack of other chained paint effects
 
 Effect stacks can be used to apply multiple paint effects to a QPicture. For
@@ -34,7 +34,7 @@ effect will be drawn using the original picture, not the blurred version.
 %End
   public:
 
-    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsEffectStack effect. This method ignores
 the map parameter, and always returns an empty effect stack.
@@ -72,13 +72,13 @@ Creates a new QgsEffectStack effect from a single initial effect.
     virtual bool readProperties( const QDomElement &element );
 
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
 %Docstring
 Unused for QgsEffectStack, will always return an empty string map
 %End
 
-    virtual void readProperties( const QgsStringMap &props );
+    virtual void readProperties( const QVariantMap &props );
 
 %Docstring
 Unused for QgsEffectStack, props parameter will be ignored
@@ -88,7 +88,7 @@ Unused for QgsEffectStack, props parameter will be ignored
 %Docstring
 Appends an effect to the end of the stack.
 
-:param effect: QgsPaintEffect to append. Ownership of the effect will be
+:param effect: :py:class:`QgsPaintEffect` to append. Ownership of the effect will be
                transferred to the stack object.
 
 .. seealso:: :py:func:`insertEffect`
@@ -99,7 +99,7 @@ Appends an effect to the end of the stack.
 Inserts an effect at a specified index within the stack.
 
 :param index: position to insert the effect
-:param effect: QgsPaintEffect to insert. Ownership of the effect will be
+:param effect: :py:class:`QgsPaintEffect` to insert. Ownership of the effect will be
                transferred to the stack object.
 
 .. seealso:: :py:func:`appendEffect`
@@ -110,7 +110,7 @@ Inserts an effect at a specified index within the stack.
 Replaces the effect at a specified position within the stack.
 
 :param index: position of effect to replace
-:param effect: QgsPaintEffect to replace with. Ownership of the effect will be
+:param effect: :py:class:`QgsPaintEffect` to replace with. Ownership of the effect will be
                transferred to the stack object.
 %End
 
@@ -126,7 +126,7 @@ Removes an effect from the stack and returns a pointer to it.
 Returns a pointer to the list of effects currently contained by
 the stack
 
-:return: list of QgsPaintEffects within the stack
+:return: list of :py:class:`QgsPaintEffects` within the stack
 %End
 
     int count() const;
@@ -142,7 +142,7 @@ Returns a pointer to the effect at a specified index within the stack
 
 :param index: position of effect to return
 
-:return: QgsPaintEffect at specified position
+:return: :py:class:`QgsPaintEffect` at specified position
 %End
 
 

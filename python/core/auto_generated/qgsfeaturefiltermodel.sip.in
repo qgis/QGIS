@@ -10,7 +10,7 @@
 
 class QgsFeatureFilterModel : QgsFeaturePickerModelBase
 {
-%Docstring
+%Docstring(signature="appended")
 Provides a list of features based on filter conditions.
 Features are fetched asynchronously.
 

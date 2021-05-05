@@ -139,19 +139,12 @@ void QgsQuickPositionKit::updateProjectedPosition()
     return;
 
   QgsPointXY srcPoint = QgsPointXY( mPosition.x(), mPosition.y() );
-  QgsPointXY projectedPositionXY = srcPoint;
-  try
-  {
-    projectedPositionXY = QgsQuickUtils::transformPoint(
-                            positionCRS(),
-                            mMapSettings->destinationCrs(),
-                            mMapSettings->transformContext(),
-                            srcPoint );
-  }
-  catch ( const QgsCsException & )
-  {
-    QgsDebugMsg( QStringLiteral( "Failed to transform GPS position: " ) + srcPoint.toString() );
-  }
+  QgsPointXY projectedPositionXY = QgsQuickUtils::transformPoint(
+                                     positionCRS(),
+                                     mMapSettings->destinationCrs(),
+                                     mMapSettings->transformContext(),
+                                     srcPoint
+                                   );
 
   QgsPoint projectedPosition( projectedPositionXY );
   projectedPosition.addZValue( mPosition.z() );

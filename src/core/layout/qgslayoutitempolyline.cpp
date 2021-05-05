@@ -98,7 +98,7 @@ bool QgsLayoutItemPolyline::_removeNode( const int index )
 
 void QgsLayoutItemPolyline::createDefaultPolylineStyleSymbol()
 {
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );

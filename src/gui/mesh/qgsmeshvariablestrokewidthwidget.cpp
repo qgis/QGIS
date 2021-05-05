@@ -17,6 +17,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QPointer>
 
 #include "qgssettings.h"
 
@@ -38,9 +39,9 @@ QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
 
   connect( mValueMinimumLineEdit, &QLineEdit::textEdited, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
   connect( mValueMaximumLineEdit, &QLineEdit::textEdited, this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mWidthMinimumSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mWidthMinimumSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
-  connect( mWidthMaximumSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mWidthMaximumSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );
   connect( mIgnoreOutOfRangecheckBox, &QCheckBox::toggled,
            this, &QgsMeshVariableStrokeWidthWidget::widgetChanged );

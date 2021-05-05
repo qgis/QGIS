@@ -36,7 +36,7 @@ class QgsRelation;
 
 /**
  * \ingroup gui
- * A reusable widget that can be used to build a expression string.
+ * \brief A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for example of usage.
   */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
@@ -416,6 +416,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;
+
+    // To be called whenever expression context has been updated
+    void expressionContextUpdated();
 
     // Will hold items with
     // * a display string that matches the represented field values

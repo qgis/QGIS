@@ -32,11 +32,9 @@
 
 
 /**
-\class QgsMssqlGeometryParser
-\brief Geometry parser for SqlGeometry/SqlGeography.
-*
+ * \class QgsMssqlGeometryParser
+ * \brief Geometry parser for SqlGeometry/SqlGeography.
 */
-
 class QgsMssqlGeometryParser
 {
 

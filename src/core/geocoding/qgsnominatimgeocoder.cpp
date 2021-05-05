@@ -27,13 +27,14 @@
 #include <QJsonArray>
 
 QMutex QgsNominatimGeocoder::sMutex;
-QMap< QUrl, QList< QgsGeocoderResult > > QgsNominatimGeocoder::sCachedResults;
+typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 
 QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const QString &endpoint )
   : QgsGeocoderInterface()
   , mCountryCodes( countryCodes )
-  , mEndpoint( QStringLiteral( "https://nominatim.openstreetmap.org/search" ) )
+  , mEndpoint( QStringLiteral( "https://nominatim.qgis.org/search" ) )
 {
   if ( !endpoint.isEmpty() )
     mEndpoint = endpoint;
@@ -89,8 +90,8 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   const QUrl url = requestUrl( string, bounds );
 
   QMutexLocker locker( &sMutex );
-  auto it = sCachedResults.constFind( url );
-  if ( it != sCachedResults.constEnd() )
+  auto it = sCachedResults()->constFind( url );
+  if ( it != sCachedResults()->constEnd() )
   {
     return *it;
   }
@@ -126,7 +127,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   const QVariantList results = doc.array().toVariantList();
   if ( results.isEmpty() )
   {
-    sCachedResults.insert( url, QList<QgsGeocoderResult>() );
+    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -137,7 +138,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     matches << jsonToResult( result.toMap() );
   }
 
-  sCachedResults.insert( url, matches );
+  sCachedResults()->insert( url, matches );
 
   return matches;
 }

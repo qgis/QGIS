@@ -11,7 +11,7 @@
 
 class QgsMapToolEdit: QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for map tools that edit vector geometry
 %End
 
@@ -25,8 +25,16 @@ Base class for map tools that edit vector geometry
 
     double defaultZValue() const;
 %Docstring
-Returns default Z value
-Use for set Z coordinate to new vertex for 2.5d geometries
+Returns default Z value.
+Used for setting Z coordinate to new vertex.
+%End
+
+    double defaultMValue() const;
+%Docstring
+Returns default M value.
+Used for setting M coordinate to new vertex.
+
+.. versionadded:: 3.20
 %End
 
   protected:
@@ -74,7 +82,7 @@ Adds a list of ``vertices`` to other features to keep topology up to date, e.g. 
 The ``vertices`` list specifies a set of topological points to add, in the layer's coordinate reference system.
 
 .. deprecated:: QGIS 3.12
-   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+   - will be removed in QGIS 4.0. Use the variant which accepts :py:class:`QgsPoint` objects instead of :py:class:`QgsPointXY`.
 %End
 
     TopologicalResult addTopologicalPoints( const QVector<QgsPoint> &vertices );

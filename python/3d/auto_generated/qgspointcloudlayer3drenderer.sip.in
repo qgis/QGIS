@@ -11,10 +11,9 @@
 
 
 
-
 class QgsPointCloudLayer3DRenderer : QgsAbstract3DRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 3D renderer that renders all points from a point cloud layer
 
 .. versionadded:: 3.18
@@ -92,6 +91,15 @@ Returns whether bounding boxes will be visible when rendering the point cloud.
 Sets whether bounding boxes will be visible when rendering the point cloud.
 
 .. seealso:: :py:func:`showBoundingBoxes`
+%End
+
+    int pointRenderingBudget() const;
+%Docstring
+Returns the maximum number of points that will be rendered to the scene
+%End
+    void setPointRenderingBudget( int budget );
+%Docstring
+Sets the maximum number of points to be rendered in the scene
 %End
 
   private:

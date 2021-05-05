@@ -56,6 +56,13 @@ QHash<const char *, int> QgsRelationReferenceFactory::supportedWidgetTypes()
 
 unsigned int QgsRelationReferenceFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
+  int normalRelationsCount = 0;
   const QList<QgsRelation> relations = vl->referencingRelations( fieldIdx );
-  return !relations.isEmpty() ? 21 /*A bit stronger than the range widget*/ : 5;
+  for ( const QgsRelation &rel : relations )
+  {
+    if ( rel.type() == QgsRelation::Normal )
+      normalRelationsCount++;
+  }
+  // generated relations should not be used for relation reference widget
+  return normalRelationsCount > 0 ? 21 /*A bit stronger than the range widget*/ : 5;
 }

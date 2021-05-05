@@ -27,6 +27,10 @@ class TestQgsRectangle: public QObject
   private slots:
     void isEmpty();
     void fromWkt();
+    void constructor();
+    void constructorTwoPoints();
+    void set();
+    void setXY();
     void fromCenter();
     void manipulate();
     void regression6194();
@@ -80,6 +84,88 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isEmpty() );
+}
+
+void TestQgsRectangle::constructor()
+{
+  QgsRectangle r( 1, 2, 13, 14 );
+  QCOMPARE( r.xMinimum(), 1.0 );
+  QCOMPARE( r.xMaximum(), 13.0 );
+  QCOMPARE( r.yMinimum(), 2.0 );
+  QCOMPARE( r.yMaximum(), 14.0 );
+
+  // auto normalized
+  QgsRectangle r2( 13, 14, 1, 2 );
+  QCOMPARE( r2.xMinimum(), 1.0 );
+  QCOMPARE( r2.xMaximum(), 13.0 );
+  QCOMPARE( r2.yMinimum(), 2.0 );
+  QCOMPARE( r2.yMaximum(), 14.0 );
+
+  // no normalization
+  QgsRectangle r3( 13, 14, 1, 2, false );
+  QCOMPARE( r3.xMinimum(), 13.0 );
+  QCOMPARE( r3.xMaximum(), 1.0 );
+  QCOMPARE( r3.yMinimum(), 14.0 );
+  QCOMPARE( r3.yMaximum(), 2.0 );
+}
+
+void TestQgsRectangle::constructorTwoPoints()
+{
+  QgsRectangle r( QgsPointXY( 1, 2 ), QgsPointXY( 13, 14 ) );
+  QCOMPARE( r.xMinimum(), 1.0 );
+  QCOMPARE( r.xMaximum(), 13.0 );
+  QCOMPARE( r.yMinimum(), 2.0 );
+  QCOMPARE( r.yMaximum(), 14.0 );
+
+  // auto normalized
+  QgsRectangle r2( QgsPointXY( 13, 14 ), QgsPointXY( 1, 2 ) );
+  QCOMPARE( r2.xMinimum(), 1.0 );
+  QCOMPARE( r2.xMaximum(), 13.0 );
+  QCOMPARE( r2.yMinimum(), 2.0 );
+  QCOMPARE( r2.yMaximum(), 14.0 );
+
+  // no normalization
+  QgsRectangle r3( QgsPointXY( 13, 14 ), QgsPointXY( 1, 2 ), false );
+  QCOMPARE( r3.xMinimum(), 13.0 );
+  QCOMPARE( r3.xMaximum(), 1.0 );
+  QCOMPARE( r3.yMinimum(), 14.0 );
+  QCOMPARE( r3.yMaximum(), 2.0 );
+}
+
+void TestQgsRectangle::set()
+{
+  QgsRectangle r( QgsPointXY( 1, 2 ), QgsPointXY( 13, 14 ) );
+  // auto normalized
+  r.set( QgsPointXY( 13, 14 ), QgsPointXY( 1, 2 ) );
+  QCOMPARE( r.xMinimum(), 1.0 );
+  QCOMPARE( r.xMaximum(), 13.0 );
+  QCOMPARE( r.yMinimum(), 2.0 );
+  QCOMPARE( r.yMaximum(), 14.0 );
+
+  // no normalization
+  r.set( QgsPointXY( 13, 14 ), QgsPointXY( 1, 2 ), false );
+  QCOMPARE( r.xMinimum(), 13.0 );
+  QCOMPARE( r.xMaximum(), 1.0 );
+  QCOMPARE( r.yMinimum(), 14.0 );
+  QCOMPARE( r.yMaximum(), 2.0 );
+}
+
+void TestQgsRectangle::setXY()
+{
+  QgsRectangle r( QgsPointXY( 111, 112 ), QgsPointXY( 113, 114 ) );
+  // auto normalized
+  r.set( 13, 14, 1, 2 );
+  QCOMPARE( r.xMinimum(), 1.0 );
+  QCOMPARE( r.xMaximum(), 13.0 );
+  QCOMPARE( r.yMinimum(), 2.0 );
+  QCOMPARE( r.yMaximum(), 14.0 );
+
+  // no normalization
+  r.set( 13, 14, 1, 2, false );
+  QCOMPARE( r.xMinimum(), 13.0 );
+  QCOMPARE( r.xMaximum(), 1.0 );
+  QCOMPARE( r.yMinimum(), 14.0 );
+  QCOMPARE( r.yMaximum(), 2.0 );
 }
 
 void TestQgsRectangle::fromCenter()

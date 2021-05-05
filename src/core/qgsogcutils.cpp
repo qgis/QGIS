@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QObject>
+#include <QRegularExpression>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -141,9 +142,28 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Co
 
     if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
     {
-      geomSrs.createFromString( geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) );
+      QString srsName { geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) };
+
+      // The logic here follows WFS GeoServer conventions from https://docs.geoserver.org/latest/en/user/services/wfs/axis_order.html
+      const bool ignoreAxisOrientation { srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) || srsName.startsWith( QLatin1String( "EPSG:" ) ) };
+
+      // GDAL does not recognise http://www.opengis.net/gml/srs/epsg.xml#4326 but it does
+      // http://www.opengis.net/def/crs/EPSG/0/4326 so, let's try that
+      if ( srsName.startsWith( QLatin1String( "http://www.opengis.net/gml/srs/" ) ) )
+      {
+        const auto parts { srsName.split( QRegularExpression( QStringLiteral( R"raw(/|#|\.)raw" ) ) ) };
+        if ( parts.length() == 10 )
+        {
+          srsName = QStringLiteral( "http://www.opengis.net/def/crs/%1/0/%2" ).arg( parts[ 7 ].toUpper(), parts[ 9 ] );
+        }
+      }
+      geomSrs.createFromUserInput( srsName );
       if ( geomSrs.isValid() && geomSrs != context.layer->crs() )
       {
+        if ( geomSrs.hasAxisInverted() && ! ignoreAxisOrientation )
+        {
+          geometry.get()->swapXy();
+        }
         const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
         try
         {
@@ -1281,7 +1301,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
 
           wkbPtr.readHeader();
 
-          double x, y;
+          double x = 0;
+          double y = 0;
           if ( invertAxisOrientation )
             wkbPtr >> y >> x;
           else
@@ -1325,7 +1346,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
             coordString += ts;
           }
 
-          double x, y;
+          double x = 0;
+          double y = 0;
           if ( invertAxisOrientation )
             wkbPtr >> y >> x;
           else
@@ -1378,7 +1400,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
               coordString += ts;
             }
 
-            double x, y;
+            double x = 0;
+            double y = 0;
             if ( invertAxisOrientation )
               wkbPtr >> y >> x;
             else
@@ -1418,8 +1441,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         if ( numRings == 0 ) // sanity check for zero rings in polygon
           return QDomElement();
 
-        int *ringNumPoints = new int[numRings]; // number of points in each ring
-
         for ( int idx = 0; idx < numRings; idx++ )
         {
           QString boundaryName = ( gmlVersion == GML_2_1_2 ) ? "gml:outerBoundaryIs" : "gml:exterior";
@@ -1430,9 +1451,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           QDomElement boundaryElem = doc.createElement( boundaryName );
           QDomElement ringElem = doc.createElement( QStringLiteral( "gml:LinearRing" ) );
           // get number of points in the ring
-          int nPoints;
+          int nPoints = 0;
           wkbPtr >> nPoints;
-          ringNumPoints[idx] = nPoints;
 
           QDomElement coordElem = baseCoordElem.cloneNode().toElement();
           QString coordString;
@@ -1443,7 +1463,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
               coordString += ts;
             }
 
-            double x, y;
+            double x = 0;
+            double y = 0;
             if ( invertAxisOrientation )
               wkbPtr >> y >> x;
             else
@@ -1461,7 +1482,6 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           boundaryElem.appendChild( ringElem );
           polygonElem.appendChild( boundaryElem );
         }
-        delete [] ringNumPoints;
         return polygonElem;
       }
       case QgsWkbTypes::MultiPolygon25D:
@@ -1513,7 +1533,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
                 coordString += ts;
               }
 
-              double x, y;
+              double x = 0;
+              double y = 0;
               if ( invertAxisOrientation )
                 wkbPtr >> y >> x;
               else
@@ -2659,8 +2680,13 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 static QString mapBinarySpatialToOgc( const QString &name )
 {
   QString nameCompare( name );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   if ( name.size() > 3 && name.midRef( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
+#else
+  if ( name.size() > 3 && QStringView {name}.mid( 0, 3 ).toString().compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
+    nameCompare = name.mid( 3 );
+#endif
   QStringList spatialOps;
   spatialOps << QStringLiteral( "BBOX" ) << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "Crosses" ) << QStringLiteral( "Equals" )
              << QStringLiteral( "Disjoint" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Touches" ) << QStringLiteral( "Within" );
@@ -2676,8 +2702,13 @@ static QString mapBinarySpatialToOgc( const QString &name )
 static QString mapTernarySpatialToOgc( const QString &name )
 {
   QString nameCompare( name );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   if ( name.size() > 3 && name.midRef( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
+#else
+  if ( name.size() > 3 && QStringView {name}.mid( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
+    nameCompare = name.mid( 3 );
+#endif
   if ( nameCompare.compare( QLatin1String( "DWithin" ), Qt::CaseInsensitive ) == 0 )
     return QStringLiteral( "DWithin" );
   if ( nameCompare.compare( QLatin1String( "Beyond" ), Qt::CaseInsensitive ) == 0 )

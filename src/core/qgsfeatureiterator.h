@@ -23,7 +23,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * Internal feature iterator to be implemented within data providers
+ * \brief Internal feature iterator to be implemented within data providers
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
 /**
  * \ingroup core
- * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+ * \brief Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings (although present in SIP file)
 */
 template<typename T>
@@ -259,7 +259,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 
 /**
  * \ingroup core
- * Wrapper for iterator of features from vector data provider or vector layer
+ * \brief Wrapper for iterator of features from vector data provider or vector layer
  */
 class CORE_EXPORT QgsFeatureIterator
 {
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsFeatureIterator
 
     SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
     % MethodCode
-    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );

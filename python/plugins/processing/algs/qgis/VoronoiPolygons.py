@@ -85,6 +85,9 @@ class VoronoiPolygons(QgisAlgorithm):
     def displayName(self):
         return self.tr('Voronoi polygons')
 
+    def tags(self):
+        return self.tr('thiessen').split(',')
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
@@ -151,7 +154,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
         # Eliminate duplicate points
-        uniqueSet = set(item for item in pts)
+        uniqueSet = set(pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j)
                                for (j, i) in enumerate(uniqueSet)])

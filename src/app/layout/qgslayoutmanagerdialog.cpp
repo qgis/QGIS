@@ -200,7 +200,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   {
     if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
-      templateMap.insert( info.baseName(), info.absoluteFilePath() );
+      templateMap.insert( info.completeBaseName(), info.absoluteFilePath() );
     }
   }
   return templateMap;
@@ -260,7 +260,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
       title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
     }
 
-    std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+    std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( QgsProject::instance() );
     if ( loadingTemplate )
     {
       bool loadedOK = false;
@@ -321,10 +321,10 @@ void QgsLayoutManagerDialog::createReport()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
-  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );
+  std::unique_ptr< QgsReport > report = std::make_unique< QgsReport >( QgsProject::instance() );
   report->setName( title );
 
-  std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( QgsProject::instance() );
+  std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( QgsProject::instance() );
   header->initializeDefaults();
   report->setHeader( header.release() );
   report->setHeaderEnabled( true );
@@ -417,7 +417,7 @@ void QgsLayoutManagerDialog::removeClicked()
   }
 
   // Once we have the layout list, we can delete all of them !
-  for ( QgsMasterLayoutInterface *l : qgis::as_const( layoutList ) )
+  for ( QgsMasterLayoutInterface *l : std::as_const( layoutList ) )
   {
     QgsProject::instance()->layoutManager()->removeLayout( l );
   }

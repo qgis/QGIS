@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include "qgsvectorlayerexporter.h"
 #include "qgspostgresprovider.h"
@@ -294,6 +295,9 @@ QgsPostgresConn *QgsPostgresProvider::connectionRO() const
 
 void QgsPostgresProvider::setListening( bool isListening )
 {
+  if ( !mValid )
+    return;
+
   if ( isListening && !mListener )
   {
     mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
@@ -600,7 +604,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         QString delim;
         expr = QStringLiteral( "%1 IN (" ).arg( ( pkType == PktOid ? QStringLiteral( "oid" ) : QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ) );
 
-        for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+        for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
         {
           expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) );
           delim = ',';
@@ -621,7 +625,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         QString delim;
         expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
 
-        for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+        for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
         {
           QVariantList pkVals = sharedData->lookupKey( featureId );
           if ( !pkVals.isEmpty() )
@@ -642,7 +646,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       //complex primary key, need to build up where string
       QStringList whereClauses;
-      for ( const QgsFeatureId featureId : qgis::as_const( featureIds ) )
+      for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
       {
         whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
@@ -902,7 +906,7 @@ bool QgsPostgresProvider::loadFields()
     if ( !attroids.isEmpty() )
     {
       QStringList attroidsList;
-      for ( Oid attroid : qgis::as_const( attroids ) )
+      for ( Oid attroid : std::as_const( attroids ) )
       {
         attroidsList.append( QString::number( attroid ) );
       }
@@ -1006,11 +1010,12 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-          if ( re.exactMatch( formattedFieldType ) )
+          const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "numeric\\((\\d+),(\\d+)\\)" ) ) );
+          const QRegularExpressionMatch match = re.match( formattedFieldType );
+          if ( match.hasMatch() )
           {
-            fieldSize = re.cap( 1 ).toInt();
-            fieldPrec = re.cap( 2 ).toInt();
+            fieldSize = match.captured( 1 ).toInt();
+            fieldPrec = match.captured( 2 ).toInt();
           }
           else if ( formattedFieldType != QLatin1String( "numeric" ) )
           {
@@ -1027,10 +1032,11 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "character varying\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( "character varying\\((\\d+)\\)" ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1079,10 +1085,11 @@ bool QgsPostgresProvider::loadFields()
 
         fieldType = QVariant::String;
 
-        QRegExp re( "character\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( "character\\((\\d+)\\)" ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -1097,10 +1104,11 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::String;
 
-        QRegExp re( "char\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        const QRegularExpression re( QRegularExpression::anchoredPattern( QStringLiteral( "char\\((\\d+)\\)" ) ) );
+        const QRegularExpressionMatch match = re.match( formattedFieldType );
+        if ( match.hasMatch() )
         {
-          fieldSize = re.cap( 1 ).toInt();
+          fieldSize = match.captured( 1 ).toInt();
         }
         else
         {
@@ -2531,7 +2539,25 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[ i ] );
+          // the conversion functions expects the list as a string, so convert it
+          if ( value.type() == QVariant::StringList )
+          {
+            QStringList list_vals = value.toStringList();
+            // all strings need to be double quoted to allow special postgres
+            // array characters such as {, or whitespace in the string
+            // but we need to escape all double quotes and backslashes
+            list_vals.replaceInStrings( "\\", "\\\\" );
+            list_vals.replaceInStrings( "\"", "\\\"" );
+            v = QStringLiteral( "{\"" ) + value.toStringList().join( QLatin1String( "\",\"" ) ) + QStringLiteral( "\"}" );
+          }
+          else if ( value.type() == QVariant::List )
+          {
+            v = "{" + value.toStringList().join( "," ) + "}";
+          }
+          else
+          {
+            v = paramValue( value.toString(), defaultValues[ i ] );
+          }
 
           if ( v != value.toString() )
           {
@@ -2639,8 +2665,10 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
     conn->begin();
 
     QgsFeatureIds chunkIds;
-    const QgsFeatureIds::const_iterator lastId = --ids.end();
-    for ( QgsFeatureIds::const_iterator it = ids.begin(); it != ids.end(); ++it )
+    QgsFeatureIds::const_iterator lastId = ids.constEnd();
+    --lastId;
+
+    for ( QgsFeatureIds::const_iterator it = ids.constBegin(); it != ids.constEnd(); ++it )
     {
       // create chunks of fids to delete, the last chunk may be smaller
       chunkIds.insert( *it );
@@ -2656,7 +2684,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
       if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
 
-      for ( QgsFeatureIds::const_iterator chunkIt = chunkIds.begin(); chunkIt != chunkIds.end(); ++chunkIt )
+      for ( QgsFeatureIds::const_iterator chunkIt = chunkIds.constBegin(); chunkIt != chunkIds.constEnd(); ++chunkIt )
       {
         mShared->removeFid( *chunkIt );
       }
@@ -3727,15 +3755,14 @@ QgsRectangle QgsPostgresProvider::extent() const
     {
       QgsDebugMsgLevel( "Got extents using: " + sql, 2 );
 
-      QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
-      if ( ext.contains( rx ) )
+      const QRegularExpression rx( "\\((.+) (.+),(.+) (.+)\\)" );
+      const QRegularExpressionMatch match = rx.match( ext );
+      if ( match.hasMatch() )
       {
-        QStringList ex = rx.capturedTexts();
-
-        mLayerExtent.setXMinimum( ex[1].toDouble() );
-        mLayerExtent.setYMinimum( ex[2].toDouble() );
-        mLayerExtent.setXMaximum( ex[3].toDouble() );
-        mLayerExtent.setYMaximum( ex[4].toDouble() );
+        mLayerExtent.setXMinimum( match.captured( 1 ).toDouble() );
+        mLayerExtent.setYMinimum( match.captured( 2 ).toDouble() );
+        mLayerExtent.setXMaximum( match.captured( 3 ).toDouble() );
+        mLayerExtent.setYMaximum( match.captured( 4 ).toDouble() );
       }
       else
       {
@@ -4528,7 +4555,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   QgsDataProvider::ProviderOptions providerOptions;
   QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
+  std::unique_ptr< QgsPostgresProvider > provider = std::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -4721,7 +4748,7 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
-    if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
+    if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsMessageLog::logMessage( tr( "Cannot find separator: %1" ).arg( txt.mid( i ) ), tr( "PostGIS" ) );
       return QString();
@@ -4734,14 +4761,14 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
     int start = i;
     for ( ; i < txt.length(); i++ )
     {
-      if ( txt.midRef( i ).startsWith( sep ) )
+      if ( QStringView{txt}.mid( i ).startsWith( sep ) )
       {
-        QStringRef r( txt.midRef( start, i - start ) );
+        QStringView v( QStringView{txt}.mid( start, i - start ) );
         i += sep.length();
-        return r.trimmed().toString();
+        return v.trimmed().toString();
       }
     }
-    return txt.midRef( start, i - start ).trimmed().toString();
+    return QStringView{txt}.mid( start, i - start ).trimmed().toString();
   }
 }
 
@@ -4971,6 +4998,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
   }
 
   int nbFound = 0;
+  QList<QString> refTableFound;
   for ( int row = 0; row < sqlResult.PQntuples(); ++row )
   {
     const QString name = sqlResult.PQgetvalue( row, 0 );
@@ -4988,7 +5016,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
-    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) )
+    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) || ( !refTableFound.contains( refTable ) ) )
     {
       // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
@@ -5005,6 +5033,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
         {
           result.append( relation );
           ++nbFound;
+          refTableFound.append( refTable );
         }
         else
         {
@@ -5015,9 +5044,16 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     else
     {
       // multi reference field => add the field pair to all the referenced layers found
+      const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );
       for ( int i = 0; i < nbFound; ++i )
       {
-        result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+        for ( const QgsVectorLayer *foundLayer : foundLayers )
+        {
+          if ( result[result.size() - 1 - i].referencedLayerId() == foundLayer->id() )
+          {
+            result[result.size() - 1 - i].addFieldPair( fkColumn, refColumn );
+          }
+        }
       }
     }
   }

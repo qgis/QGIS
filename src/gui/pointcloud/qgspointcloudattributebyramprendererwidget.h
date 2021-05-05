@@ -52,6 +52,7 @@ class GUI_EXPORT QgsPointCloudAttributeByRampRendererWidget: public QgsPointClou
 
     bool mBlockChangedSignal = false;
     bool mBlockMinMaxChanged = false;
+    bool mBlockSetMinMaxFromLayer = false;
 
     double mProviderMin = std::numeric_limits< double >::quiet_NaN();
     double mProviderMax = std::numeric_limits< double >::quiet_NaN();

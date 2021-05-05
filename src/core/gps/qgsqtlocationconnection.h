@@ -45,6 +45,7 @@ SIP_IF_FEATURE( MOBILITY_LOCATION )
 /**
  * \ingroup core
  * \class QgsQtLocationConnection
+ * \brief A GPS connection subclass based on the Qt Location libraries.
  * \note may not be available in Python bindings on all platforms
 */
 class CORE_EXPORT QgsQtLocationConnection: public QgsGpsConnection

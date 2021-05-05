@@ -10,7 +10,7 @@
 
 class QgsBrowserProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 A QSortFilterProxyModel subclass for filtering and sorting browser model items.
 
 .. versionadded:: 3.4

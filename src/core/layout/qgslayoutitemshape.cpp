@@ -29,7 +29,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
 {
   setBackgroundEnabled( false );
   setFrameEnabled( false );
-  QgsStringMap properties;
+  QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );

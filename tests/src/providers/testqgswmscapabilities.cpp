@@ -77,6 +77,8 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl.size(), 1 );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref,
                 QString( "http://www.example.com/fb.png" ) );
+
+      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << QStringLiteral( "EPSG:2056" ) );
     }
 
     void guessCrs()
@@ -118,10 +120,10 @@ class TestQgsWmsCapabilities: public QObject
         "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S"
       };
 
-      for ( QString resolutionText : resolutionList )
+      for ( const QString &resolutionText : resolutionList )
       {
-        QgsWmstResolution resolution = settings.parseWmstResolution( resolutionText );
-        QCOMPARE( resolution.text(), resolutionText );
+        QgsTimeDuration resolution = settings.parseWmstResolution( resolutionText );
+        QCOMPARE( resolution.toString(), resolutionText );
       }
 
       QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
@@ -130,14 +132,14 @@ class TestQgsWmsCapabilities: public QObject
       QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
       QDateTime end = QDateTime( QDate( 2020, 1, 9 ), QTime( 0, 0, 0 ), Qt::UTC );
 
-      QgsWmstResolution res;
-      res.day = 1;
-      QgsWmstResolution extentResolution = extent.datesResolutionList.at( 0 ).resolution;
+      QgsTimeDuration res;
+      res.days = 1;
+      QgsTimeDuration extentResolution = extent.datesResolutionList.at( 0 ).resolution;
 
       QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 0 ), start );
       QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 1 ), end );
 
-      QCOMPARE( extentResolution.text(), res.text() );
+      QCOMPARE( extentResolution.toString(), res.toString() );
 
       QDateTime firstClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 3 ), QTime( 16, 0, 0 ), Qt::UTC ) );
       QDateTime firstExpected = QDateTime( QDate( 2020, 1, 3 ), QTime( 0, 0, 0 ), Qt::UTC );
@@ -199,6 +201,46 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
       QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
       QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+    }
+
+    void wmstListOfTimeExtents()
+    {
+      // test parsing a fixed list of time extents
+      QgsWmsSettings settings;
+
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z" ) );
+      settings.setTimeDimensionExtent( extent );
+
+      QCOMPARE( extent.datesResolutionList.size(), 8 );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 0 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 1 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 1 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 2 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 2 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 3 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 3 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1959, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 4 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 4 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1960, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 5 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 5 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1967, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 6 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 6 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.size(), 1 );
+      QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1933, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1949, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1973, 12, 31 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
     }
 
     void wmsTemporalDimension_data()

@@ -32,7 +32,7 @@ class QgsFieldsPrivate;
 /**
  * \class QgsFields
  * \ingroup core
- * Container of fields for a vector layer.
+ * \brief Container of fields for a vector layer.
  *
  * In addition to storing a list of QgsField instances, it also:
  *
@@ -293,9 +293,9 @@ class CORE_EXPORT  QgsFields
      * Looks up field's index from the field name.
      * This method matches in the following order:
      *
-     *  1. The exact field name taking case sensitivity into account
-     *  2. Looks for the field name by case insensitive comparison
-     *  3. The field alias (case insensitive)
+     * 1. The exact field name taking case sensitivity into account
+     * 2. Looks for the field name by case insensitive comparison
+     * 3. The field alias (case insensitive)
      *
      * \param fieldName The name to look for.
      *

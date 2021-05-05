@@ -9,8 +9,9 @@
 
 class QgsListFieldFormatter : QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Field formatter for a list field.
+
 This represents a list type value.
 Values will be represented as a comma-separated list.
 

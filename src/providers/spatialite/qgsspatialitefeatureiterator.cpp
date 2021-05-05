@@ -123,33 +123,24 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+    QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
+    if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
-
-      QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
-
-      if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
+      whereClause = compiler.result();
+      if ( !whereClause.isEmpty() )
       {
-        whereClause = compiler.result();
-        if ( !whereClause.isEmpty() )
-        {
-          useFallbackWhereClause = true;
-          fallbackWhereClause = whereClauses.join( QLatin1String( " AND " ) );
-          whereClauses.append( whereClause );
-          //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
-          mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
-          mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
-        }
-      }
-      if ( result != QgsSqlExpressionCompiler::Complete )
-      {
-        //can't apply limit at provider side as we need to check all results using QGIS expressions
-        limitAtProvider = false;
+        useFallbackWhereClause = true;
+        fallbackWhereClause = whereClauses.join( QLatin1String( " AND " ) );
+        whereClauses.append( whereClause );
+        //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
+        mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
+        mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
       }
     }
-    else
+    if ( result != QgsSqlExpressionCompiler::Complete )
     {
+      //can't apply limit at provider side as we need to check all results using QGIS expressions
       limitAtProvider = false;
     }
   }
@@ -163,40 +154,33 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     mOrderByCompiled = true;
 
-    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    const auto constOrderBy = request.orderBy();
+    for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
     {
-      const auto constOrderBy = request.orderBy();
-      for ( const QgsFeatureRequest::OrderByClause &clause : constOrderBy )
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields, request.flags() & QgsFeatureRequest::IgnoreStaticNodesDuringExpressionCompilation );
+      QgsExpression expression = clause.expression();
+      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
-        QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
-        QgsExpression expression = clause.expression();
-        if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
-        {
-          QString part;
-          part = compiler.result();
+        QString part;
+        part = compiler.result();
 
-          if ( clause.nullsFirst() )
-            orderByParts << QStringLiteral( "%1 IS NOT NULL" ).arg( part );
-          else
-            orderByParts << QStringLiteral( "%1 IS NULL" ).arg( part );
-
-          part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
-          orderByParts << part;
-        }
+        if ( clause.nullsFirst() )
+          orderByParts << QStringLiteral( "%1 IS NOT NULL" ).arg( part );
         else
-        {
-          // Bail out on first non-complete compilation.
-          // Most important clauses at the beginning of the list
-          // will still be sent and used to pre-sort so the local
-          // CPU can use its cycles for fine-tuning.
-          mOrderByCompiled = false;
-          break;
-        }
+          orderByParts << QStringLiteral( "%1 IS NULL" ).arg( part );
+
+        part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
+        orderByParts << part;
       }
-    }
-    else
-    {
-      mOrderByCompiled = false;
+      else
+      {
+        // Bail out on first non-complete compilation.
+        // Most important clauses at the beginning of the list
+        // will still be sent and used to pre-sort so the local
+        // CPU can use its cycles for fine-tuning.
+        mOrderByCompiled = false;
+        break;
+      }
     }
 
     if ( !mOrderByCompiled )

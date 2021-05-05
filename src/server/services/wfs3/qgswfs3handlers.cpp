@@ -21,6 +21,7 @@
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 #include "qgsserverapiutils.h"
+#include "qgsserverfeatureid.h"
 #include "qgsfeaturerequest.h"
 #include "qgsjsonutils.h"
 #include "qgsogrutils.h"
@@ -31,7 +32,10 @@
 #include "qgsserverinterface.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsvectorlayerutils.h"
 #include "qgslogger.h"
+
+#include <QTextCodec>
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
@@ -258,6 +262,8 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   {
     publishedAttributes = accessControl->layerAttributes( vLayer, publishedAttributes );
   }
+#else
+  ( void )context;
 #endif
 
   QgsFields publishedFields;
@@ -1113,7 +1119,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
   const std::string title { mapLayer->title().isEmpty() ? mapLayer->name().toStdString() : mapLayer->title().toStdString() };
 
   // Get parameters
-  QVariantMap params { values( context )};
+  QVariantMap params = values( context );
 
   switch ( context.request()->method() )
   {
@@ -1274,11 +1280,16 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       QgsFeatureIterator features { mapLayer->getFeatures( featureRequest ) };
       QgsFeature feat;
       long i { 0 };
+      QMap<QgsFeatureId, QString> fidMap;
+
       while ( features.nextFeature( feat ) )
       {
         // Ignore records before offset
         if ( i >= offset )
+        {
+          fidMap.insert( feat.id(), QgsServerFeatureId::getServerFid( feat, mapLayer->dataProvider()->pkAttributeIndexes() ) );
           featureList << feat;
+        }
         i++;
       }
 
@@ -1306,6 +1317,12 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       json data = exporter.exportFeaturesToJsonObject( featureList );
+
+      // Patch feature IDs with server feature IDs
+      for ( int i = 0; i < featureList.length(); i++ )
+      {
+        data[ "features" ][ i ]["id"] = fidMap.value( data[ "features" ][ i ]["id"] ).toStdString();
+      }
 
       // Add some metadata
       data["numberMatched"] = matchedFeaturesCount;
@@ -1413,7 +1430,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         json postData = json::parse( context.request()->data() );
 
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
-        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
         if ( features.isEmpty() )
         {
           throw QgsServerApiBadRequestException( QStringLiteral( "Posted data does not contain any feature" ) );
@@ -1449,7 +1467,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           {
             authorizedFieldNames.push_back( f.name() );
           }
-          const QVariantMap properties { QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( ) };
+          const QVariantMap properties = QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( );
           const QgsFields fields = mapLayer->fields();
           for ( const auto &field : fields )
           {
@@ -1461,7 +1479,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
               }
               else
               {
-                QVariant value { properties.value( field.name() ) };
+                QVariant value = properties.value( field.name() );
                 // Convert blobs
                 if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
@@ -1488,8 +1506,9 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         }
         feat.setId( FID_NULL );
 
-        QgsFeatureList featuresToAdd;
-        featuresToAdd.append( feat );
+        QgsVectorLayerUtils::matchAttributesToFields( feat, mapLayer->fields( ) );
+
+        QgsFeatureList featuresToAdd( { feat } );
         if ( ! mapLayer->dataProvider()->addFeatures( featuresToAdd ) )
         {
           throw QgsServerApiInternalServerError( QStringLiteral( "Error adding feature to collection" ) );
@@ -1558,12 +1577,33 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
   // Retrieve feature from storage
   const QString featureId { match.captured( QStringLiteral( "featureId" ) ) };
   QgsFeatureRequest featureRequest = filteredRequest( mapLayer, context );
-  featureRequest.setFilterFid( featureId.toLongLong() );
+  const QString fidExpression { QgsServerFeatureId::getExpressionFromServerFid( featureId, mapLayer->dataProvider() ) };
+  if ( ! fidExpression.isEmpty() )
+  {
+    QgsExpression *filterExpression { featureRequest.filterExpression() };
+    if ( ! filterExpression )
+    {
+      featureRequest.setFilterExpression( fidExpression );
+    }
+    else
+    {
+      featureRequest.setFilterExpression( QStringLiteral( "(%1) AND (%2)" ).arg( fidExpression, filterExpression->expression() ) );
+    }
+  }
+  else
+  {
+    bool ok;
+    featureRequest.setFilterFid( featureId.toLongLong( &ok ) );
+    if ( ! ok )
+    {
+      throw QgsServerApiInternalServerError( QStringLiteral( "Invalid feature ID [%1]" ).arg( featureId ) );
+    }
+  }
   QgsFeature feature;
   QgsFeatureIterator it { mapLayer->getFeatures( featureRequest ) };
-  if ( ! it.nextFeature( feature ) && feature.isValid() )
+  if ( ! it.nextFeature( feature ) || ! feature.isValid() )
   {
-    QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
+    throw QgsServerApiInternalServerError( QStringLiteral( "Invalid feature [%1]" ).arg( featureId ) );
   }
 
   auto doGet = [ & ]( )
@@ -1583,6 +1623,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
     exporter.setAttributes( featureRequest.subsetOfAttributes() );
     exporter.setAttributeDisplayName( true );
     json data = exporter.exportFeatureToJsonObject( feature );
+    // Patch feature ID
+    data["id"] = featureId.toStdString();
     data["links"] = links( context );
     json navigation = json::array();
     const QUrl url { context.request()->url() };
@@ -1651,7 +1693,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         // Parse
         json postData = json::parse( context.request()->data() );
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
-        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), mapLayer->fields(), QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFields fields( QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) ) );
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
         if ( features.isEmpty() )
         {
           throw QgsServerApiBadRequestException( QStringLiteral( "Posted data does not contain any feature" ) );
@@ -1691,7 +1734,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           {
             authorizedFieldNames.push_back( f.name() );
           }
-          const QVariantMap properties { QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( ) };
+          const QVariantMap properties = QgsJsonUtils::parseJson( postData["properties"].dump( ) ).toMap( );
           const QgsFields fields = mapLayer->fields();
           int fieldIndex = 0;
           for ( const auto &field : fields )
@@ -1704,7 +1747,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               }
               else
               {
-                QVariant value { properties.value( field.name() ) };
+                QVariant value = properties.value( field.name() );
                 // Convert blobs
                 if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
@@ -1811,7 +1854,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           {
             authorizedFieldNames.push_back( f.name() );
           }
-          const QVariantMap properties { QgsJsonUtils::parseJson( postData["modify"].dump( ) ).toMap( ) };
+          const QVariantMap properties = QgsJsonUtils::parseJson( postData["modify"].dump( ) ).toMap( );
           const QgsFields fields = mapLayer->fields();
           int fieldIndex = 0;
           for ( const auto &field : fields )
@@ -1824,7 +1867,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               }
               else
               {
-                QVariant value { properties.value( field.name() ) };
+                QVariant value = properties.value( field.name() );
                 // Convert blobs
                 if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {

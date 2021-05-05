@@ -13,7 +13,7 @@
 
 class QgsAbstractVectorLayerLabeling
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class - its implementations define different approaches to the labeling of a vector layer.
 
 .. versionadded:: 3.0
@@ -89,7 +89,7 @@ or exported to a vector format.
 Try to create instance of an implementation based on the XML data
 %End
 
-    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
 Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
 %End
@@ -107,7 +107,7 @@ should be canceled.
 
   protected:
 
-    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const;
+    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
 %Docstring
 Writes a TextSymbolizer element contents based on the provided labeling settings
 
@@ -122,7 +122,7 @@ Writes a TextSymbolizer element contents based on the provided labeling settings
 
 class QgsVectorLayerSimpleLabeling : QgsAbstractVectorLayerLabeling
 {
-%Docstring
+%Docstring(signature="appended")
 Basic implementation of the labeling interface.
 
 The configuration is kept in layer's custom properties for backward compatibility.
@@ -163,7 +163,7 @@ Set pal settings (takes ownership).
 
     virtual bool requiresAdvancedEffects() const;
 
-    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+    virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 
 
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );

@@ -15,6 +15,7 @@ set(ORACLE_SRCS
   qgsoracleconnpool.cpp
   qgsoracleexpressioncompiler.cpp
   qgsoracletransaction.cpp
+  qgsoracleproviderconnection.cpp
 )
 
 if (WITH_GUI)
@@ -32,20 +33,7 @@ set(ORACLE_HDRS
 # Build
 
 include_directories(
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
 )
 include_directories(SYSTEM
@@ -60,6 +48,9 @@ if (WITH_GUI)
 endif()
 
 add_library (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
+
+# require c++17
+target_compile_features(oracleprovider PRIVATE cxx_std_17)
 
 target_link_libraries (oracleprovider
   qgis_core

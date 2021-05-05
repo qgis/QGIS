@@ -25,7 +25,7 @@ class QDomElement;
 
 /**
  * \ingroup 3d
- * Definition of a directional light in a 3D map scene
+ * \brief Definition of a directional light in a 3D map scene
  *
  * \since QGIS 3.16
  */

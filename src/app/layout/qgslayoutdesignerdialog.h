@@ -465,6 +465,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QAction *mActionPaste = nullptr;
     QProgressBar *mStatusProgressBar = nullptr;
 
+    QMenu *mDynamicTextMenu = nullptr;
+
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )
@@ -544,7 +546,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     //! Load predefined scales from the project's properties
     void loadPredefinedScalesFromProject();
-    QVector<double> predefinedScales() const;
 
     QgsLayoutAtlas *atlas();
 

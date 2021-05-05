@@ -34,7 +34,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );
@@ -138,11 +138,13 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.geometry(), vlayer, false );
 
         if ( allFeaturesInView && !viewRect.intersects( feat.geometry().boundingBox() ) )
           allFeaturesInView = false;
       }
+      mRubberBand->updatePosition();
+      mRubberBand->update();
 
       if ( !allFeaturesInView )
       {
@@ -188,9 +190,22 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( mMode )
     {
       case Move:
-        for ( QgsFeatureId id : qgis::as_const( mMovedFeatures ) )
+      {
+        QgsFeatureRequest request;
+        request.setFilterFids( mMovedFeatures ).setNoAttributes();
+        QgsFeatureIterator fi = vlayer->getFeatures( request );
+        QgsFeature f;
+        while ( fi.nextFeature( f ) )
         {
-          vlayer->translateFeature( id, dx, dy );
+          if ( !f.hasGeometry() )
+            continue;
+
+          QgsGeometry geom = f.geometry();
+          if ( !( geom.translate( dx, dy ) == QgsGeometry::Success ) )
+            continue;
+
+          QgsFeatureId id = f.id();
+          vlayer->changeGeometry( id, geom );
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
@@ -206,7 +221,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mSnapIndicator->setMatch( QgsPointLocator::Match() );
         cadDockWidget()->clear();
         break;
-
+      }
       case CopyMove:
         QgsFeatureRequest request;
         request.setFilterFids( mMovedFeatures );
@@ -233,7 +248,7 @@ void QgsMapToolMoveFeature::deactivate()
   mRubberBand = nullptr;
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
-  QgsMapTool::deactivate();
+  QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )

@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QTextStream>
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
@@ -61,11 +62,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 #ifdef WITH_QTWEBKIT
   // Setup information tab
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
-#else
   const int horizontalDpi = logicalDpiX();
-#endif
 
   // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
   if ( horizontalDpi > 96 )

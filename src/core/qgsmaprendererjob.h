@@ -23,11 +23,13 @@
 #include <QPainter>
 #include <QObject>
 #include <QTime>
+#include <QElapsedTimer>
 
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
+#include "qgssettingsentry.h"
 
 
 class QgsLabelingEngine;
@@ -41,7 +43,7 @@ class QgsFeatureFilterProvider;
 
 /**
  * \ingroup core
- * Structure keeping low-level rendering job information.
+ * \brief Structure keeping low-level rendering job information.
  */
 struct LayerRenderJob
 {
@@ -53,15 +55,40 @@ struct LayerRenderJob
    * May be NULLPTR if it is not necessary to draw to separate image (e.g. sequential rendering).
    */
   QImage *img;
-  //! TRUE when img has been initialized (filled with transparent pixels) and is safe to compose
+  //! TRUE when img has been initialized (filled with transparent pixels)
   bool imageInitialized = false;
+
+  bool imageCanBeComposed() const;
+
   QgsMapLayerRenderer *renderer; // must be deleted
+
   QPainter::CompositionMode blendMode;
   double opacity;
   //! If TRUE, img already contains cached image from previous rendering
   bool cached;
   QgsWeakMapLayerPointer layer;
+
+  /**
+   * TRUE if the render job was successfully completed in its entirety (i.e. it was
+   * not canceled or aborted early).
+   *
+   * \since QGIS 3.18
+   */
+  bool completed = false;
+
   int renderingTime; //!< Time it took to render the layer in ms (it is -1 if not rendered or still rendering)
+
+  /**
+   * Estimated time for the layer to render, in ms.
+   *
+   * This can be used to specifies hints at the expected render times for the layer, so that
+   * the corresponding layer renderer can apply heuristics and determine appropriate update
+   * intervals during the render operation.
+   *
+   * \since QGIS 3.18
+   */
+  int estimatedRenderingTime = 0;
+
   QStringList errors; //!< Rendering errors
 
   /**
@@ -111,7 +138,7 @@ typedef QList<LayerRenderJob> LayerRenderJobs;
 
 /**
  * \ingroup core
- * Structure keeping low-level label rendering job information.
+ * \brief Structure keeping low-level label rendering job information.
  */
 struct LabelRenderJob
 {
@@ -158,7 +185,7 @@ struct LabelRenderJob
 
 /**
  * \ingroup core
- * Abstract base class for map rendering implementations.
+ * \brief Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
  * the caller is not blocked while the rendering is in progress. Non-blocking
@@ -284,6 +311,20 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
     /**
+     * Sets approximate render times (in ms) for map layers.
+     *
+     * This can be used to specifies hints at the expected render times for layers, so that
+     * the individual layer renderers can apply heuristics and determine appropriate update
+     * intervals during the render operation.
+     *
+     * The keys for \a hints must be set to the corresponding layer IDs.
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 3.18
+     */
+    void setLayerRenderingTimeHints( const QHash< QString, int > &hints ) SIP_SKIP;
+
+    /**
      * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
@@ -295,6 +336,18 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \note not available in Python bindings
      */
     static const QString LABEL_CACHE_ID SIP_SKIP;
+
+    /**
+     * QgsMapRendererCache ID string for cached label image during preview compositions only.
+     * \note not available in Python bindings
+     * \since QGIS 3.18
+     */
+    static const QString LABEL_PREVIEW_CACHE_ID SIP_SKIP;
+
+#ifndef SIP_RUN
+    //! Settings entry log canvas refresh event
+    static const inline QgsSettingsEntryBool settingsLogCanvasRefreshEvent = QgsSettingsEntryBool( QStringLiteral( "Map/logCanvasRefreshEvent" ), QgsSettings::NoSection, false );
+#endif
 
   signals:
 
@@ -322,6 +375,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Render time (in ms) per layer, by layer ID
     QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
+
+    /**
+     * Approximate expected layer rendering time per layer, by layer ID
+     *
+     * \since QGIS 3.18
+     */
+    QHash< QString, int > mLayerRenderingTimeHints;
 
     /**
      * TRUE if layer rendering time should be recorded.
@@ -366,7 +426,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     LayerRenderJobs prepareSecondPassJobs( LayerRenderJobs &firstPassJobs, LabelRenderJob &labelJob ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob ) SIP_SKIP;
+    static QImage composeImage( const QgsMapSettings &settings,
+                                const LayerRenderJobs &jobs,
+                                const LabelRenderJob &labelJob,
+                                const QgsMapRendererCache *cache = nullptr ) SIP_SKIP;
+
+    //! \note not available in Python bindings
+    static QImage layerImageToBeComposed( const QgsMapSettings &settings, const LayerRenderJob &job, const QgsMapRendererCache *cache ) SIP_SKIP;
 
     /**
      * Compose second pass images into first pass images.
@@ -429,8 +495,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
 /**
  * \ingroup core
- * Intermediate base class adding functionality that allows client to query the rendered image.
- *  The image can be queried even while the rendering is still in progress to get intermediate result
+ * \brief Intermediate base class adding functionality that allows client to query the rendered image.
+ *
+ * The image can be queried even while the rendering is still in progress to get intermediate result
  *
  * \since QGIS 2.4
  */

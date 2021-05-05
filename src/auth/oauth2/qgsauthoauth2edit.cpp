@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QDesktopServices>
+#include <QUrl>
 
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"
@@ -607,7 +608,7 @@ void QgsAuthOAuth2Edit::getSoftStatementDir()
 
 void QgsAuthOAuth2Edit::initConfigObjs()
 {
-  mOAuthConfigCustom = qgis::make_unique<QgsAuthOAuth2Config>( nullptr );
+  mOAuthConfigCustom = std::make_unique<QgsAuthOAuth2Config>( nullptr );
   mOAuthConfigCustom->setConfigType( QgsAuthOAuth2Config::Custom );
   mOAuthConfigCustom->setToDefaults();
 }
@@ -1144,7 +1145,11 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
     registerReply = QgsNetworkAccessManager::instance()->post( registerRequest, json );
   mDownloading = true;
   connect( registerReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::registerReplyFinished, Qt::QueuedConnection );
-  connect( registerReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  connect( registerReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#else
+  connect( registerReply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#endif
 }
 
 void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
@@ -1162,7 +1167,11 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     QNetworkReply *configReply = QgsNetworkAccessManager::instance()->get( configRequest );
     mDownloading = true;
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );
-    connect( configReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    connect( configReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#else
+    connect( configReply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
+#endif
   }
 }
 

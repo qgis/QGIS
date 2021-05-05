@@ -90,6 +90,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mDecimalsSpinBox</tabstop>
+  <tabstop>mShowThousandsCheckBox</tabstop>
+  <tabstop>mShowPlusCheckBox</tabstop>
+  <tabstop>mShowTrailingZerosCheckBox</tabstop>
+  <tabstop>mScalingComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -24,7 +24,7 @@
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )
   , mNam( manager )
-  , mRootNode( qgis::make_unique< QgsNetworkLoggerRootNode >() )
+  , mRootNode( std::make_unique< QgsNetworkLoggerRootNode >() )
 {
   // logger must be created on the main thread
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
@@ -45,17 +45,17 @@ void QgsNetworkLogger::enableLogging( bool enabled )
 {
   if ( enabled )
   {
-    connect( mNam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated, Qt::UniqueConnection );
-    connect( mNam, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished, Qt::UniqueConnection );
-    connect( mNam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut, Qt::UniqueConnection );
     connect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress, Qt::UniqueConnection );
     connect( mNam, &QgsNetworkAccessManager::requestEncounteredSslErrors, this, &QgsNetworkLogger::requestEncounteredSslErrors, Qt::UniqueConnection );
   }
   else
   {
-    disconnect( mNam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated );
-    disconnect( mNam, qgis::overload< QgsNetworkReplyContent >::of( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished );
-    disconnect( mNam, qgis::overload< QgsNetworkRequestParameters >::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut );
+    disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated );
+    disconnect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished );
+    disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut );
     disconnect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress );
     disconnect( mNam, &QgsNetworkAccessManager::requestEncounteredSslErrors, this, &QgsNetworkLogger::requestEncounteredSslErrors );
   }
@@ -76,7 +76,7 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr< QgsNetworkLoggerRequestGroup > group = qgis::make_unique< QgsNetworkLoggerRequestGroup >( parameters );
+  std::unique_ptr< QgsNetworkLoggerRequestGroup > group = std::make_unique< QgsNetworkLoggerRequestGroup >( parameters );
   mRequestGroups.insert( parameters.requestId(), group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();
@@ -195,7 +195,7 @@ void QgsNetworkLogger::removeRows( const QList<int> &rows )
   QList< int > res = rows;
   std::sort( res.begin(), res.end(), std::greater< int >() );
 
-  for ( int row : qgis::as_const( res ) )
+  for ( int row : std::as_const( res ) )
   {
     int popId = data( index( row, 0, QModelIndex() ), QgsNetworkLoggerNode::RoleId ).toInt();
     mRequestGroups.remove( popId );

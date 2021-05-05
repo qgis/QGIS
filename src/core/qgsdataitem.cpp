@@ -28,7 +28,9 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
+#include <QTimer>
 #include <mutex>
+#include <QRegularExpression>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
@@ -106,7 +108,7 @@ QIcon QgsLayerItem::iconVectorTile()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
 }
 
-QIcon QgsLayerItem::iconPointCloudLayer()
+QIcon QgsLayerItem::iconPointCloud()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
 }
@@ -129,6 +131,44 @@ QIcon QgsDataCollectionItem::openDirIcon()
 QIcon QgsDataCollectionItem::homeDirIcon()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderHome.svg" ) );
+}
+
+QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection() const
+{
+  const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+
+  if ( ! md )
+  {
+    return nullptr;
+  }
+
+  const QString connectionName { name() };
+
+  try
+  {
+    // First try to retrieve the connection by name if this is a stored connection
+    if ( md->findConnection( connectionName ) )
+    {
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
+    }
+
+    // If that fails, try to create a connection from the path, in case this is a
+    // filesystem-based DB (gpkg or spatialite)
+    // The name is useless, we need to get the file path from the data item path
+    const QString databaseFilePath { path().remove( QRegularExpression( R"re([\aZ]{2,}://)re" ) ) };
+
+    if ( QFile::exists( databaseFilePath ) )
+    {
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( databaseFilePath, {} ) );
+    }
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    // This is expected and it is not an error in case the provider does not implement
+    // the connections API
+  }
+  return nullptr;
 }
 
 QIcon QgsDataCollectionItem::iconDir()
@@ -155,7 +195,7 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
     try
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
-      mTableProperty = qgis::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
+      mTableProperty = std::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
     }
     catch ( QgsProviderConnectionException &ex )
     {
@@ -421,6 +461,11 @@ void QgsDataItem::moveToThread( QThread *targetThread )
     child->moveToThread( targetThread );
   }
   QObject::moveToThread( targetThread );
+}
+
+QgsAbstractDatabaseProviderConnection *QgsDataItem::databaseConnection() const
+{
+  return nullptr;
 }
 
 QIcon QgsDataItem::icon()
@@ -774,6 +819,11 @@ bool QgsDataItem::handleDoubleClick()
   return false;
 }
 
+QgsMimeDataUtils::Uri QgsDataItem::mimeUri() const
+{
+  return mimeUris().isEmpty() ? QgsMimeDataUtils::Uri() : mimeUris().first();
+}
+
 bool QgsDataItem::rename( const QString & )
 {
   return false;
@@ -961,7 +1011,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName && mUri == o->mUri && mProviderKey == o->mProviderKey );
 }
 
-QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsLayerItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
 
@@ -1021,7 +1071,7 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
   u.uri = uri();
   u.supportedCrs = supportedCrs();
   u.supportedFormats = supportedFormats();
-  return u;
+  return { u };
 }
 
 // ---------------------------------------------------------------------
@@ -1304,13 +1354,13 @@ QWidget *QgsDirectoryItem::paramWidget()
   return new QgsDirectoryParamWidget( mPath );
 }
 
-QgsMimeDataUtils::Uri QgsDirectoryItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsDirectoryItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
   u.layerType = QStringLiteral( "directory" );
   u.name = mName;
   u.uri = mDirPath;
-  return u;
+  return { u };
 }
 
 QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *parent )
@@ -1462,13 +1512,13 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
   setState( Populated ); // no more children
 }
 
-QgsMimeDataUtils::Uri QgsProjectItem::mimeUri() const
+QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri u;
   u.layerType = QStringLiteral( "project" );
   u.name = mName;
   u.uri = mPath;
-  return u;
+  return { u };
 }
 
 QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path )
@@ -1846,6 +1896,27 @@ QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
 QIcon QgsDatabaseSchemaItem::iconDataCollection()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+}
+
+QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const
+{
+  const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( providerKey() ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+  if ( ! md )
+  {
+    return nullptr;
+  }
+  const QString connectionName { parent()->name() };
+  try
+  {
+    return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    // This is expected and it is not an error in case the provider does not implement
+    // the connections API
+  }
+  return nullptr;
 }
 
 

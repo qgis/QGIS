@@ -84,17 +84,10 @@ void TestQgsGdalUtils::supportsRasterCreate()
   QVERIFY( !QgsGdalUtils::supportsRasterCreate( GDALGetDriverByName( "ESRI Shapefile" ) ) );
 }
 
-#if PROJ_VERSION_MAJOR>=6
 #define EPSG_4326_WKT \
   "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]]," \
   "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433," \
   "AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]"
-#else
-#define EPSG_4326_WKT \
-  "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]]," \
-  "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433," \
-  "AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]"
-#endif
 
 void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
 {
@@ -105,11 +98,7 @@ void TestQgsGdalUtils::testCreateSingleBandMemoryDataset()
   QCOMPARE( GDALGetRasterXSize( ds1.get() ), 40 );
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( GDALGetProjectionRef( ds1.get() ),  R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
-#else
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
-#endif
   double geoTransform[6];
   double geoTransformExpected[] = { 1, 0.5, 0, 11, 0, -0.5 };
   QCOMPARE( GDALGetGeoTransform( ds1.get(), geoTransform ), CE_None );
@@ -127,11 +116,7 @@ void TestQgsGdalUtils::testCreateMultiBandMemoryDataset()
   QCOMPARE( GDALGetRasterXSize( ds1.get() ), 40 );
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( GDALGetProjectionRef( ds1.get() ),  R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
-#else
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
-#endif
   double geoTransform[6];
   double geoTransformExpected[] = { 1, 0.5, 0, 11, 0, -0.5 };
   QCOMPARE( GDALGetGeoTransform( ds1.get(), geoTransform ), CE_None );
@@ -156,11 +141,7 @@ void TestQgsGdalUtils::testCreateSingleBandTiffDataset()
   QCOMPARE( GDALGetRasterXSize( ds1.get() ), 40 );
   QCOMPARE( GDALGetRasterYSize( ds1.get() ), 20 );
 
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( GDALGetProjectionRef( ds1.get() ), R"""(GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]])""" );
-#else
-  QCOMPARE( GDALGetProjectionRef( ds1.get() ), EPSG_4326_WKT );
-#endif
 
   double geoTransform[6];
   double geoTransformExpected[] = { 1, 0.5, 0, 11, 0, -0.5 };

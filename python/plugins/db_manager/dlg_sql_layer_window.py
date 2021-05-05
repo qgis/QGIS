@@ -115,7 +115,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.editSql.setMarginVisible(True)
+        self.editSql.setLineNumbersVisible(True)
         self.initCompleter()
         self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
@@ -300,17 +300,20 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
-        if hasUniqueField:
-            if self.allowMultiColumnPk:
-                checkedCols = []
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.checkState() == Qt.Checked:
-                        checkedCols.append(item.data())
-                uniqueFieldName = ",".join(checkedCols)
-            elif self.uniqueCombo.currentIndex() >= 0:
-                uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
-            else:
-                uniqueFieldName = None
+        if hasUniqueField and self.allowMultiColumnPk:
+            checkedCols = [
+                item.data()
+                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+                if item.checkState() == Qt.Checked
+            ]
+
+            uniqueFieldName = ",".join(checkedCols)
+        elif (
+            hasUniqueField
+            and not self.allowMultiColumnPk
+            and self.uniqueCombo.currentIndex() >= 0
+        ):
+            uniqueFieldName = self.uniqueModel.item(self.uniqueCombo.currentIndex()).data()
         else:
             uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
@@ -538,10 +541,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def uniqueTextChanged(self, text):
         # Whenever there is new text displayed in the combobox, check if it is the correct one and if not, display the correct one.
-        checkedItems = []
-        for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-            if item.checkState() == Qt.Checked:
-                checkedItems.append(item.text())
+        checkedItems = [
+            item.text()
+            for item in self.uniqueModel.findItems("*", Qt.MatchWildcard)
+            if item.checkState() == Qt.Checked
+        ]
+
         label = ", ".join(checkedItems)
         if text != label:
             self.uniqueCombo.setEditText(label)

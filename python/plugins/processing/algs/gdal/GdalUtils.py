@@ -34,6 +34,8 @@ with warnings.catch_warnings():
     from osgeo import ogr
 
 from qgis.core import (Qgis,
+                       QgsBlockingProcess,
+                       QgsRunProcess,
                        QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
@@ -43,7 +45,14 @@ from qgis.core import (Qgis,
                        QgsCredentials,
                        QgsDataSourceUri,
                        QgsProjUtils,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsProcessingException)
+
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QProcess
+)
+
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
@@ -88,41 +97,65 @@ class GdalUtils:
 
         fused_command = ' '.join([str(c) for c in commands])
         QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
-        feedback.pushInfo('GDAL command:')
+        feedback.pushInfo(GdalUtils.tr('GDAL command:'))
         feedback.pushCommandInfo(fused_command)
-        feedback.pushInfo('GDAL command output:')
-        success = False
-        retry_count = 0
-        while not success:
-            loglines = []
-            loglines.append('GDAL execution console output')
-            try:
-                with subprocess.Popen(
-                    fused_command,
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stdin=subprocess.DEVNULL,
-                    stderr=subprocess.STDOUT,
-                    universal_newlines=True,
-                ) as proc:
-                    for line in proc.stdout:
-                        feedback.pushConsoleInfo(line)
-                        loglines.append(line)
-                    success = True
-            except IOError as e:
-                if retry_count < 5:
-                    retry_count += 1
-                else:
-                    raise IOError(
-                        str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
-                            len(loglines), u'\n'.join(loglines[-10:])))
+        feedback.pushInfo(GdalUtils.tr('GDAL command output:'))
 
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
-            GdalUtils.consoleOutput = loglines
+        loglines = [GdalUtils.tr('GDAL execution console output')]
 
-    @staticmethod
-    def getConsoleOutput():
-        return GdalUtils.consoleOutput
+        def on_stdout(ba):
+            val = ba.data().decode('UTF-8')
+            # catch progress reports
+            if val == '100 - done.':
+                on_stdout.progress = 100
+                feedback.setProgress(on_stdout.progress)
+            elif val in ('0', '10', '20', '30', '40', '50', '60', '70', '80', '90'):
+                on_stdout.progress = int(val)
+                feedback.setProgress(on_stdout.progress)
+            elif val == '.':
+                on_stdout.progress += 2.5
+                feedback.setProgress(on_stdout.progress)
+
+            on_stdout.buffer += val
+            if on_stdout.buffer.endswith('\n') or on_stdout.buffer.endswith('\r'):
+                # flush buffer
+                feedback.pushConsoleInfo(on_stdout.buffer.rstrip())
+                loglines.append(on_stdout.buffer.rstrip())
+                on_stdout.buffer = ''
+
+        on_stdout.progress = 0
+        on_stdout.buffer = ''
+
+        def on_stderr(ba):
+            val = ba.data().decode('UTF-8')
+            on_stderr.buffer += val
+
+            if on_stderr.buffer.endswith('\n') or on_stderr.buffer.endswith('\r'):
+                # flush buffer
+                feedback.reportError(on_stderr.buffer.rstrip())
+                loglines.append(on_stderr.buffer.rstrip())
+                on_stderr.buffer = ''
+
+        on_stderr.buffer = ''
+
+        command, *arguments = QgsRunProcess.splitCommand(fused_command)
+        proc = QgsBlockingProcess(command, arguments)
+        proc.setStdOutHandler(on_stdout)
+        proc.setStdErrHandler(on_stderr)
+
+        res = proc.run(feedback)
+        if feedback.isCanceled() and res != 0:
+            feedback.pushInfo(GdalUtils.tr('Process was canceled and did not complete'))
+        elif not feedback.isCanceled() and proc.exitStatus() == QProcess.CrashExit:
+            raise QgsProcessingException(GdalUtils.tr('Process was unexpectedly terminated'))
+        elif res == 0:
+            feedback.pushInfo(GdalUtils.tr('Process completed successfully'))
+        elif proc.processError() == QProcess.FailedToStart:
+            raise QgsProcessingException(GdalUtils.tr('Process {} failed to start. Either {} is missing, or you may have insufficient permissions to run the program.').format(command, command))
+        else:
+            feedback.reportError(GdalUtils.tr('Process returned error code {}').format(res))
+
+        return loglines
 
     @staticmethod
     def getSupportedRasters():
@@ -137,8 +170,8 @@ class GdalUtils:
 
         GdalUtils.supportedRasters = {}
         GdalUtils.supportedOutputRasters = {}
-        GdalUtils.supportedRasters['GTiff'] = ['tif']
-        GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+        GdalUtils.supportedRasters['GTiff'] = ['tif', 'tiff']
+        GdalUtils.supportedOutputRasters['GTiff'] = ['tif', 'tiff']
 
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
@@ -150,8 +183,8 @@ class GdalUtils:
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            if gdal.DMD_EXTENSION in metadata:
-                extensions = metadata[gdal.DMD_EXTENSION].split('/')
+            if gdal.DMD_EXTENSIONS in metadata:
+                extensions = metadata[gdal.DMD_EXTENSIONS].split(' ')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
                     # Only creatable rasters can be referenced in output rasters
@@ -177,20 +210,24 @@ class GdalUtils:
 
     @staticmethod
     def getSupportedRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
     def getSupportedOutputRasterExtensions():
-        allexts = ['tif']
+        allexts = []
         for exts in list(GdalUtils.getSupportedOutputRasters().values()):
             for ext in exts:
-                if ext not in allexts and ext != '':
+                if ext not in allexts and ext not in ['', 'tif', 'tiff']:
                     allexts.append(ext)
+        allexts.sort()
+        allexts[0:0] = ['tif', 'tiff']
         return allexts
 
     @staticmethod
@@ -217,13 +254,14 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
-        escChars = [' ', '&', '(', ')']
+        escChars = [' ', '&', '(', ')', '"', ';']
         joined = ''
         for s in strList:
             if not isinstance(s, str):
                 s = str(s)
-            if s and s[0] != '-' and any(c in s for c in escChars):
-                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
+            # don't escape if command starts with - and isn't a negative number, e.g. -9999
+            if s and re.match(r'^([^-]|-\d)', s) and any(c in s for c in escChars):
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '"""') \
                           + '"'
             else:
                 escaped = s
@@ -327,7 +365,7 @@ class GdalUtils:
             if dsUri.host() != "":
                 ogrstr += delim + dsUri.host()
                 delim = ""
-                if dsUri.port() != "" and dsUri.port() != '1521':
+                if dsUri.port() not in ["", '1521']:
                     ogrstr += ":" + dsUri.port()
                 ogrstr += "/"
                 if dsUri.database() != "":
@@ -438,9 +476,10 @@ class GdalUtils:
         if crs.authid().upper().startswith('EPSG:') or crs.authid().upper().startswith('IGNF:') or crs.authid().upper().startswith('ESRI:'):
             return crs.authid()
 
-        if QgsProjUtils.projVersionMajor() >= 6:
-            # use WKT
-            return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
+        return crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED_GDAL)
 
-        # fallback to proj4 string, stripping out newline characters
-        return crs.toProj().replace('\n', ' ').replace('\r', ' ')
+    @classmethod
+    def tr(cls, string, context=''):
+        if context == '':
+            context = cls.__name__
+        return QCoreApplication.translate(context, string)

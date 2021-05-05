@@ -26,7 +26,7 @@ class QgsLayoutMouseHandles;
 
 /**
  * \ingroup gui
- * Layout view tool for selecting items in the layout.
+ * \brief Layout view tool for selecting items in the layout.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool

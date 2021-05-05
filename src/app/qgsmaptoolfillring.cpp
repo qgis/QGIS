@@ -33,6 +33,20 @@ QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   mToolName = tr( "Fill ring" );
 }
 
+bool QgsMapToolFillRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::Streaming:
+      return true;
+
+    case QgsMapToolCapture::CircularString:
+      return false;
+  }
+  return false;
+}
+
 void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
@@ -130,7 +144,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
 
     QgsLineString ext( pointList );
-    std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >( );
+    std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >( );
     polygon->setExteriorRing( ext.clone() );
     g = QgsGeometry( std::move( polygon ) );
   }

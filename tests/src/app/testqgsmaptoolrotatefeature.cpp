@@ -44,6 +44,10 @@ class TestQgsMapToolRotateFeature: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testRotateFeature();
+    void testRotateFeatureManualAnchor();
+    void testCancelManualAnchor();
+    void testRotateFeatureManualAnchorAfterStartRotate();
+    void testRotateFeatureManualAnchorSnapping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -86,10 +90,10 @@ void TestQgsMapToolRotateFeature::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0))" );
+  QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" );
+  QString wkt2 = QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" );
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -109,6 +113,7 @@ void TestQgsMapToolRotateFeature::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBase );
   mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerBase )->init();
 
   // create the tool
   mRotateTool = new QgsMapToolRotateFeature( mCanvas );
@@ -134,10 +139,106 @@ void TestQgsMapToolRotateFeature::testRotateFeature()
   utils.mouseMove( 2, 1 );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((0.72 -0.17, 0.28 1.17, 1.17 0.72, 0.72 -0.17))" ) );
-  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0))" ) );
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
 
   mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchor()
+{
+  // test rotating around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // set anchor point
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.08 0.12, 0.87 1.1, 1.84 1.31, 2.06 0.34, 1.08 0.12))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testCancelManualAnchor()
+{
+  // test canceling rotation around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // set anchor point
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // right click = remove anchor point
+  utils.mouseClick( 10, 15, Qt::RightButton, Qt::KeyboardModifiers(), true );
+
+  // now rotate -- should be around feature center, not anchor point
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-0.17 0.28, 0.28 1.17, 1.17 0.72, 0.72 -0.17, -0.17 0.28))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorAfterStartRotate()
+{
+  // test rotating around a fixed anchor point, where the fixed anchor point is placed after rotation begins
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  // start rotation
+  utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // set anchor point
+  utils.mouseMove( 0, 5 );
+  utils.mouseClick( 0, 5, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // complete rotation
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-4.74 6.58, -3.79 6.26, -4.11 5.32, -5.06 5.63, -4.74 6.58))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorSnapping()
+{
+  // test rotating around a fixed anchor point
+  TestQgsMapToolUtils utils( mRotateTool );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  const double tolerance = cfg.tolerance();
+  const QgsTolerance::UnitType units = cfg.units();
+  cfg.setTolerance( 0.5 );
+  cfg.setUnits( QgsTolerance::LayerUnits );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // set anchor point, should snap to (1.1, 5)
+  utils.mouseMove( 1, 5.1 );
+  utils.mouseClick( 1, 5.1, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // source point should snap to (1, 1)
+  utils.mouseMove( 0.9, 0.9 );
+  utils.mouseClick( 0.9, 0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // target point should snap to (2.1, 1)
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.37 -0.11, 1.11 0.85, 2.07 1.12, 2.34 0.15, 1.37 -0.11))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0, 1.1 5, 2.1 5, 2.1 0, 1.1 0))" ) );
+
+  mLayerBase->undoStack()->undo();
+
+  // restore tolerance setting
+  cfg.setTolerance( tolerance );
+  cfg.setUnits( units );
+  mCanvas->snappingUtils()->setConfig( cfg );
 }
 
 

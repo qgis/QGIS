@@ -11,6 +11,8 @@ set(QGIS_QUICK_PLUGIN_SRC
 
 set(QGIS_QUICK_PLUGIN_RESOURCES
   components/qgsquickicontextitem.qml
+  components/qgsquickcheckboxcomponent.qml
+  components/qgsquickswitch.qml
   editor/qgsquickeditorwidgetcombobox.qml
   editor/qgsquickcheckbox.qml
   editor/qgsquickdatetime.qml
@@ -39,26 +41,8 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/annotations
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
-  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/locator
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/quickgui
 
-  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/quickgui
 )
 
@@ -93,6 +77,10 @@ add_library(qgis_quick_plugin ${LIBRARY_TYPE}
     ${QGIS_QUICK_PLUGIN_MOC_SRCS}
     ${QGIS_QUICK_PLUGIN_RESOURCES}
 )
+
+# require c++17
+target_compile_features(qgis_quick_plugin PRIVATE cxx_std_17)
+
 target_link_libraries(qgis_quick_plugin qgis_quick)
 set_target_properties(qgis_quick_plugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${QGIS_QUICK_PLUGIN_RUNTIME_DIR})
 target_compile_definitions(qgis_quick_plugin PRIVATE "-DQT_NO_FOREACH")

@@ -13,8 +13,8 @@
 
 class QgsPluginLayerType
 {
-%Docstring
-class for creating plugin specific layers
+%Docstring(signature="appended")
+Class for creating plugin specific layers
 %End
 
 %TypeHeaderCode
@@ -50,10 +50,10 @@ Show plugin layer properties dialog. Return ``False`` if the dialog cannot be sh
 
 class QgsPluginLayerRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry of plugin layers types.
 
-QgsPluginLayerRegistry is not usually directly created, but rather accessed through
+:py:class:`QgsPluginLayerRegistry` is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.pluginLayerRegistry()`.
 %End
 

@@ -38,7 +38,7 @@ class QgsLocatorLineEdit;
 /**
  * \class QgsLocatorWidget
  * \ingroup gui
- * A special locator widget which allows searching for matching results from a QgsLocator
+ * \brief A special locator widget which allows searching for matching results from a QgsLocator
  * and presenting them to users for selection.
  * \see QgsLocator
  * \since QGIS 3.0
@@ -143,7 +143,7 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
 /**
  * \class QgsLocatorResultsView
  * \ingroup gui
- * Custom QTreeView designed for showing the results in a QgsLocatorWidget.
+ * \brief Custom QTreeView designed for showing the results in a QgsLocatorWidget.
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLocatorResultsView : public QTreeView
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsLocatorResultsView : public QTreeView
 /**
  * \class QgsLocatorLineEdit
  * \ingroup gui
- * Custom line edit to handle completion within the line edit as a light gray text
+ * \brief Custom line edit to handle completion within the line edit as a light gray text
  * \since QGIS 3.16
  */
 class QgsLocatorLineEdit : public QgsFilterLineEdit

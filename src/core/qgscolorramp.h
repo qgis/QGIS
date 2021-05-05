@@ -89,7 +89,7 @@ class CORE_EXPORT QgsColorRamp
     /**
      * Returns a string map containing all the color ramp's properties.
      */
-    virtual QgsStringMap properties() const = 0;
+    virtual QVariantMap properties() const = 0;
 
     /**
      * Returns a list of available ramp types, where the first value in each item is the QgsColorRamp::type() string
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
                           const QgsGradientStopsList &stops = QgsGradientStopsList() );
 
     //! Creates a new QgsColorRamp from a map of properties
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     int count() const override { return mStops.count() + 2; }
     double value( int index ) const override;
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     QString type() const override;
     void invert() override;
     QgsGradientColorRamp *clone() const override SIP_FACTORY;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     /**
      * Returns the gradient start color.
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     double value( int index ) const override;
     QColor color( double value ) const override;
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 
     QString type() const override;
     QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     int count() const override { return mCount; }
 
     /**
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 
     QgsRandomColorRamp *clone() const override SIP_FACTORY;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
   protected:
 
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Sets the list of colors used by the ramp.
@@ -552,7 +552,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     QString type() const override;
     void invert() override;
     QgsPresetSchemeColorRamp *clone() const override SIP_FACTORY;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     int count() const override;
 
     QString schemeName() const override { return QStringLiteral( "preset" ); }
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      * \param properties color ramp properties
      * \see properties()
      */
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     double value( int index ) const override;
     QColor color( double value ) const override;
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
     QString type() const override { return QgsColorBrewerColorRamp::typeString(); }
     void invert() override;
     QgsColorBrewerColorRamp *clone() const override SIP_FACTORY;
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
     int count() const override { return mColors; }
 
     /**
@@ -701,7 +701,8 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
                          const QString &variantName = QString(), bool inverted = false,
                          bool doLoadFile = true );
 
-    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    //! Creates the symbol layer
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     /**
      * Returns the string identifier for QgsCptCityColorRamp.
@@ -718,7 +719,7 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const SIP_FACTORY;
 
-    QgsStringMap properties() const override;
+    QVariantMap properties() const override;
 
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }

@@ -36,7 +36,7 @@
 
 /**
  * \ingroup core
- * Template that stores data related to a connection to a single server or datasource.
+ * \brief Template that stores data related to a connection to a single server or datasource.
  *
  * It is assumed that following functions exist:
  *
@@ -76,7 +76,7 @@ class QgsConnectionPoolGroup
 
     ~QgsConnectionPoolGroup()
     {
-      for ( const Item &item : qgis::as_const( conns ) )
+      for ( const Item &item : std::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( item.c );
       }
@@ -185,12 +185,12 @@ class QgsConnectionPoolGroup
     void invalidateConnections()
     {
       connMutex.lock();
-      for ( const Item &i : qgis::as_const( conns ) )
+      for ( const Item &i : std::as_const( conns ) )
       {
         qgsConnectionPool_ConnectionDestroy( i.c );
       }
       conns.clear();
-      for ( T c : qgis::as_const( acquiredConns ) )
+      for ( T c : std::as_const( acquiredConns ) )
         qgsConnectionPool_InvalidateConnection( c );
       connMutex.unlock();
     }
@@ -250,7 +250,8 @@ class QgsConnectionPoolGroup
 
 /**
  * \ingroup core
- * Template class responsible for keeping a pool of open connections.
+ * \brief Template class responsible for keeping a pool of open connections.
+ *
  * This is desired to avoid the overhead of creation of new connection every time.
  *
  * The methods are thread safe.
@@ -274,7 +275,7 @@ class QgsConnectionPool
     virtual ~QgsConnectionPool()
     {
       mMutex.lock();
-      for ( T_Group *group : qgis::as_const( mGroups ) )
+      for ( T_Group *group : std::as_const( mGroups ) )
       {
         delete group;
       }

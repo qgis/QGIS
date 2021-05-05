@@ -57,18 +57,18 @@ class DummyPaintEffect : public QgsPaintEffect
     {}
     QString type() const override { return QStringLiteral( "Dummy" ); }
     QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
-    static QgsPaintEffect *create( const QgsStringMap &props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] ); }
-    QgsStringMap properties() const override
+    static QgsPaintEffect *create( const QVariantMap &props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )].toString(), props[QStringLiteral( "testProp2" )].toString() ); }
+    QVariantMap properties() const override
     {
-      QgsStringMap props;
+      QVariantMap props;
       props[QStringLiteral( "testProp" )] = mProp1;
       props[QStringLiteral( "testProp2" )] = mProp2;
       return props;
     }
-    void readProperties( const QgsStringMap &props ) override
+    void readProperties( const QVariantMap &props ) override
     {
-      mProp1 = props[QStringLiteral( "testProp" )];
-      mProp2 = props[QStringLiteral( "testProp2" )];
+      mProp1 = props[QStringLiteral( "testProp" )].toString();
+      mProp2 = props[QStringLiteral( "testProp2" )].toString();
     }
 
     QString prop1() { return mProp1; }
@@ -317,7 +317,7 @@ void TestQgsPaintEffect::drawSource()
   delete cloneCast;
 
   //read/write
-  QgsStringMap props = effect->properties();
+  QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDrawSourceEffect::create( props );
   QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect * >( readEffect );
   QVERIFY( readCast );
@@ -391,7 +391,7 @@ void TestQgsPaintEffect::blur()
   delete cloneCast;
 
   //read/write
-  QgsStringMap props = effect->properties();
+  QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsBlurEffect::create( props );
   QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect * >( readEffect );
   QVERIFY( readCast );
@@ -484,7 +484,7 @@ void TestQgsPaintEffect::dropShadow()
   delete cloneCast;
 
   //read/write
-  QgsStringMap props = effect->properties();
+  QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDropShadowEffect::create( props );
   QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect * >( readEffect );
   QVERIFY( readCast );
@@ -586,7 +586,7 @@ void TestQgsPaintEffect::glow()
   delete cloneCast;
 
   //read/write
-  QgsStringMap props = effect->properties();
+  QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsOuterGlowEffect::create( props );
   QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect * >( readEffect );
   QVERIFY( readCast );
@@ -701,7 +701,7 @@ void TestQgsPaintEffect::transform()
   clone.reset( nullptr );
 
   //read/write
-  QgsStringMap props = effect->properties();
+  QVariantMap props = effect->properties();
   std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
   QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect.get() );
   QVERIFY( readCast );
@@ -973,7 +973,7 @@ void TestQgsPaintEffect::layout()
   lineLayer->setRenderer( renderer );
 
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &l );
+  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 

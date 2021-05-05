@@ -35,6 +35,7 @@
 #include "qgseffectstack.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
+#include "qgsxmlutils.h"
 
 #include <QColor>
 #include <QFont>
@@ -46,6 +47,10 @@
 #include <QSettings>
 #include <QRegExp>
 #include <QPicture>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QMimeData>
+#include <QRegularExpression>
 
 #define POINTS_TO_MM 2.83464567
 
@@ -1155,7 +1160,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   int pass = element.attribute( QStringLiteral( "pass" ) ).toInt();
 
   // parse properties
-  QgsStringMap props = parseProperties( element );
+  QVariantMap props = parseProperties( element );
 
   // if there are any paths stored in properties, convert them from relative to absolute
   QgsApplication::symbolLayerRegistry()->resolvePaths( layerClass, props, context.pathResolver(), false );
@@ -1233,12 +1238,13 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( QStringLiteral( "locked" ), layer->isLocked() );
     layerEl.setAttribute( QStringLiteral( "pass" ), layer->renderingPass() );
 
-    QgsStringMap props = layer->properties();
+    QVariantMap props = layer->properties();
 
     // if there are any paths in properties, convert them from absolute to relative
     QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
     saveProperties( props, doc, layerEl );
+
     if ( layer->paintEffect() && !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
       layer->paintEffect()->saveProperties( doc, layerEl );
 
@@ -1711,7 +1717,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
 
     if ( validFill || validStroke )
     {
-      QgsStringMap map;
+      QVariantMap map;
       map[QStringLiteral( "name" )] = QStringLiteral( "square" );
       map[QStringLiteral( "color" )] = encodeColor( validFill ? fillColor : Qt::transparent );
       map[QStringLiteral( "color_border" )] = encodeColor( validStroke ? strokeColor : Qt::transparent );
@@ -1888,7 +1894,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
     {
       if ( format == QLatin1String( "image/svg+xml" ) )
       {
-        QgsStringMap map;
+        QVariantMap map;
         map[QStringLiteral( "name" )] = name;
         map[QStringLiteral( "fill" )] = fillColor.name();
         map[QStringLiteral( "outline" )] = strokeColor.name();
@@ -1903,7 +1909,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
       }
       else if ( format == QLatin1String( "ttf" ) )
       {
-        QgsStringMap map;
+        QVariantMap map;
         map[QStringLiteral( "font" )] = name;
         map[QStringLiteral( "chr" )] = markIndex;
         map[QStringLiteral( "color" )] = encodeColor( validFill ? fillColor : Qt::transparent );
@@ -2947,33 +2953,50 @@ QgsStringMap QgsSymbolLayerUtils::getVendorOptionList( QDomElement &element )
 }
 
 
-QgsStringMap QgsSymbolLayerUtils::parseProperties( QDomElement &element )
+QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 {
-  QgsStringMap props;
-  QDomElement e = element.firstChildElement();
-  while ( !e.isNull() )
+  QVariant newSymbols = QgsXmlUtils::readVariant( element.firstChildElement( QStringLiteral( "Option" ) ) );
+  if ( newSymbols.type() == QVariant::Map )
   {
-    if ( e.tagName() == QLatin1String( "prop" ) )
-    {
-      QString propKey = e.attribute( QStringLiteral( "k" ) );
-      QString propValue = e.attribute( QStringLiteral( "v" ) );
-      props[propKey] = propValue;
-    }
-    e = e.nextSiblingElement();
+    return newSymbols.toMap();
   }
-  return props;
+  else
+  {
+    // read old style of writing properties
+    // backward compatibility with project saved in <= 3.16
+    QVariantMap props;
+    QDomElement e = element.firstChildElement();
+    while ( !e.isNull() )
+    {
+      if ( e.tagName() == QLatin1String( "prop" ) )
+      {
+        QString propKey = e.attribute( QStringLiteral( "k" ) );
+        QString propValue = e.attribute( QStringLiteral( "v" ) );
+        props[propKey] = propValue;
+      }
+      e = e.nextSiblingElement();
+    }
+    return props;
+  }
 }
 
 
-void QgsSymbolLayerUtils::saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element )
+void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
 {
-  for ( QgsStringMap::iterator it = props.begin(); it != props.end(); ++it )
+  element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
+
+  // -----
+  // let's do this to try to keep some backward compatibility
+  // to open a project saved on 3.18+ in QGIS <= 3.16
+  // TODO QGIS 4: remove
+  for ( QVariantMap::iterator it = props.begin(); it != props.end(); ++it )
   {
     QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
     propEl.setAttribute( QStringLiteral( "k" ), it.key() );
-    propEl.setAttribute( QStringLiteral( "v" ), it.value() );
+    propEl.setAttribute( QStringLiteral( "v" ), it.value().toString() );
     element.appendChild( propEl );
   }
+  // -----
 }
 
 QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
@@ -3122,7 +3145,7 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
   QString rampType = element.attribute( QStringLiteral( "type" ) );
 
   // parse properties
-  QgsStringMap props = QgsSymbolLayerUtils::parseProperties( element );
+  QVariantMap props = QgsSymbolLayerUtils::parseProperties( element );
 
   if ( rampType == QgsGradientColorRamp::typeString() )
     return QgsGradientColorRamp::create( props );
@@ -3159,7 +3182,7 @@ QVariant QgsSymbolLayerUtils::colorRampToVariant( const QString &name, QgsColorR
   rampMap.insert( QStringLiteral( "type" ), ramp->type() );
   rampMap.insert( QStringLiteral( "name" ), name );
 
-  QgsStringMap properties = ramp->properties();
+  QVariantMap properties = ramp->properties();
 
   QVariantMap propertyMap;
   for ( auto property = properties.constBegin(); property != properties.constEnd(); ++property )
@@ -3179,7 +3202,7 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
 
   // parse properties
   QVariantMap propertyMap = rampMap.value( QStringLiteral( "properties" ) ).toMap();
-  QgsStringMap props;
+  QVariantMap props;
 
   for ( auto property = propertyMap.constBegin(); property != propertyMap.constEnd(); ++property )
   {
@@ -4166,6 +4189,24 @@ bool QgsSymbolLayerUtils::pointInPolygon( const QPolygonF &points, QPointF point
   return inside;
 }
 
+double QgsSymbolLayerUtils::polylineLength( const QPolygonF &polyline )
+{
+  if ( polyline.size() < 2 )
+    return 0;
+
+  double totalLength = 0;
+  auto it = polyline.begin();
+  QPointF p1 = *it++;
+  for ( ; it != polyline.end(); ++it )
+  {
+    QPointF p2 = *it;
+    const double segmentLength = std::sqrt( std::pow( p1.x() - p2.x(), 2.0 ) + std::pow( p1.y() - p2.y(), 2.0 ) );
+    totalLength += segmentLength;
+    p1 = p2;
+  }
+  return totalLength;
+}
+
 QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset )
 {
   if ( polyline.size() < 2 )
@@ -4458,7 +4499,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   return breaks;
 }
 
-double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props )
+double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props )
 {
   double scale = 1;
   bool roundToUnit = false;
@@ -4535,14 +4576,14 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
   return rescaled;
 }
 
-QPointF QgsSymbolLayerUtils::rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props )
+QPointF QgsSymbolLayerUtils::rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props )
 {
   double x = rescaleUom( point.x(), unit, props );
   double y = rescaleUom( point.y(), unit, props );
   return QPointF( x, y );
 }
 
-QVector<qreal> QgsSymbolLayerUtils::rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props )
+QVector<qreal> QgsSymbolLayerUtils::rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props )
 {
   QVector<qreal> result;
   QVector<qreal>::const_iterator it = array.constBegin();
@@ -4553,29 +4594,29 @@ QVector<qreal> QgsSymbolLayerUtils::rescaleUom( const QVector<qreal> &array, Qgs
   return result;
 }
 
-void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props )
+void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props )
 {
-  if ( !props.value( QStringLiteral( "scaleMinDenom" ), QString() ).isEmpty() )
+  if ( !props.value( QStringLiteral( "scaleMinDenom" ), QString() ).toString().isEmpty() )
   {
     QDomElement scaleMinDenomElem = doc.createElement( QStringLiteral( "se:MinScaleDenominator" ) );
-    scaleMinDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMinDenom" ) ).toDouble() ) ) );
+    scaleMinDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMinDenom" ) ).toString().toDouble() ) ) );
     ruleElem.appendChild( scaleMinDenomElem );
   }
 
-  if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QString() ).isEmpty() )
+  if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QString() ).toString().isEmpty() )
   {
     QDomElement scaleMaxDenomElem = doc.createElement( QStringLiteral( "se:MaxScaleDenominator" ) );
-    scaleMaxDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMaxDenom" ) ).toDouble() ) ) );
+    scaleMaxDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMaxDenom" ) ).toString().toDouble() ) ) );
     ruleElem.appendChild( scaleMaxDenomElem );
   }
 }
 
-void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QgsStringMap &props )
+void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props )
 {
   if ( !qgsDoubleNear( mScaleMinDenom, 0 ) )
   {
     bool ok;
-    double parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    double parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toString().toDouble( &ok );
     if ( !ok || parentScaleMinDenom <= 0 )
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mScaleMinDenom );
     else
@@ -4585,7 +4626,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double 
   if ( !qgsDoubleNear( mScaleMaxDenom, 0 ) )
   {
     bool ok;
-    double parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
+    double parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toString().toDouble( &ok );
     if ( !ok || parentScaleMaxDenom <= 0 )
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mScaleMaxDenom );
     else
@@ -4730,3 +4771,15 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   return 0;
 }
+
+QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context )
+{
+  QgsStringMap properties;
+  QMap<QString, QgsProperty>::const_iterator paramIt = propertiesMap.constBegin();
+  for ( ; paramIt != propertiesMap.constEnd(); ++paramIt )
+  {
+    properties.insert( paramIt.key(), paramIt.value().valueAsString( context ) );
+  }
+  return properties;
+}
+

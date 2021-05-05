@@ -22,6 +22,8 @@
 
 #include "qgsfeatureid.h"
 #include "qgsshadowrenderingframegraph.h"
+#include "qgsray3d.h"
+#include "qgscameracontroller.h"
 
 namespace Qt3DRender
 {
@@ -45,7 +47,6 @@ namespace Qt3DExtras
 class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
-class QgsCameraController;
 class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
@@ -55,13 +56,13 @@ class QgsSkyboxSettings;
 class Qgs3DMapExportSettings;
 class QgsShadowRenderingFrameGraph;
 class QgsPostprocessingEntity;
-
+class QgsChunkNode;
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup 3d
- * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+ * \brief Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  * \note Not available in Python bindings
  * \since QGIS 3.0
  */
@@ -112,6 +113,14 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
     //! Exports the scene according to the scene export settings
     void exportScene( const Qgs3DMapExportSettings &exportSettings );
+
+    /**
+     * Returns the active chunk nodes of \a layer
+     *
+     * \since QGIS 3.18
+     */
+    QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -152,6 +161,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onEyeDomeShadingSettingsChanged();
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
+    void onCameraMovementSpeedChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );

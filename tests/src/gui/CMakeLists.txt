@@ -5,61 +5,11 @@ set (util_SRCS)
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-  ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/mesh
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology
-  ${CMAKE_SOURCE_DIR}/src/gui/processing
-  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
-  ${CMAKE_SOURCE_DIR}/src/gui/raster
-  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/numericformats
-  ${CMAKE_SOURCE_DIR}/src/core/processing
-  ${CMAKE_SOURCE_DIR}/src/core/providers/ogr
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/classification
-  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
+include_directories(
+  ${CMAKE_SOURCE_DIR}/tests/src/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/src/native
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
-  ${CMAKE_BINARY_DIR}/src/analysis
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/gui
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/ui/auth
-  ${CMAKE_BINARY_DIR}/src/native
   ${CMAKE_CURRENT_BINARY_DIR}
-)
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
-  ${QWT_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 if(ENABLE_MODELTEST)
@@ -100,6 +50,7 @@ macro (ADD_QGIS_TEST testname testsrc)
   set(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   set(qgis_${testname}_MOC_CPPS ${testsrc})
   add_executable(qgis_${testname} ${qgis_${testname}_SRCS})
+  target_compile_features(qgis_${testname} PRIVATE cxx_std_17)
   set_target_properties(qgis_${testname} PROPERTIES AUTORCC TRUE)
   target_link_libraries(qgis_${testname}
     ${Qt5Xml_LIBRARIES}
@@ -114,7 +65,8 @@ macro (ADD_QGIS_TEST testname testsrc)
     ${QWT_LIBRARY}
     qgis_analysis
     qgis_core
-    qgis_gui)
+    qgis_gui
+    qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   target_link_libraries(qgis_${testname} qgis_native)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
@@ -175,3 +127,10 @@ ADD_QGIS_TEST(singlebandpseudocolorrendererwidget testqgssinglebandpseudocolorre
 ADD_QGIS_TEST(doublevalidator testqgsdoublevalidator.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(externalresourcewidgetwrapper testqgsexternalresourcewidgetwrapper.cpp)
+
+SET_TESTS_PROPERTIES(qgis_listwidgettest PROPERTIES LABELS "POSTGRES")
+if (ENABLE_PGTEST)
+  SET_TESTS_PROPERTIES(qgis_processingguitest qgis_valuerelationwidgetwrapper qgis_texteditwrapper
+    qgis_newdatabasetablewidget
+    PROPERTIES LABELS "POSTGRES")
+endif()

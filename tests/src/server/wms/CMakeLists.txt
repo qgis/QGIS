@@ -2,29 +2,12 @@
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/annotations
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/server
   ${CMAKE_SOURCE_DIR}/src/server/services
   ${CMAKE_SOURCE_DIR}/src/server/services/wms
 
   ${CMAKE_BINARY_DIR}/src/server
-  ${CMAKE_BINARY_DIR}/src/core
 
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -38,6 +21,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 set(MODULE_WMS_SRCS
+  ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrequest.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrenderer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsrestorer.cpp
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgsmaprendererjobproxy.cpp
@@ -58,6 +42,7 @@ macro (ADD_QGIS_TEST TESTSRC)
   string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   set (TESTNAME  "qgis_${TESTNAME}test")
   add_executable(${TESTNAME} ${TESTSRC} ${MODULE_WMS_SRCS} ${MODULE_WMS_MOC_SRCS})
+  target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
@@ -77,6 +62,7 @@ endmacro (ADD_QGIS_TEST)
 
 set(TESTS
   test_qgsserver_wms_dxf.cpp
+  test_qgsserver_wms_request.cpp
   test_qgsserver_wms_restorer.cpp
   test_qgsserver_wms_exceptions.cpp
   test_qgsserver_wms_parameters.cpp

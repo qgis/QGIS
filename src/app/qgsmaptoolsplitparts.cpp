@@ -30,6 +30,20 @@ QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas *canvas )
   setSnapToLayerGridEnabled( false );
 }
 
+bool QgsMapToolSplitParts::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::Streaming:
+      return true;
+
+    case QgsMapToolCapture::CircularString:
+      return false;
+  }
+  return false;
+}
+
 void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer

@@ -27,6 +27,8 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QToolButton>
+#include <QCheckBox>
+#include <QTextStream>
 
 #include <nlohmann/json.hpp>
 
@@ -217,4 +219,16 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   settingsMenu->addAction( mActionShowSuccessful );
   settingsMenu->addAction( mActionShowTimeouts );
+
+  mToolbar->addSeparator();
+  QCheckBox *disableCacheCheck = new QCheckBox( tr( "Disable cache" ) );
+  connect( disableCacheCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    // note -- we deliberately do NOT store this as a permanent setting in QSettings
+    // as it is designed to be a temporary debugging tool only and we don't want
+    // users to accidentally leave this enabled and cause unnecessary server load...
+    QgsNetworkAccessManager::instance()->setCacheDisabled( checked );
+  } );
+
+  mToolbar->addWidget( disableCacheCheck );
 }

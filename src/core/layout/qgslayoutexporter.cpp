@@ -27,9 +27,13 @@
 #include "qgsfeedback.h"
 #include "qgslayoutgeopdfexporter.h"
 #include "qgslinestring.h"
+#include "qgsmessagelog.h"
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
+#include <QBuffer>
+#include <QTimeZone>
+#include <QTextStream>
 
 #include "gdal.h"
 #include "cpl_conv.h"
@@ -195,12 +199,14 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
 
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
 
-  if ( imageSize.isValid() && ( !qgsDoubleNear( static_cast< double >( imageSize.width() ) / imageSize.height(),
-                                paperRect.width() / paperRect.height(), 0.008 ) ) )
+  const double imageAspectRatio = static_cast< double >( imageSize.width() ) / imageSize.height();
+  const double paperAspectRatio = paperRect.width() / paperRect.height();
+  if ( imageSize.isValid() && ( !qgsDoubleNear( imageAspectRatio, paperAspectRatio, 0.008 ) ) )
   {
     // specified image size is wrong aspect ratio for paper rect - so ignore it and just use dpi
     // this can happen e.g. as a result of data defined page sizes
     // see https://github.com/qgis/QGIS/issues/26422
+    QgsMessageLog::logMessage( QObject::tr( "Ignoring custom image size because aspect ratio %1 does not match paper ratio %2" ).arg( QString::number( imageAspectRatio, 'g', 3 ), QString::number( paperAspectRatio, 'g', 3 ) ), QStringLiteral( "Layout" ), Qgis::Warning );
     imageSize = QSize();
   }
 
@@ -292,6 +298,9 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
+    // see https://doc.qt.io/qt-5/qpainter.html#limitations
+    if ( width > 32768 || height > 32768 )
+      QgsMessageLog::logMessage( QObject::tr( "Error: output width or height is larger than 32768 pixel, result will be clipped" ) );
     image.setDotsPerMeterX( static_cast< int >( std::round( resolution / 25.4 * 1000 ) ) );
     image.setDotsPerMeterY( static_cast< int>( std::round( resolution / 25.4 * 1000 ) ) );
     image.fill( Qt::transparent );
@@ -392,14 +401,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
   else
   {
-    for ( int page : qgis::as_const( settings.pages ) )
+    for ( int page : std::as_const( settings.pages ) )
     {
       if ( page >= 0 && page < mLayout->pageCollection()->pageCount() )
         pages << page;
     }
   }
 
-  for ( int page : qgis::as_const( pages ) )
+  for ( int page : std::as_const( pages ) )
   {
     if ( !mLayout->pageCollection()->shouldExportPage( page ) )
     {
@@ -529,7 +538,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   std::unique_ptr< QgsLayoutGeoPdfExporter > geoPdfExporter;
   if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
-    geoPdfExporter = qgis::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
+    geoPdfExporter = std::make_unique< QgsLayoutGeoPdfExporter >( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
 
@@ -619,7 +628,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         // setup georeferencing
         QList< QgsLayoutItemMap * > maps;
         mLayout->layoutItems( maps );
-        for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+        for ( QgsLayoutItemMap *map : std::as_const( maps ) )
         {
           QgsAbstractGeoPdfExporter::GeoReferencedSection georef;
           georef.crs = map->crs();

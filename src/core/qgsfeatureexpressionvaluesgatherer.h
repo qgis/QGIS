@@ -71,7 +71,7 @@ class QgsFeatureExpressionValuesGatherer: public QThread
       Entry( const QgsFeatureId &_featureId, const QString &_value, const QgsVectorLayer *layer )
         : featureId( _featureId )
         , value( _value )
-        , feature( QgsFeature( layer->fields() ) )
+        , feature( QgsFeature( layer ? layer->fields() : QgsFields() ) )
       {}
 
       QVariantList identifierFields;
@@ -97,8 +97,8 @@ class QgsFeatureExpressionValuesGatherer: public QThread
 
       QgsFeature feature;
       QList<int> attributeIndexes;
-      for ( const QString &fieldName : qgis::as_const( mIdentifierFields ) )
-        attributeIndexes << mSource->fields().indexOf( fieldName );
+      for ( auto it = mIdentifierFields.constBegin(); it != mIdentifierFields.constEnd(); ++it )
+        attributeIndexes << mSource->fields().indexOf( *it );
 
       while ( iterator.nextFeature( feature ) )
       {

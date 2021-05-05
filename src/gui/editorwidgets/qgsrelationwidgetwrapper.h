@@ -19,8 +19,10 @@
 #include "qgswidgetwrapper.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgsattributeeditorrelation.h"
 
-class QgsRelationEditorWidget;
+
+class QgsAbstractRelationEditorWidget;
 
 /**
  * \ingroup gui
@@ -34,7 +36,21 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   public:
 
     //! Constructor for QgsRelationWidgetWrapper
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsRelationWidgetWrapper(
+      QgsVectorLayer *vl,
+      const QgsRelation &relation,
+      QWidget *editor SIP_CONSTRAINED = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED  = nullptr
+    );
+
+    //! Constructor for QgsRelationWidgetWrapper
+    QgsRelationWidgetWrapper(
+      const QString &relationEditorName,
+      QgsVectorLayer *vl,
+      const QgsRelation &relation,
+      QWidget *editor = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
     /**
      * Defines if a title label should be shown for this widget.
@@ -97,14 +113,31 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     /**
      * Defines the buttons which are shown
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.18 use setWidgetConfig() instead
      */
-    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    Q_DECL_DEPRECATED void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) SIP_DEPRECATED;
 
     /**
      * Returns the buttons which are shown
      * \since QGIS 3.16
+     * \deprecated since QGIS 3.18 use widgetConfig() instead
      */
-    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation::Buttons visibleButtons() const SIP_DEPRECATED;
+
+
+    /**
+     * Will set the config of this widget wrapper to the specified config.
+     *
+     * \param config The config for this wrapper
+     * \since QGIS 3.18
+     */
+    void setWidgetConfig( const QVariantMap &config );
+
+    /**
+     * Returns the whole widget config
+     * \since QGIS 3.18
+     */
+    QVariantMap widgetConfig() const;
 
     /**
      * Determines the force suppress form popup status that is configured for this widget
@@ -187,7 +220,8 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void aboutToSave() override;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
-    QgsRelationEditorWidget *mWidget = nullptr;
+    QString mRelationEditorId;
+    QgsAbstractRelationEditorWidget *mWidget = nullptr;
 };
 
 #endif // QGSRELATIONWIDGETWRAPPER_H

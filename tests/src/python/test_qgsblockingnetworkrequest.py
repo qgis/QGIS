@@ -62,7 +62,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
         spy = QSignalSpy(request.downloadFinished)
 
         handler = mockedwebserver.SequentialHandler()
-        handler.add('GET', '/ffff', 404)
+        handler.add('GET', '/ffff', 404, {}, '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"\n        "http://www.w3.org/TR/html4/strict.dtd">\n<html>\n    <head>\n        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: HTTPStatus.NOT_FOUND - Nothing matches the given URI.</p>\n    </body>\n</html>\n')
         with mockedwebserver.install_http_handler(handler):
             err = request.get(QNetworkRequest(QUrl('http://localhost:' + str(TestQgsBlockingNetworkRequest.port) + '/ffff')))
         self.assertEqual(len(spy), 1)
@@ -70,7 +70,7 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
         self.assertIn('Not Found', request.errorMessage())
         reply = request.reply()
         self.assertEqual(reply.error(), QNetworkReply.ContentNotFoundError)
-        self.assertFalse(reply.content())
+        self.assertEqual(reply.content(), '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"\n        "http://www.w3.org/TR/html4/strict.dtd">\n<html>\n    <head>\n        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: HTTPStatus.NOT_FOUND - Nothing matches the given URI.</p>\n    </body>\n</html>\n')
 
     def testGet(self):
         request = QgsBlockingNetworkRequest()

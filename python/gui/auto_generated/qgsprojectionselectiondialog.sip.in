@@ -12,7 +12,7 @@
 
 class QgsProjectionSelectionDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A generic dialog to prompt the user for a Coordinate Reference System.
 
 Typically you will use this when you want to prompt the user for
@@ -28,7 +28,7 @@ to get an epsg code:
            mCrs = mySelector.crs()
 
 If you wish to embed the projection selector into an existing dialog
-the you probably want to look at QgsProjectionSelectionWidget instead.
+the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instead.
 
 .. versionadded:: 3.0
 %End
@@ -97,6 +97,14 @@ Sets the text to show for the not set option. Note that this option is not shown
 by default and must be set visible by calling :py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
 
 .. versionadded:: 3.16
+%End
+
+    void setRequireValidSelection();
+%Docstring
+Sets the dialog to require a valid selection only, preventing users from accepting the
+dialog if no selection is present.
+
+.. versionadded:: 3.18
 %End
 
   public slots:

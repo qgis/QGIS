@@ -13,7 +13,7 @@
 
 class QgsProcessingFeatureSourceDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates settings relating to a feature source input to a processing algorithm.
 
@@ -78,7 +78,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
     QVariant toVariant() const;
 %Docstring
 Saves this source definition to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
 
@@ -88,7 +88,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this source definition from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
 
@@ -109,7 +109,7 @@ QFlags<QgsProcessingFeatureSourceDefinition::Flag> operator|(QgsProcessingFeatur
 
 class QgsProcessingOutputLayerDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
 
@@ -124,14 +124,14 @@ Encapsulates settings relating to a feature sink or output raster layer for a pr
     QgsProcessingOutputLayerDefinition( const QString &sink = QString(), QgsProject *destinationProject = 0 );
 %Docstring
 Constructor for QgsProcessingOutputLayerDefinition, accepting a static sink/layer string.
-The ``destinationProject`` parameter can be set to a QgsProject instance in which
+The ``destinationProject`` parameter can be set to a :py:class:`QgsProject` instance in which
 to automatically load the resulting sink/layer after completing processing.
 %End
 
     QgsProcessingOutputLayerDefinition( const QgsProperty &sink, QgsProject *destinationProject = 0 );
 %Docstring
 Constructor for QgsProcessingOutputLayerDefinition, accepting a QgsProperty sink/layer.
-The ``destinationProject`` parameter can be set to a QgsProject instance in which
+The ``destinationProject`` parameter can be set to a :py:class:`QgsProject` instance in which
 to automatically load the resulting sink/layer after completing processing.
 %End
 
@@ -179,7 +179,7 @@ Calling this method will set :py:func:`~QgsProcessingOutputLayerDefinition.useRe
     QVariant toVariant() const;
 %Docstring
 Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadVariant`
 
@@ -189,7 +189,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this output layer definition from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`toVariant`
 
@@ -211,7 +211,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 
 class QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 
 Base class for the definition of processing parameters.
 
@@ -509,6 +509,13 @@ Returns a string version of the parameter input ``value``, which is suitable for
 parameter value when running an algorithm directly from a Python command.
 %End
 
+    virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
+%Docstring
+Returns a Python comment explaining a parameter ``value``, or an empty string if no comment is required.
+
+.. versionadded:: 3.20
+%End
+
     virtual QString asScriptCode() const;
 %Docstring
 Returns the parameter definition encoded in a string which can be used within a
@@ -590,7 +597,7 @@ like parameter description, ID, and extra content like default values (depending
     bool isDynamic() const;
 %Docstring
 Returns ``True`` if the parameter supports is dynamic, and can support data-defined values
-(i.e. QgsProperty based values).
+(i.e. :py:class:`QgsProperty` based values).
 
 .. seealso:: :py:func:`setIsDynamic`
 
@@ -602,7 +609,7 @@ Returns ``True`` if the parameter supports is dynamic, and can support data-defi
     void setIsDynamic( bool dynamic );
 %Docstring
 Sets whether the parameter is ``dynamic``, and can support data-defined values
-(i.e. QgsProperty based values).
+(i.e. :py:class:`QgsProperty` based values).
 
 .. seealso:: :py:func:`isDynamic`
 
@@ -726,7 +733,7 @@ typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameter
 
 class QgsProcessingParameters
 {
-%Docstring
+%Docstring(signature="appended")
 
 A collection of utilities for working with parameters when running a processing algorithm.
 
@@ -1366,14 +1373,14 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 
     static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 %Docstring
-Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+Evaluates the parameter with matching ``definition`` to a list of files (for :py:class:`QgsProcessingParameterMultipleLayers` in :py:class:`QgsProcessing`:TypeFile mode).
 
 .. versionadded:: 3.10
 %End
 
     static QStringList parameterAsFileList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
-Evaluates the parameter with matching ``definition`` to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
+Evaluates the parameter with matching ``definition`` to a list of files (for :py:class:`QgsProcessingParameterMultipleLayers` in :py:class:`QgsProcessing`:TypeFile mode).
 
 .. versionadded:: 3.10
 %End
@@ -1508,7 +1515,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a database
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
-Creates a new QgsProcessingParameterDefinition using the configuration from a
+Creates a new :py:class:`QgsProcessingParameterDefinition` using the configuration from a
 supplied variant ``map``.
 The caller takes responsibility for deleting the returned object.
 %End
@@ -1520,7 +1527,7 @@ Creates an autogenerated parameter description from a parameter ``name``.
 
     static QgsProcessingParameterDefinition *parameterFromScriptCode( const QString &code ) /Factory/;
 %Docstring
-Creates a new QgsProcessingParameterDefinition using the configuration from a
+Creates a new :py:class:`QgsProcessingParameterDefinition` using the configuration from a
 supplied script ``code`` string.
 The caller takes responsibility for deleting the returned object.
 %End
@@ -1531,7 +1538,7 @@ The caller takes responsibility for deleting the returned object.
 
 class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A boolean parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1568,7 +1575,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A coordinate reference system parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1606,7 +1613,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A rectangular map extent parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1645,7 +1652,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A point parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1683,7 +1690,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterGeometry : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A geometry parameter for processing algorithms.
 
 .. versionadded:: 3.16
@@ -1694,12 +1701,13 @@ A geometry parameter for processing algorithms.
 %End
   public:
 
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >(), bool allowMultipart = true );
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
 
-The ``geometryTypes`` argument allows for specifying a list of geometry types (see QgsWkbTypes.GeometryType) acceptable for this
+The ``geometryTypes`` argument allows for specifying a list of geometry types (see :py:class:`QgsWkbTypes`.GeometryType) acceptable for this
 parameter. Passing a empty list will allow for any type of geometry.
+The ``allowMultiPart`` argument allows specifying a multi part geometry
 %End
 
     static QString typeName();
@@ -1724,17 +1732,33 @@ Returns the type name for the parameter class.
 
     QList<int>  geometryTypes() const;
 %Docstring
-Returns the parameter allowed geometries, as a list of QgsWkbTypes.GeometryType values.
+Returns the parameter allowed geometries, as a list of :py:class:`QgsWkbTypes`.GeometryType values.
 
 .. seealso:: :py:func:`setGeometryTypes`
 %End
 
     void setGeometryTypes( const QList<int> &geometryTypes );
 %Docstring
-Sets the allowed  ``geometryTypes``, as a list of QgsWkbTypes.GeometryType values.
+Sets the allowed  ``geometryTypes``, as a list of :py:class:`QgsWkbTypes`.GeometryType values.
 
 .. seealso:: :py:func:`geometryTypes`
 %End
+
+    bool  allowMultipart() const;
+%Docstring
+Returns the parameter allow multipart geometries.
+
+.. seealso:: :py:func:`setAllowMultipart`
+%End
+
+    void setAllowMultipart( bool allowMultipart );
+%Docstring
+Sets the allow multipart geometries
+
+.. seealso:: :py:func:`allowMultipart`
+%End
+
+
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
@@ -1743,9 +1767,9 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterFile : QgsProcessingParameterDefinition
+class QgsProcessingParameterFile : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 An input file or folder parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1784,6 +1808,8 @@ Returns the type name for the parameter class.
     virtual QString asScriptCode() const;
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
 
 
     Behavior behavior() const;
@@ -1862,7 +1888,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A table (matrix) parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -1961,7 +1987,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A parameter for processing algorithms which accepts multiple map layers.
 
 .. versionadded:: 3.0
@@ -2041,7 +2067,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric parameter for processing algorithms.
 
 For numeric parameters with a :py:func:`~QgsProcessingParameterMultipleLayers.dataType` of Double, the number of decimals places
@@ -2152,7 +2178,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterDistance : QgsProcessingParameterNumber
 {
-%Docstring
+%Docstring(signature="appended")
 A double numeric parameter for distance values. Linked to a source layer or CRS parameter
 to determine what units the distance values are in.
 
@@ -2241,10 +2267,10 @@ Sets the default distance ``unit`` for the parameter.
 
 class QgsProcessingParameterScale : QgsProcessingParameterNumber
 {
-%Docstring
+%Docstring(signature="appended")
 A double numeric parameter for map scale values.
 
-QgsProcessingParameterScale should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDouble()`,
+:py:class:`QgsProcessingParameterScale` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDouble()`,
 which will return a numeric value representing the scale denominator.
 
 .. versionadded:: 3.8
@@ -2284,7 +2310,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterRange : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric range parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2345,7 +2371,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A raster layer parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2385,7 +2411,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 An enum based parameter for processing algorithms, allowing for selection from predefined values.
 
 .. versionadded:: 3.0
@@ -2415,6 +2441,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString valueAsPythonComment( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString asScriptCode() const;
 
@@ -2483,7 +2511,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterString : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A string parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2544,13 +2572,13 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterAuthConfig : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A string parameter for authentication configuration ID values.
 
 This parameter allows for users to select from available authentication configurations,
 or create new authentication configurations as required.
 
-QgsProcessingParameterAuthConfig should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
+:py:class:`QgsProcessingParameterAuthConfig` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
 
 .. versionadded:: 3.6
 %End
@@ -2587,7 +2615,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 An expression parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2648,7 +2676,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterLimitedDataTypes
 {
-%Docstring
+%Docstring(signature="appended")
 Can be inherited by parameters which require limits to their acceptable data types.
 
 .. versionadded:: 3.0
@@ -2684,9 +2712,9 @@ Sets the geometry ``types`` for sources acceptable by the parameter.
 
 class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A vector layer (with or without geometry) parameter for processing algorithms. Consider using
-the more versatile QgsProcessingParameterFeatureSource wherever possible.
+the more versatile :py:class:`QgsProcessingParameterFeatureSource` wherever possible.
 
 .. versionadded:: 3.0
 %End
@@ -2735,7 +2763,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterMeshLayer : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A mesh layer parameter for processing algorithms.
 
 .. versionadded:: 3.6
@@ -2776,7 +2804,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 A map layer parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2826,7 +2854,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterField : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A vector layer or feature source field parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -2954,7 +2982,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 An input feature source (such as vector layers) parameter for processing algorithms.
 
 .. versionadded:: 3.0
@@ -3004,7 +3032,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
 which are used for the destination for layers output by an algorithm.
 
@@ -3037,7 +3065,7 @@ output will not be created by default.
 
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 /Factory/;
 %Docstring
-Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
+Returns a new :py:class:`QgsProcessingOutputDefinition` corresponding to the definition of the destination
 parameter.
 %End
 
@@ -3121,7 +3149,7 @@ the model provider)
 
 class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 {
-%Docstring
+%Docstring(signature="appended")
 A feature sink output for processing algorithms.
 
 A parameter which represents the destination feature sink for features created by an algorithm.
@@ -3198,7 +3226,7 @@ Sets the layer ``type`` for the sinks associated with the parameter.
 %Docstring
 Returns ``True`` if the sink supports appending features to an existing table.
 
-A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+A sink only supports appending if the algorithm implements :py:class:`QgsProcessingAlgorithm`.sinkProperties for the sink parameter.
 
 .. seealso:: :py:func:`setSupportsAppend`
 
@@ -3211,7 +3239,7 @@ Sets whether the sink supports appending features to an existing table.
 
 .. warning::
 
-   A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+   A sink only supports appending if the algorithm implements :py:class:`QgsProcessingAlgorithm`.sinkProperties for the sink parameter.
 
 .. seealso:: :py:func:`supportsAppend`
 
@@ -3235,7 +3263,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParameter
 {
-%Docstring
+%Docstring(signature="appended")
 A vector layer destination parameter, for specifying the destination path for a vector layer
 created by the algorithm.
 
@@ -3327,7 +3355,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterRasterDestination : QgsProcessingDestinationParameter
 {
-%Docstring
+%Docstring(signature="appended")
 A raster layer destination parameter, for specifying the destination path for a raster layer
 created by the algorithm.
 
@@ -3385,7 +3413,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterFileDestination : QgsProcessingDestinationParameter
 {
-%Docstring
+%Docstring(signature="appended")
 A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
 created by the algorithm.
 
@@ -3471,10 +3499,9 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParameter
 {
-%Docstring
+%Docstring(signature="appended")
 A folder destination parameter, for specifying the destination path for a folder created
 by the algorithm or used for creating new files within the algorithm.
-A folder output parameter.
 
 .. versionadded:: 3.0
 %End
@@ -3515,7 +3542,7 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterBand : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A raster band parameter for Processing algorithms.
 
 .. versionadded:: 3.0
@@ -3598,10 +3625,10 @@ Sets whether multiple band selections are permitted.
 
 class QgsProcessingParameterLayout : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A print layout parameter, allowing users to select a print layout.
 
-QgsProcessingParameterLayout should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayout()`.
+:py:class:`QgsProcessingParameterLayout` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayout()`.
 This will return the matching layout from the context's current project. Alternatively, calling
 :py:func:`QgsProcessingAlgorithm.parameterAsString()` will return the name of the target print layout.
 
@@ -3642,11 +3669,11 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterLayoutItem : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A print layout item parameter, allowing users to select a particular item from a print layout.
 
-QgsProcessingParameterLayoutItem should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayoutItem()`.
-Internally, QgsProcessingParameterLayoutItems are string parameters, storing references to items either by
+:py:class:`QgsProcessingParameterLayoutItem` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsLayoutItem()`.
+Internally, :py:class:`QgsProcessingParameterLayoutItems` are string parameters, storing references to items either by
 their UUID (:py:func:`QgsLayoutItem.uuid()`) or ID (:py:func:`QgsLayoutItem.id()`).
 
 .. versionadded:: 3.8
@@ -3726,10 +3753,10 @@ These values correspond to the registered item types from :py:class:`QgsLayoutIt
 
 class QgsProcessingParameterColor : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A color parameter for processing algorithms.
 
-QgsProcessingParameterColor should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsColor()`.
+:py:class:`QgsProcessingParameterColor` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsColor()`.
 
 .. versionadded:: 3.10
 %End
@@ -3796,11 +3823,11 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterCoordinateOperation : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A coordinate operation parameter for processing algorithms, for selection between available
 coordinate operations to use when projecting between a source and destination coordinate reference system.
 
-QgsProcessingParameterCoordinateOperation should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
+:py:class:`QgsProcessingParameterCoordinateOperation` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
 
 .. versionadded:: 3.12
 %End
@@ -3921,10 +3948,10 @@ Sets the static destination ``crs``.
 
 class QgsProcessingParameterMapTheme : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A map theme parameter for processing algorithms, allowing users to select an existing map theme from a project.
 
-QgsProcessingParameterMapTheme should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
+:py:class:`QgsProcessingParameterMapTheme` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsString()`.
 
 .. versionadded:: 3.12
 %End
@@ -3970,10 +3997,10 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterDateTime : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A datetime (or pure date or time) parameter for processing algorithms.
 
-QgsProcessingParameterDateTime should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDateTime()`,
+:py:class:`QgsProcessingParameterDateTime` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDateTime()`,
 which will return a date time value.
 
 .. versionadded:: 3.14
@@ -4091,11 +4118,11 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterProviderConnection : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A data provider connection parameter for processing algorithms, allowing users to select from available registered
 connections for a particular data provider.
 
-QgsProcessingParameterProviderConnection should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsConnectionName()`.
+:py:class:`QgsProcessingParameterProviderConnection` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsConnectionName()`.
 
 .. versionadded:: 3.14
 %End
@@ -4112,7 +4139,7 @@ Constructor for QgsProcessingParameterProviderConnection, for the specified ``pr
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly. This is only implemented for a subset of current data providers.
 %End
 
@@ -4160,11 +4187,11 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterDatabaseSchema : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A database schema parameter for processing algorithms, allowing users to select from existing schemas
 on a registered database connection.
 
-QgsProcessingParameterDatabaseSchema should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsSchema()`.
+:py:class:`QgsProcessingParameterDatabaseSchema` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsSchema()`.
 
 .. versionadded:: 3.14
 %End
@@ -4179,11 +4206,11 @@ QgsProcessingParameterDatabaseSchema should be evaluated by calling :py:func:`Qg
 %Docstring
 Constructor for QgsProcessingParameterDatabaseSchema.
 
-The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+The ``connectionParameterName`` specifies the name of the parent :py:class:`QgsProcessingParameterProviderConnection` parameter.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly. This is only implemented for a subset of current data providers.
 %End
 
@@ -4233,11 +4260,11 @@ Creates a new parameter using the definition from a script code.
 
 class QgsProcessingParameterDatabaseTable : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A database table name parameter for processing algorithms, allowing users to select from existing database tables
 on a registered database connection (or optionally to enter a new table name).
 
-QgsProcessingParameterDatabaseTable should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`.
+:py:class:`QgsProcessingParameterDatabaseTable` should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`.
 
 .. versionadded:: 3.14
 %End
@@ -4256,12 +4283,12 @@ QgsProcessingParameterDatabaseTable should be evaluated by calling :py:func:`Qgs
 %Docstring
 Constructor for QgsProcessingParameterDatabaseTable.
 
-The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
-The ``schemaParameterName`` specifies the name of the parent QgsProcessingParameterDatabaseSchema parameter.
+The ``connectionParameterName`` specifies the name of the parent :py:class:`QgsProcessingParameterProviderConnection` parameter.
+The ``schemaParameterName`` specifies the name of the parent :py:class:`QgsProcessingParameterDatabaseSchema` parameter.
 
 .. warning::
 
-   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation
    in order for the model to work correctly. This is only implemented for a subset of current data providers.
 %End
 

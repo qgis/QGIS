@@ -22,6 +22,7 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+#include "qgsgeometrytransformer.h"
 
 #include <cmath>
 #include <QPainter>
@@ -177,7 +178,11 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return true;
 
   QRegularExpression rx( QStringLiteral( "\\s" ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
+#else
+  QStringList coordinates = parts.second.split( rx, Qt::SkipEmptyParts );
+#endif
 
   // So far the parser hasn't looked at the coordinates. We'll avoid having anything but numbers and return NULL instead of 0 as a coordinate.
   // Without this check, "POINT (a, b)" or "POINT (( 4, 3 ))" returned "POINT (0 ,0)"
@@ -532,6 +537,11 @@ double QgsPoint::segmentLength( QgsVertexId ) const
   return 0.0;
 }
 
+bool QgsPoint::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return rectangle.contains( mX, mY );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -640,6 +650,16 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
   return false;
 }
 
+bool QgsPoint::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback * )
+{
+  if ( !transformer )
+    return false;
+
+  const bool res = transformer->transformPoint( mX, mY, mZ, mM );
+  clearCache();
+  return res;
+}
+
 void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & )
 {
   // no meaning for points
@@ -739,6 +759,11 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
 }
 
+void QgsPoint::normalize()
+{
+  // nothing to do
+}
+
 bool QgsPoint::isEmpty() const
 {
   return std::isnan( mX ) || std::isnan( mY );
@@ -774,4 +799,63 @@ QgsPoint *QgsPoint::createEmptyWithSameType() const
 {
   double nan = std::numeric_limits<double>::quiet_NaN();
   return new QgsPoint( nan, nan, nan, nan, mWkbType );
+}
+
+int QgsPoint::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsPoint *otherPoint = qgsgeometry_cast< const QgsPoint * >( other );
+  if ( !otherPoint )
+    return -1;
+
+  if ( mX < otherPoint->mX )
+  {
+    return -1;
+  }
+  else if ( mX > otherPoint->mX )
+  {
+    return 1;
+  }
+
+  if ( mY < otherPoint->mY )
+  {
+    return -1;
+  }
+  else if ( mY > otherPoint->mY )
+  {
+    return 1;
+  }
+
+  if ( is3D() && !otherPoint->is3D() )
+    return 1;
+  else if ( !is3D() && otherPoint->is3D() )
+    return -1;
+  else if ( is3D() && otherPoint->is3D() )
+  {
+    if ( mZ < otherPoint->mZ )
+    {
+      return -1;
+    }
+    else if ( mZ > otherPoint->mZ )
+    {
+      return 1;
+    }
+  }
+
+  if ( isMeasure() && !otherPoint->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherPoint->isMeasure() )
+    return -1;
+  else if ( isMeasure() && otherPoint->isMeasure() )
+  {
+    if ( mM < otherPoint->mM )
+    {
+      return -1;
+    }
+    else if ( mM > otherPoint->mM )
+    {
+      return 1;
+    }
+  }
+
+  return 0;
 }

@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "test_dxf_export",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3844" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "LineString", "coordinates": [ [ 450000, 400000 ], [ 450100, 400000 ] ] } }
+]
+}

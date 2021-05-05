@@ -23,6 +23,7 @@
 #include "qgstriangularmesh.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgis.h"
 
 /**
  * \ingroup UnitTests
@@ -42,6 +43,8 @@ class TestQgsTriangularMesh : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void test_triangulate();
+
+    void test_centroids();
 
   private:
     void populateMeshVertices( QgsTriangularMesh &mesh );
@@ -66,9 +69,6 @@ void TestQgsTriangularMesh::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-
-
 }
 
 void TestQgsTriangularMesh::cleanupTestCase()
@@ -123,6 +123,48 @@ void TestQgsTriangularMesh::test_triangulate()
     mesh.triangulate( poly, 0 );
     QCOMPARE( 5, mesh.mTriangularMesh.faces.size() );
   }
+}
+
+void TestQgsTriangularMesh::test_centroids()
+{
+  QgsTriangularMesh triangularMesh;
+
+  QgsMesh nativeMesh;
+  nativeMesh.vertices << QgsMeshVertex( 0, 10, 0 ) << QgsMeshVertex( 10, 10, 0 ) << QgsMeshVertex( 10, 0, 0 ) << QgsMeshVertex( 0, 0, 0 )
+                      << QgsMeshVertex( 20, 0, 0 ) << QgsMeshVertex( 30, 10, 0 ) << QgsMeshVertex( 20, 10, 0 );
+
+  nativeMesh.faces << QgsMeshFace( {0, 1, 2, 3} ) << QgsMeshFace( {1, 2, 4, 5} );
+
+  triangularMesh.update( &nativeMesh, QgsCoordinateTransform() );
+
+  QVector<QgsMeshVertex> centroids = triangularMesh.faceCentroids();
+
+  QCOMPARE( 2, centroids.count() );
+
+  QVERIFY( qgsDoubleNear( centroids.at( 0 ).x(), 5, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 0 ).y(), 5, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 1 ).x(), 17.777777777, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 1 ).y(), 5.5555555555, 0.00001 ) );
+
+  // with big coordinates
+  nativeMesh.clear();
+  triangularMesh = QgsTriangularMesh();
+
+  nativeMesh.vertices << QgsMeshVertex( 900000000, 300000010, 0 ) << QgsMeshVertex( 900000010, 300000010, 0 ) << QgsMeshVertex( 900000010, 300000000, 0 ) << QgsMeshVertex( 900000000, 300000000, 0 )
+                      << QgsMeshVertex( 900000020, 300000000, 0 ) << QgsMeshVertex( 900000030, 300000010, 0 ) << QgsMeshVertex( 900000020, 300000010, 0 );
+
+  nativeMesh.faces << QgsMeshFace( {0, 1, 2, 3} ) << QgsMeshFace( {1, 2, 4, 5} );
+  triangularMesh.update( &nativeMesh, QgsCoordinateTransform() );
+
+  centroids = triangularMesh.faceCentroids();
+
+  QCOMPARE( 2, centroids.count() );
+
+  QVERIFY( qgsDoubleNear( centroids.at( 0 ).x(), 900000005, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 0 ).y(), 300000005, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 1 ).x(), 900000017.777777, 0.00001 ) );
+  QVERIFY( qgsDoubleNear( centroids.at( 1 ).y(), 300000005.555555, 0.00001 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsTriangularMesh )

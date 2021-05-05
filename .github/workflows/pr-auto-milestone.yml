@@ -1,9 +1,9 @@
-name: Auto set milestone on PR
+name: 📅 Auto set milestone on PR
 
-# this job is scheduled to be run with proper rights
 on:
-  schedule:
-    - cron: '* */1 * * *'
+  pull_request_target:
+    types:
+      - opened
 
 env:
   QGIS_MAJOR_VERSION: 3

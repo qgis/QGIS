@@ -11,8 +11,8 @@
 
 class QgsMapCanvasInteractionBlocker
 {
-%Docstring
-An interface for objects which block interactions with a QgsMapCanvas.
+%Docstring(signature="appended")
+An interface for objects which block interactions with a :py:class:`QgsMapCanvas`.
 
 .. versionadded:: 3.14
 %End

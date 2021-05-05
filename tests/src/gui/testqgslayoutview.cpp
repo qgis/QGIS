@@ -264,9 +264,10 @@ void TestQgsLayoutView::guiRegistry()
   // empty registry
   QVERIFY( !registry.itemMetadata( -1 ) );
   QVERIFY( registry.itemMetadataIds().isEmpty() );
+  QCOMPARE( registry.metadataIdForItemType( 0 ), -1 );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
-  std::unique_ptr< TestItem > testItem = qgis::make_unique< TestItem >( nullptr );
+  std::unique_ptr< TestItem > testItem = std::make_unique< TestItem >( nullptr );
   QVERIFY( !registry.createItemWidget( testItem.get() ) ); // not in registry
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
@@ -287,6 +288,7 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( spyTypeAdded.count(), 1 );
   int uuid = registry.itemMetadataIds().value( 0 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), uuid );
+  QCOMPARE( registry.metadataIdForItemType( QgsLayoutItemRegistry::LayoutItem + 101 ), uuid );
 
   // duplicate type id is allowed
   metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
@@ -295,6 +297,7 @@ void TestQgsLayoutView::guiRegistry()
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
   QCOMPARE( registry.itemMetadataIds().count(), 2 );
+  QCOMPARE( registry.metadataIdForItemType( QgsLayoutItemRegistry::LayoutItem + 101 ), uuid );
 
   QVERIFY( registry.itemMetadata( uuid ) );
   QCOMPARE( registry.itemMetadata( uuid )->visibleName(), QStringLiteral( "mytype" ) );

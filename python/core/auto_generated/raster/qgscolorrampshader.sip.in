@@ -13,7 +13,7 @@
 
 class QgsColorRampShader : QgsRasterShaderFunction
 {
-%Docstring
+%Docstring(signature="appended")
 A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
 %End
 
@@ -115,6 +115,13 @@ Returns the source color ramp.
 .. seealso:: :py:func:`setSourceColorRamp`
 
 .. versionadded:: 3.0
+%End
+
+    QgsColorRamp *createColorRamp() const /Factory/;
+%Docstring
+Creates a gradient color ramp from shader settings.
+
+.. versionadded:: 3.18
 %End
 
     void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );

@@ -65,34 +65,27 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   spinOffsetY->setClearValue( 0.0 );
   mRotationSpinBox->setClearValue( 0.0 );
 
-  QStringList names;
-  names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
-
   int size = mShapeListWidget->iconSize().width();
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
-#else
   size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
-#endif
   mShapeListWidget->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   mShapeListWidget->setIconSize( QSize( size, size ) );
 
   double markerSize = size * 0.8;
-  const auto constNames = names;
-  for ( const QString &name : constNames )
+  const auto shapes = QgsEllipseSymbolLayer::availableShapes();
+  for ( QgsEllipseSymbolLayer::Shape shape : shapes )
   {
     QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolWidthUnit( QgsUnitTypes::RenderPixels );
     lyr->setSymbolHeightUnit( QgsUnitTypes::RenderPixels );
-    lyr->setSymbolName( name );
+    lyr->setShape( shape );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( markerSize );
     lyr->setSymbolHeight( markerSize * 0.75 );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderPixels, QSize( size, size ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), mShapeListWidget );
-    item->setToolTip( name );
-    item->setData( Qt::UserRole, name );
+    item->setData( Qt::UserRole, static_cast< int >( shape ) );
+    item->setToolTip( QgsEllipseSymbolLayer::encodeShape( shape ) );
     delete lyr;
   }
   // show at least 2 rows (only 1 row is required, but looks too cramped)
@@ -101,6 +94,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   connect( spinOffsetX, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penJoinStyleChanged );
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penCapStyleChanged );
 }
 
 void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -119,11 +113,16 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   btnChangeColorStroke->setColor( mLayer->strokeColor() );
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
-  QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
-  if ( !symbolItemList.isEmpty() )
+  QgsEllipseSymbolLayer::Shape shape = mLayer->shape();
+  for ( int i = 0; i < mShapeListWidget->count(); ++i )
   {
-    mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );
+    if ( static_cast< QgsEllipseSymbolLayer::Shape >( mShapeListWidget->item( i )->data( Qt::UserRole ).toInt() ) == shape )
+    {
+      mShapeListWidget->setCurrentRow( i );
+      break;
+    }
   }
+  btnChangeColorFill->setEnabled( QgsEllipseSymbolLayer::shapeIsFilled( mLayer->shape() ) );
 
   //set combo entries to current values
   blockComboSignals( true );
@@ -141,6 +140,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
+  cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
   blockComboSignals( false );
 
   registerDataDefinedButton( mSymbolWidthDDBtn, QgsSymbolLayer::PropertyWidth );
@@ -151,6 +151,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
   registerDataDefinedButton( mShapeDDBtn, QgsSymbolLayer::PropertyName );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
   registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
@@ -167,12 +168,9 @@ void QgsEllipseSymbolLayerWidget::mShapeListWidget_itemSelectionChanged()
 {
   if ( mLayer )
   {
-    QListWidgetItem *item = mShapeListWidget->currentItem();
-    if ( item )
-    {
-      mLayer->setSymbolName( item->data( Qt::UserRole ).toString() );
-      emit changed();
-    }
+    mLayer->setShape( static_cast< QgsEllipseSymbolLayer::Shape>( mShapeListWidget->currentItem()->data( Qt::UserRole ).toInt() ) );
+    btnChangeColorFill->setEnabled( QgsEllipseSymbolLayer::shapeIsFilled( mLayer->shape() ) );
+    emit changed();
   }
 }
 
@@ -291,6 +289,12 @@ void QgsEllipseSymbolLayerWidget::penJoinStyleChanged()
   emit changed();
 }
 
+void QgsEllipseSymbolLayerWidget::penCapStyleChanged()
+{
+  mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
+  emit changed();
+}
+
 void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
 {
   mSymbolWidthUnitWidget->blockSignals( block );
@@ -303,6 +307,7 @@ void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
   mSymbolHeightUnitWidget->blockSignals( block );
   mOffsetUnitWidget->blockSignals( block );
   cboJoinStyle->blockSignals( block );
+  cboCapStyle->blockSignals( block );
 }
 
 void QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )

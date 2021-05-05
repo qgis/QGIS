@@ -13,9 +13,9 @@
 
 class QgsAggregateMappingModel: QAbstractTableModel
 {
-%Docstring
-The QgsAggregateMappingModel holds mapping information for defining sets of aggregates of
-fields from a QgsFields object.
+%Docstring(signature="appended")
+The :py:class:`QgsAggregateMappingModel` holds mapping information for defining sets of aggregates of
+fields from a :py:class:`QgsFields` object.
 
 .. versionadded:: 3.14
 %End
@@ -124,9 +124,9 @@ contexts for expression based widgets used by the model.
 
 class QgsAggregateMappingWidget : QgsPanelWidget
 {
-%Docstring
-The QgsAggregateMappingWidget class creates a mapping for defining sets of aggregates of
-fields from a QgsFields object.
+%Docstring(signature="appended")
+The :py:class:`QgsAggregateMappingWidget` class creates a mapping for defining sets of aggregates of
+fields from a :py:class:`QgsFields` object.
 
 .. versionadded:: 3.14
 %End

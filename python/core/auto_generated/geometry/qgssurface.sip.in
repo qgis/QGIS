@@ -12,6 +12,9 @@
 
 class QgsSurface: QgsAbstractGeometry
 {
+%Docstring(signature="appended")
+Surface geometry type.
+%End
 
 %TypeHeaderCode
 #include "qgssurface.h"

@@ -30,7 +30,7 @@ class QgsConstWkbPtr;
 
 /**
  * \ingroup core
- * Implementation of GeometrySimplifier using the "MapToPixel" algorithm
+ * \brief Implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
  * This class enables simplify the geometries to be rendered in a MapCanvas target to speed up the vector drawing.
@@ -89,8 +89,8 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
-    //! Returns a simplified version the specified geometry
     QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value ) { mTolerance = value; }

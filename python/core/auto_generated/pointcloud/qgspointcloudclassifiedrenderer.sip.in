@@ -12,8 +12,8 @@
 
 class QgsPointCloudCategory
 {
-%Docstring
-Represents an individual category (class) from a QgsPointCloudClassifiedRenderer.
+%Docstring(signature="appended")
+Represents an individual category (class) from a :py:class:`QgsPointCloudClassifiedRenderer`.
 
 .. versionadded:: 3.18
 %End
@@ -103,7 +103,7 @@ typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
 
 class QgsPointCloudClassifiedRenderer : QgsPointCloudRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renders point clouds by a classification attribute.
 
 .. versionadded:: 3.18
@@ -124,6 +124,8 @@ Constructor for QgsPointCloudClassifiedRenderer.
     virtual QgsPointCloudRenderer *clone() const;
 
     virtual void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context );
+
+    virtual bool willRenderPoint( const QVariantMap &pointAttributes );
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 

@@ -32,11 +32,11 @@
 
 #include <QDomDocument>
 #include <QGraphicsView>
-#include <QtCore>
 
 #include "qgsmapsettings.h" // TEMPORARY
 #include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
 
+#include <QTimer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
@@ -59,6 +59,7 @@ class QgsHighlight;
 class QgsVectorLayer;
 
 class QgsLabelingResults;
+
 class QgsMapRendererCache;
 class QgsMapRendererQImageJob;
 class QgsMapSettings;
@@ -78,7 +79,7 @@ class QgsMapMouseEvent;
 
 /**
  * \ingroup gui
- * Map canvas is a class for displaying all GIS data types on a canvas.
+ * \brief Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
@@ -160,10 +161,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Gets access to the labeling results (may be NULLPTR)
+     * Gets access to the labeling results (may be NULLPTR).
+     *
+     * Since QGIS 3.20, if the \a allowOutdatedResults flag is FALSE then outdated labeling results (e.g.
+     * as a result of an ongoing canvas render) will not be returned, and instead NULLPTR will be returned.
+     *
      * \since QGIS 2.4
      */
-    const QgsLabelingResults *labelingResults() const;
+    const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
 
     /**
      * Set whether to cache images of rendered layers
@@ -309,6 +314,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Pan to the combined extent of the selected features of all provided (vector) layers.
+     * \param layers A list of layers
+     * \since QGIS 3.18
+     */
+    void panToSelected( const QList<QgsMapLayer *> &layers );
 
     /**
      * Causes a set of features with matching \a ids from a vector \a layer to flash
@@ -866,6 +878,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
     /**
+     * Zoom to the combined extent of the selected features of all provided (vector) layers.
+     * \param layers A list of layers
+     * \since QGIS 3.18
+     */
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
+
+    /**
      * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
      * \param resolutions A list of resolutions
      * \since QGIS 3.12
@@ -938,6 +957,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the scale of the map changes
     void scaleChanged( double );
 
+    /**
+     * Emitted when the scale locked state of the map changes
+     * \param locked true if the scale is locked
+     * \see setScaleLocked
+     * \since QGIS 3.18
+     */
+    void scaleLockChanged( bool locked );
+
+
     //! Emitted when the extents of the map change
     void extentsChanged();
 
@@ -980,6 +1008,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     // ### QGIS 3: rename to mapRefreshStarted()
     //! Emitted when the canvas is about to be rendered.
     void renderStarting();
+
+    /**
+     * Emitted when the pending map refresh has been canceled
+     * \since QGIS 3.18
+     */
+    void mapRefreshCanceled();
 
     //! Emitted when a new set of layers has been received
     void layersChanged();
@@ -1223,7 +1257,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mJobCanceled = false;
 
     //! Labeling results from the recently rendered map
-    QgsLabelingResults *mLabelingResults = nullptr;
+    std::unique_ptr< QgsLabelingResults > mLabelingResults;
+
+    //! TRUE if the labeling results stored in mLabelingResults are outdated (e.g. as a result of an ongoing canvas render)
+    bool mLabelingResultsOutdated = false;
 
     //! Whether layers are rendered sequentially or in parallel
     bool mUseParallelRendering = false;
@@ -1282,6 +1319,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QList<double> mZoomResolutions;
 
     QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
+
+    int mBlockItemPositionUpdates = 0;
 
     /**
      * Returns the last cursor position on the canvas in geographical coordinates

@@ -19,6 +19,8 @@
 #include "qgsquickattributeformmodelbase.h"
 #include "qgsquickattributeformmodel.h"
 #include <qgsvectorlayerutils.h>
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
 
 /// @cond PRIVATE
 
@@ -97,6 +99,7 @@ void QgsQuickAttributeFormModelBase::setAttributeModel( QgsQuickAttributeModel *
     disconnect( mAttributeModel, &QgsQuickAttributeModel::layerChanged, this, &QgsQuickAttributeFormModelBase::onLayerChanged );
     disconnect( mAttributeModel, &QgsQuickAttributeModel::featureChanged, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
     disconnect( mAttributeModel, &QgsQuickAttributeModel::modelReset, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
+    disconnect( mAttributeModel, &QgsQuickAttributeModel::dataChangedFailed, this, &QgsQuickAttributeFormModelBase::dataChangedFailed );
   }
 
   mAttributeModel = attributeModel;
@@ -106,6 +109,7 @@ void QgsQuickAttributeFormModelBase::setAttributeModel( QgsQuickAttributeModel *
     connect( mAttributeModel, &QgsQuickAttributeModel::layerChanged, this, &QgsQuickAttributeFormModelBase::onLayerChanged );
     connect( mAttributeModel, &QgsQuickAttributeModel::featureChanged, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
     connect( mAttributeModel, &QgsQuickAttributeModel::modelReset, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
+    connect( mAttributeModel, &QgsQuickAttributeModel::dataChangedFailed, this, &QgsQuickAttributeFormModelBase::dataChangedFailed );
   }
 
   emit attributeModelChanged();
@@ -250,6 +254,10 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
 
         QgsField field = mLayer->fields().at( fieldIndex );
 
+        Qt::CheckState rememberFlag = Qt::Unchecked;
+        if ( mAttributeModel->rememberValuesAllowed() && mAttributeModel->isFieldRemembered( fieldIndex ) )
+          rememberFlag = Qt::Checked;
+
         QStandardItem *item = new QStandardItem();
         item->setData( mLayer->attributeDisplayName( fieldIndex ), QgsQuickAttributeFormModel::Name );
         item->setData( mAttributeModel->featureLayerPair().feature().attribute( fieldIndex ), QgsQuickAttributeFormModel::AttributeValue );
@@ -257,7 +265,7 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
         QgsEditorWidgetSetup setup = mLayer->editorWidgetSetup( fieldIndex );
         item->setData( setup.type(), QgsQuickAttributeFormModel::EditorWidget );
         item->setData( setup.config(), QgsQuickAttributeFormModel::EditorWidgetConfig );
-        item->setData( mAttributeModel->rememberedAttributes().at( fieldIndex ) ? Qt::Checked : Qt::Unchecked, QgsQuickAttributeFormModel::RememberValue );
+        item->setData( rememberFlag, QgsQuickAttributeFormModel::RememberValue );
         item->setData( mLayer->fields().at( fieldIndex ), QgsQuickAttributeFormModel::Field );
         item->setData( QStringLiteral( "field" ), QgsQuickAttributeFormModel::ElementType );
         item->setData( fieldIndex, QgsQuickAttributeFormModel::FieldIndex );
@@ -387,6 +395,11 @@ bool QgsQuickAttributeFormModelBase::constraintsSoftValid() const
   return mConstraintsSoftValid;
 }
 
+bool QgsQuickAttributeFormModelBase::rememberValuesAllowed() const
+{
+  return mAttributeModel->rememberValuesAllowed();
+}
+
 QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
 {
   if ( !mLayer )
@@ -424,6 +437,11 @@ void QgsQuickAttributeFormModelBase::forceClean()
   mExpressionContext = QgsExpressionContext();
   mConstraintsHardValid = false;
   mConstraintsSoftValid = false;
+}
+
+void QgsQuickAttributeFormModelBase::setRememberValuesAllowed( bool rememberValuesAllowed )
+{
+  mAttributeModel->setRememberValuesAllowed( rememberValuesAllowed );
 }
 
 bool QgsQuickAttributeFormModelBase::hasTabs() const

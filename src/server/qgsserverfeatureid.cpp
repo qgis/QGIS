@@ -29,10 +29,9 @@ QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAt
   }
 
   QStringList pkValues;
-  QgsAttributeList::const_iterator it = pkAttributes.constBegin();
-  if ( it != pkAttributes.constEnd() )
+  for ( const auto &attrIdx : std::as_const( pkAttributes ) )
   {
-    pkValues.append( feature.attribute( *it ).toString() );
+    pkValues.append( feature.attribute( attrIdx ).toString() );
   }
   return pkValues.join( pkSeparator() );
 }
@@ -46,7 +45,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
     QgsFeatureIds fids;
     for ( const QString &serverFid : serverFids )
     {
-      fids.insert( serverFid.toLongLong() );
+      fids.insert( STRING_TO_FID( serverFid ) );
     }
     featureRequest.setFilterFids( fids );
     return featureRequest;
@@ -60,12 +59,12 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
 
   if ( expList.count() == 1 )
   {
-    featureRequest.setFilterExpression( expList.at( 0 ) );
+    featureRequest.combineFilterExpression( expList.at( 0 ) );
   }
   else
   {
     QString fullExpression;
-    for ( const QString &exp : qgis::as_const( expList ) )
+    for ( const QString &exp : std::as_const( expList ) )
     {
       if ( !fullExpression.isEmpty() )
       {
@@ -75,7 +74,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
       fullExpression.append( exp );
       fullExpression.append( QStringLiteral( " )" ) );
     }
-    featureRequest.setFilterExpression( fullExpression );
+    featureRequest.combineFilterExpression( fullExpression );
   }
 
   return featureRequest;

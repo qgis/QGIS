@@ -28,7 +28,7 @@
 /**
  * \class QgsRasterLayerTemporalProperties
  * \ingroup core
- * Implementation of map layer temporal properties for raster layers.
+ * \brief Implementation of map layer temporal properties for raster layers.
  *
  * \since QGIS 3.14
  */
@@ -47,10 +47,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
+    QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const override;
 
     /**
      * Mode of the raster temporal properties
-     **/
+     */
     enum TemporalMode
     {
       ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
@@ -61,14 +62,14 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * Returns the temporal properties mode.
      *
      *\see setMode()
-    **/
+    */
     TemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
-    **/
+    */
     void setMode( TemporalMode mode );
 
     /**
@@ -81,7 +82,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * layers or bands in the data provider.
      *
      *\see setIntervalHandlingMethod()
-    **/
+    */
     QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod intervalHandlingMethod() const;
 
     /**
@@ -89,7 +90,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * layers or bands in the data provider.
      *
      *\see intervalHandlingMethod()
-    **/
+    */
     void setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method );
 
     /**
@@ -111,7 +112,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
      *
      * \see setFixedTemporalRange()
-    **/
+    */
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;

@@ -13,7 +13,7 @@
 
 class QgsGlowEffect : QgsPaintEffect
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for paint effect which draw a glow inside or outside a
 picture.
 
@@ -35,9 +35,9 @@ picture.
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect();
 
-    virtual QgsStringMap properties() const;
+    virtual QVariantMap properties() const;
 
-    virtual void readProperties( const QgsStringMap &props );
+    virtual void readProperties( const QVariantMap &props );
 
 
     void setSpread( const double spread );
@@ -348,7 +348,7 @@ the picture.
 
 class QgsOuterGlowEffect : QgsGlowEffect
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which draws a glow outside of a picture.
 
 .. versionadded:: 2.9
@@ -359,7 +359,7 @@ A paint effect which draws a glow outside of a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsOuterGlowEffect effect from a properties string map.
 
@@ -384,7 +384,7 @@ Creates a new QgsOuterGlowEffect effect from a properties string map.
 
 class QgsInnerGlowEffect : QgsGlowEffect
 {
-%Docstring
+%Docstring(signature="appended")
 A paint effect which draws a glow within a picture.
 
 .. versionadded:: 2.9
@@ -395,7 +395,7 @@ A paint effect which draws a glow within a picture.
 %End
   public:
 
-    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+    static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerGlowEffect effect from a properties string map.
 

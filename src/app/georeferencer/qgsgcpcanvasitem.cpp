@@ -18,8 +18,10 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
-QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, const QgsGeorefDataPoint *dataPoint, bool isGCPSource )
+QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource )
   : QgsMapCanvasItem( mapCanvas )
   , mDataPoint( dataPoint )
   , mPointBrush( Qt::red )
@@ -46,14 +48,14 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   bool enabled = true;
   QgsPointXY worldCoords;
   int id = -1;
+  QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
 
   if ( mDataPoint )
   {
     enabled = mDataPoint->isEnabled();
-    worldCoords = mDataPoint->transCoords();
+    worldCoords = mDataPoint->canvasCoords();
     id = mDataPoint->id();
   }
-
   p->setOpacity( enabled ? 1.0 : 0.3 );
 
   // draw the point
@@ -158,7 +160,19 @@ void QgsGCPCanvasItem::updatePosition()
     return;
   }
 
-  setPos( toCanvasCoordinates( mIsGCPSource ? mDataPoint->pixelCoords() : mDataPoint->mapCoords() ) );
+  if ( mIsGCPSource )
+  {
+    setPos( toCanvasCoordinates( mDataPoint->pixelCoords() ) );
+    return;
+  }
+  if ( mDataPoint->canvasCoords().isEmpty() )
+  {
+    QgsCoordinateReferenceSystem mapCrs = mMapCanvas->mapSettings().destinationCrs();
+    QgsCoordinateTransform transf( mDataPoint->crs(), mapCrs, QgsProject::instance() );
+    QgsPointXY mapCoords  = transf.transform( mDataPoint->mapCoords() );
+    mDataPoint->setCanvasCoords( mapCoords );
+  }
+  setPos( toCanvasCoordinates( mDataPoint->canvasCoords() ) );
 }
 
 void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &context )
@@ -207,6 +221,11 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
 void QgsGCPCanvasItem::checkBoundingRectChange()
 {
   prepareGeometryChange();
+}
+
+void QgsGCPCanvasItem::setPointColor( const QColor &color )
+{
+  mPointBrush.setColor( color );
 }
 
 double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext &c )

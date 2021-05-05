@@ -35,7 +35,9 @@
 
 #define QGIS_SERVER_MODULE_SUBDIR "${QGIS_SERVER_MODULE_SUBDIR}"
 
+#if !defined(QSCINTILLA_VERSION_STR)
 #define QSCINTILLA_VERSION_STR "${QSCINTILLA_VERSION_STR}"
+#endif
 
 #if defined( __APPLE__ )
 //used by Mac to find system or bundle resources relative to amount of bundling
@@ -43,6 +45,11 @@
 #endif
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
+
+#define PYTHON_VERSION "${Python_VERSION}"
+#define PYTHON_VERSION_MAJOR "${Python_VERSION_MAJOR}"
+#define PYTHON_VERSION_MINOR "${Python_VERSION_MINOR}"
+#define PYTHON_VERSION_PATCH "${Python_VERSION_PATCH}"
 
 #cmakedefine USING_NMAKE
 
@@ -53,6 +60,8 @@
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_ORACLE
+
+#cmakedefine HAVE_HANA
 
 #cmakedefine SERVER_SKIP_ECW
 

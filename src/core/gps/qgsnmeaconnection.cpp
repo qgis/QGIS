@@ -188,6 +188,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
+    mLastGPSInformation.elevation_diff = result.diff;
     mLastGPSInformation.quality = result.sig;
     mLastGPSInformation.satellitesUsed = result.satinuse;
   }
@@ -207,6 +208,8 @@ void QgsNmeaConnection::processGstSentence( const char *data, int len )
     mLastGPSInformation.hacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) ) / 2.0 );
     // Vertical RMS
     mLastGPSInformation.vacc = sig_alt;
+    // 3D RMS
+    mLastGPSInformation.hvacc = sqrt( ( pow( sig_lat, 2 ) + pow( sig_lon, 2 ) + pow( sig_alt, 2 ) ) / 3.0 );
   }
 }
 

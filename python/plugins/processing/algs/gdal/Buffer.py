@@ -114,23 +114,20 @@ class Buffer(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        other_fields = []
-        for f in fields:
-            if f.name() == geometry:
-                continue
-            other_fields.append('"{}"'.format(f.name()))
+        other_fields_exist = any(
+            True for f in fields
+            if f.name() != geometry
+        )
 
-        if other_fields:
-            other_fields = ',*'
-        else:
-            other_fields = ''
+        other_fields = ',*' if other_fields_exist else ''
 
-        arguments = []
-        arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append('-dialect')
-        arguments.append('sqlite')
-        arguments.append('-sql')
+        arguments = [
+            output,
+            ogrLayer,
+            '-dialect',
+            'sqlite',
+            '-sql'
+        ]
 
         if dissolve or fieldName:
             sql = 'SELECT ST_Union(ST_Buffer({}, {})) AS {}{} FROM "{}"'.format(geometry, distance, geometry, other_fields, layerName)

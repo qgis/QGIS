@@ -15,44 +15,68 @@
 
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
+import QtQuick.Layouts 1.3
 import QgsQuick 0.1 as QgsQuick
 
 Item {
   property real iconSize
   property color fontColor
-  property real fontPixelSize: root.iconSize * 0.75
+  property real fontPointSize: root.iconSize * 0.75
   property string iconSource
   property string labelText
 
   id: root
-  width: root.iconSize + text.width
-  height: root.iconSize
 
-  Image {
-    id: icon
-    source: root.iconSource
-    width: root.iconSize
-    height: root.iconSize
-    sourceSize.width: width
-    sourceSize.height: height
-    fillMode: Image.PreserveAspectFit
-  }
+  ColumnLayout {
+    anchors.fill: parent
+    spacing: 2 * QgsQuick.Utils.dp
 
-  ColorOverlay {
-    anchors.fill: icon
-    source: icon
-    color: root.fontColor
-  }
+    Item {
+      id: iconContainer
 
-  Text {
-    id: text
-    height: root.iconSize
-    text: root.labelText
-    font.pixelSize: root.fontPixelSize
-    color: root.fontColor
-    anchors.leftMargin: root.iconSize + fieldItem.textMargin
-    x: root.iconSize + fieldItem.textMargin
-    horizontalAlignment: Text.AlignRight
-    verticalAlignment: Text.AlignVCenter
+      Layout.fillHeight: true
+      Layout.preferredHeight: root.height / 2
+      Layout.preferredWidth: root.width
+
+      Image {
+        id: icon
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+
+        source: root.iconSource
+        width: root.iconSize
+        height: root.iconSize
+        sourceSize.width: width
+        sourceSize.height: height
+        fillMode: Image.PreserveAspectFit
+      }
+
+      ColorOverlay {
+        anchors.fill: icon
+        source: icon
+        color: root.fontColor
+      }
+    }
+
+    Item {
+      id: textContainer
+
+      Layout.fillHeight: true
+      Layout.preferredHeight: root.height / 2
+      Layout.preferredWidth: root.width
+
+      Text {
+        id: text
+
+        text: root.labelText
+        font.pointSize: root.fontPointSize
+        width: parent.width
+        color: root.fontColor
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        maximumLineCount: 3
+      }
+    }
   }
 }

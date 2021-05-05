@@ -69,7 +69,7 @@ QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
   return *this;
 }
 
-QgsPaintEffect *QgsEffectStack::create( const QgsStringMap &map )
+QgsPaintEffect *QgsEffectStack::create( const QVariantMap &map )
 {
   QgsEffectStack *effect = new QgsEffectStack();
   effect->readProperties( map );
@@ -195,13 +195,13 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
   return true;
 }
 
-QgsStringMap QgsEffectStack::properties() const
+QVariantMap QgsEffectStack::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   return props;
 }
 
-void QgsEffectStack::readProperties( const QgsStringMap &props )
+void QgsEffectStack::readProperties( const QVariantMap &props )
 {
   Q_UNUSED( props )
 }

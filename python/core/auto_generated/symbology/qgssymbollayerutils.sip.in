@@ -10,6 +10,7 @@
 
 
 
+
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 
@@ -462,8 +463,14 @@ Creates a OGC Expression element based on the provided function expression
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
     static QgsStringMap getVendorOptionList( QDomElement &element );
 
-    static QgsStringMap parseProperties( QDomElement &element );
-    static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
+    static QVariantMap parseProperties( const QDomElement &element );
+%Docstring
+Parses the properties from XML and returns a map
+%End
+    static void saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element );
+%Docstring
+Saves the map of properties to XML
+%End
 
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -524,7 +531,7 @@ Encodes a color ramp's settings to an XML element
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
 %Docstring
 Saves a color ramp to a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.writeVariant to save it to an XML document.
+You can use :py:class:`QgsXmlUtils`.writeVariant to save it to an XML document.
 
 .. seealso:: :py:func:`loadColorRamp`
 %End
@@ -532,7 +539,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
     static QgsColorRamp *loadColorRamp( const QVariant &value ) /Factory/;
 %Docstring
 Load a color ramp from a QVariantMap, wrapped in a QVariant.
-You can use QgsXmlUtils.readVariant to load it from an XML document.
+You can use :py:class:`QgsXmlUtils`.readVariant to load it from an XML document.
 
 .. seealso:: :py:func:`colorRampToVariant`
 %End
@@ -727,6 +734,13 @@ Calculate a point on the surface of a QPolygonF
 Calculate whether a point is within of a QPolygonF
 %End
 
+    static double polylineLength( const QPolygonF &polyline );
+%Docstring
+Returns the total length of a ``polyline``.
+
+.. versionadded:: 3.20
+%End
+
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
 %Docstring
 Returns the substring of a ``polyline`` which starts at ``startOffset`` from the beginning of the line
@@ -788,7 +802,7 @@ The values are chosen so that they are 1, 2 or 5 times a power of 10.
 .. versionadded:: 2.10
 %End
 
-    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
+    static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QVariantMap &props );
 %Docstring
 Rescales the given size based on the uomScale found in the props, if any is found, otherwise
 returns the value un-modified
@@ -796,7 +810,7 @@ returns the value un-modified
 .. versionadded:: 3.0
 %End
 
-    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) /PyName=rescalePointUom/;
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) /PyName=rescalePointUom/;
 %Docstring
 Rescales the given point based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
@@ -804,7 +818,7 @@ returns a copy of the original point
 .. versionadded:: 3.0
 %End
 
-    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) /PyName=rescaleArrayUom/;
+    static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QVariantMap &props ) /PyName=rescaleArrayUom/;
 %Docstring
 Rescales the given array based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
@@ -812,14 +826,14 @@ returns a copy of the original point
 .. versionadded:: 3.0
 %End
 
-    static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props );
+    static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QVariantMap &props );
 %Docstring
 Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
 
 .. versionadded:: 3.0
 %End
 
-    static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QgsStringMap &props );
+    static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QVariantMap &props );
 %Docstring
 Merges the local scale limits, if any, with the ones already in the map, if any
 
@@ -863,6 +877,13 @@ Creates a new symbol with size restricted to min/max size if original size is ou
 :param height: expected height, can be changed by this function
 
 :return: 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+%End
+
+    static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+%Docstring
+Evaluates a map of properties using the given ``context`` and returns a variant map with evaluated expressions from the properties.
+
+.. versionadded:: 3.18
 %End
 };
 

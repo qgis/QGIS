@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
-  * Raster renderer pipe for single band gray.
+  * \brief Raster renderer pipe for single band gray.
   */
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
 
     /**
      * Returns the color ramp shader legend settings.

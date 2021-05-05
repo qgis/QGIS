@@ -29,7 +29,7 @@ class QgsPropertyOverrideButton;
 /**
  * \ingroup gui
  * \class QgsAbstractFileContentSourceLineEdit
- * Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
+ * \brief Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
  *
  * This class is designed to be used by content which is managed by a QgsAbstractContentCache,
  * i.e. it can handle either direct file paths, base64 encoded contents, or remote HTTP
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 /**
  * \ingroup gui
  * \class QgsSvgSourceLineEdit
- * A line edit widget with toolbutton for setting an SVG image path.
+ * \brief A line edit widget with toolbutton for setting an SVG image path.
  *
  * Designed for use with QgsSvgCache.
  *
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsAbstractFileContentSourceLineE
 /**
  * \ingroup gui
  * \class QgsImageSourceLineEdit
- * A line edit widget with toolbutton for setting a raster image path.
+ * \brief A line edit widget with toolbutton for setting a raster image path.
  *
  * Designed for use with QgsImageCache.
  *

@@ -79,14 +79,14 @@ QgsOrthogonalizeAlgorithm *QgsOrthogonalizeAlgorithm::createInstance() const
 
 void QgsOrthogonalizeAlgorithm::initParameters( const QVariantMap & )
 {
-  auto angleToleranceParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ANGLE_TOLERANCE" ), QObject::tr( "Maximum angle tolerance (degrees)" ),
+  auto angleToleranceParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ANGLE_TOLERANCE" ), QObject::tr( "Maximum angle tolerance (degrees)" ),
                              QgsProcessingParameterNumber::Double, 15.0, false, 0.0, 45.0 );
   angleToleranceParam->setIsDynamic( true );
   angleToleranceParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Angle tolerance" ), QObject::tr( "Maximum angle tolerance (degrees)" ), QgsPropertyDefinition::Double ) );
   angleToleranceParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( angleToleranceParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber> maxIterations = qgis::make_unique< QgsProcessingParameterNumber >(
+  std::unique_ptr< QgsProcessingParameterNumber> maxIterations = std::make_unique< QgsProcessingParameterNumber >(
         QStringLiteral( "MAX_ITERATIONS" ),
         QObject::tr( "Maximum algorithm iterations" ),
         QgsProcessingParameterNumber::Integer,

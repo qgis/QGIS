@@ -28,7 +28,7 @@
 
 /**
  * \ingroup core
- * Provides threading utilities for QGIS.
+ * \brief Provides threading utilities for QGIS.
  *
  * \since QGIS 3.4
  */
@@ -55,7 +55,6 @@ class CORE_EXPORT QgsThreadingUtils
     template <typename Func>
     static bool runOnMainThread( const Func &func, QgsFeedback *feedback = nullptr )
     {
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
       // Make sure we only deal with the vector layer on the main thread where it lives.
       // Anything else risks a crash.
       if ( QThread::currentThread() == qApp->thread() )
@@ -117,11 +116,6 @@ class CORE_EXPORT QgsThreadingUtils
         QMetaObject::invokeMethod( qApp, func, Qt::BlockingQueuedConnection );
         return true;
       }
-#else
-      Q_UNUSED( feedback )
-      func();
-      return true;
-#endif
     }
 
 };

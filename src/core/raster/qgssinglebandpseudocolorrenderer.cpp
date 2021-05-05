@@ -338,7 +338,7 @@ QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
   return bandList;
 }
 
-void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
   // create base structure
   QgsRasterRenderer::toSld( doc, element, props );
@@ -441,26 +441,22 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
     res << new QgsSimpleLegendNode( nodeLayer, name );
   }
 
-  if ( !rampShader->sourceColorRamp() )
-  {
-    const QList< QPair< QString, QColor > > items = legendSymbologyItems();
-    res.reserve( items.size() );
-    for ( const QPair< QString, QColor > &item : items )
-    {
-      res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
-    }
-    return res;
-  }
-
   switch ( rampShader->colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
-      // for interpolated shaders we use a ramp legend node
-      res << new QgsColorRampLegendNode( nodeLayer, rampShader->sourceColorRamp()->clone(),
-                                         rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
-                                         rampShader->minimumValue(), rampShader->maximumValue() );
-      break;
-
+      // for interpolated shaders we use a ramp legend node unless the settings flag
+      // to use the continuous legend is not set, in that case we fall through
+      if ( ! rampShader->legendSettings() || rampShader->legendSettings()->useContinuousLegend() )
+      {
+        if ( !rampShader->colorRampItemList().isEmpty() )
+        {
+          res << new QgsColorRampLegendNode( nodeLayer, rampShader->createColorRamp(),
+                                             rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
+                                             rampShader->minimumValue(), rampShader->maximumValue() );
+        }
+        break;
+      }
+      Q_FALLTHROUGH();
     case QgsColorRampShader::Discrete:
     case QgsColorRampShader::Exact:
     {

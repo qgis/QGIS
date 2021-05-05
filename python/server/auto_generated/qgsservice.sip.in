@@ -13,8 +13,8 @@
 
 class QgsService
 {
-%Docstring
-QgsService
+%Docstring(signature="appended")
+:py:class:`QgsService`
 Class defining interfaces for QGIS server services
 
 This class provides methods for executing server requests

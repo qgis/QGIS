@@ -1,4 +1,5 @@
 usr/lib/qgis/crssync
+usr/lib/qgis/untwine
 usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
 usr/lib/qgis/plugins/libarcgismapserverprovider.so
 usr/lib/qgis/plugins/libbasicauthmethod.so
@@ -21,4 +22,5 @@ usr/lib/qgis/plugins/libwcsprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
 usr/lib/qgis/plugins/libpdalprovider.so
+usr/lib/qgis/plugins/libhanaprovider.so
 usr/lib/*/qt?/plugins/sqldrivers/libqsqlspatialite.so

@@ -14,7 +14,7 @@
 
 class QgsLabelSearchTree
 {
-%Docstring
+%Docstring(signature="appended")
 A class to query the labeling structure at a given point (small wrapper around pal RTree class)
 %End
 
@@ -42,6 +42,18 @@ Removes and deletes all the entries.
 
 
 
+
+
+    QList<const QgsCalloutPosition *> calloutsInRectangle( const QgsRectangle &rectangle ) const;
+%Docstring
+Returns the list of callouts with origins or destinations inside the given ``rectangle``.
+
+The ``rectangle`` is specified in map coordinates.
+
+QgsLabelSearchTree keeps ownership, don't delete the returned objects.
+
+.. versionadded:: 3.20
+%End
 
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring

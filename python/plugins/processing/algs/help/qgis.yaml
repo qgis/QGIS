@@ -218,11 +218,6 @@ qgis:minimalenclosingcircle: >
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
-qgis:pointstopath: >
-  Converts a point layer to a line layer, by joining points in a defined order.
-
-  Points can be grouped by a field to output individual line features per group.
-
 qgis:polarplot: >
   This algorithm generates a polar plot based on the value of an input vector layer.
 

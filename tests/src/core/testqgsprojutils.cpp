@@ -18,9 +18,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
-#endif
 
 //header for class being tested
 #include "qgsprojutils.h"
@@ -77,18 +75,15 @@ void TestQgsProjUtils::threadSafeContext()
 
 void TestQgsProjUtils::usesAngularUnits()
 {
-#if PROJ_VERSION_MAJOR>=6
   QVERIFY( !QgsProjUtils::usesAngularUnit( QString() ) );
   QVERIFY( !QgsProjUtils::usesAngularUnit( QString( "" ) ) );
   QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "x" ) ) );
   QVERIFY( QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=longlat +ellps=WGS60 +no_defs" ) ) );
   QVERIFY( !QgsProjUtils::usesAngularUnit( QStringLiteral( "+proj=tmerc +lat_0=0 +lon_0=147 +k_0=0.9996 +x_0=500000 +y_0=10000000 +ellps=GRS80 +units=m +no_defs" ) ) );
-#endif
 }
 
 void TestQgsProjUtils::axisOrderIsSwapped()
 {
-#if PROJ_VERSION_MAJOR>=6
   PJ_CONTEXT *context = QgsProjContext::get();
   QVERIFY( !QgsProjUtils::axisOrderIsSwapped( nullptr ) );
 
@@ -96,21 +91,17 @@ void TestQgsProjUtils::axisOrderIsSwapped()
   QVERIFY( !QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
   crs.reset( proj_create( context, "urn:ogc:def:crs:EPSG::4326" ) );
   QVERIFY( QgsProjUtils::axisOrderIsSwapped( crs.get() ) );
-#endif
 }
 
 void TestQgsProjUtils::searchPath()
 {
-#if PROJ_VERSION_MAJOR>=6
   // ensure local user-writable path is present in Proj search paths
   const QStringList paths = QgsProjUtils::searchPaths();
   QVERIFY( paths.contains( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "proj" ) ) );
-#endif
 }
 
 void TestQgsProjUtils::gridsUsed()
 {
-#if PROJ_VERSION_MAJOR>=6
   // ensure local user-writable path is present in Proj search paths
   QList< QgsDatumTransform::GridDetails > grids = QgsProjUtils::gridsUsed( QStringLiteral( "+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1" ) );
   QCOMPARE( grids.count(), 1 );
@@ -128,7 +119,6 @@ void TestQgsProjUtils::gridsUsed()
   QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "GDA94_GDA2020_conformal_and_distortion.gsb" ) );
   QCOMPARE( grids.at( 0 ).packageName, QStringLiteral( "proj-datumgrid-oceania" ) );
   QVERIFY( grids.at( 0 ).directDownload );
-#endif
 #endif
 }
 

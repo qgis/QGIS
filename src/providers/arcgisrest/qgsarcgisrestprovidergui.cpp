@@ -20,7 +20,8 @@
 #include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestsourceselect.h"
-
+#include "qgsarcgisrestsourcewidget.h"
+#include "qgsprovidersourcewidgetprovider.h"
 
 //! Provider for AFS layers source select
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
@@ -37,6 +38,29 @@ class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+{
+  public:
+    QgsArcGisRestSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
+    QString providerKey() const override
+    {
+      return QgsAfsProvider::AFS_PROVIDER_KEY;
+    }
+    bool canHandleLayer( QgsMapLayer *layer ) const override
+    {
+      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != QLatin1String( "arcgismapserver" ) )
+        return false;
+
+      return true;
+    }
+    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override
+    {
+      if ( layer->providerType() != QgsAfsProvider::AFS_PROVIDER_KEY && layer->providerType() != QLatin1String( "arcgismapserver" ) )
+        return nullptr;
+
+      return new QgsArcGisRestSourceWidget( layer->providerType(), parent );
+    }
+};
 
 class QgsArcGisRestProviderGuiMetadata: public QgsProviderGuiMetadata
 {
@@ -57,6 +81,13 @@ class QgsArcGisRestProviderGuiMetadata: public QgsProviderGuiMetadata
     {
       QList<QgsSourceSelectProvider *> providers;
       providers << new QgsArcGisRestSourceSelectProvider;
+      return providers;
+    }
+
+    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override
+    {
+      QList<QgsProviderSourceWidgetProvider *> providers;
+      providers << new QgsArcGisRestSourceWidgetProvider();
       return providers;
     }
 };

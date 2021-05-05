@@ -42,6 +42,7 @@ class QgsLineSegment2D;
  */
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
+
   public:
 
     /**
@@ -69,6 +70,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * argument. If \a is25DType is TRUE (and the \a m vector is unfilled) then
      * the created Linestring will be a LineString25D type. Otherwise, the
      * LineString will be LineStringZ (or LineStringZM) type.
+     *
+     * If the sizes of \a x and \a y are non-equal then the resultant linestring
+     * will be created using the minimum size of these arrays.
      *
      * \since QGIS 3.0
      */
@@ -144,9 +148,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else // negative index, count backwards from end
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
@@ -580,15 +584,17 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     //reimplemented methods
-
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override SIP_HOLDGIL;
+    int indexOf( const QgsPoint &point ) const final;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool isClosed() const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
@@ -614,6 +620,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //curve interface
     double length() const override SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
+#endif
 
     /**
      * Returns the length in 3D world of the line string.
@@ -670,6 +680,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
+    bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
+
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
@@ -721,9 +734,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     {
       std::unique_ptr< QgsPoint > p;
       if ( a0 >= 0 )
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( a0 ) );
       else
-        p = qgis::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
+        p = std::make_unique< QgsPoint >( sipCpp->pointN( count + a0 ) );
       sipRes = sipConvertFromType( p.release(), sipType_QgsPoint, Py_None );
     }
     % End
@@ -784,6 +797,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:
@@ -807,6 +821,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     friend class QgsPolygon;
     friend class QgsTriangle;
+    friend class TestQgsGeometry;
 
 };
 

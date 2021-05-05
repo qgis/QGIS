@@ -18,7 +18,7 @@
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>
       <ogr:date_count>4</ogr:date_count>
-      <ogr:date_unique>3</ogr:date_unique>
+      <ogr:date_unique>4</ogr:date_unique>
       <ogr:date_empty>1</ogr:date_empty>
       <ogr:date_filled>3</ogr:date_filled>
       <ogr:date_min>2005/09/13</ogr:date_min>

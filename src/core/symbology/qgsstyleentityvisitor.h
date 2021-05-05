@@ -25,7 +25,7 @@
  * \class QgsStyleEntityVisitorInterface
  * \ingroup core
  *
- * An interface for classes which can visit style entity (e.g. symbol) nodes (using the visitor pattern).
+ * \brief An interface for classes which can visit style entity (e.g. symbol) nodes (using the visitor pattern).
  *
  * \since QGIS 3.10
  */

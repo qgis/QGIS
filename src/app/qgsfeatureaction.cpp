@@ -30,9 +30,13 @@
 #include "qgsactionmanager.h"
 #include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QPushButton>
+
+typedef QHash<QgsVectorLayer *, QgsAttributeMap> CachedAttributesHash;
+Q_GLOBAL_STATIC( CachedAttributesHash, sLastUsedValues )
+
 
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
@@ -68,7 +72,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
-  QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
+  const QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -77,8 +81,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     a->setEnabled( false );
     dialog->addAction( a );
 
-    const auto constActions = actions;
-    for ( const QgsAction &action : constActions )
+    for ( const QgsAction &action : actions )
     {
       if ( !action.runable() )
         continue;
@@ -170,9 +173,8 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   if ( !mLayer || !mLayer->isEditable() )
     return false;
 
-  QgsSettings settings;
-  bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues.value();
+  QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
 
   QgsFields fields = mLayer->fields();
   QgsAttributeMap initialAttributeValues;
@@ -183,9 +185,9 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     {
       initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
     }
-    else if ( reuseLastValues && sLastUsedValues.contains( mLayer ) && sLastUsedValues[ mLayer ].contains( idx ) )
+    else if ( ( reuseAllLastValues || mLayer->editFormConfig().reuseLastValue( idx ) ) && sLastUsedValues()->contains( mLayer ) && ( *sLastUsedValues() )[ mLayer ].contains( idx ) )
     {
-      initialAttributeValues.insert( idx, sLastUsedValues[ mLayer ][idx] );
+      initialAttributeValues.insert( idx, ( *sLastUsedValues() )[ mLayer ][idx] );
     }
   }
 
@@ -201,7 +203,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   //show the dialog to enter attribute values
   //only show if enabled in settings
-  bool isDisabledAttributeValuesDlg = settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+  bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value();
 
   // override application-wide setting if layer is non-spatial -- BECAUSE it's bad UX if
   // it appears that nothing happens when you click the add row button for a non-spatial layer. Unlike
@@ -295,21 +297,16 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
   mFeatureSaved = true;
 
   QgsSettings settings;
-  bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
-  if ( reuseLastValues )
+  QgsFields fields = mLayer->fields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QgsFields fields = mLayer->fields();
-    for ( int idx = 0; idx < fields.count(); ++idx )
+    QgsAttributes newValues = feature.attributes();
+    QgsAttributeMap origValues = ( *sLastUsedValues() )[ mLayer ];
+    if ( origValues[idx] != newValues.at( idx ) )
     {
-      QgsAttributes newValues = feature.attributes();
-      QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
-      if ( origValues[idx] != newValues.at( idx ) )
-      {
-        QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
-        sLastUsedValues[ mLayer ][idx] = newValues.at( idx );
-      }
+      QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( ( *sLastUsedValues() )[ mLayer ][idx].toString() ).arg( idx ) );
+      ( *sLastUsedValues() )[ mLayer ][idx] = newValues.at( idx );
     }
   }
 }
@@ -319,4 +316,3 @@ QgsFeature QgsFeatureAction::feature() const
   return mFeature ? *mFeature : QgsFeature();
 }
 
-QHash<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;

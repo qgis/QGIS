@@ -12,8 +12,9 @@
 
 class QgsFeatureRequest
 {
-%Docstring
+%Docstring(signature="appended")
 This class wraps a request for features to a vector layer (or directly its vector data provider).
+
 The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
 
 - no filter - all features are returned
@@ -63,7 +64,9 @@ Examples:
       NoFlags,
       NoGeometry,
       SubsetOfAttributes,
-      ExactIntersect
+      ExactIntersect,
+      IgnoreStaticNodesDuringExpressionCompilation,
+      EmbeddedSymbols,
     };
     typedef QFlags<QgsFeatureRequest::Flag> Flags;
 
@@ -85,7 +88,7 @@ Examples:
 
     class OrderByClause
 {
-%Docstring
+%Docstring(signature="appended")
 The OrderByClause class represents an order by clause for a QgsFeatureRequest.
 
 It can be a simple field or an expression. Multiple order by clauses can be added to
@@ -202,7 +205,7 @@ Dumps the content to an SQL equivalent
 
     class OrderBy
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a list of OrderByClauses, with the most important first and the least
 important last.
 
@@ -571,7 +574,7 @@ Gets simplification method for geometries that will be fetched
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Returns the destination coordinate reference system for feature's geometries,
-or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
+or an invalid :py:class:`QgsCoordinateReferenceSystem` if no reprojection will be done
 and all features will be left with their original geometry.
 
 .. seealso:: :py:func:`setDestinationCrs`
@@ -598,7 +601,7 @@ and reprojection is required
 Sets the destination ``crs`` for feature's geometries. If set, all
 geometries will be reprojected from their original coordinate reference
 system to this desired reference system. If ``crs`` is an invalid
-QgsCoordinateReferenceSystem then no reprojection will be done
+:py:class:`QgsCoordinateReferenceSystem` then no reprojection will be done
 and all features will be left with their original geometry.
 
 When a ``crs`` is set using :py:func:`~QgsFeatureRequest.setDestinationCrs`, then any :py:func:`~QgsFeatureRequest.filterRect`
@@ -670,7 +673,7 @@ at this moment. A negative value (which is set by default) will wait forever.
    Only works if the provider supports this option.
 
 .. deprecated::
-   Use timeout() instead.
+   Use :py:func:`~QgsFeatureRequest.timeout` instead.
 
 .. versionadded:: 3.0
 %End
@@ -685,7 +688,7 @@ at this moment. A negative value (which is set by default) will wait forever.
    Only works if the provider supports this option.
 
 .. deprecated::
-   Use setTimeout() instead.
+   Use :py:func:`~QgsFeatureRequest.setTimeout` instead.
 
 .. versionadded:: 3.0
 %End
@@ -752,7 +755,7 @@ QFlags<QgsFeatureRequest::Flag> operator|(QgsFeatureRequest::Flag f1, QFlags<Qgs
 
 class QgsAbstractFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 Base class that can be used for any class that is capable of returning features
 
 .. versionadded:: 2.4
@@ -764,7 +767,9 @@ Base class that can be used for any class that is capable of returning features
   public:
     virtual ~QgsAbstractFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
+
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0 /TransferBack/;
 %Docstring
 Gets an iterator for features matching the specified request
 
@@ -772,6 +777,7 @@ Gets an iterator for features matching the specified request
 
 :return: A feature iterator
 %End
+
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

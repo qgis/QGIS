@@ -16,6 +16,7 @@
 #include <map>
 #include <vector>
 
+#include <pdal/PointLayout.hpp>
 #include <pdal/SpatialReference.hpp>
 
 #include "EpfTypes.hpp"
@@ -38,7 +39,7 @@ class Writer;
 class Epf
 {
 public:
-    Epf();
+    Epf(BaseInfo& common);
     ~Epf();
 
     void run(const Options& options, ProgressWriter& progress);
@@ -46,7 +47,9 @@ public:
 private:
     PointCount createFileInfo(const StringList& input, StringList dimNames,
         std::vector<FileInfo>& fileInfos);
+    void fillMetadata(const pdal::PointLayoutPtr layout);
 
+    BaseInfo& m_b;
     Grid m_grid;
     std::unique_ptr<Writer> m_writer;
     ThreadPool m_pool;

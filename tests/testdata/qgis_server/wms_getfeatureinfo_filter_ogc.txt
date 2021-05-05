@@ -1,0 +1,18 @@
+Content-Length: 250
+Content-Type: application/json; charset=utf-8
+
+{
+  "features": [
+    {
+      "geometry": null,
+      "id": "testlayer èé.1",
+      "properties": {
+        "id": 2,
+        "name": "two",
+        "utf8nameè": "two àò"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

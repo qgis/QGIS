@@ -21,9 +21,10 @@
 
 
 
+
 class QgsMapCanvas : QGraphicsView
 {
-%Docstring
+%Docstring(signature="appended")
 Map canvas is a class for displaying all GIS data types on a canvas.
 %End
 
@@ -105,9 +106,12 @@ Resets the ``flags`` for the canvas' map settings.
 .. versionadded:: 3.0
 %End
 
-    const QgsLabelingResults *labelingResults() const;
+    const QgsLabelingResults *labelingResults( bool allowOutdatedResults = true ) const;
 %Docstring
-Gets access to the labeling results (may be ``None``)
+Gets access to the labeling results (may be ``None``).
+
+Since QGIS 3.20, if the ``allowOutdatedResults`` flag is ``False`` then outdated labeling results (e.g.
+as a result of an ongoing canvas render) will not be returned, and instead ``None`` will be returned.
 
 .. versionadded:: 2.4
 %End
@@ -211,7 +215,7 @@ Sets the canvas to the specified ``extent``.
 
 :return: ``True`` if the zoom was successful.
 
-:raises QgsCsException: if a transformation error occurred.
+:raises :: py:class:`QgsCsException` if a transformation error occurred.
 
 .. versionadded:: 3.10
 %End
@@ -287,6 +291,15 @@ Centers canvas extent to feature ids
 Pan to the selected features of current (vector) layer keeping same extent.
 %End
 
+    void panToSelected( const QList<QgsMapLayer *> &layers );
+%Docstring
+Pan to the combined extent of the selected features of all provided (vector) layers.
+
+:param layers: A list of layers
+
+.. versionadded:: 3.18
+%End
+
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
                           int flashes = 3, int duration = 500 );
@@ -334,7 +347,7 @@ Unset the current map tool or last non zoom tool
 
 This is called from destructor of map tools to make sure
 that this map tool won't be used any more.
-You don't have to call it manually, QgsMapTool takes care of it.
+You don't have to call it manually, :py:class:`QgsMapTool` takes care of it.
 %End
 
     QgsMapTool *mapTool();
@@ -476,7 +489,7 @@ a theme present in the associated project's :py:class:`QgsMapThemeCollection`.
 When the canvas is associated to a map theme, it will automatically follow
 the layer selection and layer styles from that theme. Calls to :py:func:`~QgsMapCanvas.setLayers`
 or :py:func:`~QgsMapCanvas.setLayerStyleOverrides` will have no effect, and canvases associated
-with a QgsLayerTreeMapCanvasBridge will no longer synchronize their
+with a :py:class:`QgsLayerTreeMapCanvasBridge` will no longer synchronize their
 state with the layer tree. In these cases it is necessary to call
 :py:func:`~QgsMapCanvas.setTheme` with an empty string to clear the theme association and
 allow map updates with :py:func:`~QgsMapCanvas.setLayers`, :py:func:`~QgsMapCanvas.setLayerStyleOverrides`, or via
@@ -954,6 +967,15 @@ Zoom to the extent of the selected features of provided (vector) layer.
 :param layer: optionally specify different than current layer
 %End
 
+    void zoomToSelected( const QList<QgsMapLayer *> &layers );
+%Docstring
+Zoom to the combined extent of the selected features of all provided (vector) layers.
+
+:param layers: A list of layers
+
+.. versionadded:: 3.18
+%End
+
     void setZoomResolutions( const QList<double> &resolutions );
 %Docstring
 Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
@@ -1021,6 +1043,18 @@ Emits current mouse position
 Emitted when the scale of the map changes
 %End
 
+    void scaleLockChanged( bool locked );
+%Docstring
+Emitted when the scale locked state of the map changes
+
+:param locked: true if the scale is locked
+
+.. seealso:: :py:func:`setScaleLocked`
+
+.. versionadded:: 3.18
+%End
+
+
     void extentsChanged();
 %Docstring
 Emitted when the extents of the map change
@@ -1068,6 +1102,13 @@ Emitted when canvas finished a refresh request.
     void renderStarting();
 %Docstring
 Emitted when the canvas is about to be rendered.
+%End
+
+    void mapRefreshCanceled();
+%Docstring
+Emitted when the pending map refresh has been canceled
+
+.. versionadded:: 3.18
 %End
 
     void layersChanged();

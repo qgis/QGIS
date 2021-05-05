@@ -1275,6 +1275,8 @@ QString QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalUnit unit )
       return QStringLiteral( "dec" );
     case TemporalCenturies:
       return QStringLiteral( "c" );
+    case TemporalIrregularStep:
+      return QStringLiteral( "xxx" );
     case TemporalUnknownUnit:
       return QStringLiteral( "<unknown>" );
   }
@@ -1308,6 +1310,8 @@ QgsUnitTypes::TemporalUnit QgsUnitTypes::decodeTemporalUnit( const QString &stri
     return TemporalDecades;
   if ( normalized == encodeUnit( TemporalCenturies ) )
     return TemporalCenturies;
+  if ( normalized == encodeUnit( TemporalIrregularStep ) )
+    return TemporalIrregularStep;
   if ( normalized == encodeUnit( TemporalUnknownUnit ) )
     return TemporalUnknownUnit;
 
@@ -1341,6 +1345,8 @@ QString QgsUnitTypes::toString( QgsUnitTypes::TemporalUnit unit )
       return QObject::tr( "decades", "temporal" );
     case TemporalCenturies:
       return QObject::tr( "centuries", "temporal" );
+    case TemporalIrregularStep:
+      return QObject::tr( "steps", "temporal" );
     case TemporalUnknownUnit:
       return QObject::tr( "<unknown>", "temporal" );
   }
@@ -1371,6 +1377,8 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::TemporalUnit unit )
       return QObject::tr( "dec", "temporal" );
     case TemporalCenturies:
       return QObject::tr( "cen", "temporal" );
+    case TemporalIrregularStep:
+      return QObject::tr( "steps", "temporal" );
     case TemporalUnknownUnit:
       return QObject::tr( "<unknown>", "temporal" );
   }
@@ -1404,6 +1412,8 @@ QgsUnitTypes::TemporalUnit QgsUnitTypes::stringToTemporalUnit( const QString &st
     return TemporalDecades;
   if ( normalized == toString( TemporalCenturies ) )
     return TemporalCenturies;
+  if ( normalized == toString( TemporalIrregularStep ) )
+    return TemporalIrregularStep;
   if ( normalized == toString( TemporalUnknownUnit ) )
     return TemporalUnknownUnit;
 
@@ -1442,6 +1452,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 3155760000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1471,6 +1482,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 315576000000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1500,6 +1512,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 52596000.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1529,6 +1542,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 876600.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1558,6 +1572,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1587,6 +1602,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 7 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1616,6 +1632,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 30 / 36525.0;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1645,6 +1662,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 0.01;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1674,6 +1692,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 0.1;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
@@ -1704,12 +1723,14 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, 
         case TemporalCenturies:
           return 1;
         case TemporalUnknownUnit:
+        case TemporalIrregularStep:
           return 1.0;
       }
       break;
     }
 
     case TemporalUnknownUnit:
+    case TemporalIrregularStep:
     {
       return 1.0;
     }

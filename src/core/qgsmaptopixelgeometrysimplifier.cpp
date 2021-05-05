@@ -92,11 +92,11 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   // Write the generalized geometry
   if ( geometryType == QgsWkbTypes::LineString && !isRing )
   {
-    return qgis::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 );
+    return std::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 );
   }
   else
   {
-    std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString >(
+    std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
         QVector< double >() << x1
         << x2
         << x2
@@ -111,7 +111,7 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
       return std::move( ext );
     else
     {
-      std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
       polygon->setExteriorRing( ext.release() );
       return std::move( polygon );
     }
@@ -308,7 +308,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
 
     if ( !output )
     {
-      output = qgis::make_unique< QgsLineString >( lineStringX, lineStringY );
+      output = std::make_unique< QgsLineString >( lineStringX, lineStringY );
     }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {
@@ -414,4 +414,48 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
   }
 
   return QgsGeometry( simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, *geometry.constGet(), mTolerance, false ) );
+}
+
+QgsAbstractGeometry *QgsMapToPixelSimplifier::simplify( const QgsAbstractGeometry *geometry ) const
+{
+  //
+  // IMPORTANT!!!!!!!
+  // We want to avoid any geometry cloning we possibly can here, which is why the
+  // "fail" paths always return nullptr
+  //
+
+  if ( !geometry )
+  {
+    return nullptr;
+  }
+  if ( mSimplifyFlags == QgsMapToPixelSimplifier::NoFlags )
+  {
+    return nullptr;
+  }
+
+  // Check whether the geometry can be simplified using the map2pixel context
+  const QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( geometry->wkbType() );
+  const QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( singleType );
+  if ( flatType == QgsWkbTypes::Point )
+  {
+    return nullptr;
+  }
+
+  const bool isaLinearRing = flatType == QgsWkbTypes::Polygon;
+  const int numPoints = geometry->nCoordinates();
+
+  if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
+  {
+    // No simplify simple geometries
+    return nullptr;
+  }
+
+  const QgsRectangle envelope = geometry->boundingBox();
+  if ( std::max( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
+  {
+    //points are in average too far apart to lead to any significant simplification
+    return nullptr;
+  }
+
+  return simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, *geometry, mTolerance, false ).release();
 }

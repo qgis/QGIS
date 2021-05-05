@@ -71,12 +71,12 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   QgsSymbolLayer *floor = QgsSimpleFillSymbolLayer::create();
 
-  QgsStringMap wallProperties;
+  QVariantMap wallProperties;
   wallProperties.insert( QStringLiteral( "geometryModifier" ), WALL_EXPRESSION );
   wallProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
   QgsSymbolLayer *walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
 
-  QgsStringMap roofProperties;
+  QVariantMap roofProperties;
   roofProperties.insert( QStringLiteral( "geometryModifier" ), ROOF_EXPRESSION );
   roofProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
   QgsSymbolLayer *roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );

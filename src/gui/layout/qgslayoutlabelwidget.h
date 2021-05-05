@@ -25,10 +25,11 @@
 #include "ui_qgslayoutlabelwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemlabel.h"
+#include <functional>
 
 /**
  * \ingroup gui
- * A widget for layout item settings.
+ * \brief A widget for layout item settings.
  *
  * \note This class is not a part of public API
  * \since QGIS 3.12
@@ -40,6 +41,22 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private U
     //! constructor
     explicit QgsLayoutLabelWidget( QgsLayoutItemLabel *label );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
+
+    /**
+     * Populates the specified \a menu with actions reflecting dynamic text expressions applicable for a \a layout.
+     *
+     * This includes dynamic text for expressions like:
+     *
+     * - current date
+     * - total page count
+     * - current page number
+     * - etc
+     *
+     * The \a callback function will be called whenever one of the created actions is triggered.
+     *
+     * \since QGIS 3.18
+     */
+    static void buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function< void( const QString &expression ) > &callback );
 
   protected:
 
@@ -66,6 +83,8 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private U
     QPointer< QgsLayoutItemLabel > mLabel = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
+
+    QMenu *mDynamicTextMenu = nullptr;
 
     void blockAllSignals( bool block );
 };

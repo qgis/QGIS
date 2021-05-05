@@ -30,7 +30,7 @@
  *
  * \see QgsLayoutMeasurementConverter
  * \note This class does not inherit from QPointF since QPointF includes methods which should not apply
- * to positions with with units. For instance, the + and - operators would mislead users of this class
+ * to positions with units. For instance, the + and - operators would mislead users of this class
  * to believe that addition of two QgsLayoutPoints with different unit types would automatically convert
  * units. Instead, all unit conversion must be handled by a QgsLayoutMeasurementConverter so that
  * conversion between paper and screen units can be correctly performed.

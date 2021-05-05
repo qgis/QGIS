@@ -32,7 +32,7 @@ class QgsDemHeightMapGenerator;
 
 /**
  * \ingroup 3d
- * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
+ * \brief Implementation of terrain generator that uses a raster layer with DEM to build terrain.
  *
  * \note Not available in Python bindings
  *

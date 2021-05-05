@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>360</width>
     <height>705</height>
    </rect>
   </property>
@@ -61,8 +61,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>446</width>
-        <height>665</height>
+        <width>358</width>
+        <height>682</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -84,27 +84,49 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QPlainTextEdit" name="mTextEdit">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>150</height>
-             </size>
+          <item row="2" column="1">
+           <widget class="QToolButton" name="mDynamicTextButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Dynamic Text</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::InstantPopup</enum>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
+           <widget class="QToolButton" name="mInsertExpressionButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Insert/Edit Expression…</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="mHtmlCheckBox">
             <property name="text">
              <string>Render as HTML</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="mInsertExpressionButton">
-            <property name="text">
-             <string>Insert or Edit an Expression…</string>
+          <item row="0" column="0" colspan="2">
+           <widget class="QPlainTextEdit" name="mTextEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -352,6 +374,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -364,20 +391,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFontButton</class>
    <extends>QToolButton</extends>
    <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -386,6 +408,7 @@
   <tabstop>mTextEdit</tabstop>
   <tabstop>mHtmlCheckBox</tabstop>
   <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mDynamicTextButton</tabstop>
   <tabstop>mAppearanceGroup</tabstop>
   <tabstop>mFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
@@ -394,6 +417,7 @@
   <tabstop>mLeftRadioButton</tabstop>
   <tabstop>mCenterRadioButton</tabstop>
   <tabstop>mRightRadioButton</tabstop>
+  <tabstop>mJustifyRadioButton</tabstop>
   <tabstop>mTopRadioButton</tabstop>
   <tabstop>mMiddleRadioButton</tabstop>
   <tabstop>mBottomRadioButton</tabstop>

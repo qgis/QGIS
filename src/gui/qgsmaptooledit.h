@@ -27,7 +27,7 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * Base class for map tools that edit vector geometry
+ * \brief Base class for map tools that edit vector geometry
 */
 class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
 {
@@ -39,10 +39,18 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     Flags flags() const override { return QgsMapTool::EditTool; }
 
     /**
-     * Returns default Z value
-     * Use for set Z coordinate to new vertex for 2.5d geometries
+     * Returns default Z value.
+     * Used for setting Z coordinate to new vertex.
      */
     double defaultZValue() const;
+
+    /**
+     * Returns default M value.
+     * Used for setting M coordinate to new vertex.
+     *
+     * \since QGIS 3.20
+     */
+    double defaultMValue() const;
 
   private slots:
     //! Vector layers' editingStopped SIGNAL will eventually trigger a clean

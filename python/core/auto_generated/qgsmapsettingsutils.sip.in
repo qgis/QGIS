@@ -12,7 +12,7 @@
 
 class QgsMapSettingsUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utilities for map settings.
 
 .. versionadded:: 3.0

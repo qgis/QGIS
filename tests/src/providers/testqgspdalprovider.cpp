@@ -55,7 +55,6 @@ class TestQgsPdalProvider : public QObject
     void brokenPath();
     void validLayer();
     void testEptGeneration();
-    void testEptGenerationNonASCII();
 
   private:
     QString mTestDataDir;
@@ -92,11 +91,11 @@ void TestQgsPdalProvider::filters()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( metadata );
 
-  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "PDAL Point Clouds (*.laz *.las)" ) );
+  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "PDAL Point Clouds (*.laz *.las *.LAZ *.LAS)" ) );
   QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterVector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
-  QVERIFY( registryPointCloudFilters.contains( "(*.laz *.las)" ) );
+  QVERIFY( registryPointCloudFilters.contains( "(*.laz *.las *.LAZ *.LAS)" ) );
 }
 
 void TestQgsPdalProvider::encodeUri()
@@ -160,7 +159,7 @@ void TestQgsPdalProvider::preferredUri()
 void TestQgsPdalProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >(
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >(
         QStringLiteral( "not valid" ),
         QStringLiteral( "layer" ),
         QStringLiteral( "pdal" ) );
@@ -172,7 +171,7 @@ void TestQgsPdalProvider::validLayer()
   QgsPointCloudLayer::LayerOptions options;
   options.skipIndexGeneration = true;
 
-  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >(
+  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >(
         mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ),
         QStringLiteral( "layer" ),
         QStringLiteral( "pdal" ),
@@ -197,16 +196,6 @@ void TestQgsPdalProvider::testEptGeneration()
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
   QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
-  QVERIFY( task.run() );
-  QFileInfo fi( dir.path() + "/ept.json" );
-  QVERIFY( fi.exists() );
-}
-
-void TestQgsPdalProvider::testEptGenerationNonASCII()
-{
-  QTemporaryDir dir;
-  QVERIFY( dir.isValid() );
-  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud%! _čopy.las" ), dir.path() );
   QVERIFY( task.run() );
   QFileInfo fi( dir.path() + "/ept.json" );
   QVERIFY( fi.exists() );

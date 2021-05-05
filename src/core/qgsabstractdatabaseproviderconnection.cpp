@@ -17,6 +17,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
+#include "qgsfeedback.h"
+
 #include <QVariant>
 #include <QObject>
 
@@ -173,7 +175,7 @@ void QgsAbstractDatabaseProviderConnection::deleteField( const QString &fieldNam
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl { qgis::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) };
+  std::unique_ptr<QgsVectorLayer> vl { std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) };
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
@@ -198,7 +200,7 @@ void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, con
 
   QgsVectorLayer::LayerOptions options { false, false };
   options.skipCrsValidation = true;
-  std::unique_ptr<QgsVectorLayer> vl( qgis::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
+  std::unique_ptr<QgsVectorLayer> vl( std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
   if ( ! vl->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
@@ -265,7 +267,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType
 {
   // Do not add the type if it's already present
   const QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType toAdd { type, crs };
-  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const auto &t : std::as_const( mGeometryColumnTypes ) )
   {
     if ( t == toAdd )
     {
@@ -328,7 +330,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlag( const QgsAbs
 int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimensions() const
 {
   int res = 0;
-  for ( const TableProperty::GeometryColumnType &ct : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const TableProperty::GeometryColumnType &ct : std::as_const( mGeometryColumnTypes ) )
   {
     res = std::max( res, QgsWkbTypes::coordDimensions( ct.wkbType ) );
   }
@@ -397,7 +399,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setFlags( const QgsAb
 QList<QgsCoordinateReferenceSystem> QgsAbstractDatabaseProviderConnection::TableProperty::crsList() const
 {
   QList<QgsCoordinateReferenceSystem> crss;
-  for ( const auto &t : qgis::as_const( mGeometryColumnTypes ) )
+  for ( const auto &t : std::as_const( mGeometryColumnTypes ) )
   {
     crss.push_back( t.crs );
   }
@@ -435,48 +437,54 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::setSchema( const QStr
 }
 
 
+///@cond PRIVATE
+
 QStringList QgsAbstractDatabaseProviderConnection::QueryResult::columns() const
 {
   return mColumns;
 }
 
-QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows() const
+QList<QList<QVariant> > QgsAbstractDatabaseProviderConnection::QueryResult::rows( QgsFeedback *feedback )
 {
-  // mRowCount might be -1 (unknown)
-  while ( mResultIterator && ( mRowCount < 0 || mRows.count() < mRowCount ) )
+
+  QList<QList<QVariant> > rows;
+
+  while ( mResultIterator &&
+          mResultIterator->hasNextRow() &&
+          ( ! feedback || ! feedback->isCanceled() ) )
   {
-    const QVariantList row { mResultIterator->nextRow() };
+    const QVariantList row( mResultIterator->nextRow() );
     if ( row.isEmpty() )
     {
       break;
     }
-    mRows.push_back( row );
+    else
+    {
+      rows.push_back( row );
+    }
   }
-  return mRows;
+  return rows;
 }
 
-QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow()
+QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() const
 {
-  if ( ! mResultIterator && ! mResultIterator->hasNextRow() )
+  if ( ! mResultIterator )
   {
     return QList<QVariant>();
   }
-
-  const QList<QVariant> row { mResultIterator->nextRow() };
-
-  if ( ! row.isEmpty() )
-  {
-    mRows.push_back( row );
-  }
-
-  return row;
+  return mResultIterator->nextRow();
 }
 
 
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
 {
-  return mRowCount;
+  if ( ! mResultIterator )
+  {
+    return 0;
+  }
+  return mResultIterator->fetchedRowCount();
 }
+
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
 {
@@ -487,20 +495,39 @@ bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
   return mResultIterator->hasNextRow();
 }
 
-///@cond PRIVATE
-
 void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QString &columnName )
 {
   mColumns.push_back( columnName );
 }
 
-void QgsAbstractDatabaseProviderConnection::QueryResult::setRowCount( const qlonglong &rowCount )
-{
-  mRowCount = rowCount;
-}
 
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
   : mResultIterator( iterator )
 {}
+
+
+QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::nextRow()
+{
+  QMutexLocker lock( &mMutex );
+  const QVariantList row = nextRowPrivate();
+  if ( ! row.isEmpty() )
+  {
+    mFetchedRowCount++;
+  }
+  return row;
+}
+
+bool QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::hasNextRow() const
+{
+  QMutexLocker lock( &mMutex );
+  return hasNextRowPrivate();
+}
+
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::fetchedRowCount()
+{
+  QMutexLocker lock( &mMutex );
+  return mFetchedRowCount;
+}
+
 
 ///@endcond private

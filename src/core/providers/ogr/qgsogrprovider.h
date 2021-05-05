@@ -105,6 +105,13 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QgsAbstractFeatureSource *featureSource() const override;
 
     QgsCoordinateReferenceSystem crs() const override;
+
+    /**
+     * Gets the number of sublayer in the OGR datasource.
+     * layer_styles is not counted.
+     * \since QGIS 3.16
+     */
+    uint subLayerCount() const override;
     QStringList subLayers() const override;
     QgsLayerMetadata layerMetadata() const override;
     QStringList subLayersWithoutFeatureCount() const;
@@ -152,6 +159,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString description() const override;
     QgsTransaction *transaction() const override;
     bool doesStrictFeatureTypeCheck() const override;
+    QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
 
     //! Returns OGR geometry type
     static OGRwkbGeometryType getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer );
@@ -172,6 +180,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
+
+    //! Loads metadata for the layer
+    void loadMetadata();
 
     //! Find out the number of features of the whole layer
     void recalculateFeatureCount() const;
@@ -302,10 +313,12 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     mutable QStringList mSubLayerList;
 
-    //! converts \a value from json QVariant to QString
+    //! Converts \a value from json QVariant to QString
     QString jsonStringValue( const QVariant &value ) const;
 
-    bool addFeaturePrivate( QgsFeature &f, QgsFeatureSink::Flags flags );
+    //! The \a incrementalFeatureId will generally be -1, except for a few OGR drivers where QGIS will pass on a value when OGR doesn't set it
+    bool addFeaturePrivate( QgsFeature &f, QgsFeatureSink::Flags flags, QgsFeatureId incrementalFeatureId = -1 );
+
     //! Deletes one feature
     bool deleteFeature( QgsFeatureId id );
 
@@ -387,13 +400,21 @@ class CORE_EXPORT QgsOgrProviderUtils
     class DatasetWithLayers
     {
       public:
-        QMutex         mutex;
-        GDALDatasetH   hDS = nullptr;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        QMutex mutex;
+#else
+        QRecursiveMutex mutex;
+#endif
+        GDALDatasetH    hDS = nullptr;
         QMap<QString, QgsOgrLayer *>  setLayers;
         int            refCount = 0;
         bool           canBeShared = true;
 
-        DatasetWithLayers(): mutex( QMutex::Recursive ) {}
+        DatasetWithLayers()
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+          : mutex( QMutex::Recursive )
+#endif
+        {}
     };
 
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
@@ -549,8 +570,11 @@ class QgsOgrDataset
 
     static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident,
                                           QgsOgrProviderUtils::DatasetWithLayers *ds );
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex &mutex() { return mDs->mutex; }
+#else
+    QRecursiveMutex &mutex() { return mDs->mutex; }
+#endif
 
     bool executeSQLNoReturn( const QString &sql );
 
@@ -575,7 +599,11 @@ class QgsOgrFeatureDefn
     ~QgsOgrFeatureDefn() = default;
 
     OGRFeatureDefnH get();
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex &mutex();
+#else
+    QRecursiveMutex &mutex();
+#endif
 
   public:
 
@@ -634,7 +662,11 @@ class QgsOgrLayer
       QgsOgrProviderUtils::DatasetWithLayers *ds,
       OGRLayerH hLayer );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex &mutex() { return ds->mutex; }
+#else
+    QRecursiveMutex &mutex() { return ds->mutex; }
+#endif
 
   public:
 
@@ -725,11 +757,20 @@ class QgsOgrLayer
     //! Wrapper of OGR_L_GetLayerCount
     void SetSpatialFilter( OGRGeometryH );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     //! Returns native GDALDatasetH object with the mutex to lock when using it
     GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex );
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
     OGRLayerH getHandleAndMutex( QMutex *&mutex );
+#else
+    //! Returns native GDALDatasetH object with the mutex to lock when using it
+    GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex );
+
+    //! Returns native OGRLayerH object with the mutex to lock when using it
+    OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex );
+#endif
+
 
     //! Wrapper of GDALDatasetReleaseResultSet( GDALDatasetExecuteSQL( ... ) )
     void ExecuteSQLNoReturn( const QByteArray &sql );
@@ -758,6 +799,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
@@ -778,6 +820,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
+    bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
 
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;

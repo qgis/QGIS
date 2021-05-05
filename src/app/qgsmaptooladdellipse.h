@@ -18,7 +18,7 @@
 
 #include "qgsmaptoolcapture.h"
 #include "qgsellipse.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgis_app.h"
 
 class QgsGeometryRubberBand;
@@ -47,8 +47,8 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
 
     /**
      * The parent map tool, e.g. the add feature tool.
-     *  Completed ellipse will be added to this tool by calling its toLineString() method.
-     **/
+     * Completed ellipse will be added to this tool by calling its toLineString() method.
+     */
     QgsMapToolCapture *mParentTool = nullptr;
     //! Ellipse points (in map coordinates)
     QgsPointSequence mPoints;
@@ -57,7 +57,7 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
     //! Ellipse
     QgsEllipse mEllipse;
     //! convenient method to return the number of segments
-    unsigned int segments( ) { return QgsSettings().value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() * 12; }
+    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12; }
     //! Layer type which will be used for rubberband
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 

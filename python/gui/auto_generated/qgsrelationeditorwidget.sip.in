@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
@@ -20,24 +21,38 @@
 
 
 
-class QgsRelationEditorWidget : QgsCollapsibleGroupBox
+class QgsRelationEditorWidget : QgsAbstractRelationEditorWidget
 {
+%Docstring(signature="appended")
+The default relation widget in QGIS.
+
+.. versionadded:: 3.18
+%End
 
 %TypeHeaderCode
 #include "qgsrelationeditorwidget.h"
 %End
-%ConvertToSubClassCode
-    if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
-      sipType = sipType_QgsRelationEditorWidget;
-    else
-      sipType = NULL;
-%End
   public:
 
+    enum Button
+    {
+      Link,
+      Unlink,
+      SaveChildEdits,
+      AddChildFeature,
+      DuplicateChildFeature,
+      DeleteChildFeature,
+      ZoomToChildFeature,
+      AllButtons
+    };
+    typedef QFlags<QgsRelationEditorWidget::Button> Buttons;
 
-    QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
+
+    QgsRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
+Constructor
 
+:param config: widget configuration
 :param parent: parent widget
 %End
 
@@ -51,28 +66,14 @@ Define the view mode for the dual view
 Gets the view mode for the dual view
 %End
 
-    void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
+    QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring
-Sets the ``relation`` and the ``feature``
+The feature selection manager is responsible for the selected features
+which are currently being edited.
 %End
 
-    void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
-%Docstring
-Set the relation(s) for this widget
-If only one relation is set, it will act as a simple 1:N relation widget
-If both relations are set, it will act as an N:M relation widget
-inserting and deleting entries on the intermediate table as required.
+    virtual void setEditorContext( const QgsAttributeEditorContext &context );
 
-:param relation: Relation referencing the edited table
-:param nmrelation: Optional reference from the referencing table to a 3rd N:M table
-%End
-
-    void setFeature( const QgsFeature &feature, bool update = true );
-%Docstring
-Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
-%End
-
-    void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
 Sets the editor ``context``
 
@@ -82,169 +83,120 @@ Sets the editor ``context``
    the geometry of a referencing feature from this widget
 %End
 
-    QgsAttributeEditorContext editorContext( ) const;
-%Docstring
-Returns the attribute editor context.
-
-.. versionadded:: 3.14
-%End
-
-    QgsIFeatureSelectionManager *featureSelectionManager();
-%Docstring
-The feature selection manager is responsible for the selected features
-which are currently being edited.
-%End
-
-    bool showLabel() const;
-%Docstring
-Defines if a title label should be shown for this widget.
-
-.. versionadded:: 2.18
-%End
-
-    void setShowLabel( bool showLabel );
-%Docstring
-Defines if a title label should be shown for this widget.
-
-.. versionadded:: 2.18
-%End
-
- bool showLinkButton() const /Deprecated/;
-%Docstring
-Determines if the "link feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
- void setShowLinkButton( bool showLinkButton ) /Deprecated/;
-%Docstring
-Determines if the "link feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- bool showUnlinkButton() const /Deprecated/;
-%Docstring
-Determines if the "unlink feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
- void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
-%Docstring
-Determines if the "unlink feature" button should be shown
-
-.. versionadded:: 2.18
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
-%Docstring
-Determines if the "Save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-
-.. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
-%End
-
- bool showSaveChildEditsButton() const /Deprecated/;
-%Docstring
-Determines if the "Save child layer edits" button should be shown
-
-.. versionadded:: 3.14
-
-.. deprecated:: QGIS 3.16
-   use visibleButtons() instead
-%End
-
-    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+    void setVisibleButtons( const Buttons &buttons );
 %Docstring
 Defines the buttons which are shown
-
-.. versionadded:: 3.16
 %End
 
-    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+    Buttons visibleButtons() const;
 %Docstring
 Returns the buttons which are shown
-
-.. versionadded:: 3.16
 %End
 
-    bool forceSuppressFormPopup() const;
+ void duplicateFeature() /Deprecated/;
 %Docstring
-Determines the force suppress form popup status that is configured for this widget
+Duplicates a feature
 
-.. versionadded:: 3.16
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsRelationEditorWidget.duplicateSelectedFeatures` instead
 %End
 
-    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+    void duplicateSelectedFeatures();
 %Docstring
-Sets force suppress form popup status with ``forceSuppressFormPopup``
-configured for this widget
+Duplicates the selected features
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
-    QVariant nmRelationId() const;
+    void unlinkSelectedFeatures();
 %Docstring
-Determines the relation id of the second relation involved in an N:M relation.
-
-.. versionadded:: 3.16
+Unlinks the selected features from the relation
 %End
 
-    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+    void deleteSelectedFeatures();
 %Docstring
-Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
-If it's empty, then it's considered as a 1:M relationship.
-
-.. versionadded:: 3.16
+Deletes the currently selected features
 %End
 
-    QString label() const;
+    void zoomToSelectedFeatures();
 %Docstring
-Determines the label of this element
-
-.. versionadded:: 3.16
+Zooms to the selected features
 %End
 
-    void setLabel( const QString &label = QString() );
-%Docstring
-Sets ``label`` for this element
-If it's empty it takes the relation id as label
+    virtual QVariantMap config() const;
 
-.. versionadded:: 3.16
+%Docstring
+Returns the current configuration
 %End
 
-    QgsFeature feature() const;
-%Docstring
-Returns the widget's current feature
+    virtual void setConfig( const QVariantMap &config );
 
-.. versionadded:: 3.14
+%Docstring
+Defines the current configuration
+%End
+
+    virtual void setTitle( const QString &title );
+
+%Docstring
+Sets the title of the root groupbox
 %End
 
   public slots:
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
-    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+
+  protected:
+    virtual void updateUi();
+    virtual void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature );
+
+    virtual void afterSetRelationFeature();
+
+    virtual void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation );
+
+    virtual void afterSetRelations();
+
+
+};
+
+
+class QgsRelationEditorConfigWidget : QgsAbstractRelationEditorConfigWidget
+{
+%Docstring(signature="appended")
+Creates a new configuration widget for the relation editor widget
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsrelationeditorwidget.h"
+%End
+  public:
+
+    explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
-Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+Create a new configuration widget
 
-.. versionadded:: 3.14
+:param relation: The relation for which the configuration dialog will be created
+:param parent: A parent widget
+%End
+
+    QVariantMap config();
+%Docstring
+Create a configuration from the current GUI state
+
+:return: A widget configuration
+%End
+
+    void setConfig( const QVariantMap &config );
+%Docstring
+Update the configuration widget to represent the given configuration.
+
+:param config: The configuration which should be represented by this widget
 %End
 
 };
+
+
 
 
 /************************************************************************

@@ -25,7 +25,7 @@
 
 /**
  * \ingroup core
- * An annotation item which renders a marker symbol at a point location.
+ * \brief An annotation item which renders a marker symbol at a point location.
  *
  * \since QGIS 3.16
  */

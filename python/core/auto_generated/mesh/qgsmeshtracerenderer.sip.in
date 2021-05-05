@@ -16,9 +16,9 @@
 
 class QgsMeshVectorTraceAnimationGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 
-A wrapper for QgsMeshParticuleTracesField used to render the particles. Available for Python binding
+A wrapper for :py:class:`QgsMeshParticuleTracesField` used to render the particles. Available for Python binding
 
 .. versionadded:: 3.12
 %End

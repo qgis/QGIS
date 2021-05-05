@@ -21,7 +21,7 @@
 #include <QPicture>
 #include <QTransform>
 
-QgsPaintEffect *QgsTransformEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsTransformEffect::create( const QVariantMap &map )
 {
   QgsTransformEffect *newEffect = new QgsTransformEffect();
   newEffect->readProperties( map );
@@ -43,9 +43,9 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   drawSource( *painter );
 }
 
-QgsStringMap QgsTransformEffect::properties() const
+QVariantMap QgsTransformEffect::properties() const
 {
-  QgsStringMap props;
+  QVariantMap props;
   props.insert( QStringLiteral( "reflect_x" ), mReflectX ? "1" : "0" );
   props.insert( QStringLiteral( "reflect_y" ), mReflectY ? "1" : "0" );
   props.insert( QStringLiteral( "scale_x" ), QString::number( mScaleX ) );
@@ -62,7 +62,7 @@ QgsStringMap QgsTransformEffect::properties() const
   return props;
 }
 
-void QgsTransformEffect::readProperties( const QgsStringMap &props )
+void QgsTransformEffect::readProperties( const QVariantMap &props )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -75,8 +75,8 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mShearY = props.value( QStringLiteral( "shear_y" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateX = props.value( QStringLiteral( "translate_x" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateY = props.value( QStringLiteral( "translate_y" ), QStringLiteral( "0.0" ) ).toDouble();
-  mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "translate_unit" ) ) );
-  mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "translate_unit_scale" ) ) );
+  mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "translate_unit" ) ).toString() );
+  mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "translate_unit_scale" ) ).toString() );
 }
 
 QgsTransformEffect *QgsTransformEffect::clone() const

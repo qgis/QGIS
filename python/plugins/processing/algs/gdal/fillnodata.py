@@ -115,9 +115,10 @@ class fillnodata(GdalAlgorithm):
         return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
-        arguments.append('-md')
-        arguments.append(str(self.parameterAsInt(parameters, self.DISTANCE, context)))
+        arguments = [
+            '-md',
+            str(self.parameterAsInt(parameters, self.DISTANCE, context)),
+        ]
 
         nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
         if nIterations:
@@ -155,11 +156,4 @@ class fillnodata(GdalAlgorithm):
         arguments.append(raster.source())
         arguments.append(out)
 
-        if isWindows():
-            commands = ["python3", "-m", self.commandName()]
-        else:
-            commands = [self.commandName() + '.py']
-
-        commands.append(GdalUtils.escapeAndJoin(arguments))
-
-        return commands
+        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]

@@ -1,5 +1,5 @@
 v.proj
-Re-projects a vector map from one location to the current location
+Re-projects a vector layer to another coordinate reference system
 Vector (v.*)
 QgsProcessingParameterFeatureSource|input|Input vector to reproject|-1|None|False
 QgsProcessingParameterCrs|crs|New coordinate reference system|None|False

@@ -7,43 +7,7 @@ set (util_SRCS)
 # the UI file won't be wrapped!
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/expression
-  ${CMAKE_SOURCE_DIR}/src/core/dxf
-  ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/labeling
-  ${CMAKE_SOURCE_DIR}/src/core/layout
-  ${CMAKE_SOURCE_DIR}/src/core/mesh
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
-  ${CMAKE_SOURCE_DIR}/src/core/numericformats
-  ${CMAKE_SOURCE_DIR}/src/core/processing
-  ${CMAKE_SOURCE_DIR}/src/core/processing/models
-  ${CMAKE_SOURCE_DIR}/src/core/providers/meshmemory
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/effects
-  ${CMAKE_SOURCE_DIR}/src/core/layertree
-  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
-  ${CMAKE_SOURCE_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-  ${CMAKE_SOURCE_DIR}/src/analysis/network
-  ${CMAKE_SOURCE_DIR}/src/analysis/processing
-  ${CMAKE_SOURCE_DIR}/src/analysis/vector
-  ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/test
-  ${CMAKE_SOURCE_DIR}/external
-  ${CMAKE_SOURCE_DIR}/external/nlohmann
-
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/analysis
-)
-include_directories(SYSTEM
-  ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${SQLITE3_INCLUDE_DIR}
 )
 
 if(HAVE_OPENCL)
@@ -69,6 +33,8 @@ macro (ADD_QGIS_TEST TESTSRC)
   set(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
   set(${TESTNAME}_MOC_CPPS ${TESTSRC})
   add_executable(${TESTNAME} ${${TESTNAME}_SRCS})
+  # require c++17
+  target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
   target_link_libraries(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}
@@ -82,6 +48,7 @@ endmacro (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 set(TESTS
+ testqgsgcptransformer.cpp
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
  testqgsprocessing.cpp
@@ -100,3 +67,6 @@ set(TESTS
 foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})
 endforeach(TESTSRC)
+
+SET_TESTS_PROPERTIES(qgis_processingtest
+  PROPERTIES LABELS "POSTGRES")

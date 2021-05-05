@@ -11,7 +11,7 @@
 
 class QgsGoogleMapsGeocoder : QgsGeocoderInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A geocoder which uses the Google Map geocoding API to retrieve results.
 
 This geocoder utilizes the Google Maps "geocoding" API in order to geocode

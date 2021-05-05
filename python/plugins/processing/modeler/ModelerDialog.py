@@ -40,12 +40,14 @@ from qgis.core import (Qgis,
                        QgsProcessing,
                        QgsProject,
                        QgsProcessingModelParameter,
-                       QgsSettings
+                       QgsSettings,
+                       QgsProcessingContext
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
                       QgsModelGraphicsScene,
-                      QgsModelDesignerDialog)
+                      QgsModelDesignerDialog,
+                      QgsProcessingContextGenerator)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -105,6 +107,19 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.view().centerOn(0, 0)
 
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
+
     def editHelp(self):
         alg = self.model()
         dlg = HelpEditionDialog(alg)
@@ -138,12 +153,13 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setLastRunChildAlgorithmInputs(dlg.results().get('CHILD_INPUTS', {}))
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
+        dlg.setLogLevel(QgsProcessingContext.Verbose)
         dlg.setParameters(self.model().designerParameterValues())
         dlg.algorithmFinished.connect(on_finished)
         dlg.exec_()
 
         if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.createProcessingParameters())
+            self.model().setDesignerParameterValues(dlg.createProcessingParameters(include_default=False))
 
     def saveInProject(self):
         if not self.validateSave():
@@ -221,8 +237,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
-        scene.createItems(self.model(), context)
         self.setModelScene(scene)
+        # create items later that setModelScene to setup link to messageBar to the scene
+        scene.createItems(self.model(), context)
 
     def create_widget_context(self):
         """
@@ -270,6 +287,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                                                          context=context,
                                                          widgetContext=widget_context,
                                                          algorithm=self.model())
+            dlg.registerProcessingContextGenerator(self.context_generator)
             if dlg.exec_():
                 new_param = dlg.createParameter()
                 self.autogenerate_parameter_name(new_param)

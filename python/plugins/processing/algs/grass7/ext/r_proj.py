@@ -22,18 +22,19 @@ __date__ = 'October 2017'
 __copyright__ = '(C) 2017, Médéric Ribreux'
 
 from qgis.core import QgsProcessingParameterString
-from ..Grass7Utils import isWindows
+from processing.tools.system import isWindows
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
     layer = alg.parameterAsLayer(parameters, 'input', context)
-    layerCrs = layer.crs().toProj()
 
     # Creates a new location with this Crs
+    wkt_file_name = Grass7Utils.exportCrsWktToFile(layer.crs())
     newLocation = 'newProj{}'.format(alg.uniqueSuffix)
-    alg.commands.append('g.proj proj4="{}" location={}'.format(
-        layerCrs, newLocation))
+    alg.commands.append('g.proj wkt="{}" location={}'.format(
+        wkt_file_name, newLocation))
 
     # Go to the newly created location
     alg.commands.append('g.mapset mapset=PERMANENT location={}'.format(
@@ -48,7 +49,8 @@ def processInputs(alg, parameters, context, feedback):
 
     # Grab the projected Crs
     crs = alg.parameterAsCrs(parameters, 'crs', context)
-    alg.commands.append('g.proj -c proj4="{}"'.format(crs.toProj()))
+    wkt_file_name = Grass7Utils.exportCrsWktToFile(crs)
+    alg.commands.append('g.proj -c wkt="{}"'.format(wkt_file_name))
 
     # Remove crs parameter
     alg.removeParameter('crs')

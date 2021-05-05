@@ -32,6 +32,7 @@
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
+
 #include <mutex>
 
 #include <QButtonGroup>
@@ -84,6 +85,8 @@ void QgsLabelingGui::initCalloutWidgets()
 {
   _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
   _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
+  _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
 }
 
 void QgsLabelingGui::updateCalloutWidget( QgsCallout *callout )
@@ -196,6 +199,7 @@ void QgsLabelingGui::showLineAnchorSettings()
     const QgsLabelLineSettings widgetSettings = widget->settings();
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
     mLineSettings.setAnchorType( widgetSettings.anchorType() );
+    mLineSettings.setAnchorClipping( widgetSettings.anchorClipping() );
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
@@ -242,6 +246,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mBufferDrawDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShapeDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mCalloutsDrawCheckBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -251,11 +256,11 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mScaleBasedVisibilityChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mFontLimitPixelChkBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
-  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
+  connect( mGeometryGeneratorType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::updateGeometryTypeBasedWidgets );
   connect( mGeometryGeneratorExpressionButton, &QToolButton::clicked, this, &QgsLabelingGui::showGeometryGeneratorExpressionBuilder );
   connect( mGeometryGeneratorGroupBox, &QGroupBox::toggled, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mGeometryGenerator, &QgsCodeEditorExpression::textChanged, this, &QgsLabelingGui::validateGeometryGeneratorExpression );
-  connect( mGeometryGeneratorType, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
+  connect( mGeometryGeneratorType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::validateGeometryGeneratorExpression );
   connect( mObstacleSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showObstacleSettings );
   connect( mLineAnchorSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingGui::showLineAnchorSettings );
 
@@ -304,7 +309,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
 
   mTextFormatsListWidget->setLayerType( mLayer ? mLayer->geometryType() : mGeomType );
-  mBackgroundSymbolButton->setLayer( mLayer );
+  mBackgroundMarkerSymbolButton->setLayer( mLayer );
+  mBackgroundFillSymbolButton->setLayer( mLayer );
 
   // load labeling settings from layer
   updateGeometryTypeBasedWidgets();
@@ -327,7 +333,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     mGeometryGeneratorGroupBox->setCollapsed( true );
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
 
-  updateWidgetForFormat( mSettings.format() );
+  updateWidgetForFormat( mSettings.format().isValid() ? mSettings.format() : QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
 
   mFieldExpressionWidget->setRow( -1 );
   mFieldExpressionWidget->setField( mSettings.fieldName );
@@ -549,6 +555,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
   lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
+  lyr.lineSettings().setAnchorClipping( mLineSettings.anchorClipping() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
@@ -625,18 +632,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f )
 {
-  if ( ddBtn->isActive() && !chkBx->isChecked() )
-  {
-    chkBx->setChecked( true );
-  }
-  f->setEnabled( chkBx->isChecked() );
+  f->setEnabled( chkBx->isChecked() || ddBtn->isActive() );
 }
 
 bool QgsLabelingGui::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == mLblNoObstacle1 )
   {
-    if ( event->type() == QEvent::MouseButtonPress && dynamic_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
+    if ( event->type() == QEvent::MouseButtonPress && qgis::down_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
     {
       // clicking the obstacle label toggles the checkbox, just like a "normal" checkbox label...
       mChkNoObstacle->setChecked( !mChkNoObstacle->isChecked() );

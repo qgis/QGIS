@@ -30,10 +30,11 @@ class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
 class QgsProject;
+class QgsVector3D;
 
 /**
  * \ingroup core
-* Class for doing transforms between two map coordinate systems.
+* \brief Class for doing transforms between two map coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the
@@ -211,6 +212,17 @@ class CORE_EXPORT QgsCoordinateTransform
      * \returns transformed point
      */
     QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
+
+    /**
+     * Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
+     * If the direction is ForwardTransform then coordinates are transformed from source to destination,
+     * otherwise points are transformed from destination to source CRS.
+     * \param point coordinates of point to transform
+     * \param direction transform direction (defaults to ForwardTransform)
+     * \returns transformed point
+     * \since QGIS 3.18
+     */
+    QgsVector3D transform( const QgsVector3D &point, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transforms a rectangle from the source CRS to the destination CRS.
@@ -657,16 +669,14 @@ class CORE_EXPORT QgsCoordinateTransform
 
 #endif
 
+  private:
+
 #ifndef SIP_RUN
-#if PROJ_VERSION_MAJOR>=6
-  protected:
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
     static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
 #endif
-#endif
-  private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 
@@ -682,16 +692,10 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mDisableFallbackHandler = false;
     mutable bool mFallbackOperationOccurred = false;
 
-#if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
                        const QString &coordinateOperationProj, bool allowFallback );
-#else
-    bool setFromCache( const QgsCoordinateReferenceSystem &src,
-                       const QgsCoordinateReferenceSystem &dest,
-                       int srcDatumTransform,
-                       int destDatumTransform );
-#endif
+
     void addToCache();
 
     // cache

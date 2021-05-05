@@ -424,9 +424,9 @@ void TestQgsMapSettings::testXmlReadWrite()
 
 void TestQgsMapSettings::testSetLayers()
 {
-  std::unique_ptr<  QgsVectorLayer  > vlA = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<  QgsVectorLayer  > vlB = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
-  std::unique_ptr<  QgsVectorLayer  > nonSpatial = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "none" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<  QgsVectorLayer  > vlA = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<  QgsVectorLayer  > vlB = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<  QgsVectorLayer  > nonSpatial = std::make_unique< QgsVectorLayer >( QStringLiteral( "none" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
 
   QgsMapSettings ms;
   ms.setLayers( QList< QgsMapLayer * >() << vlA.get() );
@@ -531,11 +531,7 @@ void TestQgsMapSettings::testExpressionContext()
   e = QgsExpression( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e.evaluate( &c );
 
-#if PROJ_VERSION_MAJOR>=6
   QCOMPARE( r.toString(), QStringLiteral( "EPSG:7030" ) );
-#else
-  QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
-#endif
 
   e = QgsExpression( QStringLiteral( "@map_start_time" ) );
   r = e.evaluate( &c );
@@ -563,10 +559,10 @@ void TestQgsMapSettings::testExpressionContext()
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
 {
-  std::unique_ptr< TestHandler > testHandler = qgis::make_unique< TestHandler >();
-  std::unique_ptr< TestHandler > testHandler2 = qgis::make_unique< TestHandler >();
+  std::unique_ptr< TestHandler > testHandler = std::make_unique< TestHandler >();
+  std::unique_ptr< TestHandler > testHandler2 = std::make_unique< TestHandler >();
 
-  std::unique_ptr< QgsMapSettings> mapSettings = qgis::make_unique< QgsMapSettings >();
+  std::unique_ptr< QgsMapSettings> mapSettings = std::make_unique< QgsMapSettings >();
   QVERIFY( mapSettings->renderedFeatureHandlers().isEmpty() );
   mapSettings->addRenderedFeatureHandler( testHandler.get() );
   mapSettings->addRenderedFeatureHandler( testHandler2.get() );

@@ -12,8 +12,8 @@
 
 class QgsGui : QObject
 {
-%Docstring
-QgsGui is a singleton class containing various registry and other global members
+%Docstring(signature="appended")
+:py:class:`QgsGui` is a singleton class containing various registry and other global members
 related to GUI classes.
 
 .. versionadded:: 3.0
@@ -84,7 +84,7 @@ Returns the global numeric format gui registry, used for registering the GUI wid
 
     static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /KeepReference/;
 %Docstring
-Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
+Returns the global code editor color scheme registry, used for registering the color schemes for :py:class:`QgsCodeEditor` widgets.
 
 .. versionadded:: 3.16
 %End
@@ -121,6 +121,20 @@ Returns the registry of GUI-related components of data providers
     static QgsSubsetStringEditorProviderRegistry *subsetStringEditorProviderRegistry() /KeepReference/;
 %Docstring
 Returns the registry of subset string editors of data providers
+
+.. versionadded:: 3.18
+%End
+
+    static QgsProviderSourceWidgetProviderRegistry *sourceWidgetProviderRegistry() /KeepReference/;
+%Docstring
+Returns the registry of provider source widget providers.
+
+.. versionadded:: 3.18
+%End
+
+    static QgsRelationWidgetRegistry *relationWidgetRegistry() /KeepReference/;
+%Docstring
+Returns the global relation widget registry, used for managing all known relation widget factories.
 
 .. versionadded:: 3.18
 %End

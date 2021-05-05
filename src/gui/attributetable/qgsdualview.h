@@ -25,6 +25,9 @@
 #include "qgsattributeform.h"
 #include "qgis_gui.h"
 
+#include <QPointer>
+#include <QUuid>
+
 class QgsFeatureRequest;
 class QgsMapLayerAction;
 class QgsScrollArea;
@@ -32,7 +35,7 @@ class QgsFieldConditionalFormatWidget;
 
 /**
  * \ingroup gui
- * This widget is used to show the attributes of a set of features of a QgsVectorLayer.
+ * \brief This widget is used to show the attributes of a set of features of a QgsVectorLayer.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
  * are shown in a table and the editor layout, where the features are shown as a selectable list
@@ -344,7 +347,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void resizeColumn();
 
+    void resizeAllColumns();
+
     void autosizeColumn();
+
+    void autosizeAllColumns();
 
     void previewExpressionChanged( const QString &expression );
 
@@ -393,6 +400,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   private:
 
     /**
+     * Initialize the attribute form to a given \a feature.
+     *
+     * \since QGIS 3.20
+     */
+    void initAttributeForm( const QgsFeature &feature );
+
+    /**
      * Initializes widgets which depend on the attributes of this layer
      */
     void columnBoxInit();
@@ -428,9 +442,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;
-    // If the current feature is set, while the form is still not initialized
-    // we will temporarily save it in here and set it on init
-    QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
     ViewMode mPreviousView = AttributeTable;

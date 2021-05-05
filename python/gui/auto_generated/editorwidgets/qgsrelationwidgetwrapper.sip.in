@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
 
@@ -18,7 +19,23 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 %End
   public:
 
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsRelationWidgetWrapper(
+      QgsVectorLayer *vl,
+      const QgsRelation &relation,
+      QWidget *editor /Constrained/ = 0,
+      QWidget *parent /TransferThis,Constrained/  = 0
+    );
+%Docstring
+Constructor for QgsRelationWidgetWrapper
+%End
+
+    QgsRelationWidgetWrapper(
+      const QString &relationEditorName,
+      QgsVectorLayer *vl,
+      const QgsRelation &relation,
+      QWidget *editor = 0,
+      QWidget *parent /TransferThis/ = 0
+    );
 %Docstring
 Constructor for QgsRelationWidgetWrapper
 %End
@@ -46,7 +63,7 @@ Determines if the "link feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
  void setShowLinkButton( bool showLinkButton ) /Deprecated/;
@@ -56,7 +73,7 @@ Determines if the "link feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  bool showUnlinkButton() const /Deprecated/;
@@ -66,7 +83,7 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
  void setShowUnlinkButton( bool showUnlinkButton ) /Deprecated/;
@@ -76,7 +93,7 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  void setShowSaveChildEditsButton( bool showChildEdits ) /Deprecated/;
@@ -86,7 +103,7 @@ Determines if the "Save child layer edits" button should be shown
 .. versionadded:: 3.14
 
 .. deprecated:: QGIS 3.16
-   use setVisibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.setVisibleButtons` instead
 %End
 
  bool showSaveChildEditsButton() const /Deprecated/;
@@ -96,21 +113,44 @@ Determines if the "Save child layer edits" button should be shown
 .. versionadded:: 3.14
 
 .. deprecated:: QGIS 3.16
-   use visibleButtons() instead
+   use :py:func:`~QgsRelationWidgetWrapper.visibleButtons` instead
 %End
 
-    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+ void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons ) /Deprecated/;
 %Docstring
 Defines the buttons which are shown
 
 .. versionadded:: 3.16
+
+.. deprecated:: QGIS 3.18
+   use :py:func:`~QgsRelationWidgetWrapper.setWidgetConfig` instead
 %End
 
-    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+ QgsAttributeEditorRelation::Buttons visibleButtons() const /Deprecated/;
 %Docstring
 Returns the buttons which are shown
 
 .. versionadded:: 3.16
+
+.. deprecated:: QGIS 3.18
+   use :py:func:`~QgsRelationWidgetWrapper.widgetConfig` instead
+%End
+
+
+    void setWidgetConfig( const QVariantMap &config );
+%Docstring
+Will set the config of this widget wrapper to the specified config.
+
+:param config: The config for this wrapper
+
+.. versionadded:: 3.18
+%End
+
+    QVariantMap widgetConfig() const;
+%Docstring
+Returns the whole widget config
+
+.. versionadded:: 3.18
 %End
 
     bool forceSuppressFormPopup() const;

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
+    <width>395</width>
     <height>220</height>
    </rect>
   </property>
@@ -152,6 +152,8 @@
   <tabstop>mValueMinimumLineEdit</tabstop>
   <tabstop>mValueMaximumLineEdit</tabstop>
   <tabstop>mDefaultMinMaxButton</tabstop>
+  <tabstop>mIgnoreOutOfRangecheckBox</tabstop>
+  <tabstop>mUseAbsoluteValueCheckBox</tabstop>
   <tabstop>mWidthMinimumSpinBox</tabstop>
   <tabstop>mWidthMaximumSpinBox</tabstop>
  </tabstops>

@@ -30,6 +30,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectordataprovider.h"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -111,6 +112,21 @@ struct QgsOracleLayerProperty
 #endif
 };
 
+/**
+ * Wraps acquireConnection() and releaseConnection() from a QgsOracleConnPool.
+ * This can be used to ensure a connection is correctly released when scope ends
+ */
+class QgsPoolOracleConn
+{
+    class QgsOracleConn *mConn;
+  public:
+    QgsPoolOracleConn( const QString &connInfo );
+    ~QgsPoolOracleConn();
+
+    class QgsOracleConn *get() const { return mConn; }
+};
+
+
 class QgsOracleConn : public QObject
 {
     Q_OBJECT
@@ -183,6 +199,35 @@ class QgsOracleConn : public QObject
      * \returns Oracle database major version, -1 if an error occurred
      */
     int version();
+
+    /**
+     * Returns a list of supported native types for this connection.
+     * \since QGIS 3.18
+     */
+    QList<QgsVectorDataProvider::NativeType> nativeTypes();
+
+    /**
+     * Returns spatial index name for column \a geometryColumn in table \a tableName from
+     * schema/user \a ownerName.
+     * Returns an empty string if there is no spatial index
+     * \a isValid is updated with TRUE if the returned index is valid
+     * \since QGIS 3.18
+     */
+    QString getSpatialIndexName( const QString &ownerName, const QString &tableName, const QString &geometryColumn, bool &isValid );
+
+    /**
+     * Create a spatial index for for column \a geometryColumn in table \a tableName from
+     * schema/user \a ownerName.
+     * Returns created index name. An empty string is returned if the creation has failed.
+     * \note We assume that the sdo_geom_metadata table is already correctly populated before creating
+     * the index. If not, the index creation would failed.
+     */
+    QString createSpatialIndex( const QString &ownerName, const QString &tableName, const QString &geometryColumn );
+
+    /**
+     * Returns list of defined primary keys for \a tableName table in \a ownerName schema/user
+     */
+    QStringList getPrimaryKeys( const QString &ownerName, const QString &tableName );
 
     static const int sGeomTypeSelectLimit;
 

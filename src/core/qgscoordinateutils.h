@@ -28,6 +28,7 @@
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
 class QgsProject;
+class QgsRectangle;
 
 //not stable api - I plan on reworking this when QgsCoordinateFormatter lands in 2.16
 ///@cond NOT_STABLE_API
@@ -77,12 +78,19 @@ class CORE_EXPORT QgsCoordinateUtils
     Q_INVOKABLE static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
     /**
+     * Formats an \a extent for use with the specified \a project, respecting the project's
+     * coordinate display settings.
+     * \since QGIS 3.18
+     */
+    Q_INVOKABLE static QString formatExtentForProject( QgsProject *project, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &destCrs, int precision );
+
+    /**
      * Converts a degree minute second coordinate string to its decimal equivalent.
      * \param string degree minute second string to convert
      * \returns Double decimal value
      * \since QGIS 3.16
      */
-    Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok );
+    Q_INVOKABLE static double dmsToDecimal( const QString &string, bool *ok = nullptr, bool *isEasting = nullptr );
 
 };
 

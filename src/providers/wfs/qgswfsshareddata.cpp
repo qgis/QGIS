@@ -257,14 +257,22 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   {
     query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
   }
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+  else
+  {
+    query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
+  }
 
   QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
   if ( !namespaceValue.isEmpty() )
   {
     if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    {
       query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    }
+    else
+    {
+      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    }
   }
 
   if ( !filter.isEmpty() )
@@ -327,14 +335,16 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   query.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     query.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
+  else
+    query.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
 
   QString namespaceValue( mShared->mCaps.getNamespaceParameterValue( mShared->mWFSVersion, mUri.typeName() ) );
   if ( !namespaceValue.isEmpty() )
   {
     if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
       query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+    else
+      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )

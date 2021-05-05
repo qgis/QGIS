@@ -76,13 +76,17 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     menu->addSeparator();
 
+    QMenu *maintainMenu = new QMenu( tr( "Schema Operations" ), menu );
+
     QAction *actionRename = new QAction( tr( "Rename Schema…" ), this );
     connect( actionRename, &QAction::triggered, this, [schemaItem, context] { renameSchema( schemaItem, context ); } );
-    menu->addAction( actionRename );
+    maintainMenu->addAction( actionRename );
 
     QAction *actionDelete = new QAction( tr( "Delete Schema…" ), this );
     connect( actionDelete, &QAction::triggered, this, [schemaItem, context] { deleteSchema( schemaItem, context ); } );
-    menu->addAction( actionDelete );
+    maintainMenu->addAction( actionDelete );
+
+    menu->addMenu( maintainMenu );
   }
 
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
@@ -90,23 +94,26 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     const QgsPostgresLayerProperty &layerInfo = layerItem->layerInfo();
     QString typeName = layerInfo.isView ? tr( "View" ) : tr( "Table" );
 
+    QMenu *maintainMenu = new QMenu( tr( "%1 Operations" ).arg( typeName ), menu );
+
     QAction *actionRenameLayer = new QAction( tr( "Rename %1…" ).arg( typeName ), this );
     connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
-    menu->addAction( actionRenameLayer );
+    maintainMenu->addAction( actionRenameLayer );
 
     if ( !layerInfo.isView )
     {
       QAction *actionTruncateLayer = new QAction( tr( "Truncate %1…" ).arg( typeName ), this );
       connect( actionTruncateLayer, &QAction::triggered, this, [layerItem, context] { truncateTable( layerItem, context ); } );
-      menu->addAction( actionTruncateLayer );
+      maintainMenu->addAction( actionTruncateLayer );
     }
 
     if ( layerInfo.isMaterializedView )
     {
       QAction *actionRefreshMaterializedView = new QAction( tr( "Refresh Materialized View…" ), this );
       connect( actionRefreshMaterializedView, &QAction::triggered, this, [layerItem, context] { refreshMaterializedView( layerItem, context ); } );
-      menu->addAction( actionRefreshMaterializedView );
+      maintainMenu->addAction( actionRefreshMaterializedView );
     }
+    menu->addMenu( maintainMenu );
   }
 }
 

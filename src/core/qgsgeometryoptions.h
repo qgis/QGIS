@@ -21,13 +21,14 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
+#include "qgssettingsentry.h"
 
 #include <QObject>
 
 /**
  * \ingroup core
  *
- * The QgsGeometryOptions class contains options to automatically adjust geometries to
+ * \brief The QgsGeometryOptions class contains options to automatically adjust geometries to
  * constraints on a layer.
  *
  * \since QGIS 3.4
@@ -130,6 +131,11 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      * \since QGIS 3.4
      */
     void readXml( const QDomNode &node );
+
+#ifndef SIP_RUN
+    //! Settings entry search path for templates
+    static const inline QgsSettingsEntryString settingsGeometryValidationDefaultChecks = QgsSettingsEntryString( QStringLiteral( "geometry_validation/default_checks" ), QgsSettings::NoSection, QString() );
+#endif
 
   signals:
 

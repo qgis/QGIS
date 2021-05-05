@@ -70,16 +70,22 @@ QVariant QgsListWidgetWrapper::value() const
 {
   QVariant::Type type = field().type();
   if ( !mWidget ) return QVariant( type );
+  const QVariantList list = mWidget->list();
+  if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )
+  {
+    return QVariant( );
+  }
   if ( type == QVariant::StringList )
   {
     QStringList result;
-    const QVariantList list = mWidget->list();
     for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
       result.append( it->toString() );
     return result;
   }
   else
-    return QVariant( mWidget->list() );
+  {
+    return list;
+  }
 }
 
 void QgsListWidgetWrapper::onValueChanged()

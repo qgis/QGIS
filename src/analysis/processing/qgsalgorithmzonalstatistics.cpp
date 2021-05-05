@@ -42,7 +42,7 @@ QString QgsZonalStatisticsAlgorithm::name() const
 
 QString QgsZonalStatisticsAlgorithm::displayName() const
 {
-  return QObject::tr( "Zonal statistics" );
+  return QObject::tr( "Zonal statistics (in place)" );
 }
 
 QStringList QgsZonalStatisticsAlgorithm::tags() const

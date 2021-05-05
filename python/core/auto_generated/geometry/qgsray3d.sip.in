@@ -1,0 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsray3d.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRay3D
+{
+%Docstring(signature="appended")
+A representation of a ray in 3D.
+
+A ray is composed of an origin point (the start of the ray) and a direction vector.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsray3d.h"
+%End
+  public:
+
+    QgsRay3D( const QVector3D &origin, const QVector3D &direction );
+%Docstring
+Constructor
+
+.. note::
+
+   : the direction is automatically normalized
+%End
+
+    QVector3D origin() const;
+%Docstring
+Returns the origin of the ray
+
+.. seealso:: :py:func:`setOrigin`
+%End
+
+    QVector3D direction() const;
+%Docstring
+Returns the direction of the ray
+see :py:func:`~QgsRay3D.setDirection`
+%End
+
+    void setOrigin( const QVector3D &origin );
+%Docstring
+Sets the origin of the ray
+
+.. seealso:: :py:func:`origin`
+%End
+
+    void setDirection( const QVector3D direction );
+%Docstring
+Sets the direction of the ray
+
+.. note::
+
+   : the direction is automatically normalized
+
+.. seealso:: :py:func:`direction`
+%End
+
+    QVector3D projectedPoint( const QVector3D &point ) const;
+%Docstring
+Returns the projection of the point on the ray
+(which is the closest point of the ray to ``point``)
+%End
+    bool isInFront( const QVector3D &point ) const;
+%Docstring
+Checks whether the point is in front of the ray
+%End
+    double angleToPoint( const QVector3D &point ) const;
+%Docstring
+Returns the angle between the ray and the vector from the ray's origin and the point ``point``
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsray3d.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

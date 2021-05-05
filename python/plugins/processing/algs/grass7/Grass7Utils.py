@@ -31,7 +31,8 @@ import sys
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsCoordinateReferenceSystem)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
@@ -81,6 +82,18 @@ class Grass7Utils:
         else:
             batchFile = os.path.join(gisdbase, 'grass_batch_job.sh')
         return batchFile
+
+    @staticmethod
+    def exportCrsWktToFile(crs):
+        """
+        Exports a crs as a WKT definition to a text file, and returns the path
+        to this file
+        """
+        wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT_PREFERRED)
+        wkt_file = QgsProcessingUtils.generateTempFilename('crs.prj')
+        with open(wkt_file, 'wt') as f:
+            f.write(wkt)
+        return wkt_file
 
     @staticmethod
     def installedVersion(run=False):
@@ -356,8 +369,7 @@ class Grass7Utils:
 
     @staticmethod
     def executeGrass(commands, feedback, outputCommands=None):
-        loglines = []
-        loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
+        loglines = [Grass7Utils.tr('GRASS GIS 7 execution console output')]
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrassExecution(commands)
         # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
@@ -423,14 +435,14 @@ class Grass7Utils:
                 if sys.version_info >= (3, 6):
                     kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
             with subprocess.Popen(
-                    command,
-                    shell=False,
-                    stdout=subprocess.PIPE,
-                    stdin=subprocess.DEVNULL,
-                    stderr=subprocess.STDOUT,
-                    universal_newlines=True,
-                    env=grassenv,
-                    **kw
+                command,
+                shell=False,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT,
+                universal_newlines=True,
+                env=grassenv,
+                **kw
             ) as proc:
                 for line in iter(proc.stdout.readline, ''):
                     if 'GRASS_INFO_PERCENT' in line:
@@ -439,7 +451,7 @@ class Grass7Utils:
                                 line[len('GRASS_INFO_PERCENT') + 2:]))
                         except:
                             pass
-                    if any([l in line for l in ['WARNING', 'ERROR']]):
+                    if any(l in line for l in ['WARNING', 'ERROR']):
                         loglines.append(line.strip())
                         feedback.reportError(line.strip())
                     elif line.strip():

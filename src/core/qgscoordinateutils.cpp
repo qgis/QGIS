@@ -22,6 +22,9 @@
 #include "qgis.h"
 #include "qgsexception.h"
 #include "qgscoordinateformatter.h"
+#include "qgsrectangle.h"
+#include <QRegularExpression>
+
 ///@cond NOT_STABLE_API
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
@@ -131,9 +134,18 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   }
 }
 
-double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok )
+QString QgsCoordinateUtils::formatExtentForProject( QgsProject *project, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &destCrs, int precision )
+{
+  const QgsPointXY p1( extent.xMinimum(), extent.yMinimum() );
+  const QgsPointXY p2( extent.xMaximum(), extent.yMaximum() );
+  return QStringLiteral( "%1 : %2" ).arg( QgsCoordinateUtils::formatCoordinateForProject( project, p1, destCrs, precision ),
+                                          QgsCoordinateUtils::formatCoordinateForProject( project, p2, destCrs, precision ) );
+}
+
+double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *isEasting )
 {
   const QString negative( QStringLiteral( "swSW-" ) );
+  const QString easting( QStringLiteral( "eEwW" ) );
   double value = 0.0;
   bool okValue = false;
 
@@ -146,7 +158,7 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok )
     ok = &okValue;
   }
 
-  QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch match = dms.match( string.trimmed() );
   if ( match.hasMatch() )
   {
@@ -174,10 +186,18 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok )
     if ( sign1.isEmpty() )
     {
       value = !sign2.isEmpty() && negative.contains( sign2 ) ? -v : v;
+      if ( isEasting )
+      {
+        *isEasting = easting.contains( sign2 );
+      }
     }
     else if ( sign2.isEmpty() )
     {
       value = !sign1.isEmpty() && negative.contains( sign1 ) ? -v : v;
+      if ( isEasting )
+      {
+        *isEasting = easting.contains( sign2 );
+      }
     }
     else
     {

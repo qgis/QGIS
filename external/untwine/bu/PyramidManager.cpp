@@ -28,8 +28,6 @@ namespace untwine
 namespace bu
 {
 
-//PyramidManager::PyramidManager(const BaseInfo& b) : m_b(b), m_pool(6), m_totalPoints(0)
-//PyramidManager::PyramidManager(const BaseInfo& b) : m_b(b), m_pool(8), m_totalPoints(0)
 PyramidManager::PyramidManager(const BaseInfo& b) : m_b(b), m_pool(10), m_totalPoints(0)
 {}
 
@@ -136,10 +134,23 @@ OctantInfo PyramidManager::removeComplete(const VoxelKey& k)
 }
 
 
-void PyramidManager::logOctant(const VoxelKey& k, int cnt)
+void PyramidManager::logOctant(const VoxelKey& k, int cnt, const IndexedStats& istats)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
+    for (auto is : istats)
+    {
+        Stats& s = is.second;
+
+        auto it = m_stats.find(s.name());
+        if (it != m_stats.end())
+        {
+            Stats& cur = it->second;
+            cur.merge(s);
+        }
+        else
+            m_stats.insert({s.name(), s});
+    }
     m_written.insert({k, cnt});
     m_totalPoints += cnt;
 }
@@ -227,6 +238,15 @@ std::deque<VoxelKey> PyramidManager::emit(const VoxelKey& p, int stopLevel, Entr
         }
     }
     return roots;
+}
+
+
+Stats *PyramidManager::stats(const std::string& name)
+{
+    auto si = m_stats.find(name);
+    if (si == m_stats.end())
+        return nullptr;
+    return &si->second;
 }
 
 } // namespace bu

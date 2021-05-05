@@ -33,7 +33,7 @@
 
 /**
  * \ingroup core
- * Feedback object tailored for raster block reading.
+ * \brief Feedback object tailored for raster block reading.
  *
  * \since QGIS 3.0
  */
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
 /**
  * \ingroup core
- * Base class for processing filters like renderers, reprojector, resampler etc.
+ * \brief Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
 {

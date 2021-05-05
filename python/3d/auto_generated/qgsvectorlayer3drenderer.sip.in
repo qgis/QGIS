@@ -15,8 +15,8 @@
 
 class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
-%Docstring
-Metadata for vector layer 3D renderer to allow creation of its instances from XML
+%Docstring(signature="appended")
+Metadata for vector layer 3D renderer to allow creation of its instances from XML.
 
 .. warning::
 
@@ -42,7 +42,7 @@ Creates an instance of a 3D renderer based on a DOM element with renderer config
 
 class QgsVectorLayer3DRenderer : QgsAbstractVectorLayer3DRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 3D renderer that renders all features of a vector layer with the same 3D symbol.
 The appearance is completely defined by the symbol.
 

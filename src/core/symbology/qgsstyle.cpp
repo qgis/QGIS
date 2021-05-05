@@ -39,6 +39,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
+#include <QFileInfo>
 
 #include <sqlite3.h>
 #include "qgssqliteutils.h"
@@ -72,17 +73,17 @@ QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
 QgsStyle::QgsStyle()
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = qgis::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
       1.6, 0, QgsSymbol::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
   simpleMarker->setStrokeWidth( 0.4 );
-  mPatchMarkerSymbol = qgis::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );
+  mPatchMarkerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );
 
-  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 84, 176, 74 ), 0.6 );
-  mPatchLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 84, 176, 74 ), 0.6 );
+  mPatchLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
 
-  std::unique_ptr< QgsGradientFillSymbolLayer > gradientFill = qgis::make_unique< QgsGradientFillSymbolLayer >( QColor( 66, 150, 63 ), QColor( 84, 176, 74 ) );
-  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleOutline = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 56, 128, 54 ), 0.26 );
-  mPatchFillSymbol = qgis::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << gradientFill.release() << simpleOutline.release() );
+  std::unique_ptr< QgsGradientFillSymbolLayer > gradientFill = std::make_unique< QgsGradientFillSymbolLayer >( QColor( 66, 150, 63 ), QColor( 84, 176, 74 ) );
+  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleOutline = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 56, 128, 54 ), 0.26 );
+  mPatchFillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << gradientFill.release() << simpleOutline.release() );
 }
 
 QgsStyle::~QgsStyle()
@@ -211,7 +212,9 @@ bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   symEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -410,7 +413,9 @@ bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favo
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   rampEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -960,7 +965,9 @@ bool QgsStyle::saveTextFormat( const QString &name, const QgsTextFormat &format,
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   formatElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO textformat VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -1034,7 +1041,9 @@ bool QgsStyle::saveLabelSettings( const QString &name, const QgsPalLayerSettings
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   settingsElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO labelsettings VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -1103,7 +1112,9 @@ bool QgsStyle::saveLegendPatchShape( const QString &name, const QgsLegendPatchSh
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   shapeElem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO legendpatchshapes VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -1168,7 +1179,7 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
   switch ( type )
   {
     case QgsSymbol::Marker:
-      geom = QgsGeometry( qgis::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
+      geom = QgsGeometry( std::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
       break;
 
     case QgsSymbol::Line:
@@ -1176,14 +1187,14 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
       // we're adding 0.5 to get rid of blurred preview:
       // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
       double y = static_cast< int >( size.height() ) / 2 + 0.5;
-      geom = QgsGeometry( qgis::make_unique< QgsLineString >( ( QVector< double >() << 0 << size.width() ),
+      geom = QgsGeometry( std::make_unique< QgsLineString >( ( QVector< double >() << 0 << size.width() ),
                           ( QVector< double >() << y << y ) ) );
       break;
     }
 
     case QgsSymbol::Fill:
     {
-      geom = QgsGeometry( qgis::make_unique< QgsPolygon >(
+      geom = QgsGeometry( std::make_unique< QgsPolygon >(
                             new QgsLineString( QVector< double >() << 0 << static_cast< int >( size.width() ) << static_cast< int >( size.width() ) << 0 << 0,
                                 QVector< double >() << static_cast< int >( size.height() ) << static_cast< int >( size.height() ) << 0 << 0 << static_cast< int >( size.height() ) ) ) );
       break;
@@ -1211,6 +1222,11 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( QgsSymbol::SymbolTyp
   return res;
 }
 
+QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
+{
+  return textFormat( QStringLiteral( "Default" ) );
+}
+
 bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool favorite, const QStringList &tags )
 {
   // insert it into the database
@@ -1221,7 +1237,9 @@ bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, b
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   elem.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO symbol3d VALUES (NULL, '%q', '%q', %d);",
                                        name.toUtf8().constData(), xmlArray.constData(), ( favorite ? 1 : 0 ) );
@@ -2279,7 +2297,9 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QStri
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
   smartEl.save( stream, 4 );
   QString query = qgs_sqlite3_mprintf( "INSERT INTO smartgroup VALUES (NULL, '%q', '%q')",
                                        name.toUtf8().constData(), xmlArray.constData() );
@@ -2424,7 +2444,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
         {
           QStringList dummy = symbols;
           symbols.clear();
-          for ( const QString &result : qgis::as_const( resultNames ) )
+          for ( const QString &result : std::as_const( resultNames ) )
           {
             if ( dummy.contains( result ) )
               symbols << result;
@@ -2664,7 +2684,9 @@ bool QgsStyle::exportXml( const QString &filename )
   }
 
   QTextStream ts( &f );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   ts.setCodec( "UTF-8" );
+#endif
   doc.save( ts, 2 );
   f.close();
 
@@ -2820,92 +2842,97 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
   }
 
   // load text formats
-  if ( version == STYLE_CURRENT_VERSION )
+
+  // this is ONLY safe to do if we have a QGuiApplication-- it requires QFontDatabase, which is not available otherwise!
+  if ( qobject_cast< QGuiApplication * >( QCoreApplication::instance() ) )
   {
-    const QDomElement textFormatElement = docEl.firstChildElement( QStringLiteral( "textformats" ) );
-    e = textFormatElement.firstChildElement();
-    while ( !e.isNull() )
+    if ( version == STYLE_CURRENT_VERSION )
     {
-      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
-      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      const QDomElement textFormatElement = docEl.firstChildElement( QStringLiteral( "textformats" ) );
+      e = textFormatElement.firstChildElement();
+      while ( !e.isNull() )
       {
-        // skip the format, should already be present
-        continue;
-      }
-
-      if ( e.tagName() == QLatin1String( "textformat" ) )
-      {
-        QString name = e.attribute( QStringLiteral( "name" ) );
-        QStringList tags;
-        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+        if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
-          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
-        }
-        bool favorite = false;
-        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
-        {
-          favorite = true;
+          // skip the format, should already be present
+          continue;
         }
 
-        QgsTextFormat format;
-        const QDomElement styleElem = e.firstChildElement();
-        format.readXml( styleElem, QgsReadWriteContext() );
-        addTextFormat( name, format );
-        if ( mCurrentDB )
+        if ( e.tagName() == QLatin1String( "textformat" ) )
         {
-          saveTextFormat( name, format, favorite, tags );
+          QString name = e.attribute( QStringLiteral( "name" ) );
+          QStringList tags;
+          if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+          {
+            tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+          }
+          bool favorite = false;
+          if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
+          {
+            favorite = true;
+          }
+
+          QgsTextFormat format;
+          const QDomElement styleElem = e.firstChildElement();
+          format.readXml( styleElem, QgsReadWriteContext() );
+          addTextFormat( name, format );
+          if ( mCurrentDB )
+          {
+            saveTextFormat( name, format, favorite, tags );
+          }
         }
+        else
+        {
+          QgsDebugMsg( "unknown tag: " + e.tagName() );
+        }
+        e = e.nextSiblingElement();
       }
-      else
-      {
-        QgsDebugMsg( "unknown tag: " + e.tagName() );
-      }
-      e = e.nextSiblingElement();
     }
-  }
 
-  // load label settings
-  if ( version == STYLE_CURRENT_VERSION )
-  {
-    const QDomElement labelSettingsElement = docEl.firstChildElement( QStringLiteral( "labelsettings" ) );
-    e = labelSettingsElement.firstChildElement();
-    while ( !e.isNull() )
+    // load label settings
+    if ( version == STYLE_CURRENT_VERSION )
     {
-      const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
-      if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
+      const QDomElement labelSettingsElement = docEl.firstChildElement( QStringLiteral( "labelsettings" ) );
+      e = labelSettingsElement.firstChildElement();
+      while ( !e.isNull() )
       {
-        // skip the settings, should already be present
-        continue;
-      }
-
-      if ( e.tagName() == QLatin1String( "labelsetting" ) )
-      {
-        QString name = e.attribute( QStringLiteral( "name" ) );
-        QStringList tags;
-        if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+        const int entityAddedVersion = e.attribute( QStringLiteral( "addedVersion" ) ).toInt();
+        if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
-          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
-        }
-        bool favorite = false;
-        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
-        {
-          favorite = true;
+          // skip the settings, should already be present
+          continue;
         }
 
-        QgsPalLayerSettings settings;
-        const QDomElement styleElem = e.firstChildElement();
-        settings.readXml( styleElem, QgsReadWriteContext() );
-        addLabelSettings( name, settings );
-        if ( mCurrentDB )
+        if ( e.tagName() == QLatin1String( "labelsetting" ) )
         {
-          saveLabelSettings( name, settings, favorite, tags );
+          QString name = e.attribute( QStringLiteral( "name" ) );
+          QStringList tags;
+          if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
+          {
+            tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
+          }
+          bool favorite = false;
+          if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QLatin1String( "1" ) )
+          {
+            favorite = true;
+          }
+
+          QgsPalLayerSettings settings;
+          const QDomElement styleElem = e.firstChildElement();
+          settings.readXml( styleElem, QgsReadWriteContext() );
+          addLabelSettings( name, settings );
+          if ( mCurrentDB )
+          {
+            saveLabelSettings( name, settings, favorite, tags );
+          }
         }
+        else
+        {
+          QgsDebugMsg( "unknown tag: " + e.tagName() );
+        }
+        e = e.nextSiblingElement();
       }
-      else
-      {
-        QgsDebugMsg( "unknown tag: " + e.tagName() );
-      }
-      e = e.nextSiblingElement();
     }
   }
 
@@ -3037,7 +3064,9 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
   QDomElement symEl;
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   stream.setCodec( "UTF-8" );
+#endif
 
   QString query;
 

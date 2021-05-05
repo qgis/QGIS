@@ -423,8 +423,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 getattr(self, fullName)(parameters, context, feedback)
 
         # Run GRASS
-        loglines = []
-        loglines.append(self.tr('GRASS GIS 7 execution commands'))
+        loglines = [self.tr('GRASS GIS 7 execution commands')]
         for line in self.commands:
             feedback.pushCommandInfo(line)
             loglines.append(line)
@@ -636,6 +635,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     value = '{},{}'.format(v[0], v[1])
             elif isinstance(param, QgsProcessingParameterCrs):
                 if self.parameterAsCrs(parameters, paramName, context):
+                    # TODO: ideally we should be exporting to WKT here, but it seems not all grass algorithms
+                    # will accept a wkt string for a crs value (e.g. r.tileset)
                     value = '"{}"'.format(self.parameterAsCrs(parameters, paramName, context).toProj())
             # For everything else, we assume that it is a string
             else:
@@ -788,9 +789,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param createOpt: creation options for format.
         :param metaOpt: metadata options for export.
         """
-        if not createOpt:
-            if outFormat in Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS:
-                createOpt = Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS[outFormat]
+        createOpt = createOpt or Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS.get(outFormat)
 
         for cmd in [self.commands, self.outputCommands]:
             # Adjust region to layer before exporting
@@ -1028,26 +1027,28 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def setSessionProjectionFromProject(self):
         """
         Set the projection from the project.
-        We creates a PROJ4 definition which is transmitted to Grass
+        We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet and iface:
-            self.destination_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj()
-            command = 'g.proj -c proj4="{}"'.format(proj4)
-            self.commands.append(command)
-            Grass7Utils.projectionSet = True
+            self.setSessionProjection(iface.mapCanvas().mapSettings().destinationCrs())
 
     def setSessionProjectionFromLayer(self, layer):
         """
         Set the projection from a QgsVectorLayer.
-        We creates a PROJ4 definition which is transmitted to Grass
+        We create a WKT definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet:
-            proj4 = str(layer.crs().toProj())
-            self.destination_crs = layer.crs()
-            command = 'g.proj -c proj4="{}"'.format(proj4)
-            self.commands.append(command)
-            Grass7Utils.projectionSet = True
+            self.setSessionProjection(layer.crs())
+
+    def setSessionProjection(self, crs):
+        """
+        Set the session projection to the specified CRS
+        """
+        self.destination_crs = crs
+        file_name = Grass7Utils.exportCrsWktToFile(crs)
+        command = 'g.proj -c wkt="{}"'.format(file_name)
+        self.commands.append(command)
+        Grass7Utils.projectionSet = True
 
     def convertToHtml(self, fileName):
         # Read HTML contents

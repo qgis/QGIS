@@ -27,6 +27,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsunittypes.h"
+#include "qgis.h"
 
 class QString;
 
@@ -293,7 +294,22 @@ class CORE_EXPORT QgsInterval
      */
     QgsUnitTypes::TemporalUnit originalUnit() const { return mOriginalUnit; }
 
-    bool operator==( QgsInterval other ) const;
+    bool operator==( QgsInterval other ) const
+    {
+      if ( !mValid && !other.mValid )
+        return true;
+      else if ( mValid && other.mValid && ( mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit || other.mOriginalUnit != QgsUnitTypes::TemporalUnknownUnit ) )
+        return mOriginalUnit == other.mOriginalUnit && mOriginalDuration == other.mOriginalDuration;
+      else if ( mValid && other.mValid )
+        return qgsDoubleNear( mSeconds, other.mSeconds );
+      else
+        return false;
+    }
+
+    bool operator!=( QgsInterval other ) const
+    {
+      return !( *this == other );
+    }
 
     /**
      * Converts a string to an interval

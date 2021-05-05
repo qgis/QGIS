@@ -217,7 +217,7 @@ std::unique_ptr<QgsProcessingParameterDefinition> QgsRasterAnalysisUtils::create
     i++;
   }
 
-  return qgis::make_unique< QgsProcessingParameterEnum >( name, description, names, false, defaultChoice );
+  return std::make_unique< QgsProcessingParameterEnum >( name, description, names, false, defaultChoice );
 }
 
 Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
@@ -319,14 +319,14 @@ std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const s
   return cellValues;
 }
 
-double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> cellValues, int stackSize )
+double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> &cellValues, int stackSize )
 {
   double sum = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
   double mean = sum / static_cast<double>( stackSize );
   return mean;
 }
 
-double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> cellValues, int stackSize )
+double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> &cellValues, int stackSize )
 {
   std::sort( cellValues.begin(), cellValues.end() );
   bool even = ( stackSize % 2 ) < 1;
@@ -341,14 +341,14 @@ double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> cellVal
 }
 
 
-double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> cellValues, int stackSize )
+double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> &cellValues, int stackSize )
 {
   double variance = varianceFromCellValues( cellValues, stackSize );
   double stddev = std::sqrt( variance );
   return stddev;
 }
 
-double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> cellValues, int stackSize )
+double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> &cellValues, int stackSize )
 {
   double mean = meanFromCellValues( cellValues, stackSize );
   double accum = 0.0;
@@ -360,17 +360,17 @@ double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> cellV
   return variance;
 }
 
-double QgsRasterAnalysisUtils::maximumFromCellValues( std::vector<double> cellValues )
+double QgsRasterAnalysisUtils::maximumFromCellValues( std::vector<double> &cellValues )
 {
   return *std::max_element( cellValues.begin(), cellValues.end() );
 }
 
-double QgsRasterAnalysisUtils::minimumFromCellValues( std::vector<double> cellValues )
+double QgsRasterAnalysisUtils::minimumFromCellValues( std::vector<double> &cellValues )
 {
   return *std::min_element( cellValues.begin(), cellValues.end() );
 }
 
-double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize )
+double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize )
 {
   if ( stackSize == 1 )
   {
@@ -418,7 +418,7 @@ double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> cellV
   }
 }
 
-double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> cellValues, const double noDataValue, int stackSize )
+double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize )
 {
   if ( stackSize == 1 )
   {
@@ -466,17 +466,127 @@ double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> cellV
   }
 }
 
-double QgsRasterAnalysisUtils::rangeFromCellValues( std::vector<double> cellValues )
+double QgsRasterAnalysisUtils::rangeFromCellValues( std::vector<double> &cellValues )
 {
   double max = *std::max_element( cellValues.begin(), cellValues.end() );
   double min = *std::min_element( cellValues.begin(), cellValues.end() );
   return max - min;
 }
 
-double QgsRasterAnalysisUtils::varietyFromCellValues( std::vector<double> cellValues )
+double QgsRasterAnalysisUtils::varietyFromCellValues( std::vector<double> &cellValues )
 {
   std::unordered_set<double> uniqueValues( cellValues.begin(), cellValues.end() );
   return uniqueValues.size();
+}
+
+double QgsRasterAnalysisUtils::nearestRankPercentile( std::vector<double> &cellValues, int stackSize, double percentile )
+{
+  //if percentile equals 0 -> pick the first element of the ordered list
+  std::sort( cellValues.begin(), cellValues.end() );
+
+  int i = 0;
+  if ( percentile > 0 )
+  {
+    i = std::ceil( percentile * static_cast<double>( stackSize ) ) - 1;
+  }
+
+  return cellValues[i];
+}
+
+double QgsRasterAnalysisUtils::interpolatedPercentileInc( std::vector<double> &cellValues, int stackSize, double percentile )
+{
+  std::sort( cellValues.begin(), cellValues.end() );
+  double x = ( percentile * ( stackSize - 1 ) );
+
+  int i = static_cast<int>( std::floor( x ) );
+  double xFraction = std::fmod( x, 1 );
+
+  if ( stackSize == 1 )
+  {
+    return cellValues[0];
+  }
+  else if ( stackSize == 2 )
+  {
+    return cellValues[0] + ( cellValues[1] - cellValues[0] ) * percentile;
+  }
+  else
+  {
+    return cellValues[i] + ( cellValues[i + 1] - cellValues[i] ) * xFraction;
+  }
+}
+
+double QgsRasterAnalysisUtils::interpolatedPercentileExc( std::vector<double> &cellValues, int stackSize, double percentile, double noDataValue )
+{
+  std::sort( cellValues.begin(), cellValues.end() );
+  double x = ( percentile * ( stackSize + 1 ) );
+
+  int i = static_cast<int>( std::floor( x ) ) - 1;
+  double xFraction = std::fmod( x, 1 );
+  double lowerExcValue =  1.0 / ( static_cast<double>( stackSize ) + 1.0 );
+  double upperExcValue = static_cast<double>( stackSize ) / ( static_cast<double>( stackSize ) + 1.0 );
+
+  if ( stackSize < 2 || ( ( percentile < lowerExcValue || percentile > upperExcValue ) ) )
+  {
+    return noDataValue;
+  }
+  else
+  {
+    return cellValues[i] + ( cellValues[i + 1] - cellValues[i] ) * xFraction;
+  }
+}
+
+double QgsRasterAnalysisUtils::interpolatedPercentRankInc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue )
+{
+  std::sort( cellValues.begin(), cellValues.end() );
+
+  if ( value < cellValues[0] || value > cellValues[stackSize - 1] )
+  {
+    return noDataValue;
+  }
+  else
+  {
+    for ( int i = 0; i < stackSize - 1; i++ )
+    {
+      if ( cellValues[i] <= value && cellValues[i + 1] >= value )
+      {
+        double fraction = 0.0;
+
+        //make sure that next number in the distribution is not the same to prevent NaN fractions
+        if ( !qgsDoubleNear( cellValues[i], cellValues[i + 1] ) )
+          fraction = ( value - cellValues[i] ) / ( cellValues[i + 1] - cellValues[i] );
+
+        return ( fraction + i ) / ( stackSize - 1 );
+      }
+    }
+    return noDataValue;
+  }
+}
+
+double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue )
+{
+  std::sort( cellValues.begin(), cellValues.end() );
+
+  if ( value < cellValues[0] || value > cellValues[stackSize - 1] )
+  {
+    return noDataValue;
+  }
+  else
+  {
+    for ( int i = 0; i < stackSize - 1; i++ )
+    {
+      if ( cellValues[i] <= value && cellValues[i + 1] >= value )
+      {
+        double fraction = 0.0;
+
+        //make sure that next number in the distribution is not the same to prevent NaN fractions
+        if ( !qgsDoubleNear( cellValues[i], cellValues[i + 1] ) )
+          fraction = ( value - cellValues[i] ) / ( cellValues[i + 1] - cellValues[i] );
+
+        return ( ( i + 1 ) + fraction ) / ( stackSize + 1 );
+      }
+    }
+    return noDataValue;
+  }
 }
 
 
