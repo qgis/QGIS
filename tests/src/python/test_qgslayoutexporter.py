@@ -1128,6 +1128,10 @@ class TestQgsLayoutExporter(unittest.TestCase):
         label.setBlendMode(QPainter.CompositionMode_Overlay)
         self.assertTrue(QgsLayoutExporter.requiresRasterization(l))
 
+        # but if the item is NOT visible, it won't affect the output in any way..
+        label.setVisibility(False)
+        self.assertFalse(QgsLayoutExporter.requiresRasterization(l))
+
     def testContainsAdvancedEffects(self):
         """
         Test QgsLayoutExporter.containsAdvancedEffects
@@ -1145,6 +1149,10 @@ class TestQgsLayoutExporter(unittest.TestCase):
         # an item with transparency will force it to be individually rasterized
         label.setItemOpacity(0.5)
         self.assertTrue(QgsLayoutExporter.containsAdvancedEffects(l))
+
+        # but if the item is NOT visible, it won't affect the output in any way..
+        label.setVisibility(False)
+        self.assertFalse(QgsLayoutExporter.containsAdvancedEffects(l))
 
 
 if __name__ == '__main__':
