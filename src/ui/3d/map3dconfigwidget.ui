@@ -765,7 +765,7 @@
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_8">
                        <property name="text">
-                        <string>Corner:</string>
+                        <string>Corner</string>
                        </property>
                       </widget>
                      </item>
