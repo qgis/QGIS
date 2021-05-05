@@ -82,7 +82,8 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   } );
 
   mPropertyOverrideButton->setVisible( mPropertyOverrideButtonVisible );
-
+  mPropertyOverrideButton->registerEnabledWidget( mFileLineEdit, false );
+  mPropertyOverrideButton->registerEnabledWidget( mFileToolButton, false );
 }
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
