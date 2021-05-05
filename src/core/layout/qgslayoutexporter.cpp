@@ -1926,7 +1926,8 @@ bool QgsLayoutExporter::requiresRasterization( const QgsLayout *layout )
 
   for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
-    if ( currentItem->requiresRasterization() )
+    // ignore invisible items, they won't affect the output in any way...
+    if ( currentItem->isVisible() && currentItem->requiresRasterization() )
       return true;
   }
   return false;
@@ -1942,7 +1943,8 @@ bool QgsLayoutExporter::containsAdvancedEffects( const QgsLayout *layout )
 
   for ( QgsLayoutItem *currentItem : std::as_const( items ) )
   {
-    if ( currentItem->containsAdvancedEffects() )
+    // ignore invisible items, they won't affect the output in any way...
+    if ( currentItem->isVisible() && currentItem->containsAdvancedEffects() )
       return true;
   }
   return false;
