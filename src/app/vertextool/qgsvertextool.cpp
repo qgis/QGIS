@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include "qgsmessagelog.h"
 #include "qgsvertextool.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -1372,6 +1372,15 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
       }
       break;
     }
+    case Qt::Key_C:
+    {
+      if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
+      {
+        e->ignore();  // Override default shortcut management
+        toggleVertexCurve();
+      }
+      break;
+    }
     case Qt::Key_R:
     {
       if ( e->modifiers() & Qt::ShiftModifier && !mDraggingVertex && !mDraggingEdge )
@@ -2428,6 +2437,7 @@ void QgsVertexTool::deleteVertex()
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
+        QgsMessageLog::logMessage("DELETE : fid:"+QString::number(fid)+" ; vertexId:"+QString::number(vertexId), "DEBUG");
         if ( res != QgsVectorLayer::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
         if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
@@ -2473,6 +2483,133 @@ void QgsVertexTool::deleteVertex()
       setHighlightedVertices( vertices_new );
     }
   }
+
+  if ( mVertexEditor && mLockedFeature )
+    mVertexEditor->updateEditor( mLockedFeature.get() );
+}
+
+
+void QgsVertexTool::toggleVertexCurve()
+{
+  Vertex toConvert = Vertex(nullptr, -1, -1);
+  if ( mSelectedVertices.size() == 1 )
+  {
+    toConvert = mSelectedVertices.first();
+  }
+  else if( mDraggingVertexType == AddingVertex )
+  {
+    toConvert = *mDraggingVertex;
+  }
+  else
+  {
+    // We only support converting one vertex at a time
+    QgsMessageLog::logMessage("Need exactly 1 selected/editted vertex", "DEBUG");
+    return;
+  }
+
+
+  QgsVectorLayer *layer = toConvert.layer;
+  QgsFeatureId fId = toConvert.fid;
+  int vNr = toConvert.vertexId;
+  QgsVertexId vId;
+  QgsFeature feature = layer->getFeature( fId );
+  QgsGeometry geom = feature.geometry();
+  geom.vertexIdFromVertexNr( vNr, vId );
+
+  if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
+  {
+    // The layer is not a curved type
+    QgsMessageLog::logMessage("Layer is not curved", "DEBUG");
+    return;
+  }
+
+  // We get the vertex ID and the point
+  // QgsPoint vPt = geom.constGet()->vertexAt(vId);
+
+  // QgsVertexId vIdPrev;
+  // QgsVertexId vIdNext;
+  // geom.constGet()->adjacentVertices(vId, vIdPrev, vIdNext);
+  // if( ! vIdPrev.isValid() || ! vIdNext.isValid() ){
+  //   QgsMessageLog::logMessage("Can't work on first or last point", "DEBUG");
+  //   return;
+  // }
+
+  QgsCompoundCurve *compoundCurve = dynamic_cast<QgsCompoundCurve *>( geom.get() );
+  if( ! compoundCurve ){
+    QgsMessageLog::logMessage("Only compound curves supported (for now)", "DEBUG");
+    return;
+  }
+
+  // const QgsCurve *c0 = compoundCurve->curveAt(0);
+  // QgsMessageLog::logMessage("Curve 0 : " + c0->asWkt(), "DEBUG");
+  // const QgsCurve *c1 = compoundCurve->curveAt(1);
+  // QgsMessageLog::logMessage("Curve 1 : " + c1->asWkt(), "DEBUG");
+
+
+
+  // QgsCircularString arc = new QgsCircularString(prevVid, vid, nextVid);
+
+  // QgsGeometry geomPartA = geom.clone();
+  // QgsGeometry geomPartB = geom.clone();
+
+  // geomPartA.splitFeature()
+
+  // QgsMessageLog::logMessage("Geom is of type : " + geom.constGet()->wktTypeStr(), "DEBUG");
+
+  // vid.part;
+  // vid.ring;
+  // vid.vertex;
+  // QgsCompoundCurve *compoundCurveCopy = compoundCurve->clone();
+
+  // QgsVectorLayerEditUtils
+  // bool success;
+  // QgsMessageLog::logMessage("CONVERT : fid:"+QString::number(fId)+" ; vertexId:"+QString::number(vNr), "DEBUG");
+
+  // QVector< QPair<int, QgsVertexId> > curveVertexId = compoundCurve->curveVertexId(vId);
+  // QgsMessageLog::logMessage("curveVertexId (sic!)", "DEBUG");
+  // for ( auto it = curveVertexId.constBegin(); it != curveVertexId.constEnd(); ++it )
+  // {
+  //     QgsMessageLog::logMessage("Curve : "+QString::number(it->first)+"  Point : "+QString::number(it->second.part)+"/"+QString::number(it->second.ring)+"/"+QString::number(it->second.vertex), "DEBUG");
+  // }
+
+
+  QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
+  QgsCompoundCurve *compoundCurveCopy = compoundCurve->clone();
+
+
+
+  if ( vId.type == QgsVertexId::CurveVertex ) {
+    layer->beginEditCommand( tr( "Converting vertex to linear" ) );
+    // layer->deleteVertex( fId, vNr );
+    // layer->insertVertex( vPt, fId, vNr );
+    // vId.type = QgsVertexId::CurveVertex;
+    // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
+    compoundCurveCopy->convertVertex(	vId, QgsVertexId::SegmentVertex );
+
+  } else {
+    layer->beginEditCommand( tr( "Converting vertex to curve" ) );
+    // layer->deleteVertex( fId, vNr );
+    // layer->insertVertex( vPt, fId, vNr );
+    // vId.type = QgsVertexId::SegmentVertex;
+    // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
+    compoundCurveCopy->convertVertex(	vId, QgsVertexId::CurveVertex );
+  }
+
+  geom.set( compoundCurveCopy );
+  layer->changeGeometry( fId, geom );
+
+  // if ( success )
+  // {
+    QgsMessageLog::logMessage("Should be OK", "DEBUG");
+    layer->endEditCommand();
+    layer->triggerRepaint();
+  // }
+  // else
+  // {
+  //   QgsMessageLog::logMessage("Has failed :-/", "DEBUG");
+  //   layer->destroyEditCommand();
+  // }
+
 
   if ( mVertexEditor && mLockedFeature )
     mVertexEditor->updateEditor( mLockedFeature.get() );
