@@ -3192,8 +3192,17 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
     }
   }
 
-  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, options, QgsFeatureSink::SinkFlags(), newFilename, newLayer ) );
+  QString tempNewFilename;
+  QString tempNewLayer;
+
+  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, options, QgsFeatureSink::SinkFlags(), &tempNewFilename, &tempNewLayer ) );
   writer->setSymbologyScale( options.symbologyScale );
+
+  if ( newFilename )
+    *newFilename = tempNewFilename;
+
+  if ( newLayer )
+    *newLayer = tempNewLayer;
 
   if ( newFilename )
   {
@@ -3335,7 +3344,44 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
     *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( n - errors ).arg( n );
   }
 
-  return errors == 0 ? NoError : ErrFeatureWriteFailed;
+  writer.reset();
+
+  bool metadataFailure = false;
+  if ( options.saveMetadata )
+  {
+    QString uri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), QVariantMap
+    {
+      {QStringLiteral( "path" ), tempNewFilename },
+      {QStringLiteral( "layerName" ), tempNewLayer }
+    } );
+
+    try
+    {
+      QString error;
+      if ( !QgsProviderRegistry::instance()->saveLayerMetadata( QStringLiteral( "ogr" ), uri, options.layerMetadata, error ) )
+      {
+        if ( errorMessage )
+        {
+          if ( !errorMessage->isEmpty() )
+            *errorMessage += '\n';
+          *errorMessage += error;
+        }
+        metadataFailure = true;
+      }
+    }
+    catch ( QgsNotSupportedException &e )
+    {
+      if ( errorMessage )
+      {
+        if ( !errorMessage->isEmpty() )
+          *errorMessage += '\n';
+        *errorMessage += e.what();
+      }
+      metadataFailure = true;
+    }
+  }
+
+  return errors == 0 ? ( !metadataFailure ? NoError : ErrSavingMetadata ) : ErrFeatureWriteFailed;
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
