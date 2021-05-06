@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>581</width>
-    <height>491</height>
+    <width>573</width>
+    <height>462</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -138,7 +138,7 @@
    <item row="2" column="0" colspan="3">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="noRendererPage"/>
      <widget class="QWidget" name="singleColorRendererPage">
@@ -191,7 +191,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="colorRampRendererPage">
-      <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,1" columnstretch="0,0">
+      <layout class="QGridLayout" name="gridLayout_3" rowstretch="0" columnstretch="0">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -205,74 +205,93 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Attribute</string>
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>591</width>
+            <height>221</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Attribute</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QgsPointCloudAttributeComboBox" name="mRenderingParameterComboBox"/>
+           </item>
+           <item row="1" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Min</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsDoubleSpinBox" name="mColorRampShaderMinEdit">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="minimum">
+                <double>-9999999999.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>9999999999.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Max</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsDoubleSpinBox" name="mColorRampShaderMaxEdit">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="minimum">
+                <double>-9999999999.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>9999999999.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="mScalarRecalculateMinMaxButton">
+               <property name="text">
+                <string>Load</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QgsPointCloudAttributeComboBox" name="mRenderingParameterComboBox"/>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
-       </item>
-       <item row="1" column="1">
-        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Min</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMinEdit">
-           <property name="decimals">
-            <number>6</number>
-           </property>
-           <property name="minimum">
-            <double>-9999999999.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>9999999999.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>0.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Max</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QgsDoubleSpinBox" name="mColorRampShaderMaxEdit">
-           <property name="decimals">
-            <number>6</number>
-           </property>
-           <property name="minimum">
-            <double>-9999999999.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>9999999999.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="mScalarRecalculateMinMaxButton">
-           <property name="text">
-            <string>Load</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
@@ -518,7 +537,30 @@ enhancement</string>
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <layout class="QGridLayout" name="mClassifiedRenderingLayout"/>
+        <layout class="QGridLayout" name="_2">
+         <item row="0" column="0">
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>569</width>
+              <height>233</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="mClassifiedRenderingLayout"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -531,15 +573,14 @@ enhancement</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsPointCloudAttributeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspointcloudattributecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorRampShaderWidget</class>
@@ -548,9 +589,10 @@ enhancement</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPointCloudAttributeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspointcloudattributecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -560,7 +602,6 @@ enhancement</string>
   <tabstop>mMaxScreenErrorSpinBox</tabstop>
   <tabstop>mPointBudgetSpinBox</tabstop>
   <tabstop>mShowBoundingBoxesCheckBox</tabstop>
-  <tabstop>mRenderingParameterComboBox</tabstop>
   <tabstop>mColorRampShaderMinEdit</tabstop>
   <tabstop>mColorRampShaderMaxEdit</tabstop>
   <tabstop>mScalarRecalculateMinMaxButton</tabstop>
