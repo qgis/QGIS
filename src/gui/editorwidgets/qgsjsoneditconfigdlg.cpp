@@ -20,6 +20,7 @@ QgsJsonEditConfigDlg::QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 {
   setupUi( this );
   connect( mDefaultViewComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mFormatJsonComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 
@@ -28,6 +29,7 @@ QVariantMap QgsJsonEditConfigDlg::config()
   QVariantMap cfg;
 
   cfg.insert( QStringLiteral( "DefaultView" ), mDefaultViewComboBox->currentIndex() );
+  cfg.insert( QStringLiteral( "FormatJson" ), mFormatJsonComboBox->currentIndex() );
 
   return cfg;
 }
@@ -35,4 +37,5 @@ QVariantMap QgsJsonEditConfigDlg::config()
 void QgsJsonEditConfigDlg::setConfig( const QVariantMap &config )
 {
   mDefaultViewComboBox->setCurrentIndex( config.value( QStringLiteral( "DefaultView" ) ).toInt() );
+  mFormatJsonComboBox->setCurrentIndex( config.value( QStringLiteral( "FormatJson" ) ).toInt() );
 }

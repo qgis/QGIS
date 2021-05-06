@@ -17,7 +17,6 @@
 
 #include "qgsjsoneditwrapper.h"
 #include "qgsjsoneditconfigdlg.h"
-#include "qgsjsoneditsearchwidgetwrapper.h"
 
 QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name )
   : QgsEditorWidgetFactory( name )
@@ -27,11 +26,6 @@ QgsJsonEditWidgetFactory::QgsJsonEditWidgetFactory( const QString &name )
 QgsEditorWidgetWrapper *QgsJsonEditWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsJsonEditWrapper( vl, fieldIdx, editor, parent );
-}
-
-QgsSearchWidgetWrapper *QgsJsonEditWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
-{
-  return new QgsJsonEditSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget *QgsJsonEditWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const

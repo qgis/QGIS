@@ -27,7 +27,7 @@ QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
 {
   if ( !parent )
   {
-    setTitle( tr( "JavaScript Editor" ) );
+    setTitle( tr( "JSON Editor" ) );
   }
   setFoldingVisible( true );
   QgsCodeEditorJson::initializeLexer();

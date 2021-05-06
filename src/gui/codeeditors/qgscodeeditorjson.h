@@ -35,7 +35,7 @@ class GUI_EXPORT QgsCodeEditorJson : public QgsCodeEditor
 
   public:
 
-    //! Constructor for QgsCodeEditorJavascript
+    //! Constructor for QgsCodeEditorJson
     QgsCodeEditorJson( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:

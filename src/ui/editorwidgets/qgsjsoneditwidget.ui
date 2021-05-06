@@ -17,16 +17,12 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="mStackedWidgetPageText">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QgsCodeEditorJson" name="mTextEdit" native="true">
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the SQL query editor.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
+        <widget class="QgsCodeEditorJson" name="mCodeEditorJson" native="true"/>
        </item>
       </layout>
      </widget>
@@ -67,6 +63,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mTextToolButton">
+       <property name="toolTip">
+        <string>Show text</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -81,6 +80,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mTreeToolButton">
+       <property name="toolTip">
+        <string>Show tree</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>

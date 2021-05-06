@@ -40,6 +40,13 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
       Tree = 1
     };
 
+    enum class FormatJson : int
+    {
+      Indented = 0,
+      Compact = 1,
+      Disabled = 2
+    };
+
     explicit QgsJsonEditWidget( QWidget *parent SIP_TRANSFERTHIS );
 
     ~QgsJsonEditWidget() override;
@@ -53,12 +60,14 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
 
     void setView( View view ) const;
 
+    void setFormatJsonMode( FormatJson formatJson );
+
   private slots:
 
     void textToolButtonClicked( bool checked );
     void treeToolButtonClicked( bool checked );
 
-    void refreshTreeView();
+    void codeEditorJsonTextChanged();
 
   private:
 
@@ -68,7 +77,10 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
       Value = 1
     };
 
+    void refreshTreeView( const QJsonDocument &jsonDocument );
     void refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent );
+
+    FormatJson mFormatJsonMode = FormatJson::Indented;
 };
 
 #endif // QGSJSONEDITWIDGET_H

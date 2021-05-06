@@ -69,7 +69,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 
   private:
 
-    QgsAttributeForm *mForm = nullptr;
     void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
 
     QgsJsonEditWidget *mJsonEditWidget = nullptr;

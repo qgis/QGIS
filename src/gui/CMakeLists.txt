@@ -165,7 +165,6 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
   editorwidgets/qgsjsoneditconfigdlg.cpp
-  editorwidgets/qgsjsoneditsearchwidgetwrapper.cpp
   editorwidgets/qgsjsoneditwidgetfactory.cpp
   editorwidgets/qgsjsoneditwrapper.cpp
   editorwidgets/qgsjsoneditwidget.cpp
@@ -963,7 +962,6 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgskeyvaluewidgetfactory.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
   editorwidgets/qgsjsoneditconfigdlg.h
-  editorwidgets/qgsjsoneditsearchwidgetwrapper.h
   editorwidgets/qgsjsoneditwidgetfactory.h
   editorwidgets/qgsjsoneditwrapper.h
   editorwidgets/qgsjsoneditwidget.h

@@ -16,16 +16,6 @@
 #include "qgsjsoneditwrapper.h"
 
 #include "qgsjsoneditwidget.h"
-#include "qgsfields.h"
-#include "qgsfieldvalidator.h"
-#include "qgsfilterlineedit.h"
-#include "qgsapplication.h"
-#include "qgsjsonutils.h"
-#include "qgsmessagebar.h"
-#include "qgslogger.h"
-
-#include <QSettings>
-#include <nlohmann/json.hpp>
 
 QgsJsonEditWrapper::QgsJsonEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -44,6 +34,7 @@ QWidget *QgsJsonEditWrapper::createWidget( QWidget *parent )
 {
   QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget( parent );
   jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( config( QStringLiteral( "DefaultView" ) ).toInt() ) );
+  jsonEditWidget->setFormatJsonMode( static_cast<QgsJsonEditWidget::FormatJson>( config( QStringLiteral( "FormatJson" ) ).toInt() ) );
   return jsonEditWidget;
 }
 
