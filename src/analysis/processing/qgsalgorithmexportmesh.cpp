@@ -1276,10 +1276,13 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
-  if ( ! file.open( QIODevice::WriteOnly ) )
+  if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
 
   QTextStream textStream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
   for ( const DataGroup &datagroup : mDataPerGroup )
@@ -1588,10 +1591,13 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
 
   QString outputFileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
   QFile file( outputFileName );
-  if ( ! file.open( QIODevice::WriteOnly ) )
+  if ( ! file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     throw QgsProcessingException( QObject::tr( "Unable to create the outputfile" ) );
 
   QTextStream textStream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  textStream.setCodec( "UTF-8" );
+#endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "time" );
 
