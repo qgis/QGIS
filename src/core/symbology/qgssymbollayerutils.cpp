@@ -36,6 +36,8 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
 #include "qgsxmlutils.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbollayer.h"
 
 #include <QColor>
 #include <QFont>
@@ -3915,6 +3917,51 @@ void QgsSymbolLayerUtils::premultiplyColor( QColor &rgb, int alpha )
   {
     rgb.setRgb( 0, 0, 0, 0 );
   }
+}
+
+bool QgsSymbolLayerUtils::condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline )
+{
+  QgsSimpleFillSymbolLayer *simpleFill = dynamic_cast< QgsSimpleFillSymbolLayer *>( fill );
+  QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< QgsSimpleLineSymbolLayer *>( outline );
+
+  if ( !simpleFill || !simpleLine )
+    return false;
+
+  if ( simpleLine->useCustomDashPattern() )
+    return false;
+
+  if ( simpleLine->dashPatternOffset() )
+    return false;
+
+  if ( simpleLine->alignDashPattern() )
+    return false;
+
+  if ( simpleLine->tweakDashPatternOnCorners() )
+    return false;
+
+  if ( simpleLine->trimDistanceStart() || simpleLine->trimDistanceEnd() )
+    return false;
+
+  if ( simpleLine->drawInsidePolygon() )
+    return false;
+
+  if ( simpleLine->ringFilter() != QgsSimpleLineSymbolLayer::AllRings )
+    return false;
+
+  if ( simpleLine->offset() )
+    return false;
+
+  if ( simpleLine->hasDataDefinedProperties() )
+    return false;
+
+  // looks good!
+  simpleFill->setStrokeColor( simpleLine->color() );
+  simpleFill->setStrokeWidth( simpleLine->width() );
+  simpleFill->setStrokeWidthUnit( simpleLine->widthUnit() );
+  simpleFill->setStrokeWidthMapUnitScale( simpleLine->widthMapUnitScale() );
+  simpleFill->setStrokeStyle( simpleLine->penStyle() );
+  simpleFill->setPenJoinStyle( simpleLine->penJoinStyle() );
+  return true;
 }
 
 void QgsSymbolLayerUtils::sortVariantList( QList<QVariant> &list, Qt::SortOrder order )
