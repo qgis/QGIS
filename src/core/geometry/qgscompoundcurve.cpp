@@ -907,7 +907,7 @@ QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId 
   return curveIds;
 }
 
-bool QgsCompoundCurve::convertVertex( QgsVertexId position, QgsVertexId::VertexType type )
+bool QgsCompoundCurve::convertVertex( QgsVertexId position )
 {
 
   // First we find out the sub-curves that are contain that vertex.
@@ -1003,19 +1003,31 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position, QgsVertexId::VertexT
   }
 
   // We merge consecutive LineStrings
-  // TODO ? : move this to a new mergeConsecutiveLineStrings() method;
-  // const QVector< QgsCurve * > curves = mCurves;
-  // int i = 0;
-  // lastCurve *curve
-  // for ( QgsCurve *curve : curves )
-  // {
+  // TODO ? : move this to a new QgsCompoundCurve::mergeConsecutiveLineStrings() method;
+  QgsLineString *lastLineString = nullptr;
+  QVector<QgsCurve *> newCurves;
+  for ( int i = 0; i < mCurves.size(); ++i )
+  {
+    QgsCurve *curve = mCurves.at( i );
+    QgsLineString *curveAsLineString = dynamic_cast<QgsLineString *>( curve );
 
-  // }
+    if ( curveAsLineString != nullptr && lastLineString != nullptr )
+    {
+      // We append to previous
+      lastLineString->append( curveAsLineString );
+    }
+    else
+    {
+      // We keep as is
+      newCurves.append( curve );
+      lastLineString = curveAsLineString;
+    }
+  }
+
+  mCurves = newCurves;
 
   clearCache();
-
   return true;
-
 }
 
 

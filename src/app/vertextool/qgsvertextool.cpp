@@ -2584,25 +2584,9 @@ void QgsVertexTool::toggleVertexCurve()
   }
   QgsCompoundCurve *compoundCurveCopy = (QgsCompoundCurve*)geomTmp;
 
+  layer->beginEditCommand( tr( "Converting vertex type" ) );
 
-  bool success = false;
-  if ( vId.type == QgsVertexId::CurveVertex ) {
-    layer->beginEditCommand( tr( "Converting vertex to linear" ) );
-    // layer->deleteVertex( fId, vNr );
-    // layer->insertVertex( vPt, fId, vNr );
-    // vId.type = QgsVertexId::CurveVertex;
-    // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
-    success = compoundCurveCopy->convertVertex(	vId, QgsVertexId::SegmentVertex );
-
-  } else {
-    layer->beginEditCommand( tr( "Converting vertex to curve" ) );
-    // layer->deleteVertex( fId, vNr );
-    // layer->insertVertex( vPt, fId, vNr );
-    // vId.type = QgsVertexId::SegmentVertex;
-    // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
-    success = compoundCurveCopy->convertVertex(	vId, QgsVertexId::CurveVertex );
-  }
-
+  bool success = compoundCurveCopy->convertVertex(vId );
 
   if ( success )
   {
