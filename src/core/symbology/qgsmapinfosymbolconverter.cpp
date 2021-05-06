@@ -461,7 +461,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       symbol->symbolLayer( 0 )->setLocked( true );
 
       std::unique_ptr<QgsSimpleLineSymbolLayer > secondRail( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
-      double offset = 2 * size;
+      const double offset = 2 * size;
       qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffset( offset );
       qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffsetUnit( sizeUnit );
       secondRail->setOffset( -offset );
