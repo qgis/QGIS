@@ -364,12 +364,20 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   t.scale( mScaling, mScaling );
   t.translate( -layerCoords.x(), -layerCoords.y() );
 
-  for ( QgsFeatureId id : std::as_const( mScaledFeatures ) )
+  QgsFeatureRequest request;
+  request.setFilterFids( mScaledFeatures ).setNoAttributes();
+  QgsFeatureIterator fi = vlayer->getFeatures( request );
+  QgsFeature feat;
+  while ( fi.nextFeature( feat ) )
   {
-    QgsFeature feat;
-    vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
+    if ( !feat.hasGeometry() )
+      continue;
+
     QgsGeometry geom = feat.geometry();
-    geom.transform( t );
+    if ( !( geom.transform( t ) == QgsGeometry::Success ) )
+      continue;
+
+    QgsFeatureId id = feat.id();
     vlayer->changeGeometry( id, geom );
   }
 
