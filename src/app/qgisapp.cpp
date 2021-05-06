@@ -6099,7 +6099,11 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLay
   chooseSublayersDialog.populateLayerTable( list );
 
   if ( !chooseSublayersDialog.exec() )
+  {
+    delete parentLayer;
+    parentLayer = nullptr;
     return result;
+  }
 
   const bool addToGroup = chooseSublayersDialog.addToGroupCheckbox();
 
