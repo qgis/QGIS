@@ -28,6 +28,7 @@
 
 class QgsProjectionSelectionDialog;
 class QgsHighlightableComboBox;
+class QLabel;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -100,6 +101,28 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     static QString crsOptionText( const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
 
+    /**
+     * Returns TRUE if the widget will show a warning to users when they select a CRS which uses
+     * a datum ensemble.
+     *
+     * \warning Determining datum ensembles requires PROJ 8.0 or later.
+     *
+     * \see setShowDatumEnsembleWarnings()
+     * \since QGIS 3.20
+     */
+    bool showDatumEnsembleWarnings() const;
+
+    /**
+     * Sets whether the widget will show a warning to users when they select a CRS which uses
+     * a datum ensemble.
+     *
+     * \warning Determining datum ensembles requires PROJ 8.0 or later.
+     *
+     * \see showDatumEnsembleWarnings()
+     * \since QGIS 3.20
+     */
+    void setShowDatumEnsembleWarnings( bool showDatumEnsembleWarnings );
+
   signals:
 
     /**
@@ -151,6 +174,10 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QString mNotSetText;
     QString mMessage;
 
+    bool mShowDatumEnsembleWarnings = true;
+    QWidget *mWarningLabelContainer = nullptr;
+    QLabel *mWarningLabel = nullptr;
+
     void addNotSetOption();
     void addProjectCrsOption();
     void addDefaultCrsOption();
@@ -167,6 +194,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
   private slots:
 
     void comboIndexChanged( int idx );
+    void updateWarning();
 
 };
 
