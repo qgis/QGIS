@@ -40,6 +40,10 @@ class GUI_EXPORT QgsCodeEditorJson : public QgsCodeEditor
 
   protected:
     void initializeLexer() override;
+
+  private slots:
+
+    void scintillaHotspotClick( int position, int modifiers );
 };
 
 #endif // QGSCODEEDITORJSON_H

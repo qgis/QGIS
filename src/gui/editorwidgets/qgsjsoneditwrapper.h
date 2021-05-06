@@ -31,8 +31,7 @@ SIP_NO_FILE
  *
  * Options:
  * <ul>
- * <li><b>IsMultiline</b> <i>If set to TRUE, a multiline widget will be used.</i></li>
- * <li><b>UseHtml</b> <i>Will represent the content as HTML. Only available for multiline widgets.</i></li>
+ * <li><b>DefaultView</b> <i>Default view can be choosen between text or tree.</i></li>
  * </ul>
  * \note not available in Python bindings
  */

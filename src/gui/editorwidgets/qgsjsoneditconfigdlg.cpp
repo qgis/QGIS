@@ -19,8 +19,7 @@ QgsJsonEditConfigDlg::QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
-  connect( mIsMultiline, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mUseHtml, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mDefaultViewComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 
@@ -28,14 +27,12 @@ QVariantMap QgsJsonEditConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "IsMultiline" ), mIsMultiline->isChecked() );
-  cfg.insert( QStringLiteral( "UseHtml" ), mUseHtml->isChecked() );
+  cfg.insert( QStringLiteral( "DefaultView" ), mDefaultViewComboBox->currentIndex() );
 
   return cfg;
 }
 
 void QgsJsonEditConfigDlg::setConfig( const QVariantMap &config )
 {
-  mIsMultiline->setChecked( config.value( QStringLiteral( "IsMultiline" ) ).toBool() );
-  mUseHtml->setChecked( config.value( QStringLiteral( "UseHtml" ) ).toBool() );
+  mDefaultViewComboBox->setCurrentIndex( config.value( QStringLiteral( "DefaultView" ) ).toInt() );
 }

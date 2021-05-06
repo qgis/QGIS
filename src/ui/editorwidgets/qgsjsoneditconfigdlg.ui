@@ -14,23 +14,25 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
+    <widget class="QComboBox" name="mDefaultViewComboBox">
+     <item>
+      <property name="text">
+       <string>Text</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Tree</string>
+      </property>
+     </item>
+    </widget>
+   </item>
    <item row="0" column="0">
-    <widget class="QGroupBox" name="mIsMultiline">
-     <property name="title">
-      <string>Multiline</string>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Default view</string>
      </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="mUseHtml">
-        <property name="text">
-         <string>HTML</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>

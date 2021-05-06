@@ -23,7 +23,7 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
 {
   setupUi( this );
 
-  showText();
+  setView( View::Text );
 
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
@@ -56,34 +56,41 @@ bool QgsJsonEditWidget::validJson() const
   return true;
 }
 
+void QgsJsonEditWidget::setView( QgsJsonEditWidget::View view ) const
+{
+  switch ( view )
+  {
+    case View::Text:
+    {
+      mStackedWidget->setCurrentWidget( mStackedWidgetPageText );
+      mTextToolButton->setChecked( true );
+      mTreeToolButton->setChecked( false );
+    }
+    break;
+    case View::Tree:
+    {
+      mStackedWidget->setCurrentWidget( mStackedWidgetPageTree );
+      mTreeToolButton->setChecked( true );
+      mTextToolButton->setChecked( false );
+    }
+    break;
+  }
+}
+
 void QgsJsonEditWidget::textToolButtonClicked( bool checked )
 {
   if ( checked )
-    showText();
+    setView( View::Text );
   else
-    showTree();
+    setView( View::Tree );
 }
 
 void QgsJsonEditWidget::treeToolButtonClicked( bool checked )
 {
   if ( checked )
-    showTree();
+    setView( View::Tree );
   else
-    showText();
-}
-
-void QgsJsonEditWidget::showText()
-{
-  mStackedWidget->setCurrentWidget( mStackedWidgetPageText );
-  mTextToolButton->setChecked( true );
-  mTreeToolButton->setChecked( false );
-}
-
-void QgsJsonEditWidget::showTree()
-{
-  mStackedWidget->setCurrentWidget( mStackedWidgetPageTree );
-  mTreeToolButton->setChecked( true );
-  mTextToolButton->setChecked( false );
+    setView( View::Text );
 }
 
 void QgsJsonEditWidget::refreshTreeView()
@@ -97,7 +104,7 @@ void QgsJsonEditWidget::refreshTreeView()
 
   if ( jsonDocument.isNull() )
   {
-    showText();
+    setView( View::Text );
     mTextToolButton->setDisabled( true );
     mTreeToolButton->setDisabled( true );
     mTreeToolButton->setToolTip( tr( "Invalid JSON, tree view not available" ) );

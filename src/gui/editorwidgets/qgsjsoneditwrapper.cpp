@@ -42,7 +42,9 @@ QVariant QgsJsonEditWrapper::value() const
 
 QWidget *QgsJsonEditWrapper::createWidget( QWidget *parent )
 {
-  return new QgsJsonEditWidget( parent );
+  QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget( parent );
+  jsonEditWidget->setView( static_cast<QgsJsonEditWidget::View>( config( QStringLiteral( "DefaultView" ) ).toInt() ) );
+  return jsonEditWidget;
 }
 
 void QgsJsonEditWrapper::initWidget( QWidget *editor )
@@ -82,7 +84,7 @@ void QgsJsonEditWrapper::updateValues( const QVariant &value, const QVariantList
     return;
 
   //restore placeholder text, which may have been removed by showIndeterminateState()
-  mJsonEditWidget->setJsonText( value.toString() );
+  mJsonEditWidget->setJsonText( field().displayString( value ) );
 }
 
 void QgsJsonEditWrapper::setEnabled( bool enabled )

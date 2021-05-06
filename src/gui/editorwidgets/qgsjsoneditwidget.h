@@ -33,6 +33,13 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     Q_OBJECT
 
   public:
+
+    enum class View : int
+    {
+      Text = 0,
+      Tree = 1
+    };
+
     explicit QgsJsonEditWidget( QWidget *parent SIP_TRANSFERTHIS );
 
     ~QgsJsonEditWidget() override;
@@ -43,6 +50,8 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     QString jsonText() const;
 
     bool validJson() const;
+
+    void setView( View view ) const;
 
   private slots:
 
@@ -59,11 +68,6 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
       Value = 1
     };
 
-    void showText();
-    void showTree();
-
-    void refreshTreeViewObject( const QJsonObject &jsonObject, QTreeWidgetItem *treeWidgetItemParent );
-    void refreshTreeViewArray( const QJsonArray &jsonArray, QTreeWidgetItem *treeWidgetItemParent );
     void refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent );
 };
 

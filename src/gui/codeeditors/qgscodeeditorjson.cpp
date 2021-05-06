@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorjson.cpp - A Json editor based on QScintilla
+    qgscodeeditorjson.cpp - A JSON editor based on QScintilla
      --------------------------------------
     Date                 : 4.5.2021
     Copyright            : (C) 2021 Damiano Lombardi
@@ -31,6 +31,8 @@ QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
   }
   setFoldingVisible( true );
   QgsCodeEditorJson::initializeLexer();
+
+  connect( this, &QsciScintillaBase::SCN_HOTSPOTCLICK, this, &QgsCodeEditorJson::scintillaHotspotClick );
 }
 
 void QgsCodeEditorJson::initializeLexer()
@@ -65,4 +67,9 @@ void QgsCodeEditorJson::initializeLexer()
 
   SendScintilla( SCI_STYLESETHOTSPOT, ( int )QsciLexerJSON::IRI, true );
   setHotspotUnderline( true );
+}
+
+void QgsCodeEditorJson::scintillaHotspotClick( int position, int modifiers )
+{
+
 }
