@@ -27,7 +27,7 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), QgsLabelObstacleSettings::PolygonInterior );
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), QgsLabelObstacleSettings::PolygonBoundary );
 
-  connect( mObstacleTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( !mBlockSignals )
       emit changed();

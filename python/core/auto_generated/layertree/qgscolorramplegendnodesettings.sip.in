@@ -12,7 +12,7 @@
 
 class QgsColorRampLegendNodeSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Settings for a color ramp legend node.
 
 .. versionadded:: 3.18
@@ -197,6 +197,26 @@ Sets the ramp ``orientation`` (i.e. horizontal or vertical).
 .. seealso:: :py:func:`orientation`
 
 .. seealso:: :py:func:`setDirection`
+%End
+
+    bool useContinuousLegend() const;
+%Docstring
+Returns ``True`` if a continuous gradient legend will be used.
+
+.. seealso:: :py:func:`setUseContinuousLegend`
+%End
+
+    void setUseContinuousLegend( bool useContinuousLegend );
+%Docstring
+Sets the flag to use a continuos gradient legend to ``useContinuousLegend``.
+
+When this flag is set the legend will be rendered using a continuous color ramp with
+min and max values, when it is not set the legend will be rendered using separate
+items for each entry.
+
+.. seealso:: :py:func:`setOrientation`
+
+.. seealso:: :py:func:`direction`
 %End
 
 };

@@ -432,6 +432,42 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
   return true;
 }
 
+void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )
+{
+  if ( !other )
+    return;
+
+  if ( !other->identifier().isEmpty() )
+    mIdentifier = other->identifier();
+
+  if ( !other->parentIdentifier().isEmpty() )
+    mParentIdentifier = other->parentIdentifier();
+
+  if ( !other->language().isEmpty() )
+    mLanguage = other->language();
+
+  if ( !other->type().isEmpty() )
+    mType = other->type();
+
+  if ( !other->title().isEmpty() )
+    mTitle = other->title();
+
+  if ( !other->abstract().isEmpty() )
+    mAbstract = other->abstract();
+
+  if ( !other->history().isEmpty() )
+    mHistory = other->history();
+
+  if ( !other->keywords().isEmpty() )
+    mKeywords = other->keywords();
+
+  if ( !other->contacts().isEmpty() )
+    mContacts = other->contacts();
+
+  if ( !other->links().isEmpty() )
+    mLinks = other->links();
+}
+
 bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther )  const
 {
   return ( ( mIdentifier == metadataOther.mIdentifier ) &&

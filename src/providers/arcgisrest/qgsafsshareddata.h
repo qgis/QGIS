@@ -26,7 +26,7 @@ class QgsFeedback;
 
 /**
  * \brief This class holds data, shared between QgsAfsProvider and QgsAfsFeatureIterator
- **/
+ */
 class QgsAfsSharedData : public QObject
 {
     Q_OBJECT

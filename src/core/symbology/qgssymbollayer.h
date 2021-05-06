@@ -88,6 +88,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsSimpleLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
+        else if ( sipCpp->layerType() == "InterpolatedLine" )
+          sipType = sipType_QgsInterpolatedLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
@@ -188,7 +190,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
-      PropertyDashPatternOffset, //!< Dash pattern offset
+      PropertyDashPatternOffset, //!< Dash pattern offset,
+      PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
+      PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
     };
 
     /**

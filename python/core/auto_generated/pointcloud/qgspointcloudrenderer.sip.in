@@ -13,7 +13,7 @@
 
 class QgsPointCloudRenderContext
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates the render context for a 2D point cloud rendering operation.
 
@@ -26,7 +26,7 @@ Encapsulates the render context for a 2D point cloud rendering operation.
   public:
 
     QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset,
-                                double zValueScale, double zValueFixedOffset );
+                                double zValueScale, double zValueFixedOffset, QgsFeedback *feedback = 0 );
 %Docstring
 Constructor for QgsPointCloudRenderContext.
 
@@ -53,9 +53,23 @@ Returns a reference to the context's render context.
 Returns the scale of the layer's int32 coordinates compared to CRS coords.
 %End
 
+    void setScale( const QgsVector3D &scale );
+%Docstring
+Sets the scale of the layer's int32 coordinates compared to CRS coords.
+
+.. versionadded:: 3.20
+%End
+
     QgsVector3D offset() const;
 %Docstring
 Returns the offset of the layer's int32 coordinates compared to CRS coords.
+%End
+
+    void setOffset( const QgsVector3D &offset );
+%Docstring
+Sets the offset of the layer's int32 coordinates compared to CRS coords.
+
+.. versionadded:: 3.20
 %End
 
     long pointsRendered() const;
@@ -135,6 +149,13 @@ Returns any constant offset which must be applied to z values taken from the poi
    Scaling of z values via :py:func:`~QgsPointCloudRenderContext.zValueScale` should be applied before the :py:func:`~QgsPointCloudRenderContext.zValueFixedOffset`.
 %End
 
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object used to cancel rendering
+
+.. versionadded:: 3.20
+%End
+
 
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
@@ -143,7 +164,7 @@ Returns any constant offset which must be applied to z values taken from the poi
 
 class QgsPointCloudRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for 2d point cloud renderers.
 

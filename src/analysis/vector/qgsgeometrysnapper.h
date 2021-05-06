@@ -17,14 +17,17 @@
 #ifndef QGS_GEOMETRY_SNAPPER_H
 #define QGS_GEOMETRY_SNAPPER_H
 
-#include <QMutex>
-#include <QFuture>
-#include <QStringList>
 #include "qgsspatialindex.h"
 #include "qgsabstractgeometry.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
+#include "qgsgeos.h"
 #include "qgis_analysis.h"
+
+#include <QMutex>
+#include <QFuture>
+#include <QStringList>
+#include <geos_c.h>
 
 class QgsVectorLayer;
 
@@ -102,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     enum PointFlag { SnappedToRefNode, SnappedToRefSegment, Unsnapped };
 
     QgsFeatureSource *mReferenceSource = nullptr;
-    QgsFeatureList mInputFeatures;
+    QHash<QgsFeatureId, QgsGeometry> mCachedReferenceGeometries;
 
     QgsSpatialIndex mIndex;
     mutable QMutex mIndexMutex;
@@ -226,32 +229,17 @@ class QgsSnapIndex
     typedef QList<SnapItem *> Cell;
     typedef QPair<QgsPoint, QgsPoint> Segment;
 
-    class GridRow
-    {
-      public:
-        GridRow() = default;
-        ~GridRow();
-        const Cell *getCell( int col ) const;
-        Cell &getCreateCell( int col );
-        QList<SnapItem *> getSnapItems( int colStart, int colEnd ) const;
-
-      private:
-        QList<QgsSnapIndex::Cell> mCells;
-        int mColStartIdx = 0;
-    };
-
     QgsPoint mOrigin;
     double mCellSize;
 
     QList<CoordIdx *> mCoordIdxs;
-    QList<GridRow> mGridRows;
-    int mRowsStartIdx;
+    QList<SnapItem *> mSnapItems;
 
     void addPoint( const CoordIdx *idx, bool isEndPoint );
     void addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo );
-    const Cell *getCell( int col, int row ) const;
-    Cell &getCreateCell( int col, int row );
 
+    GEOSSTRtree *mSTRTree = nullptr;
+    std::vector< geos::unique_ptr > mSTRTreeItems;
 };
 
 ///@endcond

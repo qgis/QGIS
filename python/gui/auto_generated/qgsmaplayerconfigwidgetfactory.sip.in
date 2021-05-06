@@ -11,7 +11,7 @@
 
 class QgsMapLayerConfigWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Factory class for creating custom map layer property pages
 
 .. versionadded:: 2.16
@@ -21,6 +21,12 @@ Factory class for creating custom map layer property pages
 #include "qgsmaplayerconfigwidgetfactory.h"
 %End
   public:
+
+    enum class ParentPage
+    {
+      NoParent,
+      Temporal,
+    };
 
     QgsMapLayerConfigWidgetFactory();
 %Docstring
@@ -120,6 +126,16 @@ Set support flag for style dock
 Check if the layer is supported for this widget.
 
 :return: ``True`` if this layer is supported for this widget
+%End
+
+    virtual ParentPage parentPage() const;
+%Docstring
+Returns the associated parent page, for factories which create sub-components of a standard page.
+
+The default implementation returns QgsMapLayerConfigWidgetFactory.ParentPage.NoParent, indicating that the
+factory creates top-level pages which are not subcomponents.
+
+.. versionadded:: 3.20
 %End
 
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0 /Factory/;

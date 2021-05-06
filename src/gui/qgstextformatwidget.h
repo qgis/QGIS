@@ -267,7 +267,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
   private slots:
     void optionsStackedWidget_CurrentChanged( int indx );
     void showBackgroundRadius( bool show );
-    void showBackgroundPenStyle( bool show );
     void mShapeSVGPathLineEdit_textChanged( const QString &text );
     void onSubstitutionsChanged( const QgsStringReplacementCollection &substitutions );
     void previewScaleChanged( double scale );

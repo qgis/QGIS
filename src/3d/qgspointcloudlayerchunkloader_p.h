@@ -104,7 +104,6 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     const QgsPointCloudLayerChunkLoaderFactory *mFactory;
     std::unique_ptr<QgsPointCloud3DSymbolHandler> mHandler;
     QgsPointCloud3DRenderContext mContext;
-    bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
 };
 

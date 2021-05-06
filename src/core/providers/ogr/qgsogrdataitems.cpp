@@ -577,7 +577,14 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
 
-// GDAL 3.1 Shapefile driver directly handles .shp.zip files
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
+  // GDAL 3.1 Shapefile driver directly handles .shp.zip files
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
        GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
   {

@@ -63,10 +63,12 @@ class QgsO2: public O2
 
     /**
      * Compute expiration delay from current timestamp and expires()
-     * Should only be called just after a refresh / link event. */
+     * Should only be called just after a refresh / link event.
+    */
     void computeExpirationDelay();
 
-    /** Returns expiration delay.
+    /**
+     * Returns expiration delay.
      * May be 0 if it is unknown
      */
     int expirationDelay() const { return mExpirationDelay; }

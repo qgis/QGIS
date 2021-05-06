@@ -136,7 +136,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    for ( QStandardItem *item : qgis::as_const( childItemList ) )
+    for ( QStandardItem *item : std::as_const( childItemList ) )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -260,7 +260,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         row[ DbtmSrid ]->setText( tr( "Enter…" ) );
         row[ DbtmSrid ]->setFlags( row[ DbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        for ( QStandardItem *item : qgis::as_const( row ) )
+        for ( QStandardItem *item : std::as_const( row ) )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -281,7 +281,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        for ( QStandardItem *item : qgis::as_const( row ) )
+        for ( QStandardItem *item : std::as_const( row ) )
         {
           item->setFlags( item->flags() | flags );
         }

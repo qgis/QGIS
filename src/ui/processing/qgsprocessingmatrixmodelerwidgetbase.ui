@@ -128,6 +128,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mTableView</tabstop>
+  <tabstop>mButtonAddColumn</tabstop>
+  <tabstop>mButtonRemoveColumn</tabstop>
+  <tabstop>mButtonAddRow</tabstop>
+  <tabstop>mButtonRemoveRow</tabstop>
+  <tabstop>mButtonClear</tabstop>
+  <tabstop>mFixedRows</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

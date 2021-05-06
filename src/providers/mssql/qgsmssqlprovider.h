@@ -52,9 +52,8 @@ enum QgsMssqlPrimaryKeyType
 };
 
 /**
-\class QgsMssqlProvider
-\brief Data provider for mssql server.
-*
+ * \class QgsMssqlProvider
+ * \brief Data provider for mssql server.
 */
 class QgsMssqlProvider final: public QgsVectorDataProvider
 {

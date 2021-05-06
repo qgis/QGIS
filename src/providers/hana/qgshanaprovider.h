@@ -19,6 +19,7 @@
 
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
+#include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
 #ifdef HAVE_GUI
 #include "qgsproviderguimetadata.h"
@@ -33,22 +34,12 @@ class QgsFeature;
 class QgsField;
 class QDomDocument;
 
-class QgsHanaConnection;
 class QgsHanaConnectionRef;
 class QgsHanaFeatureIterator;
 
-struct FieldInfo
-{
-  short type;
-  bool isAutoIncrement;
-  bool isNullable;
-  bool isSigned;
-};
-
 /**
-\class QgsHanaProvider
-\brief Data provider for SAP HANA database.
-*
+ * \class QgsHanaProvider
+ * \brief Data provider for SAP HANA database.
 */
 class QgsHanaProvider final : public QgsVectorDataProvider
 {
@@ -166,9 +157,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Disable support for SelectAtId
     bool mSelectAtIdDisabled = false;
     // Attributes of nongeometry fields
-    QgsFields mAttributeFields;
-    // Additional information about HANA fields
-    QVector<FieldInfo> mFieldInfos;
+    QgsFields mFields;
+    AttributeFields mAttributeFields;
     //Capabilities of the layer
     QgsVectorDataProvider::Capabilities mCapabilities;
     // Default values of the result set

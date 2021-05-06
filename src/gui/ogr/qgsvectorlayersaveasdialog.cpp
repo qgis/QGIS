@@ -49,13 +49,13 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *par
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options, QWidget *parent, Qt::WindowFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
-  , mOptions( static_cast< Options >( options ) )
+  , mOptions( options )
 {
   if ( layer )
   {
@@ -91,6 +91,12 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 
   if ( !( mOptions & Extent ) )
     mExtentGroupBox->hide();
+
+  if ( !( mOptions & Metadata ) )
+  {
+    mCheckPersistMetadata->setChecked( false );
+    mCheckPersistMetadata->hide();
+  }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
   mButtonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
@@ -228,7 +234,7 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
         {
           QComboBox *cb = new QComboBox();
           cb->setObjectName( it.key() );
-          for ( const QString &val : qgis::as_const( opt->values ) )
+          for ( const QString &val : std::as_const( opt->values ) )
           {
             cb->addItem( val, val );
           }
@@ -582,7 +588,6 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     delete item;
   }
 
-  // workaround so the Q_FOREACH macro does not get confused by the ','
   typedef QPair<QLabel *, QWidget *> LabelControlPair;
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
@@ -972,6 +977,11 @@ void QgsVectorLayerSaveAsDialog::setOnlySelected( bool onlySelected )
 bool QgsVectorLayerSaveAsDialog::onlySelected() const
 {
   return mSelectedOnly->isChecked();
+}
+
+bool QgsVectorLayerSaveAsDialog::persistMetadata() const
+{
+  return mCheckPersistMetadata->isChecked();
 }
 
 QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const

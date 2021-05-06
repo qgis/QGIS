@@ -44,12 +44,14 @@ set(QGIS_APP_SRCS
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslayercapabilitiesmodel.cpp
+  qgslayernotesmanager.cpp
   qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
+  qgslayertreeviewnotesindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
   qgslayertreeviewtemporalindicator.cpp
   qgslayertreeviewofflineindicator.cpp
@@ -420,9 +422,10 @@ if(HAVE_OPENCL)
 endif()
 
 if (HAVE_PDAL)
-  include_directories(SYSTEM
-    ${PDAL_INCLUDE_DIR}
-  )
+  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 if(ENABLE_MODELTEST)
@@ -472,6 +475,7 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/maptools
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/app/pointcloud
@@ -602,9 +606,7 @@ if (POSTGRES_FOUND)
 endif()
 
 if (HAVE_PDAL)
-  target_link_libraries(qgis_app
-    ${PDAL_LIBRARIES}
-  )
+  target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)

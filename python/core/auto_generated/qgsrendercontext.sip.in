@@ -14,7 +14,7 @@
 
 class QgsRenderContext : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains information about the context of a rendering operation.
 
 The context of a rendering operation defines properties such as
@@ -280,6 +280,15 @@ per millimeter.
 .. seealso:: :py:func:`setScaleFactor`
 %End
 
+    double dpiTarget() const;
+%Docstring
+Returns the targeted DPI for rendering.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
     bool renderingStopped() const;
 %Docstring
 Returns ``True`` if the rendering operation has been stopped and any ongoing
@@ -425,6 +434,15 @@ to physical sizes. This should usually be equal to the number of pixels
 per millimeter.
 
 .. seealso:: :py:func:`scaleFactor`
+%End
+
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the targeted ``dpi`` for rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
 %End
 
     void setRendererScale( double scale );

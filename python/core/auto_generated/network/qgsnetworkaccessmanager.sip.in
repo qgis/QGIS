@@ -14,7 +14,7 @@
 
 class QgsNetworkRequestParameters
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates parameters and properties of a network request.
 
 .. versionadded:: 3.6
@@ -102,7 +102,7 @@ QgsNetworkRequestParameters.AttributeInitiatorRequestId attribute set.
 
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
-%Docstring
+%Docstring(signature="appended")
 network access manager for QGIS
 
 This class implements the QGIS network access manager.  It's a singleton
@@ -320,6 +320,30 @@ The contents of the reply will be returned after the request is completed or an 
 
 .. versionadded:: 3.6
 %End
+
+    void requestAuthOpenBrowser( const QUrl &url ) const;
+%Docstring
+Forwards an external browser login ``url`` opening request to the authentication handler.
+
+.. note::
+
+   If called by a background thread, the request will be forwarded to the network manager on the main thread.
+
+.. versionadded:: 3.20
+%End
+
+    void requestAuthCloseBrowser() const;
+%Docstring
+Forwards an external browser login closure request to the authentication handler.
+
+.. note::
+
+   If called by a background thread, the request will be forwarded to the network manager on the main thread.
+
+.. versionadded:: 3.20
+%End
+
+
 
   signals:
 

@@ -11,7 +11,7 @@
 
 class QgsShortcutsManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Shortcuts manager is a class that contains a list of QActions and QShortcuts
 that have been registered and their shortcuts can be changed.
 

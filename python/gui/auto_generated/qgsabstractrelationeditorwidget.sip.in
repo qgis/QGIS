@@ -18,7 +18,7 @@
 
 class QgsAbstractRelationEditorWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class to build new relation widgets.
 
 .. versionadded:: 3.18
@@ -60,6 +60,13 @@ inserting and deleting entries on the intermediate table as required.
     QgsRelation relation() const;
 %Docstring
 Returns the relation
+
+.. versionadded:: 3.18
+%End
+
+    QgsRelation nmRelation() const;
+%Docstring
+Returns the nm relation
 
 .. versionadded:: 3.18
 %End
@@ -259,7 +266,7 @@ Check :py:class:`QgsRealationEditorWidget` as an example.
 
 class QgsAbstractRelationEditorConfigWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 This class should be subclassed for every configurable relation widget type.
 
 It implements the GUI configuration widget and transforms this to/from a configuration.
@@ -316,6 +323,19 @@ Returns the relation for which this configuration widget applies
 :return: The relation
 %End
 
+    virtual void setNmRelation( const QgsRelation &nmRelation );
+%Docstring
+Set the nm relation for this widget.
+
+:param nmRelation: The nm relation
+%End
+
+    virtual QgsRelation nmRelation() const;
+%Docstring
+Returns the nm relation for which this configuration widget applies
+
+:return: The nm relation
+%End
 
 };
 
@@ -324,7 +344,7 @@ Returns the relation for which this configuration widget applies
 
 class QgsAbstractRelationEditorWidgetFactory
 {
-%Docstring
+%Docstring(signature="appended")
 Factory class for creating relation widgets and their corresponding config widgets
 
 .. versionadded:: 3.18

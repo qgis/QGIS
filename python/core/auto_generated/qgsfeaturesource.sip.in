@@ -12,7 +12,7 @@
 
 class QgsFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for objects which provide features via a getFeatures method.
 
 .. versionadded:: 3.0

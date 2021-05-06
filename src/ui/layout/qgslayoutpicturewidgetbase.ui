@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-4</y>
+        <y>-368</y>
         <width>520</width>
-        <height>881</height>
+        <height>845</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -557,10 +557,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -571,29 +581,19 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayoutItemComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsImageSourceLineEdit</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayoutItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSvgSourceLineEdit</class>
@@ -607,6 +607,7 @@
   <tabstop>mRadioSVG</tabstop>
   <tabstop>mRadioRaster</tabstop>
   <tabstop>mImageSourceLineEdit</tabstop>
+  <tabstop>mSourceDDBtn</tabstop>
   <tabstop>viewGroups</tabstop>
   <tabstop>viewImages</tabstop>
   <tabstop>mSvgSourceLineEdit</tabstop>

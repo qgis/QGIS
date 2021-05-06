@@ -11,7 +11,7 @@
 
 class QgsBookmark
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a spatial bookmark, with a name, CRS and extent.
 
@@ -118,7 +118,7 @@ Returns a DOM element representing the bookmark's properties.
 
 class QgsBookmarkManager : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 Manages storage of a set of bookmarks.
 

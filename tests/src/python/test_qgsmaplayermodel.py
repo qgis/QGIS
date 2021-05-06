@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel
+from qgis.core import QgsVectorLayer, QgsProject, QgsMapLayerModel, QgsApplication
 from qgis.PyQt.QtCore import Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
@@ -124,6 +124,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
         self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l3')
+
+        self.assertIsNone(m.data(m.index(0, 0), Qt.DecorationRole))
+        # set icon and text for empty item
+        m.setAllowEmptyLayer(True, 'empty', QgsApplication.getThemeIcon('/mItemBookmark.svg'))
+        self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'empty')
+        self.assertFalse(m.data(m.index(0, 0), Qt.DecorationRole).isNull())
 
         QgsProject.instance().removeMapLayers([l1.id(), l2.id(), l3.id()])
 

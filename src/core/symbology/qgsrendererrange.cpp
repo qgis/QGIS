@@ -193,7 +193,7 @@ bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat 
 void QgsRendererRangeLabelFormat::setPrecision( int precision )
 {
   // Limit the range of decimal places to a reasonable range
-  precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
+  precision = std::clamp( precision, MIN_PRECISION, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
   mNumberSuffix.clear();

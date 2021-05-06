@@ -222,6 +222,32 @@ class CORE_EXPORT QgsTextFormat
     void setNamedStyle( const QString &style );
 
     /**
+     * Returns the list of font families to use when restoring the text format, in order of precedence.
+     *
+     * \warning The list of families returned by this method is ONLY used when restoring the text format
+     * from serialized versions, and will not affect the current font() familily used by the format.
+     *
+     * \see setFamilies()
+     * \since QGIS 3.20
+     */
+    QStringList families() const;
+
+    /**
+     * Sets a list of font \a families to use for the text format, in order of precedence.
+     *
+     * When restoring serialized versions of the text format then the first matching font family
+     * from this list will be used for the text format. This provides a way to specify a list of possible
+     * font families which are used as fallbacks if a family isn't available on a particular QGIS install (CSS style).
+     *
+     * \warning The list of families set by calling this method is ONLY used when restoring the text format
+     * from serialized versions, and will not affect the current font() familily used by the format.
+     *
+     * \see families()
+     * \since QGIS 3.20
+     */
+    void setFamilies( const QStringList &families );
+
+    /**
      * Returns the size for rendered text. Units are retrieved using sizeUnit().
      * \see setSize()
      * \see sizeUnit()

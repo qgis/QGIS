@@ -10,7 +10,7 @@
 
 class QgsClassificationJenks : QgsClassificationMethod
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsClassificationJenks` is an implementation of :py:class:`QgsClassificationMethod`
 for natural breaks based on Jenks method
 

@@ -11,7 +11,7 @@
 
 class QgsRangeSlider : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A slider control with two interactive endpoints, for interactive selection of a range of values.
 
 .. versionadded:: 3.18

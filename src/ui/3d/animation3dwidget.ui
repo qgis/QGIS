@@ -295,9 +295,11 @@
   <tabstop>btnRemoveKeyframe</tabstop>
   <tabstop>btnEditKeyframe</tabstop>
   <tabstop>btnDuplicateKeyframe</tabstop>
+  <tabstop>btnExportAnimation</tabstop>
   <tabstop>cboInterpolation</tabstop>
   <tabstop>btnPlayPause</tabstop>
   <tabstop>sliderTime</tabstop>
+  <tabstop>mLoopingCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

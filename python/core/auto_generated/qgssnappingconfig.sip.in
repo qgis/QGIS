@@ -11,7 +11,7 @@
 
 class QgsSnappingConfig
 {
-%Docstring
+%Docstring(signature="appended")
 This is a container for configuration of the snapping of the project
 
 .. versionadded:: 3.0
@@ -77,7 +77,7 @@ QgsSnappingConfig.SnappingTypeFlag.
 
     class IndividualLayerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 This is a container of advanced configuration (per layer) of the snapping of the project
 
 .. versionadded:: 3.0

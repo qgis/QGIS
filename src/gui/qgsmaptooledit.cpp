@@ -19,7 +19,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QKeyEvent>
 
@@ -36,37 +36,33 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
 
 double QgsMapToolEdit::defaultZValue() const
 {
-  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+  return QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.value();
+}
+
+double QgsMapToolEdit::defaultMValue() const
+{
+  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_m_value" ), Qgis::DEFAULT_M_COORDINATE ).toDouble();
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
-  QgsSettings settings;
-  QColor color(
-    settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
-    settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
-    settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
-  color.setAlphaF( myAlpha );
-  return color;
+  return QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
 }
 
 int QgsMapToolEdit::digitizingStrokeWidth()
 {
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/digitizing/line_width" ), 1 ).toInt();
+  return QgsSettingsRegistryCore::settingsDigitizingLineWidth.value();
 }
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  QgsSettings settings;
-  QColor fillColor(
-    settings.value( QStringLiteral( "qgis/digitizing/fill_color_red" ), 255 ).toInt(),
-    settings.value( QStringLiteral( "qgis/digitizing/fill_color_green" ), 0 ).toInt(),
-    settings.value( QStringLiteral( "qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0;
-  fillColor.setAlphaF( myAlpha );
-  return fillColor;
+  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.value(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.value() );
 }
 
 
@@ -78,7 +74,7 @@ QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
   QColor color = digitizingStrokeColor();
   if ( alternativeBand )
   {
-    double alphaScale = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+    double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
     color.setAlphaF( color.alphaF() * alphaScale );
     rb->setLineStyle( Qt::DotLine );
   }
@@ -148,15 +144,14 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
 
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
-  QgsSettings settings;
   QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
-  QColor color( settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
-                settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
-                settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
+  QColor color( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
+                QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
+                QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value() );
+  double myAlpha = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() / 255.0;
   if ( alternativeBand )
   {
-    myAlpha = myAlpha * settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+    myAlpha = myAlpha * QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
     rb->setLineStyle( Qt::DotLine );
   }
   color.setAlphaF( myAlpha );

@@ -12,7 +12,7 @@
 
 class QgsPointCloudBlock
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for storing raw data from point cloud nodes
 
 .. note::
@@ -28,11 +28,11 @@ Base class for storing raw data from point cloud nodes
   public:
     QgsPointCloudBlock( int count,
                         const QgsPointCloudAttributeCollection &attributes,
-                        const QByteArray &data );
+                        const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset );
 %Docstring
 Ctor
 %End
-    ~QgsPointCloudBlock();
+    virtual ~QgsPointCloudBlock();
 
     const char *data() const;
 %Docstring
@@ -49,7 +49,17 @@ Returns number of points that are stored in the block
 Returns the attributes that are stored in the data block, along with their size
 %End
 
+    QgsVector3D scale() const;
+%Docstring
+Returns the custom scale of the block.
+%End
+
+    QgsVector3D offset() const;
+%Docstring
+Returns the custom offset of the block.
+%End
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -87,7 +87,7 @@ QVariantMap QgsConditionalBranchAlgorithm::processAlgorithm( const QVariantMap &
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
 
   QVariantMap results;
-  for ( Output *output : qgis::as_const( mOutputs ) )
+  for ( Output *output : std::as_const( mOutputs ) )
   {
     output->expression.prepare( &expressionContext );
     const QVariant res = output->expression.evaluate( &expressionContext );

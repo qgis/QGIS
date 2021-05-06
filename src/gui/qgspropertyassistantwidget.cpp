@@ -309,12 +309,16 @@ bool QgsPropertyAssistantWidget::computeValuesFromField( const QString &fieldNam
     return false;
   }
 
+  QVariant min;
+  QVariant max;
+  mLayer->minimumAndMaximumValue( fieldIndex, min, max );
+
   bool ok = false;
-  double minDouble = mLayer->minimumValue( fieldIndex ).toDouble( &ok );
+  double minDouble = min.toDouble( &ok );
   if ( !ok )
     return false;
 
-  double maxDouble = mLayer->maximumValue( fieldIndex ).toDouble( &ok );
+  double maxDouble = max.toDouble( &ok );
   if ( !ok )
     return false;
 

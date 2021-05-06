@@ -75,6 +75,9 @@ QList<QgsSimpleMarkerSymbolLayerBase::Shape> QgsSimpleMarkerSymbolLayerBase::ava
          << CrossFill
          << Cross2
          << Line
+         << HalfArc
+         << ThirdArc
+         << QuarterArc
          << ArrowHead
          << ArrowHeadFilled
          << SemiCircle
@@ -133,6 +136,9 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBa
     case Cross2:
     case Line:
     case ArrowHead:
+    case HalfArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
   return true;
@@ -356,6 +362,12 @@ QgsSimpleMarkerSymbolLayerBase::Shape QgsSimpleMarkerSymbolLayerBase::decodeShap
     return LeftHalfTriangle;
   else if ( cleaned == QLatin1String( "asterisk_fill" ) )
     return AsteriskFill;
+  else if ( cleaned == QLatin1String( "half_arc" ) )
+    return HalfArc;
+  else if ( cleaned == QLatin1String( "third_arc" ) )
+    return ThirdArc;
+  else if ( cleaned == QLatin1String( "quarter_arc" ) )
+    return QuarterArc;
 
   if ( ok )
     *ok = false;
@@ -418,6 +430,12 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( QgsSimpleMarkerSymbolLayerB
       return QStringLiteral( "quarter_circle" );
     case AsteriskFill:
       return QStringLiteral( "asterisk_fill" );
+    case HalfArc:
+      return QStringLiteral( "half_arc" );
+    case ThirdArc:
+      return QStringLiteral( "third_arc" );
+    case QuarterArc:
+      return QStringLiteral( "quarter_arc" );
   }
   return QString();
 }
@@ -635,6 +653,9 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( QgsSimpleMarkerSymbolLayerB
     case SemiCircle:
     case ThirdCircle:
     case QuarterCircle:
+    case HalfArc:
+    case ThirdArc:
+    case QuarterArc:
       return false;
   }
 
@@ -665,6 +686,21 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( QgsSimpleMarkerSymbolLay
     case QuarterCircle:
       mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       mPath.lineTo( 0, 0 );
+      return true;
+
+    case HalfArc:
+      mPath.moveTo( 1, 0 );
+      mPath.arcTo( -1, -1, 2, 2, 0, 180 );
+      return true;
+
+    case ThirdArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 120 );
+      return true;
+
+    case QuarterArc:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 2, 2, 90, 90 );
       return true;
 
     case Cross:
@@ -894,6 +930,11 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
   }
 
+  if ( props.contains( QStringLiteral( "cap_style" ) ) )
+  {
+    m->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( props[QStringLiteral( "cap_style" )].toString() ) );
+  }
+
   m->restoreOldDataDefinedProperties( props );
 
   return m;
@@ -918,6 +959,7 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
   mPen.setStyle( mStrokeStyle );
+  mPen.setCapStyle( mPenCapStyle );
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
@@ -1113,6 +1155,16 @@ void QgsSimpleMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, QgsSimpl
       mSelPen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( style ) );
     }
   }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
+  {
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    QString style = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext(), QString(), &ok );
+    if ( ok )
+    {
+      mPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+      mSelPen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( style ) );
+    }
+  }
 
   if ( shapeIsFilled( shape ) )
   {
@@ -1183,6 +1235,7 @@ QVariantMap QgsSimpleMarkerSymbolLayer::properties() const
   map[QStringLiteral( "outline_width_unit" )] = QgsUnitTypes::encodeUnit( mStrokeWidthUnit );
   map[QStringLiteral( "outline_width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale );
   map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "cap_style" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
   return map;
@@ -1202,6 +1255,7 @@ QgsSimpleMarkerSymbolLayer *QgsSimpleMarkerSymbolLayer::clone() const
   m->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setPenCapStyle( mPenCapStyle );
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
@@ -2693,7 +2747,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
     }
   }
 
-  QMatrix transform;
+  QTransform transform;
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
 
@@ -3100,7 +3154,7 @@ QRectF QgsRasterMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   double angle = 0.0;
   calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + outputOffset.x(), point.y() + outputOffset.y() );
@@ -3552,7 +3606,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   calculateOffsetAndRotation( context, scaledSize, hasDataDefinedRotation, offset, angle );
   scaledSize = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
 
-  QMatrix transform;
+  QTransform transform;
 
   // move to the desired position
   transform.translate( point.x() + offset.x(), point.y() + offset.y() );

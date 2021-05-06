@@ -33,7 +33,7 @@ class QMenu;
 class QgsHighlight;
 
 /**
-  Namespace containing methods which are useful for the select maptool widgets
+ * Namespace containing methods which are useful for the select maptool widgets
  */
 namespace QgsMapToolSelectUtils
 {
@@ -41,11 +41,11 @@ namespace QgsMapToolSelectUtils
   /**
    * Calculates a list of features matching a selection geometry and flags.
    * \param canvas the map canvas used to get the current selected vector layer and
-    for any required geometry transformations
+   * for any required geometry transformations
    * \param selectGeometry the geometry to select the layers features. This geometry
-    must be in terms of the canvas coordinate system.
+   * must be in terms of the canvas coordinate system.
    * \param doContains features will only be selected if fully contained within
-    the selection rubber band (otherwise intersection is enough).
+   * the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
    * \returns list of features which match search geometry and parameters
    * \since QGIS 2.16

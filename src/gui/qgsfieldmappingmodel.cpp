@@ -288,7 +288,7 @@ QString QgsFieldMappingModel::findExpressionForDestinationField( const QgsFieldM
 {
   // Search for fields in the source
   // 1. match by name
-  for ( const QgsField &sf : qgis::as_const( mSourceFields ) )
+  for ( const QgsField &sf : std::as_const( mSourceFields ) )
   {
     if ( sf.name() == f.field.name() )
     {
@@ -297,7 +297,7 @@ QString QgsFieldMappingModel::findExpressionForDestinationField( const QgsFieldM
     }
   }
   // 2. match by type
-  for ( const QgsField &sf : qgis::as_const( mSourceFields ) )
+  for ( const QgsField &sf : std::as_const( mSourceFields ) )
   {
     if ( excludedFieldNames.contains( sf.name() ) || sf.type() != f.field.type() )
       continue;
@@ -314,7 +314,7 @@ void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
     mExpressionContextGenerator->setSourceFields( mSourceFields );
   QStringList usedFields;
   beginResetModel();
-  for ( const Field &f : qgis::as_const( mMapping ) )
+  for ( const Field &f : std::as_const( mMapping ) )
   {
     if ( QgsExpression( f.expression ).isField() )
     {

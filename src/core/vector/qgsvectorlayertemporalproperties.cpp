@@ -63,8 +63,12 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       const int fieldIndex = vectorLayer->fields().lookupField( mStartFieldName );
       if ( fieldIndex >= 0 )
       {
-        const QDateTime min = vectorLayer->minimumValue( fieldIndex ).toDateTime();
-        const QDateTime maxStartTime = vectorLayer->maximumValue( fieldIndex ).toDateTime();
+        QVariant minVal;
+        QVariant maxVal;
+        vectorLayer->minimumAndMaximumValue( fieldIndex, minVal, maxVal );
+
+        const QDateTime min = minVal.toDateTime();
+        const QDateTime maxStartTime = maxVal.toDateTime();
         const QgsInterval eventDuration = QgsInterval( mFixedDuration, mDurationUnit );
         return QgsDateTimeRange( min, maxStartTime + eventDuration );
       }
@@ -109,20 +113,33 @@ QgsDateTimeRange QgsVectorLayerTemporalProperties::calculateTemporalExtent( QgsM
       const int endFieldIndex = vectorLayer->fields().lookupField( mEndFieldName );
       if ( startFieldIndex >= 0 && endFieldIndex >= 0 )
       {
-        return QgsDateTimeRange( std::min( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
-                                           vectorLayer->minimumValue( endFieldIndex ).toDateTime() ),
-                                 std::max( vectorLayer->maximumValue( startFieldIndex ).toDateTime(),
-                                           vectorLayer->maximumValue( endFieldIndex ).toDateTime() ) );
+        QVariant startMinVal;
+        QVariant startMaxVal;
+        vectorLayer->minimumAndMaximumValue( startFieldIndex, startMinVal, startMaxVal );
+        QVariant endMinVal;
+        QVariant endMaxVal;
+        vectorLayer->minimumAndMaximumValue( endFieldIndex, endMinVal, endMaxVal );
+
+        return QgsDateTimeRange( std::min( startMinVal.toDateTime(),
+                                           endMinVal.toDateTime() ),
+                                 std::max( startMaxVal.toDateTime(),
+                                           endMaxVal.toDateTime() ) );
       }
       else if ( startFieldIndex >= 0 )
       {
-        return QgsDateTimeRange( vectorLayer->minimumValue( startFieldIndex ).toDateTime(),
-                                 vectorLayer->maximumValue( startFieldIndex ).toDateTime() );
+        QVariant startMinVal;
+        QVariant startMaxVal;
+        vectorLayer->minimumAndMaximumValue( startFieldIndex, startMinVal, startMaxVal );
+        return QgsDateTimeRange( startMinVal.toDateTime(),
+                                 startMaxVal.toDateTime() );
       }
       else if ( endFieldIndex >= 0 )
       {
-        return QgsDateTimeRange( vectorLayer->minimumValue( endFieldIndex ).toDateTime(),
-                                 vectorLayer->maximumValue( endFieldIndex ).toDateTime() );
+        QVariant endMinVal;
+        QVariant endMaxVal;
+        vectorLayer->minimumAndMaximumValue( endFieldIndex, endMinVal, endMaxVal );
+        return QgsDateTimeRange( endMinVal.toDateTime(),
+                                 endMaxVal.toDateTime() );
       }
       break;
     }
@@ -494,6 +511,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
           break;
 
         case QgsUnitTypes::TemporalUnknownUnit:
+        case QgsUnitTypes::TemporalIrregularStep:
           return QString();
       }
       return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),

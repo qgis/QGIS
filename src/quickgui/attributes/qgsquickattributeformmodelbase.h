@@ -41,7 +41,7 @@ class QVariant;
 
 /**
  * \ingroup quick
- * \brief This is an internal (implementation) class used as the source model for QgsQuickAttributeFormModel.
+ * This is an internal (implementation) class used as the source model for QgsQuickAttributeFormModel.
  *
  * \sa QgsQuickAttributeFormModel
  *
@@ -123,6 +123,8 @@ class QgsQuickAttributeFormModelBase : public QStandardItemModel
     void constraintsHardValidChanged();
     //! \copydoc QgsQuickAttributeFormModelBase::constraintsSoftValid
     void constraintsSoftValidChanged();
+    //! Emitted when setData failed
+    void dataChangedFailed( const QString &message );
 
   private slots:
     void onFeatureChanged();

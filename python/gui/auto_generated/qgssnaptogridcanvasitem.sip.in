@@ -16,7 +16,7 @@
 
 class QgsSnapToGridCanvasItem : QgsMapCanvasItem
 {
-%Docstring
+%Docstring(signature="appended")
 
 Shows a grid on the map canvas given a spatial resolution.
 

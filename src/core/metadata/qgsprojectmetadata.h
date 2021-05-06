@@ -87,6 +87,7 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 
     bool readMetadataXml( const QDomElement &metadataElement ) override;
     bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const override;
+    void combine( const QgsAbstractMetadataBase *other ) override;
 
     bool operator==( const QgsProjectMetadata &metadataOther ) const;
 

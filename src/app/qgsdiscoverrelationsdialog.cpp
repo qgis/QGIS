@@ -34,7 +34,7 @@ QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation>
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );
-  for ( const QgsRelation &relation : qgis::as_const( mFoundRelations ) )
+  for ( const QgsRelation &relation : std::as_const( mFoundRelations ) )
     addRelation( relation );
 
   mRelationsTable->resizeColumnsToContents();

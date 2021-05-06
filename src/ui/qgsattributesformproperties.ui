@@ -223,7 +223,7 @@ Use this function to add extra logic to your forms.</string>
          <x>0</x>
          <y>0</y>
          <width>598</width>
-         <height>480</height>
+         <height>492</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
@@ -239,6 +239,17 @@ Use this function to add extra logic to your forms.</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mEditorLayoutComboBox</tabstop>
+  <tabstop>mTbInitCode</tabstop>
+  <tabstop>mFormSuppressCmbBx</tabstop>
+  <tabstop>mEditFormLineEdit</tabstop>
+  <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mAddTabOrGroupButton</tabstop>
+  <tabstop>mRemoveTabOrGroupButton</tabstop>
+  <tabstop>mInvertSelectionButton</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

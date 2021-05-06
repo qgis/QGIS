@@ -351,7 +351,7 @@ int QgsFeature::approximateMemoryUsage() const
   size_t s = sizeof( *this ) + sizeof( *d );
 
   // Attributes
-  for ( const QVariant &attr : qgis::as_const( d->attributes ) )
+  for ( const QVariant &attr : std::as_const( d->attributes ) )
   {
     s += qgsQVariantApproximateMemoryUsage( attr );
   }

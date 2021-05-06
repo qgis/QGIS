@@ -81,6 +81,11 @@ QgsDataSourceUri &QgsGeoNodeConnection::addWfsConnectionSettings( QgsDataSourceU
   return QgsOwsConnection::addWfsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wfs" ) );
 }
 
+QgsDataSourceUri &QgsGeoNodeConnection::addWcsConnectionSettings( QgsDataSourceUri &uri ) const
+{
+  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wcs" ) );
+}
+
 QString QgsGeoNodeConnection::settingsKey() const
 {
   return QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/" ) + mConnName;

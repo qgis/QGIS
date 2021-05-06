@@ -30,7 +30,11 @@
 #include "qgswkbtypes.h"
 
 #include <gdal.h>
+#include <geos_c.h>
 #include <ogr_api.h>
+
+#define xstr(x) str(x)
+#define str(x) #x
 
 // Version constants
 //
@@ -51,6 +55,8 @@ const double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
+
+const double Qgis::DEFAULT_M_COORDINATE = 0.0;
 
 const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
 
@@ -253,7 +259,10 @@ uint qHash( const QVariant &variant )
       return qHash( variant.toDateTime() );
     case QVariant::Url:
     case QVariant::Locale:
+    case QVariant::RegularExpression:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     case QVariant::RegExp:
+#endif
       return qHash( variant.toString() );
     default:
       break;
@@ -295,6 +304,38 @@ QString Qgis::devVersion()
   return QString::fromUtf8( QGIS_DEV_VERSION );
 }
 
+QString Qgis::geosVersion()
+{
+  return GEOSversion();
+}
+
+int Qgis::geosVersionInt()
+{
+  static const int version = QStringLiteral( "%1%2%3" )
+                             .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
+                             .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
+                             .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
+                             ;
+  return version;
+}
+
+int Qgis::geosVersionMajor()
+{
+  return GEOS_VERSION_MAJOR;
+}
+
+int Qgis::geosVersionMinor()
+{
+  return GEOS_VERSION_MINOR;
+}
+
+int Qgis::geosVersionPatch()
+{
+  static const int version = atoi( xstr( GEOS_VERSION_PATCH ) );
+  return version;
+}
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 template<>
 bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
 {
@@ -302,3 +343,4 @@ bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList
   // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
   return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }
+#endif

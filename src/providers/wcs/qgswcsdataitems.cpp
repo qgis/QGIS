@@ -19,6 +19,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
 
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
+#include "qgssettings.h"
+
 #ifdef HAVE_GUI
 #include "qgswcssourceselect.h"
 #endif
@@ -52,7 +56,8 @@ QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
     return children;
   }
 
-  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
+  const QVector<QgsWcsCoverageSummary> summaries = mWcsCapabilities.capabilities().contents.coverageSummary;
+  for ( const QgsWcsCoverageSummary &coverageSummary : summaries )
   {
     // Attention, the name may be empty
     QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
@@ -93,7 +98,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
-  Q_FOREACH ( const QgsWcsCoverageSummary &coverageSummary, mCoverageSummary.coverageSummary )
+  for ( const QgsWcsCoverageSummary &coverageSummary : std::as_const( mCoverageSummary.coverageSummary ) )
   {
     // Attention, the name may be empty
     QgsDebugMsgLevel( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title, 2 );
@@ -155,7 +160,7 @@ QString QgsWCSLayerItem::createUri()
   // TODO: prefer project CRS
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  Q_FOREACH ( const QString &c, mCoverageSummary.supportedCrs )
+  for ( const QString &c : std::as_const( mCoverageSummary.supportedCrs ) )
   {
     testCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -189,7 +194,8 @@ QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path 
 QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "WCS" ) )
+  const QStringList list = QgsOwsConnection::connectionList( "WCS" );
+  for ( const QString &connName : list )
   {
     QgsOwsConnection connection( QStringLiteral( "WCS" ), connName );
     QgsDataItem *conn = new QgsWCSConnectionItem( this, connName, mPath + '/' + connName, connection.uri().encodedUri() );
@@ -251,4 +257,51 @@ QgsDataItem *QgsWcsDataItemProvider::createDataItem( const QString &path, QgsDat
   }
 
   return nullptr;
+}
+
+
+QVector<QgsDataItem *> QgsWcsDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
+{
+  QVector<QgsDataItem *> items;
+  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WCS" ) ) );
+
+      if ( !encodedUris.isEmpty() )
+      {
+        for ( const QString &encodedUri : encodedUris )
+        {
+          QgsDebugMsgLevel( encodedUri, 3 );
+          QgsDataSourceUri uri;
+          QgsSettings settings;
+          QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
+
+          QString dpiMode = settings.value( key + "/wcs/dpiMode", "all" ).toString();
+          uri.setParam( QStringLiteral( "url" ), encodedUri );
+          if ( !dpiMode.isEmpty() )
+          {
+            uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+          }
+
+          QgsDebugMsgLevel( QStringLiteral( "WCS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ), 2 );
+
+          QgsDataItem *item = new QgsWCSConnectionItem( parentItem, QStringLiteral( "WCS" ), path, uri.encodedUri() );
+          if ( item )
+          {
+            items.append( item );
+          }
+        }
+      }
+    }
+  }
+
+  return items;
 }

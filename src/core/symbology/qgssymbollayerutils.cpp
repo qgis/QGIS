@@ -36,6 +36,8 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsrenderer.h"
 #include "qgsxmlutils.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbollayer.h"
 
 #include <QColor>
 #include <QFont>
@@ -3917,6 +3919,51 @@ void QgsSymbolLayerUtils::premultiplyColor( QColor &rgb, int alpha )
   }
 }
 
+bool QgsSymbolLayerUtils::condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline )
+{
+  QgsSimpleFillSymbolLayer *simpleFill = dynamic_cast< QgsSimpleFillSymbolLayer *>( fill );
+  QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< QgsSimpleLineSymbolLayer *>( outline );
+
+  if ( !simpleFill || !simpleLine )
+    return false;
+
+  if ( simpleLine->useCustomDashPattern() )
+    return false;
+
+  if ( simpleLine->dashPatternOffset() )
+    return false;
+
+  if ( simpleLine->alignDashPattern() )
+    return false;
+
+  if ( simpleLine->tweakDashPatternOnCorners() )
+    return false;
+
+  if ( simpleLine->trimDistanceStart() || simpleLine->trimDistanceEnd() )
+    return false;
+
+  if ( simpleLine->drawInsidePolygon() )
+    return false;
+
+  if ( simpleLine->ringFilter() != QgsSimpleLineSymbolLayer::AllRings )
+    return false;
+
+  if ( simpleLine->offset() )
+    return false;
+
+  if ( simpleLine->hasDataDefinedProperties() )
+    return false;
+
+  // looks good!
+  simpleFill->setStrokeColor( simpleLine->color() );
+  simpleFill->setStrokeWidth( simpleLine->width() );
+  simpleFill->setStrokeWidthUnit( simpleLine->widthUnit() );
+  simpleFill->setStrokeWidthMapUnitScale( simpleLine->widthMapUnitScale() );
+  simpleFill->setStrokeStyle( simpleLine->penStyle() );
+  simpleFill->setPenJoinStyle( simpleLine->penJoinStyle() );
+  return true;
+}
+
 void QgsSymbolLayerUtils::sortVariantList( QList<QVariant> &list, Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
@@ -4187,6 +4234,24 @@ bool QgsSymbolLayerUtils::pointInPolygon( const QPolygonF &points, QPointF point
     j = i;
   }
   return inside;
+}
+
+double QgsSymbolLayerUtils::polylineLength( const QPolygonF &polyline )
+{
+  if ( polyline.size() < 2 )
+    return 0;
+
+  double totalLength = 0;
+  auto it = polyline.begin();
+  QPointF p1 = *it++;
+  for ( ; it != polyline.end(); ++it )
+  {
+    QPointF p2 = *it;
+    const double segmentLength = std::sqrt( std::pow( p1.x() - p2.x(), 2.0 ) + std::pow( p1.y() - p2.y(), 2.0 ) );
+    totalLength += segmentLength;
+    p1 = p2;
+  }
+  return totalLength;
 }
 
 QPolygonF QgsSymbolLayerUtils::polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset )

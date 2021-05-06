@@ -390,6 +390,21 @@ class CORE_EXPORT QgsGeometry
     bool isSimple() const;
 
     /**
+     * Returns TRUE if the geometry is a polygon that is almost an axis-parallel rectangle.
+     *
+     * The \a maximumDeviation argument specifes the maximum angle (in degrees) that the polygon edges
+     * are allowed to deviate from axis parallel lines.
+     *
+     * By default the check will permit polygons with more than 4 edges, so long as the overall shape of
+     * the polygon is an axis-parallel rectangle (i.e. it is tolerant to rectangles with additional vertices
+     * added along the rectangle sides). If \a simpleRectanglesOnly is set to TRUE then the method will
+     * only return TRUE if the geometry is a simple rectangle consisting of 4 edges.
+     *
+     * \since QGIS 3.20
+     */
+    bool isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly = false ) const;
+
+    /**
      * Returns the planar, 2-dimensional area of the geometry.
      *
      * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
@@ -623,6 +638,46 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
+
+    /**
+     * Returns the Fréchet distance between this geometry and \a geom, restricted to discrete points for both geometries.
+     *
+     * The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
+     * Therefore it is often better than the Hausdorff distance.
+     *
+     * In case of error -1 will be returned.
+     *
+     * This method requires a QGIS build based on GEOS 3.7 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.6 or earlier.
+     * \see frechetDistanceDensify()
+     * \since QGIS 3.20
+     */
+    double frechetDistance( const QgsGeometry &geom ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Returns the Fréchet distance between this geometry and \a geom, restricted to discrete points for both geometries.
+     *
+     * The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
+     * Therefore it is often better than the Hausdorff distance.
+     *
+     * This function accepts a \a densifyFraction argument. The function performs a segment
+     * densification before computing the discrete Fréchet distance. The \a densifyFraction parameter
+     * sets the fraction by which to densify each segment. Each segment will be split into a
+     * number of equal-length subsegments, whose fraction of the total length is
+     * closest to the given fraction.
+     *
+     * This method can be used when the default approximation provided by frechetDistance()
+     * is not sufficient. Decreasing the \a densifyFraction parameter will make the
+     * distance returned approach the true Fréchet distance for the geometries.
+     *
+     * This method requires a QGIS build based on GEOS 3.7 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.6 or earlier.
+     * \see frechetDistance()
+     * \since QGIS 3.20
+     */
+    double frechetDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
@@ -1340,6 +1395,83 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary SIP_OUT = nullptr ) const;
 
     /**
+     * Constructs the Largest Empty Circle for a set of obstacle geometries, up to a
+     * specified tolerance.
+     *
+     * The Largest Empty Circle is the largest circle which has its center in the convex hull of the
+     * obstacles (the boundary), and whose interior does not intersect with any obstacle.
+     * The circle center is the point in the interior of the boundary which has the farthest distance from
+     * the obstacles (up to tolerance). The circle is determined by the center point and a point lying on an
+     * obstacle indicating the circle radius.
+     * The implementation uses a successive-approximation technique over a grid of square cells covering the obstacles and boundary.
+     * The grid is refined using a branch-and-bound algorithm.  Point containment and distance are computed in a performant
+     * way by using spatial indexes.
+     * Returns a two-point linestring, with one point at the center of the inscribed circle and the other
+     * on the boundary of the inscribed circle.
+     *
+     * This method requires QGIS builds based on GEOS 3.9 or later.
+     *
+     * \warning the \a tolerance value must be a value greater than 0, or the algorithm may never converge on a solution
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry largestEmptyCircle( double tolerance, const QgsGeometry &boundary = QgsGeometry() ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Returns a linestring geometry which represents the minimum diameter of the geometry.
+     *
+     * The minimum diameter is defined to be the width of the smallest band that
+     * contains the geometry, where a band is a strip of the plane defined
+     * by two parallel lines. This can be thought of as the smallest hole that the geometry
+     * can be moved through, with a single rotation.
+     *
+     * This method requires a QGIS build based on GEOS 3.6 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry minimumWidth() const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Computes the minimum clearance of a geometry.
+     *
+     * The minimum clearance is the smallest amount by which
+     * a vertex could be moved to produce an invalid polygon, a non-simple linestring, or a multipoint with
+     * repeated points.  If a geometry has a minimum clearance of 'eps', it can be said that:
+     *
+     * - No two distinct vertices in the geometry are separated by less than 'eps'
+     * - No vertex is closer than 'eps' to a line segment of which it is not an endpoint.
+     *
+     * If the minimum clearance cannot be defined for a geometry (such as with a single point, or a multipoint
+     * whose points are identical) a value of infinity will be returned.
+     *
+     * If an error occurs while calculating the clearance NaN will be returned.
+     *
+     * This method requires a QGIS build based on GEOS 3.6 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    double minimumClearance() const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Returns a LineString whose endpoints define the minimum clearance of a geometry.
+     *
+     * If the geometry has no minimum clearance, an empty LineString will be returned.
+     *
+     * This method requires a QGIS build based on GEOS 3.6 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.5 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry minimumClearanceLine() const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Returns the smallest convex polygon that contains all the points in the geometry.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
@@ -1376,6 +1508,34 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    /**
+     * Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
+     *
+     * The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
+     * The resulting linework is dissolved (duplicate lines are removed).
+     *
+     * The input geometry type should be a (Multi)LineString.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry node() const;
+
+    /**
+     * Find paths shared between the two given lineal geometries (this and \a other).
+     *
+     * Returns a GeometryCollection having two elements:
+     *
+     * - first element is a MultiLineString containing shared paths
+     *   having the same direction on both inputs
+     * - second element is a MultiLineString containing shared paths
+     *   having the opposite direction on the two inputs
+     *
+     * Returns a null geometry on exception.
+     *
+     * \since QGIS 3.20
+     */
+    QgsGeometry sharedPaths( const QgsGeometry &other ) const;
 
     /**
      * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
@@ -2036,7 +2196,9 @@ class CORE_EXPORT QgsGeometry
      *
      * \returns new valid QgsGeometry or null geometry on error
      *
-     * \note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+     * \note For QGIS builds using GEOS library versions older than 3.8 this method calls
+     * an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
+     * later this method calls the GEOS MakeValid method directly.
      *
      * \since QGIS 3.0
      */
@@ -2124,6 +2286,17 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      */
     void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
+
+    /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    void normalize();
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.

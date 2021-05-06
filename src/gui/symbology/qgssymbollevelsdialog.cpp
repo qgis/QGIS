@@ -129,7 +129,7 @@ void QgsSymbolLevelsWidget::updateUi()
 
 void QgsSymbolLevelsWidget::apply()
 {
-  for ( const QgsLegendSymbolItem &legendSymbol : qgis::as_const( mLegendSymbols ) )
+  for ( const QgsLegendSymbolItem &legendSymbol : std::as_const( mLegendSymbols ) )
   {
     QgsSymbol *sym = legendSymbol.symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )

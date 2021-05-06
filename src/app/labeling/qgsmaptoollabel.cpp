@@ -24,7 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
@@ -62,7 +62,7 @@ void QgsMapToolLabel::deactivate()
 bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 {
   QgsPointXY pt = toMapCoordinates( e->pos() );
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
     return false;
 
@@ -74,7 +74,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   QList<QgsLabelPosition> activeLayerLabels;
   if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
     {
       if ( pos.layerID == currentLayer->id() )
       {
@@ -87,7 +87,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 
   // prioritize unplaced labels
   QList<QgsLabelPosition> unplacedLabels;
-  for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+  for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
   {
     if ( pos.isUnplaced )
     {
@@ -101,7 +101,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
   {
     // multiple candidates found, so choose the smallest (i.e. most difficult to select otherwise)
     double minSize = std::numeric_limits< double >::max();
-    for ( const QgsLabelPosition &pos : qgis::as_const( labelPosList ) )
+    for ( const QgsLabelPosition &pos : std::as_const( labelPosList ) )
     {
       const double labelSize = pos.width * pos.height;
       if ( labelSize < minSize )
@@ -123,7 +123,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, bool &isOrigin )
 {
   QgsPointXY pt = toMapCoordinates( e->pos() );
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
     return false;
 
@@ -137,7 +137,7 @@ bool QgsMapToolLabel::calloutAtPosition( QMouseEvent *e, QgsCalloutPosition &p, 
   QList<QgsCalloutPosition> activeLayerCallouts;
   if ( const QgsVectorLayer *currentLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() ) )
   {
-    for ( const QgsCalloutPosition &pos : qgis::as_const( calloutPosList ) )
+    for ( const QgsCalloutPosition &pos : std::as_const( calloutPosList ) )
     {
       if ( pos.layerID == currentLayer->id() )
       {
@@ -189,11 +189,10 @@ void QgsMapToolLabel::createRubberBands()
           // instead, just use the boundary of the polygon for the rubber band
           geom = QgsGeometry( geom.constGet()->boundary() );
         }
-        QgsSettings settings;
-        int r = settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt();
-        int g = settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt();
-        int b = settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt();
-        int a = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt();
+        int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value();
+        int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value();
+        int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value();
+        int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value();
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );
@@ -846,7 +845,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   bool changed = false;
-  for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
+  for ( const QgsPalLayerSettings::Property &p : std::as_const( mPalProperties ) )
   {
     int index = -1;
 
@@ -877,7 +876,6 @@ bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes, bool ov
   return createAuxiliaryFields( mCurrentLabel, indexes, overwriteExpression );
 }
 
-
 bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes, bool overwriteExpression )
 {
   bool newAuxiliaryLayer = false;
@@ -898,7 +896,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   bool changed = false;
-  for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
+  for ( const QgsDiagramLayerSettings::Property &p : std::as_const( mDiagramProperties ) )
   {
     int index = -1;
 
@@ -922,6 +920,56 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   return newAuxiliaryLayer;
 }
 
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+{
+  return createAuxiliaryFields( mCurrentCallout, calloutIndexes, overwriteExpression );
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsCalloutPosition &details, QgsCalloutIndexes &calloutIndexes, bool overwriteExpression )
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( details.layerID );
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+  bool changed = false;
+  for ( const QgsCallout::Property &p : std::as_const( mCalloutProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = vlayer->labeling() && vlayer->labeling()->settings( details.providerID ).callout() ? vlayer->labeling()->settings( details.providerID ).callout()->dataDefinedProperties().property( p ) :
+                       QgsProperty();
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+      changed = true;
+    }
+
+    calloutIndexes[p] = index;
+  }
+  if ( changed )
+    emit vlayer->styleChanged();
+
+  return newAuxiliaryLayer;
+}
+
 void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 {
   if ( !mHoverRubberBand )
@@ -938,9 +986,7 @@ void QgsMapToolLabel::updateHoveredLabel( QgsMapMouseEvent *e )
 
   QgsCalloutPosition calloutPosition;
   bool isOrigin = false;
-  int xCol = 0;
-  int yCol = 0;
-  if ( calloutAtPosition( e, calloutPosition, isOrigin ) && canModifyCallout( calloutPosition, isOrigin, xCol, yCol ) )
+  if ( !mCalloutProperties.isEmpty() && calloutAtPosition( e, calloutPosition, isOrigin ) )
   {
     if ( !mCalloutOtherPointsRubberBand )
     {

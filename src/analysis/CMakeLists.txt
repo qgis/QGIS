@@ -140,6 +140,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandompointsonlines.cpp
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
+  processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
@@ -451,6 +452,9 @@ target_compile_features(qgis_analysis PRIVATE cxx_std_17)
 # Exiv still uses std::auto_ptr
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_definitions(qgis_analysis PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR)
+endif()
+if (MSVC)
+  target_compile_definitions(qgis_analysis PUBLIC _HAS_AUTO_PTR_ETC=1)
 endif()
 
 target_include_directories(qgis_analysis PUBLIC

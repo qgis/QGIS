@@ -14,7 +14,7 @@
 
 class QgsPostgresStringUtils
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsPostgresStringUtils` provides functions to handle postgres array like formatted lists in strings.
 
 .. versionadded:: 3.8

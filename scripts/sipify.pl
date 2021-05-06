@@ -95,16 +95,24 @@ sub read_line {
 }
 
 sub write_output {
-    my ($dbg_code, $out) = @_;
+    my ($dbg_code, $out, $prepend) = @_;
+    $prepend //= "no";
     if ($debug == 1){
         $dbg_code = sprintf("%d %-4s :: ", $LINE_IDX, $dbg_code);
     }
     else{
         $dbg_code = '';
     }
-    push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
-    push @OUTPUT, $dbg_code.$out;
-    push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    if ($prepend eq "prepend")
+    {
+       unshift @OUTPUT, $dbg_code . $out;
+    }
+    else
+    {
+      push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
+      push @OUTPUT, $dbg_code . $out;
+      push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    }
     $IF_FEATURE_CONDITION = '';
 }
 
@@ -466,7 +474,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
     $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
-    $line =~ s/\bSIP_HOLDGIL\b/\/HoldGIL\//;    
+    $line =~ s/\bSIP_HOLDGIL\b/\/HoldGIL\//;
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
@@ -850,7 +858,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # class declaration started
     # https://regex101.com/r/6FWntP/16
-    if ( $LINE =~ m/^(\s*(class))(\s+Q_DECL_DEPRECATED)?\s+([A-Z0-9_]+_EXPORT\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    if ( $LINE =~ m/^(\s*(class))\s+([A-Z0-9_]+_EXPORT\s+)?(Q_DECL_DEPRECATED\s+)?(?<classname>\w+)(?<domain>\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -899,7 +907,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
         $LINE .= "\n{\n";
         if ( $COMMENT !~ m/^\s*$/ ){
-            $LINE .= "%Docstring\n$COMMENT\n%End\n";
+            $LINE .= "%Docstring(signature=\"appended\")\n$COMMENT\n%End\n";
         }
         $LINE .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"";
         # for template based inheritance, add a typedef to define the base type
@@ -1110,7 +1118,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
         $LINE =~ s/\s*\bNODISCARD \b//;
         $LINE =~ s/\s*\bQ_DECL_DEPRECATED\b//;
-        $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
+        $LINE =~ s/^(\s*)?(const |virtual |static )*inline /$1$2/;
         $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;
         $LINE =~ s/\s*=\s*default\b//g;
@@ -1261,9 +1269,28 @@ while ($LINE_IDX < $LINE_COUNT){
     # fix astyle placing space after % character
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
+    # handle enum/flags QgsSettingsEntryEnumFlag
+    if ( $LINE =~ m/^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$/ ) {
+      my $prep_line = "class QgsSettingsEntryEnumFlag_$3
+{
+%TypeHeaderCode
+#include \"" .basename($headerfile) . "\"
+#include \"qgssettingsentry.h\"
+typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $2 &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    $2 value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const $2 &defaultValueOverride = $2() ) const;
+};";
+    $LINE = "$1const QgsSettingsEntryEnumFlag_$3 $3;";
+    $COMMENT = '';
+    write_output("ENF", "$prep_line\n", "prepend");
+    }
+
     write_output("NOR", "$LINE\n");
-    if ($PYTHON_SIGNATURE ne ''){
-        write_output("PSI", "$PYTHON_SIGNATURE\n");
+    if ($PYTHON_SIGNATURE ne '') {
+      write_output("PSI", "$PYTHON_SIGNATURE\n");
     }
 
     # multiline definition (parenthesis left open)

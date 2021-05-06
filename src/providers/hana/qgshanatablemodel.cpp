@@ -125,7 +125,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   childItemList << selItem;
   childItemList << sqlItem;
 
-  for ( QStandardItem *item :  qgis::as_const( childItemList ) )
+  for ( QStandardItem *item :  std::as_const( childItemList ) )
   {
     if ( tip.isEmpty() || withTipButSelectable )
       item->setFlags( item->flags() | Qt::ItemIsSelectable );

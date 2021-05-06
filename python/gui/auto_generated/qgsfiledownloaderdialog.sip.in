@@ -11,7 +11,7 @@
 
 class QgsFileDownloaderDialog : QProgressDialog
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsFileDownloaderDialog` is a QProgressDialog subclass which
 handles file downloads and user feedback.
 

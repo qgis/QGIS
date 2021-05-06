@@ -1,0 +1,52 @@
+name: 😱 Build with Qt 6
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/**'
+    - '.ci/**'
+    - '.docker/**'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/**'
+    - '.ci/**'
+    - '.docker/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Build Docker Container with Build Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-qt6-build-deps
+          dockerfile: .docker/qgis3-qt6-build-deps.dockerfile
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Run build
+        run: |
+          docker run -v $(pwd):/usr/src/qgis ${DOCKER_IMAGE} /usr/src/qgis/.docker/docker-qgis-build-qt6.sh
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}

@@ -10,9 +10,9 @@
 
 
 
-class QgsCurve: QgsAbstractGeometry
+class QgsCurve: QgsAbstractGeometry /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for curved geometry type
 
 .. versionadded:: 2.10
@@ -142,6 +142,23 @@ Returns the point and vertex id of a point within the curve.
          - type: will be set to the vertex type of the node
 %End
 
+    virtual int indexOf( const QgsPoint &point ) const = 0;
+%Docstring
+Returns the index of the first vertex matching the given ``point``, or -1 if a matching
+vertex is not found.
+
+.. note::
+
+   If the curve has m or z values then the search ``point`` must have exactly matching
+   m and z values in order to be matched against the curve's vertices.
+
+.. note::
+
+   This method only matches against segment vertices, not curve vertices.
+
+.. versionadded:: 3.20
+%End
+
     virtual QgsCurve *reversed() const = 0 /Factory/;
 %Docstring
 Returns a reversed copy of the curve, where the direction of the curve has been flipped.
@@ -174,6 +191,7 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsCurve *toCurveType() const /Factory/;
 
+    void normalize() final /HoldGIL/;
 
     virtual QgsRectangle boundingBox() const;
 
@@ -265,6 +283,24 @@ Returns the curve's orientation, e.g. clockwise or counter-clockwise.
    The result is not predictable for non-closed curves.
 
 .. versionadded:: 3.6
+%End
+
+    virtual void scroll( int firstVertexIndex ) = 0;
+%Docstring
+Scrolls the curve vertices so that they start with the vertex at the given index.
+
+.. warning::
+
+   This should only be called on closed curves, or the shape of the curve will be altered and
+   the result is undefined.
+
+.. warning::
+
+   The ``firstVertexIndex`` must correspond to a segment vertex and not a curve point or the result
+   is undefined.
+
+
+.. versionadded:: 3.20
 %End
 
 

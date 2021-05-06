@@ -200,7 +200,7 @@ class TestQgsRuleBasedRenderer: public QObject
       // and does not have a parent
       QVERIFY( !root->parent() );
 
-      Q_FOREACH ( QgsRuleBasedRenderer::Rule *node, root->children() )
+      for ( QgsRuleBasedRenderer::Rule *node : root->children() )
         check_non_root_rule( node );
     }
 
@@ -212,7 +212,7 @@ class TestQgsRuleBasedRenderer: public QObject
       // and must have a parent
       QVERIFY( node->parent() );
       // check that all children are okay
-      Q_FOREACH ( QgsRuleBasedRenderer::Rule *child, node->children() )
+      for ( QgsRuleBasedRenderer::Rule *child : node->children() )
         check_non_root_rule( child );
     }
 

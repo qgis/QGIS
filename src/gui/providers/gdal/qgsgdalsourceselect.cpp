@@ -323,7 +323,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     else if ( !options.isEmpty() )
     {
       QComboBox *cb = new QComboBox();
-      for ( const QString &val : qgis::as_const( options ) )
+      for ( const QString &val : std::as_const( options ) )
       {
         cb->addItem( val, val );
       }

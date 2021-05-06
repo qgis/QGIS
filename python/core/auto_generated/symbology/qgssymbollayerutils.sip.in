@@ -684,6 +684,20 @@ Converts a QColor into a premultiplied ARGB QColor value using a specified alpha
 .. versionadded:: 2.3
 %End
 
+    static bool condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline );
+%Docstring
+Attempts to condense a ``fill`` and ``outline`` layer, by moving the outline layer to the
+fill symbol's stroke.
+
+This will only be done if the ``outline`` can be transformed into a stroke on the fill layer
+losslessly. If so, ``fill`` will be updated in place with the new stroke. Any existing stroke
+settings in ``fill`` will be replaced.
+
+Returns ``True`` if the fill and outline were successfully condensed.
+
+.. versionadded:: 3.20
+%End
+
     static void sortVariantList( QList<QVariant> &list, Qt::SortOrder order );
 %Docstring
 Sorts the passed list in requested order
@@ -732,6 +746,13 @@ Calculate a point on the surface of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 %Docstring
 Calculate whether a point is within of a QPolygonF
+%End
+
+    static double polylineLength( const QPolygonF &polyline );
+%Docstring
+Returns the total length of a ``polyline``.
+
+.. versionadded:: 3.20
 %End
 
     static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );

@@ -99,7 +99,7 @@ QgsFields QgsDropTableFieldsAlgorithm::outputFields( const QgsFields &inputField
   std::sort( mFieldIndices.begin(), mFieldIndices.end(), std::greater< int >() );
 
   // this second time we make a cleaned version of the fields
-  for ( const int index : qgis::as_const( mFieldIndices ) )
+  for ( const int index : std::as_const( mFieldIndices ) )
   {
     outFields.remove( index );
   }
@@ -115,7 +115,7 @@ bool QgsDropTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     std::unique_ptr< QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
     if ( source )
     {
-      for ( const QString &field : qgis::as_const( mFieldsToDelete ) )
+      for ( const QString &field : std::as_const( mFieldsToDelete ) )
       {
         const int index = source->fields().lookupField( field );
         if ( index < 0 )
@@ -232,7 +232,7 @@ QgsFields QgsRetainTableFieldsAlgorithm::outputFields( const QgsFields &inputFie
 
   // this second time we make a cleaned version of the fields
   QgsFields outFields;
-  for ( const int index : qgis::as_const( mFieldIndices ) )
+  for ( const int index : std::as_const( mFieldIndices ) )
   {
     outFields.append( inputFields.at( index ) );
   }
@@ -248,7 +248,7 @@ bool QgsRetainTableFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
     std::unique_ptr< QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
     if ( source )
     {
-      for ( const QString &field : qgis::as_const( mFieldsToRetain ) )
+      for ( const QString &field : std::as_const( mFieldsToRetain ) )
       {
         const int index = source->fields().lookupField( field );
         if ( index < 0 )

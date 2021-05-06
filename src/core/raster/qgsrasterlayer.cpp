@@ -55,6 +55,7 @@ email                : tim at linfiniti.com
 #include "qgscubicrasterresampler.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsmaplayerfactory.h"
 
 #include <cmath>
 #include <cstdio>
@@ -74,7 +75,6 @@ email                : tim at linfiniti.com
 #include <QImage>
 #include <QLabel>
 #include <QList>
-#include <QMatrix>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
@@ -127,8 +127,12 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   setProviderType( providerKey );
 
   QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-
-  setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
+  QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+  if ( options.loadDefaultStyle )
+  {
+    providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
+  setDataSourcePrivate( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
   {
@@ -311,6 +315,9 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 
 QString QgsRasterLayer::htmlMetadata() const
 {
+  if ( !mDataProvider )
+    return QString();
+
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
@@ -876,13 +883,20 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 }
 
-void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
   QString errorMsg;
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   // Store the original style
   if ( hadRenderer && ! loadDefaultStyleFlag )
@@ -922,12 +936,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   mDataSource = dataSource;
   mLayerName = baseName;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-
   setDataProvider( provider, options, flags );
 
   if ( mDataProvider )
@@ -966,8 +974,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
       setDefaultContrastEnhancement();
     }
   }
-  emit dataSourceChanged();
-  emit dataChanged();
 }
 
 void QgsRasterLayer::closeDataProvider()
@@ -1758,6 +1764,7 @@ void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &t
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
 QStringList QgsRasterLayer::subLayers() const
@@ -2172,6 +2179,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
                                const QgsReadWriteContext &context ) const
 {
+  if ( !mDataProvider )
+    return false;
+
   // first get the layer element so that we can append the type attribute
 
   QDomElement mapLayerNode = layer_node.toElement();
@@ -2182,7 +2192,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "raster" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::RasterLayer ) );
 
   // add provider node
 

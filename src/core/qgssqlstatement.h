@@ -771,7 +771,7 @@ class CORE_EXPORT QgsSQLStatement
     /**
      * \ingroup core
      * \brief Support for visitor pattern - algorithms dealing with the statement
-        may be implemented without modifying the Node classes
+     * may be implemented without modifying the Node classes
     */
     class CORE_EXPORT Visitor
     {

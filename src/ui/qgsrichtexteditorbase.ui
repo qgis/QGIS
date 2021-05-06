@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRichTextEditorBase</class>
+ <widget class="QWidget" name="QgsRichTextEditorBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>846</width>
+    <height>312</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string notr="true"/>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QToolBar" name="mToolBar">
+     <addaction name="mActionUndo"/>
+     <addaction name="mActionRedo"/>
+     <addaction name="mActionCut"/>
+     <addaction name="mActionCopy"/>
+     <addaction name="mActionPaste"/>
+     <addaction name="separator"/>
+     <addaction name="mActionBold"/>
+     <addaction name="mActionItalic"/>
+     <addaction name="mActionUnderline"/>
+     <addaction name="mActionStrikeOut"/>
+     <addaction name="mActionBulletList"/>
+     <addaction name="mActionOrderedList"/>
+     <addaction name="mActionDecreaseIndent"/>
+     <addaction name="mActionIncreaseIndent"/>
+     <addaction name="separator"/>
+     <addaction name="mActionInsertLink"/>
+     <addaction name="mActionInsertImage"/>
+     <addaction name="mActionEditSource"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QStackedWidget" name="mStackedWidget">
+     <widget class="QWidget" name="mPageRichEdit">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsImageDropTextEdit" name="mTextEdit">
+         <property name="autoFormatting">
+          <set>QTextEdit::AutoNone</set>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mPageSourceEdit"/>
+    </widget>
+   </item>
+  </layout>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="mActionCut">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCut.svg</normaloff>:/images/themes/default/mActionEditCut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut</string>
+   </property>
+  </action>
+  <action name="mActionCopy">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="mActionPaste">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Past</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="mActionInsertLink">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="insert-link">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Insert Link</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert link</string>
+   </property>
+  </action>
+  <action name="mActionBold">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="format-text-bold">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Bold</string>
+   </property>
+  </action>
+  <action name="mActionItalic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="format-text-italic">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Italic</string>
+   </property>
+   <property name="toolTip">
+    <string>Italic</string>
+   </property>
+  </action>
+  <action name="mActionUnderline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="format-text-underline">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Underline</string>
+   </property>
+   <property name="toolTip">
+    <string>Underline</string>
+   </property>
+  </action>
+  <action name="mActionStrikeOut">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="format-text-strikethrough">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Strike Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Strike Out</string>
+   </property>
+  </action>
+  <action name="mActionBulletList">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bullet List</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a bullet list</string>
+   </property>
+  </action>
+  <action name="mActionOrderedList">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ordered List</string>
+   </property>
+   <property name="toolTip">
+    <string>Create an ordered list</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseIndent">
+   <property name="icon">
+    <iconset theme="format-indent-less">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease Indentation</string>
+   </property>
+   <property name="toolTip">
+    <string>Decrease indentation</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseIndent">
+   <property name="icon">
+    <iconset theme="format-indent-more">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Increase Indentation</string>
+   </property>
+   <property name="toolTip">
+    <string>Increase indentation</string>
+   </property>
+  </action>
+  <action name="mActionInsertImage">
+   <property name="icon">
+    <iconset theme="insert-image">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Insert Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert image</string>
+   </property>
+  </action>
+  <action name="mActionEditSource">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditHtml.svg</normaloff>:/images/themes/default/mActionEditHtml.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit HTML Source</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit HTML Source</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsImageDropTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>qgsimagedroptextedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgspostgreslistener.h"
-
+#include "qgsdatasourceuri.h"
+#include "qgscredentials.h"
 #include "qgslogger.h"
 
 #ifdef Q_OS_WIN
@@ -24,6 +25,8 @@
 #else
 #include <sys/select.h>
 #endif
+
+const int PG_CONNECT_TIMEOUT = 30;
 
 extern "C"
 {
@@ -58,7 +61,43 @@ QgsPostgresListener::~QgsPostgresListener()
 void QgsPostgresListener::run()
 {
   PGconn *conn = nullptr;
-  conn = PQconnectdb( mConnString.toLocal8Bit() );
+  QString connectString = mConnString;
+
+  connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
+  conn = PQconnectdb( connectString.toUtf8() );
+
+  if ( PQstatus( conn ) != CONNECTION_OK )
+  {
+    QgsDataSourceUri uri( connectString );
+    QString username = uri.username();
+    QString password = uri.password();
+
+    PQfinish( conn );
+
+    QgsCredentials::instance()->lock();
+
+    if ( QgsCredentials::instance()->get( mConnString, username, password, PQerrorMessage( conn ) ) )
+    {
+      uri.setUsername( username );
+      uri.setPassword( password );
+      connectString = uri.connectionInfo( false );
+      connectString += QStringLiteral( " connect_timeout=%1" ).arg( PG_CONNECT_TIMEOUT );
+
+      conn = PQconnectdb( connectString.toUtf8() );
+      if ( PQstatus( conn ) == CONNECTION_OK )
+        QgsCredentials::instance()->put( mConnString, username, password );
+    }
+
+    QgsCredentials::instance()->unlock();
+
+    if ( PQstatus( conn ) != CONNECTION_OK )
+    {
+      PQfinish( conn );
+      QgsDebugMsg( QStringLiteral( "LISTENer not started" ) );
+      return;
+    }
+  }
+
 
   PGresult *res = PQexec( conn, "LISTEN qgis" );
   if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
@@ -94,7 +133,6 @@ void QgsPostgresListener::run()
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-    QgsDebugMsg( QStringLiteral( "select in the loop" ) );
     if ( select( sock + 1, &input_mask, nullptr, nullptr, &timeout ) < 0 )
     {
       QgsDebugMsg( QStringLiteral( "error in select" ) );
@@ -109,10 +147,6 @@ void QgsPostgresListener::run()
       emit notify( msg );
       QgsDebugMsg( "notify " + msg );
       PQfreemem( n );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "not a notify" ) );
     }
 
     if ( mStop )

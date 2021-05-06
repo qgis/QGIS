@@ -36,7 +36,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mTracesMaxLengthSpinBox->setClearValue( 100.0 );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mColoringMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged,
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -45,13 +45,13 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   connect( mColorRampShaderMaximumEditLine, &QLineEdit::textEdited,
            this, &QgsMeshRendererVectorSettingsWidget::onColorRampMinMaxChanged );
 
-  connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mLineWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
 
   connect( mDisplayVectorsOnGridGroupBox, &QGroupBox::toggled, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -71,30 +71,30 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
     connect( widget, &QLineEdit::textChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   }
 
-  connect( mXSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mYSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mXSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mYSpacingSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onSymbologyChanged );
   onSymbologyChanged( 0 );
 
-  connect( mSymbologyVectorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mSymbologyVectorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mStreamlinesSeedingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onStreamLineSeedingMethodChanged );
   onStreamLineSeedingMethodChanged( 0 );
 
-  connect( mStreamlinesSeedingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mStreamlinesSeedingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mStreamlinesDensitySpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mStreamlinesDensitySpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mTracesMaxLengthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mTracesMaxLengthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mTracesParticlesCountSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mTracesParticlesCountSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
   mTracesTailLengthMapUnitWidget->setUnits( QgsUnitTypes::RenderUnitList()
@@ -187,7 +187,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )

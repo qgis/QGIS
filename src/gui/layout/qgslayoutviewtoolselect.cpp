@@ -50,7 +50,6 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //swallow clicks while dragging/resizing items
     return;
   }
-
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
@@ -218,10 +217,15 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     itemList = layout()->items( rect.center(), selectionMode );
   else
     itemList = layout()->items( rect, selectionMode );
-  for ( QGraphicsItem *item : qgis::as_const( itemList ) )
+
+  QgsLayoutItemPage *focusedPaperItem = nullptr;
+  for ( QGraphicsItem *item : std::as_const( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    if ( paperItem )
+      focusedPaperItem = paperItem;
+
     if ( layoutItem && !paperItem )
     {
       if ( !layoutItem->isLocked() )
@@ -243,11 +247,16 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     }
   }
 
+
   //update item panel
   const QList<QgsLayoutItem *> selectedItemList = layout()->selectedLayoutItems();
   if ( !selectedItemList.isEmpty() )
   {
     emit itemFocused( selectedItemList.at( 0 ) );
+  }
+  else if ( focusedPaperItem )
+  {
+    emit itemFocused( focusedPaperItem );
   }
   else
   {

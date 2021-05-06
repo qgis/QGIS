@@ -21,6 +21,7 @@
 #include "qgsserversettings.h"
 #include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
+#include "qgsserverrequest.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;
@@ -56,7 +57,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
   private:
 
 
-    json projectsData() const;
+    json projectsData( const QgsServerRequest &request ) const;
 
     const QgsServerSettings *mSettings = nullptr;
 };

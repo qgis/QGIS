@@ -164,6 +164,13 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Comparator for sorting of geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+
+    /**
      * Clears the geometry, ie reset it to a null geometry
      */
     virtual void clear() = 0;
@@ -227,6 +234,17 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
+
+    /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void normalize() = 0;
 
     //import
 
@@ -536,6 +554,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry contains curved segments
      */
     virtual bool hasCurvedSegments() const;
+
+    /**
+     * Returns TRUE if the bounding box of this geometry intersects with a \a rectangle.
+     *
+     * Since this test only considers the bounding box of the geometry, is is very fast to
+     * calculate and handles invalid geometries.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const SIP_HOLDGIL;
 
     /**
      * Returns a version of the geometry without curves. Caller takes ownership of
@@ -1015,6 +1043,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
+
+    /**
+     * Returns the sort index for the geometry, used in the compareTo() method to compare
+     * geometries of different types.
+     *
+     * \since QGIS 3.20
+     */
+    int sortIndex() const;
+
+    /**
+     * Compares to an \a other geometry of the same class, and returns a integer
+     * for sorting of the two geometries.
+     *
+     * \note The actual logic for the sorting is an internal detail only and is subject to change
+     * between QGIS versions. The result should only be used for direct comparison of geometries
+     * and not stored for later use.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
 
     /**
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)

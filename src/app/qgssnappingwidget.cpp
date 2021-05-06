@@ -40,7 +40,7 @@
 #include "qgssnappinglayertreemodel.h"
 #include "qgssnappingwidget.h"
 #include "qgsunittypes.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsscalewidget.h"
 
 #ifdef ENABLE_MODELTEST
@@ -145,6 +145,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   QMenu *avoidIntersectionsModeMenu = new QMenu( tr( "Set Avoid Overlap Mode" ), this );
   mAllowIntersectionsAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAllowIntersections.svg" ) ), tr( "Allow Overlap" ), avoidIntersectionsModeMenu );
   mAvoidIntersectionsCurrentLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsCurrentLayer.svg" ) ), tr( "Avoid Overlap on Active Layer" ), avoidIntersectionsModeMenu );
+  mAvoidIntersectionsCurrentLayerAction->setToolTip( tr( "Avoid Overlap on Active Layer.\nBeware that this option will be applied on all vertices of the edited geometries, even if outside the current view extent" ) );
   mAvoidIntersectionsLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsLayers.svg" ) ), tr( "Follow Advanced Configuration" ), avoidIntersectionsModeMenu );
   avoidIntersectionsModeMenu->addAction( mAllowIntersectionsAction );
   avoidIntersectionsModeMenu->addAction( mAvoidIntersectionsCurrentLayerAction );
@@ -230,7 +231,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mUnitsComboBox->addItem( mapCanvasDistanceUnits, QgsTolerance::ProjectUnits );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Project/Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
-  connect( mUnitsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsSnappingWidget::changeUnit );
 
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
@@ -417,8 +418,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   modeChanged();
   updateToleranceDecimals();
 
-  bool defaultSnapEnabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
-  enableSnapping( defaultSnapEnabled );
+  enableSnapping( QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value() );
 
   restoreGeometry( QgsSettings().value( QStringLiteral( "/Windows/SnappingWidget/geometry" ) ).toByteArray() );
 }
@@ -460,7 +460,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   }
 
   // update snapping flag actions
-  for ( QAction *action : qgis::as_const( mSnappingFlagActions ) )
+  for ( QAction *action : std::as_const( mSnappingFlagActions ) )
   {
     const QgsSnappingConfig::SnappingTypeFlag actionFlag = static_cast<QgsSnappingConfig::SnappingTypeFlag>( action->data().toInt() );
     action->setChecked( config.typeFlag() & actionFlag );
@@ -712,7 +712,7 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   else
   {
     // user unchecked the action -- find out which ones we should set as new default action
-    for ( QAction *flagAction : qgis::as_const( mSnappingFlagActions ) )
+    for ( QAction *flagAction : std::as_const( mSnappingFlagActions ) )
     {
       if ( type & static_cast<QgsSnappingConfig::SnappingTypeFlag>( flagAction->data().toInt() ) )
       {

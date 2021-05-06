@@ -213,7 +213,7 @@ struct MapIndexedPointCloudNode
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, mIndexScale, mIndexOffset, x, y, z );
+      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), x, y, z );
       QgsPoint point( x, y );
 
       if ( mZRange.contains( z ) && extentEngine->contains( &point ) )
@@ -260,7 +260,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 
   acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
                    MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
-                   qgis::overload<const QVector<QMap<QString, QVariant>>&>::of( &QVector<QMap<QString, QVariant>>::append ),
+                   qOverload<const QVector<QMap<QString, QVariant>>&>( &QVector<QMap<QString, QVariant>>::append ),
                    QtConcurrent::UnorderedReduce );
 
   return acceptedPoints;

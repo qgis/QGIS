@@ -14,7 +14,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 class QgsRasterLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a raster layer.
 
@@ -156,24 +156,6 @@ Set the data provider.
 :param flags: provider flags since QGIS 3.16
 
 .. versionadded:: 3.2
-%End
-
-    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
-
-%Docstring
-Updates the data source of the layer. The layer's renderer and legend will be preserved only
-if the geometry type of the new data source matches the current geometry type of the layer.
-
-:param dataSource: new layer data source
-:param baseName: base name of the layer
-:param provider: provider string
-:param options: provider options
-:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
-                             data source
-
-.. seealso:: :py:func:`dataSourceChanged`
-
-.. versionadded:: 3.6
 %End
 
     LayerType rasterType();

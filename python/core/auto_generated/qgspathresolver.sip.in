@@ -11,7 +11,7 @@
 
 class QgsPathResolver
 {
-%Docstring
+%Docstring(signature="appended")
 Resolves relative paths into absolute paths and vice versa. Used for writing
 
 .. versionadded:: 3.0

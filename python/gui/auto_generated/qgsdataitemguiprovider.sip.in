@@ -11,7 +11,7 @@
 
 class QgsDataItemGuiContext
 {
-%Docstring
+%Docstring(signature="appended")
 
 Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the application GUI.
 
@@ -51,7 +51,7 @@ This bar can be used to provide non-blocking feedback to users.
 
 class QgsDataItemGuiProvider
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for providers which affect how :py:class:`QgsDataItem` items behave
 within the application GUI.

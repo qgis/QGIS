@@ -58,6 +58,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
+    void normalize() final SIP_HOLDGIL;
 
     //surface interface
     double area() const override SIP_HOLDGIL;
@@ -66,6 +67,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     //curve polygon interface
 
@@ -305,6 +307,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

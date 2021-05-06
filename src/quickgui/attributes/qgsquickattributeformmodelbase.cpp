@@ -99,6 +99,7 @@ void QgsQuickAttributeFormModelBase::setAttributeModel( QgsQuickAttributeModel *
     disconnect( mAttributeModel, &QgsQuickAttributeModel::layerChanged, this, &QgsQuickAttributeFormModelBase::onLayerChanged );
     disconnect( mAttributeModel, &QgsQuickAttributeModel::featureChanged, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
     disconnect( mAttributeModel, &QgsQuickAttributeModel::modelReset, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
+    disconnect( mAttributeModel, &QgsQuickAttributeModel::dataChangedFailed, this, &QgsQuickAttributeFormModelBase::dataChangedFailed );
   }
 
   mAttributeModel = attributeModel;
@@ -108,6 +109,7 @@ void QgsQuickAttributeFormModelBase::setAttributeModel( QgsQuickAttributeModel *
     connect( mAttributeModel, &QgsQuickAttributeModel::layerChanged, this, &QgsQuickAttributeFormModelBase::onLayerChanged );
     connect( mAttributeModel, &QgsQuickAttributeModel::featureChanged, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
     connect( mAttributeModel, &QgsQuickAttributeModel::modelReset, this, &QgsQuickAttributeFormModelBase::onFeatureChanged );
+    connect( mAttributeModel, &QgsQuickAttributeModel::dataChangedFailed, this, &QgsQuickAttributeFormModelBase::dataChangedFailed );
   }
 
   emit attributeModelChanged();

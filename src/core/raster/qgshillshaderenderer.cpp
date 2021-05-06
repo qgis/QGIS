@@ -448,11 +448,11 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         if ( !mMultiDirectional )
         {
           // Standard single direction hillshade
-          grayValue = qBound( 0.0, ( sin_altRadians_mul_254 -
-                                     ( derY * cos_az_mul_cos_alt_mul_z_mul_254 -
-                                       derX * sin_az_mul_cos_alt_mul_z_mul_254 ) ) /
-                              std::sqrt( 1 + square_z * ( derX * derX + derY * derY ) )
-                              , 255.0 );
+          grayValue = std::clamp( ( sin_altRadians_mul_254 -
+                                    ( derY * cos_az_mul_cos_alt_mul_z_mul_254 -
+                                      derX * sin_az_mul_cos_alt_mul_z_mul_254 ) ) /
+                                  std::sqrt( 1 + square_z * ( derX * derX + derY * derY ) ),
+                                  0.0, 255.0 );
         }
         else
         {
@@ -464,7 +464,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
           // Flat?
           if ( xx_plus_yy == 0.0 )
           {
-            grayValue = qBound( 0.0f, static_cast<float>( 1.0 + sin_altRadians_mul_254 ), 255.0f );
+            grayValue = std::clamp( static_cast<float>( 1.0 + sin_altRadians_mul_254 ), 0.0f, 255.0f );
           }
           else
           {
@@ -494,7 +494,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
                                            weight_360 * val360_mul_127 ) / xx_plus_yy ) /
                                        ( 1 + square_z * xx_plus_yy );
 
-            grayValue = qBound( 0.0f, 1.0f + cang_mul_127, 255.0f );
+            grayValue = std::clamp( 1.0f + cang_mul_127, 0.0f, 255.0f );
           }
         }
 

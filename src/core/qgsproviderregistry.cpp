@@ -68,11 +68,11 @@ QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
 
 /**
  * Convenience function for finding any existing data providers that match "providerKey"
-
-  Necessary because [] map operator will create a QgsProviderMetadata
-  instance.  Also you cannot use the map [] operator in const members for that
-  very reason.  So there needs to be a convenient way to find a data provider
-  without accidentally adding a null meta data item to the metadata map.
+ *
+ * Necessary because [] map operator will create a QgsProviderMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find a data provider
+ * without accidentally adding a null meta data item to the metadata map.
 */
 static
 QgsProviderMetadata *findMetadata_( const QgsProviderRegistry::Providers &metaData,
@@ -659,6 +659,17 @@ QString QgsProviderRegistry::loadStyle( const QString &providerKey, const QStrin
     errCause = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
   }
   return ret;
+}
+
+bool QgsProviderRegistry::saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  errorMessage.clear();
+  if ( QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey ) )
+    return meta->saveLayerMetadata( uri, metadata, errorMessage );
+  else
+  {
+    throw QgsNotSupportedException( QObject::tr( "Unable to load %1 provider" ).arg( providerKey ) );
+  }
 }
 
 bool QgsProviderRegistry::createDb( const QString &providerKey, const QString &dbPath, QString &errCause )

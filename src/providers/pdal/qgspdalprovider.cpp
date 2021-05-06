@@ -190,7 +190,7 @@ QVariant QgsPdalProvider::metadataStatistic( const QString &attribute, QgsStatis
     return QVariant();
 }
 
-int QgsPdalProvider::pointCount() const
+qint64 QgsPdalProvider::pointCount() const
 {
   return mPointCount;
 }
@@ -334,9 +334,14 @@ QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
 
     case QgsProviderMetadata::FilterType::FilterPointCloud:
       // TODO get the available/supported filters from PDAL library
-      return QObject::tr( "PDAL Point Clouds" ) + QStringLiteral( " (*.laz *.las)" );
+      return QObject::tr( "PDAL Point Clouds" ) + QStringLiteral( " (*.laz *.las *.LAZ *.LAS)" );
   }
   return QString();
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsPdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const

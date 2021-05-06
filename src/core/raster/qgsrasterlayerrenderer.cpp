@@ -58,7 +58,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   feedback.setPreviewOnly( true );
   feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
-  QgsRasterDrawer drawer( &iterator );
+  QgsRasterDrawer drawer( &iterator, mR->renderContext()->dpiTarget() );
   drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
   mR->mReadyToCompose = true;
   QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
@@ -201,6 +201,19 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mWidth = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() ) );
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
+
+  if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
+       && rendererContext.dpiTarget() >= 0.0 )
+  {
+    const double dpiScaleFactor = rendererContext.dpiTarget() / rendererContext.painter()->device()->logicalDpiX();
+    mRasterViewPort->mWidth *= dpiScaleFactor;
+    mRasterViewPort->mHeight *= dpiScaleFactor;
+  }
+  else
+  {
+    rendererContext.setDpiTarget( -1.0 );
+  }
+
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is because
   //mapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
@@ -322,7 +335,7 @@ bool QgsRasterLayerRenderer::render()
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
-  QgsRasterDrawer drawer( &iterator );
+  QgsRasterDrawer drawer( &iterator, renderContext()->dpiTarget() );
   drawer.draw( renderContext()->painter(), mRasterViewPort, &renderContext()->mapToPixel(), mFeedback );
 
   if ( restoreOldResamplingStage )

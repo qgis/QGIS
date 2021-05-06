@@ -125,6 +125,7 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
       , joinStyle( other.joinStyle )
       , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
       , markerSymbol( other.markerSymbol ? other.markerSymbol->clone() : nullptr )
+      , fillSymbol( other.fillSymbol ? other.fillSymbol->clone() : nullptr )
     {
     }
 
@@ -153,6 +154,7 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
     Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
     std::unique_ptr< QgsPaintEffect > paintEffect;
     std::unique_ptr< QgsMarkerSymbol > markerSymbol;
+    std::unique_ptr< QgsFillSymbol > fillSymbol;
 
   private:
     QgsTextBackgroundSettingsPrivate &operator=( const QgsTextBackgroundSettingsPrivate & ) = delete;
@@ -262,6 +264,7 @@ class QgsTextSettingsPrivate : public QSharedData
       : QSharedData( other )
       , isValid( other.isValid )
       , textFont( other.textFont )
+      , families( other.families )
       , textNamedStyle( other.textNamedStyle )
       , fontSizeUnits( other.fontSizeUnits )
       , fontSizeMapUnitScale( other.fontSizeMapUnitScale )
@@ -280,6 +283,7 @@ class QgsTextSettingsPrivate : public QSharedData
 
     bool isValid = false;
     QFont textFont;
+    QStringList families;
     QString textNamedStyle;
     QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;
     QgsMapUnitScale fontSizeMapUnitScale;

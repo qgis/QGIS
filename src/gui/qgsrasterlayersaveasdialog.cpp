@@ -824,15 +824,12 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
       if ( ! mPyramidsOptionsWidget->overviewList().isEmpty() )
         myPyramidList = mDataProvider->buildPyramidList( mPyramidsOptionsWidget->overviewList() );
     }
-    QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
-    for ( myRasterPyramidIterator = myPyramidList.begin();
-          myRasterPyramidIterator != myPyramidList.end();
-          ++myRasterPyramidIterator )
+    for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
     {
-      if ( ! mPyramidsUseExistingCheckBox->isChecked() ||  myRasterPyramidIterator->exists )
+      if ( ! mPyramidsUseExistingCheckBox->isChecked() || pyramid.getExists() )
       {
-        text += QString::number( myRasterPyramidIterator->xDim ) + QStringLiteral( "x" ) +
-                QString::number( myRasterPyramidIterator->yDim ) + ' ';
+        text += QString::number( pyramid.getXDim() ) + QStringLiteral( "x" ) +
+                QString::number( pyramid.getYDim() ) + ' ';
       }
     }
   }

@@ -10,7 +10,7 @@
 
 class QgsPointCloudRendererWidget : QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for point cloud 2D renderer settings widgets.
 
 .. versionadded:: 3.18

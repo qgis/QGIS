@@ -23,6 +23,9 @@
 #include "qgsmultilinestring.h"
 #include "qgsogrprovider.h"
 #include "qgslinesymbollayer.h"
+#include "qgspolygon.h"
+#include "qgsmultipolygon.h"
+
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -34,14 +37,6 @@
 #include <QRegularExpression>
 
 #include "ogr_srs_api.h"
-
-// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
-// whereas previously there was only unset fields. For QGIS purposes, both
-// states (unset/null) are equivalent.
-#ifndef OGRNullMarker
-#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
-#endif
-
 
 
 void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
@@ -93,6 +88,89 @@ void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH
 void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
 {
   GDALDestroyWarpOptions( options );
+}
+
+QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
+{
+  if ( !value || OGR_RawField_IsUnset( value ) || OGR_RawField_IsNull( value ) )
+    return QVariant();
+
+  switch ( type )
+  {
+    case OFTInteger:
+      return value->Integer;
+
+    case OFTInteger64:
+      return value->Integer64;
+
+    case OFTReal:
+      return value->Real;
+
+    case OFTString:
+    case OFTWideString:
+      return QString::fromUtf8( value->String );
+
+    case OFTDate:
+      return QDate( value->Date.Year, value->Date.Month, value->Date.Day );
+
+    case OFTTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+    }
+
+    case OFTDateTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
+                        QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+    }
+
+    case OFTBinary:
+      // not supported!
+      Q_ASSERT_X( false, "QgsOgrUtils::OGRFieldtoVariant", "OFTBinary type not supported" );
+      return QVariant();
+
+    case OFTIntegerList:
+    {
+      QVariantList res;
+      res.reserve( value->IntegerList.nCount );
+      for ( int i = 0; i < value->IntegerList.nCount; ++i )
+        res << value->IntegerList.paList[ i ];
+      return res;
+    }
+
+    case OFTInteger64List:
+    {
+      QVariantList res;
+      res.reserve( value->Integer64List.nCount );
+      for ( int i = 0; i < value->Integer64List.nCount; ++i )
+        res << value->Integer64List.paList[ i ];
+      return res;
+    }
+
+    case OFTRealList:
+    {
+      QVariantList res;
+      res.reserve( value->RealList.nCount );
+      for ( int i = 0; i < value->RealList.nCount; ++i )
+        res << value->RealList.paList[ i ];
+      return res;
+    }
+
+    case OFTStringList:
+    case OFTWideStringList:
+    {
+      QVariantList res;
+      res.reserve( value->StringList.nCount );
+      for ( int i = 0; i < value->StringList.nCount; ++i )
+        res << QString::fromUtf8( value->StringList.paList[ i ] );
+      return res;
+    }
+  }
+  return QVariant();
 }
 
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
@@ -277,30 +355,108 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::StringList:
+      {
+        QStringList list;
+        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+        const int count = CSLCount( lst );
+        if ( count > 0 )
+        {
+          list.reserve( count );
+          for ( int i = 0; i < count; i++ )
+          {
+            if ( encoding )
+              list << encoding->toUnicode( lst[i] );
+            else
+              list << QString::fromUtf8( lst[i] );
+          }
+        }
+        value = list;
+        break;
+      }
+
       case QVariant::List:
       {
-        if ( field.subType() == QVariant::String )
+        switch ( field.subType() )
         {
-          QStringList list;
-          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-          const int count = CSLCount( lst );
-          if ( count > 0 )
+          case QVariant::String:
           {
-            for ( int i = 0; i < count; i++ )
+            QStringList list;
+            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+            const int count = CSLCount( lst );
+            if ( count > 0 )
             {
-              if ( encoding )
-                list << encoding->toUnicode( lst[i] );
-              else
-                list << QString::fromUtf8( lst[i] );
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                if ( encoding )
+                  list << encoding->toUnicode( lst[i] );
+                else
+                  list << QString::fromUtf8( lst[i] );
+              }
             }
+            value = list;
+            break;
           }
-          value = list;
-        }
-        else
-        {
-          Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
-          if ( ok )
-            *ok = false;
+
+          case QVariant::Int:
+          {
+            QVariantList list;
+            int count = 0;
+            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::Double:
+          {
+            QVariantList list;
+            int count = 0;
+            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::LongLong:
+          {
+            QVariantList list;
+            int count = 0;
+            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          default:
+          {
+            Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
+            if ( ok )
+              *ok = false;
+            break;
+          }
         }
         break;
       }
@@ -427,6 +583,38 @@ std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeomet
   return mp;
 }
 
+std::unique_ptr< QgsPolygon > ogrGeometryToQgsPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  if ( count >= 1 )
+  {
+    polygon->setExteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, 0 ) ).release() );
+  }
+
+  for ( int i = 1; i < count; ++i )
+  {
+    polygon->addInteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
+std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiPolygon > polygon = std::make_unique< QgsMultiPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  polygon->reserve( count );
+  for ( int i = 0; i < count; ++i )
+  {
+    polygon->addGeometry( ogrGeometryToQgsPolygon( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
 QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -537,19 +725,27 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
     case QgsWkbTypes::LineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
     }
 
     case QgsWkbTypes::MultiLineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
+    }
+
+    case QgsWkbTypes::Polygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsPolygon( geom ) );
+    }
+
+    case QgsWkbTypes::MultiPolygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsMultiPolygon( geom ) );
     }
 
     default:
       break;
-  };
+  }
 
   // Fallback to inefficient WKB conversions
 

@@ -11,7 +11,7 @@
 
 class QgsLayoutItemTextTable : QgsLayoutTable
 {
-%Docstring
+%Docstring(signature="appended")
 A text table item that reads text from string lists
 
 .. versionadded:: 3.0

@@ -12,7 +12,7 @@
 
 class QgsPointCloudDataProvider: QgsDataProvider
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for providing data for :py:class:`QgsPointCloudLayer`
 
 Responsible for reading native point cloud data and returning the indexed data.
@@ -128,7 +128,7 @@ Gets the current index generation state
 Returns whether provider has index which is valid
 %End
 
-    virtual int pointCount() const = 0;
+    virtual qint64 pointCount() const = 0;
 %Docstring
 Returns the total number of points available in the dataset.
 %End

@@ -21,6 +21,7 @@
 #include <QString>
 #include <QSet>
 #include <QRegularExpression>
+#include <QDate>
 
 #include <proj.h>
 
@@ -294,6 +295,53 @@ QStringList QgsProjUtils::nonAvailableGrids( const QString &projDef )
 }
 #endif
 
+int QgsProjUtils::projVersionMajor()
+{
+  return PROJ_VERSION_MAJOR;
+}
+
+QString QgsProjUtils::epsgRegistryVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "EPSG.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::epsgRegistryDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "EPSG.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::esriDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "ESRI.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::esriDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "ESRI.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
+QString QgsProjUtils::ignfDatabaseVersion()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *version = proj_context_get_database_metadata( context, "IGNF.VERSION" );
+  return QString( version );
+}
+
+QDate QgsProjUtils::ignfDatabaseDate()
+{
+  PJ_CONTEXT *context = QgsProjContext::get();
+  const char *date = proj_context_get_database_metadata( context, "IGNF.DATE" );
+  return QDate::fromString( date, Qt::DateFormat::ISODate );
+}
+
 QStringList QgsProjUtils::searchPaths()
 {
   const QString path( proj_info().searchpath );
@@ -308,7 +356,7 @@ QStringList QgsProjUtils::searchPaths()
   // thin out duplicates from paths -- see https://github.com/OSGeo/proj.4/pull/1498
   QStringList res;
   res.reserve( paths.count() );
-  for ( const QString &p : qgis::as_const( paths ) )
+  for ( const QString &p : std::as_const( paths ) )
   {
     if ( existing.contains( p ) )
       continue;

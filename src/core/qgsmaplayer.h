@@ -183,8 +183,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
       Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
       Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
+      Notes              = 1 << 17, //!< Layer user notes (since QGIS 3.20)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -513,6 +514,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Returns the extent of the layer.
     virtual QgsRectangle extent() const;
+
+    /**
+     * Returns the WGS84 extent (EPSG:4326) of the layer according to
+     * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
+     * WGS84 extent read in the qgs project is returned. Otherwise, the actual
+     * WGS84 extent is returned.
+     * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
+     * \since QGIS 3.20
+     */
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
 
     /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
@@ -978,7 +989,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      *
-     * Subclasses should override this method: default implementation does nothing.
+     * This method was defined in QgsVectorLayer since 2.10 and was marked as deprecated since 3.2
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
      *
      * \param dataSource new layer data source
      * \param baseName base name of the layer
@@ -989,7 +1014,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see dataSourceChanged()
      * \since QGIS 3.6
      */
-    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Subclasses should override setDataSourcePrivate: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param flags provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 
     /**
      * Returns the provider type (provider key) for this layer
@@ -1503,6 +1544,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     void onNotified( const QString &message );
 
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Called by setDataSource()
+     * Subclasses should override this method: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param flags provider read flags
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    virtual void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+
   protected:
 
     /**
@@ -1602,8 +1660,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
-    //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    /**
+     * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+     * the extent is not invalidated because we want to trust metadata whatever
+     * happens.
+     * \since QGIS 3.20
+     */
+    void invalidateWgs84Extent();
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
@@ -1685,6 +1748,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
+    // const method because extents are mutable
+    void updateExtent( const QgsRectangle &extent ) const;
+
     /**
      * This method returns TRUE by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -1742,6 +1808,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
+    //! Extent of the layer
+    mutable QgsRectangle mExtent;
+
+    //! Extent of the layer in EPSG:4326
+    mutable QgsRectangle mWgs84Extent;
+
     /**
      * Stores the original XML properties of the layer when loaded from the project
      *
@@ -1751,6 +1823,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class QgsVectorLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

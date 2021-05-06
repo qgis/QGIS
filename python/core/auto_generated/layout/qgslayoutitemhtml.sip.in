@@ -11,7 +11,7 @@
 
 class QgsLayoutItemHtml: QgsLayoutMultiFrame
 {
-%Docstring
+%Docstring(signature="appended")
 A layout multiframe subclass for HTML content.
 
 .. versionadded:: 3.0

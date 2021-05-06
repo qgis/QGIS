@@ -25,5 +25,6 @@ PositionMarker 0.1 qgsquickpositionmarker.qml
 ScaleBar 0.1 qgsquickscalebar.qml
 PhotoCapture 0.1 qgsquickphotopanel.qml
 MessageLog 0.1 qgsquickmessagelog.qml
+SwitchComponent 0.1 qgsquickswitch.qml
 
 typeinfo qgsquick.qmltypes

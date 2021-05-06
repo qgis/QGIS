@@ -12,7 +12,7 @@
 
 class QgsDateTimeStatisticalSummary
 {
-%Docstring
+%Docstring(signature="appended")
 Calculator for summary statistics and aggregates for a list of datetimes.
 
 Statistics are calculated by calling :py:func:`~calculate` and passing a list of datetimes. The

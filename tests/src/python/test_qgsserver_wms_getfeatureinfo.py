@@ -25,7 +25,6 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-import xml.etree.ElementTree as ET
 import json
 
 from qgis.testing import unittest
@@ -237,22 +236,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values1-text-xml',
                                  'test_project_values.qgz')
 
-    def testGetFeatureInfoValueRelationArray(self):
-        """Test GetFeatureInfo on "value relation" widget with array field (multiple selections)"""
-        mypath = self.testdata_path + "test_project_values.qgz"
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=layer3&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=926&height=787&srs=EPSG%3A4326' +
-                                 '&bbox=912217,5605059,914099,5606652' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=True' +
-                                 '&QUERY_LAYERS=layer3&I=487&J=308',
-                                 'wms_getfeatureinfo-values3-text-xml',
-                                 'test_project_values.qgz')
-
     # TODO make GetFeatureInfo show what's in the display expression and
     # enable test
     @unittest.expectedFailure
@@ -437,91 +420,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'FILTER=<Filter><And><PropertyIsEqualTo><PropertyName>id</PropertyName><Literal>2</Literal></PropertyIsEqualTo>' +
                                  '<PropertyIsEqualTo><PropertyName>name</PropertyName><Literal>two</Literal></PropertyIsEqualTo></And></Filter>', 'wms_getfeatureinfo_filter_ogc')
 
-    def testGetFeatureInfoTolerance(self):
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=layer3&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=913119.2,5605988.9,913316.0,5606047.4' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=layer3&I=193&J=100' +
-                                 '&FI_POINT_TOLERANCE=0',
-                                 'wms_getfeatureinfo_point_tolerance_0_text_xml',
-                                 'test_project_values.qgz')
-
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=layer3&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=913119.2,5605988.9,913316.0,5606047.4' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=layer3&I=193&J=100' +
-                                 '&FI_POINT_TOLERANCE=20',
-                                 'wms_getfeatureinfo_point_tolerance_20_text_xml',
-                                 'test_project_values.qgz')
-
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=ls2d&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=-50396.4,-2783.0,161715.8,114108.6' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=ls2d&I=153&J=147' +
-                                 '&FI_LINE_TOLERANCE=0',
-                                 'wms_getfeatureinfo_line_tolerance_0_text_xml',
-                                 'test_project_values.qgz')
-
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=ls2d&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=-50396.4,-2783.0,161715.8,114108.6' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=ls2d&I=153&J=147' +
-                                 '&FI_LINE_TOLERANCE=20',
-                                 'wms_getfeatureinfo_line_tolerance_20_text_xml',
-                                 'test_project_values.qgz')
-
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=p2d&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=-135832.0,-66482.4,240321.9,167300.4' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=p2d&I=206&J=144' +
-                                 '&FI_POLYGON_TOLERANCE=0',
-                                 'wms_getfeatureinfo_polygon_tolerance_0_text_xml',
-                                 'test_project_values.qgz')
-
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=p2d&styles=&' +
-                                 'VERSION=1.3.0&' +
-                                 'info_format=text%2Fxml&' +
-                                 'width=400&height=200' +
-                                 '&bbox=-135832.0,-66482.4,240321.9,167300.4' +
-                                 '&CRS=EPSG:3857' +
-                                 '&FEATURE_COUNT=10' +
-                                 '&WITH_GEOMETRY=False' +
-                                 '&QUERY_LAYERS=p2d&I=206&J=144' +
-                                 '&FI_POLYGON_TOLERANCE=20',
-                                 'wms_getfeatureinfo_polygon_tolerance_20_text_xml',
-                                 'test_project_values.qgz')
-
     def testGetFeatureInfoGML(self):
         # Test getfeatureinfo response gml
         self.wms_request_compare('GetFeatureInfo',
@@ -627,91 +525,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=landsat&X=250&Y=250',
                                  'wms_getfeatureinfo_raster_json',
                                  normalizeJson=True)
-
-    def testGetFeatureInfoPostgresTypes(self):
-        # compare json list output with file
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=json' +
-                                 '&info_format=text%2Fxml' +
-                                 '&srs=EPSG%3A3857' +
-                                 '&QUERY_LAYERS=json' +
-                                 '&FILTER=json' +
-                                 urllib.parse.quote(':"pk" = 1'),
-                                 'get_postgres_types_json_list',
-                                 'test_project_postgres_types.qgs',
-                                 normalizeJson=True)
-
-        # compare dict output with file
-        self.wms_request_compare('GetFeatureInfo',
-                                 '&layers=json' +
-                                 '&info_format=text%2Fxml' +
-                                 '&srs=EPSG%3A3857' +
-                                 '&QUERY_LAYERS=json' +
-                                 '&FILTER=json' +
-                                 urllib.parse.quote(':"pk" = 2'),
-                                 'get_postgres_types_json_dict',
-                                 'test_project_postgres_types.qgs',
-                                 normalizeJson=True)
-
-        # compare decoded json field list
-        response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
-                                                                        '&layers=json' +
-                                                                        '&info_format=text%2Fxml' +
-                                                                        '&srs=EPSG%3A3857' +
-                                                                        '&QUERY_LAYERS=json' +
-                                                                        '&FILTER=json' +
-                                                                        urllib.parse.quote(
-                                                                            ':"pk" = 1'),
-                                                                        'test_project_postgres_types.qgs')
-        root = ET.fromstring(response_body)
-        for attribute in root.iter('Attribute'):
-            if attribute.get('name') == 'jvalue':
-                self.assertIsInstance(json.loads(attribute.get('value')), list)
-                self.assertEqual(json.loads(attribute.get('value')), [1, 2, 3])
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), [
-                        1.0, 2.0, 3.0])
-            if attribute.get('name') == 'jbvalue':
-                self.assertIsInstance(json.loads(attribute.get('value')), list)
-                self.assertEqual(json.loads(attribute.get('value')), [4, 5, 6])
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), [
-                        4.0, 5.0, 6.0])
-
-        # compare decoded json field dict
-        response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
-                                                                        '&layers=json' +
-                                                                        '&info_format=text%2Fxml' +
-                                                                        '&srs=EPSG%3A3857' +
-                                                                        '&QUERY_LAYERS=json' +
-                                                                        '&FILTER=json' +
-                                                                        urllib.parse.quote(
-                                                                            ':"pk" = 2'),
-                                                                        'test_project_postgres_types.qgs')
-        root = ET.fromstring(response_body)
-        for attribute in root.iter('Attribute'):
-            if attribute.get('name') == 'jvalue':
-                self.assertIsInstance(json.loads(attribute.get('value')), dict)
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), {
-                        'a': 1, 'b': 2})
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), {
-                        'a': 1.0, 'b': 2.0})
-            if attribute.get('name') == 'jbvalue':
-                self.assertIsInstance(json.loads(attribute.get('value')), dict)
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), {
-                        'c': 4, 'd': 5})
-                self.assertEqual(
-                    json.loads(
-                        attribute.get('value')), {
-                        'c': 4.0, 'd': 5.0})
 
     def testGetFeatureInfoGroupedLayers(self):
         """Test that we can get feature info from the top and group layers"""

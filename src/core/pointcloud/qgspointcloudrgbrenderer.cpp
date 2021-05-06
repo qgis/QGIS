@@ -110,7 +110,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
     }
 
     pointXY( context, ptr, i, x, y );
-    if ( visibleExtent.contains( QgsPointXY( x, y ) ) )
+    if ( visibleExtent.contains( x, y ) )
     {
       if ( reproject )
       {

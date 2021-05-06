@@ -9,7 +9,7 @@
 
 class QgsAttributeEditorContainer : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 This is a container for attribute editors, used to group them visually in the
 attribute form if it is set to the drag and drop designer.
 %End

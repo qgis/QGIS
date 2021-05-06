@@ -240,8 +240,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Open the specified project file; prompt to save previous project if necessary.
-      Used to process a commandline argument, FileOpen or Drop event.
-      */
+     * Used to process a commandline argument, FileOpen or Drop event.
+     */
     void openProject( const QString &fileName );
 
     void openLayerDefinition( const QString &filename );
@@ -1105,7 +1105,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsBrowserGuiModel *browserModel();
 
-    /*
+    /**
      * Change data source for \a layer, a data source selection dialog
      * will be opened and if accepted the data selected source will be
      * applied.
@@ -1117,22 +1117,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a raster layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the \a uri and \a baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The \a baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
+     * The caller must provide information compatible with the provider plugin
+     * using the \a uri and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
 
     /**
      * Add a vector layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the \a vectorLayerPath and \a baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The \a baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
+     * The caller must provide information compatible with the provider plugin
+     * using the \a vectorLayerPath and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
@@ -1951,7 +1951,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param categories style categories
      * \since QGIS 3.12
      */
-    void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories categories );
+    void vectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
 
     //! Enable or disable event tracing (for debugging)
     void toggleEventTracing();
@@ -1961,6 +1961,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.16
      */
     void enableDigitizeWithCurve( bool enable );
+
+    /**
+     * Enables or disables stream digitizing
+     * \since QGIS 3.20
+     */
+    void enableStreamDigitizing( bool enable );
 
     /**
      * Enables the action that toggles digitizing with curve
@@ -2194,7 +2200,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                          const QString &layerName,
                                          const QString &encoding,
                                          const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
-                                     int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
+                                     QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
 
     //! Sets project properties, including map untis
@@ -2229,7 +2235,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setupConnections();
     void initLayerTreeView();
     void createOverview();
-    void createCanvasTools();
+    void setupCanvasTools();
     void createMapTips();
     void createDecorations();
     void init3D();
@@ -2463,14 +2469,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * String containing supporting vector file formats
-      Suitable for a QFileDialog file filter.  Build in ctor.
-      */
+     * Suitable for a QFileDialog file filter.  Build in ctor.
+     */
     QString mVectorFileFilter;
 
     /**
      * String containing supporting raster file formats
-      Suitable for a QFileDialog file filter.  Build in ctor.
-      */
+     * Suitable for a QFileDialog file filter.  Build in ctor.
+     */
     QString mRasterFileFilter;
 
     //! Timer for map tips
@@ -2525,6 +2531,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mDevToolsDock = nullptr;
     QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
 
+    QToolButton *mDigitizeModeToolButton = nullptr;
+
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
@@ -2570,7 +2578,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeoreferencerMainWindow *mGeoreferencer = nullptr;
 #endif
 
-    QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
+    QList<const QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mProjectPropertiesWidgetFactories;
 

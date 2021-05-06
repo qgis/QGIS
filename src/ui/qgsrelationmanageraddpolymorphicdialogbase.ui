@@ -171,11 +171,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCheckableComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscheckablecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsfieldcombobox.h</header>
@@ -184,13 +179,29 @@
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsCheckableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscheckablecombobox.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mIdLineEdit</tabstop>
+  <tabstop>mReferencingLayerComboBox</tabstop>
+  <tabstop>mReferencedLayerFieldComboBox</tabstop>
+  <tabstop>mRelationStrengthComboBox</tabstop>
+  <tabstop>mFieldsMappingTable</tabstop>
+  <tabstop>mFieldsMappingAddButton</tabstop>
+  <tabstop>mFieldsMappingRemoveButton</tabstop>
+  <tabstop>mReferencedLayersComboBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

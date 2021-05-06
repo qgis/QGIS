@@ -12,7 +12,7 @@
 
 class QgsLayerTreeUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Assorted functions for dealing with layer trees.
 
 .. versionadded:: 2.4

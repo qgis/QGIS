@@ -78,12 +78,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     //! Triggered when linking operation succeeded
     void onLinkingSucceeded();
 
-    //! Triggered when the browser needs to be opened at \a url
-    void onOpenBrowser( const QUrl &url );
-
-    //! Triggered on browser close
-    void onCloseBrowser();
-
     //! Triggered on reply finished
     void onReplyFinished();
 
@@ -114,7 +108,11 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     QgsO2 *authO2( const QString &authcfg );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QMutex mNetworkRequestMutex { QMutex::Recursive };
+#else
+    QRecursiveMutex mNetworkRequestMutex;
+#endif
 };
 
 #endif // QGSAUTHOAUTH2METHOD_H

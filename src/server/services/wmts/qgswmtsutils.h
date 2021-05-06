@@ -22,6 +22,7 @@
 #include "qgsmodule.h"
 #include "qgswmtsparameters.h"
 #include "qgswmtsserviceexception.h"
+#include "qgsserversettings.h"
 
 #include <QDomDocument>
 
@@ -125,7 +126,7 @@ namespace QgsWmts
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
 
   // Define namespaces used in WMTS documents
   const QString WMTS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wmts/1.0" );

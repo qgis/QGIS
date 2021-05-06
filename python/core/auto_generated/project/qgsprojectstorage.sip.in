@@ -13,7 +13,7 @@
 
 class QgsProjectStorage
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for project storage - to be implemented by various backends
 and registered in :py:class:`QgsProjectStorageRegistry`.
 
@@ -27,7 +27,7 @@ and registered in :py:class:`QgsProjectStorageRegistry`.
 
     class Metadata
 {
-%Docstring
+%Docstring(signature="appended")
 Metadata associated with a project
 
 .. versionadded:: 3.2

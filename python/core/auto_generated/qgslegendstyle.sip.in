@@ -12,7 +12,7 @@
 
 class QgsLegendStyle
 {
-%Docstring
+%Docstring(signature="appended")
 Contains detailed styling information relating to how a layout legend should be rendered.
 %End
 

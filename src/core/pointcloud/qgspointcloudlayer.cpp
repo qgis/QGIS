@@ -30,20 +30,25 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerfactory.h"
 #include <QUrl>
 
-QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
+QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
                                         const QString &providerLib,
                                         const QgsPointCloudLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
+  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, uri )
   , mElevationProperties( new QgsPointCloudLayerElevationProperties( this ) )
 {
-
-  if ( !path.isEmpty() && !providerLib.isEmpty() )
+  if ( !uri.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
+    QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+    if ( options.loadDefaultStyle )
+    {
+      providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+    }
+    setDataSourcePrivate( uri, baseName, providerLib, providerOptions, providerFlags );
 
     if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
       mDataProvider.get()->generateIndex();
@@ -102,7 +107,12 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, false );
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    setDataSourcePrivate( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
   if ( !isValid() )
@@ -121,7 +131,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "point-cloud" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::PointCloudLayer ) );
 
   if ( mDataProvider )
   {
@@ -276,10 +286,11 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 {
   if ( mDataProvider )
     mDataProvider->setTransformContext( transformContext );
+  invalidateWgs84Extent();
 }
 
-void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
-                                        const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   if ( mDataProvider )
   {
@@ -291,18 +302,11 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   mProviderKey = provider;
   mDataSource = dataSource;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-
   mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
     setValid( false );
-    emit dataSourceChanged();
     return;
   }
 
@@ -313,7 +317,6 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   if ( !isValid() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
-    emit dataSourceChanged();
     return;
   }
 
@@ -323,6 +326,12 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
   setExtent( mDataProvider->extent() );
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
@@ -354,9 +363,34 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
       setRenderer( QgsApplication::pointCloudRendererRegistry()->defaultRenderer( mDataProvider.get() ) );
     }
   }
+}
 
-  emit dataSourceChanged();
-  triggerRepaint();
+QString QgsPointCloudLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerType(), source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().writePath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( providerType(), parts );
+  }
+  else
+  {
+    return source;
+  }
+}
+
+QString QgsPointCloudLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
+{
+  QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( dataProvider, source );
+  if ( parts.contains( QStringLiteral( "path" ) ) )
+  {
+    parts.insert( QStringLiteral( "path" ), context.pathResolver().readPath( parts.value( QStringLiteral( "path" ) ).toString() ) );
+    return QgsProviderRegistry::instance()->encodeUri( dataProvider, parts );
+  }
+  else
+  {
+    return source;
+  }
 }
 
 void QgsPointCloudLayer::onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
@@ -411,11 +445,8 @@ QString QgsPointCloudLayer::htmlMetadata() const
     path = uriComponents[QStringLiteral( "path" )].toString();
     if ( QFile::exists( path ) )
       myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
-  }
-  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
-  {
-    const QString url = uriComponents[QStringLiteral( "url" )].toString();
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+    else
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( path ).toString(), path ) ) + QStringLiteral( "</td></tr>\n" );
   }
 
   // data source
@@ -443,7 +474,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  const int pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
+  const qint64 pointCount = mDataProvider ? mDataProvider->pointCount() : -1;
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                 + tr( "Point count" ) + QStringLiteral( "</td><td>" )
                 + ( pointCount < 0 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( pointCount ) ) )
@@ -600,7 +631,7 @@ QgsPointCloudAttributeCollection QgsPointCloudLayer::attributes() const
   return mDataProvider ? mDataProvider->attributes() : QgsPointCloudAttributeCollection();
 }
 
-int QgsPointCloudLayer::pointCount() const
+qint64 QgsPointCloudLayer::pointCount() const
 {
   return mDataProvider ? mDataProvider->pointCount() : 0;
 }

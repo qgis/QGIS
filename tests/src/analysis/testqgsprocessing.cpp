@@ -812,13 +812,14 @@ void TestQgsProcessing::compatibleLayers()
 
   // sorted
   QStringList lIds;
-  Q_FOREACH ( QgsRasterLayer *rl, QgsProcessingUtils::compatibleRasterLayers( &p ) )
+  QList<QgsRasterLayer *>  layers = QgsProcessingUtils::compatibleRasterLayers( &p );
+  for ( QgsRasterLayer *rl : layers )
     lIds << rl->name();
   QCOMPARE( lIds, QStringList() << "ar2" << "R1" << "zz" );
 
   // unsorted
   lIds.clear();
-  Q_FOREACH ( QgsRasterLayer *rl, QgsProcessingUtils::compatibleRasterLayers( &p, false ) )
+  for ( QgsRasterLayer *rl : QgsProcessingUtils::compatibleRasterLayers( &p, false ) )
     lIds << rl->name();
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz" );
 
@@ -827,13 +828,13 @@ void TestQgsProcessing::compatibleLayers()
 
   // sorted
   lIds.clear();
-  Q_FOREACH ( QgsMeshLayer *rl, QgsProcessingUtils::compatibleMeshLayers( &p ) )
+  for ( QgsMeshLayer *rl : QgsProcessingUtils::compatibleMeshLayers( &p ) )
     lIds << rl->name();
   QCOMPARE( lIds, QStringList() << "mA" << "MX" );
 
   // unsorted
   lIds.clear();
-  Q_FOREACH ( QgsMeshLayer *rl, QgsProcessingUtils::compatibleMeshLayers( &p, false ) )
+  for ( QgsMeshLayer *rl : QgsProcessingUtils::compatibleMeshLayers( &p, false ) )
     lIds << rl->name();
   QCOMPARE( lIds, QStringList() << "MX" << "mA" );
 
@@ -842,49 +843,49 @@ void TestQgsProcessing::compatibleLayers()
 
   // sorted
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" << "v3" << "V4" << "vvvv4" );
 
   // unsorted
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>(), false ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>(), false ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "V4" << "v1" << "v3" << "vvvv4" );
 
   // point only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" );
 
   // polygon only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPolygon ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPolygon ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "V4" );
 
   // line only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorLine ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorLine ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v3" );
 
   // point and line only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" << "v3" );
 
   // any vector w geometry
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" << "v3" << "V4" );
 
   // any vector
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVector ) )
+  for ( QgsVectorLayer *vl : QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVector ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" << "v3" << "V4" << "vvvv4" );
 
@@ -893,13 +894,13 @@ void TestQgsProcessing::compatibleLayers()
 
   // sorted
   lIds.clear();
-  Q_FOREACH ( QgsMapLayer *l, QgsProcessingUtils::compatibleLayers( &p ) )
+  for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p ) )
     lIds << l->name();
   QCOMPARE( lIds, QStringList() << "ar2" << "mA" << "MX" << "R1" << "v1" << "v3" << "V4" << "vvvv4" <<  "zz" );
 
   // unsorted
   lIds.clear();
-  Q_FOREACH ( QgsMapLayer *l, QgsProcessingUtils::compatibleLayers( &p, false ) )
+  for ( QgsMapLayer *l : QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" );
 }
@@ -2302,11 +2303,11 @@ void TestQgsProcessing::parameters()
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "landsat" ) );
   // unless setting prohibits it...
-  QgsSettings().setValue( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), false );
+  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( false );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( rl.get() );
   QCOMPARE( rl->name(), QStringLiteral( "my_dest" ) );
   // if layer has a layername, we should use that instead of the base file name...
-  QgsSettings().setValue( QStringLiteral( "Processing/Configuration/PREFER_FILENAME_AS_LAYER_NAME" ), true );
+  QgsProcessing::settingsPreferFilenameAsLayerName.setValue( true );
   vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points_gpkg.gpkg|layername=points_small", QString() );
   context2.layersToLoadOnCompletion().values().at( 0 ).setOutputLayerName( vl.get() );
   QCOMPARE( vl->name(), QStringLiteral( "points_small" ) );
@@ -3444,6 +3445,7 @@ void TestQgsProcessing::parameterGeometry()
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsRectangle( 10, 10, 20, 20 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedRectangle( QgsRectangle( 10, 10, 20, 20 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QString( "MultiPoint((10 10), (20 20))" ) ) );
 
   // string representing a geometry
   QVariantMap params;
@@ -3611,9 +3613,32 @@ void TestQgsProcessing::parameterGeometry()
   QCOMPARE( fromMap2.flags(), def->flags() );
   QCOMPARE( fromMap2.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap2.geometryTypes(), def->geometryTypes() );
+  QCOMPARE( fromMap2.allowMultipart(), def->allowMultipart() );
   def.reset( dynamic_cast< QgsProcessingParameterGeometry *>( QgsProcessingParameters::parameterFromVariantMap( map2 ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterGeometry *>( def.get() ) );
 
+  // not multipart
+  def.reset( new QgsProcessingParameterGeometry( "not_multipart", QString(), QString( "Point(-1 3)" ), false, {}, false ) );
+  QVERIFY( !def->allowMultipart() );
+  QVERIFY( !def->checkValueIsAcceptable( QString( "MultiPoint((10 10), (20 20))" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "MultiPoint((10 10), (20 20))" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('not_multipart', '', allowMultipart=False, defaultValue='Point(-1 3)')" ) );
+
+  QVariantMap map3 = def->toVariantMap();
+  QgsProcessingParameterGeometry fromMap3( "x" );
+  QVERIFY( fromMap3.fromVariantMap( map3 ) );
+  QCOMPARE( fromMap3.allowMultipart(), false );
+
+  std::unique_ptr< QgsProcessingParameterGeometry > cloned( dynamic_cast< QgsProcessingParameterGeometry *>( def->clone() ) );
+  QCOMPARE( cloned->name(), def->name() );
+  QCOMPARE( cloned->description(), def->description() );
+  QCOMPARE( cloned->flags(), def->flags() );
+  QCOMPARE( cloned->defaultValue(), def->defaultValue() );
+  QCOMPARE( cloned->geometryTypes(), def->geometryTypes() );
+  QCOMPARE( cloned->allowMultipart(), def->allowMultipart() );
 
 }
 
@@ -4914,6 +4939,11 @@ void TestQgsProcessing::parameterEnum()
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2, context ), QStringLiteral( "[1,2]" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1,2" ), context ), QStringLiteral( "[1,2]" ) );
+
+  QCOMPARE( def->valueAsPythonComment( QVariant(), context ), QString() );
+  QCOMPARE( def->valueAsPythonComment( 2, context ), QStringLiteral( "C" ) );
+  QCOMPARE( def->valueAsPythonComment( QVariantList() << 1 << 2, context ), QStringLiteral( "B,C" ) );
+  QCOMPARE( def->valueAsPythonComment( QStringLiteral( "1,2" ), context ), QStringLiteral( "B,C" ) );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterEnum('non_optional', '', options=['A','B','C'], allowMultiple=True, usesStaticStrings=False, defaultValue=5)" ) );
@@ -10304,9 +10334,9 @@ void TestQgsProcessing::modelExecution()
                               "    alg_params = {\n"
                               "      'DISSOLVE': False,\n"
                               "      'DISTANCE': parameters['DIST'],\n"
-                              "      'END_CAP_STYLE': 1,\n"
+                              "      'END_CAP_STYLE': 1,  # Flat\n"
                               "      'INPUT': parameters['SOURCE_LAYER'],\n"
-                              "      'JOIN_STYLE': 2,\n"
+                              "      'JOIN_STYLE': 2,  # Bevel\n"
                               "      'SEGMENTS': QgsExpression('@myvar*2').evaluate(),\n"
                               "      'OUTPUT': parameters['MyModelOutput']\n"
                               "    }\n"
@@ -11012,7 +11042,7 @@ void TestQgsProcessing::tempUtils()
 
   QgsSettings settings;
   QString alternative_tempFolder1 = tempDirPath + QStringLiteral( "/alternative_temp_test_one" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder1 );
+  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder1.length() ), alternative_tempFolder1 );
@@ -11024,7 +11054,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
   // change temp folder in the settings again
   QString alternative_tempFolder2 =  tempDirPath + QStringLiteral( "/alternative_temp_test_two" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder2 );
+  QgsProcessing::settingsTempPath.setValue( alternative_tempFolder2 );
   // check folder and if it's constant constant with alternative temp folder 2
   tempFolder = QgsProcessingUtils::tempFolder();
   QCOMPARE( tempFolder.left( alternative_tempFolder2.length() ), alternative_tempFolder2 );
@@ -11034,7 +11064,7 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
   QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
   QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QString() );
+  QgsProcessing::settingsTempPath.setValue( QString() );
 
 }
 
@@ -11499,10 +11529,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context.preferredRasterFormat(), QStringLiteral( "tif" ) );
 
   // unless the user has set a default format, which IS supported by that provider
-  QgsSettings settings;
-
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -11513,8 +11541,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
+  QgsProcessing::settingsDefaultOutputVectorLayerExt.setValue( QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
+  QgsProcessing::settingsDefaultOutputRasterLayerExt.setValue( QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }

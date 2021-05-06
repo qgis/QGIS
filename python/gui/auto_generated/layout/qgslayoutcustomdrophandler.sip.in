@@ -11,7 +11,7 @@
 
 class QgsLayoutCustomDropHandler : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class that may be implemented to handle new types of data to be dropped or pasted in QGIS layouts.
 
 .. versionadded:: 3.0

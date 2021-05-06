@@ -73,7 +73,8 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  Q_FOREACH ( QString p, extraPluginsPaths() )
+  const QStringList extraPaths = extraPluginsPaths();
+  for ( QString p : extraPaths )
   {
     if ( !QDir( p ).exists() )
     {
@@ -109,9 +110,16 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   }
 
   // set PyQt api versions
-  QStringList apiV2classes;
-  apiV2classes << QStringLiteral( "QDate" ) << QStringLiteral( "QDateTime" ) << QStringLiteral( "QString" ) << QStringLiteral( "QTextStream" ) << QStringLiteral( "QTime" ) << QStringLiteral( "QUrl" ) << QStringLiteral( "QVariant" );
-  Q_FOREACH ( const QString &clsName, apiV2classes )
+  for ( const QString &clsName :
+        {
+          QStringLiteral( "QDate" ),
+          QStringLiteral( "QDateTime" ),
+          QStringLiteral( "QString" ),
+          QStringLiteral( "QTextStream" ),
+          QStringLiteral( "QTime" ),
+          QStringLiteral( "QUrl" ),
+          QStringLiteral( "QVariant" )
+        } )
   {
     if ( !runString( QStringLiteral( "sip.setapi('%1', 2)" ).arg( clsName ),
                      QObject::tr( "Couldn't set SIP API versions." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )

@@ -265,7 +265,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
     hasZ = hasZ || mExteriorRing->is3D();
     hasM = hasM || mExteriorRing->isMeasure();
   }
-  for ( const QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( const QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -464,6 +464,27 @@ QString QgsCurvePolygon::asKml( int precision ) const
   return kml;
 }
 
+void QgsCurvePolygon::normalize()
+{
+  // normalize rings
+  if ( mExteriorRing )
+    mExteriorRing->normalize();
+
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
+  {
+    ring->normalize();
+  }
+
+  // sort rings
+  std::sort( mInteriorRings.begin(), mInteriorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
+  {
+    return a->compareTo( b ) > 0;
+  } );
+
+  // normalize ring orientation
+  forceRHR();
+}
+
 double QgsCurvePolygon::area() const
 {
   if ( !mExteriorRing )
@@ -605,11 +626,44 @@ bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
   {
     result = cleanRing( mExteriorRing.get() );
   }
-  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
   {
     if ( cleanRing( ring ) ) result = true;
   }
   return result;
+}
+
+bool QgsCurvePolygon::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  if ( !mExteriorRing && mInteriorRings.empty() )
+    return false;
+
+  // if we already have the bounding box calculated, then this check is trivial!
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.intersects( rectangle );
+  }
+
+  // loop through each ring and test the bounding box intersection.
+  // This gives us a chance to use optimisations which may be present on the individual
+  // ring geometry subclasses, and at worst it will cause a calculation of the bounding box
+  // of each individual ring geometry which we would have to do anyway... (and these
+  // bounding boxes are cached, so would be reused without additional expense)
+  if ( mExteriorRing && mExteriorRing->boundingBoxIntersects( rectangle ) )
+    return true;
+
+  for ( const QgsCurve *ring : mInteriorRings )
+  {
+    if ( ring->boundingBoxIntersects( rectangle ) )
+      return true;
+  }
+
+  // even if we don't intersect the bounding box of any rings, we may still intersect the
+  // bounding box of the overall polygon (we are considering worst case scenario here and
+  // the polygon is invalid, with rings outside the exterior ring!)
+  // so here we fall back to the non-optimised base class check which has to first calculate
+  // the overall bounding box of the polygon..
+  return QgsSurface::boundingBoxIntersects( rectangle );
 }
 
 QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
@@ -651,7 +705,7 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   }
 
   //match dimensionality for rings
-  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *ring : std::as_const( mInteriorRings ) )
   {
     if ( is3D() )
       ring->addZValue();
@@ -732,7 +786,7 @@ void QgsCurvePolygon::removeInvalidRings()
 {
   QVector<QgsCurve *> validRings;
   validRings.reserve( mInteriorRings.size() );
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     if ( !curve->isRing() )
     {
@@ -757,7 +811,7 @@ void QgsCurvePolygon::forceRHR()
   }
 
   QVector<QgsCurve *> validRings;
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     if ( curve && curve->orientation() != QgsCurve::CounterClockwise )
     {
@@ -823,7 +877,7 @@ void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, QgsCoordinate
     mExteriorRing->transform( ct, d, transformZ );
   }
 
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -837,7 +891,7 @@ void QgsCurvePolygon::transform( const QTransform &t, double zTranslate, double 
     mExteriorRing->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
 
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
@@ -1192,7 +1246,7 @@ bool QgsCurvePolygon::addZValue( double zValue )
 
   if ( mExteriorRing )
     mExteriorRing->addZValue( zValue );
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->addZValue( zValue );
   }
@@ -1209,7 +1263,7 @@ bool QgsCurvePolygon::addMValue( double mValue )
 
   if ( mExteriorRing )
     mExteriorRing->addMValue( mValue );
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->addMValue( mValue );
   }
@@ -1225,7 +1279,7 @@ bool QgsCurvePolygon::dropZValue()
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropZValue();
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->dropZValue();
   }
@@ -1241,7 +1295,7 @@ bool QgsCurvePolygon::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropMValue();
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->dropMValue();
   }
@@ -1253,7 +1307,7 @@ void QgsCurvePolygon::swapXy()
 {
   if ( mExteriorRing )
     mExteriorRing->swapXy();
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->swapXy();
   }
@@ -1280,7 +1334,7 @@ bool QgsCurvePolygon::transform( QgsAbstractGeometryTransformer *transformer, Qg
     return false;
   }
 
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     res = curve->transform( transformer );
 
@@ -1299,7 +1353,7 @@ void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint 
   if ( mExteriorRing )
     mExteriorRing->filterVertices( filter );
 
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->filterVertices( filter );
   }
@@ -1311,7 +1365,7 @@ void QgsCurvePolygon::transformVertices( const std::function<QgsPoint( const Qgs
   if ( mExteriorRing )
     mExteriorRing->transformVertices( transform );
 
-  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  for ( QgsCurve *curve : std::as_const( mInteriorRings ) )
   {
     curve->transformVertices( transform );
   }
@@ -1329,4 +1383,46 @@ QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
     return mExteriorRing.get();
   else
     return mInteriorRings.at( index - 1 );
+}
+
+int QgsCurvePolygon::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCurvePolygon *otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( other );
+  if ( !otherPolygon )
+    return -1;
+
+  if ( mExteriorRing && !otherPolygon->mExteriorRing )
+    return 1;
+  else if ( !mExteriorRing && otherPolygon->mExteriorRing )
+    return -1;
+  else if ( mExteriorRing && otherPolygon->mExteriorRing )
+  {
+    int shellComp = mExteriorRing->compareTo( otherPolygon->mExteriorRing.get() );
+    if ( shellComp != 0 )
+    {
+      return shellComp;
+    }
+  }
+
+  const int nHole1 = mInteriorRings.size();
+  const int nHole2 = otherPolygon->mInteriorRings.size();
+  if ( nHole1 < nHole2 )
+  {
+    return -1;
+  }
+  if ( nHole1 > nHole2 )
+  {
+    return 1;
+  }
+
+  for ( int i = 0; i < nHole1; i++ )
+  {
+    const int holeComp = mInteriorRings.at( i )->compareTo( otherPolygon->mInteriorRings.at( i ) );
+    if ( holeComp != 0 )
+    {
+      return holeComp;
+    }
+  }
+
+  return 0;
 }

@@ -12,7 +12,7 @@
 
 class QgsAbstractCacheIndex
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for cache indices
 %End
 

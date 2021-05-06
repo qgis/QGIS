@@ -971,8 +971,39 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
-    //! Open layer properties dialog
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+    /**
+     * Opens layer properties dialog for the layer \a l.
+     * Optionally, a \a page to open can be specified (since QGIS 3.20).
+     * The list below contains valid page names:
+     *
+     * Vector Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Labels,
+     * mOptsPage_Masks, mOptsPage_Diagrams, mOptsPage_SourceFields, mOptsPage_AttributesForm,
+     * mOptsPage_Joins, mOptsPage_AuxiliaryStorage, mOptsPage_Actions, mOptsPage_Display,
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Variables, mOptsPage_Metadata,
+     * mOptsPage_DataDependencies, mOptsPage_Legend, mOptsPage_Server
+     *
+     * Raster Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_Transparency,
+     * mOptsPage_Histogram, mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Pyramids,
+     * mOptsPage_Metadata, mOptsPage_Legend, mOptsPage_Server
+     *
+     * Mesh Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent,
+     * mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
+     *
+     * Point Cloud Layer:
+     * mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+     *
+     * Vector Tile Layer:
+     * mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
+     *
+     * \note Page names are subject to change without notice between QGIS versions,
+     * they are not considered part of the stable API.
+     *
+     * \note More strings may be available depending on the context, e.g. via plugins.
+     */
+    virtual void showLayerProperties( QgsMapLayer *l, const QString &page = QString() ) = 0;
 
     //! Open attribute table dialog
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;

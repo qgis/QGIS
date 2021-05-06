@@ -48,6 +48,8 @@ class TestQgsMapToolScaleFeature: public QObject
     void testCancelManualAnchor();
     void testScaleFeatureWithAnchorSetAfterStart();
     void testScaleSelectedFeatures();
+    void testScaleFeatureManualAnchorSnapping();
+    void testScaleFeatureDifferentCrs();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -113,6 +115,7 @@ void TestQgsMapToolScaleFeature::initTestCase()
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerBase );
   mCanvas->setCurrentLayer( mLayerBase );
+  mCanvas->snappingUtils()->locatorForLayer( mLayerBase )->init();
 
   // create the tool
   mScaleTool = new QgsMapToolScaleFeature( mCanvas );
@@ -229,6 +232,66 @@ void TestQgsMapToolScaleFeature::testScaleSelectedFeatures()
   mLayerBase->undoStack()->undo();
 }
 
+void TestQgsMapToolScaleFeature::testScaleFeatureManualAnchorSnapping()
+{
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  const double tolerance = cfg.tolerance();
+  const QgsTolerance::UnitType units = cfg.units();
+  cfg.setTolerance( 0.5 );
+  cfg.setUnits( QgsTolerance::LayerUnits );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  //set manual anchor point, should snap to (-2, -2)
+  utils.mouseClick( -1.9, -1.9, Qt::LeftButton, Qt::ControlModifier, true );
+
+  // resize, source point should snap to (-1, -1)
+  utils.mouseMove( -0.9, -0.9 );
+  utils.mouseClick( -0.9, -0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  // target point should snap to (1.1, 0.8)
+  utils.mouseMove( 1.2, 0.9 );
+  utils.mouseClick( 1.2, 0.9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2 -2, -2 0.95, 0.95 0.95, 0.95 -2, -2 -2))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  mLayerBase->undoStack()->undo();
+
+  // restore tolerance setting
+  cfg.setTolerance( tolerance );
+  cfg.setUnits( units );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // remove manual anchor point via right click
+  utils.mouseClick( 10, 25, Qt::RightButton, Qt::KeyboardModifiers(), true );
+}
+
+void TestQgsMapToolScaleFeature::testScaleFeatureDifferentCrs()
+{
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  TestQgsMapToolUtils utils( mScaleTool );
+
+  //scale up
+  utils.mouseClick( -8.82187821744550682, 2.0909475540607434, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -8.82188215592444536, 2.09095048559432861 );
+  utils.mouseClick( -8.82188215592444536, 2.09095048559432861, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.1 0.8, 1.1 5, 2.1 5, 2.1 0.8, 1.1 0.8))" ) );
+
+  //scale down
+  utils.mouseClick( -8.82185881943214234, 2.09096315856551129, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseMove( -8.82185818217576667, 2.09097065484482636 );
+  utils.mouseClick( -8.82185818217576667, 2.09097065484482636, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((-2.5 -2.5, -2.5 -0.5, -0.5 -0.5, -0.5 -2.5, -2.5 -2.5))" ) );
+  QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon ((1.35 1.84, 1.35 3.96, 1.85 3.96, 1.85 1.84, 1.35 1.84))" ) );
+
+  mLayerBase->undoStack()->undo();
+  mLayerBase->undoStack()->undo();
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+}
 
 QGSTEST_MAIN( TestQgsMapToolScaleFeature )
 #include "testqgsmaptoolscalefeature.moc"

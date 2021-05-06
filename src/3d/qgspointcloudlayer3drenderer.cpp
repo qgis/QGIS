@@ -27,20 +27,14 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayerelevationproperties.h"
 
-#include "qgis.h"
-
 QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
   , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
   , mCoordinateTransform( coordinateTransform )
+  , mFeedback( new QgsFeedback )
 {
-  auto callback = []()->bool
-  {
-    return false;
-  };
-  mIsCanceledCallback = callback;
 }
 
 void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCollection &attributes )
@@ -70,6 +64,18 @@ void QgsPointCloud3DRenderContext::setCoordinateTransform( const QgsCoordinateTr
 {
   mCoordinateTransform = coordinateTransform;
 }
+
+bool QgsPointCloud3DRenderContext::isCanceled() const
+{
+  return mFeedback->isCanceled();
+}
+
+void QgsPointCloud3DRenderContext::cancelRendering() const
+{
+  mFeedback->cancel();
+}
+// ---------
+
 
 QgsPointCloudLayer3DRendererMetadata::QgsPointCloudLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "pointcloud" ) )

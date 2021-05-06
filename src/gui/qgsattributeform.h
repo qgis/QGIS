@@ -340,7 +340,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onConstraintStatusChanged( const QString &constraint,
                                     const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
     void preventFeatureRefresh();
-    void synchronizeEnabledState();
+    void synchronizeState();
     void layerSelectionChanged();
 
     //! Save multi edit changes
@@ -448,6 +448,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool mValuesInitialized = false;
     bool mDirty = false;
     bool mIsSettingFeature = false;
+
+    bool mValidConstraints = true;
+    QgsMessageBarItem *mConstraintsFailMessageBarItem = nullptr;
 
     struct ContainerInformation
     {

@@ -23,7 +23,7 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the operations on curve geometries
+ * This is a unit test for the enum and flag functions of QgsSettings
  */
 class TestQgsSettings : public QObject
 {

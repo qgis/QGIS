@@ -623,6 +623,20 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static void premultiplyColor( QColor &rgb, int alpha );
 
+    /**
+     * Attempts to condense a \a fill and \a outline layer, by moving the outline layer to the
+     * fill symbol's stroke.
+     *
+     * This will only be done if the \a outline can be transformed into a stroke on the fill layer
+     * losslessly. If so, \a fill will be updated in place with the new stroke. Any existing stroke
+     * settings in \a fill will be replaced.
+     *
+     * Returns TRUE if the fill and outline were successfully condensed.
+     *
+     * \since QGIS 3.20
+     */
+    static bool condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline );
+
     //! Sorts the passed list in requested order
     static void sortVariantList( QList<QVariant> &list, Qt::SortOrder order );
     //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
@@ -656,6 +670,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
+
+    /**
+     * Returns the total length of a \a polyline.
+     *
+     * \since QGIS 3.20
+     */
+    static double polylineLength( const QPolygonF &polyline );
 
     /**
      * Returns the substring of a \a polyline which starts at \a startOffset from the beginning of the line

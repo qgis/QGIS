@@ -30,7 +30,14 @@ from qgis.core import (
     QgsArrowSymbolLayer,
     QgsUnitTypes,
     QgsRenderChecker,
-    QgsGradientColorRamp
+    QgsGradientColorRamp,
+    QgsShapeburstFillSymbolLayer,
+    QgsMarkerLineSymbolLayer,
+    QgsSimpleLineSymbolLayer,
+    QgsSimpleFillSymbolLayer,
+    QgsSymbolLayer,
+    QgsProperty,
+    QgsMapUnitScale
 )
 from qgis.testing import unittest, start_app
 
@@ -270,6 +277,17 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/pixel")
         self.assertEqual(decode, (QgsUnitTypes.RenderPixels, 1.0))
 
+    def testPolylineLength(self):
+        """
+        Test QgsSymbolLayerUtils.polylineLength
+        """
+        self.assertEqual(QgsSymbolLayerUtils.polylineLength(QPolygonF()), 0.0)
+        self.assertEqual(
+            QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 12), QPointF(11, 12)])), 0.0)
+        self.assertEqual(
+            QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(11, 12)])), 10.0)
+        self.assertEqual(QgsSymbolLayerUtils.polylineLength(QPolygonF([QPointF(11, 2), QPointF(11, 12), QPointF(111, 12)])), 110.0)
+
     def testPolylineSubstring(self):
         res = QgsSymbolLayerUtils.polylineSubstring(QPolygonF(), 1, 2)  # no crash
         self.assertFalse(res)
@@ -458,6 +476,77 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         pix = QgsSymbolLayerUtils.colorRampPreviewPixmap(r, QSize(100, 200), direction=Qt.Vertical, flipDirection=True)
         img = QImage(pix)
         self.assertTrue(self.imageCheck('color_ramp_vertical_flipped', 'color_ramp_vertical_flipped', img))
+
+    def testCondenseFillAndOutline(self):
+        """
+        Test QgsSymbolLayerUtils.condenseFillAndOutline
+        """
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(None, None))
+
+        # not simple fill or line
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(QgsShapeburstFillSymbolLayer(), QgsSimpleLineSymbolLayer()))
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(QgsSimpleFillSymbolLayer(), QgsMarkerLineSymbolLayer()))
+
+        # simple fill/line
+        fill = QgsSimpleFillSymbolLayer()
+        line = QgsSimpleLineSymbolLayer()
+
+        # set incompatible settings on outline
+        line.setUseCustomDashPattern(True)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setDashPatternOffset(1)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setAlignDashPattern(True)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setTweakDashPatternOnCorners(True)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setTrimDistanceStart(1)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setTrimDistanceEnd(1)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setDrawInsidePolygon(True)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setRingFilter(QgsSimpleLineSymbolLayer.ExteriorRingOnly)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setOffset(1)
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        line = QgsSimpleLineSymbolLayer()
+        line.setDataDefinedProperty(QgsSymbolLayer.PropertyTrimEnd, QgsProperty.fromValue(4))
+        self.assertFalse(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        # compatible!
+        line = QgsSimpleLineSymbolLayer()
+        line.setColor(QColor(255, 0, 0))
+        line.setWidth(1.2)
+        line.setWidthUnit(QgsUnitTypes.RenderPoints)
+        line.setWidthMapUnitScale(QgsMapUnitScale(1, 2))
+        line.setPenJoinStyle(Qt.MiterJoin)
+        line.setPenStyle(Qt.DashDotDotLine)
+        self.assertTrue(QgsSymbolLayerUtils.condenseFillAndOutline(fill, line))
+
+        self.assertEqual(fill.strokeColor(), QColor(255, 0, 0))
+        self.assertEqual(fill.strokeWidth(), 1.2)
+        self.assertEqual(fill.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(fill.strokeWidthMapUnitScale(), QgsMapUnitScale(1, 2))
+        self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
+        self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

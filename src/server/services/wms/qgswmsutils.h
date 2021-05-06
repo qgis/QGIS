@@ -24,6 +24,7 @@
 #define QGSWMSUTILS_H
 
 #include "qgsmodule.h"
+#include "qgsserversettings.h"
 
 class QgsRectangle;
 
@@ -50,7 +51,7 @@ namespace QgsWms
   /**
    * Returns WMS service URL
    */
-  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
+  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
 
   /**
    * Parse image format parameter

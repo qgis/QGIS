@@ -21,6 +21,7 @@ set (WMS_SRCS
   qgswmsparameters.cpp
   qgswmsrestorer.cpp
   qgswmsrendercontext.cpp
+  qgswmsrequest.cpp
 )
 
 set (WMS_HDRS

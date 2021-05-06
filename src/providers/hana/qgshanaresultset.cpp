@@ -87,6 +87,16 @@ double QgsHanaResultSet::getDouble( unsigned short columnIndex )
   return *mResultSet->getDouble( columnIndex );
 }
 
+int QgsHanaResultSet::getInt( unsigned short columnIndex )
+{
+  return *mResultSet->getInt( columnIndex );
+}
+
+short QgsHanaResultSet::getShort( unsigned short columnIndex )
+{
+  return *mResultSet->getShort( columnIndex );
+}
+
 QString QgsHanaResultSet::getString( unsigned short columnIndex )
 {
   return QgsHanaUtils::toQString( mResultSet->getNString( columnIndex ) );
@@ -170,6 +180,8 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
     case SQLDataTypes::Binary:
     case SQLDataTypes::VarBinary:
     case SQLDataTypes::LongVarBinary:
+      return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
+    case 29812: /* ST_GEOMETRY, ST_POINT */
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
     default:
       QgsDebugMsg( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );

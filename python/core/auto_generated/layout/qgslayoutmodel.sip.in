@@ -14,7 +14,7 @@
 
 class QgsLayoutModel: QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A model for items attached to a layout. The model also maintains the z-order for the
 layout, and must be notified whenever item stacking changes.
@@ -97,7 +97,7 @@ Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` an
 
 class QgsLayoutProxyModel: QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 Allows for filtering a QgsLayoutModel by item type.
 
 .. versionadded:: 3.0

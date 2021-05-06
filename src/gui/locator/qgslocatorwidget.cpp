@@ -132,7 +132,7 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   if ( mMapCanvas == canvas )
     return;
 
-  for ( const QMetaObject::Connection &conn : qgis::as_const( mCanvasConnections ) )
+  for ( const QMetaObject::Connection &conn : std::as_const( mCanvasConnections ) )
   {
     disconnect( conn );
   }

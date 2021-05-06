@@ -29,7 +29,9 @@
 #include <QPrinter>
 #endif
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget )
+  : mIterator( iterator )
+  , mDpiTarget( dpiTarget )
 {
 }
 
@@ -122,8 +124,10 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
+  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
+  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
+
   QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
@@ -131,13 +135,11 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   // in #7766, it seems to be a bug in Qt, setting a brush with alpha 255 is a workaround
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
-
   if ( qgsMapToPixel )
   {
-    int w = qgsMapToPixel->mapWidth();
-    int h = qgsMapToPixel->mapHeight();
-
-    double rotation = qgsMapToPixel->mapRotation();
+    const int w = qgsMapToPixel->mapWidth();
+    const int h = qgsMapToPixel->mapHeight();
+    const double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale
@@ -149,7 +151,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( tlPoint, img );
+  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / dpiScaleFactor ) ) : img );
 
 #if 0
   // For debugging:

@@ -10,7 +10,7 @@
 
 class QgsNetworkReplyContent
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates a network reply within a container which is inexpensive to copy and safe to pass between threads.
 
 .. versionadded:: 3.6

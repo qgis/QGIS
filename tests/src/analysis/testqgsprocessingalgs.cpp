@@ -39,6 +39,7 @@
 #include "qgsreclassifyutils.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsprintlayout.h"
+#include "qgslayertree.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmarkersymbollayer.h"
@@ -78,6 +79,7 @@ class TestQgsProcessingAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
     void saveFeaturesAlg();
     void packageAlg();
+    void rasterLayerProperties();
     void exportToSpreadsheetXlsx();
     void exportToSpreadsheetOds();
     void exportToSpreadsheetOptions();
@@ -177,6 +179,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportMeshTimeSeries();
 
     void fileDownloader();
+
+    void rasterize();
 
   private:
 
@@ -455,6 +459,59 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( selectedPolygonsPackagedLayer->isValid() );
   QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 10 ); // With enabled SELECTED_FEATURES_ONLY all features should be saved when there is no selection
+}
+
+void TestQgsProcessingAlgs::rasterLayerProperties()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterlayerproperties" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/landsat.tif" ) );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 781662.375 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 793062.375 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 3339523.125 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 3350923.125 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "781662.3750000000000000,3339523.1250000000000000 : 793062.3750000000000000,3350923.1250000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "EPSG:32633" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 9 );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/raster/valueRas3_float64.asc" ) );
+  parameters.insert( QStringLiteral( "BAND" ), 1 );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "0.0000000000000000,0.0000000000000000 : 4.0000000000000000,4.0000000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "HAS_NODATA_VALUE" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "NODATA_VALUE" ) ).toInt(), -9999 );
 }
 
 void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()
@@ -6509,6 +6566,53 @@ void TestQgsProcessingAlgs::fileDownloader()
   QVERIFY( ok );
   // verify that temporary outputs have the URL file extension appended
   QVERIFY( results.value( QStringLiteral( "OUTPUT" ) ).toString().endsWith( QLatin1String( ".txt" ) ) );
+}
+
+void TestQgsProcessingAlgs::rasterize()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterize" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QString outputTif = QDir::tempPath() + "/rasterize_output.tif";
+  if ( QFile::exists( outputTif ) )
+    QFile::remove( outputTif );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "EXTENT" ), QStringLiteral( "-120,-80,15,55" ) );
+  parameters.insert( QStringLiteral( "TILE_SIZE" ), 320 );
+  parameters.insert( QStringLiteral( "MAP_UNITS_PER_PIXEL" ), 0.125 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputTif );
+
+  // create a temporary project with three layers, but only two are visible
+  // (to test that the algorithm in the default setup without defined LAYERS or MAP_THEME uses only vsisible
+  // layers that and in the correct order)
+  QgsProject project;
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( dataDir + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( dataDir + "/lines.shp", QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( dataDir + "/polys.shp", QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() && linesLayer->isValid() && polygonLayer->isValid() );
+  project.addMapLayers( QList<QgsMapLayer *>() << pointsLayer << linesLayer << polygonLayer );
+  QgsLayerTreeLayer *nodePolygons = project.layerTreeRoot()->findLayer( polygonLayer );
+  QVERIFY( nodePolygons );
+  nodePolygons->setItemVisibilityChecked( false );
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  context->setProject( &project );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFile::exists( outputTif ) );
+
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "processing_algorithm" ) );
+  checker.setControlExtension( "tif" );
+  checker.setControlName( "expected_rasterize" );
+  checker.setRenderedImage( outputTif );
+  QVERIFY( checker.compareImages( "rasterize", 500 ) );
 }
 
 void TestQgsProcessingAlgs::exportMeshTimeSeries()

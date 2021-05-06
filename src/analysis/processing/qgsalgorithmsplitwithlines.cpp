@@ -166,7 +166,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
       if ( !splittingLines.empty() )
       {
-        for ( const QgsGeometry &splitGeom : qgis::as_const( splittingLines ) )
+        for ( const QgsGeometry &splitGeom : std::as_const( splittingLines ) )
         {
           QgsPointSequence splitterPList;
           QVector< QgsGeometry > outGeoms;
@@ -242,7 +242,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     QVector< QgsGeometry > parts;
-    for ( const QgsGeometry &aGeom : qgis::as_const( inGeoms ) )
+    for ( const QgsGeometry &aGeom : std::as_const( inGeoms ) )
     {
       if ( feedback->isCanceled() )
       {

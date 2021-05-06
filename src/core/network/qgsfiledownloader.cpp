@@ -74,7 +74,7 @@ void QgsFileDownloader::startDownload()
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );
   connect( mReply, &QNetworkReply::finished, this, &QgsFileDownloader::onFinished );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsFileDownloader::onDownloadProgress );
-  connect( nam, qgis::overload< QNetworkReply *>::of( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
+  connect( nam, qOverload< QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsFileDownloader::onRequestTimedOut, Qt::UniqueConnection );
 #ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors, Qt::UniqueConnection );
 #endif
@@ -101,10 +101,10 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
     QStringList errorMessages;
     errorMessages.reserve( errors.size() + 1 );
     errorMessages <<  QStringLiteral( "SSL Errors: " );
-    for ( auto end = errors.size(), i = 0; i != end; ++i )
-    {
-      errorMessages << errors[i].errorString();
-    }
+
+    for ( const QSslError &error : errors )
+      errorMessages << error.errorString();
+
     error( errorMessages );
   }
 }
@@ -113,10 +113,9 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 
 void QgsFileDownloader::error( const QStringList &errorMessages )
 {
-  for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
-  {
-    mErrors << errorMessages[i];
-  }
+  for ( const QString &error : errorMessages )
+    mErrors << error;
+
   if ( mReply )
     mReply->abort();
   emit downloadError( mErrors );

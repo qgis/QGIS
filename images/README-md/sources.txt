@@ -1,0 +1,13 @@
+These are examples used in the GitHub landing page README.md
+
+icebergs.gif, network_analysis_2.png - Ben Hur, own work @benhur07b
+plugins_1.png - self-explanatory screenshot
+qgis_map_showcase.png - screen shot from https://www.flickr.com/groups/qgis/pool/
+
+These no longer used, but might be helpful if need smaller thumbnails / side-by-side images
+
+QGIS_ex1.png - https://www.qgis.org/en/_images/qgisdesktopscreenshot.jpg via https://www.qgis.org/en/site/about/index.html
+QGIS_ex2.png - https://www.flickr.com/photos/7361002@N08/50870685936/in/pool-2244553@N22 via https://www.qgis.org/en/site/about/screenshots.html
+QGIS_ex3.png - https://docs.qgis.org/3.16/en/_images/models_model.png
+QGIS_ex4.png - https://docs.qgis.org/3.16/en/_images/python_console_editor.png
+QGIS_ex5.png - https://docs.qgis.org/3.16/en/_images/server_wfs3_feature.png

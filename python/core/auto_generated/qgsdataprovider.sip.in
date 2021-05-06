@@ -13,7 +13,7 @@
 
 class QgsDataProvider : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for spatial data provider implementations.
 %End
 
@@ -74,6 +74,7 @@ Abstract base class for spatial data provider implementations.
     {
       FlagTrustDataSource,
       SkipFeatureCount,
+      FlagLoadDefaultStyle,
     };
     typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
 

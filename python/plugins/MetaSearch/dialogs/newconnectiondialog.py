@@ -89,10 +89,8 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
             self.settings.setValue(keyurl, conn_url)
             self.settings.setValue('/MetaSearch/selected', conn_name)
 
-            if conn_username != '':
-                self.settings.setValue('%s/username' % key, conn_username)
-            if conn_password != '':
-                self.settings.setValue('%s/password' % key, conn_password)
+            self.settings.setValue('%s/username' % key, conn_username)
+            self.settings.setValue('%s/password' % key, conn_password)
 
             QDialog.accept(self)
 

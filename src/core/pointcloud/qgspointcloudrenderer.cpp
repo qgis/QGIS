@@ -27,12 +27,13 @@
 #include <QThread>
 #include <QPointer>
 
-QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset )
+QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback )
   : mRenderContext( context )
   , mScale( scale )
   , mOffset( offset )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
+  , mFeedback( feedback )
 {
 
 }

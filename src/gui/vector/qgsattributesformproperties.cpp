@@ -30,6 +30,7 @@
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorqmlelement.h"
 #include "qgsattributeeditorhtmlelement.h"
+#include "qgssettingsregistrycore.h"
 
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -169,9 +170,7 @@ void QgsAttributesFormProperties::initFormLayoutTree()
 
 void QgsAttributesFormProperties::initSuppressCombo()
 {
-  QgsSettings settings;
-
-  if ( settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool() )
+  if ( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value() )
   {
     mFormSuppressCmbBx->addItem( tr( "Hide Form on Add Feature (global settings)" ) );
   }
@@ -1188,7 +1187,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::activated ), qmlCode, [ = ]( int index )
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();
         switch ( index )

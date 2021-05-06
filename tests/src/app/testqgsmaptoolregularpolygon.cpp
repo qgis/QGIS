@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsgeometryutils.h"
@@ -87,7 +87,7 @@ void TestQgsMapToolRegularPolygon::cleanupTestCase()
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygon2Points mapTool( mParentTool, mCanvas );
@@ -106,11 +106,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygon2Points mapTool( mParentTool, mCanvas );
@@ -131,13 +131,13 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVerte
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygonCenterPoint mapTool( mParentTool, mCanvas );
@@ -156,11 +156,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygonCenterPoint mapTool( mParentTool, mCanvas );
@@ -181,13 +181,13 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDelet
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygonCenterCorner mapTool( mParentTool, mCanvas );
@@ -206,11 +206,11 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolRegularPolygonCenterCorner mapTool( mParentTool, mCanvas );
@@ -231,7 +231,7 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDele
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 

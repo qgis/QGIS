@@ -14,7 +14,7 @@
 
 class QgsPalLayerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings for how a map layer will be labeled.
 %End
 
@@ -231,6 +231,7 @@ Contains settings for how a map layer will be labeled.
       LabelAllParts,
       PolygonLabelOutside,
       LineAnchorPercent,
+      LineAnchorClipping,
 
       // rendering
       ScaleVisibility,
@@ -289,6 +290,14 @@ Finalises the label settings after use.
 This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`, in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
+%End
+
+    bool containsAdvancedEffects() const;
+%Docstring
+Returns ``True`` if any component of the label settings requires advanced effects
+such as blend modes, which require output in raster formats to be fully respected.
+
+.. versionadded:: 3.20
 %End
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -661,7 +670,7 @@ Returns a pixmap preview for label ``settings``.
 
 class QgsLabelCandidate
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a label candidate.
 %End
 
@@ -677,7 +686,7 @@ Represents a label candidate.
 
 class QgsPalLabeling
 {
-%Docstring
+%Docstring(signature="appended")
 PAL labeling utilities.
 %End
 

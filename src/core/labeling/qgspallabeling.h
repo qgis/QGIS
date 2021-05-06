@@ -336,6 +336,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
+      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
 
       // rendering
       ScaleVisibility = 23,
@@ -394,6 +395,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.10
      */
     void stopRender( QgsRenderContext &context );
+
+    /**
+     * Returns TRUE if any component of the label settings requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     * \since QGIS 3.20
+     */
+    bool containsAdvancedEffects() const;
 
     /**
      * Returns the labeling property definitions.
@@ -1063,7 +1071,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsExpression *expression = nullptr;
 
-    QFontDatabase mFontDB;
+    std::unique_ptr< QFontDatabase > mFontDB;
 
     QgsTextFormat mFormat;
 

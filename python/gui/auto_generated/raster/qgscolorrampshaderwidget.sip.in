@@ -13,7 +13,7 @@
 
 class QgsColorRampShaderWidget: QWidget, protected Ui::QgsColorRampShaderWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 
 It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
 the Quantile classification mode can be used and the LoadFromBandButton is visible.

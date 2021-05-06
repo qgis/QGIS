@@ -12,7 +12,7 @@
 
 class QgsTextBackgroundSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Container for settings relating to a text background object.
 
 .. note::
@@ -141,6 +141,38 @@ to the background settings.
 .. seealso:: :py:func:`markerSymbol`
 
 .. versionadded:: 3.10
+%End
+
+    QgsFillSymbol *fillSymbol() const;
+%Docstring
+Returns the fill symbol to be rendered in the background. Ownership remains with
+the background settings.
+
+.. note::
+
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle,
+   QgsTextBackgroundSettings.ShapeSquare, QgsTextBackgroundSettings.ShapeCircle or
+   QgsTextBackgroundSettings.ShapeEllipse
+
+.. seealso:: :py:func:`setFillSymbol`
+
+.. versionadded:: 3.20
+%End
+
+    void setFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the current fill ``symbol`` for the background shape. Ownership is transferred
+to the background settings.
+
+.. note::
+
+   This is only used when the :py:func:`~QgsTextBackgroundSettings.type` is QgsTextBackgroundSettings.ShapeRectangle,
+   QgsTextBackgroundSettings.ShapeSquare, QgsTextBackgroundSettings.ShapeCircle or
+   QgsTextBackgroundSettings.ShapeEllipse
+
+.. seealso:: :py:func:`fillSymbol`
+
+.. versionadded:: 3.20
 %End
 
     SizeType sizeType() const;
@@ -447,6 +479,11 @@ Returns the color used for filing the background shape.
 .. seealso:: :py:func:`setFillColor`
 
 .. seealso:: :py:func:`strokeColor`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     void setFillColor( const QColor &color );
@@ -458,6 +495,11 @@ Sets the color used for filing the background shape.
 .. seealso:: :py:func:`fillColor`
 
 .. seealso:: :py:func:`setStrokeColor`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     QColor strokeColor() const;
@@ -467,6 +509,11 @@ Returns the color used for outlining the background shape.
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`fillColor`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     void setStrokeColor( const QColor &color );
@@ -498,6 +545,11 @@ Sets the width of the shape's stroke (stroke). Units are specified through
 .. seealso:: :py:func:`strokeWidth`
 
 .. seealso:: :py:func:`setStrokeWidthUnit`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
@@ -518,6 +570,11 @@ Sets the units used for the shape's stroke width.
 .. seealso:: :py:func:`strokeWidthUnit`
 
 .. seealso:: :py:func:`setStrokeWidth`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     QgsMapUnitScale strokeWidthMapUnitScale() const;
@@ -540,6 +597,11 @@ Sets the map unit scale object for the shape stroke width. This is only used if 
 .. seealso:: :py:func:`strokeWidthMapUnitScale`
 
 .. seealso:: :py:func:`setStrokeWidthUnit`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     Qt::PenJoinStyle joinStyle() const;
@@ -556,6 +618,11 @@ Sets the join style used for drawing the background shape.
 :param style: join style
 
 .. seealso:: :py:func:`joinStyle`
+
+.. note::
+
+   As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
+   other background types should be configured through their symbols.
 %End
 
     const QgsPaintEffect *paintEffect() const;
@@ -601,8 +668,15 @@ Write settings into a DOM element.
 %Docstring
 Updates the format by evaluating current values of data defined properties.
 
+.. note::
+
+   Since QGIS 3.20, data defined fill color, stroke color, stroke width, and
+   pen join style will only modify SVG backgrounds. For other background types, the
+   data defined properties within symbols are to be used.
+
 .. versionadded:: 3.10
 %End
+
 
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 %Docstring

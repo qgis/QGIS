@@ -57,6 +57,16 @@ namespace
 
     return bbox.intersect( QgsRectangle( minx, miny, maxx, maxy ) );
   }
+
+  QString fieldExpression( const QgsField &field )
+  {
+    QString typeName = field.typeName();
+    QString fieldName = QgsHanaUtils::quotedIdentifier( field.name() );
+    if ( field.type() == QVariant::String &&
+         ( typeName == QLatin1String( "ST_GEOMETRY" ) || typeName == QLatin1String( "ST_POINT" ) ) )
+      return QStringLiteral( "%1.ST_ASWKT()" ).arg( fieldName );
+    return fieldName;
+  }
 }
 
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
@@ -180,7 +190,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         QVariantList pkValues;
         pkValues.reserve( mSource->mPrimaryKeyAttrs.size() );
-        for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
+        for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           QVariant v = mResultSet->getValue( paramIndex );
           pkValues << v;
@@ -201,7 +211,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   // Read attributes
   if ( mHasAttributes )
   {
-    for ( int idx : qgis::as_const( mAttributesToFetch ) )
+    for ( int idx : std::as_const( mAttributesToFetch ) )
     {
       feature.setAttribute( idx, mResultSet->getValue( paramIndex ) );
       ++paramIndex;
@@ -337,20 +347,20 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 
   QStringList sqlFields;
   // Add feature id column
-  for ( int idx : qgis::as_const( mSource->mPrimaryKeyAttrs ) )
+  for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
   {
-    QString fieldName = mSource->mFields.at( idx ).name();
-    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
+    const QgsField &field = mSource->mFields.at( idx );
+    sqlFields.push_back( fieldExpression( field ) );
   }
 
-  for ( int idx : qgis::as_const( attrIds ) )
+  for ( int idx : std::as_const( attrIds ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( idx ) )
       continue;
 
-    QString fieldName = mSource->mFields.at( idx ).name();
     mAttributesToFetch.append( idx );
-    sqlFields.push_back( QgsHanaUtils::quotedIdentifier( fieldName ) );
+    const QgsField &field = mSource->mFields.at( idx );
+    sqlFields.push_back( fieldExpression( field ) );
   }
 
   mHasAttributes = !mAttributesToFetch.isEmpty();
@@ -435,10 +445,9 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     }
   }
 
-  QString sql = QStringLiteral( "SELECT %1 FROM %2.%3" ).arg(
+  QString sql = QStringLiteral( "SELECT %1 FROM %2" ).arg(
                   sqlFields.isEmpty() ? QStringLiteral( "*" ) : sqlFields.join( ',' ),
-                  QgsHanaUtils::quotedIdentifier( mSource->mSchemaName ),
-                  QgsHanaUtils::quotedIdentifier( mSource->mTableName ) );
+                  mSource->mQuery );
 
   if ( !sqlFilter.isEmpty() )
     sql += QStringLiteral( " WHERE (%1)" ).arg( sqlFilter.join( QLatin1String( ") AND (" ) ) );
@@ -469,19 +478,17 @@ QVariantList QgsHanaFeatureIterator::buildSqlQueryParameters( ) const
 QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
   : mDatabaseVersion( p->mDatabaseVersion )
   , mUri( p->mUri )
-  , mSchemaName( p->mSchemaName )
-  , mTableName( p->mTableName )
+  , mQuery( p->mQuerySource )
+  , mQueryWhereClause( p->mQueryWhereClause )
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mPrimaryKeyCntx( p->mPrimaryKeyCntx )
-  , mFields( p->mAttributeFields )
-  , mFieldInfos( p->mFieldInfos )
+  , mFields( p->mFields )
   , mGeometryColumn( p->mGeometryColumn )
   , mGeometryType( p->wkbType() )
   , mSrid( p->mSrid )
   , mSrsExtent( p->mSrsExtent )
   , mCrs( p->crs() )
-  , mQueryWhereClause( p->mQueryWhereClause )
 {
   if ( p->mHasSrsPlanarEquivalent && p->mDatabaseVersion.majorVersion() <= 1 )
     mSrid = QgsHanaUtils::toPlanarSRID( p->mSrid );

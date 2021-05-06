@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -205,8 +205,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>341</width>
-                <height>301</height>
+                <width>710</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -410,8 +410,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
-                <height>47</height>
+                <width>710</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -494,8 +494,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>47</height>
+                <width>710</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -584,7 +584,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
+                <width>710</width>
                 <height>604</height>
                </rect>
               </property>
@@ -724,8 +724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>304</width>
-                <height>701</height>
+                <width>696</width>
+                <height>661</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -765,7 +765,7 @@
                      <item row="0" column="0">
                       <widget class="QLabel" name="label_8">
                        <property name="text">
-                        <string>Corner:</string>
+                        <string>Corner</string>
                        </property>
                       </widget>
                      </item>
@@ -1041,19 +1041,30 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1063,32 +1074,32 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLightsWidget</class>
    <extends>QWidget</extends>
    <header>qgslightswidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsMessageBar</class>
-   <extends>QWidget</extends>
-   <header>qgsmessagebar.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>spinCameraFieldOfView</tabstop>
+  <tabstop>m3DOptionsListWidget</tabstop>
+  <tabstop>scrollAreaTerrain</tabstop>
   <tabstop>cboTerrainType</tabstop>
   <tabstop>cboTerrainLayer</tabstop>
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
+  <tabstop>terrainElevationOffsetSpinBox</tabstop>
   <tabstop>groupTerrainShading</tabstop>
+  <tabstop>scrollAreaLight</tabstop>
+  <tabstop>scrollAreaShadow</tabstop>
+  <tabstop>groupShadowRendering</tabstop>
+  <tabstop>scrollAreaCameraSkybox</tabstop>
+  <tabstop>cboCameraProjectionType</tabstop>
+  <tabstop>spinCameraFieldOfView</tabstop>
+  <tabstop>mCameraNavigationModeCombo</tabstop>
+  <tabstop>mCameraMovementSpeed</tabstop>
   <tabstop>groupSkyboxSettings</tabstop>
+  <tabstop>scrollAreaAdvanced</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
   <tabstop>spinGroundError</tabstop>
@@ -1097,6 +1108,16 @@
   <tabstop>chkShowBoundingBoxes</tabstop>
   <tabstop>chkShowCameraViewCenter</tabstop>
   <tabstop>chkShowLightSourceOrigins</tabstop>
+  <tabstop>mFpsCounterCheckBox</tabstop>
+  <tabstop>edlGroupBox</tabstop>
+  <tabstop>edlStrengthSpinBox</tabstop>
+  <tabstop>edlDistanceSpinBox</tabstop>
+  <tabstop>mDebugShadowMapGroupBox</tabstop>
+  <tabstop>mDebugShadowMapCornerComboBox</tabstop>
+  <tabstop>mDebugShadowMapSizeSpinBox</tabstop>
+  <tabstop>mDebugDepthMapGroupBox</tabstop>
+  <tabstop>mDebugDepthMapCornerComboBox</tabstop>
+  <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

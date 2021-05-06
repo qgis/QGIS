@@ -138,5 +138,6 @@ void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &do
 
   QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
   propsElement.appendChild( QgsXmlUtils::writeVariant( mMap, doc ) );
+
   parentNode.appendChild( propsElement );
 }

@@ -30,7 +30,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
   {
     QList<QgsDataItemProvider *> providerList = QgsProviderRegistry::instance()->dataItemProviders( key );
     mProviders << providerList;
-    for ( const auto &p : qgis::as_const( providerList ) )
+    for ( const auto &p : std::as_const( providerList ) )
     {
       if ( ! p->dataProviderKey().isEmpty() )
       {
@@ -49,7 +49,7 @@ QList<QgsDataItemProvider *> QgsDataItemProviderRegistry::providers() const { re
 
 QgsDataItemProvider *QgsDataItemProviderRegistry::provider( const QString &providerName ) const
 {
-  for ( const auto &p : qgis::as_const( mProviders ) )
+  for ( const auto &p : std::as_const( mProviders ) )
   {
     if ( p->name() == providerName )
     {

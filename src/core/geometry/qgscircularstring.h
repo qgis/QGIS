@@ -51,6 +51,26 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
                        const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
+     * Construct a circular string from arrays of coordinates. If the z or m
+     * arrays are non-empty then the resultant circular string will have
+     * z and m types accordingly.
+     *
+     * This constructor is more efficient then calling setPoints().
+     *
+     * If the sizes of \a x and \a y are non-equal then the resultant circular string
+     * will be created using the minimum size of these arrays.
+     *
+     * \warning It is the caller's responsibility to ensure that the supplied arrays
+     * are of odd sizes.
+     *
+     * \since QGIS 3.20
+     */
+    QgsCircularString( const QVector<double> &x, const QVector<double> &y,
+                       const QVector<double> &z = QVector<double>(),
+                       const QVector<double> &m = QVector<double>() ) SIP_HOLDGIL;
+
+
+    /**
      * Creates a circular string with a single arc representing
      * the curve from \a p1 to \a p2 with the specified \a center.
      *
@@ -84,6 +104,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool isEmpty() const override SIP_HOLDGIL;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
     int numPoints() const override SIP_HOLDGIL;
+    int indexOf( const QgsPoint &point ) const final;
 
     /**
      * Returns the point at index i within the circular string.
@@ -96,6 +117,18 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Sets the circular string's points
      */
     void setPoints( const QgsPointSequence &points );
+
+    /**
+     * Appends the contents of another circular \a string to the end of this circular string.
+     *
+     * \param string circular string to append. Ownership is not transferred.
+     *
+     * \warning It is the caller's responsibility to ensure that the first point in the appended
+     * \a string matches the last point in the existing curve, or the result will be undefined.
+     *
+     * \since QGIS 3.20
+     */
+    void append( const QgsCircularString *string );
 
     double length() const override;
     QgsPoint startPoint() const override SIP_HOLDGIL;
@@ -130,10 +163,12 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double yAt( int index ) const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
     void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
 
     /**
      * Cast the \a geom to a QgsCircularString.
@@ -165,6 +200,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:

@@ -59,7 +59,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
 
 void QgsTerrainTextureGenerator::cancelJob( int jobId )
 {
-  Q_FOREACH ( const JobData &jd, mJobs )
+  for ( const JobData &jd : std::as_const( mJobs ) )
   {
     if ( jd.jobId == jobId )
     {
