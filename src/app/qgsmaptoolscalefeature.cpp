@@ -377,7 +377,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
     if ( !( geom.transform( t ) == QgsGeometry::Success ) )
       continue;
 
-    QgsFeatureId id = feat.id();
+    const QgsFeatureId id = feat.id();
     vlayer->changeGeometry( id, geom );
   }
 
@@ -477,5 +477,4 @@ void QgsMapToolScaleFeature::deleteScalingWidget()
   }
   mScalingWidget = nullptr;
 }
-
 
