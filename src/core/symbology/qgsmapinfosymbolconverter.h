@@ -51,9 +51,7 @@ class CORE_EXPORT QgsMapInfoSymbolConversionContext
   private:
 
     QStringList mWarnings;
-    QgsUnitTypes::RenderUnit mTargetUnit = QgsUnitTypes::RenderPixels;
 
-    double mSizeConversionFactor = 1.0;
 };
 
 /**
