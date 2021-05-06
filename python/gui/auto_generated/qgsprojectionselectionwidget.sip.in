@@ -83,6 +83,34 @@ passed, the message will be a generic
 %End
 
 
+    bool showDatumEnsembleWarnings() const;
+%Docstring
+Returns ``True`` if the widget will show a warning to users when they select a CRS which uses
+a datum ensemble.
+
+.. warning::
+
+   Determining datum ensembles requires PROJ 8.0 or later.
+
+.. seealso:: :py:func:`setShowDatumEnsembleWarnings`
+
+.. versionadded:: 3.20
+%End
+
+    void setShowDatumEnsembleWarnings( bool showDatumEnsembleWarnings );
+%Docstring
+Sets whether the widget will show a warning to users when they select a CRS which uses
+a datum ensemble.
+
+.. warning::
+
+   Determining datum ensembles requires PROJ 8.0 or later.
+
+.. seealso:: :py:func:`showDatumEnsembleWarnings`
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
     void crsChanged( const QgsCoordinateReferenceSystem & );
