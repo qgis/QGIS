@@ -17,6 +17,8 @@
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
+#include "qgslinestring.h"
+#include "qgscircularstring.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryvalidator.h"
@@ -2508,7 +2510,7 @@ void QgsVertexTool::deleteVertex()
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       for ( int vertexId : vertexIds )
       {
-        QgsMessageLog::logMessage("DELETE : fid:"+QString::number(fid)+" ; vertexId:"+QString::number(vertexId), "DEBUG");
+        QgsMessageLog::logMessage( "DELETE : fid:" + QString::number( fid ) + " ; vertexId:" + QString::number( vertexId ), "DEBUG" );
         if ( res != QgsVectorLayer::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
         if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
@@ -2563,21 +2565,21 @@ void QgsVertexTool::deleteVertex()
 void QgsVertexTool::toggleVertexCurve()
 {
   std::cout << "test";
-  QgsMessageLog::logMessage("test", "DEBUG");
+  QgsMessageLog::logMessage( "test", "DEBUG" );
 
-  Vertex toConvert = Vertex(nullptr, -1, -1);
+  Vertex toConvert = Vertex( nullptr, -1, -1 );
   if ( mSelectedVertices.size() == 1 )
   {
     toConvert = mSelectedVertices.first();
   }
-  else if( mDraggingVertexType == AddingVertex || mDraggingVertexType == MovingVertex )
+  else if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == MovingVertex )
   {
     toConvert = *mDraggingVertex;
   }
   else
   {
     // We only support converting one vertex at a time
-    QgsMessageLog::logMessage("Need exactly 1 selected/editted vertex", "DEBUG");
+    QgsMessageLog::logMessage( "Need exactly 1 selected/editted vertex", "DEBUG" );
     return;
   }
 
@@ -2593,83 +2595,36 @@ void QgsVertexTool::toggleVertexCurve()
   if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
   {
     // The layer is not a curved type
-    QgsMessageLog::logMessage("Layer is not curved", "DEBUG");
+    QgsMessageLog::logMessage( "Layer is not curved", "DEBUG" );
     return;
   }
 
-  // We get the vertex ID and the point
-  // QgsPoint vPt = geom.constGet()->vertexAt(vId);
-
-  // QgsVertexId vIdPrev;
-  // QgsVertexId vIdNext;
-  // geom.constGet()->adjacentVertices(vId, vIdPrev, vIdNext);
-  // if( ! vIdPrev.isValid() || ! vIdNext.isValid() ){
-  //   QgsMessageLog::logMessage("Can't work on first or last point", "DEBUG");
-  //   return;
-  // }
-
-  // QgsCompoundCurve *compoundCurve = dynamic_cast<QgsCompoundCurve *>( geom.get() );
-  // if( ! compoundCurve ){
-  //   compoundCurve->convertTo(QgsWkbTypes::CompoundCurve);
-  //   QgsMessageLog::logMessage("Only compound curves supported (for now)", "DEBUG");
-  //   return;
-  // }
-
-  // const QgsCurve *c0 = compoundCurve->curveAt(0);
-  // QgsMessageLog::logMessage("Curve 0 : " + c0->asWkt(), "DEBUG");
-  // const QgsCurve *c1 = compoundCurve->curveAt(1);
-  // QgsMessageLog::logMessage("Curve 1 : " + c1->asWkt(), "DEBUG");
-
-
-
-  // QgsCircularString arc = new QgsCircularString(prevVid, vid, nextVid);
-
-  // QgsGeometry geomPartA = geom.clone();
-  // QgsGeometry geomPartB = geom.clone();
-
-  // geomPartA.splitFeature()
-
-  // QgsMessageLog::logMessage("Geom is of type : " + geom.constGet()->wktTypeStr(), "DEBUG");
-
-  // vid.part;
-  // vid.ring;
-  // vid.vertex;
-  // QgsCompoundCurve *compoundCurveCopy = compoundCurve->clone();
-
-  // QgsVectorLayerEditUtils
-  // bool success;
-  // QgsMessageLog::logMessage("CONVERT : fid:"+QString::number(fId)+" ; vertexId:"+QString::number(vNr), "DEBUG");
-
-  // QVector< QPair<int, QgsVertexId> > curveVertexId = compoundCurve->curveVertexId(vId);
-  // QgsMessageLog::logMessage("curveVertexId (sic!)", "DEBUG");
-  // for ( auto it = curveVertexId.constBegin(); it != curveVertexId.constEnd(); ++it )
-  // {
-  //     QgsMessageLog::logMessage("Curve : "+QString::number(it->first)+"  Point : "+QString::number(it->second.part)+"/"+QString::number(it->second.ring)+"/"+QString::number(it->second.vertex), "DEBUG");
-  // }
-
-
-  QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
-  if( ! geomTmp->convertTo(QgsWkbTypes::CompoundCurve) ){
-      QgsMessageLog::logMessage("Could not convert "+geomTmp->wktTypeStr() + " to CompoundCurve", "DEBUG");
-      return;
-  }
-  QgsCompoundCurve *compoundCurveCopy = (QgsCompoundCurve*)geomTmp;
-
   layer->beginEditCommand( tr( "Converting vertex type" ) );
 
-  bool success = compoundCurveCopy->convertVertex(vId );
+
+  // TODO : implement convertVertex on QgsGeometry instead of following block, like this :
+  // bool success = geom.convertVertex(vId );
+  QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
+  if ( ! geomTmp->convertTo( QgsWkbTypes::CompoundCurve ) )
+  {
+    QgsMessageLog::logMessage( "Could not convert " + geomTmp->wktTypeStr() + " to CompoundCurve", "DEBUG" );
+    return;
+  }
+  QgsCompoundCurve *cpdCurve = ( QgsCompoundCurve * )geomTmp;
+  bool success = cpdCurve->convertVertex( vId );
+
 
   if ( success )
   {
-    QgsMessageLog::logMessage("Should be OK", "DEBUG");
-    geom.set( compoundCurveCopy );
+    QgsMessageLog::logMessage( "Should be OK", "DEBUG" );
+    geom.set( cpdCurve );
     layer->changeGeometry( fId, geom );
     layer->endEditCommand();
     layer->triggerRepaint();
   }
   else
   {
-    QgsMessageLog::logMessage("Has failed :-/", "DEBUG");
+    QgsMessageLog::logMessage( "Has failed :-/", "DEBUG" );
     layer->destroyEditCommand();
   }
 

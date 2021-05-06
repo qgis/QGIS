@@ -83,6 +83,7 @@ class TestQgsVertexTool : public QObject
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
     void testVertexToolCompoundCurve();
+    void testConvertVertex();
 
 
   private:
@@ -1320,6 +1321,35 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   mouseClick( 0.5, 7, Qt::RightButton );
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+}
+
+void TestQgsVertexTool::testConvertVertex()
+{
+  // convert vertex in linestring
+
+  mouseClick( 1, 1, Qt::LeftButton );
+  keyClick( Qt::Key_C );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "COMPOUNDCURVE(CIRCULARSTRING(2 1, 1 1, 1 3))" ) );
+
+  mLayerLine->undoStack()->undo();
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+
+  // convert vertex in polygon
+
+  mouseClick( 7, 4, Qt::LeftButton );
+  keyClick( Qt::Key_C );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "CURVEPOLYGON(COMPOUNDCURVE((4 1, 7 1), CIRCULARSTRING(7 1, 7 4, 4 4), (4 4, 4 1)))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )

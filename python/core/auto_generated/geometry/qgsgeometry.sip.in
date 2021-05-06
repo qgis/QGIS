@@ -727,6 +727,7 @@ Deletes the vertex at the given position number and item
          object to help make the distinction?)
 %End
 
+
     QgsPoint vertexAt( int atVertex ) const;
 %Docstring
 Returns coordinates of a vertex.
