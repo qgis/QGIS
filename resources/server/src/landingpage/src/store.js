@@ -73,7 +73,7 @@ export default new Vuex.Store({
   actions: {
     async getCatalog({ commit }) {
       try {
-        fetch(`/index.json`)
+        fetch(`./index.json`)
           .then((response) => {
             if (!response) {
               throw Error(`Error fetching data from QGIS Server`)
@@ -100,8 +100,7 @@ export default new Vuex.Store({
     },
     async getProject({ commit }, projectId) {
       try {
-        //console.log(`Inside getProject ${projectId}`)
-        fetch(`/map/${projectId}.json`)
+        fetch(`./map/${projectId}.json`)
           .then((response) => {
             if (!response) {
               throw Error(`Error fetching data from QGIS Server`)
@@ -130,7 +129,7 @@ export default new Vuex.Store({
      * Fetches the TOC style icons from GetLegendGraphics
      */
     async getToc({ commit }, payload) {
-      let toc_url = `/project/${payload.projectId}/?SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=${payload.layers}&FORMAT=application/json`
+      let toc_url = `./project/${payload.projectId}/?SERVICE=WMS&REQUEST=GetLegendGraphics&LAYERS=${payload.layers}&FORMAT=application/json`
       fetch(toc_url)
         .then(this.handleErrors)
         .then((response) => response.json())

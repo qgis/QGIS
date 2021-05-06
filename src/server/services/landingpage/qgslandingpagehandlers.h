@@ -54,7 +54,12 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
     const QString templatePath( const QgsServerApiContext &context ) const override;
 
+    /**
+     *  Returns the path prefix, default is empty. Also makes sure that not-empty
+     *  prefix starts with "/" (ex: "/mylandingprefix"
+     */
     static QString prefix( const QgsServerSettings *settings );
+
 
   private:
 
@@ -77,7 +82,7 @@ class QgsLandingPageMapHandler: public QgsServerOgcApiHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override { return QRegularExpression( R"re(^/map/([a-f0-9]{32}).*$)re" ); }
+    QRegularExpression path() const override;
     std::string operationId() const override { return "getMap"; }
     QStringList tags() const override { return { QStringLiteral( "Catalog" ), QStringLiteral( "Map Viewer" ) }; }
     std::string summary() const override

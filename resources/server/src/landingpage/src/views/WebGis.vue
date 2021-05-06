@@ -313,7 +313,7 @@ export default {
         this.map.fitBounds(jl.getBounds());
       }
       let that = this;
-      this.wms_source = WmsSource.source(`/project/` + project.id + `/?`, {
+      this.wms_source = WmsSource.source(`./project/` + project.id + `/?`, {
         tileSize: 512,
         transparent: true,
         format: "image/png",

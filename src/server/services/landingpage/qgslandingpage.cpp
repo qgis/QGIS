@@ -46,8 +46,8 @@ class QgsLandingPageApi: public QgsServerOgcApi
     {
       QString baseUrlPrefix{ serverIface()->serverSettings()->landingPageBaseUrlPrefix() };
 
-      // Make sure prefix always starts with /
-      if ( ! baseUrlPrefix.startsWith( '/' ) )
+      // Make sure non empty prefix always starts with /
+      if ( ! baseUrlPrefix.isEmpty() && ! baseUrlPrefix.startsWith( '/' ) )
       {
         baseUrlPrefix.prepend( '/' );
       }
@@ -69,11 +69,11 @@ class QgsLandingPageApi: public QgsServerOgcApi
       return path.isEmpty()
              || path == '/'
              || path.startsWith( QLatin1String( "/map/" ) )
-             || path.startsWith( QLatin1String( "/index" ) )
+             || path.startsWith( QLatin1String( "/index." ) )
              // Static
              || path.startsWith( QLatin1String( "/css/" ) )
              || path.startsWith( QLatin1String( "/js/" ) )
-             || path == QLatin1String( "/favicon.ico" );
+             || path == QLatin1String( "favicon.ico" );
     }
 
 };
@@ -100,7 +100,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
     {
       mEnvWasChanged = false;
       const auto handler { serverInterface()->requestHandler() };
-      if ( handler->path().startsWith( QStringLiteral( "%1project/" ).arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
+      if ( handler->path().startsWith( QStringLiteral( "%1/project/" ).arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( ! projectPath.isEmpty() )
@@ -153,7 +153,7 @@ class QgsLandingPageModule: public QgsServiceModule
                                                                };
       // Register handlers
       landingPageApi->registerHandler<QgsServerStaticHandler>(
-        QStringLiteral( "%1(?<staticFilePath>((css|js)/.*)|favicon.ico)$" )
+        QStringLiteral( "%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" )
         .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ), QStringLiteral( "landingpage" ) );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );
