@@ -538,6 +538,42 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+// bool QgsGeometry::convertVertex( int atVertex )
+// {
+//   if ( !d->geometry )
+//   {
+//     return false;
+//   }
+
+//   QgsVertexId id;
+//   if ( !vertexIdFromVertexNr( atVertex, id ) )
+//   {
+//     return false;
+//   }
+
+//   QgsAbstractGeometry* geom = d->geometry.get();
+
+
+//   // If the geom is a compound curve, we take it as is
+//   if( QgsCompoundCurve *cpdCurve = dynamic_cast<QgsCompoundCurve *>( geom )  )
+//   {
+//     return cpdCurve->convertVertex(id);
+//   }
+
+//   // If the geom is a linestring or cirularstring, we convert to compound curve
+//   if( dynamic_cast<const QgsCircularString *>( geom ) != nullptr || dynamic_cast<const QgsLineString *>( geom ) != nullptr ){
+//     QgsCompoundCurve *cpdCurve = new QgsCompoundCurve();
+//     cpdCurve->addCurve(((QgsCurve*)geom)->clone());
+//     return cpdCurve->convertVertex(id);
+//   }
+
+//   // TODO other cases (multi-geoms, polygons...)
+
+
+//   // Otherwise, it failed
+//   return false
+// }
+
 bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 {
   if ( !d->geometry )
