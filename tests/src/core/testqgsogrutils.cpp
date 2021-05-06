@@ -572,7 +572,8 @@ void TestQgsOgrUtils::convertStyleString()
   QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->widthUnit(), QgsUnitTypes::RenderPoints );
   QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penCapStyle(), Qt::RoundCap );
   QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->penJoinStyle(), Qt::RoundJoin );
-  QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashVector(), QVector< qreal >() << 23.625 << 7.875 );
+  QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashVector().at( 0 ), 21.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashVector().at( 1 ), 10.5 );
   QCOMPARE( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->customDashPatternUnit(), QgsUnitTypes::RenderPoints );
   QVERIFY( qgis::down_cast<QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->useCustomDashPattern() );
 
