@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>462</height>
+    <width>585</width>
+    <height>476</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -215,7 +215,7 @@
             <x>0</x>
             <y>0</y>
             <width>591</width>
-            <height>221</height>
+            <height>235</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -228,6 +228,9 @@
            </item>
            <item row="0" column="1">
             <widget class="QgsPointCloudAttributeComboBox" name="mRenderingParameterComboBox"/>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
            </item>
            <item row="1" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0">
@@ -285,9 +288,6 @@
               </widget>
              </item>
             </layout>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
            </item>
           </layout>
          </widget>
