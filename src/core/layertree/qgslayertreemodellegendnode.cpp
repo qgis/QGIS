@@ -1434,3 +1434,63 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
   }
 }
 
+QgsVectorLabelLegendNode::QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent ): QgsLayerTreeModelLegendNode( nodeLayer, parent ), mLabelSettings( labelSettings )
+{
+}
+
+QgsVectorLabelLegendNode::~QgsVectorLabelLegendNode()
+{
+}
+
+QVariant QgsVectorLabelLegendNode::data( int role ) const
+{
+  if ( role == Qt::DisplayRole )
+  {
+    return mUserLabel;
+  }
+  if ( role == Qt::DecorationRole )
+  {
+    const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
+    return QgsPalLayerSettings::labelSettingsPreviewPixmap( mLabelSettings, QSize( iconSize, iconSize ), QStringLiteral( "Aa" ) );
+  }
+  return QVariant();
+}
+
+QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
+{
+  Q_UNUSED( itemHeight );
+  QgsTextFormat textFormat = mLabelSettings.format();
+  QFont font = textFormat.font();
+  QgsUnitTypes::RenderUnit fontSizeUnit = textFormat.sizeUnit();
+  double size = textFormat.size();
+  if ( fontSizeUnit == QgsUnitTypes::RenderMillimeters )
+  {
+    size *= 2.83465;
+  }
+  else if ( fontSizeUnit == QgsUnitTypes::RenderMapUnits )
+  {
+    size = 12; //render in a standard size is better
+
+    /*double oldSize = size * settings.mmPerMapUnit()  * 2.83465;
+    if( ctx && ctx->context )
+    {
+        const QgsMapToPixel& mtp = ctx->context->mapToPixel();
+        size = size  / mtp.mapUnitsPerPixel() / ctx->context->scaleFactor()  * 2.83465;
+    }*/
+  }
+  font.setPointSizeF( size );
+
+  double textHeight = settings.fontHeightCharacterMM( font, QChar( 'A' ) );
+  double textWidth = settings.textWidthMillimeters( font, "Aa" );
+
+  if ( ctx && ctx->painter )
+  {
+    ctx->painter->setPen( textFormat.color() );
+    settings.drawText( ctx->painter, ctx->columnLeft + settings.symbolSize().width() / 2.0 - textWidth / 2.0, ctx->top + settings.symbolSize().height() / 2.0 + textHeight / 2.0, "Aa", font );
+  }
+
+  double symbolWidth = qMax( textWidth, settings.symbolSize().width() );
+  double symbolHeight = qMax( textHeight, settings.symbolSize().height() );
+  return QSizeF( symbolWidth, symbolHeight );
+}
+

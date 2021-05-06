@@ -57,8 +57,11 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mTextOnSymbolGroupBox->setLayout( groupLayout );
   mTextOnSymbolGroupBox->setCollapsed( false );
 
+  mShowLabelLegendCheckBox = new QCheckBox( tr( "Show label legend" ) );
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->addWidget( mShowLabelLegendCheckBox );
   layout->addWidget( mTextOnSymbolGroupBox );
   setLayout( layout );
 }
@@ -77,6 +80,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
   if ( !legend )
     return;
 
+  mShowLabelLegendCheckBox->setChecked( legend->showLabelLegend() );
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
@@ -123,6 +127,7 @@ void QgsVectorLayerLegendWidget::populateLegendTreeView( const QHash<QString, QS
 void QgsVectorLayerLegendWidget::applyToLayer()
 {
   QgsDefaultVectorLayerLegend *legend = new QgsDefaultVectorLayerLegend( mLayer );
+  legend->setShowLabelLegend( mShowLabelLegendCheckBox->isChecked() );
   legend->setTextOnSymbolEnabled( mTextOnSymbolGroupBox->isChecked() );
   legend->setTextOnSymbolTextFormat( mTextOnSymbolFormatButton->textFormat() );
 

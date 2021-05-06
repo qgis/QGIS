@@ -27,6 +27,7 @@
 
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
+#include "qgspallabeling.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -721,5 +722,25 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     QgsDataDefinedSizeLegend *mSettings = nullptr;
     mutable QImage mImage;
 };
+
+/**
+ * \ingroup core
+ * \brief Produces legend node for a labeling text symbol
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = 0 );
+    ~QgsVectorLabelLegendNode() override;
+
+    //! Returns data associated with the item.
+    QVariant data( int role ) const override;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+  private:
+    QgsPalLayerSettings mLabelSettings;
+};
+
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

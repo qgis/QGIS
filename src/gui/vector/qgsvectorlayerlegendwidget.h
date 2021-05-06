@@ -24,6 +24,7 @@
 #include "qgstextformat.h"
 #include "qgis_gui.h"
 
+class QCheckBox;
 class QLabel;
 class QPushButton;
 class QTreeView;
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
     QLabel *mTextOnSymbolLabel = nullptr;
+    QCheckBox *mShowLabelLegendCheckBox = nullptr;
 
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;
