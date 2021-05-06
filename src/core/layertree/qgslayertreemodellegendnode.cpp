@@ -1469,14 +1469,7 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
   }
   else if ( fontSizeUnit == QgsUnitTypes::RenderMapUnits )
   {
-    size = 12; //render in a standard size is better
-
-    /*double oldSize = size * settings.mmPerMapUnit()  * 2.83465;
-    if( ctx && ctx->context )
-    {
-        const QgsMapToPixel& mtp = ctx->context->mapToPixel();
-        size = size  / mtp.mapUnitsPerPixel() / ctx->context->scaleFactor()  * 2.83465;
-    }*/
+    size = 12; //render in a standard size
   }
   font.setPointSizeF( size );
 
