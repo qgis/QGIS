@@ -180,7 +180,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       const QString encodedAreaUnit = QgsStringUtils::ampersandEncode( areaUnit );
 

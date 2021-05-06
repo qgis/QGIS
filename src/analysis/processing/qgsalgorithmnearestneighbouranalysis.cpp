@@ -134,7 +134,7 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

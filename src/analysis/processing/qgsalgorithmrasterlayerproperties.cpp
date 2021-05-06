@@ -17,7 +17,6 @@
 
 #include "qgsalgorithmrasterlayerproperties.h"
 #include "qgsstringutils.h"
-#include <QTextStream>
 
 ///@cond PRIVATE
 
