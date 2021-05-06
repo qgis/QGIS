@@ -2491,12 +2491,15 @@ void QgsVertexTool::deleteVertex()
 
 void QgsVertexTool::toggleVertexCurve()
 {
+  std::cout << "test";
+  QgsMessageLog::logMessage("test", "DEBUG");
+
   Vertex toConvert = Vertex(nullptr, -1, -1);
   if ( mSelectedVertices.size() == 1 )
   {
     toConvert = mSelectedVertices.first();
   }
-  else if( mDraggingVertexType == AddingVertex )
+  else if( mDraggingVertexType == AddingVertex || mDraggingVertexType == MovingVertex )
   {
     toConvert = *mDraggingVertex;
   }
@@ -2534,11 +2537,12 @@ void QgsVertexTool::toggleVertexCurve()
   //   return;
   // }
 
-  QgsCompoundCurve *compoundCurve = dynamic_cast<QgsCompoundCurve *>( geom.get() );
-  if( ! compoundCurve ){
-    QgsMessageLog::logMessage("Only compound curves supported (for now)", "DEBUG");
-    return;
-  }
+  // QgsCompoundCurve *compoundCurve = dynamic_cast<QgsCompoundCurve *>( geom.get() );
+  // if( ! compoundCurve ){
+  //   compoundCurve->convertTo(QgsWkbTypes::CompoundCurve);
+  //   QgsMessageLog::logMessage("Only compound curves supported (for now)", "DEBUG");
+  //   return;
+  // }
 
   // const QgsCurve *c0 = compoundCurve->curveAt(0);
   // QgsMessageLog::logMessage("Curve 0 : " + c0->asWkt(), "DEBUG");
@@ -2574,17 +2578,21 @@ void QgsVertexTool::toggleVertexCurve()
 
 
   QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
-  QgsCompoundCurve *compoundCurveCopy = compoundCurve->clone();
+  if( ! geomTmp->convertTo(QgsWkbTypes::CompoundCurve) ){
+      QgsMessageLog::logMessage("Could not convert "+geomTmp->wktTypeStr() + " to CompoundCurve", "DEBUG");
+      return;
+  }
+  QgsCompoundCurve *compoundCurveCopy = (QgsCompoundCurve*)geomTmp;
 
 
-
+  bool success = false;
   if ( vId.type == QgsVertexId::CurveVertex ) {
     layer->beginEditCommand( tr( "Converting vertex to linear" ) );
     // layer->deleteVertex( fId, vNr );
     // layer->insertVertex( vPt, fId, vNr );
     // vId.type = QgsVertexId::CurveVertex;
     // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
-    compoundCurveCopy->convertVertex(	vId, QgsVertexId::SegmentVertex );
+    success = compoundCurveCopy->convertVertex(	vId, QgsVertexId::SegmentVertex );
 
   } else {
     layer->beginEditCommand( tr( "Converting vertex to curve" ) );
@@ -2592,24 +2600,23 @@ void QgsVertexTool::toggleVertexCurve()
     // layer->insertVertex( vPt, fId, vNr );
     // vId.type = QgsVertexId::SegmentVertex;
     // feature.setGeometry( QgsGeometry(compoundCurveCopy ));
-    compoundCurveCopy->convertVertex(	vId, QgsVertexId::CurveVertex );
+    success = compoundCurveCopy->convertVertex(	vId, QgsVertexId::CurveVertex );
   }
 
-  geom.set( compoundCurveCopy );
-  layer->changeGeometry( fId, geom );
 
-  // if ( success )
-  // {
+  if ( success )
+  {
     QgsMessageLog::logMessage("Should be OK", "DEBUG");
+    geom.set( compoundCurveCopy );
+    layer->changeGeometry( fId, geom );
     layer->endEditCommand();
     layer->triggerRepaint();
-  // }
-  // else
-  // {
-  //   QgsMessageLog::logMessage("Has failed :-/", "DEBUG");
-  //   layer->destroyEditCommand();
-  // }
-
+  }
+  else
+  {
+    QgsMessageLog::logMessage("Has failed :-/", "DEBUG");
+    layer->destroyEditCommand();
+  }
 
   if ( mVertexEditor && mLockedFeature )
     mVertexEditor->updateEditor( mLockedFeature.get() );
