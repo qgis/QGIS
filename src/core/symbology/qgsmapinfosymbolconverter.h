@@ -20,8 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsunittypes.h"
 #include <QStringList>
+#include <QColor>
 
 class QgsLineSymbol;
+class QgsFillSymbol;
 
 /**
  * Context for a MapInfo symbol conversion operation.
@@ -70,6 +72,13 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      * The caller takes ownership of the returned symbol.
      */
     static QgsLineSymbol *convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, QgsUnitTypes::RenderUnit sizeUnit, bool interleaved = false ) SIP_FACTORY;
+
+    /**
+     * Converts the MapInfo fill symbol with the specified \a identifier to a QgsFillSymbol.
+     *
+     * The caller takes ownership of the returned symbol.
+     */
+    static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) SIP_FACTORY;
 
 };
 

@@ -174,6 +174,26 @@ class TestQgsEmbeddedSymbolRenderer(unittest.TestCase):
         renderchecker.setControlName('expected_embedded_mapinfo_lines')
         self.assertTrue(renderchecker.runTest('embedded_mapinfo_lines'))
 
+    def testMapFillLineSymbolConversion(self):
+        line_layer = QgsVectorLayer(TEST_DATA_DIR + '/mapinfo/fill_styles.TAB', 'Fills', 'ogr')
+
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsLineSymbol.createSimple({}))
+        line_layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(2000, 4000))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setMagnificationFactor(2)
+        mapsettings.setExtent(line_layer.extent().buffered(0.1))
+
+        mapsettings.setLayers([line_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('embedded')
+        renderchecker.setControlName('expected_embedded_mapinfo_fills')
+        self.assertTrue(renderchecker.runTest('embedded_mapinfo_fills'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
 
 //
 // QgsMapInfoSymbolConversionContext
@@ -1093,4 +1094,295 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   }
 
   return symbol.release();
+}
+
+QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor )
+{
+  Qt::BrushStyle style = Qt::SolidPattern;
+
+  bool useLineFill = false;
+  bool crossFill = false;
+  double lineAngle = 0;
+  double lineWidth = 0;
+  double lineSpacing = 1;
+  switch ( identifier )
+  {
+    case 0:
+    case 1:
+      style = Qt::NoBrush;
+      break;
+
+    case 2:
+      style = Qt::SolidPattern;
+      break;
+
+    case 3:
+    case 19:
+      style = Qt::HorPattern;
+      break;
+
+    case 4:
+    case 24:
+      style = Qt::VerPattern;
+      break;
+
+    case 5:
+    case 34:
+      style = Qt::FDiagPattern;
+      break;
+
+    case 6:
+    case 29:
+      style = Qt::BDiagPattern;
+      break;
+
+    case 7:
+    case 39:
+      style = Qt::CrossPattern;
+      break;
+
+    case 8:
+    case 44:
+      style = Qt::DiagCrossPattern;
+      break;
+
+    case 12:
+      style = Qt::Dense1Pattern;
+      break;
+
+    case 13:
+      style = Qt::Dense2Pattern;
+      break;
+
+    case 14:
+      style = Qt::Dense3Pattern;
+      break;
+
+    case 15:
+      style = Qt::Dense4Pattern;
+      break;
+
+    case 16:
+      style = Qt::Dense5Pattern;
+      break;
+
+    case 17:
+      style = Qt::Dense6Pattern;
+      break;
+
+    case 18:
+      style = Qt::Dense7Pattern;
+      break;
+
+    case 20:
+      useLineFill = true;
+      lineAngle = 0;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 21:
+      useLineFill = true;
+      lineAngle = 0;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 22:
+      useLineFill = true;
+      lineAngle = 0;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    case 23:
+      useLineFill = true;
+      lineAngle = 0;
+      lineSpacing = 3.0;
+      lineWidth = 1.0;
+      break;
+
+    case 25:
+      useLineFill = true;
+      lineAngle = 90;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 26:
+      useLineFill = true;
+      lineAngle = 90;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 27:
+      useLineFill = true;
+      lineAngle = 90;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    case 28:
+      useLineFill = true;
+      lineAngle = 90;
+      lineSpacing = 3.0;
+      lineWidth = 1.0;
+      break;
+
+    case 30:
+      useLineFill = true;
+      lineAngle = 45;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 31:
+      useLineFill = true;
+      lineAngle = 45;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 32:
+      useLineFill = true;
+      lineAngle = 45;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    case 33:
+      useLineFill = true;
+      lineAngle = 45;
+      lineSpacing = 3.0;
+      lineWidth = 1.0;
+      break;
+
+    case 35:
+      useLineFill = true;
+      lineAngle = 135;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 36:
+      useLineFill = true;
+      lineAngle = 135;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 37:
+      useLineFill = true;
+      lineAngle = 135;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    case 38:
+      useLineFill = true;
+      lineAngle = 135;
+      lineSpacing = 3.0;
+      lineWidth = 1.0;
+      break;
+
+    case 40:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 0;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 41:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 0;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 42:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 0;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    case 43:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 0;
+      lineSpacing = 3.0;
+      lineWidth = 1.0;
+      break;
+
+    case 45:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 45;
+      lineSpacing = 6;
+      lineWidth = 1.2;
+      break;
+
+    case 46:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 45;
+      lineSpacing = 4;
+      lineWidth = 0.8;
+      break;
+
+    case 47:
+      useLineFill = true;
+      crossFill = true;
+      lineAngle = 45;
+      lineSpacing = 3.4;
+      lineWidth = 1.2;
+      break;
+
+    default:
+      context.pushWarning( QObject::tr( "The brush style is not supported in QGIS" ) );
+      return nullptr;
+  }
+
+  QgsSymbolLayerList layers;
+  if ( backColor.isValid() && style != Qt::SolidPattern && ( useLineFill || style != Qt::NoBrush ) )
+  {
+    std::unique_ptr< QgsSimpleFillSymbolLayer > backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
+    backgroundFill->setLocked( true );
+    backgroundFill->setStrokeStyle( Qt::NoPen );
+    layers << backgroundFill.release();
+  }
+
+  if ( !useLineFill )
+  {
+    std::unique_ptr< QgsSimpleFillSymbolLayer > foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
+    foregroundFill->setBrushStyle( style );
+    foregroundFill->setStrokeStyle( Qt::NoPen );
+    layers << foregroundFill.release();
+  }
+  else
+  {
+    std::unique_ptr< QgsLinePatternFillSymbolLayer > lineFill = std::make_unique< QgsLinePatternFillSymbolLayer >();
+
+    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, lineWidth );
+    simpleLine->setWidthUnit( QgsUnitTypes::RenderPoints );
+    lineFill->setSubSymbol( new QgsLineSymbol( QgsSymbolLayerList() << simpleLine.release() ) );
+
+    lineFill->setDistance( lineSpacing );
+    lineFill->setDistanceUnit( QgsUnitTypes::RenderPoints );
+    lineFill->setLineAngle( lineAngle );
+
+    if ( crossFill )
+    {
+      std::unique_ptr< QgsLinePatternFillSymbolLayer > lineFill2( lineFill->clone() );
+      lineFill2->setLineAngle( lineFill->lineAngle() + 90 );
+      layers << lineFill2.release();
+    }
+
+    layers << lineFill.release();
+  }
+  return new QgsFillSymbol( layers );
 }

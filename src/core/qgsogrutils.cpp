@@ -26,6 +26,8 @@
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgsmapinfosymbolconverter.h"
+#include "qgsfillsymbollayer.h"
+#include "qgssymbollayerutils.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1234,6 +1236,9 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
   auto convertColor = []( const QString & string ) -> QColor
   {
+    if ( string.isEmpty() )
+      return QColor();
+
     const thread_local QRegularExpression sColorWithAlphaRx = QRegularExpression( QStringLiteral( "^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})$" ) );
     const QRegularExpressionMatch match = sColorWithAlphaRx.match( string );
     if ( match.hasMatch() )
@@ -1247,10 +1252,8 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     }
   };
 
-  if ( type == QgsSymbol::Line && styles.contains( QStringLiteral( "pen" ) ) )
+  auto convertPen = [&convertColor, &convertSize, string]( const QVariantMap & lineStyle ) -> std::unique_ptr< QgsSymbol >
   {
-    // line symbol type
-    const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
     QColor color = convertColor( lineStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
 
     double lineWidth = DEFAULT_SIMPLELINE_WIDTH;
@@ -1347,6 +1350,157 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       simpleLine->setRenderingPass( priority.toInt() );
     }
     return std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  };
+
+  auto convertBrush = [&convertColor]( const QVariantMap & brushStyle ) -> std::unique_ptr< QgsSymbol >
+  {
+    const QColor foreColor = convertColor( brushStyle.value( QStringLiteral( "fc" ), QStringLiteral( "#000000" ) ).toString() );
+    const QColor backColor = convertColor( brushStyle.value( QStringLiteral( "bc" ), QString() ).toString() );
+
+    const QString id = brushStyle.value( QStringLiteral( "id" ) ).toString();
+
+    // if the pen is a mapinfo brush, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-brush-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( id );
+    if ( match.hasMatch() )
+    {
+      const int brushId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertFillSymbol( brushId, context, foreColor, backColor ) );
+      if ( res )
+        return res;
+    }
+
+    const thread_local QRegularExpression sOgrId = QRegularExpression( QStringLiteral( "ogr-brush-(\\d+)" ) );
+    const QRegularExpressionMatch ogrMatch = sOgrId.match( id );
+
+    Qt::BrushStyle style = Qt::SolidPattern;
+    if ( ogrMatch.hasMatch() )
+    {
+      const int brushId = ogrMatch.captured( 1 ).toInt();
+      switch ( brushId )
+      {
+        case 0:
+          style = Qt::SolidPattern;
+          break;
+
+        case 1:
+          style = Qt::NoBrush;
+          break;
+
+        case 2:
+          style = Qt::HorPattern;
+          break;
+
+        case 3:
+          style = Qt::VerPattern;
+          break;
+
+        case 4:
+          style = Qt::FDiagPattern;
+          break;
+
+        case 5:
+          style = Qt::BDiagPattern;
+          break;
+
+        case 6:
+          style = Qt::CrossPattern;
+          break;
+
+        case 7:
+          style = Qt::DiagCrossPattern;
+          break;
+      }
+    }
+
+    QgsSymbolLayerList layers;
+    if ( backColor.isValid() && style != Qt::SolidPattern && style != Qt::NoBrush )
+    {
+      std::unique_ptr< QgsSimpleFillSymbolLayer > backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
+      backgroundFill->setLocked( true );
+      backgroundFill->setStrokeStyle( Qt::NoPen );
+      layers << backgroundFill.release();
+    }
+
+    std::unique_ptr< QgsSimpleFillSymbolLayer > foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
+    foregroundFill->setBrushStyle( style );
+    foregroundFill->setStrokeStyle( Qt::NoPen );
+
+    const QString priority = brushStyle.value( QStringLiteral( "l" ) ).toString();
+    if ( !priority.isEmpty() )
+    {
+      foregroundFill->setRenderingPass( priority.toInt() );
+    }
+    layers << foregroundFill.release();
+    return std::make_unique< QgsFillSymbol >( layers );
+  };
+
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      break;
+
+    case QgsSymbol::Line:
+      if ( styles.contains( QStringLiteral( "pen" ) ) )
+      {
+        // line symbol type
+        const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
+        return convertPen( lineStyle );
+      }
+      else
+      {
+        return nullptr;
+      }
+
+    case QgsSymbol::Fill:
+    {
+      std::unique_ptr< QgsSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+      if ( styles.contains( QStringLiteral( "brush" ) ) )
+      {
+        const QVariantMap brushStyle = styles.value( QStringLiteral( "brush" ) ).toMap();
+        fillSymbol = convertBrush( brushStyle );
+      }
+      else
+      {
+        std::unique_ptr< QgsSimpleFillSymbolLayer > emptyFill = std::make_unique< QgsSimpleFillSymbolLayer >();
+        emptyFill->setBrushStyle( Qt::NoBrush );
+        fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << emptyFill.release() );
+      }
+
+      std::unique_ptr< QgsSymbol > penSymbol;
+      if ( styles.contains( QStringLiteral( "pen" ) ) )
+      {
+        const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
+        penSymbol = convertPen( lineStyle );
+      }
+
+      if ( penSymbol )
+      {
+        const int count = penSymbol->symbolLayerCount();
+
+        if ( count == 1 )
+        {
+          // if only one pen symbol layer, let's try and combine it with the topmost brush layer, so that the resultant QGIS symbol is simpler
+          if ( QgsSymbolLayerUtils::condenseFillAndOutline( dynamic_cast< QgsFillSymbolLayer * >( fillSymbol->symbolLayer( fillSymbol->symbolLayerCount() - 1 ) ),
+               dynamic_cast< QgsLineSymbolLayer * >( penSymbol->symbolLayer( 0 ) ) ) )
+            return fillSymbol;
+        }
+
+        for ( int i = 0; i < count; ++i )
+        {
+          std::unique_ptr< QgsSymbolLayer > layer( penSymbol->takeSymbolLayer( 0 ) );
+          layer->setLocked( true );
+          fillSymbol->appendSymbolLayer( layer.release() );
+        }
+      }
+
+      return fillSymbol;
+    }
+
+    case QgsSymbol::Hybrid:
+      break;
   }
+
   return nullptr;
 }
