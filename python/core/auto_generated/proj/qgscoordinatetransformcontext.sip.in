@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatetransformcontext.h                             *
+ * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -302,7 +302,7 @@ Write the context's state to application settings.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatetransformcontext.h                             *
+ * src/core/proj/qgscoordinatetransformcontext.h                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

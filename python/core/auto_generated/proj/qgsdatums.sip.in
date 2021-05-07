@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdatums.h                                                 *
+ * src/core/proj/qgsdatums.h                                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -146,7 +146,7 @@ Contains a list of members of the ensemble.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdatums.h                                                 *
+ * src/core/proj/qgsdatums.h                                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

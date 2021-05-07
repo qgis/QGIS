@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsellipsoidutils.h                                         *
+ * src/core/proj/qgsellipsoidutils.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -70,7 +70,7 @@ ellipsoid database.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsellipsoidutils.h                                         *
+ * src/core/proj/qgsellipsoidutils.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
