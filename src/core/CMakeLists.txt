@@ -1365,6 +1365,7 @@ set(QGIS_CORE_HDRS
   proj/qgsdatumtransform.h
   proj/qgsellipsoidutils.h
   proj/qgsprojutils.h
+  proj/qgsprojectionfactors.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
