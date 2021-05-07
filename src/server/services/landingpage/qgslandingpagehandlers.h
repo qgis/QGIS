@@ -56,7 +56,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 
     /**
      *  Returns the path prefix, default is empty. Also makes sure that not-empty
-     *  prefix starts with "/" (ex: "/mylandingprefix"
+     *  prefix starts with "/" (ex: "/mylandingprefix")
      */
     static QString prefix( const QgsServerSettings *settings );
 
