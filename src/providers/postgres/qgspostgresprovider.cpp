@@ -598,20 +598,39 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
     //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
     QString delim;
-    QString expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
+    QString whereKeys;
+    for ( int i = 0; i < pkAttrs.size(); i++ )
+    {
+      whereKeys += delim + QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[i] ).name() );
+      delim = QStringLiteral( "," );
+    }
 
+    QStringList whereValuesList;
     for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
     {
       const QVariantList pkVals = sharedData->lookupKey( featureId );
       if ( !pkVals.isEmpty() )
       {
-        expr += delim + QgsPostgresConn::quotedValue( pkVals.at( 0 ) );
-        delim = ',';
+        Q_ASSERT( pkVals.size() == pkAttrs.size() );
+
+        QString delim;
+        QString whereValues;
+        for ( int i = 0; i < pkAttrs.size(); i++ )
+        {
+          whereValues += delim + QgsPostgresConn::quotedValue( pkVals[i] );
+          delim = QStringLiteral( "," );
+        }
+        whereValuesList << whereValues;
       }
     }
-    expr += ')';
+    if ( 1 ==  pkAttrs.size() )
+      return whereValuesList.isEmpty() ? QString() :
+             whereKeys.append( QStringLiteral( " IN " ) ) +
+             whereValuesList.join( QLatin1Char( ',' ) ).prepend( QLatin1Char( '(' ) ).append( QLatin1Char( ')' ) );
 
-    return expr;
+    return whereValuesList.isEmpty() ? QString() :
+           whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+           whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
   };
 
   switch ( pkType )
@@ -642,13 +661,26 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       return lookupKeyWhereClause();
 
     case PktFidMap:
+    {
+      // on simple string primary key we can use IN
+      QList<int> allowedType;
+      allowedType << QVariant::String;
+      allowedType << QVariant::Int;
+      //allowedType << QVariant::LongLong;
+      bool canUseIN = true;
+      for ( int i = 0; i < pkAttrs.size(); i++ )
+      {
+        if ( !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
+          canUseIN = false;
+      }
+      if ( canUseIN )
+        return lookupKeyWhereClause();
+
+      [[fallthrough]];
+    }
     case PktTid:
     case PktUnknown:
     {
-      // on simple string primary key we can use IN
-      if ( pkType == PktFidMap && pkAttrs.count() == 1 && fields.at( pkAttrs[0] ).type() == QVariant::String )
-        return lookupKeyWhereClause();
-
       //complex primary key, need to build up where string
       QStringList whereClauses;
       for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
