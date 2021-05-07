@@ -393,7 +393,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
-  connect( mSvgSourceLineEdit, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
+  setAllowAnyImage( mAllowAnyImage );
 
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
@@ -447,7 +447,7 @@ void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 {
   mCurrentSvgPath = svgPath;
 
-  whileBlocking( mSvgSourceLineEdit )->setSource( svgPath );
+  whileBlocking( mSourceLineEdit )->setSource( svgPath );
 
   mImagesListView->selectionModel()->blockSignals( true );
   QAbstractItemModel *m = mImagesListView->model();
@@ -485,6 +485,30 @@ void QgsSvgSelectorWidget::setAllowParameters( bool allow )
   mParametersGroupBox->setVisible( allow );
 }
 
+void QgsSvgSelectorWidget::setBrowserVisible( bool visible )
+{
+  if ( mBrowserVisible == visible )
+    return;
+
+  mBrowserVisible = visible;
+  mSvgBrowserGroupBox->setVisible( visible );
+}
+
+void QgsSvgSelectorWidget::setAllowAnyImage( bool allowAnyImage )
+{
+  mAllowAnyImage = allowAnyImage;
+
+  if ( allowAnyImage )
+    mSourceLineEdit->setMode( QgsSvgOrImageSourceLineEdit::Image );
+  else
+    mSourceLineEdit->setMode( QgsSvgOrImageSourceLineEdit::Svg );
+}
+
+QgsPropertyOverrideButton *QgsSvgSelectorWidget::propertyOverrideToolButton() const
+{
+  return mSourceLineEdit->propertyOverrideToolButton();
+}
+
 void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
 {
   mCurrentSvgPath = svgPath;
@@ -494,7 +518,7 @@ void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
 void QgsSvgSelectorWidget::svgSelectionChanged( const QModelIndex &idx )
 {
   QString filePath = idx.data( Qt::UserRole ).toString();
-  whileBlocking( mSvgSourceLineEdit )->setSource( filePath );
+  whileBlocking( mSourceLineEdit )->setSource( filePath );
   updateCurrentSvgPath( filePath );
 }
 
