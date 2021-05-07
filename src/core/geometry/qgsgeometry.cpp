@@ -635,7 +635,7 @@ bool QgsGeometry::convertVertex( int atVertex )
         // Replace the curve in the owning collection
         QgsMessageLog::logMessage( "case C", "DEBUG" );
         owningCollection->removeGeometry( id.part );
-        owningCollection->addGeometry( cpdCurve );
+        owningCollection->insertGeometry( cpdCurve, id.part );
       }
     }
     else
