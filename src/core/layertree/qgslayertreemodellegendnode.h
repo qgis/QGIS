@@ -733,35 +733,36 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
   public:
 
     /**
-     * @brief QgsVectorLabelLegendNode
-     * @param nodeLayer the parent node
-     * @param labelSettings setting of the label class
-     * @param parent the parent object
+     * \brief QgsVectorLabelLegendNode
+     * \param nodeLayer the parent node
+     * \param labelSettings setting of the label class
+     * \param parent the parent object
      */
     QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = 0 );
     ~QgsVectorLabelLegendNode() override;
 
     /**
-     * @brief data Returns data associated with the item
-     * @param role the data role
-     * @return variant containing the data for the role
+     *
+     * \brief data Returns data associated with the item
+     * \param role the data role
+     * \return variant containing the data for the role
      */
     QVariant data( int role ) const override;
 
     /**
-     * @brief drawSymbol
-     * @param settings the legend settings
-     * @param ctx context for the item
-     * @param itemHeight the height of the item
-     * @return size of the item
+     * \brief drawSymbol
+     * \param settings the legend settings
+     * \param ctx context for the item
+     * \param itemHeight the height of the item
+     * \return size of the item
      */
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
     /**
-     * @brief exportSymbolToJson
-     * @param settings the legend settings
-     * @param context the item context
-     * @return the json object
+     * \brief exportSymbolToJson
+     * \param settings the legend settings
+     * \param context the item context
+     * \return the json object
      */
     QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
