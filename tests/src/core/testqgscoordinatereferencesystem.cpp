@@ -405,66 +405,6 @@ void TestQgsCoordinateReferenceSystem::projFactors()
   QgsProjectionFactors factors = QgsCoordinateReferenceSystem().factors( QgsPoint( 0, 0 ) );
   QVERIFY( !factors.isValid() );
 
-  factors = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ).factors( QgsPoint( 0, 1 ) );
-  QVERIFY( factors.isValid() );
-  QGSCOMPARENEAR( factors.meridionalScale(), 1.0001523, 0.0000001 );
-  QGSCOMPARENEAR( factors.parallelScale(), 1.0001523, 0.0000001 );
-  QGSCOMPARENEAR( factors.arealScale(), 1.00030468, 0.00000001 );
-  QGSCOMPARENEAR( factors.angularDistortion(), 0.0, 0.00001 );
-  QGSCOMPARENEAR( factors.meridianParallelAngle(), 89.99, 0.01 );
-  QGSCOMPARENEAR( factors.meridianConvergence(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemimajor(), 1.00015234, 0.0000001 );
-  QGSCOMPARENEAR( factors.tissotSemiminor(), 1.00015232, 0.0000001 );
-  QGSCOMPARENEAR( factors.dxDlam(), 1.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDphi(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDlam(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDphi(), 1.00015233, 0.00000001 );
-
-  factors = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ).factors( QgsPoint( 1, 2 ) );
-  QVERIFY( factors.isValid() );
-  QGSCOMPARENEAR( factors.meridionalScale(), 1.0006095, 0.0000001 );
-  QGSCOMPARENEAR( factors.parallelScale(), 1.0006095, 0.0000001 );
-  QGSCOMPARENEAR( factors.arealScale(), 1.00121946, 0.00000001 );
-  QGSCOMPARENEAR( factors.angularDistortion(), 0.0, 0.00001 );
-  QGSCOMPARENEAR( factors.meridianParallelAngle(), 90.0, 0.01 );
-  QGSCOMPARENEAR( factors.meridianConvergence(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemimajor(), 1.00060955, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemiminor(), 1.00060953, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDlam(), 1.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDphi(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDlam(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDphi(), 1.00060954, 0.00000001 );
-
-  factors = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ).factors( QgsPoint( 2, 3 ) );
-  QVERIFY( factors.isValid() );
-  QGSCOMPARENEAR( factors.meridionalScale(), 1.0013723, 0.0000001 );
-  QGSCOMPARENEAR( factors.parallelScale(), 1.0013723, 0.0000001 );
-  QGSCOMPARENEAR( factors.arealScale(), 1.00274658, 0.00000001 );
-  QGSCOMPARENEAR( factors.angularDistortion(), 0.0, 0.00001 );
-  QGSCOMPARENEAR( factors.meridianParallelAngle(), 90.0, 0.01 );
-  QGSCOMPARENEAR( factors.meridianConvergence(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemimajor(), 1.00137235, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemiminor(), 1.00137235, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDlam(), 1.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDphi(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDlam(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDphi(), 1.00137235, 0.00000001 );
-
-  factors = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ).factors( QgsPoint( 3, 4 ) );
-  QVERIFY( factors.isValid() );
-  QGSCOMPARENEAR( factors.meridionalScale(), 1.0024419, 0.0000001 );
-  QGSCOMPARENEAR( factors.parallelScale(), 1.0024419, 0.0000001 );
-  QGSCOMPARENEAR( factors.arealScale(), 1.00488976, 0.00000001 );
-  QGSCOMPARENEAR( factors.angularDistortion(), 0.0, 0.00001 );
-  QGSCOMPARENEAR( factors.meridianParallelAngle(), 90.0, 0.01 );
-  QGSCOMPARENEAR( factors.meridianConvergence(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemimajor(), 1.0024419, 0.00000001 );
-  QGSCOMPARENEAR( factors.tissotSemiminor(), 1.0024419, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDlam(), 1.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dxDphi(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDlam(), 0.0, 0.00000001 );
-  QGSCOMPARENEAR( factors.dyDphi(), 1.0024419, 0.00000001 );
-
   factors = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3717" ) ).factors( QgsPoint( -120, 34 ) );
   QVERIFY( factors.isValid() );
   QGSCOMPARENEAR( factors.meridionalScale(), 1.0005466, 0.0000001 );
