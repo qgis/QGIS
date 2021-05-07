@@ -785,14 +785,14 @@ class CORE_EXPORT QgsGeometry
      */
     bool deleteVertex( int atVertex );
 
-    // /**
-    //  * Converts the vertex at the given position from/to circular
-    //  * \returns FALSE if atVertex does not correspond to a valid vertex
-    //  * on this geometry (including if this geometry is a Point),
-    //  * or if the specified vertex can't be converted (e.g. start/end points).
-    //  * \since QGIS 3.20
-    //  */
-    // bool convertVertex( int atVertex );
+    /**
+     * Converts the vertex at the given position from/to circular
+     * \returns FALSE if atVertex does not correspond to a valid vertex
+     * on this geometry (including if this geometry is a Point),
+     * or if the specified vertex can't be converted (e.g. start/end points).
+     * \since QGIS 3.20
+     */
+    bool convertVertex( int atVertex );
 
     /**
      * Returns coordinates of a vertex.

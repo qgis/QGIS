@@ -91,6 +91,7 @@ Returns the curve polygon's exterior ring.
 %End
 
 
+
     SIP_PYOBJECT interiorRing( int i ) /HoldGIL,TypeHint="QgsCurve"/;
 %Docstring
 Retrieves an interior ring from the curve polygon. The first interior ring has index 0.

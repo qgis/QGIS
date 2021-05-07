@@ -1011,28 +1011,7 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
   }
 
   // We merge consecutive LineStrings
-  // TODO ? : move this to a new QgsCompoundCurve::mergeConsecutiveLineStrings() method;
-  QgsLineString *lastLineString = nullptr;
-  QVector<QgsCurve *> newCurves;
-  for ( int i = 0; i < mCurves.size(); ++i )
-  {
-    QgsCurve *curve = mCurves.at( i );
-    QgsLineString *curveAsLineString = dynamic_cast<QgsLineString *>( curve );
-
-    if ( curveAsLineString != nullptr && lastLineString != nullptr )
-    {
-      // We append to previous
-      lastLineString->append( curveAsLineString );
-    }
-    else
-    {
-      // We keep as is
-      newCurves.append( curve );
-      lastLineString = curveAsLineString;
-    }
-  }
-
-  mCurves = newCurves;
+  condenseCurves();
 
   clearCache();
   return true;

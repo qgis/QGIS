@@ -2564,8 +2564,6 @@ void QgsVertexTool::deleteVertex()
 
 void QgsVertexTool::toggleVertexCurve()
 {
-  std::cout << "test";
-  QgsMessageLog::logMessage( "test", "DEBUG" );
 
   Vertex toConvert = Vertex( nullptr, -1, -1 );
   if ( mSelectedVertices.size() == 1 )
@@ -2578,47 +2576,27 @@ void QgsVertexTool::toggleVertexCurve()
   }
   else
   {
-    // We only support converting one vertex at a time
+    // TODO support more than just 1 vertex
     QgsMessageLog::logMessage( "Need exactly 1 selected/editted vertex", "DEBUG" );
     return;
   }
 
-
   QgsVectorLayer *layer = toConvert.layer;
-  QgsFeatureId fId = toConvert.fid;
-  int vNr = toConvert.vertexId;
-  QgsVertexId vId;
-  QgsFeature feature = layer->getFeature( fId );
-  QgsGeometry geom = feature.geometry();
-  geom.vertexIdFromVertexNr( vNr, vId );
 
   if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
   {
-    // The layer is not a curved type
     QgsMessageLog::logMessage( "Layer is not curved", "DEBUG" );
     return;
   }
 
   layer->beginEditCommand( tr( "Converting vertex type" ) );
-
-
-  // TODO : implement convertVertex on QgsGeometry instead of following block, like this :
-  // bool success = geom.convertVertex(vId );
-  QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
-  if ( ! geomTmp->convertTo( QgsWkbTypes::CompoundCurve ) )
-  {
-    QgsMessageLog::logMessage( "Could not convert " + geomTmp->wktTypeStr() + " to CompoundCurve", "DEBUG" );
-    return;
-  }
-  QgsCompoundCurve *cpdCurve = ( QgsCompoundCurve * )geomTmp;
-  bool success = cpdCurve->convertVertex( vId );
-
+  QgsGeometry geom = layer->getFeature( toConvert.fid ).geometry();
+  bool success = geom.convertVertex( toConvert.vertexId );
 
   if ( success )
   {
     QgsMessageLog::logMessage( "Should be OK", "DEBUG" );
-    geom.set( cpdCurve );
-    layer->changeGeometry( fId, geom );
+    layer->changeGeometry( toConvert.fid, geom );
     layer->endEditCommand();
     layer->triggerRepaint();
   }
