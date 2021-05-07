@@ -1459,6 +1459,63 @@ QVariant QgsVectorLabelLegendNode::data( int role ) const
 QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const
 {
   Q_UNUSED( itemHeight );
+  if ( !ctx )
+  {
+    return QSizeF( 0, 0 );
+  }
+
+  return drawSymbol( settings, ctx->painter, ctx->columnLeft, ctx->top );
+}
+
+QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, QPainter *p, double xOffset, double yOffset ) const
+{
+  QColor textColor;
+  QFont f = font( textColor );
+
+  double textHeight = settings.fontHeightCharacterMM( f, QChar( 'A' ) );
+  double textWidth = settings.textWidthMillimeters( f, "Aa" );
+
+  if ( p )
+  {
+    p->setPen( textColor );
+    settings.drawText( p, xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0, yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0, "Aa", f );
+  }
+  double symbolWidth = qMax( textWidth, settings.symbolSize().width() );
+  double symbolHeight = qMax( textHeight, settings.symbolSize().height() );
+  return QSizeF( symbolWidth, symbolHeight );
+}
+
+QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const
+{
+  QColor textColor;
+  QFont f = font( textColor );
+
+  double textHeight = settings.fontHeightCharacterMM( f, QChar( 'A' ) );
+  double textWidth = settings.textWidthMillimeters( f, "Aa" );
+
+  double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
+  int widthPixel = mmToPixel * textWidth;
+  int heightPixel = mmToPixel * textHeight;
+
+  QImage img( widthPixel, heightPixel, QImage::Format_ARGB32 );
+  img.fill( QColor( 255, 255, 255, 255 ) );
+  QPainter p( &img );
+  p.scale( mmToPixel, mmToPixel );
+
+  drawSymbol( settings, &p );
+
+  QByteArray byteArray;
+  QBuffer buffer( &byteArray );
+  img.save( &buffer, "PNG" );
+  const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
+
+  QJsonObject json;
+  json[ QStringLiteral( "icon" ) ] = base64;
+  return json;
+}
+
+QFont QgsVectorLabelLegendNode::font( QColor &c ) const
+{
   QgsTextFormat textFormat = mLabelSettings.format();
   QFont font = textFormat.font();
   QgsUnitTypes::RenderUnit fontSizeUnit = textFormat.sizeUnit();
@@ -1472,18 +1529,7 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
     size = 12; //render in a standard size
   }
   font.setPointSizeF( size );
-
-  double textHeight = settings.fontHeightCharacterMM( font, QChar( 'A' ) );
-  double textWidth = settings.textWidthMillimeters( font, "Aa" );
-
-  if ( ctx && ctx->painter )
-  {
-    ctx->painter->setPen( textFormat.color() );
-    settings.drawText( ctx->painter, ctx->columnLeft + settings.symbolSize().width() / 2.0 - textWidth / 2.0, ctx->top + settings.symbolSize().height() / 2.0 + textHeight / 2.0, "Aa", font );
-  }
-
-  double symbolWidth = qMax( textWidth, settings.symbolSize().width() );
-  double symbolHeight = qMax( textHeight, settings.symbolSize().height() );
-  return QSizeF( symbolWidth, symbolHeight );
+  c = textFormat.color();
+  return font;
 }
 

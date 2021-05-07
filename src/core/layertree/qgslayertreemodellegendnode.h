@@ -737,9 +737,12 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
     //! Returns data associated with the item.
     QVariant data( int role ) const override;
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
   private:
     QgsPalLayerSettings mLabelSettings;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, QPainter *p, double xOffset = 0.0, double yOffset = 0.0 ) const;
+    QFont font( QColor &c ) const;
 };
 
 
