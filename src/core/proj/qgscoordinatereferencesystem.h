@@ -40,6 +40,7 @@ class QDomNode;
 class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 class QgsDatumEnsemble;
+class QgsProjectionFactors;
 
 #ifndef SIP_RUN
 struct PJconsts;
@@ -744,6 +745,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.20
      */
     QgsDatumEnsemble datumEnsemble() const SIP_THROW( QgsNotSupportedException );
+
+    /**
+     * Calculate various cartographic properties, such as scale factors, angular distortion and meridian convergence for
+     * the CRS at the given geodetic \a point (in geographic coordinates).
+     *
+     * Depending on the underlying projection values will be calculated either numerically (default) or analytically.
+     * The function also calculates the partial derivatives of the given coordinate.
+     *
+     * \note Internally uses the proj library proj_factors API to calculate the factors.
+     *
+     * \since QGIS 3.20
+     */
+    QgsProjectionFactors factors( const QgsPoint &point ) const;
 
     /**
      * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.

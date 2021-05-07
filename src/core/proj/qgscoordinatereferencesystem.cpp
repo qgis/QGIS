@@ -41,6 +41,7 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsdatums.h"
+#include "qgsprojectionfactors.h"
 
 #include <sqlite3.h>
 #include "qgsprojutils.h"
@@ -1240,6 +1241,45 @@ QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
 #else
   throw QgsNotSupportedException( QStringLiteral( "Calculating datum ensembles requires a QGIS build based on PROJ 8.0 or later" ) );
 #endif
+}
+
+QgsProjectionFactors QgsCoordinateReferenceSystem::factors( const QgsPoint &point ) const
+{
+  QgsProjectionFactors res;
+
+  // we have to make a transformation object corresponding to the crs
+  QString projString = toProj();
+  projString.replace( QStringLiteral( "+type=crs" ), QString() );
+
+  QgsProjUtils::proj_pj_unique_ptr transformation( proj_create( QgsProjContext::get(), projString.toUtf8().constData() ) );
+  if ( !transformation )
+    return res;
+
+  PJ_COORD coord = proj_coord( 0, 0, 0, HUGE_VAL );
+  coord.uv.u = point.x() * M_PI / 180.0;
+  coord.uv.v = point.y() * M_PI / 180.0;
+
+  proj_errno_reset( transformation.get() );
+  const PJ_FACTORS pjFactors = proj_factors( transformation.get(), coord );
+  if ( proj_errno( transformation.get() ) )
+  {
+    return res;
+  }
+
+  res.mIsValid = true;
+  res.mMeridionalScale = pjFactors.meridional_scale;
+  res.mParallelScale = pjFactors.parallel_scale;
+  res.mArealScale = pjFactors.areal_scale;
+  res.mAngularDistortion = pjFactors.angular_distortion;
+  res.mMeridianParallelAngle = pjFactors.meridian_parallel_angle * 180 / M_PI;
+  res.mMeridianConvergence = pjFactors.meridian_convergence * 180 / M_PI;
+  res.mTissotSemimajor = pjFactors.tissot_semimajor;
+  res.mTissotSemiminor = pjFactors.tissot_semiminor;
+  res.mDxDlam = pjFactors.dx_dlam;
+  res.mDxDphi = pjFactors.dx_dphi;
+  res.mDyDlam = pjFactors.dy_dlam;
+  res.mDyDphi = pjFactors.dy_dphi;
+  return res;
 }
 
 QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
