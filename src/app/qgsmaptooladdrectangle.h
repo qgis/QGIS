@@ -48,9 +48,9 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 
     /**
      * The parent map tool, e.g. the add feature tool.
-     *  Completed regular shape will be added to this tool by calling its addCurve() method.
-     **/
-    QgsMapToolCapture *mParentTool = nullptr;
+     * Completed regular shape will be added to this tool by calling its addCurve() method.
+     */
+    QPointer<QgsMapToolCapture> mParentTool;
     //! Regular Shape points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the rectangle currently working on
