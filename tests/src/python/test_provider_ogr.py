@@ -18,10 +18,11 @@ import hashlib
 from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant, QByteArray
+from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
 from qgis.core import (
     NULL,
     QgsApplication,
+    QgsCoordinateTransformContext,
     QgsProject,
     QgsField,
     QgsFields,
@@ -33,6 +34,7 @@ from qgis.core import (
     QgsDataProvider,
     QgsVectorDataProvider,
     QgsVectorLayer,
+    QgsVectorFileWriter,
     QgsWkbTypes,
     QgsNetworkAccessManager
 )
@@ -823,6 +825,25 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.addFeature(feature))
         self.assertFalse(vl.dataProvider().hasErrors())
+
+    def testFidDoubleSaveAsGeopackage(self):
+        """Test issue GH #25795"""
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=fid:double(20,0)', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+        self.assertEqual(ml.fields()[0].type(), QVariant.Double)
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'fid_double_test'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'fid_double_test.gpkg'),
+                                                           QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'fid_double_test.gpkg')))
+
+        vl = QgsVectorLayer(os.path.join(d.path(), 'fid_double_test.gpkg'))
+        self.assertEqual(vl.fields()[0].type(), QVariant.LongLong)
 
 
 if __name__ == '__main__':
