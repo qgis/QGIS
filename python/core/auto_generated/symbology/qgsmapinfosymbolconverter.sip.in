@@ -63,6 +63,13 @@ Converts the MapInfo line symbol with the specified ``identifier`` to a :py:clas
 The caller takes ownership of the returned symbol.
 %End
 
+    static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) /Factory/;
+%Docstring
+Converts the MapInfo fill symbol with the specified ``identifier`` to a :py:class:`QgsFillSymbol`.
+
+The caller takes ownership of the returned symbol.
+%End
+
 };
 
 /************************************************************************
