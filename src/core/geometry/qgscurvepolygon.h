@@ -91,6 +91,18 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return mExteriorRing.get();
     }
 
+    /**
+     * Returns the curve polygon's exterior ring.
+     *
+     * \see interiorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *exteriorRing() SIP_SKIP
+    {
+      return mExteriorRing.get();
+    }
+
 #ifndef SIP_RUN
 
     /**
@@ -100,6 +112,23 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see exteriorRing()
      */
     const QgsCurve *interiorRing( int i ) const SIP_HOLDGIL
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *interiorRing( int i ) SIP_SKIP
     {
       if ( i < 0 || i >= mInteriorRings.size() )
       {

@@ -538,41 +538,115 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
-// bool QgsGeometry::convertVertex( int atVertex )
-// {
-//   if ( !d->geometry )
-//   {
-//     return false;
-//   }
+bool QgsGeometry::convertVertex( int atVertex )
+{
 
-//   QgsVertexId id;
-//   if ( !vertexIdFromVertexNr( atVertex, id ) )
-//   {
-//     return false;
-//   }
+  if ( !d->geometry )
+    return false;
 
-//   QgsAbstractGeometry* geom = d->geometry.get();
+  QgsVertexId id;
+  if ( !vertexIdFromVertexNr( atVertex, id ) )
+    return false;
 
+  detach();
 
-//   // If the geom is a compound curve, we take it as is
-//   if( QgsCompoundCurve *cpdCurve = dynamic_cast<QgsCompoundCurve *>( geom )  )
-//   {
-//     return cpdCurve->convertVertex(id);
-//   }
+  QgsAbstractGeometry *geom = d->geometry.get();
 
-//   // If the geom is a linestring or cirularstring, we convert to compound curve
-//   if( dynamic_cast<const QgsCircularString *>( geom ) != nullptr || dynamic_cast<const QgsLineString *>( geom ) != nullptr ){
-//     QgsCompoundCurve *cpdCurve = new QgsCompoundCurve();
-//     cpdCurve->addCurve(((QgsCurve*)geom)->clone());
-//     return cpdCurve->convertVertex(id);
-//   }
+  // If the geom is a collection, we get the concerned part, otherwise, the part is just the whole geom
+  QgsAbstractGeometry *part = nullptr;
+  QgsGeometryCollection *owningCollection = dynamic_cast<QgsGeometryCollection *>( geom );
+  if ( owningCollection != nullptr )
+    part = owningCollection->geometryN( id.part );
+  else
+    part = geom;
 
-//   // TODO other cases (multi-geoms, polygons...)
+  // If the part is a polygon, we get the concerned ring, otherwise, the ring is just the whole part
+  QgsAbstractGeometry *ring = nullptr;
+  QgsCurvePolygon *owningPolygon = dynamic_cast<QgsCurvePolygon *>( part );
+  if ( owningPolygon != nullptr )
+    ring = ( id.ring == 0 ) ? owningPolygon->exteriorRing() : owningPolygon->interiorRing( id.ring - 1 );
+  else
+    ring = part;
 
+  // If the ring is not a curve, we're probably on a point geometry
+  QgsCurve *curve = dynamic_cast<QgsCurve *>( ring );  // TODO dynamic_cast -> geom_cast
+  if ( curve == nullptr )
+  {
+    QgsMessageLog::logMessage( "Cannot execute convertVertex on " + geom->wktTypeStr(), "DEBUG" );
+    return false;
+  }
 
-//   // Otherwise, it failed
-//   return false
-// }
+  bool success = false;
+  QgsCompoundCurve *cpdCurve  = dynamic_cast<QgsCompoundCurve *>( curve );
+  if ( cpdCurve != nullptr )
+  {
+    QgsMessageLog::logMessage( "Already compound", "DEBUG" );
+    // If the geom is a already compound curve, we convert inplace, and we're done
+    success = cpdCurve->convertVertex( id );
+
+    // // This doesn't work... Not sure how to get the geometry actuall update ?  // <- REVIEW PLZ
+    // if ( success )
+    //   if ( owningCollection != nullptr )
+    //     reset( std::make_unique<QgsGeometryCollection>( *owningCollection ) ); // <- REVIEW PLZ
+    //   else if ( owningPolygon != nullptr )
+    //     reset( std::make_unique<QgsCurvePolygon>( *owningPolygon ) ); // <- REVIEW PLZ
+    //   else
+    //     reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
+
+  }
+  else
+  {
+    // TODO : move this block before the above, so we call convertVertex only in one place
+
+    QgsMessageLog::logMessage( "Convert to compound", "DEBUG" );
+    // If the geom is a linestring or cirularstring, we create a compound curve
+    QgsCompoundCurve *cpdCurve = new QgsCompoundCurve();
+    cpdCurve->addCurve( curve->clone() );
+    success = cpdCurve->convertVertex( QgsVertexId( -1, -1, id.vertex ) );
+
+    // In that case, we must also reassign the instances
+    if ( success )
+    {
+      QgsMessageLog::logMessage( "Success", "DEBUG" );
+
+      if ( owningPolygon == nullptr && owningCollection == nullptr )
+      {
+        // Standalone linestring
+        QgsMessageLog::logMessage( "case A", "DEBUG" );
+        reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
+      }
+
+      if ( owningPolygon != nullptr )
+      {
+        // Replace the ring in the owning polygon
+        QgsMessageLog::logMessage( "case B", "DEBUG" );
+        if ( id.ring == 0 )
+        {
+          owningPolygon->setExteriorRing( cpdCurve );
+        }
+        else
+        {
+          owningPolygon->removeInteriorRing( id.ring - 1 );
+          owningPolygon->addInteriorRing( cpdCurve );
+        }
+      }
+      else if ( owningCollection != nullptr )
+      {
+        // Replace the curve in the owning collection
+        QgsMessageLog::logMessage( "case C", "DEBUG" );
+        owningCollection->removeGeometry( id.part );
+        owningCollection->addGeometry( cpdCurve );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( "failure ?!", "DEBUG" );
+
+    }
+  }
+
+  return success;
+}
 
 bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 {
