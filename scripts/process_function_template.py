@@ -74,9 +74,7 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
     if json_params['type'] == 'operator':
         for v in json_params['variants']:
             if 'arguments' not in v:
-                raise BaseException("%s: arguments expected for operator")
-            if len(list(v['arguments'])) < 1 or len(list(v['arguments'])) > 2:
-                raise BaseException("%s: 1 or 2 arguments expected for operator")
+                raise BaseException("%s: arguments expected for operator" % f)
 
     cpp.write("\n\n    functionHelpTexts().insert( QStringLiteral( {0} ),\n      Help( QStringLiteral( {0} ), tr( \"{1}\" ), tr( \"{2}\" ),\n        QList<HelpVariant>()".format(
         name, json_params['type'], json_params['description'])
