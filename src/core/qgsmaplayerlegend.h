@@ -257,7 +257,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     void setTextOnSymbolEnabled( bool enabled ) { mTextOnSymbolEnabled = enabled; }
 
     /**
-     * Returns wether the legend for the labeling is shown
+     * Returns whether the legend for the labeling is shown
      * \since QGIS 3.20
     */
     bool showLabelLegend() const { return mShowLabelLegend; }

@@ -263,7 +263,7 @@ by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~Qg
 
     bool showLabelLegend() const;
 %Docstring
-Returns wether the legend for the labeling is shown
+Returns whether the legend for the labeling is shown
 
 .. versionadded:: 3.20
 %End

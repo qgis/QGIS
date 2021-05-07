@@ -1480,13 +1480,14 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
     p->setPen( textColor );
     settings.drawText( p, xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0, yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0, "Aa", f );
   }
-  double symbolWidth = qMax( textWidth, settings.symbolSize().width() );
-  double symbolHeight = qMax( textHeight, settings.symbolSize().height() );
+  double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
+  double symbolHeight = std::max( textHeight, settings.symbolSize().height() );
   return QSizeF( symbolWidth, symbolHeight );
 }
 
 QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const
 {
+  Q_UNUSED( context );
   QColor textColor;
   QFont f = font( textColor );
 
