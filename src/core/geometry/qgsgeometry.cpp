@@ -571,34 +571,18 @@ bool QgsGeometry::convertVertex( int atVertex )
   // If the ring is not a curve, we're probably on a point geometry
   QgsCurve *curve = dynamic_cast<QgsCurve *>( ring );  // TODO dynamic_cast -> geom_cast
   if ( curve == nullptr )
-  {
-    QgsMessageLog::logMessage( "Cannot execute convertVertex on " + geom->wktTypeStr(), "DEBUG" );
     return false;
-  }
 
   bool success = false;
   QgsCompoundCurve *cpdCurve  = dynamic_cast<QgsCompoundCurve *>( curve );
   if ( cpdCurve != nullptr )
   {
-    QgsMessageLog::logMessage( "Already compound", "DEBUG" );
     // If the geom is a already compound curve, we convert inplace, and we're done
     success = cpdCurve->convertVertex( id );
-
-    // // This doesn't work... Not sure how to get the geometry actuall update ?  // <- REVIEW PLZ
-    // if ( success )
-    //   if ( owningCollection != nullptr )
-    //     reset( std::make_unique<QgsGeometryCollection>( *owningCollection ) ); // <- REVIEW PLZ
-    //   else if ( owningPolygon != nullptr )
-    //     reset( std::make_unique<QgsCurvePolygon>( *owningPolygon ) ); // <- REVIEW PLZ
-    //   else
-    //     reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
-
   }
   else
   {
     // TODO : move this block before the above, so we call convertVertex only in one place
-
-    QgsMessageLog::logMessage( "Convert to compound", "DEBUG" );
     // If the geom is a linestring or cirularstring, we create a compound curve
     QgsCompoundCurve *cpdCurve = new QgsCompoundCurve();
     cpdCurve->addCurve( curve->clone() );
@@ -607,19 +591,16 @@ bool QgsGeometry::convertVertex( int atVertex )
     // In that case, we must also reassign the instances
     if ( success )
     {
-      QgsMessageLog::logMessage( "Success", "DEBUG" );
 
       if ( owningPolygon == nullptr && owningCollection == nullptr )
       {
         // Standalone linestring
-        QgsMessageLog::logMessage( "case A", "DEBUG" );
         reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
       }
 
       if ( owningPolygon != nullptr )
       {
         // Replace the ring in the owning polygon
-        QgsMessageLog::logMessage( "case B", "DEBUG" );
         if ( id.ring == 0 )
         {
           owningPolygon->setExteriorRing( cpdCurve );
@@ -633,15 +614,9 @@ bool QgsGeometry::convertVertex( int atVertex )
       else if ( owningCollection != nullptr )
       {
         // Replace the curve in the owning collection
-        QgsMessageLog::logMessage( "case C", "DEBUG" );
         owningCollection->removeGeometry( id.part );
         owningCollection->insertGeometry( cpdCurve, id.part );
       }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( "failure ?!", "DEBUG" );
-
     }
   }
 

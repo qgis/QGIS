@@ -1325,31 +1325,22 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
 
 void TestQgsVertexTool::testConvertVertex()
 {
-  // convert vertex in linestring
-
+  // convert vertex in compoundCurve
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
   mouseClick( 1, 1, Qt::LeftButton );
   keyClick( Qt::Key_C );
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((14 14, 10 10, 17 10))" ) );
+  mLayerCompoundCurve->undoStack()->undo();
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 1 );
 
-  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "COMPOUNDCURVE(CIRCULARSTRING(2 1, 1 1, 1 3))" ) );
-
-  mLayerLine->undoStack()->undo();
-
+  // convert vertex in linestring
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0.5 0.5, 1 3)" ) );
+  mouseClick( 1, 1, Qt::LeftButton );
+  keyClick( Qt::Key_C ); // DOES NOTHING AS IT'S A LINE LAYER
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0.5 0.5, 1 3)" ) );
 
-
-  // convert vertex in polygon
-
-  mouseClick( 7, 4, Qt::LeftButton );
-  keyClick( Qt::Key_C );
-
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "CURVEPOLYGON(COMPOUNDCURVE((4 1, 7 1), CIRCULARSTRING(7 1, 7 4, 4 4), (4 4, 4 1)))" ) );
-
-  mLayerPolygon->undoStack()->undo();
-
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )

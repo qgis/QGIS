@@ -921,46 +921,38 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
   // First we find out the sub-curves that are contain that vertex.
 
   // If there is more than one, it means the vertex was at the beginning or end
-  // of an arc, which we don't support. [TODO : could also happen if at the begging or end of
-  // two LineStrings, esp. after converting some other vertices... we may need to merge successive linestrings]
+  // of an arc, which we don't support.
 
   // If there is exactly one, we may either be on a LineString, or on a CircularString.
 
-  // If on CircularString, we need to check if the vertex is a CurveVertex. I not, the vertex
-  // was at the beginning or end, which we don't support. If yes, we must split the CircularString
-  // at vertex -1 and +1, , drop the middle part and insert a LineString instead with the same points.
-  // [TODO : as said above, probably worth merging successive linestrings into one once this is done]
-
-  // If on a LineString, we need to split the LineString at vertex -1 and +1, and insert a CircularString
-  // instead.
+  // If on CircularString, we need to check if the vertex is a CurveVertex (odd index).
+  // If so, we split the subcurve at vertex -1 and +1, , drop the middle part and insert a LineString/CircularString
+  // instead with the same points.
+  
+  // At the end, we call condenseCurves() to merge successible line/circular strings
 
   QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
 
+  // We cannot convert points at start/end of subcurves
   if ( curveIds.length() != 1 )
-  {
-    QgsMessageLog::logMessage( "There is not exactly one subcurve at this position. " + QString::number( curveIds.length() ), "DEBUG" );
     return false;
-  }
 
   int curveId = curveIds[0].first;
   QgsVertexId subVertexId = curveIds[0].second;
   QgsCurve *curve = mCurves[curveId];
 
+  // We cannot convert first/last point of curve
   if ( subVertexId.vertex == 0 || subVertexId.vertex == curve->numPoints() - 1 )
-  {
-    QgsMessageLog::logMessage( "Cannot convert first or last point of a sub-curve. Merge the subcurves first", "DEBUG" );
     return false;
-  }
 
   // TODO factorize circularString and lineString as logic is almost the same
   if ( const QgsCircularString *circularString = dynamic_cast<const QgsCircularString *>( curve ) )
   {
     // If it's a circular string, we convert to LineString
+
+    // We cannot convert start/end points of arcs
     if ( subVertexId.vertex % 2 == 0 ) // for some reason, subVertexId.type is always SegmentVertex...
-    {
-      QgsMessageLog::logMessage( "Cannot convert segment vertex of a circular string -> " + QString::number( subVertexId.type ), "DEBUG" );
       return false;
-    }
 
     QgsPointSequence points;
     circularString->points( points );

@@ -4580,12 +4580,8 @@ class TestQgsGeometry(unittest.TestCase):
 
         for wkt_before, wkt_expected in test_setup.items():
             geom = QgsGeometry.fromWkt(wkt_before)
-            # Ensure convert has the expected result
             geom.convertVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
             self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)), f'convertVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
-            # Ensure converting again returns back to initial
-            # geom.convertVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
-            # self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(wkt_before).asWkt(), 'Second call to convertVertex did not properly revert changes.')
 
     def testSingleSidedBuffer(self):
 

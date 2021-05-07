@@ -2576,34 +2576,41 @@ void QgsVertexTool::toggleVertexCurve()
   }
   else
   {
-    // TODO support more than just 1 vertex
-    QgsMessageLog::logMessage( "Need exactly 1 selected/editted vertex", "DEBUG" );
+    // TODO support more than just 1 vertex    
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Currently, conversion can only be done on exactly one vertex." ),
+      Qgis::Info );
     return;
   }
-
+  
   QgsVectorLayer *layer = toConvert.layer;
 
   if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
   {
-    QgsMessageLog::logMessage( "Layer is not curved", "DEBUG" );
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Layer of type %1 does not support curved geometries." ).arg( layer->wkbType() ),
+      Qgis::Warning );
     return;
   }
 
-  layer->beginEditCommand( tr( "Converting vertex type" ) );
   QgsGeometry geom = layer->getFeature( toConvert.fid ).geometry();
-  bool success = geom.convertVertex( toConvert.vertexId );
+  bool success = geom.convertVertex(toConvert.vertexId);
 
   if ( success )
   {
-    QgsMessageLog::logMessage( "Should be OK", "DEBUG" );
     layer->changeGeometry( toConvert.fid, geom );
     layer->endEditCommand();
     layer->triggerRepaint();
   }
   else
   {
-    QgsMessageLog::logMessage( "Has failed :-/", "DEBUG" );
     layer->destroyEditCommand();
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Could not convert vertex" ),
+      tr( "Start/end of vertices of features and arcs can not be converted." ).arg( layer->wkbType() ),
+      Qgis::Warning );
   }
 
   if ( mVertexEditor && mLockedFeature )
