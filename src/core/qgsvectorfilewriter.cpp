@@ -238,6 +238,23 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     mOgrDriverName = driverName;
   }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,1)
+  QString fidFieldName;
+  if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+  {
+    for ( const QString &layerOption : layerOptions )
+    {
+      if ( layerOption.startsWith( QStringLiteral( "FID=" ) ) )
+      {
+        fidFieldName = layerOption.mid( 4 );
+        break;
+      }
+    }
+    if ( fidFieldName.isEmpty() )
+      fidFieldName = QStringLiteral( "fid" );
+  }
+#endif
+
   // find driver in OGR
   OGRSFDriverH poDriver;
   QgsApplication::registerOgrDrivers();
@@ -653,6 +670,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             break;
 
           case QVariant::Double:
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,1)
+            if ( mOgrDriverName == QLatin1String( "GPKG" ) && attrField.precision() == 0 && attrField.name().compare( fidFieldName, Qt::CaseInsensitive ) == 0 )
+            {
+              // Convert field to match required FID type
+              ogrType = OFTInteger64;
+              break;
+            }
+#endif
             ogrType = OFTReal;
             break;
 
