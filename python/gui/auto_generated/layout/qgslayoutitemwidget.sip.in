@@ -149,6 +149,7 @@ the widget was updated.
 Returns the atlas for the layout (if available)
 %End
 
+
 };
 
 
