@@ -226,14 +226,19 @@ set(QGIS_APP_SRCS
   pluginmanager/qgspluginsortfilterproxymodel.cpp
   pluginmanager/qgspluginitemdelegate.cpp
 
-  qgsnewspatialitelayerdialog.cpp
-
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
 
   mesh/qgsmeshcalculatordialog.cpp
 )
+
+if (WITH_SPATIALITE)
+  set(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    qgsnewspatialitelayerdialog.cpp
+  )
+endif()
 
 if (WITH_GEOREFERENCER)
   set(QGIS_APP_SRCS

@@ -1774,13 +1774,18 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${GEOS_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
-  ${SPATIALITE_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
 )
+
+if (WITH_SPATIALITE)
+  target_include_directories(qgis_core SYSTEM PUBLIC
+    ${SPATIALITE_INCLUDE_DIR}
+  )
+endif()
 
 target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -1941,11 +1946,14 @@ target_link_libraries(qgis_core
   ${SPATIALINDEX_LIBRARY}
   ${EXPAT_LIBRARY}
   ${SQLITE3_LIBRARY}
-  ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
 )
+
+if (WITH_SPATIALITE)
+  target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})
+endif()
 
 if (WITH_QT6)
   target_link_libraries(qgis_core Qt6::Core5Compat)
