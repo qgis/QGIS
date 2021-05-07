@@ -732,5 +732,46 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().clear()
 
 
+    def test_rotated_map_hit(self):
+        """Test filter by map handling of rotated map.""""
+        poly_path = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(line_path, 'polys', 'ogr')
+
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([poly_layer])
+
+        s = QgsMapSettings()
+        s.setLayers([poly_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        layout.addLayoutItem(map)
+        map.setExtent(poly_layer.extent())
+        legendf = QgsLayoutItemLegend(layout)
+        legendf.setTitle("Filtered Legend")
+        legendf.attemptSetSceneRect(QRectF(120, 40, 80, 80))
+        legendf.setFrameEnabled(True)
+        legendf.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legendf.setBackgroundColor(QColor(200, 200, 200))
+        legendf.setTitle('filtered')
+        legendf.setLegendFilterByMapEnabled(True)
+        layout.addLayoutItem(legendf)
+        legendf.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-105.037, 24.445, -103.55, 35.185))
+        map.setMapRotation(45)
+
+        checker = QgsLayoutChecker(
+            'composer_legend_raster_filter', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+        QgsProject.instance().clear()
+
+
 if __name__ == '__main__':
     unittest.main()
