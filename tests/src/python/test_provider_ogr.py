@@ -914,6 +914,25 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
 
+    def testFidDoubleSaveAsGeopackage(self):
+        """Test issue GH #25795"""
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=fid:double(20,0)', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+        self.assertEqual(ml.fields()[0].type(), QVariant.Double)
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'fid_double_test'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'fid_double_test.gpkg'),
+                                                           QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'fid_double_test.gpkg')))
+
+        vl = QgsVectorLayer(os.path.join(d.path(), 'fid_double_test.gpkg'))
+        self.assertEqual(vl.fields()[0].type(), QVariant.LongLong)
+
     def testDecodeEncodeUriVsizip(self):
         """Test decodeUri/encodeUri for /vsizip/ prefixed URIs"""
 
