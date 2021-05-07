@@ -233,7 +233,11 @@ if(WITH_CORE)
     set (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
   endif()
 
-  set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  # try to configure and build POSTGRESQL support
+  set (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether Spatialite support should be built (required for spatialite, virtual, wfs providers)")
+  if (WITH_SPATIALITE)
+      set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  endif()
 
   set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   if(WITH_ORACLE)
@@ -390,7 +394,10 @@ if(WITH_CORE)
     find_package(Poly2Tri REQUIRED)
   endif()
 
-  find_package(SpatiaLite REQUIRED)
+  if (WITH_SPATIALITE)
+    find_package(SpatiaLite REQUIRED)
+    set (HAVE_SPATIALITE TRUE)
+  endif()
 
   if (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
     message (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")

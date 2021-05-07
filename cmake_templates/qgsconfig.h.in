@@ -57,6 +57,8 @@
 
 #cmakedefine HAVE_GUI
 
+#cmakedefine HAVE_SPATIALITE
+
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_ORACLE

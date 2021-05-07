@@ -53,8 +53,14 @@
 extern "C"
 {
 #include <sqlite3.h>
+}
+
+#ifdef HAVE_SPATIALITE
+extern "C"
+{
 #include <spatialite.h>
 }
+#endif
 
 #define CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE "isOfflineEditable"
 #define CUSTOM_PROPERTY_REMOTE_SOURCE "remoteSource"
@@ -368,6 +374,7 @@ void QgsOfflineEditing::synchronize()
 
 void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 {
+#ifdef HAVE_SPATIALITE
   // attempting to perform self-initialization for a newly created DB
   if ( !sqlite_handle )
     return;
@@ -425,6 +432,9 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
     return;
   }
   spatial_ref_sys_init( sqlite_handle, 0 );
+#else
+  ( void )sqlite_handle;
+#endif
 }
 
 bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, ContainerType containerType )
@@ -557,6 +567,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   {
     case SpatiaLite:
     {
+#ifdef HAVE_SPATIALITE
       // create table
       QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
       QString delim;
@@ -669,7 +680,13 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       newLayer = new QgsVectorLayer( connectionString,
                                      layer->name() + layerNameSuffix, QStringLiteral( "spatialite" ), options );
       break;
+
+#else
+      showWarning( tr( "No Spatialite support available" ) );
+      return nullptr;
+#endif
     }
+
     case GPKG:
     {
       // Set options
