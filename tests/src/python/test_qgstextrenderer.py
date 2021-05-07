@@ -2803,7 +2803,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setColor(QColor(0, 255, 0))
         format.setAllowHtmlFormatting(True)
         assert self.checkRenderPoint(format, 'text_html_formatting', None, text=[
-            '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'],
+            '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline">t</span></span>'],
             point=QPointF(50, 200))
 
     def testHtmlFormattingBuffer(self):
