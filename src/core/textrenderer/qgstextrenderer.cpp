@@ -1556,7 +1556,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         path.addText( xOffset, 0, fragmentFont, fragment.text() );
 
         QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-        textColor.setAlphaF( format.opacity() );
+        textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
         textp.setBrush( textColor );
         textp.drawPath( path );
 
@@ -1604,7 +1604,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
               applyExtraSpacingForLineJustification( fragmentFont, extraWordSpace * fontScale, extraLetterSpace * fontScale );
 
             QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-            textColor.setAlphaF( format.opacity() );
+            textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
 
             context.painter()->setPen( textColor );
             context.painter()->setFont( fragmentFont );
@@ -1796,7 +1796,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
         textp.begin( &textPict );
         textp.setPen( Qt::NoPen );
         QColor textColor = fragment.characterFormat().textColor().isValid() ? fragment.characterFormat().textColor() : format.color();
-        textColor.setAlphaF( format.opacity() );
+        textColor.setAlphaF( fragment.characterFormat().textColor().isValid() ? textColor.alphaF() * format.opacity() : format.opacity() );
         textp.setBrush( textColor );
         textp.scale( 1 / fontScale, 1 / fontScale );
         textp.drawPath( path );
