@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatereferencesystemregistry.h                      *
+ * src/core/proj/qgscoordinatereferencesystemregistry.h                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -158,7 +158,7 @@ user-defined CRS) to change.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatereferencesystemregistry.h                      *
+ * src/core/proj/qgscoordinatereferencesystemregistry.h                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

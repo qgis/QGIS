@@ -286,11 +286,6 @@ set(QGIS_CORE_SRCS
   qgsconditionalstyle.cpp
   qgsconnectionregistry.cpp
   qgscoordinateformatter.cpp
-  qgscoordinatereferencesystem.cpp
-  qgscoordinatereferencesystemregistry.cpp
-  qgscoordinatetransform.cpp
-  qgscoordinatetransform_p.cpp
-  qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
   qgscplhttpfetchoverrider.cpp
   qgscredentials.cpp
@@ -305,13 +300,11 @@ set(QGIS_CORE_SRCS
   qgsdataprovider.cpp
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
-  qgsdatumtransform.cpp
   qgsdbfilterproxymodel.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgselevationutils.cpp
-  qgsellipsoidutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
   qgsexpressioncontext.cpp
@@ -406,7 +399,6 @@ set(QGIS_CORE_SRCS
   qgspointlocatorinittask.cpp
   qgsqueryresultmodel.cpp
   qgssnappingconfig.cpp
-  qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
@@ -554,6 +546,15 @@ set(QGIS_CORE_SRCS
   pal/priorityqueue.cpp
   pal/problem.cpp
   pal/util.cpp
+
+  proj/qgscoordinatereferencesystem.cpp
+  proj/qgscoordinatereferencesystemregistry.cpp
+  proj/qgscoordinatetransform.cpp
+  proj/qgscoordinatetransform_p.cpp
+  proj/qgscoordinatetransformcontext.cpp
+  proj/qgsdatumtransform.cpp
+  proj/qgsellipsoidutils.cpp
+  proj/qgsprojutils.cpp
 
   project/qgsproject.cpp
   project/qgsprojectbadlayerhandler.cpp
@@ -880,10 +881,6 @@ set(QGIS_CORE_HDRS
   qgsconnectionpool.h
   qgsconnectionregistry.h
   qgscoordinateformatter.h
-  qgscoordinatereferencesystem.h
-  qgscoordinatereferencesystemregistry.h
-  qgscoordinatetransform.h
-  qgscoordinatetransformcontext.h
   qgscoordinateutils.h
   qgscredentials.h
   qgsdartmeasurement.h
@@ -897,15 +894,12 @@ set(QGIS_CORE_HDRS
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
-  qgsdatums.h
-  qgsdatumtransform.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditorwidgetsetup.h
   qgselevationutils.h
-  qgsellipsoidutils.h
   qgserror.h
   qgseventtracing.h
   qgsexception.h
@@ -1014,7 +1008,6 @@ set(QGIS_CORE_HDRS
   qgspointlocatorinittask.h
   qgspointxy.h
   qgspostgresstringutils.h
-  qgsprojutils.h
   qgsproperty.h
   qgspropertycollection.h
   qgspropertytransformer.h
@@ -1364,6 +1357,15 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
 
+  proj/qgscoordinatereferencesystem.h
+  proj/qgscoordinatereferencesystemregistry.h
+  proj/qgscoordinatetransform.h
+  proj/qgscoordinatetransformcontext.h
+  proj/qgsdatums.h
+  proj/qgsdatumtransform.h
+  proj/qgsellipsoidutils.h
+  proj/qgsprojutils.h
+
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
   metadata/qgslayermetadataformatter.h
@@ -1618,9 +1620,6 @@ set(QGIS_CORE_HDRS
 )
 
 set(QGIS_CORE_PRIVATE_HDRS
-  qgscoordinatereferencesystem_p.h
-  qgscoordinatetransformcontext_p.h
-  qgscoordinatetransform_p.h
   qgsfeature_p.h
   qgsfield_p.h
   qgsfields_p.h
@@ -1629,6 +1628,9 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsspatialindexkdbush_p.h
 
   editform/qgseditformconfig_p.h
+  proj/qgscoordinatereferencesystem_p.h
+  proj/qgscoordinatetransformcontext_p.h
+  proj/qgscoordinatetransform_p.h
   textrenderer/qgstextrenderer_p.h
 )
 
@@ -1813,6 +1815,7 @@ target_include_directories(qgis_core PUBLIC
   pointcloud
   processing
   processing/models
+  proj
   project
   providers
   providers/arcgis

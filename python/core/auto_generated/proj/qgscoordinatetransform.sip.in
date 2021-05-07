@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatetransform.h                                    *
+ * src/core/proj/qgscoordinatetransform.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -587,7 +587,7 @@ sourceUnits * scaleFactor = destinationUnits
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatetransform.h                                    *
+ * src/core/proj/qgscoordinatetransform.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

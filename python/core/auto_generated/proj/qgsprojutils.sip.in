@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsprojutils.h                                              *
+ * src/core/proj/qgsprojutils.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -98,7 +98,7 @@ Returns the current list of Proj file search paths.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsprojutils.h                                              *
+ * src/core/proj/qgsprojutils.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

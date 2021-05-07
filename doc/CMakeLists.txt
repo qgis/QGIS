@@ -75,6 +75,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
+      ${CMAKE_SOURCE_DIR}/src/core/proj
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
       ${CMAKE_SOURCE_DIR}/src/core/project
       ${CMAKE_SOURCE_DIR}/src/core/providers

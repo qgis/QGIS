@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatereferencesystem.h                              *
+ * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -946,7 +946,7 @@ that outdated CRS objects are not created.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgscoordinatereferencesystem.h                              *
+ * src/core/proj/qgscoordinatereferencesystem.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
