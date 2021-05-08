@@ -764,7 +764,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.setMapRotation(45)
 
         checker = QgsLayoutChecker(
-            'composer_legend_raster_filter', layout)
+            'composer_legend_rotated_map', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
         TestQgsLayoutItemLegend.report += checker.report()
