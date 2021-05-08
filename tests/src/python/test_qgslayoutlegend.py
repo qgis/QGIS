@@ -734,7 +734,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     def test_rotated_map_hit(self):
         """Test filter by map handling of rotated map."""
         poly_path = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        poly_layer = QgsVectorLayer(line_path, 'polys', 'ogr')
+        poly_layer = QgsVectorLayer(poly_path, 'polys', 'ogr')
 
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([poly_layer])
