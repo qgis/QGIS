@@ -150,6 +150,7 @@ set(QGIS_APP_SRCS
   qgsundowidget.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
+  qgsmaptooladdabstract.cpp
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
