@@ -834,7 +834,16 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       QgsAttributes newAttrs( containerType == GPKG ? attrs.count() + 1 : attrs.count() );
       for ( int it = 0; it < attrs.count(); ++it )
       {
-        newAttrs[column++] = attrs.at( it );
+        QVariant attr = attrs.at( it );
+        if ( layer->fields().at( it ).type() == QVariant::StringList )
+        {
+          attr = attr.toStringList().join( ',' );
+        }
+        else if ( layer->fields().at( it ).type() == QVariant::List )
+        {
+          attr = attr.toStringList().join( ',' );
+        }
+        newAttrs[column++] = attr;
       }
       f.setAttributes( newAttrs );
 
@@ -1017,7 +1026,17 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
     QgsAttributes attrs = it->attributes();
     for ( int it = 0; it < attrs.count(); ++it )
     {
-      newAttrs[ attrLookup[ it ] ] = attrs.at( it );
+      int remoteAttributeIndex = attrLookup[ it ];
+      QVariant attr = attrs.at( it );
+      if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
+      {
+        attr = attr.toString().split( ',' );
+      }
+      else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
+      {
+        attr = convertStringToList( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
+      }
+      newAttrs[ remoteAttributeIndex ] = attr;
     }
 
     // respect constraints and provider default values
@@ -1026,6 +1045,31 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
 
     emit progressUpdated( i++ );
   }
+}
+
+QVariantList QgsOfflineEditing::convertStringToList( const QString &string, QVariant::Type type )
+{
+  QVariantList variantList;
+  const QStringList stringList = string.split( ',' );
+  for ( const QString &string : stringList )
+  {
+    switch ( type )
+    {
+      case QVariant::Int:
+        variantList << string.toInt();
+        break;
+      case QVariant::LongLong:
+        variantList << string.toLongLong();
+        break;
+      case QVariant::Double:
+        variantList << string.toDouble();
+        break;
+      default:
+        // unsupported list type
+        break;
+    }
+  }
+  return variantList;
 }
 
 void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId )
@@ -1058,7 +1102,20 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
-    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
+
+
+    int remoteAttributeIndex = attrLookup[ values.at( i ).attr ];
+    QVariant attr = values.at( i ).value;
+    if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
+    {
+      attr = attr.toString().split( ',' );
+    }
+    else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
+    {
+      attr = convertStringToList( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
+    }
+
+    remoteLayer->changeAttributeValue( fid, remoteAttributeIndex, attr );
 
     emit progressUpdated( i + 1 );
   }
