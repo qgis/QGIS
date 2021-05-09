@@ -249,7 +249,6 @@ void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, cons
       mQgsWidget->setDocumentPath( value.toString() );
     }
   }
-
 }
 
 void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
