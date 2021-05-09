@@ -50,9 +50,13 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     QSize sizeHint() const override;
 
   public slots:
+
     void setPixmap( const QPixmap & );
     void resizeEvent( QResizeEvent * ) override;
+    void clear();
+
   private:
+
     QPixmap mPixmap;
 };
 
