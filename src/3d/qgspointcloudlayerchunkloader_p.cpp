@@ -209,7 +209,7 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
     extentMin3D = coordinateTransform.transform( extentMin3D );
     extentMax3D = coordinateTransform.transform( extentMax3D );
   }
-  catch ( QgsCsException &e )
+  catch ( QgsCsException & )
   {
     QgsDebugMsg( QStringLiteral( "Error transforming node bounds coordinate" ) );
   }

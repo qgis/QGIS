@@ -25,6 +25,14 @@
 #include "qgis.h"
 #include "qgssnappingconfig.h"
 #include "qgsgeometry.h"
+#include "qgsmaplayerproxymodel.h"
+
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsTolerance::UnitType> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::JoinStyle> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsGeometry::EndCapStyle> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag<QgsUnitTypes::LayoutUnit> SIP_SKIP;
+template class CORE_EXPORT QgsSettingsEntryEnumFlag< class QFlags<enum QgsMapLayerProxyModel::Filter> > SIP_SKIP;
 
 /**
  * \ingroup core
