@@ -1708,7 +1708,7 @@ void TestQgsCoordinateReferenceSystem::displayIdentifier()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:4326 - WGS 84" ) );
   crs.setCoordinateEpoch( 2021.3 );
-  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:4326 - WGS 84 (2021.3)" ) );
+  QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:4326 - WGS 84 @ 2021.3" ) );
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( crs.userFriendlyIdentifier(), QStringLiteral( "EPSG:3111 - GDA94 / Vicgrid" ) );
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
