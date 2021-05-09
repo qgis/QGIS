@@ -56,6 +56,14 @@ QSize QgsPixmapLabel::sizeHint() const
 void QgsPixmapLabel::resizeEvent( QResizeEvent *e )
 {
   QLabel::resizeEvent( e );
-  QLabel::setPixmap( mPixmap.scaled( this->size(),
-                                     Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  if ( !mPixmap.isNull() )
+  {
+    QLabel::setPixmap( mPixmap.scaled( this->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+  }
+}
+
+void QgsPixmapLabel::clear()
+{
+  mPixmap = QPixmap();
+  QLabel::clear();
 }
