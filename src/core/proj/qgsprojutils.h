@@ -148,6 +148,16 @@ class CORE_EXPORT QgsProjUtils
     static bool axisOrderIsSwapped( const PJ *crs );
 
     /**
+     * Returns TRUE if the given proj coordinate system is a dynamic CRS.
+     *
+     * A dynamic CRS relies on a dynamic datum, that is a datum that is not
+     * plate-fixed.
+     *
+     * \since QGIS 3.20
+     */
+    static bool isDynamic( const PJ *crs );
+
+    /**
      * Given a PROJ crs (which may be a compound or bound crs, or some other type), extract a single crs
      * from it.
      */

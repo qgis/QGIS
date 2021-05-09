@@ -139,6 +139,48 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
   return false;
 }
 
+bool QgsProjUtils::isDynamic( const PJ *crs )
+{
+  // ported from GDAL OGRSpatialReference::IsDynamic()
+  bool isDynamic = false;
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  proj_pj_unique_ptr horiz = crsToSingleCrs( crs );
+
+  proj_pj_unique_ptr datum( horiz ? proj_crs_get_datum( context, horiz.get() ) : nullptr );
+  if ( datum )
+  {
+    const PJ_TYPE type = proj_get_type( datum.get() );
+    isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
+                type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+    if ( !isDynamic )
+    {
+      const QString authName( proj_get_id_auth_name( datum.get(), 0 ) );
+      const QString code( proj_get_id_code( datum.get(), 0 ) );
+      if ( authName == QLatin1String( "EPSG" ) && code == QLatin1String( "6326" ) )
+      {
+        isDynamic = true;
+      }
+    }
+  }
+#if PROJ_VERSION_MAJOR > 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
+  else
+  {
+    proj_pj_unique_ptr ensemble( horiz ? proj_crs_get_datum_ensemble( context, horiz.get() ) : nullptr );
+    if ( ensemble )
+    {
+      proj_pj_unique_ptr member( proj_datum_ensemble_get_member( context, ensemble.get(), 0 ) );
+      if ( member )
+      {
+        const PJ_TYPE type = proj_get_type( member.get() );
+        isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
+                    type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+      }
+    }
+  }
+#endif
+  return isDynamic;
+}
 
 QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
 {

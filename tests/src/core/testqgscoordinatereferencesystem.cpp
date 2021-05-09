@@ -77,6 +77,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void toProj();
     void isGeographic();
     void mapUnits();
+    void isDynamic();
     void setValidationHint();
     void hasAxisInverted();
     void createFromProjInvalid();
@@ -1200,6 +1201,41 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   // an invalid crs should return unknown unit
   QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
 }
+
+void TestQgsCoordinateReferenceSystem::isDynamic()
+{
+#if (PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR==7 && PROJ_VERSION_MINOR >= 2 ) )
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:7665" ) );
+  QVERIFY( crs.isDynamic() );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4171" ) );
+  QVERIFY( !crs.isDynamic() );
+
+  // WGS84 (generic), using datum ensemble
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( crs.isDynamic() );
+
+  // ETRS89 (generic), using datum ensemble
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4258" ) );
+  QVERIFY( !crs.isDynamic() );
+
+  QVERIFY( crs.createFromWkt( QStringLiteral( R"""(GEOGCS["WGS 84",
+      DATUM["WGS_1984",
+          SPHEROID["WGS 84",6378137,298.257223563,
+              AUTHORITY["EPSG","7030"]],
+          AUTHORITY["EPSG","6326"]],
+      PRIMEM["Greenwich",0,
+          AUTHORITY["EPSG","8901"]],
+      UNIT["degree",0.0174532925199433,
+          AUTHORITY["EPSG","9122"]],
+      AXIS["Latitude",NORTH],
+      AXIS["Longitude",EAST],
+      AUTHORITY["EPSG","4326"]])""" ) ) );
+  QVERIFY( crs.isValid() );
+  QVERIFY( crs.isDynamic() );
+#endif
+}
+
 void TestQgsCoordinateReferenceSystem::setValidationHint()
 {
   QgsCoordinateReferenceSystem myCrs;

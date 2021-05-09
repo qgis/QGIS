@@ -1197,6 +1197,15 @@ bool QgsCoordinateReferenceSystem::isGeographic() const
   return d->mIsGeographic;
 }
 
+bool QgsCoordinateReferenceSystem::isDynamic() const
+{
+  const PJ *pj = projObject();
+  if ( !pj )
+    return false;
+
+  return QgsProjUtils::isDynamic( pj );
+}
+
 QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
 {
   QgsDatumEnsemble res;
