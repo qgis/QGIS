@@ -891,7 +891,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) )
+    const QString str = sipCpp->isValid() ? QStringLiteral( "<QgsCoordinateReferenceSystem: %1%2>" ).arg( !sipCpp->authid().isEmpty() ? sipCpp->authid() : sipCpp->toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ),
+                        std::isfinite( sipCpp->coordinateEpoch() ) ? QStringLiteral( " (%1)" ).arg( sipCpp->coordinateEpoch() ) : QString() )
                         : QStringLiteral( "<QgsCoordinateReferenceSystem: invalid>" );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
