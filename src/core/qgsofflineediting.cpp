@@ -588,6 +588,11 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         {
           dataType = QStringLiteral( "TEXT" );
         }
+        else if ( type == QVariant::StringList  || type == QVariant::List )
+        {
+          dataType = QStringLiteral( "TEXT" );
+          showWarning( tr( "Field '%1' from layer %2 has been converted from a list to a string of comma-separated values." ).arg( field.name(), layer->name() ) );
+        }
         else
         {
           showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
