@@ -6,7 +6,7 @@
 
 #include "mdal_dynamic_driver.hpp"
 #include "mdal_logger.hpp"
-#if not defined (WIN32)
+#if !defined(WIN32)
 #include <dlfcn.h>
 #endif
 #include <string.h>

@@ -163,7 +163,7 @@ QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection
       return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( databaseFilePath, {} ) );
     }
   }
-  catch ( QgsProviderConnectionException &ex )
+  catch ( QgsProviderConnectionException & )
   {
     // This is expected and it is not an error in case the provider does not implement
     // the connections API
@@ -1911,7 +1911,7 @@ QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection
   {
     return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) );
   }
-  catch ( QgsProviderConnectionException &ex )
+  catch ( QgsProviderConnectionException & )
   {
     // This is expected and it is not an error in case the provider does not implement
     // the connections API

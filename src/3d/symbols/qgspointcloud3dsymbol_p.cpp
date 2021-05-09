@@ -426,7 +426,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
     {
       coordinateTransform.transformInPlace( x, y, z );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       if ( !alreadyPrintedDebug )
       {
@@ -545,7 +545,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     {
       coordinateTransform.transformInPlace( x, y, z );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       if ( !alreadyPrintedDebug )
       {
@@ -699,7 +699,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     {
       coordinateTransform.transformInPlace( x, y, z );
     }
-    catch ( QgsCsException &e )
+    catch ( QgsCsException & )
     {
       if ( !alreadyPrintedDebug )
       {
