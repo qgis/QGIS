@@ -1206,6 +1206,23 @@ bool QgsCoordinateReferenceSystem::isDynamic() const
   return QgsProjUtils::isDynamic( pj );
 }
 
+void QgsCoordinateReferenceSystem::setCoordinateEpoch( double epoch )
+{
+  if ( d->mCoordinateEpoch == epoch )
+    return;
+
+  // detaching clears the proj object, so we need to clone the existing one first
+  QgsProjUtils::proj_pj_unique_ptr clone( proj_clone( QgsProjContext::get(), projObject() ) );
+  d.detach();
+  d->mCoordinateEpoch = epoch;
+  d->setPj( std::move( clone ) );
+}
+
+double QgsCoordinateReferenceSystem::coordinateEpoch() const
+{
+  return d->mCoordinateEpoch;
+}
+
 QgsDatumEnsemble QgsCoordinateReferenceSystem::datumEnsemble() const
 {
   QgsDatumEnsemble res;
@@ -1617,6 +1634,9 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
     return true;
 
   if ( !d->mIsValid || !srs.d->mIsValid )
+    return false;
+
+  if ( d->mCoordinateEpoch != srs.d->mCoordinateEpoch )
     return false;
 
   const bool isUser = d->mSrsId >= USER_CRS_START_ID;
@@ -2706,9 +2726,31 @@ bool operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
     return false;
 
   if ( !c1IsUser && !c2IsUser )
-    return c1.d->mAuthId > c2.d->mAuthId;
+  {
+    if ( c1.d->mAuthId != c2.d->mAuthId )
+      return c1.d->mAuthId > c2.d->mAuthId;
+  }
+  else
+  {
+    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    if ( wkt1 != wkt2 )
+      return wkt1 > wkt2;
+  }
 
-  return c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) > c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
+    return false;
+
+  if ( std::isnan( c1.d->mCoordinateEpoch ) && std::isnan( c2.d->mCoordinateEpoch ) )
+    return false;
+
+  if ( std::isnan( c1.d->mCoordinateEpoch ) && !std::isnan( c2.d->mCoordinateEpoch ) )
+    return false;
+
+  if ( !std::isnan( c1.d->mCoordinateEpoch ) && std::isnan( c2.d->mCoordinateEpoch ) )
+    return true;
+
+  return c1.d->mCoordinateEpoch > c2.d->mCoordinateEpoch;
 }
 
 bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
@@ -2735,10 +2777,33 @@ bool operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateRefe
     return false;
 
   if ( !c1IsUser && !c2IsUser )
-    return c1.d->mAuthId < c2.d->mAuthId;
+  {
+    if ( c1.d->mAuthId != c2.d->mAuthId )
+      return c1.d->mAuthId < c2.d->mAuthId;
+  }
+  else
+  {
+    const QString wkt1 = c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    const QString wkt2 = c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+    if ( wkt1 != wkt2 )
+      return wkt1 < wkt2;
+  }
 
-  return c1.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) < c2.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED );
+  if ( c1.d->mCoordinateEpoch == c2.d->mCoordinateEpoch )
+    return false;
+
+  if ( std::isnan( c1.d->mCoordinateEpoch ) && std::isnan( c2.d->mCoordinateEpoch ) )
+    return false;
+
+  if ( !std::isnan( c1.d->mCoordinateEpoch ) && std::isnan( c2.d->mCoordinateEpoch ) )
+    return false;
+
+  if ( std::isnan( c1.d->mCoordinateEpoch ) && !std::isnan( c2.d->mCoordinateEpoch ) )
+    return true;
+
+  return c1.d->mCoordinateEpoch < c2.d->mCoordinateEpoch;
 }
+
 bool operator>= ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 )
 {
   return !( c1 < c2 );
