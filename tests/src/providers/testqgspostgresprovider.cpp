@@ -326,6 +326,19 @@ void TestQgsPostgresProvider::testWhereClauseFids()
     QCOMPARE( values, expectedValues );                                 \
   }
 
+#define CHECK_IN_VALUES_2FLD_CLAUSE(whereClause,expectedValues)         \
+  {                                                                     \
+    QRegularExpression inRe("\\( ?\\\"fld1\\\", ?\\\"fld2\\\" ?\\) ?IN ?\\( ?VALUES ?\\(([^)]*)\\),\\(([^)]*)\\) ?\\)");\
+    QVERIFY(inRe.isValid());                                            \
+    QRegularExpressionMatch match = inRe.match( whereClause );          \
+    QVERIFY( match.hasMatch() );                                        \
+    QStringList values;                                                 \
+    values << match.captured(1);                                        \
+    values << match.captured(2);                                        \
+    std::sort( values.begin(), values.end() );                          \
+    QCOMPARE( values, expectedValues );                                 \
+  }
+
   // QRegularExpression inOr("\\(\\\"fld\\\"=([^,]*) OR \\\"fld\\\"=([^,]*)\\)");
 
 #define CHECK_OR_CLAUSE(whereClause,expectedValues)                     \
@@ -410,8 +423,9 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
                    QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
 
-  // Composite text + int -> OR clause
-  f0.setName( "fld_int" );
+  // Composite text + int -> IN VALUES clause
+  f0.setName( "fld1" );
+  f3.setName( "fld2" );
   pkAttrs.clear();
   pkAttrs.append( 0 );
   pkAttrs.append( 1 );
@@ -424,9 +438,8 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 42 << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << 43 << QString( "PostGIS too!" ) );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
-                   << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
+  CHECK_IN_VALUES_2FLD_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
+                               QStringList()  << "42,'QGIS ''Rocks''!'" << "43,'PostGIS too!'" );
 }
 
 QGSTEST_MAIN( TestQgsPostgresProvider )
