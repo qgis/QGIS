@@ -30,6 +30,8 @@
 #include "qgsogrproxytextcodec.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfontutils.h"
 
 class TestQgsOgrUtils: public QObject
 {
@@ -635,6 +637,82 @@ void TestQgsOgrUtils::convertStyleString()
   QCOMPARE( qgis::down_cast<QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
   QCOMPARE( qgis::down_cast<QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::SolidLine );
   QCOMPARE( qgis::down_cast<QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeColor().name(), QStringLiteral( "#ffff00" ) );
+
+  // symbol
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(a:0,c:#5050ff,s:36pt,id:"ogr-sym-5"))""" ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#5050ff" ) );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->shape(), QgsSimpleMarkerSymbolLayer::Square );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 36.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::NoPen );
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(a:0,c:#5050ff,s:36pt,id:"ogr-sym-6"))""" ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().alpha(), 0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeColor().name(), QStringLiteral( "#5050ff" ) );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->shape(), QgsSimpleMarkerSymbolLayer::Triangle );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 36.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::SolidLine );
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(a:20,c:#5050ff,s:36pt,id:"ogr-sym-5"))""" ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#5050ff" ) );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->shape(), QgsSimpleMarkerSymbolLayer::Square );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 36.0 );
+  // OGR symbol angles are opposite direction to qgis marker angles
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), -20.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::NoPen );
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(c:#5050ff,o:#3030ff,s:36pt,id:"ogr-sym-5"))""" ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#5050ff" ) );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->shape(), QgsSimpleMarkerSymbolLayer::Square );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 36.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::SolidLine );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeColor().name(), QStringLiteral( "#3030ff" ) );
+
+  // font symbol
+  QFont f = QgsFontUtils::getStandardTestFont();
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(c:#00FF00,s:12pt,id:"font-sym-75,ogr-sym-9",f:"%1"))""" ).arg( f.family() ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#00ff00" ) );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->character(), QStringLiteral( "K" ) );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 12.0 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeWidth(), 0 );
+
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(a:20,c:#00FF00,o:#3030ff,s:12pt,id:"font-sym-75,ogr-sym-9",f:"%1"))""" ).arg( f.family() ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#00ff00" ) );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->character(), QStringLiteral( "K" ) );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 12.0 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), -20.0 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeWidth(), 1 );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeWidthUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsFontMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeColor().name(), QStringLiteral( "#3030ff" ) );
+
+  // bad font name, should fallback to ogr symbol id
+  symbol = QgsOgrUtils::symbolFromStyleString( QStringLiteral( R"""(SYMBOL(c:#00FF00,s:12pt,id:"font-sym-75,ogr-sym-9",f:"xxxxxx"))""" ), QgsSymbol::Marker );
+  QVERIFY( symbol );
+  QCOMPARE( symbol->symbolLayerCount(), 1 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->color().name(), QStringLiteral( "#00ff00" ) );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->shape(), QgsSimpleMarkerSymbolLayer::Star );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->size(), 12.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->angle(), 0.0 );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->sizeUnit(), QgsUnitTypes::RenderPoints );
+  QCOMPARE( qgis::down_cast<QgsSimpleMarkerSymbolLayer * >( symbol->symbolLayer( 0 ) )->strokeStyle(), Qt::NoPen );
 }
 
 QGSTEST_MAIN( TestQgsOgrUtils )

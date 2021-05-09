@@ -27,7 +27,10 @@
 #include "qgsmultipolygon.h"
 #include "qgsmapinfosymbolconverter.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfontutils.h"
+#include "qgsmessagelog.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1436,9 +1439,169 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
     return std::make_unique< QgsFillSymbol >( layers );
   };
 
+  auto convertSymbol = [&convertColor, &convertSize, string]( const QVariantMap & symbolStyle ) -> std::unique_ptr< QgsSymbol >
+  {
+    const QColor color = convertColor( symbolStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
+
+    double symbolSize = DEFAULT_SIMPLEMARKER_SIZE;
+    QgsUnitTypes::RenderUnit symbolSizeUnit = QgsUnitTypes::RenderMillimeters;
+    convertSize( symbolStyle.value( QStringLiteral( "s" ) ).toString(), symbolSize, symbolSizeUnit );
+
+    const double angle = symbolStyle.value( QStringLiteral( "a" ), QStringLiteral( "0" ) ).toDouble();
+
+    const QString id = symbolStyle.value( QStringLiteral( "id" ) ).toString();
+
+    std::unique_ptr< QgsMarkerSymbolLayer > markerLayer;
+
+    const thread_local QRegularExpression sFontId = QRegularExpression( QStringLiteral( "font-sym-(\\d+)" ) );
+    const QRegularExpressionMatch fontMatch = sFontId.match( id );
+    if ( fontMatch.hasMatch() )
+    {
+      const int symId = fontMatch.captured( 1 ).toInt();
+      const QStringList families = symbolStyle.value( QStringLiteral( "f" ), QString() ).toString().split( ',' );
+
+      bool familyFound = false;
+      QString fontFamily;
+      for ( const QString &family : std::as_const( families ) )
+      {
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+        {
+          familyFound = true;
+          fontFamily = family;
+          break;
+        }
+      }
+
+      if ( familyFound )
+      {
+        std::unique_ptr< QgsFontMarkerSymbolLayer > fontMarker = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, QChar( symId ), symbolSize );
+        fontMarker->setSizeUnit( symbolSizeUnit );
+        fontMarker->setAngle( -angle );
+
+        fontMarker->setColor( color );
+
+        const QColor strokeColor = convertColor( symbolStyle.value( QStringLiteral( "o" ), QString() ).toString() );
+        if ( strokeColor.isValid() )
+        {
+          fontMarker->setStrokeColor( strokeColor );
+          fontMarker->setStrokeWidth( 1 );
+          fontMarker->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+        }
+        else
+        {
+          fontMarker->setStrokeWidth( 0 );
+        }
+
+        markerLayer = std::move( fontMarker );
+      }
+      else if ( !families.empty() )
+      {
+        // couldn't even find a matching font in the backup list
+        QgsMessageLog::logMessage( QObject::tr( "Font %1 not found on system" ).arg( families.at( 0 ) ) );
+      }
+    }
+
+    if ( !markerLayer )
+    {
+      const thread_local QRegularExpression sOgrId = QRegularExpression( QStringLiteral( "ogr-sym-(\\d+)" ) );
+      const QRegularExpressionMatch ogrMatch = sOgrId.match( id );
+
+      QgsSimpleMarkerSymbolLayerBase::Shape shape;
+      bool isFilled = true;
+      if ( ogrMatch.hasMatch() )
+      {
+        const int symId = ogrMatch.captured( 1 ).toInt();
+        switch ( symId )
+        {
+          case 0:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross;
+            break;
+
+          case 1:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross2;
+            break;
+
+          case 2:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            break;
+
+          case 3:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            break;
+
+          case 4:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            break;
+
+          case 5:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            break;
+
+          case 6:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            break;
+
+          case 7:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            break;
+
+          case 8:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            break;
+
+          case 9:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            break;
+
+          case 10:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Line;
+            break;
+        }
+      }
+
+      std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
+      simpleMarker->setSizeUnit( symbolSizeUnit );
+
+      if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
+      {
+        simpleMarker->setColor( color );
+        simpleMarker->setStrokeStyle( Qt::NoPen );
+      }
+      else
+      {
+        simpleMarker->setFillColor( QColor( 0, 0, 0, 0 ) );
+        simpleMarker->setStrokeColor( color );
+      }
+
+      const QColor strokeColor = convertColor( symbolStyle.value( QStringLiteral( "o" ), QString() ).toString() );
+      if ( strokeColor.isValid() )
+      {
+        simpleMarker->setStrokeColor( strokeColor );
+        simpleMarker->setStrokeStyle( Qt::SolidLine );
+      }
+
+      markerLayer = std::move( simpleMarker );
+    }
+
+    return std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << markerLayer.release() );
+  };
+
   switch ( type )
   {
     case QgsSymbol::Marker:
+      if ( styles.contains( QStringLiteral( "symbol" ) ) )
+      {
+        const QVariantMap symbolStyle = styles.value( QStringLiteral( "symbol" ) ).toMap();
+        return convertSymbol( symbolStyle );
+      }
+      else
+      {
+        return nullptr;
+      }
       break;
 
     case QgsSymbol::Line:
