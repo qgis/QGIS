@@ -733,6 +733,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool isGeographic() const;
 
     /**
+     * Returns TRUE if the CRS is a dynamic CRS.
+     *
+     * A dynamic CRS relies on a dynamic datum, that is a datum that is not
+     * plate-fixed.
+     *
+     * \since QGIS 3.20
+     */
+    bool isDynamic() const;
+
+    /**
      * Attempts to retrieve datum ensemble details from the CRS.
      *
      * If the CRS does not use a datum ensemble then an invalid QgsDatumEnsemble will
