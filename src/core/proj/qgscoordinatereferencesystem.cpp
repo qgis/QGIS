@@ -1101,25 +1101,29 @@ QString QgsCoordinateReferenceSystem::description() const
 
 QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( IdentifierType type ) const
 {
+  QString id;
   if ( !authid().isEmpty() )
   {
     if ( type != ShortString && !description().isEmpty() )
-      return QStringLiteral( "%1 - %2" ).arg( authid(), description() );
-    return authid();
+      id = QStringLiteral( "%1 - %2" ).arg( authid(), description() );
+    else
+      id = authid();
   }
   else if ( !description().isEmpty() )
-    return description();
+    id = description();
   else if ( type == ShortString )
-    return isValid() ? QObject::tr( "Custom CRS" ) : QObject::tr( "Unknown CRS" );
+    id = isValid() ? QObject::tr( "Custom CRS" ) : QObject::tr( "Unknown CRS" );
   else if ( !toWkt( WKT_PREFERRED ).isEmpty() )
-    return QObject::tr( "Custom CRS: %1" ).arg(
-             type == MediumString ? ( toWkt( WKT_PREFERRED ).left( 50 ) + QString( QChar( 0x2026 ) ) )
-             : toWkt( WKT_PREFERRED ) );
+    id = QObject::tr( "Custom CRS: %1" ).arg(
+           type == MediumString ? ( toWkt( WKT_PREFERRED ).left( 50 ) + QString( QChar( 0x2026 ) ) )
+           : toWkt( WKT_PREFERRED ) );
   else if ( !toProj().isEmpty() )
-    return QObject::tr( "Custom CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
-           : toProj() );
-  else
-    return QString();
+    id = QObject::tr( "Custom CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
+         : toProj() );
+  if ( !id.isEmpty() && !std::isnan( d->mCoordinateEpoch ) )
+    id += QStringLiteral( " (%1)" ).arg( d->mCoordinateEpoch );
+
+  return id;
 }
 
 QString QgsCoordinateReferenceSystem::projectionAcronym() const
