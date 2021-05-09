@@ -47,6 +47,7 @@
 #include <QDomNode>
 #include <QFile>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 #include <ogr_srs_api.h>
 
@@ -845,13 +846,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       for ( int it = 0; it < attrs.count(); ++it )
       {
         QVariant attr = attrs.at( it );
-        if ( layer->fields().at( it ).type() == QVariant::StringList )
+        if ( layer->fields().at( it ).type() == QVariant::StringList || layer->fields().at( it ).type() == QVariant::List )
         {
-          attr = attr.toStringList().join( ',' );
-        }
-        else if ( layer->fields().at( it ).type() == QVariant::List )
-        {
-          attr = attr.toStringList().join( ',' );
+          attr = convertStringListToString( attr.toStringList() );
         }
         newAttrs[column++] = attr;
       }
@@ -1057,10 +1054,25 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
   }
 }
 
+QStringList QgsOfflineEditing::convertStringToStringList( const QString &string )
+{
+  return string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
+}
+
+QString QgsOfflineEditing::convertStringListToString( const QStringList &stringList )
+{
+  QStringList modifiedStringList = stringList;
+  for ( QString &string : modifiedStringList )
+  {
+    string.replace( QStringLiteral( "," ), QStringLiteral( "\\," ) );
+  }
+  return modifiedStringList.join( QStringLiteral( " , " ) );
+}
+
 QVariantList QgsOfflineEditing::convertStringToList( const QString &string, QVariant::Type type )
 {
   QVariantList variantList;
-  const QStringList stringList = string.split( ',' );
+  const QStringList stringList = string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
   for ( const QString &string : stringList )
   {
     switch ( type )
@@ -1118,7 +1130,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
     QVariant attr = values.at( i ).value;
     if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
     {
-      attr = attr.toString().split( ',' );
+      attr = convertStringToStringList( attr.toString() );
     }
     else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
     {
