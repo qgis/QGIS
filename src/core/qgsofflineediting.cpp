@@ -756,6 +756,11 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           ogrType = OFTInteger;
           ogrSubType = OFSTBoolean;
         }
+        else if ( type == QVariant::StringList || type == QVariant::List )
+        {
+          ogrType = OFTString;
+          showWarning( tr( "Field '%1' from layer %2 has been converted from a list to a string of comma-separated values." ).arg( fieldName, layer->name() ) );
+        }
         else
           ogrType = OFTString;
 
