@@ -49,7 +49,11 @@ determined from the width with the given aspect ratio.
     void setPixmap( const QPixmap & );
     virtual void resizeEvent( QResizeEvent * );
 
+
     void clear();
+%Docstring
+Clears any label contents.
+%End
 
 };
 
