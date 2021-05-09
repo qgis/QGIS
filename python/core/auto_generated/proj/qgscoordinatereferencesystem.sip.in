@@ -820,6 +820,50 @@ be returned.
 .. versionadded:: 3.20
 %End
 
+    void setCoordinateEpoch( double epoch );
+%Docstring
+Sets the coordinate ``epoch``, as a decimal year.
+
+In a dynamic CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`), coordinates of a point on the surface of the Earth may
+change with time. To be unambiguous the coordinates must always be qualified
+with the epoch at which they are valid. The coordinate epoch is not necessarily
+the epoch at which the observation was collected.
+
+Pedantically the coordinate epoch of an observation belongs to the
+observation, and not to the CRS, however it is often more practical to
+bind it to the CRS. The coordinate epoch should be specified for dynamic
+CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
+
+:param epoch: Coordinate epoch as decimal year (e.g. 2021.3)
+
+.. seealso:: :py:func:`coordinateEpoch`
+
+
+.. versionadded:: 3.20
+%End
+
+    double coordinateEpoch() const;
+%Docstring
+Returns the coordinate epoch, as a decimal year.
+
+In a dynamic CRS, coordinates of a point on the surface of the Earth may
+change with time. To be unambiguous the coordinates must always be qualified
+with the epoch at which they are valid. The coordinate epoch is not necessarily
+the epoch at which the observation was collected.
+
+Pedantically the coordinate epoch of an observation belongs to the
+observation, and not to the CRS, however it is often more practical to
+bind it to the CRS. The coordinate epoch should be specified for dynamic
+CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
+
+:return: Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
+
+.. seealso:: :py:func:`setCoordinateEpoch`
+
+
+.. versionadded:: 3.20
+%End
+
     QgsProjectionFactors factors( const QgsPoint &point ) const;
 %Docstring
 Calculate various cartographic properties, such as scale factors, angular distortion and meridian convergence for

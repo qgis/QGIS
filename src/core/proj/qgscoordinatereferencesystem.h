@@ -757,6 +757,48 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsDatumEnsemble datumEnsemble() const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Sets the coordinate \a epoch, as a decimal year.
+     *
+     * In a dynamic CRS (see isDynamic()), coordinates of a point on the surface of the Earth may
+     * change with time. To be unambiguous the coordinates must always be qualified
+     * with the epoch at which they are valid. The coordinate epoch is not necessarily
+     * the epoch at which the observation was collected.
+     *
+     * Pedantically the coordinate epoch of an observation belongs to the
+     * observation, and not to the CRS, however it is often more practical to
+     * bind it to the CRS. The coordinate epoch should be specified for dynamic
+     * CRS (see isDynamic()).
+     *
+     * \param epoch Coordinate epoch as decimal year (e.g. 2021.3)
+     *
+     * \see coordinateEpoch()
+     *
+     * \since QGIS 3.20
+     */
+    void setCoordinateEpoch( double epoch );
+
+    /**
+     * Returns the coordinate epoch, as a decimal year.
+     *
+     * In a dynamic CRS, coordinates of a point on the surface of the Earth may
+     * change with time. To be unambiguous the coordinates must always be qualified
+     * with the epoch at which they are valid. The coordinate epoch is not necessarily
+     * the epoch at which the observation was collected.
+     *
+     * Pedantically the coordinate epoch of an observation belongs to the
+     * observation, and not to the CRS, however it is often more practical to
+     * bind it to the CRS. The coordinate epoch should be specified for dynamic
+     * CRS (see isDynamic()).
+     *
+     * \returns Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
+     *
+     * \see setCoordinateEpoch()
+     *
+     * \since QGIS 3.20
+     */
+    double coordinateEpoch() const;
+
+    /**
      * Calculate various cartographic properties, such as scale factors, angular distortion and meridian convergence for
      * the CRS at the given geodetic \a point (in geographic coordinates).
      *

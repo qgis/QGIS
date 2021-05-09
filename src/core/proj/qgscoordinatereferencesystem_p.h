@@ -60,6 +60,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
+      , mCoordinateEpoch( other.mCoordinateEpoch )
       , mPj()
       , mProj4( other.mProj4 )
       , mWktPreferred( other.mWktPreferred )
@@ -105,6 +106,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     //! Whether this CRS is properly defined and valid
     bool mIsValid = false;
+
+    //! Coordinate epoch
+    double mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
 
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.
