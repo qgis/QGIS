@@ -958,6 +958,16 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QgsCoordinateReferenceSystem myCrs2;
   QVERIFY( myCrs2.readXml( node ) );
   QVERIFY( myCrs == myCrs2 );
+  QVERIFY( std::isnan( myCrs2.coordinateEpoch() ) );
+
+  // with coordinate epoch
+  myCrs.setCoordinateEpoch( 2021.3 );
+  QDomElement node1a = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node1a );
+  QVERIFY( myCrs.writeXml( node1a, document ) );
+  QgsCoordinateReferenceSystem myCrs2a;
+  QVERIFY( myCrs2.readXml( node1a ) );
+  QVERIFY( myCrs == myCrs2 );
 
   // Empty XML made from writeXml operation
   QgsCoordinateReferenceSystem myCrs3;
@@ -989,6 +999,14 @@ void TestQgsCoordinateReferenceSystem::readWriteXml()
   QCOMPARE( myCrs7.authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( myCrs7.toProj(), QStringLiteral( "+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
   QCOMPARE( myCrs7.toWkt(), QStringLiteral( R"""(PROJCS["GDA94 / Vicgrid",GEOGCS["GDA94",DATUM["Geocentric_Datum_of_Australia_1994",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6283"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4283"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["latitude_of_origin",-37],PARAMETER["central_meridian",145],PARAMETER["standard_parallel_1",-36],PARAMETER["standard_parallel_2",-38],PARAMETER["false_easting",2500000],PARAMETER["false_northing",2500000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","3111"]])""" ) );
+  // with coordinate epoch
+  myCrs6.setCoordinateEpoch( 2021.3 );
+  node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+  QVERIFY( myCrs6.writeXml( node, document ) );
+  QgsCoordinateReferenceSystem myCrs7a;
+  QVERIFY( myCrs7a.readXml( node ) );
+  QCOMPARE( myCrs7a.coordinateEpoch(), 2021.3 );
 
   // valid CRS from proj string
   QgsCoordinateReferenceSystem myCrs8;
