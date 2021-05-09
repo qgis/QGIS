@@ -247,7 +247,7 @@ class ClipRasterByMask(GdalAlgorithm):
             tiled = re.search(r"Is Tiled</td><td>([^<]+)", metadata)
             if (tiled):
                 if (tiled.group(1) == 'true'):
-                    uri_config['mode'] = 2 
+                    uri_config['mode'] = 2
             for item in layerSource.split(' '):
                 column = re.search(r"^\((.*)\)$", item)
                 if (column):
