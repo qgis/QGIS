@@ -1801,6 +1801,19 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       //make sure the map units have been set
       setMapUnits();
     }
+
+    const QString epoch = srsNode.toElement().attribute( QStringLiteral( "coordinateEpoch" ) );
+    if ( !epoch.isEmpty() )
+    {
+      bool epochOk = false;
+      d->mCoordinateEpoch = epoch.toDouble( &epochOk );
+      if ( !epochOk )
+        d->mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+    }
+    else
+    {
+      d->mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+    }
   }
   else
   {
@@ -1815,6 +1828,11 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
 {
   QDomElement layerNode = node.toElement();
   QDomElement srsElement = doc.createElement( QStringLiteral( "spatialrefsys" ) );
+
+  if ( std::isfinite( d->mCoordinateEpoch ) )
+  {
+    srsElement.setAttribute( QStringLiteral( "coordinateEpoch" ), d->mCoordinateEpoch );
+  }
 
   QDomElement wktElement = doc.createElement( QStringLiteral( "wkt" ) );
   wktElement.appendChild( doc.createTextNode( toWkt( WKT_PREFERRED ) ) );
