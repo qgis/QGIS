@@ -22,6 +22,7 @@ __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Alexander Bruy'
 
 import os
+import re
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -161,7 +162,32 @@ class ClipRasterByExtent(GdalAlgorithm):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             arguments.append(extra)
 
-        arguments.append(inLayer.source())
+        layerSource = inLayer.source()
+        layerProvider = inLayer.dataProvider()
+        if (layerProvider.name() == 'postgresraster'):
+            metadata = layerProvider.htmlMetadata()
+            uri_config = {}
+            tiled = re.search(r"Is Tiled</td><td>([^<]+)", metadata)
+            if (tiled):
+                if (tiled.group(1) == 'true'):
+                    uri_config['mode'] = 2 
+            for item in layerSource.split(' '):
+                column = re.search(r"^\((.*)\)$", item)
+                if (column):
+                    uri_config['column'] = column.group(1)
+                    continue
+                schema = re.search(r"table=([^.]+)\.(.+)$", item)
+                if (schema):
+                    uri_config['schema'] = schema.group(1)
+                    uri_config['table'] = schema.group(2)
+                    continue
+                pair = re.search(r"([^=]+)=(.+)", item)
+                if (pair):
+                    if pair.group(1) != 'srid':
+                        uri_config[pair.group(1)] = pair.group(2)
+            layerSource = 'PG: ' + " ".join(["=".join([key, str(val)]) for key, val in uri_config.items()])
+
+        arguments.append(layerSource)
         arguments.append(out)
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
