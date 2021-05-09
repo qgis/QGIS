@@ -53,6 +53,8 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
 
     void setPixmap( const QPixmap & );
     void resizeEvent( QResizeEvent * ) override;
+
+    //! Clears any label contents.
     void clear();
 
   private:
