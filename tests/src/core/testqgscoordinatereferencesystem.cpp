@@ -79,6 +79,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void isGeographic();
     void mapUnits();
     void isDynamic();
+    void celestialBody();
     void setValidationHint();
     void hasAxisInverted();
     void createFromProjInvalid();
@@ -1330,6 +1331,20 @@ void TestQgsCoordinateReferenceSystem::isDynamic()
       AUTHORITY["EPSG","4326"]])""" ) ) );
   QVERIFY( crs.isValid() );
   QVERIFY( crs.isDynamic() );
+#endif
+}
+
+void TestQgsCoordinateReferenceSystem::celestialBody()
+{
+#if (PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR >= 1 ) )
+  QgsCoordinateReferenceSystem crs;
+  QCOMPARE( crs.celestialBodyName(), QString() );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( crs.celestialBodyName(), QStringLiteral( "Earth" ) );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) );
+  QCOMPARE( crs.celestialBodyName(), QStringLiteral( "Moon" ) );
 #endif
 }
 
