@@ -180,7 +180,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 
 /**
  * \ingroup gui
- * \class QgsImageSourceLineEdit
+ * \class QgsPictureSourceLineEditBase
  * \brief A line edit widget with toolbutton for setting a raster image path.
  *
  * \see QgsSvgSourceLineEdit
