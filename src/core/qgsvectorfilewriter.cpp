@@ -2564,12 +2564,13 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             int pos = 0;
             for ( const QString &string : list )
             {
-              lst[pos] = mCodec->fromUnicode( string ).data();
+              lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
               pos++;
             }
           }
           lst[count] = nullptr;
           OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+          CSLDestroy( lst );
         }
         else
         {
@@ -2592,12 +2593,13 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
               int pos = 0;
               for ( const QString &string : list )
               {
-                lst[pos] = mCodec->fromUnicode( string ).data();
+                lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
                 pos++;
               }
             }
             lst[count] = nullptr;
             OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+            CSLDestroy( lst );
           }
           else
           {

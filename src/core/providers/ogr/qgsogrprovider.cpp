@@ -1980,7 +1980,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
-    else if ( attrVal.isNull() || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
+    else if ( attrVal.isNull() || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2075,12 +2075,13 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
             int pos = 0;
             for ( const QString &string : list )
             {
-              lst[pos] = textEncoding()->fromUnicode( string ).data();
+              lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
               pos++;
             }
           }
           lst[count] = nullptr;
           OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
+          CSLDestroy( lst );
           break;
         }
 
@@ -2778,8 +2779,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
 
       OGRFieldType type = OGR_Fld_GetType( fd );
-
-      if ( it2->isNull() || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) ) ) )
+      if ( it2->isNull() || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
       {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2796,7 +2796,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
       else
       {
-
         switch ( type )
         {
           case OFTInteger:
@@ -2862,12 +2861,13 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
               int pos = 0;
               for ( const QString &string : list )
               {
-                lst[pos] = textEncoding()->fromUnicode( string ).data();
+                lst[pos] = CPLStrdup( textEncoding()->fromUnicode( string ).data() );
                 pos++;
               }
             }
             lst[count] = nullptr;
             OGR_F_SetFieldStringList( of.get(), f, lst );
+            CSLDestroy( lst );
             break;
           }
 

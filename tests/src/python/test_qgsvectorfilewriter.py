@@ -1060,39 +1060,35 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         Test writing with a string list field
         :return:
         """
-        basetestpath = tempfile.mkdtemp()
-        tmpfile = os.path.join(basetestpath, 'newstringlistfield.gml')
-        ds = ogr.GetDriverByName('GML').CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
-        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
-        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
-        lyr.CreateField(ogr.FieldDefn('strlistfield', ogr.OFTStringList))
-        ds = None
+        source_fields = QgsFields()
+        source_fields.append(QgsField('int', QVariant.Int))
+        source_fields.append(QgsField('stringlist', QVariant.StringList, subType=QVariant.String))
+        vl = QgsMemoryProviderUtils.createMemoryLayer('test', source_fields)
+        f = QgsFeature()
+        f.setAttributes([1, ['ab', 'cd']])
+        vl.dataProvider().addFeature(f)
 
-        vl = QgsVectorLayer(tmpfile)
-        self.assertTrue(vl.isValid())
-
-        # write a gml dataset with a string list field
-        filename = os.path.join(str(QDir.tempPath()), 'with_stringlist_field.gml')
+        filename = os.path.join(str(QDir.tempPath()), 'with_stringlist_field.geojson')
         rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(vl,
                                                              filename,
                                                              'utf-8',
                                                              vl.crs(),
-                                                             'GML')
+                                                             'GeoJSON')
 
         self.assertEqual(rc, QgsVectorFileWriter.NoError)
 
-        # open the resulting gml
+        # open the resulting geojson
         vl = QgsVectorLayer(filename, '', 'ogr')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
 
         # test type of converted field
-        idx = fields.indexFromName('strlistfield')
+        idx = fields.indexFromName('stringlist')
         self.assertEqual(fields.at(idx).type(), QVariant.StringList)
         self.assertEqual(fields.at(idx).subType(), QVariant.String)
 
-        del vl
+        self.assertEqual([f.attributes() for f in vl.getFeatures()], [[1, ['ab', 'cd']]])
+
         os.unlink(filename)
 
     def testWriteWithIntegerListField(self):
@@ -1117,7 +1113,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         self.assertEqual(rc, QgsVectorFileWriter.NoError)
 
-        # open the resulting gml
+        # open the resulting geojson
         vl = QgsVectorLayer(filename, '', 'ogr')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
@@ -1153,7 +1149,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         self.assertEqual(rc, QgsVectorFileWriter.NoError)
 
-        # open the resulting gml
+        # open the resulting geojson
         vl = QgsVectorLayer(filename, '', 'ogr')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
