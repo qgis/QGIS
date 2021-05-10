@@ -647,6 +647,7 @@ void QgsLayoutItemPicture::setSvgDynamicParameters( const QMap<QString, QgsPrope
     variantParameters.insert( it.key(), it.value().toVariant() );
 
   mCustomProperties.setValue( QStringLiteral( "svg-dynamic-parameters" ), variantParameters );
+  refreshPicture();
 }
 
 void QgsLayoutItemPicture::shapeChanged()
