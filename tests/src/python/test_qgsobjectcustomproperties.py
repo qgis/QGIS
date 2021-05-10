@@ -95,6 +95,5 @@ class TestQgsObjectCustomProperties(unittest.TestCase):
         self.assertEqual(props.value('b', defaultValue='yy'), 'xx')
 
 
-
 if __name__ == '__main__':
     unittest.main()
