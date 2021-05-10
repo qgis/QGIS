@@ -559,7 +559,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    def testStringListField(self):
+    def testGmlStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
@@ -591,6 +591,87 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(list_field.type(), QVariant.StringList)
         self.assertEqual(list_field.typeName(), 'StringList')
         self.assertEqual(list_field.subType(), QVariant.String)
+
+    def testStringListField(self):
+        tmpfile = os.path.join(self.basetestpath, 'newstringlistfield.geojson')
+        ds = ogr.GetDriverByName('GeoJSON').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('stringlistfield', ogr.OFTStringList))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('strfield', 'one')
+        f.SetField('intfield', 1)
+        f.SetFieldStringList(2, ['a', 'b', 'c'])
+        lyr.CreateFeature(f)
+
+        lyr = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        list_field = fields[fields.lookupField('stringlistfield')]
+        self.assertEqual(list_field.type(), QVariant.StringList)
+        self.assertEqual(list_field.typeName(), 'StringList')
+        self.assertEqual(list_field.subType(), QVariant.String)
+
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attributes(), ['one', 1, ['a', 'b', 'c']])
+
+        # add features
+        f = QgsFeature()
+        f.setAttributes(['two', 2, ['z', 'y', 'x']])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes(['three', 3, NULL])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes(['four', 4, []])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, ['a', 'b', 'c']],
+                          ['two', 2, ['z', 'y', 'x']],
+                          ['three', 3, NULL],
+                          ['four', 4, NULL]])
+
+        # change attribute values
+        f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
+        f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
+        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {2: NULL}, f3_id: {2: ['m', 'n', 'o']}}))
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, NULL],
+                          ['two', 2, ['z', 'y', 'x']],
+                          ['three', 3, ['m', 'n', 'o']],
+                          ['four', 4, NULL]])
+
+        # add attribute
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.StringList, subType=QVariant.String)]))
+        f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
+        f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
+        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: ['111', '222']}, f3_id: {3: ['121', '122', '123']}}))
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, NULL, ['111', '222']],
+                          ['two', 2, ['z', 'y', 'x'], NULL],
+                          ['three', 3, ['m', 'n', 'o'], ['121', '122', '123']],
+                          ['four', 4, NULL, NULL]])
 
     def testIntListField(self):
         tmpfile = os.path.join(self.basetestpath, 'newintlistfield.geojson')
