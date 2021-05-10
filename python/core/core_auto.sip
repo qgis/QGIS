@@ -436,6 +436,7 @@
 %Include auto_generated/proj/qgsdatums.sip
 %Include auto_generated/proj/qgsdatumtransform.sip
 %Include auto_generated/proj/qgsellipsoidutils.sip
+%Include auto_generated/proj/qgsprojoperation.sip
 %Include auto_generated/proj/qgsprojutils.sip
 %Include auto_generated/proj/qgsprojectionfactors.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip

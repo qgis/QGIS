@@ -19,9 +19,11 @@
 #define QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 
 #include <QObject>
+#include <QMap>
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCelestialBody;
+class QgsProjOperation;
 
 /**
  * \class QgsCoordinateReferenceSystemRegistry
@@ -124,6 +126,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     bool removeUserCrs( long id );
 
     /**
+     * Returns a map of all valid PROJ operations.
+     *
+     * The map keys correspond to PROJ operation IDs.
+     *
+     * \since QGIS 3.20
+     */
+    QMap< QString, QgsProjOperation > projOperations() const;
+
+    /**
      * Returns a list of all known celestial bodies.
      *
      * \warning This method requires PROJ 8.1 or later
@@ -179,6 +190,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     bool insertProjection( const QString &projectionAcronym );
 
     mutable QList< QgsCelestialBody > mCelestialBodies;
+    mutable QMap< QString, QgsProjOperation > mProjOperations;
 
 };
 

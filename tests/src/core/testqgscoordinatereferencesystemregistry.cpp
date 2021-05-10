@@ -23,6 +23,7 @@
 //header for class being tested
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsapplication.h"
+#include "qgsprojoperation.h"
 
 class TestQgsCoordinateReferenceSystemRegistry: public QObject
 {
@@ -33,6 +34,7 @@ class TestQgsCoordinateReferenceSystemRegistry: public QObject
     void addUserCrs();
     void changeUserCrs();
     void removeUserCrs();
+    void projOperations();
 
   private:
 
@@ -301,6 +303,17 @@ void TestQgsCoordinateReferenceSystemRegistry::removeUserCrs()
   // doesn't exist anymore...
   QgsCoordinateReferenceSystem crs3( authid );
   QVERIFY( !crs3.isValid() );
+}
+
+void TestQgsCoordinateReferenceSystemRegistry::projOperations()
+{
+  QMap< QString, QgsProjOperation > operations = QgsApplication::coordinateReferenceSystemRegistry()->projOperations();
+
+  QVERIFY( operations.contains( QStringLiteral( "lcc" ) ) );
+  QVERIFY( operations.value( QStringLiteral( "lcc" ) ).isValid() );
+  QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).id(), QStringLiteral( "lcc" ) );
+  QCOMPARE( operations.value( QStringLiteral( "lcc" ) ).description(), QStringLiteral( "Lambert Conformal Conic" ) );
+  QVERIFY( operations.value( QStringLiteral( "lcc" ) ).details().contains( QStringLiteral( "Conic" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystemRegistry )

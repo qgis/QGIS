@@ -26,6 +26,7 @@ Email                : sherman at mrcc dot com
 #include "qgsproject.h"
 #include "qgsprojutils.h"
 #include "qgsprojectionfactors.h"
+#include "qgsprojoperation.h"
 #include <proj.h>
 #include <gdal.h>
 #include <cpl_conv.h>
@@ -80,6 +81,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void mapUnits();
     void isDynamic();
     void celestialBody();
+    void operation();
     void setValidationHint();
     void hasAxisInverted();
     void createFromProjInvalid();
@@ -1346,6 +1348,23 @@ void TestQgsCoordinateReferenceSystem::celestialBody()
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) );
   QCOMPARE( crs.celestialBodyName(), QStringLiteral( "Moon" ) );
 #endif
+}
+
+void TestQgsCoordinateReferenceSystem::operation()
+{
+  QgsCoordinateReferenceSystem crs;
+  QVERIFY( !crs.operation().isValid() );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QVERIFY( crs.operation().isValid() );
+  QCOMPARE( crs.operation().id(), QStringLiteral( "longlat" ) );
+  QCOMPARE( crs.operation().description(),  QStringLiteral( "Lat/long (Geodetic alias)" ) );
+
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) );
+  QVERIFY( crs.operation().isValid() );
+  QCOMPARE( crs.operation().id(), QStringLiteral( "utm" ) );
+  QCOMPARE( crs.operation().description(),  QStringLiteral( "Universal Transverse Mercator (UTM)" ) );
+  QVERIFY( crs.operation().details().contains( QStringLiteral( "south approx" ) ) );
 }
 
 void TestQgsCoordinateReferenceSystem::setValidationHint()

@@ -893,6 +893,14 @@ The function also calculates the partial derivatives of the given coordinate.
 .. versionadded:: 3.20
 %End
 
+    QgsProjOperation operation() const;
+%Docstring
+Returns information about the PROJ operation associated with the coordinate reference system, for example
+the projection method used by the CRS.
+
+.. versionadded:: 3.20
+%End
+
     bool hasAxisInverted() const;
 %Docstring
 Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
