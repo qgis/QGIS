@@ -425,14 +425,14 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     bool browserVisible() const {return mBrowserVisible;}
 
     /**
-     * Defines if the widget should allow any image
+     * Defines if the widget should allow any raster or SVG image
      * or if the file chooser will be limited to open SVG files
      * \since QGIS 3.20
      */
     void setAllowAnyImage( bool allowAnyImage );
 
     /**
-     * Returns if the widget should allow any image
+     * Returns if the widget should allow any raster or SVG image
      * or if the file chooser will be limited to open SVG files
      * \since QGIS 3.20
      */

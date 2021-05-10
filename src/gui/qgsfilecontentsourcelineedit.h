@@ -183,13 +183,11 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
  * \class QgsImageSourceLineEdit
  * \brief A line edit widget with toolbutton for setting a raster image path.
  *
- * Designed for use with QgsImageCache.
- *
  * \see QgsSvgSourceLineEdit
  *
  * \since QGIS 3.20
  */
-class GUI_EXPORT QgsSvgOrImageSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
+class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSourceLineEdit
 {
     Q_OBJECT
   public:
@@ -205,8 +203,9 @@ class GUI_EXPORT QgsSvgOrImageSourceLineEdit : public QgsAbstractFileContentSour
 
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
+     * The default format is SVG.
      */
-    QgsSvgOrImageSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
+    QgsPictureSourceLineEditBase( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QgsAbstractFileContentSourceLineEdit( parent )
     {}
 
@@ -218,7 +217,7 @@ class GUI_EXPORT QgsSvgOrImageSourceLineEdit : public QgsAbstractFileContentSour
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
-    QgsSvgOrImageSourceLineEdit( Format format, QWidget *parent SIP_TRANSFERTHIS = nullptr )
+    QgsPictureSourceLineEditBase( Format format, QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QgsAbstractFileContentSourceLineEdit( parent )
       , mFormat( format )
     {}
@@ -251,7 +250,7 @@ class GUI_EXPORT QgsSvgOrImageSourceLineEdit : public QgsAbstractFileContentSour
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsSvgSourceLineEdit : public QgsSvgOrImageSourceLineEdit
+class GUI_EXPORT QgsSvgSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
@@ -260,7 +259,7 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsSvgOrImageSourceLineEdit
      * Constructor for QgsSvgSourceLineEdit, with the specified \a parent widget.
      */
     QgsSvgSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QgsSvgOrImageSourceLineEdit( Svg, parent )
+      : QgsPictureSourceLineEditBase( Svg, parent )
     {}
 };
 
@@ -275,7 +274,7 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsSvgOrImageSourceLineEdit
  *
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsImageSourceLineEdit : public QgsSvgOrImageSourceLineEdit
+class GUI_EXPORT QgsImageSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
@@ -284,7 +283,7 @@ class GUI_EXPORT QgsImageSourceLineEdit : public QgsSvgOrImageSourceLineEdit
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
     QgsImageSourceLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QgsSvgOrImageSourceLineEdit( Image, parent )
+      : QgsPictureSourceLineEditBase( Image, parent )
     {}
 };
 

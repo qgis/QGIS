@@ -156,7 +156,7 @@ Returns if the SVG browser should be visible
 
     void setAllowAnyImage( bool allowAnyImage );
 %Docstring
-Defines if the widget should allow any image
+Defines if the widget should allow any raster or SVG image
 or if the file chooser will be limited to open SVG files
 
 .. versionadded:: 3.20
@@ -164,7 +164,7 @@ or if the file chooser will be limited to open SVG files
 
     bool allowAnyImage() const;
 %Docstring
-Returns if the widget should allow any image
+Returns if the widget should allow any raster or SVG image
 or if the file chooser will be limited to open SVG files
 
 .. versionadded:: 3.20

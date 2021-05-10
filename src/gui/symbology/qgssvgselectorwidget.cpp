@@ -499,9 +499,9 @@ void QgsSvgSelectorWidget::setAllowAnyImage( bool allowAnyImage )
   mAllowAnyImage = allowAnyImage;
 
   if ( allowAnyImage )
-    mSourceLineEdit->setMode( QgsSvgOrImageSourceLineEdit::Image );
+    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Image );
   else
-    mSourceLineEdit->setMode( QgsSvgOrImageSourceLineEdit::Svg );
+    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Svg );
 }
 
 QgsPropertyOverrideButton *QgsSvgSelectorWidget::propertyOverrideToolButton() const

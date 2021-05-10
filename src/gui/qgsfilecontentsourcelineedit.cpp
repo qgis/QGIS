@@ -287,7 +287,7 @@ QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
 
 ///@cond PRIVATE
 
-QString QgsSvgOrImageSourceLineEdit::fileFilter() const
+QString QgsPictureSourceLineEditBase::fileFilter() const
 {
   switch ( mFormat )
   {
@@ -298,7 +298,7 @@ QString QgsSvgOrImageSourceLineEdit::fileFilter() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::selectFileTitle() const
+QString QgsPictureSourceLineEditBase::selectFileTitle() const
 {
   switch ( mFormat )
   {
@@ -309,7 +309,7 @@ QString QgsSvgOrImageSourceLineEdit::selectFileTitle() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::fileFromUrlTitle() const
+QString QgsPictureSourceLineEditBase::fileFromUrlTitle() const
 {
   switch ( mFormat )
   {
@@ -320,7 +320,7 @@ QString QgsSvgOrImageSourceLineEdit::fileFromUrlTitle() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::fileFromUrlText() const
+QString QgsPictureSourceLineEditBase::fileFromUrlText() const
 {
   switch ( mFormat )
   {
@@ -331,7 +331,7 @@ QString QgsSvgOrImageSourceLineEdit::fileFromUrlText() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::embedFileTitle() const
+QString QgsPictureSourceLineEditBase::embedFileTitle() const
 {
   switch ( mFormat )
   {
@@ -342,7 +342,7 @@ QString QgsSvgOrImageSourceLineEdit::embedFileTitle() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::extractFileTitle() const
+QString QgsPictureSourceLineEditBase::extractFileTitle() const
 {
   switch ( mFormat )
   {
@@ -353,7 +353,7 @@ QString QgsSvgOrImageSourceLineEdit::extractFileTitle() const
   }
 }
 
-QString QgsSvgOrImageSourceLineEdit::defaultSettingsKey() const
+QString QgsPictureSourceLineEditBase::defaultSettingsKey() const
 {
   switch ( mFormat )
   {
