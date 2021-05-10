@@ -23,6 +23,7 @@ from qgis.core import (
 from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer
 from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
+from qgis.PyQt.QtTest import QAbstractItemModelTester
 
 
 class TestPyQgsQgsQueryResultModel(unittest.TestCase):
@@ -72,6 +73,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         conn = md.createConnection(self.uri, {})
         res = conn.execSql('SELECT generate_series(1, 1000)')
         model = QgsQueryResultModel(res)
+        tester = QAbstractItemModelTester(model, QAbstractItemModelTester.FailureReportingMode.Warning)
         self.assertEqual(model.rowCount(model.index(-1, -1)), 0)
 
         while model.rowCount(model.index(-1, -1)) < 1000:
@@ -102,6 +104,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
 
         self.model = QgsQueryResultModel(res)
+        self.tester = QAbstractItemModelTester(model, QAbstractItemModelTester.FailureReportingMode.Warning)
 
         self.running = True
 
@@ -131,6 +134,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         conn = md.createConnection(self.uri, {})
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
         model = QgsQueryResultModel(res)
+        tester = QAbstractItemModelTester(model, QAbstractItemModelTester.FailureReportingMode.Warning)
         v.setModel(model)
 
         def _set_row_count(idx, first, last):

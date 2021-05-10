@@ -71,7 +71,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 ///@endcond private
 
 /**
- * \brief The QgsQueryResultWidget class allow users to enter and run an SQL query on a
+ * \brief The QgsQueryResultWidget class allows users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
  * Query results are displayed in a table view.
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void updateSqlLayerColumns();
 
     /**
-     * Cancel and wait for finish.
+     * Cancel and wait for finish
      */
     void cancelRunningQuery();
 

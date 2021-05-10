@@ -248,8 +248,6 @@ ADD_PYTHON_TEST(PyQgsProviderSourceWidgetProviderRegistry test_qgssourcewidgetpr
 ADD_PYTHON_TEST(PyQgsProviderSublayerDetails test_qgsprovidersublayerdetails.py)
 ADD_PYTHON_TEST(PyQgsProviderSublayerModel test_qgsprovidersublayermodel.py)
 ADD_PYTHON_TEST(TestQgsRandomMarkerSymbolLayer test_qgsrandommarkersymbollayer.py)
-ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
-ADD_PYTHON_TEST(PyQgsQueryResultWidget test_qgsqueryresultwidget.py)
 ADD_PYTHON_TEST(PyQgsRange test_qgsrange.py)
 ADD_PYTHON_TEST(PyQgsRangeSlider test_qgsrangeslider.py)
 ADD_PYTHON_TEST(PyQgsRangeWidgets test_qgsrangewidgets.py)
@@ -380,8 +378,9 @@ endif()
 
 if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
-  ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
   ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
+  ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
+  ADD_PYTHON_TEST(PyQgsQueryResultWidget test_qgsqueryresultwidget.py)
   ADD_PYTHON_TEST(PyQgsVectorLayerUtilsPostgres test_qgsvectorlayerutils_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
@@ -407,7 +406,7 @@ if (ENABLE_PGTEST)
     SET_TESTS_PROPERTIES(PyQgsServerWMSGetFeatureInfoPG PyQgsServerAccessControlWMSGetPrintPG PyQgsServerAccessControlWMSGetMapPG
     PROPERTIES LABELS "POSTGRES")
   endif()
-  SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
+  SET_TESTS_PROPERTIES(PyQgsImportIntoPostGIS PyQgsQueryResultWidget PyQgsQueryResultModel PyQgsVectorFileWriterPostgres PyQgsPostgresProvider
     PyQgsVectorLayerUtilsPostgres PyQgsPostgresRasterProvider PyQgsPostgresDomain PyQgsPostgresTransaction
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest

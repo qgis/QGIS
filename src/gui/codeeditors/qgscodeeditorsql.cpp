@@ -74,7 +74,7 @@ void QgsCodeEditorSQL::setFields( const QgsFields &fields )
 
   QStringList fieldNames;
 
-  for ( const QgsField &field : qgis::as_const( fields ) )
+  for ( const QgsField &field : std::as_const( fields ) )
   {
     fieldNames.push_back( field.name() );
   }

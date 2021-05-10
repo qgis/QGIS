@@ -88,7 +88,7 @@ void QgsQueryResultWidget::executeQuery()
     const auto sql = mSqlEditor->text( );
 
     mWasCanceled = false;
-    mFeedback = qgis::make_unique<QgsFeedback>();
+    mFeedback = std::make_unique<QgsFeedback>();
     mStopButton->setEnabled( true );
     mStatusLabel->show();
     mStatusLabel->setText( tr( "Running⋯" ) );
@@ -188,7 +188,7 @@ void QgsQueryResultWidget::startFetching()
     else
     {
       QgsAbstractDatabaseProviderConnection::QueryResult result { mQueryResultWatcher.result() };
-      mModel = qgis::make_unique<QgsQueryResultModel>( result );
+      mModel = std::make_unique<QgsQueryResultModel>( result );
       connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
       {
         mModel->cancel();
@@ -343,14 +343,14 @@ void QgsConnectionsApiFetcher::fetchTokens()
       schemas.push_back( QString() );  // Fake empty schema for DBs not supporting it
     }
 
-    for ( const auto &schema : qgis::as_const( schemas ) )
+    for ( const auto &schema : std::as_const( schemas ) )
     {
       if ( mStopFetching ) { return; }
       QStringList tableNames;
       try
       {
         const auto tables = mConnection->tables( schema );
-        for ( const auto &table : qgis::as_const( tables ) )
+        for ( const auto &table : std::as_const( tables ) )
         {
           if ( mStopFetching ) { return; }
           tableNames.push_back( table.tableName() );
@@ -363,7 +363,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
       }
 
       // Get fields
-      for ( const auto &table : qgis::as_const( tableNames ) )
+      for ( const auto &table : std::as_const( tableNames ) )
       {
         if ( mStopFetching ) { return; }
         QStringList fieldNames;
@@ -371,7 +371,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
         {
           const auto fields( mConnection->fields( schema, table ) );
           if ( mStopFetching ) { return; }
-          for ( const auto &field : qgis::as_const( fields ) )
+          for ( const auto &field : std::as_const( fields ) )
           {
             fieldNames.push_back( field.name() );
             if ( mStopFetching ) { return; }

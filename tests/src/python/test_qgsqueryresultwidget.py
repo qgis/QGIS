@@ -59,7 +59,7 @@ class PyQgsQueryResultWidget(unittest.TestCase):
             md = QgsProviderRegistry.instance().providerMetadata('postgres')
             conn = md.createConnection(cls.uri, {})
             conn.dropVectorTable('qgis_test', 'random_big_data')
-        except:
+        except Exception:
             pass
 
     def test_widget(self):
