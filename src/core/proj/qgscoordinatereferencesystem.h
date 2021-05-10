@@ -41,6 +41,7 @@ class QDomDocument;
 class QgsCoordinateReferenceSystemPrivate;
 class QgsDatumEnsemble;
 class QgsProjectionFactors;
+class QgsProjOperation;
 
 #ifndef SIP_RUN
 struct PJconsts;
@@ -821,6 +822,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \since QGIS 3.20
      */
     QgsProjectionFactors factors( const QgsPoint &point ) const;
+
+    /**
+     * Returns information about the PROJ operation associated with the coordinate reference system, for example
+     * the projection method used by the CRS.
+     *
+     * \since QGIS 3.20
+     */
+    QgsProjOperation operation() const;
 
     /**
      * Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.

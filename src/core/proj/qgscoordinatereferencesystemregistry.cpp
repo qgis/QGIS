@@ -26,6 +26,7 @@
 #include "qgsprojutils.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsexception.h"
+#include "qgsprojoperation.h"
 
 #include <sqlite3.h>
 #include <mutex>
@@ -290,6 +291,7 @@ bool QgsCoordinateReferenceSystemRegistry::removeUserCrs( long id )
   return res;
 }
 
+
 bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &projectionAcronym )
 {
   sqlite3_database_unique_ptr database;
@@ -342,6 +344,34 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
   }
 
   return true;
+}
+
+QMap<QString, QgsProjOperation> QgsCoordinateReferenceSystemRegistry::projOperations() const
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize PROJ operations" ) );
+
+    const PJ_OPERATIONS *operation = proj_list_operations();
+    while ( operation && operation->id )
+    {
+      QgsProjOperation value;
+      value.mValid = true;
+      value.mId = QString( operation->id );
+
+      const QString description( *operation->descr );
+      const QStringList descriptionParts = description.split( QStringLiteral( "\n\t" ) );
+      value.mDescription = descriptionParts.value( 0 );
+      value.mDetails = descriptionParts.mid( 1 ).join( '\n' );
+
+      mProjOperations.insert( value.id(), value );
+
+      operation++;
+    }
+  } );
+
+  return mProjOperations;
 }
 
 QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies() const

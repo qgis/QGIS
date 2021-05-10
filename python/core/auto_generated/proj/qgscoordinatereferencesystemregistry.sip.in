@@ -113,6 +113,15 @@ Returns ``False`` if the CRS could not be removed.
 .. seealso:: :py:func:`userCrsRemoved`
 %End
 
+    QMap< QString, QgsProjOperation > projOperations() const;
+%Docstring
+Returns a map of all valid PROJ operations.
+
+The map keys correspond to PROJ operation IDs.
+
+.. versionadded:: 3.20
+%End
+
     QList< QgsCelestialBody > celestialBodies() const;
 %Docstring
 Returns a list of all known celestial bodies.

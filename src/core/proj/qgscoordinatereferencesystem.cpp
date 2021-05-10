@@ -42,6 +42,7 @@
 #include "qgsogrutils.h"
 #include "qgsdatums.h"
 #include "qgsprojectionfactors.h"
+#include "qgsprojoperation.h"
 
 #include <sqlite3.h>
 #include "qgsprojutils.h"
@@ -1324,6 +1325,28 @@ QgsProjectionFactors QgsCoordinateReferenceSystem::factors( const QgsPoint &poin
   res.mDxDphi = pjFactors.dx_dphi;
   res.mDyDlam = pjFactors.dy_dlam;
   res.mDyDphi = pjFactors.dy_dphi;
+  return res;
+}
+
+QgsProjOperation QgsCoordinateReferenceSystem::operation() const
+{
+  QgsProjOperation res;
+
+  // we have to make a transformation object corresponding to the crs
+  QString projString = toProj();
+  projString.replace( QStringLiteral( "+type=crs" ), QString() );
+
+  QgsProjUtils::proj_pj_unique_ptr transformation( proj_create( QgsProjContext::get(), projString.toUtf8().constData() ) );
+  if ( !transformation )
+    return res;
+
+  PJ_PROJ_INFO info = proj_pj_info( transformation.get() );
+
+  if ( info.id )
+  {
+    return QgsApplication::coordinateReferenceSystemRegistry()->projOperations().value( QString( info.id ) );
+  }
+
   return res;
 }
 
