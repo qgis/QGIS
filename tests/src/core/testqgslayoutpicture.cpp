@@ -420,9 +420,9 @@ void TestQgsLayoutPicture::dynamicSvgParameters()
   mPicture->setPicturePath( mDynamicSvgParamsImage );
 
   QMap<QString, QgsProperty> parametersProperties;
-  parametersProperties.insert( QStringLiteral( "text1" ), QgsProperty::fromExpression( QStringLiteral( "green?" ) ) );
-  parametersProperties.insert( QStringLiteral( "text2" ), QgsProperty::fromExpression( QStringLiteral( "supergreen" ) ) );
-  parametersProperties.insert( QStringLiteral( "align" ), QgsProperty::fromExpression( QStringLiteral( "middle" ) ) );
+  parametersProperties.insert( QStringLiteral( "text1" ), QgsProperty::fromExpression( QStringLiteral( "'green?'" ) ) );
+  parametersProperties.insert( QStringLiteral( "text2" ), QgsProperty::fromExpression( QStringLiteral( "'supergreen'" ) ) );
+  parametersProperties.insert( QStringLiteral( "align" ), QgsProperty::fromExpression( QStringLiteral( "'middle'" ) ) );
 
   mPicture->setSvgDynamicParameters( parametersProperties );
 
