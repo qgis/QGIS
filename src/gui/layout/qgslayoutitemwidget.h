@@ -200,10 +200,10 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
     //! Returns the atlas for the layout (if available)
     QgsLayoutAtlas *layoutAtlas() const;
 
-    QgsLayoutObject *mObject = nullptr;
-
   private:
     QgsLayoutConfigObject *mConfigObject = nullptr;
+
+    QgsLayoutObject *mObject = nullptr;
 };
 
 

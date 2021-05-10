@@ -44,7 +44,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mSvgSelectorWidget->setAllowParameters( true );
   mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
   mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
-  mSvgSelectorWidget->initParametersModel( mObject );
+  mSvgSelectorWidget->initParametersModel( layoutObject() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
   mResizeModeComboBox->addItem( tr( "Stretch" ), QgsLayoutItemPicture::Stretch );
