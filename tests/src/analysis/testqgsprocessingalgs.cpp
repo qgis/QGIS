@@ -291,7 +291,7 @@ void TestQgsProcessingAlgs::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool *ok )
+QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool saveMetadata, bool *ok )
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
 
@@ -305,6 +305,7 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
   parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
   parameters.insert( QStringLiteral( "SELECTED_FEATURES_ONLY" ), selectedFeaturesOnly );
+  parameters.insert( QStringLiteral( "SAVE_METADATA" ), saveMetadata );
   return package->run( parameters, *context, &feedback, ok );
 }
 
@@ -391,7 +392,7 @@ void TestQgsProcessingAlgs::packageAlg()
   QVariantMap parameters;
   QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
   bool ok = false;
-  QVariantMap results = pkgAlg( layers, outputGpkg, true, false, &ok );
+  QVariantMap results = pkgAlg( layers, outputGpkg, true, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -409,9 +410,12 @@ void TestQgsProcessingAlgs::packageAlg()
   std::unique_ptr<QgsVectorLayer> rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
       QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
+  QgsLayerMetadata metadata;
+  metadata.setFees( QStringLiteral( "lots of dogecoin" ) );
+  rectangles->setMetadata( metadata );
 
   // Test adding an additional layer (overwrite disabled)
-  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, false, &ok );
+  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -426,7 +430,7 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer.reset();
 
   // And finally, test with overwrite enabled
-  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, &ok );
+  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -438,9 +442,21 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer = std::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( !pointLayer->isValid() ); // It's gone -- the gpkg was recreated with a single layer
 
+  QCOMPARE( rectanglesPackagedLayer->metadata().fees(), QString() );
+  rectanglesPackagedLayer.reset();
+
+  // save layer metadata
+  results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, true, &ok );
+  QVERIFY( ok );
+  rectanglesPackagedLayer = std::make_unique< QgsVectorLayer >( outputGpkg + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+  QCOMPARE( rectanglesPackagedLayer->metadata().fees(), QStringLiteral( "lots of dogecoin" ) );
+
   // Test saving of selected features only
   mPolygonLayer->selectByIds( QgsFeatureIds() << 1 << 2 << 3 );
-  QVariantMap results4 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVariantMap results4 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results4.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -451,7 +467,7 @@ void TestQgsProcessingAlgs::packageAlg()
   selectedPolygonsPackagedLayer.reset();
 
   mPolygonLayer->removeSelection();
-  QVariantMap results5 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVariantMap results5 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results5.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );

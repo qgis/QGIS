@@ -57,6 +57,7 @@ void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( outputParameter );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing GeoPackage" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_STYLES" ), QObject::tr( "Save layer styles into GeoPackage" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_METADATA" ), QObject::tr( "Save layer metadata into GeoPackage" ), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SELECTED_FEATURES_ONLY" ), QObject::tr( "Save only selected features" ), false ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
 }
@@ -89,6 +90,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 {
   const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
   const bool saveStyles = parameterAsBoolean( parameters, QStringLiteral( "SAVE_STYLES" ), context );
+  const bool saveMetadata = parameterAsBoolean( parameters, QStringLiteral( "SAVE_METADATA" ), context );
   const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
   QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
   if ( packagePath.isEmpty() )
@@ -156,7 +158,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       {
         QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer.get() );
         bool onlySaveSelected = vectorLayer->selectedFeatureCount() > 0 && selectedFeaturesOnly;
-        if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, onlySaveSelected ) )
+        if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, onlySaveSelected ) )
           errored = true;
         else
           outputLayers.append( QStringLiteral( "%1|layername=%2" ).arg( packagePath, layer->name() ) );
@@ -213,7 +215,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
 }
 
 bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context,
-    QgsProcessingFeedback *feedback, bool saveStyles, bool selectedFeaturesOnly )
+    QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly )
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = QStringLiteral( "GPKG" );
@@ -222,6 +224,11 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   options.fileEncoding = context.defaultEncoding();
   options.onlySelectedFeatures = selectedFeaturesOnly;
   options.feedback = feedback;
+  if ( saveMetadata )
+  {
+    options.layerMetadata = layer->metadata();
+    options.saveMetadata = true;
+  }
 
   // remove any existing FID field, let this be completely recreated
   // since many layer sources have fid fields which are not compatible with gpkg requirements
