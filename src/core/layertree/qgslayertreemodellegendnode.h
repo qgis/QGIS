@@ -768,8 +768,8 @@ class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
 
   private:
     QgsPalLayerSettings mLabelSettings;
-    QSizeF drawSymbol( const QgsLegendSettings &settings, QPainter *p, double xOffset = 0.0, double yOffset = 0.0 ) const;
-    QFont font( QColor &c ) const;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset = 0.0, double yOffset = 0.0 ) const;
+    void textWidthHeight( double &width, double &height, QgsRenderContext &ctx, const QgsTextFormat &textFormat, const QStringList &textLines ) const;
 };
 
 
