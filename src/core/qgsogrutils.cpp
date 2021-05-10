@@ -1451,6 +1451,22 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
     const QString id = symbolStyle.value( QStringLiteral( "id" ) ).toString();
 
+    // if the symbol is a mapinfo symbol, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-sym-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( id );
+    if ( match.hasMatch() )
+    {
+      const int symbolId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+
+      // ogr interpretations of mapinfo symbol sizes are too large -- scale these down
+      symbolSize *= 0.61;
+
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertMarkerSymbol( symbolId, context, color, symbolSize, symbolSizeUnit ) );
+      if ( res )
+        return res;
+    }
+
     std::unique_ptr< QgsMarkerSymbolLayer > markerLayer;
 
     const thread_local QRegularExpression sFontId = QRegularExpression( QStringLiteral( "font-sym-(\\d+)" ) );
@@ -1602,7 +1618,6 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       {
         return nullptr;
       }
-      break;
 
     case QgsSymbol::Line:
       if ( styles.contains( QStringLiteral( "pen" ) ) )

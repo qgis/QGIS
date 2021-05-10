@@ -24,6 +24,7 @@
 
 class QgsLineSymbol;
 class QgsFillSymbol;
+class QgsMarkerSymbol;
 
 /**
  * Context for a MapInfo symbol conversion operation.
@@ -79,6 +80,15 @@ class CORE_EXPORT QgsMapInfoSymbolConverter
      * The caller takes ownership of the returned symbol.
      */
     static QgsFillSymbol *convertFillSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, const QColor &backColor = QColor() ) SIP_FACTORY;
+
+    /**
+     * Converts the MapInfo marker symbol with the specified \a identifier to a QgsMarkerSymbol.
+     *
+     * This method will convert a MapInfo "MapInfo 3.0 Compatible" symbol with a specific \a identifier to a QgsMarkerSymbol.
+     *
+     * The caller takes ownership of the returned symbol.
+     */
+    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit ) SIP_FACTORY;
 
 };
 
