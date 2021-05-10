@@ -1,0 +1,24 @@
+{
+"type": "FeatureCollection",
+"name": "remote_lists",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 90, "Importance": 3.0, "Pilots": 2, "Cabin Crew": 0, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -117.23257, 37.21877 ] } },
+{ "type": "Feature", "properties": { "Class": "Biplane", "Heading": 0, "Importance": 1.0, "Pilots": 3, "Cabin Crew": 3, "Staff": 6, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -83.33333, 33.88889 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 85, "Importance": 3.0, "Pilots": 1, "Cabin Crew": 1, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -109.61353, 35.71946 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 95, "Importance": 3.0, "Pilots": 1, "Cabin Crew": 1, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -97.79848, 34.83609 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 90, "Importance": 3.0, "Pilots": 1, "Cabin Crew": 0, "Staff": 1, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -88.30228, 33.73188 ] } },
+{ "type": "Feature", "properties": { "Class": "Biplane", "Heading": 340, "Importance": 1.0, "Pilots": 3, "Cabin Crew": 3, "Staff": 6, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -85.65217, 38.92167 ] } },
+{ "type": "Feature", "properties": { "Class": "Biplane", "Heading": 300, "Importance": 1.0, "Pilots": 3, "Cabin Crew": 2, "Staff": 5, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -93.1608, 40.68841 ] } },
+{ "type": "Feature", "properties": { "Class": "Biplane", "Heading": 270, "Importance": 1.0, "Pilots": 3, "Cabin Crew": 4, "Staff": 7, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -102.43616, 41.24051 ] } },
+{ "type": "Feature", "properties": { "Class": "Biplane", "Heading": 240, "Importance": 1.0, "Pilots": 3, "Cabin Crew": 2, "Staff": 5, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -112.26363, 39.36335 ] } },
+{ "type": "Feature", "properties": { "Class": "B52", "Heading": 0, "Importance": 10.0, "Pilots": 2, "Cabin Crew": 1, "Staff": 3, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -103.31953, 22.80021 ] } },
+{ "type": "Feature", "properties": { "Class": "B52", "Heading": 12, "Importance": 10.0, "Pilots": 1, "Cabin Crew": 1, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -102.87785, 31.52346 ] } },
+{ "type": "Feature", "properties": { "Class": "B52", "Heading": 34, "Importance": 10.0, "Pilots": 2, "Cabin Crew": 1, "Staff": 3, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -99.56522, 40.57798 ] } },
+{ "type": "Feature", "properties": { "Class": "B52", "Heading": 80, "Importance": 10.0, "Pilots": 2, "Cabin Crew": 1, "Staff": 3, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -94.26501, 46.87198 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 160, "Importance": 4.0, "Pilots": 2, "Cabin Crew": 0, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -114.196, 42.39993 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 180, "Importance": 3.0, "Pilots": 1, "Cabin Crew": 0, "Staff": 1, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -113.25742, 35.9403 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 140, "Importance": 10.0, "Pilots": 1, "Cabin Crew": 1, "Staff": 2, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -110.05521, 31.52346 ] } },
+{ "type": "Feature", "properties": { "Class": "Jet", "Heading": 100, "Importance": 20.0, "Pilots": 3, "Cabin Crew": 0, "Staff": 3, "StaffNames": ["Bob", "Alice"], "StaffAges": [22, 33] }, "geometry": { "type": "Point", "coordinates": [ -104.97585, 28.65252 ] } }
+]
+}
