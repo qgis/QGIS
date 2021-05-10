@@ -24,10 +24,6 @@
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
-  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
-  mColorRampShader.setColorRampType(QLatin1String("DISCRETE"));
-  mColorRampShader.classifyColorRamp(52,-1, QgsRectangle(0,0,0,0), nullptr);
-  mColorRampShader.setClip(true);
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
@@ -193,8 +189,10 @@ void QgsPointCloudAttributeByRampRenderer::renderDisplaz(DrawCount mdrawlist, st
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-			Vertex = m_geom->getPointByIndex(*it);
-			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();
+      if ( !m_geom->getPointByIndex(*it, Vertex))
+      {
+        return;
+      }
 			if (is_Z)
 			{
 				attributeValue = Vertex.z;

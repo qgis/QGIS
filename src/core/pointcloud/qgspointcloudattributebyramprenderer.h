@@ -118,7 +118,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
 
     QString mAttribute = QStringLiteral( "Intensity" );
     QgsColorRampShader mColorRampShader;
-
+  
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERER_H

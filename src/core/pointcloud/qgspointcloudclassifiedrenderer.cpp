@@ -182,7 +182,7 @@ void QgsPointCloudClassifiedRenderer::renderDisplaz(DrawCount mdrawlist, std::sh
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-			Vertex = m_geom->getPointByIndex(*it);
+      if (!m_geom->getPointByIndex(*it, Vertex)) { return; };
 			attributeValue = classification[(*it)];
 			color = colors.value(attributeValue);
 			drawPoint(Vertex.x, Vertex.y, color, context);

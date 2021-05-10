@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1482</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -264,7 +264,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionAllEdits"/>
@@ -466,6 +466,20 @@
    <addaction name="settargetclass"/>
    <addaction name="setbeforclass"/>
    <addaction name="showshaderparameter"/>
+  </widget>
+  <widget class="QToolBar" name="m_DianLIToolBar">
+   <property name="windowTitle">
+    <string>dianliToolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="action_tiqudianlixian"/>
+   <addaction name="action_chongjiandianlixian"/>
+   <addaction name="action_xiubudianlixian"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -3645,6 +3659,33 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Classify By Pologon</string>
+   </property>
+  </action>
+  <action name="action_tiqudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/mapIcon.png</normaloff>:/images/cc/mapIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>电力线提取</string>
+   </property>
+  </action>
+  <action name="action_chongjiandianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</iconset>
+   </property>
+   <property name="text">
+    <string>电力线重建</string>
+   </property>
+  </action>
+  <action name="action_xiubudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>模型离散化</string>
    </property>
   </action>
  </widget>

@@ -209,7 +209,10 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-			Vertex = m_geom->getPointByIndex(*it);
+      if (!m_geom->getPointByIndex(*it, Vertex))
+      {
+        return;
+      } 
 			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();+
 			 red = color[(*it) * 3] / 100;
 			 green = color[(*it) * 3 + 1] / 100;
