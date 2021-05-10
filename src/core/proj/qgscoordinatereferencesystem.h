@@ -757,6 +757,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QgsDatumEnsemble datumEnsemble() const SIP_THROW( QgsNotSupportedException );
 
     /**
+     * Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
+     *
+     * \warning This method requires PROJ 8.1 or later
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on PROJ 8.0 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QString celestialBodyName() const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Sets the coordinate \a epoch, as a decimal year.
      *
      * In a dynamic CRS (see isDynamic()), coordinates of a point on the surface of the Earth may

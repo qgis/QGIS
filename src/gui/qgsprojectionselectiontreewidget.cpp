@@ -959,6 +959,19 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 
   try
   {
+    const QString celestialBody = currentCrs.celestialBodyName();
+    if ( !celestialBody.isEmpty() )
+    {
+      properties << tr( "Celestial body: %1" ).arg( celestialBody );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+
+  }
+
+  try
+  {
     const QgsDatumEnsemble ensemble = currentCrs.datumEnsemble();
     if ( ensemble.isValid() )
     {

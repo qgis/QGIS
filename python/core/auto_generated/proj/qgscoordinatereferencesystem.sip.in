@@ -820,6 +820,20 @@ be returned.
 .. versionadded:: 3.20
 %End
 
+    QString celestialBodyName() const throw( QgsNotSupportedException );
+%Docstring
+Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
+
+.. warning::
+
+   This method requires PROJ 8.1 or later
+
+:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 8.0 or earlier.
+
+
+.. versionadded:: 3.20
+%End
+
     void setCoordinateEpoch( double epoch );
 %Docstring
 Sets the coordinate ``epoch``, as a decimal year.

@@ -1210,6 +1210,21 @@ bool QgsCoordinateReferenceSystem::isDynamic() const
   return QgsProjUtils::isDynamic( pj );
 }
 
+QString QgsCoordinateReferenceSystem::celestialBodyName() const
+{
+  const PJ *pj = projObject();
+  if ( !pj )
+    return QString();
+
+#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
+  PJ_CONTEXT *context = QgsProjContext::get();
+
+  return QString( proj_get_celestial_body_name( context, pj ) );
+#else
+  throw QgsNotSupportedException( QStringLiteral( "Retrieving celestial body requires a QGIS build based on PROJ 8.1 or later" ) );
+#endif
+}
+
 void QgsCoordinateReferenceSystem::setCoordinateEpoch( double epoch )
 {
   if ( d->mCoordinateEpoch == epoch )
