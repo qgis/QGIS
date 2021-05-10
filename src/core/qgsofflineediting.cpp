@@ -1037,7 +1037,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
       QVariant attr = attrs.at( it );
       if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
       {
-        attr = attr.toString().split( ',' );
+        attr = convertStringToStringList( attr.toString() );
       }
       else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
       {
@@ -1056,7 +1056,12 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
 
 QStringList QgsOfflineEditing::convertStringToStringList( const QString &string )
 {
-  return string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
+  QStringList stringList = string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
+  for ( QString &string : stringList )
+  {
+    string.replace( QStringLiteral( "\\," ), QStringLiteral( "," ) );
+  }
+  return stringList;
 }
 
 QString QgsOfflineEditing::convertStringListToString( const QStringList &stringList )
@@ -1066,7 +1071,7 @@ QString QgsOfflineEditing::convertStringListToString( const QStringList &stringL
   {
     string.replace( QStringLiteral( "," ), QStringLiteral( "\\," ) );
   }
-  return modifiedStringList.join( QStringLiteral( " , " ) );
+  return modifiedStringList.join( QStringLiteral( "," ) );
 }
 
 QVariantList QgsOfflineEditing::convertStringToList( const QString &string, QVariant::Type type )
