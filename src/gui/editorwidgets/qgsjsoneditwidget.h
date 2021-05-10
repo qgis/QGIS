@@ -19,47 +19,62 @@
 #include "ui_qgsjsoneditwidget.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
-
-SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsJsonEditWidget
+ * \brief The QgsJsonEditWidget is a widget to display JSON data in a code highlighted text or tree form.
+ * \since QGIS 3.20
  */
-
 class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidget
 {
     Q_OBJECT
 
   public:
 
+    //! View mode, text or tree.
     enum class View : int
     {
-      Text = 0,
-      Tree = 1
+      Text = 0, //!< JSON data displayed as text.
+      Tree = 1 //!< JSON data displayed as tree. Tree view is disabled for invalid JSON data.
     };
 
+    //! Format mode in the text view
     enum class FormatJson : int
     {
-      Indented = 0,
-      Compact = 1,
-      Disabled = 2
+      Indented = 0, //!< JSON data formatted with regular indentation
+      Compact = 1, //!< JSON data formatted as a compact one line string
+      Disabled = 2 //!< JSON data is not formatted
     };
 
-    explicit QgsJsonEditWidget( QWidget *parent SIP_TRANSFERTHIS );
+    /**
+     * Constructor for QgsJsonEditWidget.
+     * \param parent parent widget
+     */
+    explicit QgsJsonEditWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsJsonEditWidget() override;
-
-
+    /**
+     * \brief Set the JSON text in the widget to \a jsonText.
+     */
     void setJsonText( const QString &jsonText );
 
+    /**
+     * \brief Returns the JSON text.
+     */
     QString jsonText() const;
 
-    bool validJson() const;
-
+    /**
+     * \brief Set the \a view mode.
+     * \see View
+     */
     void setView( View view ) const;
 
+    /**
+     * \brief Set the \a formatJson mode.
+     * \see FormatJson
+     */
     void setFormatJsonMode( FormatJson formatJson );
 
   private slots:
@@ -80,7 +95,7 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void refreshTreeView( const QJsonDocument &jsonDocument );
     void refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent );
 
-    void setClickableUrl( const QString &url );
+    QString mJsonText;
 
     FormatJson mFormatJsonMode = FormatJson::Indented;
 };

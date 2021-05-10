@@ -33,19 +33,16 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   connect( mCodeEditorJson, &QgsCodeEditorJson::textChanged, this, &QgsJsonEditWidget::codeEditorJsonTextChanged );
 }
 
-QgsJsonEditWidget::~QgsJsonEditWidget()
-{
-
-}
-
 void QgsJsonEditWidget::setJsonText( const QString &jsonText )
 {
-  const QJsonDocument jsonDocument = QJsonDocument::fromJson( jsonText.toUtf8() );
+  mJsonText = jsonText;
+
+  const QJsonDocument jsonDocument = QJsonDocument::fromJson( mJsonText.toUtf8() );
 
   mCodeEditorJson->blockSignals( true );
   if ( jsonDocument.isNull() )
   {
-    mCodeEditorJson->setText( jsonText );
+    mCodeEditorJson->setText( mJsonText );
   }
   else
   {
@@ -58,7 +55,7 @@ void QgsJsonEditWidget::setJsonText( const QString &jsonText )
         mCodeEditorJson->setText( jsonDocument.toJson( QJsonDocument::Compact ) );
         break;
       case FormatJson::Disabled:
-        mCodeEditorJson->setText( jsonText );
+        mCodeEditorJson->setText( mJsonText );
         break;
     }
   }
@@ -69,12 +66,7 @@ void QgsJsonEditWidget::setJsonText( const QString &jsonText )
 
 QString QgsJsonEditWidget::jsonText() const
 {
-  return mCodeEditorJson->text();
-}
-
-bool QgsJsonEditWidget::validJson() const
-{
-  return true;
+  return mJsonText;
 }
 
 void QgsJsonEditWidget::setView( QgsJsonEditWidget::View view ) const
@@ -121,7 +113,8 @@ void QgsJsonEditWidget::treeToolButtonClicked( bool checked )
 
 void QgsJsonEditWidget::codeEditorJsonTextChanged()
 {
-  const QJsonDocument jsonDocument = QJsonDocument::fromJson( mCodeEditorJson->text().toUtf8() );
+  mJsonText = mCodeEditorJson->text();
+  const QJsonDocument jsonDocument = QJsonDocument::fromJson( mJsonText.toUtf8() );
   refreshTreeView( jsonDocument );
 }
 
@@ -180,15 +173,8 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QString::number( jsonValue.toDouble() ) );
       break;
     case QJsonValue::String:
-    {
-      const QString jsonValueString = jsonValue.toString();
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValueString );
-
-      QUrl url( jsonValueString, QUrl::StrictMode );
-      if ( !url.scheme().isEmpty() )
-        setClickableUrl( jsonValueString );
-    }
-    break;
+      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValue.toString() );
+      break;
     case QJsonValue::Array:
     {
       const QJsonArray jsonArray = jsonValue.toArray();
@@ -217,11 +203,3 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       break;
   }
 }
-
-void QgsJsonEditWidget::setClickableUrl( const QString &url )
-{
-  mCodeEditorJson->addIndicator( mCodeEditorJson->text().indexOf( url ),
-                                 url.size(),
-                                 QUrl( url ) );
-}
-

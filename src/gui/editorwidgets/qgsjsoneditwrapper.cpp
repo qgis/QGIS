@@ -49,7 +49,7 @@ void QgsJsonEditWrapper::initWidget( QWidget *editor )
 
 bool QgsJsonEditWrapper::valid() const
 {
-  return ( mJsonEditWidget && mJsonEditWidget->validJson() );
+  return ( mJsonEditWidget );
 }
 
 void QgsJsonEditWrapper::showIndeterminateState()

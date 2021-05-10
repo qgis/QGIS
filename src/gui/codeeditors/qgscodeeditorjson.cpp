@@ -31,26 +31,6 @@ QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
   }
   setFoldingVisible( true );
   QgsCodeEditorJson::initializeLexer();
-
-  connect( this, &QsciScintillaBase::SCN_INDICATORRELEASE, this, &QgsCodeEditorJson::scintillaIndicatorRelease );
-  connect( this, &QsciScintillaBase::SCN_INDICATORCLICK, this, &QgsCodeEditorJson::scintillaIndicatorClick );
-}
-
-#include <QDebug>
-void QgsCodeEditorJson::addIndicator( int startPos, int size, const QVariant &value )
-{
-  qDebug() << "addIndicator at" << startPos << "size" << size;
-
-  indicatorDefine( SquiggleIndicator, 42 );
-
-  SendScintilla( SCI_SETINDICATORCURRENT, 42 );
-  SendScintilla( SCI_SETINDICATORVALUE, 43 );
-
-  SendScintilla( SCI_INDICATORFILLRANGE, startPos, size );
-
-  connect( this, &QsciScintillaBase::SCN_INDICATORRELEASE, this, &QgsCodeEditorJson::scintillaIndicatorRelease );
-  connect( this, &QsciScintillaBase::SCN_INDICATORCLICK, this, &QgsCodeEditorJson::scintillaIndicatorClick );
-
 }
 
 void QgsCodeEditorJson::initializeLexer()
@@ -83,20 +63,4 @@ void QgsCodeEditorJson::initializeLexer()
   setLexer( lexer );
   setLineNumbersVisible( true );
   runPostLexerConfigurationTasks();
-}
-
-void QgsCodeEditorJson::scintillaIndicatorRelease( int position, int modifiers )
-{
-  int value = SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT,
-                             position );
-
-  qDebug() << "scintillaIndicatorRelease value:" << value;
-}
-
-void QgsCodeEditorJson::scintillaIndicatorClick( int position, int modifiers )
-{
-  int value = SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT,
-                             position );
-
-  qDebug() << "scintillaIndicatorClick value:" << value;
 }
