@@ -98,6 +98,10 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         self.assertEqual(gany_defs.acronym, gany_id)
         self.assertEqual(gany_defs.description,
                          'Ganymede 2000 IAU IAG (ESRI:107916)')
+
+        if QgsProjUtils.projVersionMajor() > 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() >= 1):
+            self.assertEqual(gany_defs.celestialBodyName, 'Ganymede')
+
         self.assertTrue(gany_defs.parameters.valid)
         self.assertEqual(gany_defs.parameters.semiMajor,
                          2632345.0)

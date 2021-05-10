@@ -68,6 +68,15 @@ class CORE_EXPORT QgsEllipsoidUtils
       QString description;
       //! Ellipsoid parameters
       QgsEllipsoidUtils::EllipsoidParameters parameters;
+
+      /**
+       * Name of the associated celestial body (e.g. "Earth").
+       *
+       * \warning This method requires PROJ 8.1 or later. On earlier PROJ builds the string will always be empty.
+       *
+       * \since QGIS 3.20
+       */
+      QString celestialBodyName;
     };
 
     /**

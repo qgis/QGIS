@@ -40,6 +40,8 @@ Contains utility functions for working with ellipsoids and querying the ellipsoi
       QString acronym;
       QString description;
       QgsEllipsoidUtils::EllipsoidParameters parameters;
+
+      QString celestialBodyName;
     };
 
     static EllipsoidParameters ellipsoidParameters( const QString &ellipsoid );
