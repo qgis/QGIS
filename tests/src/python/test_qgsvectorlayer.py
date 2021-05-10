@@ -59,6 +59,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        QgsExpression,
+                       QgsLayerMetadata,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -3029,8 +3030,14 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
         layer.actions().addAction(action)
 
+        metadata = QgsLayerMetadata()
+        metadata.setFees('a handful of roos')
+        layer.setMetadata(metadata)
+
         # clone layer
         clone = layer.clone()
+
+        self.assertEqual(layer.metadata().fees(), 'a handful of roos')
 
         # generate xml from layer
         layer_doc = QDomDocument("doc")
