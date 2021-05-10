@@ -17,7 +17,7 @@
    <item row="1" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="mStackedWidgetPageText">
       <layout class="QGridLayout" name="gridLayout_2">
@@ -30,6 +30,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QTreeWidget" name="mTreeWidget">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string notr="true">Key</string>

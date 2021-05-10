@@ -35,7 +35,18 @@ QgsEditorConfigWidget *QgsJsonEditWidgetFactory::configWidget( QgsVectorLayer *v
 
 unsigned int QgsJsonEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
-  return 10;
+  const QVariant::Type type = vl->fields().field( fieldIdx ).type();
+
+  switch ( type )
+  {
+    case QVariant::Map:
+      return 15;
+      break;
+    case QVariant::List:
+      return 10;
+      break;
+    default:
+      return 5;
+      break;
+  }
 }

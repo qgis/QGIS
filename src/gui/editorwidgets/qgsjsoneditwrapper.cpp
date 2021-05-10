@@ -27,7 +27,7 @@ QVariant QgsJsonEditWrapper::value() const
   if ( !mJsonEditWidget )
     return QVariant();
 
-  return QVariant( mJsonEditWidget->jsonText() );
+  return mJsonEditWidget->property( RAW_VALUE_PROPERTY.toUtf8().data() );
 }
 
 QWidget *QgsJsonEditWrapper::createWidget( QWidget *parent )
@@ -58,8 +58,7 @@ void QgsJsonEditWrapper::showIndeterminateState()
     return;
 
   mJsonEditWidget->blockSignals( true );
-  //note - this is deliberately a zero length string, not a null string!
-  mJsonEditWidget->setJsonText( QStringLiteral( "" ) );
+  mJsonEditWidget->setJsonText( QStringLiteral( "<mixed values>" ) );
   mJsonEditWidget->blockSignals( false );
 }
 
@@ -74,7 +73,7 @@ void QgsJsonEditWrapper::updateValues( const QVariant &value, const QVariantList
   if ( !mJsonEditWidget )
     return;
 
-  //restore placeholder text, which may have been removed by showIndeterminateState()
+  mJsonEditWidget->setProperty( RAW_VALUE_PROPERTY.toUtf8().data(), value );
   mJsonEditWidget->setJsonText( field().displayString( value ) );
 }
 

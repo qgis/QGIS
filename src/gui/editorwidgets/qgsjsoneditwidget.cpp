@@ -25,6 +25,8 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
 
   setView( View::Text );
 
+  mCodeEditorJson->setReadOnly( true );
+
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
 
@@ -178,8 +180,15 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QString::number( jsonValue.toDouble() ) );
       break;
     case QJsonValue::String:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValue.toString() );
-      break;
+    {
+      const QString jsonValueString = jsonValue.toString();
+      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValueString );
+
+      QUrl url( jsonValueString, QUrl::StrictMode );
+      if ( !url.scheme().isEmpty() )
+        setClickableUrl( jsonValueString );
+    }
+    break;
     case QJsonValue::Array:
     {
       const QJsonArray jsonArray = jsonValue.toArray();
@@ -207,5 +216,12 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QStringLiteral( "Undefined value" ) );
       break;
   }
+}
+
+void QgsJsonEditWidget::setClickableUrl( const QString &url )
+{
+  mCodeEditorJson->addIndicator( mCodeEditorJson->text().indexOf( url ),
+                                 url.size(),
+                                 QUrl( url ) );
 }
 

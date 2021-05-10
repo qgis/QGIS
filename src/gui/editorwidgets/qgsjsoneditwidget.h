@@ -80,6 +80,8 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void refreshTreeView( const QJsonDocument &jsonDocument );
     void refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent );
 
+    void setClickableUrl( const QString &url );
+
     FormatJson mFormatJsonMode = FormatJson::Indented;
 };
 

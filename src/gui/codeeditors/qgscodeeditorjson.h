@@ -38,12 +38,15 @@ class GUI_EXPORT QgsCodeEditorJson : public QgsCodeEditor
     //! Constructor for QgsCodeEditorJson
     QgsCodeEditorJson( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    void addIndicator( int startPos, int size, const QVariant &value = QVariant() );
+
   protected:
     void initializeLexer() override;
 
   private slots:
 
-    void scintillaHotspotClick( int position, int modifiers );
+    void scintillaIndicatorRelease( int position, int modifiers );
+    void scintillaIndicatorClick( int position, int modifiers );
 };
 
 #endif // QGSCODEEDITORJSON_H
