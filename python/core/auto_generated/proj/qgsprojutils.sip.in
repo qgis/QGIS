@@ -29,6 +29,13 @@ Utility functions for working with the proj library.
 Returns the proj library major version number.
 %End
 
+    static int projVersionMinor();
+%Docstring
+Returns the proj library minor version number.
+
+.. versionadded:: 3.20
+%End
+
     static QString epsgRegistryVersion();
 %Docstring
 Returns the EPSG registry database version used by the proj library (e.g. "v9.8.6").

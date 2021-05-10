@@ -51,6 +51,13 @@ class CORE_EXPORT QgsProjUtils
     static int projVersionMajor();
 
     /**
+     * Returns the proj library minor version number.
+     *
+     * \since QGIS 3.20
+     */
+    static int projVersionMinor();
+
+    /**
      * Returns the EPSG registry database version used by the proj library (e.g. "v9.8.6").
      *
      * \see epsgRegistryDate()

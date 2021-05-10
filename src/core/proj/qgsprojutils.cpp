@@ -359,6 +359,11 @@ int QgsProjUtils::projVersionMajor()
   return PROJ_VERSION_MAJOR;
 }
 
+int QgsProjUtils::projVersionMinor()
+{
+  return PROJ_VERSION_MINOR;
+}
+
 QString QgsProjUtils::epsgRegistryVersion()
 {
   PJ_CONTEXT *context = QgsProjContext::get();
