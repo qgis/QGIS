@@ -164,16 +164,16 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
   switch ( jsonValue.type() )
   {
     case QJsonValue::Null:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QStringLiteral( "null" ) );
+      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QStringLiteral( "null" ) );
       break;
     case QJsonValue::Bool:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
       break;
     case QJsonValue::Double:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QString::number( jsonValue.toDouble() ) );
+      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QString::number( jsonValue.toDouble() ) );
       break;
     case QJsonValue::String:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, jsonValue.toString() );
+      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValue.toString() );
       break;
     case QJsonValue::Array:
     {
@@ -199,7 +199,7 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
     }
     break;
     case QJsonValue::Undefined:
-      treeWidgetItemParent->setText( ( int )TreeWidgetColumn::Value, QStringLiteral( "Undefined value" ) );
+      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QStringLiteral( "Undefined value" ) );
       break;
   }
 }

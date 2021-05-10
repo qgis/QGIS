@@ -19,8 +19,8 @@ QgsJsonEditConfigDlg::QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
-  connect( mDefaultViewComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( mFormatJsonComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mDefaultViewComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mFormatJsonComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 

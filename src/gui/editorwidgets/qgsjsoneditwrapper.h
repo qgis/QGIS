@@ -31,7 +31,7 @@ SIP_NO_FILE
  *
  * Options:
  * <ul>
- * <li><b>DefaultView</b> <i>Default view can be choosen between text or tree.</i></li>
+ * <li><b>DefaultView</b> <i>Default view, text or tree can be selected.</i></li>
  * </ul>
  * \note not available in Python bindings
  */
