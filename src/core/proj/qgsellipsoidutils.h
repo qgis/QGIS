@@ -21,6 +21,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include <QStringList>
 
+class QgsCelestialBody;
+
 /**
  * \class QgsEllipsoidUtils
  * \ingroup core
@@ -54,6 +56,7 @@ class CORE_EXPORT QgsEllipsoidUtils
 
       //! Associated coordinate reference system
       QgsCoordinateReferenceSystem crs;
+
     };
 
     /**
@@ -98,6 +101,19 @@ class CORE_EXPORT QgsEllipsoidUtils
      * \see definitions()
      */
     static QStringList acronyms();
+
+    /**
+     * Returns a list of all known celestial bodies.
+     *
+     * \note This method is an alias for QgsCoordinateReferenceSystemRegistry::celestialBodies().
+     *
+     * \warning This method requires PROJ 8.1 or later
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on PROJ 8.0 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    static QList< QgsCelestialBody > celestialBodies();
 
 #ifndef SIP_RUN
 

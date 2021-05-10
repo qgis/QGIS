@@ -21,6 +21,8 @@
 #include <QObject>
 #include "qgscoordinatereferencesystem.h"
 
+class QgsCelestialBody;
+
 /**
  * \class QgsCoordinateReferenceSystemRegistry
  * \ingroup core
@@ -41,6 +43,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * Constructor for QgsCoordinateReferenceSystemRegistry, with the specified \a parent object.
      */
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
+
+    ~QgsCoordinateReferenceSystemRegistry();
 
     /**
      * \brief Contains details of a custom (user defined) CRS.
@@ -119,6 +123,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     bool removeUserCrs( long id );
 
+    /**
+     * Returns a list of all known celestial bodies.
+     *
+     * \warning This method requires PROJ 8.1 or later
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on PROJ 8.0 or earlier.
+     *
+     * \since QGIS 3.20
+     */
+    QList< QgsCelestialBody > celestialBodies() const;
+
   signals:
 
     /**
@@ -162,6 +177,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
   private:
 
     bool insertProjection( const QString &projectionAcronym );
+
+    mutable QList< QgsCelestialBody > mCelestialBodies;
 
 };
 

@@ -112,6 +112,15 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         self.assertFalse(gany_defs.parameters.useCustomParameters)
         self.assertEqual(gany_defs.parameters.crs.authid(), '')
 
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() < 1), 'Not a proj >= 8.1 build')
+    def testCelestialBodies(self):
+        bodies = QgsEllipsoidUtils.celestialBodies()
+
+        self.assertTrue(bodies)
+
+        ganymede = [body for body in bodies if body.name() == 'Ganymede' and body.authority() == 'ESRI'][0]
+        self.assertTrue(ganymede.isValid())
+
     def testMappingEllipsoidsToProj6(self):
         old_qgis_ellipsoids = {'Adrastea2000': 'Adrastea2000', 'airy': 'Airy 1830', 'Amalthea2000': 'Amalthea2000',
                                'Ananke2000': 'Ananke2000',
