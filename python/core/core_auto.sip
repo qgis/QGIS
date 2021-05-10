@@ -428,6 +428,7 @@
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
 %Include auto_generated/pointcloud/qgspointcloudrgbrenderer.sip
+%Include auto_generated/proj/qgscelestialbody.sip
 %Include auto_generated/proj/qgscoordinatereferencesystem.sip
 %Include auto_generated/proj/qgscoordinatereferencesystemregistry.sip
 %Include auto_generated/proj/qgscoordinatetransform.sip

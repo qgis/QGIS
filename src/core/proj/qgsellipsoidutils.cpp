@@ -22,6 +22,8 @@
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
 #include "qgsruntimeprofiler.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscelestialbody.h"
 
 #include <proj.h>
 #include <mutex>
@@ -334,6 +336,11 @@ QStringList QgsEllipsoidUtils::acronyms()
     result << def.acronym;
   }
   return result;
+}
+
+QList<QgsCelestialBody> QgsEllipsoidUtils::celestialBodies()
+{
+  return QgsApplication::coordinateReferenceSystemRegistry()->celestialBodies();
 }
 
 void QgsEllipsoidUtils::invalidateCache( bool disableCache )

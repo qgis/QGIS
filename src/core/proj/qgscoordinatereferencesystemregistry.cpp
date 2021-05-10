@@ -22,14 +22,22 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssqliteutils.h"
+#include "qgscelestialbody.h"
+#include "qgsprojutils.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsexception.h"
 
 #include <sqlite3.h>
+#include <mutex>
+#include <proj.h>
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )
 {
 
 }
+
+QgsCoordinateReferenceSystemRegistry::~QgsCoordinateReferenceSystemRegistry() = default;
 
 QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> QgsCoordinateReferenceSystemRegistry::userCrsList() const
 {
@@ -334,4 +342,40 @@ bool QgsCoordinateReferenceSystemRegistry::insertProjection( const QString &proj
   }
 
   return true;
+}
+
+QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies() const
+{
+#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
+
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
+  {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Initialize celestial bodies" ) );
+
+    PJ_CONTEXT *context = QgsProjContext::get();
+
+    int resultCount = 0;
+    PROJ_CELESTIAL_BODY_INFO **list = proj_get_celestial_body_list_from_database( context, nullptr, &resultCount );
+    mCelestialBodies.reserve( resultCount );
+    for ( int i = 0; i < resultCount; i++ )
+    {
+      const PROJ_CELESTIAL_BODY_INFO *info = list[ i ];
+      if ( !info )
+        break;
+
+      QgsCelestialBody body;
+      body.mValid = true;
+      body.mAuthority = QString( info->auth_name );
+      body.mName = QString( info->name );
+
+      mCelestialBodies << body;
+    }
+    proj_celestial_body_list_destroy( list );
+  } );
+
+  return mCelestialBodies;
+#else
+  throw QgsNotSupportedException( QStringLiteral( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
+#endif
 }

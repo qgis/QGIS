@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCoordinateReferenceSystemRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -30,6 +31,8 @@ any user-defined CRSes.
 %Docstring
 Constructor for QgsCoordinateReferenceSystemRegistry, with the specified ``parent`` object.
 %End
+
+    ~QgsCoordinateReferenceSystemRegistry();
 
     class UserCrsDetails
 {
@@ -108,6 +111,20 @@ Removes the existing user CRS with matching ``id``.
 Returns ``False`` if the CRS could not be removed.
 
 .. seealso:: :py:func:`userCrsRemoved`
+%End
+
+    QList< QgsCelestialBody > celestialBodies() const;
+%Docstring
+Returns a list of all known celestial bodies.
+
+.. warning::
+
+   This method requires PROJ 8.1 or later
+
+:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 8.0 or earlier.
+
+
+.. versionadded:: 3.20
 %End
 
   signals:

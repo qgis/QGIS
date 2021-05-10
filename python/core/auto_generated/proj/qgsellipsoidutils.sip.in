@@ -8,6 +8,7 @@
 
 
 
+
 class QgsEllipsoidUtils
 {
 %Docstring(signature="appended")
@@ -33,6 +34,7 @@ Contains utility functions for working with ellipsoids and querying the ellipsoi
       double inverseFlattening;
 
       QgsCoordinateReferenceSystem crs;
+
     };
 
     struct EllipsoidDefinition
@@ -64,6 +66,25 @@ Returns a list of all known ellipsoid acronyms from the internal
 ellipsoid database.
 
 .. seealso:: :py:func:`definitions`
+%End
+
+    static QList< QgsCelestialBody > celestialBodies();
+%Docstring
+Returns a list of all known celestial bodies.
+
+.. note::
+
+   This method is an alias for :py:func:`QgsCoordinateReferenceSystemRegistry.celestialBodies()`.
+
+.. warning::
+
+   This method requires PROJ 8.1 or later
+
+
+:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 8.0 or earlier.
+
+
+.. versionadded:: 3.20
 %End
 
 };
