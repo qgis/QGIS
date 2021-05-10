@@ -24,7 +24,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsJsonEditWidgetFactory
+ * \brief Editor widget factory for JSON edit widgets.
  * \note not available in Python bindings
+ * \since QGIS 3.20
  */
 
 class GUI_EXPORT QgsJsonEditWidgetFactory : public QgsEditorWidgetFactory
@@ -37,6 +39,8 @@ class GUI_EXPORT QgsJsonEditWidgetFactory : public QgsEditorWidgetFactory
      */
     QgsJsonEditWidgetFactory( const QString &name );
 
+    // QgsEditorWidgetFactory interface
+  public:
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 

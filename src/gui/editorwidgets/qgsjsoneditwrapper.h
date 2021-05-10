@@ -34,6 +34,7 @@ SIP_NO_FILE
  * <li><b>DefaultView</b> <i>Default view, text or tree can be selected.</i></li>
  * </ul>
  * \note not available in Python bindings
+ * \since QGIS 3.20
  */
 
 class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper

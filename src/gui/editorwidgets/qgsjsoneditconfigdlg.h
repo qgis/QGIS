@@ -26,14 +26,22 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsJsonEditConfigDlg
- * \note not available in Python bindings
+ * \brief The QgsJsonEditConfigDlg is a configuration widget for JSON edit widget.
+ * \since QGIS 3.20
  */
-
 class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui::QgsJsonEditConfigDlg
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsJsonEditWidget.
+     *
+     * \param vl       The layer for which the configuration dialog will be created
+     * \param fieldIdx The index of the field on the layer for which this dialog will be created
+     * \param parent   A parent widget
+     */
     explicit QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
