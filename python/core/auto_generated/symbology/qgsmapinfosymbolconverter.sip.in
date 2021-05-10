@@ -70,6 +70,15 @@ Converts the MapInfo fill symbol with the specified ``identifier`` to a :py:clas
 The caller takes ownership of the returned symbol.
 %End
 
+    static QgsMarkerSymbol *convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit ) /Factory/;
+%Docstring
+Converts the MapInfo marker symbol with the specified ``identifier`` to a :py:class:`QgsMarkerSymbol`.
+
+This method will convert a MapInfo "MapInfo 3.0 Compatible" symbol with a specific ``identifier`` to a :py:class:`QgsMarkerSymbol`.
+
+The caller takes ownership of the returned symbol.
+%End
+
 };
 
 /************************************************************************

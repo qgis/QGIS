@@ -1386,3 +1386,172 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
   }
   return new QgsFillSymbol( layers );
 }
+
+QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &color, double size, QgsUnitTypes::RenderUnit sizeUnit )
+{
+  QgsSimpleMarkerSymbolLayerBase::Shape shape;
+  bool isFilled = true;
+  bool isNull = false;
+  bool hasShadow = false;
+  double angle = 0;
+  QgsMarkerSymbolLayer::VerticalAnchorPoint vertAlign = QgsMarkerSymbolLayer::VCenter;
+  QPointF shadowOffset;
+  switch ( identifier )
+  {
+    case 31:
+      // null symbol
+      isNull = true;
+      break;
+
+    case 32:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+      break;
+
+    case 33:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Diamond;
+      break;
+
+    case 34:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+      break;
+
+    case 35:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+      break;
+
+    case 36:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+      break;
+
+    case 37:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+      angle = 180;
+      break;
+
+    case 38:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+      isFilled = false;
+      break;
+
+    case 39:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Diamond;
+      isFilled = false;
+      break;
+
+    case 40:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+      isFilled = false;
+      break;
+
+    case 41:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+      isFilled = false;
+      break;
+
+    case 42:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+      isFilled = false;
+      break;
+
+    case 43:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+      angle = 180;
+      isFilled = false;
+      break;
+
+    case 44:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+      hasShadow = true;
+      shadowOffset = QPointF( size * 0.1, size * 0.1 );
+      break;
+
+    case 45:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+      shadowOffset = QPointF( size * 0.2, size * 0.1 );
+      hasShadow = true;
+      break;
+
+    case 46:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+      shadowOffset = QPointF( size * 0.1, size * 0.1 );
+      hasShadow = true;
+      break;
+
+    case 47:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Arrow;
+      size *= 0.66666;
+      angle = 45;
+      vertAlign = QgsMarkerSymbolLayer::Top;
+      break;
+
+    case 48:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Arrow;
+      size *= 0.66666;
+      angle = 225;
+      vertAlign = QgsMarkerSymbolLayer::Top;
+      break;
+
+    case 49:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Cross;
+      break;
+
+    case 50:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Cross2;
+      break;
+
+    case 51:
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Cross;
+      break;
+
+    default:
+      context.pushWarning( QObject::tr( "The symbol is not supported in QGIS" ) );
+      return nullptr;
+  }
+
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, size );
+  simpleMarker->setSizeUnit( sizeUnit );
+  simpleMarker->setAngle( angle );
+  simpleMarker->setVerticalAnchorPoint( vertAlign );
+
+  if ( isNull )
+  {
+    simpleMarker->setFillColor( QColor( 0, 0, 0, 0 ) );
+    simpleMarker->setStrokeStyle( Qt::NoPen );
+  }
+  if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
+  {
+    simpleMarker->setColor( color );
+    simpleMarker->setStrokeColor( QColor( 0, 0, 0 ) );
+    simpleMarker->setStrokeWidth( 0 );
+  }
+  else
+  {
+    simpleMarker->setFillColor( QColor( 0, 0, 0, 0 ) );
+    simpleMarker->setStrokeColor( color );
+  }
+
+  QgsSymbolLayerList symbols;
+  if ( hasShadow )
+  {
+    std::unique_ptr< QgsSimpleMarkerSymbolLayer > shadow( simpleMarker->clone() );
+    shadow->setColor( QColor( 0, 0, 0 ) );
+    shadow->setLocked( true );
+    shadow->setOffset( shadowOffset );
+    shadow->setOffsetUnit( sizeUnit );
+
+    symbols << shadow.release();
+    symbols << simpleMarker.release();
+  }
+  else
+  {
+    if ( identifier == 51 )
+    {
+      std::unique_ptr< QgsSimpleMarkerSymbolLayer > second( simpleMarker->clone() );
+      second->setShape( QgsSimpleMarkerSymbolLayer::Shape::Cross2 );
+      symbols << second.release();
+    }
+    symbols << simpleMarker.release();
+  }
+
+  return new QgsMarkerSymbol( symbols );
+}
