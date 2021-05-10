@@ -282,7 +282,7 @@ QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
 
 
 //
-// QgsSvgOrImageSourceLineEdit
+// QgsPictureSourceLineEditBase
 //
 
 ///@cond PRIVATE

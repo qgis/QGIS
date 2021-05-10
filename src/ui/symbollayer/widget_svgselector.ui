@@ -216,7 +216,7 @@
     </spacer>
    </item>
    <item row="3" column="0">
-    <widget class="QgsSvgOrImageSourceLineEdit" name="mSourceLineEdit" native="true">
+    <widget class="QgsPictureSourceLineEditBase" name="mSourceLineEdit" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -243,7 +243,7 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSvgOrImageSourceLineEdit</class>
+   <class>QgsPictureSourceLineEditBase</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
