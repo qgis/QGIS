@@ -105,7 +105,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Returns TRUE if the widget will show a warning to users when they select a CRS which has
      * low accuracy.
      *
-     * \see showAccuracyWarnings()
+     * \see setShowAccuracyWarnings()
      * \since QGIS 3.20
      */
     bool showAccuracyWarnings() const;
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \see showAccuracyWarnings()
      * \since QGIS 3.20
      */
-    void showAccuracyWarnings( bool show );
+    void setShowAccuracyWarnings( bool show );
 
   signals:
 

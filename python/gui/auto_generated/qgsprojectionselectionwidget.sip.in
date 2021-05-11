@@ -88,12 +88,12 @@ passed, the message will be a generic
 Returns ``True`` if the widget will show a warning to users when they select a CRS which has
 low accuracy.
 
-.. seealso:: :py:func:`showAccuracyWarnings`
+.. seealso:: :py:func:`setShowAccuracyWarnings`
 
 .. versionadded:: 3.20
 %End
 
-    void showAccuracyWarnings( bool show );
+    void setShowAccuracyWarnings( bool show );
 %Docstring
 Sets whether the widget will ``show`` warnings to users when they select a CRS which has
 low accuracy.
