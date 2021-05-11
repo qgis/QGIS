@@ -72,7 +72,7 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     void mNorthTypeComboBox_currentIndexChanged( int index );
 
     void sourceChanged( const QString &source );
-    void setSvgParameters( const QMap<QString, QgsProperty> &parameters );
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
     void modeChanged( bool checked );
   private:
     QPointer< QgsLayoutItemPicture > mPicture;

@@ -18,12 +18,14 @@
 #include "qgsmessagebar.h"
 #include "qgsfilterlineedit.h"
 #include "qgspropertyoverridebutton.h"
-#include <QMenu>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QHBoxLayout>
+
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QImageReader>
 #include <QInputDialog>
+#include <QLineEdit>
+#include <QMenu>
+#include <QToolButton>
 #include <QUrl>
 
 //
@@ -294,7 +296,13 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
     case Svg:
       return tr( "SVG files" ) + " (*.svg)";
     case Image:
-      return tr( "All files" ) + " (*.*)";
+      QStringList formatsFilter;
+      const QByteArrayList supportedFormats = QImageReader::supportedImageFormats();
+      for ( const auto &format : supportedFormats )
+      {
+        formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+      }
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QStringLiteral( " " ) ), tr( "All files" ) );
   }
 }
 

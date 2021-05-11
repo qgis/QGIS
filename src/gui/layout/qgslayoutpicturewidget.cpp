@@ -72,7 +72,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
   connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged );
   connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsLayoutPictureWidget::sourceChanged );
-  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgParameters );
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgDynamicParameters );
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
 
@@ -358,7 +358,7 @@ void QgsLayoutPictureWidget::updateSvgParamGui( bool resetValues )
 
   QString picturePath = mPicture->picturePath();
 
-  //activate gui for svg parameters only if supported by the svg file/ do nothing
+  //activate gui for svg parameters only if supported by the svg file
   bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;
   QColor defaultFill, defaultStroke;
   double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
@@ -450,7 +450,7 @@ void QgsLayoutPictureWidget::modeChanged( bool checked )
   bool svg = mRadioSVG->isChecked();
   const QgsLayoutItemPicture::Format newFormat = svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster;
 
-  mSvgSelectorWidget->setAllowAnyImage( svg );
+  mSvgSelectorWidget->setAllowAnyImage( !svg );
   mSvgSelectorWidget->setBrowserVisible( svg );
   mSvgSelectorWidget->setAllowParameters( svg );
   mSVGParamsGroupBox->setVisible( svg );
@@ -475,7 +475,7 @@ void QgsLayoutPictureWidget::sourceChanged( const QString &source )
   }
 }
 
-void QgsLayoutPictureWidget::setSvgParameters( const QMap<QString, QgsProperty> &parameters )
+void QgsLayoutPictureWidget::setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters )
 {
   mPicture->beginCommand( tr( "Set SVG parameters" ) );
   mPicture->setSvgDynamicParameters( parameters );
