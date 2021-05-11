@@ -691,7 +691,6 @@ QgsVectorLabelLegendNode
     virtual QVariant data( int role ) const;
 
 %Docstring
-
 data Returns data associated with the item
 
 :param role: the data role

@@ -410,7 +410,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
       QStringList pList = labeling->subProviders();
       for ( int i = 0; i < pList.size(); ++i )
       {
-        QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
+        const QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
         QString description;
         const QgsRuleBasedLabeling *ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
         if ( ruleBasedLabeling && ruleBasedLabeling->rootRule() )

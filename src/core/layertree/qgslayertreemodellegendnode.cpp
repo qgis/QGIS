@@ -1485,8 +1485,8 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
 
   QgsTextRenderer::drawText( textPos, 0.0, QgsTextRenderer::AlignLeft, textLines, ctx, textFormat );
 
-  double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
-  double symbolHeight = std::max( textHeight, settings.symbolSize().height() );
+  const double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
+  const double symbolHeight = std::max( textHeight, settings.symbolSize().height() );
   return QSizeF( symbolWidth, symbolHeight );
 }
 
@@ -1494,10 +1494,10 @@ QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSetting
 {
   Q_UNUSED( settings );
 
-  double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
+  const double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
 
-  QStringList textLines( "Aa" );
-  QgsTextFormat textFormat = mLabelSettings.format();
+  const QStringList textLines( "Aa" );
+  const QgsTextFormat textFormat = mLabelSettings.format();
   QgsRenderContext ctx( context );
   ctx.setScaleFactor( mmToPixel );
 
