@@ -94,7 +94,7 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   delete model;
 
   // Test widget closed while fetching
-  auto d = qgis::make_unique<QDialog>( );
+  auto d = std::make_unique<QDialog>( );
   QVBoxLayout *l = new QVBoxLayout();
   QgsQueryResultWidget *w = new QgsQueryResultWidget( d.get(), makeConn() );
   w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
@@ -105,12 +105,14 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   QTimer::singleShot( 1, d.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
+  // This prevents a crash in Qsci internal thread
+  std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
 }
 
 
 void TestQgsQueryResultWidget::testWidget()
 {
-  auto d = qgis::make_unique<QDialog>( );
+  auto d = std::make_unique<QDialog>( );
   QVBoxLayout *l = new QVBoxLayout();
   QgsQueryResultWidget *w = new QgsQueryResultWidget( d.get(), makeConn() );
   w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
@@ -135,7 +137,7 @@ void TestQgsQueryResultWidget::testWidgetInvalid()
 
 void TestQgsQueryResultWidget::testCodeEditorApis()
 {
-  auto w = qgis::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
+  auto w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
   bool exited = false;
   connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
@@ -145,7 +147,7 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
 
   // Test feedback interrupt
-  w = qgis::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
+  w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
   QTimer::singleShot( 0, w.get(), [ & ]
   {
     QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );

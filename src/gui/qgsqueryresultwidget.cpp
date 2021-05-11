@@ -71,6 +71,7 @@ QgsQueryResultWidget::~QgsQueryResultWidget()
     mApiFetcher->stopFetching();
     mWorkerThread.quit();
     mWorkerThread.wait();
+    mWorkerThread.deleteLater();
   }
   cancelRunningQuery();
 }
