@@ -1576,7 +1576,17 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
           case 10:
             shape = QgsSimpleMarkerSymbolLayer::Shape::Line;
             break;
+
+          default:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
+            break;
         }
+      }
+      else
+      {
+        isFilled = false;
+        shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
       }
 
       std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );

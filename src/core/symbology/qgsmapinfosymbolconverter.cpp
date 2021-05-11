@@ -1400,6 +1400,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   {
     case 31:
       // null symbol
+      shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
       isNull = true;
       break;
 
@@ -1518,7 +1519,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
     simpleMarker->setFillColor( QColor( 0, 0, 0, 0 ) );
     simpleMarker->setStrokeStyle( Qt::NoPen );
   }
-  if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
+  else if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
   {
     simpleMarker->setColor( color );
     simpleMarker->setStrokeColor( QColor( 0, 0, 0 ) );
