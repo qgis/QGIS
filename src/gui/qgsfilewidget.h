@@ -20,14 +20,20 @@
 class QLabel;
 class QToolButton;
 class QVariant;
-class QgsFileDropEdit;
 class QHBoxLayout;
+class QProgressBar;
+class QgsExternalStorage;
+class QgsFileDropEdit;
+class QgsMessageBar;
+
 #include <QWidget>
 #include <QFileDialog>
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshighlightablelineedit.h"
+#include "qgsexpressioncontext.h"
+
 
 /**
  * \ingroup gui
@@ -46,6 +52,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 #endif
 
     Q_OBJECT
+    Q_PROPERTY( QString storageType READ storageType WRITE setStorageType )
     Q_PROPERTY( bool fileWidgetButtonVisible READ fileWidgetButtonVisible WRITE setFileWidgetButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
     Q_PROPERTY( bool fullUrl READ fullUrl WRITE setFullUrl )
@@ -55,6 +62,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
     Q_PROPERTY( QFileDialog::Options options READ options WRITE setOptions )
+    Q_PROPERTY( QString auth READ storageAuthConfigId WRITE setStorageAuthConfigId )
+    Q_PROPERTY( QString storageUrlExpression READ storageUrlExpressionString WRITE setStorageUrlExpression )
 
   public:
 
@@ -115,6 +124,86 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * Sets whether the widget should be read only.
      */
     void setReadOnly( bool readOnly );
+
+    /**
+     * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
+     * null QString if there is no storage defined.
+     * If no external storage has been defined, QgsFileWidget will only update file path according to
+     * selected files.
+     * \see storageType
+     * \since QGIS 3.22
+     */
+    void setStorageType( const QString &storageType );
+
+    /**
+     * Get storage type unique identifier as defined in QgsExternalStorageRegistry.
+     * Returns null QString if there is no storage defined, only file selection.
+     * \see setStorageType
+     * \since QGIS 3.22
+     */
+    QString storageType() const;
+
+    /**
+     * Returns external storage used to store selected file names, nullptr if none have been defined.
+     * If no external storage has been defined, QgsFileWidget will only update file path according to
+     * selected files.
+     * \see setStorageType
+     * \since QGIS 3.22
+     */
+    QgsExternalStorage *externalStorage() const;
+
+    /**
+     * Sets the authentication configuration ID to be used for the current external storage (if
+     * defined)
+     * \since QGIS 3.22
+     */
+    void setStorageAuthConfigId( const QString &authCfg );
+
+    /**
+     * Returns the authentication configuration ID used for the current external storage (if defined)
+     * \since QGIS 3.22
+     */
+    const QString &storageAuthConfigId() const;
+
+    /**
+     * Set \a urlExpression expression, which once evaluated, provide the URL used to store selected
+     * documents. This is used only if an external storage has been defined
+     * \see setStorageType(), externalStorage()
+     * \since 3.22
+     */
+    void setStorageUrlExpression( const QString &urlExpression );
+
+    /**
+     * Returns the original, unmodified expression string, which once evaluated, provide the
+     * URL used to store selected documents. This is used only if an external storage has been defined.
+     * Returns null if no expression has been set.
+     * \see setStorageUrlExpression()
+     * \since 3.22
+     */
+    QString storageUrlExpressionString() const;
+
+    /**
+     * Returns expression, which once evaluated, provide the URL used to store selected
+     * documents. This is used only if an external storage has been defined.
+     * Returns null if no expression has been set.
+     * \see setStorageUrlExpression()
+     * \since 3.22
+     */
+    QgsExpression *storageUrlExpression() const;
+
+    /**
+     * Set expression context to be used when for storage URL expression evaluation
+     * \see setStorageUrlExpression
+     * \since 3.22
+     */
+    void setExpressionContext( const QgsExpressionContext &context );
+
+    /**
+     * Returns expression context used for storage url expression evaluation
+     * \see storageUrlExpression
+     * \since 3.22
+     */
+    const QgsExpressionContext &expressionContext() const;
 
     /**
      * Returns the open file dialog title.
@@ -285,6 +374,24 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     QgsFilterLineEdit *lineEdit();
 
+    /**
+     * Set \a messageBar to report messages
+     * \since QGIS 3.22
+     */
+    void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * Returns message bar used to report messages
+     * \since QGIS 3.22
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Creates and Returns an expression context scope specific to QgsFileWidget
+     * It defines the variable containing the user selected file name
+     */
+    static QgsExpressionContextScope *createFileWidgetScope();
+
   signals:
 
     /**
@@ -300,12 +407,31 @@ class GUI_EXPORT QgsFileWidget : public QWidget
   private:
     void updateLayout();
 
+    // called whenever user select file names from dialog
+    void setSelectedFileNames( QStringList fileNames );
+
+    // add file widget specific scope to expression context
+    void addFileWidgetScope();
+
+    // stores \a fileNames files using current external storage.
+    // This is a recursive method, \a storedUrls contains urls for previously stored
+    // fileNames. When all files have been successfully stored, current mFilePath
+    // is updated
+    void storeExternalFiles( QStringList fileNames, QStringList storedUrls = QStringList() );
+
+    // Returns true if \a path is a multifiles
+    static bool isMultiFiles( const QString &path );
+
+    // Update filePath according to a file path list
+    void setFilePaths( const QStringList &filePaths );
+
     QString mFilePath;
     bool mButtonVisible = true;
     bool mUseLink = false;
     bool mFullUrl = false;
     bool mReadOnly = false;
     bool mIsLinkEdited = false;
+    bool mStoreInProgress = false;
     QString mDialogTitle;
     QString mFilter;
     QString mSelectedFilter;
@@ -314,12 +440,21 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     StorageMode mStorageMode = GetFile;
     RelativeStorage mRelativeStorage = Absolute;
     QFileDialog::Options mOptions = QFileDialog::Options();
+    QgsExternalStorage *mExternalStorage = nullptr;
+    QString mAuthCfg;
+    std::unique_ptr< QgsExpression > mStorageUrlExpression;
+    QgsExpressionContext mExpressionContext;
+    QgsExpressionContextScope *mScope = nullptr;
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
     QToolButton *mLinkEditButton = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
     QHBoxLayout *mLayout = nullptr;
+    QLabel *mProgressLabel = nullptr;
+    QProgressBar *mProgressBar = nullptr;
+    QToolButton *mCancelButton = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     //! returns a HTML code with a link to the given file path
     QString toUrl( const QString &path ) const;
@@ -328,6 +463,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString relativePath( const QString &filePath, bool removeRelative ) const;
 
     friend class TestQgsFileWidget;
+    friend class TestQgsExternalResourceWidgetWrapper;
 };
 
 ///@cond PRIVATE

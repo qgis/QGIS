@@ -19,6 +19,7 @@
 
 class QWebView;
 class QgsPixmapLabel;
+class QgsMessageBar;
 
 #include <QWidget>
 #include <QVariant>
@@ -143,6 +144,47 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDefaultRoot( const QString &defaultRoot );
 
+    /**
+     * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
+     * null QString if there is no storage defined, only file selection.
+     * \see storageType
+     * \since QGIS 3.22
+     */
+    void setStorageType( const QString &storageType );
+
+    /**
+     * Get storage type unique identifier as defined in QgsExternalStorageRegistry.
+     * Returns null QString if there is no storage defined, only file selection.
+     * \see setStorageType
+     * \since QGIS 3.22
+     */
+    QString storageType() const;
+
+    /**
+     * Sets the authentication configuration ID to be used for the current external storage (if
+     * defined)
+     * \since QGIS 3.22
+     */
+    void setStorageAuthConfigId( const QString &authCfg );
+
+    /**
+     * Returns the authentication configuration ID used for the current external storage (if defined)
+     * \since QGIS 3.22
+     */
+    const QString &storageAuthConfigId() const;
+
+    /**
+     * Set \a messageBar to report messages
+     * \since 3.22
+     */
+    void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * Returns message bar used to report messages
+     * \since 3.22
+     */
+    QgsMessageBar *messageBar() const;
+
   signals:
     //! emitteed as soon as the current document changes
     void valueChanged( const QString & );
@@ -152,6 +194,16 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
   private:
     void updateDocumentViewer();
+
+    /**
+     * update document content with \a filePath
+     */
+    void updateDocumentContent( const QString &filePath );
+
+    /**
+     * Clear content from widget
+     */
+    void clearContent();
 
     QString resolvePath( const QString &path );
 
@@ -170,7 +222,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! This webview is used as a container to display the picture
     QWebView *mWebView = nullptr;
 #endif
+    QLabel *mLoadingLabel = nullptr;
+    QLabel *mErrorLabel = nullptr;
+    QMovie *mLoadingMovie = nullptr;
 
+    friend class TestQgsExternalResourceWidgetWrapper;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGET_H

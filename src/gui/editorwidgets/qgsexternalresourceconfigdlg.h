@@ -38,6 +38,8 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     //! Constructor for QgsExternalResourceConfigDlg
     explicit QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
+    QgsExpressionContext createExpressionContext() const override;
+
     // QgsEditorConfigWidget interface
   public:
     QVariantMap config() override;
@@ -49,6 +51,10 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
+
+    //! change storage type according to index from storage type combo box
+    void changeStorageType( int index );
+
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

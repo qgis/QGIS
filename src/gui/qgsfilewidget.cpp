@@ -23,6 +23,8 @@
 #include <QUrl>
 #include <QDropEvent>
 #include <QRegularExpression>
+#include <QProgressBar>
+#include <QDirIterator>
 
 #include "qgssettings.h"
 #include "qgsfilterlineedit.h"
@@ -32,6 +34,11 @@
 #include "qgsapplication.h"
 #include "qgsfileutils.h"
 #include "qgsmimedatautils.h"
+#include "qgsexternalstorage.h"
+#include "qgsexternalstorageregistry.h"
+#include "qgsmessagebar.h"
+
+#define FILEPATH_VARIABLE "selected_file_path"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
@@ -52,10 +59,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLinkLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
   mLinkLabel->setTextFormat( Qt::RichText );
   mLinkLabel->hide(); // do not show by default
-  mLinkEditButton = new QToolButton( this );
-  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
-  mLinkEditButton->hide(); // do not show by default
+  mLayout->addWidget( mLinkLabel );
 
   // otherwise, use the traditional QLineEdit subclass
   mLineEdit = new QgsFileDropEdit( this );
@@ -64,11 +68,30 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   mLayout->addWidget( mLineEdit );
 
+  mLinkEditButton = new QToolButton( this );
+  mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+  mLayout->addWidget( mLinkEditButton );
+  connect( mLinkEditButton, &QToolButton::clicked, this, &QgsFileWidget::editLink );
+  mLinkEditButton->hide(); // do not show by default
+
   mFileWidgetButton = new QToolButton( this );
   mFileWidgetButton->setText( QChar( 0x2026 ) );
   mFileWidgetButton->setToolTip( tr( "Browse" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   mLayout->addWidget( mFileWidgetButton );
+
+  mProgressLabel = new QLabel( this );
+  mLayout->addWidget( mProgressLabel );
+  mProgressLabel->hide();
+
+  mProgressBar = new QProgressBar( this );
+  mLayout->addWidget( mProgressBar );
+  mProgressBar->hide();
+
+  mCancelButton = new QToolButton( this );
+  mLayout->addWidget( mCancelButton );
+  mCancelButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) ) );
+  mCancelButton->hide();
 
   setLayout( mLayout );
 }
@@ -115,6 +138,89 @@ void QgsFileWidget::setReadOnly( bool readOnly )
   updateLayout();
 }
 
+void QgsFileWidget::setStorageType( const QString &storageType )
+{
+  if ( storageType.isEmpty() )
+    mExternalStorage = nullptr;
+
+  else
+  {
+    mExternalStorage = QgsApplication::externalStorageRegistry()->externalStorageFromType( storageType );
+    if ( !mExternalStorage )
+    {
+      QgsDebugMsg( QStringLiteral( "Invalid storage type: %1" ).arg( storageType ) );
+      return;
+    }
+    addFileWidgetScope();
+  }
+}
+
+QString QgsFileWidget::storageType() const
+{
+  return mExternalStorage ? mExternalStorage->type() : QString();
+}
+
+QgsExternalStorage *QgsFileWidget::externalStorage() const
+{
+  return mExternalStorage;
+}
+
+void QgsFileWidget::setStorageAuthConfigId( const QString &authCfg )
+{
+  mAuthCfg = authCfg;
+}
+
+const QString &QgsFileWidget::storageAuthConfigId() const
+{
+  return mAuthCfg;
+}
+
+void QgsFileWidget::setStorageUrlExpression( const QString &urlExpression )
+{
+  mStorageUrlExpression.reset( new QgsExpression( urlExpression ) );
+}
+
+QgsExpression *QgsFileWidget::storageUrlExpression() const
+{
+  return mStorageUrlExpression.get();
+}
+
+QString QgsFileWidget::storageUrlExpressionString() const
+{
+  return mStorageUrlExpression ? mStorageUrlExpression->expression() : QString();
+}
+
+
+void QgsFileWidget::setExpressionContext( const QgsExpressionContext &context )
+{
+  mScope = nullptr; // deleted by old context when we override it with the new one
+  mExpressionContext = context;
+  addFileWidgetScope();
+}
+
+void QgsFileWidget::addFileWidgetScope()
+{
+  if ( !mExternalStorage || mScope )
+    return;
+
+  mScope = createFileWidgetScope();
+  mExpressionContext << mScope;
+}
+
+QgsExpressionContextScope *QgsFileWidget::createFileWidgetScope()
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "FileWidget" ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable(
+                        QStringLiteral( FILEPATH_VARIABLE ),
+                        QString(), true, false, tr( "User selected absolute filepath" ) ) );
+  return scope;
+}
+
+const QgsExpressionContext &QgsFileWidget::expressionContext() const
+{
+  return mExpressionContext;
+}
+
 QString QgsFileWidget::dialogTitle() const
 {
   return mDialogTitle;
@@ -157,12 +263,17 @@ void QgsFileWidget::setFileWidgetButtonVisible( bool visible )
   mFileWidgetButton->setVisible( visible );
 }
 
+bool QgsFileWidget::isMultiFiles( const QString &path )
+{
+  return path.contains( QStringLiteral( "\" \"" ) );
+}
+
 void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
   // Show tooltip if multiple files are selected
-  if ( path.contains( QStringLiteral( "\" \"" ) ) )
+  if ( isMultiFiles( path ) )
   {
     mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QLatin1String( "</li><li>" ) ) ) );
   }
@@ -242,41 +353,36 @@ QgsFilterLineEdit *QgsFileWidget::lineEdit()
   return mLineEdit;
 }
 
+void QgsFileWidget::setMessageBar( QgsMessageBar *messageBar )
+{
+  mMessageBar = messageBar;
+}
+
+QgsMessageBar *QgsFileWidget::messageBar() const
+{
+  return mMessageBar;
+}
+
 void QgsFileWidget::updateLayout()
 {
-  mLayout->removeWidget( mLineEdit );
-  mLayout->removeWidget( mLinkLabel );
-  mLayout->removeWidget( mLinkEditButton );
+  mProgressLabel->setVisible( mStoreInProgress );
+  mProgressBar->setVisible( mStoreInProgress );
+  mCancelButton->setVisible( mStoreInProgress );
 
-  mLinkEditButton->setVisible( mUseLink && !mReadOnly );
+  const bool linkVisible = mUseLink && !mIsLinkEdited;
 
+  mLineEdit->setVisible( !mStoreInProgress && !linkVisible );
+  mLinkLabel->setVisible( !mStoreInProgress && linkVisible );
+  mLinkEditButton->setVisible( !mStoreInProgress && mUseLink && !mReadOnly );
+
+  mFileWidgetButton->setVisible( !mStoreInProgress );
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  if ( mUseLink && !mIsLinkEdited )
-  {
-    mLayout->insertWidget( 0, mLinkLabel );
-    mLineEdit->setVisible( false );
-    mLinkLabel->setVisible( true );
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ?
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) :
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
 
-    if ( !mReadOnly )
-    {
-      mLayout->insertWidget( 1, mLinkEditButton );
-      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-    }
-  }
-  else
-  {
-    mLayout->insertWidget( 0, mLineEdit );
-    mLineEdit->setVisible( true );
-    mLinkLabel->setVisible( false );
-
-    if ( mIsLinkEdited )
-    {
-      mLayout->insertWidget( 1, mLinkEditButton );
-      mLinkEditButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
-    }
-  }
 }
 
 void QgsFileWidget::openFileDialog()
@@ -354,15 +460,20 @@ void QgsFileWidget::openFileDialog()
     return;
 
   if ( mStorageMode != GetMultipleFiles )
+    fileNames << fileName;
+
+  setSelectedFileNames( fileNames );
+}
+
+void QgsFileWidget::setSelectedFileNames( QStringList fileNames )
+{
+  Q_ASSERT( fileNames.count() );
+
+  QgsSettings settings;
+
+  for ( int i = 0; i < fileNames.length(); i++ )
   {
-    fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
-  }
-  else
-  {
-    for ( int i = 0; i < fileNames.length(); i++ )
-    {
-      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
-    }
+    fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
   }
 
   // Store the last used path:
@@ -370,39 +481,126 @@ void QgsFileWidget::openFileDialog()
   {
     case GetFile:
     case SaveFile:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    case GetMultipleFiles:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first() ).absolutePath() );
       break;
     case GetDirectory:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
-      break;
-    case GetMultipleFiles:
-      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first( ) ).absolutePath() );
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileNames.first() );
       break;
   }
 
   // Handle relative Path storage
-  if ( mStorageMode != GetMultipleFiles )
+  for ( int i = 0; i < fileNames.length(); i++ )
   {
-    fileName = relativePath( fileName, true );
-    setFilePath( fileName );
+    fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
+  }
+
+  // store files first, update filePath later
+  if ( mExternalStorage )
+  {
+    if ( !mStorageUrlExpression->prepare( &mExpressionContext ) )
+    {
+      if ( messageBar() )
+      {
+        messageBar()->pushWarning( tr( "Storing External resource" ),
+                                   tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      }
+
+      QgsDebugMsg( tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      return;
+    }
+
+    storeExternalFiles( fileNames );
   }
   else
   {
-    for ( int i = 0; i < fileNames.length(); i++ )
-    {
-      fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
-    }
-    if ( fileNames.length() > 1 )
-    {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QLatin1String( "\" \"" ) ) ) );
-    }
-    else
-    {
-      setFilePath( fileNames.first( ) );
-    }
+    setFilePaths( fileNames );
   }
 }
 
+void QgsFileWidget::storeExternalFiles( QStringList fileNames, QStringList storedUrls )
+{
+  const QString filePath = fileNames.takeFirst();
+
+  mProgressLabel->setText( tr( "Storing file %1 ..." ).arg( QFileInfo( filePath ).baseName() ) );
+  mStoreInProgress = true;
+  updateLayout();
+
+  Q_ASSERT( mScope );
+  mScope->setVariable( QStringLiteral( FILEPATH_VARIABLE ), filePath );
+
+  QVariant url = mStorageUrlExpression->evaluate( &mExpressionContext );
+  if ( !url.isValid() )
+  {
+    if ( messageBar() )
+    {
+      messageBar()->pushWarning( tr( "Storing External resource" ),
+                                 tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+    }
+
+    mStoreInProgress = false;
+    updateLayout();
+
+    return;
+  }
+
+  QgsExternalStorageStoredContent *storedContent = mExternalStorage->store( filePath, url.toString(), mAuthCfg );
+
+  connect( storedContent, &QgsExternalStorageStoredContent::progressChanged, mProgressBar, &QProgressBar::setValue );
+  connect( mCancelButton, &QToolButton::clicked, storedContent, &QgsExternalStorageStoredContent::cancel );
+
+  auto onStoreFinished = [ = ]
+  {
+    mStoreInProgress = false;
+    updateLayout();
+    storedContent->deleteLater();
+
+    if ( storedContent->status() == Qgis::ContentStatus::Failed && messageBar() )
+    {
+      messageBar()->pushWarning( tr( "Storing External resource" ),
+                                 tr( "Storing file '%1' to url '%2' has failed : %3" ).arg( filePath, url.toString(), storedContent->errorString() ) );
+    }
+
+    if ( storedContent->status() != Qgis::ContentStatus::Finished )
+      return;
+
+    QStringList newStoredUrls = storedUrls;
+    newStoredUrls << storedContent->url();
+
+    // every thing has been stored, we update filepath
+    if ( fileNames.isEmpty() )
+    {
+      setFilePaths( newStoredUrls );
+    }
+    else
+      storeExternalFiles( fileNames, newStoredUrls );
+  };
+
+  connect( storedContent, &QgsExternalStorageStoredContent::stored, onStoreFinished );
+  connect( storedContent, &QgsExternalStorageStoredContent::canceled, onStoreFinished );
+  connect( storedContent, &QgsExternalStorageStoredContent::errorOccurred, onStoreFinished );
+
+  storedContent->store();
+}
+
+void QgsFileWidget::setFilePaths( const QStringList &filePaths )
+{
+  if ( mStorageMode != GetMultipleFiles )
+  {
+    setFilePath( filePaths.first() );
+  }
+  else
+  {
+    if ( filePaths.length() > 1 )
+    {
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( filePaths.join( QLatin1String( "\" \"" ) ) ) );
+    }
+    else
+    {
+      setFilePath( filePaths.first( ) );
+    }
+  }
+}
 
 QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelative ) const
 {
@@ -440,6 +638,11 @@ QString QgsFileWidget::toUrl( const QString &path ) const
     return QgsApplication::nullRepresentation();
   }
 
+  if ( isMultiFiles( path ) )
+  {
+    return QStringLiteral( "<a>%1</a>" ).arg( path );
+  }
+
   QString urlStr = relativePath( path, false );
   QUrl url = QUrl::fromUserInput( urlStr );
   if ( !url.isValid() || !url.isLocalFile() )
@@ -461,7 +664,6 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
   return rep;
 }
-
 
 
 ///@cond PRIVATE
