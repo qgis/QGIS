@@ -45,6 +45,7 @@
 #include "qgspalettedrasterrenderer.h"
 #include "diagram/qgspiediagram.h"
 #include "qgspropertytransformer.h"
+#include "qgsrulebasedlabeling.h"
 
 static QString _fileNameForTest( const QString &testName )
 {
@@ -204,6 +205,7 @@ class TestQgsLegendRenderer : public QObject
     void testBasicJson();
     void testOpacityJson();
     void testBigMarkerJson();
+    void testLabelLegendJson();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -1542,6 +1544,42 @@ void TestQgsLegendRenderer::testBigMarkerJson()
   QString test_name = "point_layer_icon_red_big";
   point_layer_icon_red.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+}
+
+void TestQgsLegendRenderer::testLabelLegendJson()
+{
+  QgsPalLayerSettings *labelSettings = new QgsPalLayerSettings();
+  labelSettings->fieldName = QStringLiteral( "test_attr" );
+  QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr ); //root rule
+  QgsRuleBasedLabeling::Rule *labelingRule = new QgsRuleBasedLabeling::Rule( labelSettings, 0, 0, QString(), QStringLiteral( "labelingRule" ) );
+  rootRule->appendChild( labelingRule );
+  QgsRuleBasedLabeling *labeling = new QgsRuleBasedLabeling( rootRule );
+  mVL3->setLabeling( labeling );
+  bool bkLabelsEnabled = mVL3->labelsEnabled();
+  mVL3->setLabelsEnabled( true );
+
+  QgsDefaultVectorLayerLegend *vLayerLegend = dynamic_cast<QgsDefaultVectorLayerLegend *>( mVL3->legend() );
+  if ( !vLayerLegend )
+  {
+    QFAIL( "No vector layer legend" );
+  }
+  bool bkLabelLegendEnabled = vLayerLegend->showLabelLegend();
+  vLayerLegend->setShowLabelLegend( true );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  const QJsonObject json = _renderJsonLegend( &legendModel, settings );
+  const QJsonArray nodes = json["nodes"].toArray();
+  const QJsonObject point_layer = nodes[1].toObject();
+  const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
+  const QJsonObject point_layer_labeling_symbol = point_layer_symbols[3].toObject();
+  QString labelTitle = point_layer_labeling_symbol["title"].toString();
+
+  vLayerLegend->setShowLabelLegend( bkLabelLegendEnabled );
+  mVL3->setLabelsEnabled( bkLabelsEnabled );
+
+  QVERIFY( labelTitle == "labelingRule" );
 }
 
 
