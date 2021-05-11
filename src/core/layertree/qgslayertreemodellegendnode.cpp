@@ -1477,8 +1477,8 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
 {
   QStringList textLines( "Aa" );
   QgsTextFormat textFormat = mLabelSettings.format();
+  textFormat.setSize( textFormat.size() / renderContext.scaleFactor() ); //painter is usually scaled (e.g. mm unit)
   QgsRenderContext ctx( renderContext );
-  ctx.setScaleFactor( 1.0 );
   double textWidth, textHeight;
   textWidthHeight( textWidth, textHeight, ctx, textFormat, textLines );
   QPointF textPos( xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0, yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0 );
