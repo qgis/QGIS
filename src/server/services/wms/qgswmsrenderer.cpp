@@ -3217,13 +3217,26 @@ namespace QgsWms
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsFeatureIds selectedIds;
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
-      for ( const QString &id : fids )
+      for ( const QString &fid : fids )
       {
-        selectedIds.insert( STRING_TO_FID( id ) );
+          QgsFeature feature;
+          const QString expression { QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) };
+          if ( expression.isEmpty() )
+          {
+            feature = vl->getFeature( fid.toLongLong() );
+          }
+          else
+          {
+            QgsFeatureRequest request { QgsExpression( expression )};
+            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+            vl->getFeatures( request ).nextFeature( feature );
+          }
+
+        selectedIds.insert( feature.id() );
       }
 
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
       vl->selectByIds( selectedIds );
     }
   }
