@@ -285,6 +285,20 @@ the result of data defined path overrides.
 .. versionadded:: 3.6
 %End
 
+    QMap<QString, QgsProperty> svgDynamicParameters() const;
+%Docstring
+Returns the SVG dynamic parameters
+
+.. versionadded:: 3.20
+%End
+
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
+%Docstring
+Sets the SVG dynamic parameters
+
+.. versionadded:: 3.20
+%End
+
   public slots:
 
     void setPictureRotation( double rotation );

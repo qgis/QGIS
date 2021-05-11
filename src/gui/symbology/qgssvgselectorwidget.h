@@ -44,6 +44,7 @@ class QTreeView;
 
 class QgsExpressionContextGenerator;
 class QgsSvgSelectorListModel;
+class QgsPropertyOverrideButton;
 
 
 #ifndef SIP_RUN
@@ -388,7 +389,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Initialize the parameters model so the context and the layer are referenced.
      * \since QGIS 3.18
      */
-    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer );
+    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer = nullptr );
 
     QString currentSvgPath() const;
 
@@ -396,7 +397,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns the source line edit
      * \since QGIS 3.16
      */
-    QgsSvgSourceLineEdit *sourceLineEdit() const {return mSvgSourceLineEdit;}
+    QgsPictureSourceLineEditBase *sourceLineEdit() const {return mSourceLineEdit;}
 
     /**
      * Defines if the group box to fill parameters is visible
@@ -409,6 +410,24 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * \since QGIS 3.18
      */
     bool allowParamerters() const {return mAllowParameters;}
+
+    /**
+     * Defines if the SVG browser should be visible
+     * \since QGIS 3.20
+     */
+    void setBrowserVisible( bool visible );
+
+    /**
+     * Returns if the SVG browser should be visible
+     * \since QGIS 3.20
+     */
+    bool browserVisible() const {return mBrowserVisible;}
+
+    /**
+     * Returns the property override tool button of the file line edit
+     * \since QGIS 3.20
+     */
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const;
 
   public slots:
     //! Accepts absolute paths
@@ -442,6 +461,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     int mIconSize = 30;
     QString mCurrentSvgPath; //!< Always stored as absolute path
     bool mAllowParameters = false;
+    bool mBrowserVisible = true;
     QgsSvgParametersModel *mParametersModel = nullptr;
 };
 

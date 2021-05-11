@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item row="1" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mSvgBrowserGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -216,7 +216,7 @@
     </spacer>
    </item>
    <item row="3" column="0">
-    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+    <widget class="QgsPictureSourceLineEditBase" name="mSourceLineEdit" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -238,19 +238,19 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSvgSourceLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsPictureSourceLineEditBase</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mSvgSourceLineEdit</tabstop>
+  <tabstop>mSourceLineEdit</tabstop>
   <tabstop>mGroupsTreeView</tabstop>
   <tabstop>mImagesListView</tabstop>
   <tabstop>mParametersTreeView</tabstop>
