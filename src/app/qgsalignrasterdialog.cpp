@@ -84,6 +84,8 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   mAlign = new QgsAlignRaster;
   mAlign->setProgressHandler( new QgsAlignRasterDialogProgress( mProgress ) );
 
+  mCrsSelector->setShowDatumEnsembleWarnings( true );
+
   connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::addLayer );
   connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::removeLayer );
   connect( mBtnEdit, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::editLayer );

@@ -140,6 +140,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // don't restore nodata, it needs user input
   // pyramids are not necessarily built every time
 
+  mCrsSelector->setShowDatumEnsembleWarnings( true );
+
   mCrsSelector->setLayerCrs( mLayerCrs );
   //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
   mCrsSelector->setCrs( mLayerCrs );
