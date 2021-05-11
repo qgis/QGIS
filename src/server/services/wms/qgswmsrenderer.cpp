@@ -3221,18 +3221,18 @@ namespace QgsWms
 
       for ( const QString &fid : fids )
       {
-          QgsFeature feature;
-          const QString expression { QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) };
-          if ( expression.isEmpty() )
-          {
-            feature = vl->getFeature( fid.toLongLong() );
-          }
-          else
-          {
-            QgsFeatureRequest request { QgsExpression( expression )};
-            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
-            vl->getFeatures( request ).nextFeature( feature );
-          }
+        QgsFeature feature;
+        const QString expression { QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) };
+        if ( expression.isEmpty() )
+        {
+          feature = vl->getFeature( fid.toLongLong() );
+        }
+        else
+        {
+          QgsFeatureRequest request { QgsExpression( expression )};
+          request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+          vl->getFeatures( request ).nextFeature( feature );
+        }
 
         selectedIds.insert( feature.id() );
       }
