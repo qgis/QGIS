@@ -79,6 +79,21 @@ class TestQgsObjectCustomProperties(unittest.TestCase):
         self.assertEqual(props2.value('a', defaultValue=6), '7')
         self.assertEqual(props2.value('b', defaultValue='yy'), 'xx')
 
+    def testCompatibilityRestore(self):
+        # for pre 3.20
+        legacy_xml = '<test>\n <customproperties>\n  <property key="a" value="7"/>\n  <property key="b" value="xx"/>\n </customproperties>\n</test>\n'
+        doc = QDomDocument()
+        doc.setContent(legacy_xml)
+
+        props = QgsObjectCustomProperties()
+        props.readXml(doc.documentElement())
+
+        self.assertCountEqual(props.keys(), ['a', 'b'])
+        self.assertTrue(props.contains('a'))
+        self.assertTrue(props.contains('b'))
+        self.assertEqual(props.value('a', defaultValue=6), '7')
+        self.assertEqual(props.value('b', defaultValue='yy'), 'xx')
+
 
 if __name__ == '__main__':
     unittest.main()
