@@ -294,7 +294,7 @@ bool QgsProjectionSelectionWidget::showAccuracyWarnings() const
   return mShowAccuracyWarnings;
 }
 
-void QgsProjectionSelectionWidget::showAccuracyWarnings( bool show )
+void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
 {
   mShowAccuracyWarnings = show;
   if ( !mShowAccuracyWarnings )

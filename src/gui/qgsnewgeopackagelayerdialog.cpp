@@ -100,7 +100,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mFeatureIdColumnEdit->setPlaceholderText( QStringLiteral( DEFAULT_OGR_FID_COLUMN_TITLE ) );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
-  mCrsSelector->showAccuracyWarnings( true );
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text Data" ), "text" );
   mFieldTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole Number (integer)" ), "integer" );
