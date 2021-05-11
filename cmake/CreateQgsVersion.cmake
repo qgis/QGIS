@@ -1,3 +1,7 @@
+# Creates version files
+#  qgsversion.h that defines QGSVERSION
+#  qgsversion.inc for doxygen
+
 MACRO(CREATE_QGSVERSION)
   IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
     FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
