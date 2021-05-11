@@ -105,8 +105,6 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   QTimer::singleShot( 1, d.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
-  // This prevents a crash in Qsci internal thread
-  std::this_thread::sleep_for( std::chrono::seconds( 1 ) );
 }
 
 

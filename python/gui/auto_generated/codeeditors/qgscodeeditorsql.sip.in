@@ -31,6 +31,9 @@ code autocompletion.
 Constructor for QgsCodeEditorSQL
 %End
 
+
+    virtual ~QgsCodeEditorSQL();
+
     void setFields( const QgsFields &fields );
 %Docstring
 Set field names to be added to the lexer API.

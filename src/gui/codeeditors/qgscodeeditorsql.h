@@ -39,6 +39,9 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //! Constructor for QgsCodeEditorSQL
     QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+
+    virtual ~QgsCodeEditorSQL();
+
     /**
      * Set field names to be added to the lexer API.
      *

@@ -34,6 +34,14 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   QgsCodeEditorSQL::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
 
+QgsCodeEditorSQL::~QgsCodeEditorSQL()
+{
+  if ( mApis )
+  {
+    mApis->cancelPreparation( );
+  }
+}
+
 void QgsCodeEditorSQL::initializeLexer()
 {
   QFont font = lexerFont();
