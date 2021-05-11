@@ -1492,27 +1492,22 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
 
 QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const
 {
+  Q_UNUSED( settings );
+
+  double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
+
   QStringList textLines( "Aa" );
   QgsTextFormat textFormat = mLabelSettings.format();
   QgsRenderContext ctx( context );
+  ctx.setScaleFactor( mmToPixel );
 
   double textWidth, textHeight;
   textWidthHeight( textWidth, textHeight, ctx, textFormat, textLines );
-
-  double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
-  int widthPixel = mmToPixel * textWidth;
-  int heightPixel = mmToPixel * textHeight;
-
-  QImage img( widthPixel, heightPixel, QImage::Format_ARGB32 );
-  img.fill( QColor( 255, 255, 255, 255 ) );
-  QPainter p( &img );
-  p.scale( mmToPixel, mmToPixel );
-
-  drawSymbol( settings, context );
+  QPixmap previewPixmap = mLabelSettings.labelSettingsPreviewPixmap( mLabelSettings, QSize( textWidth, textHeight ), QStringLiteral( "Aa" ) );
 
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
-  img.save( &buffer, "PNG" );
+  previewPixmap.save( &buffer, "PNG" );
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
