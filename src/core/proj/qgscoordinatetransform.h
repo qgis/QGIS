@@ -47,6 +47,10 @@ class QgsVector3D;
 * transforms coordinates from the layer's coordinate system to the map canvas.
 * \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
 *
+* \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
+* between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+* however dynamic CRS to dynamic CRS transformations are not currently supported.
+*
 * \see QgsDatumTransform
 * \see QgsCoordinateTransformContext
 */
@@ -75,6 +79,10 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * Python scripts should generally use the constructor variant which accepts
      * a QgsProject instance instead of this constructor.
+     *
+     * \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
      *
      * \warning Do NOT use an empty/default constructed QgsCoordinateTransformContext()
      * object when creating QgsCoordinateTransform objects. This prevents correct
@@ -107,6 +115,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *                                      QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
      * \endcode
      *
+     * \warning Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
      * \since QGIS 3.0
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
@@ -701,7 +712,15 @@ class CORE_EXPORT QgsCoordinateTransform
 
     // cache
     static QReadWriteLock sCacheLock;
-    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+
+    /**
+     * Map of cached transforms. The keys are formed by pairs of strings uniquely identifying the source and
+     * destination CRS, using the auth:id were available or a full WKT2 definition where an auth:id is not available.
+     *
+     * The same auth_id pairs might have multiple transformations, as they can be based on different coordinate
+     * operations, allowance of ballpark transforms, and the source or destination coordinate epoch.
+     */
+    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms;
     static bool sDisableCache;
 
 

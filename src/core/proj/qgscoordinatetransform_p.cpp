@@ -87,6 +87,11 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
   , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
   , mAllowFallbackTransforms( other.mAllowFallbackTransforms )
+  , mSourceIsDynamic( other.mSourceIsDynamic )
+  , mDestIsDynamic( other.mDestIsDynamic )
+  , mSourceCoordinateEpoch( other.mSourceCoordinateEpoch )
+  , mDestCoordinateEpoch( other.mDestCoordinateEpoch )
+  , mDefaultTime( other.mDefaultTime )
   , mIsReversed( other.mIsReversed )
   , mProjLock()
   , mProjProjections()
@@ -148,6 +153,28 @@ bool QgsCoordinateTransformPrivate::initialize()
     // circuit flag (no transform takes place)
     mShortCircuit = true;
     return true;
+  }
+
+  mSourceIsDynamic = mSourceCRS.isDynamic();
+  mSourceCoordinateEpoch = mSourceCRS.coordinateEpoch();
+  mDestIsDynamic = mDestCRS.isDynamic();
+  mDestCoordinateEpoch = mDestCRS.coordinateEpoch();
+
+  // Determine the default coordinate epoch.
+  // For time-dependent transformations, PROJ can currently only do
+  // staticCRS -> dynamicCRS or dynamicCRS -> staticCRS transformations, and
+  // in either case, the coordinate epoch of the dynamicCRS must be provided
+  // as the input time.
+  mDefaultTime = ( mSourceIsDynamic && !std::isnan( mSourceCoordinateEpoch ) && !mDestIsDynamic )
+                 ? mSourceCoordinateEpoch
+                 : ( mDestIsDynamic && !std::isnan( mDestCoordinateEpoch ) && !mSourceIsDynamic )
+                 ? mDestCoordinateEpoch : std::numeric_limits< double >::quiet_NaN();
+
+  if ( mSourceIsDynamic && mDestIsDynamic
+       && !std::isnan( mSourceCoordinateEpoch ) && mSourceCoordinateEpoch != mDestCoordinateEpoch )
+  {
+    // transforms from dynamic crs to dynamic crs with different coordinate epochs are not yet supported by PROJ
+
   }
 
   // init the projections (destination and source)

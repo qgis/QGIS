@@ -850,6 +850,13 @@ CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
 :param epoch: Coordinate epoch as decimal year (e.g. 2021.3)
 
+.. warning::
+
+   The :py:class:`QgsCoordinateTransform` class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
+
 .. seealso:: :py:func:`coordinateEpoch`
 
 
@@ -870,7 +877,14 @@ observation, and not to the CRS, however it is often more practical to
 bind it to the CRS. The coordinate epoch should be specified for dynamic
 CRS (see :py:func:`~QgsCoordinateReferenceSystem.isDynamic`).
 
+.. warning::
+
+   The :py:class:`QgsCoordinateTransform` class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
 :return: Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
+
 
 .. seealso:: :py:func:`setCoordinateEpoch`
 
