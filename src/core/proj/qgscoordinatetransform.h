@@ -118,12 +118,13 @@ class CORE_EXPORT QgsCoordinateTransform
      * to \a destination coordinate reference system, with the specified
      * datum transforms (see QgsDatumTransform).
      *
+     * \deprecated will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      * \since QGIS 3.0
      */
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     int sourceDatumTransformId,
-                                     int destinationDatumTransformId );
+    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+        const QgsCoordinateReferenceSystem &destination,
+        int sourceDatumTransformId,
+        int destinationDatumTransformId ) SIP_DEPRECATED;
 
     /**
      * Copy constructor
