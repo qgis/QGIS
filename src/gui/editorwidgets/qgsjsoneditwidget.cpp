@@ -142,7 +142,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     const QStringList keys = jsonDocument.object().keys();
     for ( const QString &key : keys )
     {
-      QJsonValue jsonValue = jsonDocument.object().value( key );
+      const QJsonValue jsonValue = jsonDocument.object().value( key );
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << key );
       refreshTreeViewItemValue( jsonValue, treeWidgetItem );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
