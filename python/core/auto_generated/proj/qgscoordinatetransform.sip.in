@@ -100,14 +100,17 @@ correctly respected during coordinate transforms. E.g.
 .. versionadded:: 3.0
 %End
 
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination,
-                                     int sourceDatumTransformId,
-                                     int destinationDatumTransformId );
+ explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+        const QgsCoordinateReferenceSystem &destination,
+        int sourceDatumTransformId,
+        int destinationDatumTransformId ) /Deprecated/;
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
 datum transforms (see :py:class:`QgsDatumTransform`).
+
+.. deprecated::
+   will be removed in QGIS 4.0. Use the constructor with a :py:class:`QgsCoordinateTransformContext` argument instead.
 
 .. versionadded:: 3.0
 %End
