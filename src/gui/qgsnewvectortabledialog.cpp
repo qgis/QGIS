@@ -137,6 +137,8 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     validate();
   } );
 
+  mCrs->setShowDatumEnsembleWarnings( true );
+
   // geometry types
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
 
