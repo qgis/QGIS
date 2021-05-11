@@ -799,6 +799,12 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
 
     /**
+     * \brief string to show in the legend and in the preview icon
+     * \since QGIS 3.20
+     */
+    QString legendString = QObject::tr( "Aa" );
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      * If the text orientation is set to rotation-based, the spaced taken to render

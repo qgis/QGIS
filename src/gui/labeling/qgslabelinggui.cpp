@@ -266,6 +266,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
+  mLegendStringLineEdit->setText( layerSettings.legendString );
+
   mMinScaleWidget->setMapCanvas( mCanvas );
   mMinScaleWidget->setShowCurrentScaleButton( true );
   mMaxScaleWidget->setMapCanvas( mCanvas );
@@ -501,6 +503,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
   lyr.isExpression = isExpression;
+
+  lyr.legendString = mLegendStringLineEdit->text();
 
   lyr.dist = 0;
 

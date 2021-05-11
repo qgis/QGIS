@@ -14,21 +14,6 @@
    <string>Layer Labeling Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <property name="verticalSpacing">
-    <number>6</number>
-   </property>
    <item row="0" column="0">
     <widget class="QFrame" name="frameLabelWith">
      <layout class="QHBoxLayout" name="horizontalLayout_19">
@@ -89,7 +74,21 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_15">
+     <item>
+      <widget class="QLabel" name="mLegendStringLabel">
+       <property name="text">
+        <string>Legend text</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mLegendStringLineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
     <widget class="QFrame" name="mLabelingFrame">
      <property name="minimumSize">
       <size>
@@ -172,7 +171,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>499</width>
+               <width>480</width>
                <height>300</height>
               </rect>
              </property>
@@ -717,8 +716,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>433</height>
+                       <width>455</width>
+                       <height>414</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1280,8 +1279,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
-                       <height>666</height>
+                       <width>467</width>
+                       <height>931</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2164,8 +2163,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>433</height>
+                       <width>467</width>
+                       <height>401</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2510,8 +2509,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>433</height>
+                       <width>488</width>
+                       <height>392</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2788,8 +2787,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
-                       <height>740</height>
+                       <width>513</width>
+                       <height>1053</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3549,8 +3548,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>433</height>
+                       <width>467</width>
+                       <height>592</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3977,8 +3976,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>433</height>
+                       <width>488</width>
+                       <height>392</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4044,7 +4043,7 @@ font-style: italic;</string>
                            </property>
                            <property name="topMargin">
                             <number>1</number>
-                           </property>                           
+                           </property>
                            <item row="0" column="1" colspan="2">
                             <widget class="QComboBox" name="mCalloutStyleComboBox"/>
                            </item>
@@ -4127,8 +4126,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>474</width>
-                       <height>1599</height>
+                       <width>510</width>
+                       <height>2059</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5827,8 +5826,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
-                       <height>666</height>
+                       <width>467</width>
+                       <height>858</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6578,6 +6577,12 @@ font-style: italic;</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -6592,12 +6597,6 @@ font-style: italic;</string>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>

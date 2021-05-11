@@ -482,6 +482,8 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsWkbTypes::GeometryType layerType;
 
+    QString legendString;
+
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 );
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.

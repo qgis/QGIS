@@ -1451,7 +1451,7 @@ QVariant QgsVectorLabelLegendNode::data( int role ) const
   if ( role == Qt::DecorationRole )
   {
     const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
-    return QgsPalLayerSettings::labelSettingsPreviewPixmap( mLabelSettings, QSize( iconSize, iconSize ), QStringLiteral( "Aa" ) );
+    return QgsPalLayerSettings::labelSettingsPreviewPixmap( mLabelSettings, QSize( iconSize, iconSize ), mLabelSettings.legendString );
   }
   return QVariant();
 }
@@ -1475,7 +1475,7 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
 
 QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset, double yOffset ) const
 {
-  QStringList textLines( "Aa" );
+  QStringList textLines( mLabelSettings.legendString );
   QgsTextFormat textFormat = mLabelSettings.format();
   textFormat.setSize( textFormat.size() / renderContext.scaleFactor() ); //painter is usually scaled (e.g. mm unit)
   QgsRenderContext ctx( renderContext );
@@ -1496,14 +1496,14 @@ QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSetting
 
   const double mmToPixel = 96.0 / 25.4; //settings.dpi() is deprecated
 
-  const QStringList textLines( "Aa" );
+  const QStringList textLines( mLabelSettings.legendString );
   const QgsTextFormat textFormat = mLabelSettings.format();
   QgsRenderContext ctx( context );
   ctx.setScaleFactor( mmToPixel );
 
   double textWidth, textHeight;
   textWidthHeight( textWidth, textHeight, ctx, textFormat, textLines );
-  QPixmap previewPixmap = mLabelSettings.labelSettingsPreviewPixmap( mLabelSettings, QSize( textWidth, textHeight ), QStringLiteral( "Aa" ) );
+  QPixmap previewPixmap = mLabelSettings.labelSettingsPreviewPixmap( mLabelSettings, QSize( textWidth, textHeight ), mLabelSettings.legendString );
 
   QByteArray byteArray;
   QBuffer buffer( &byteArray );
