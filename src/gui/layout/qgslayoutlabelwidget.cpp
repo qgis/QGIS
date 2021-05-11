@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgslayoutitemmap.h"
 #include "qgsvectorlayer.h"
+#include "qgsprojoperation.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -145,6 +146,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
             std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ),  QStringLiteral( "item_variables('%1')['map_crs_description']" ).arg( map->id() ) ),
             std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ),  QStringLiteral( "item_variables('%1')['map_crs_ellipsoid']" ).arg( map->id() ) ),
             std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ),  QStringLiteral( "item_variables('%1')['map_units']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ),  QStringLiteral( "item_variables('%1')['map_crs_projection']" ).arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
