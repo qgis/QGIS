@@ -103,6 +103,12 @@ class QgsCoordinateTransformPrivate : public QSharedData
     bool mShouldReverseCoordinateOperation = false;
     bool mAllowFallbackTransforms = true;
 
+    bool mSourceIsDynamic = false;
+    bool mDestIsDynamic = false;
+    double mSourceCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+    double mDestCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+    double mDefaultTime = std::numeric_limits< double >::quiet_NaN();
+
     //! True if the proj transform corresponds to the reverse direction, and must be flipped when transforming...
     bool mIsReversed = false;
 

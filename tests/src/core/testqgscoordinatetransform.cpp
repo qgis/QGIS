@@ -41,6 +41,10 @@ class TestQgsCoordinateTransform: public QObject
     void scaleFactor_data();
     void transform_data();
     void transform();
+#if PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
+    void transformEpoch_data();
+    void transformEpoch();
+#endif
     void transformLKS();
     void transformContextNormalize();
     void transform2DPoint();
@@ -354,6 +358,102 @@ void TestQgsCoordinateTransform::transform()
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
 }
+
+#if PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
+void TestQgsCoordinateTransform::transformEpoch_data()
+{
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
+  QTest::addColumn<double>( "sourceEpoch" );
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
+  QTest::addColumn<double>( "destEpoch" );
+  QTest::addColumn<double>( "x" );
+  QTest::addColumn<double>( "y" );
+  QTest::addColumn<int>( "direction" );
+  QTest::addColumn<double>( "outX" );
+  QTest::addColumn<double>( "outY" );
+  QTest::addColumn<double>( "precision" );
+
+  QTest::newRow( "GDA2020 to ITRF at central epoch -- no coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2020.0
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 150.0 << -30.0 << 0.0000000001;
+
+  QTest::newRow( "GDA2020 to ITRF at central epoch (reverse) -- no coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2020.0
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 150.0 << -30.0 << 0.0000000001;
+
+  QTest::newRow( "ITRF at central epoch to GDA2020 -- no coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2020.0
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 150.0 << -30.0 << 0.0000000001;
+
+  QTest::newRow( "ITRF at central epoch to GDA2020 (reverse) -- no coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2020.0
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 150.0 << -30.0 << 0.0000000001;
+
+  QTest::newRow( "GDA2020 to ITRF at 2030 -- coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2030.0
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 150.0000022212 << -29.9999950478 << 0.0000001;
+
+  QTest::newRow( "GDA2020 to ITRF at 2030 (reverse) -- coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2030.0
+      << 150.0000022212 << -29.9999950478 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 150.0 << -30.0 << 0.0000001;
+
+  QTest::newRow( "ITRF at 2030 to GDA2020-- coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2030.0
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << 150.0000022212 << -29.9999950478 << static_cast< int >( QgsCoordinateTransform::ForwardTransform ) << 150.0 << -30.0 << 0.0000001;
+
+  QTest::newRow( "ITRF at 2030 to GDA2020 (reverse) -- coordinate change expected" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 9000 ) // ITRF2014
+      << 2030.0
+      << QgsCoordinateReferenceSystem::fromEpsgId( 7844 ) // GDA2020
+      << std::numeric_limits< double >::quiet_NaN()
+      << 150.0 << -30.0 << static_cast< int >( QgsCoordinateTransform::ReverseTransform ) << 150.0000022212 << -29.9999950478 << 0.0000001;
+}
+
+void TestQgsCoordinateTransform::transformEpoch()
+{
+  QFETCH( QgsCoordinateReferenceSystem, sourceCrs );
+  QFETCH( double, sourceEpoch );
+  QFETCH( QgsCoordinateReferenceSystem, destCrs );
+  QFETCH( double, destEpoch );
+  QFETCH( double, x );
+  QFETCH( double, y );
+  QFETCH( int, direction );
+  QFETCH( double, outX );
+  QFETCH( double, outY );
+  QFETCH( double, precision );
+
+  sourceCrs.setCoordinateEpoch( sourceEpoch );
+  destCrs.setCoordinateEpoch( destEpoch );
+
+  double z = 0;
+  QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
+
+  ct.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
+  QGSCOMPARENEAR( x, outX, precision );
+  QGSCOMPARENEAR( y, outY, precision );
+}
+#endif
 
 void TestQgsCoordinateTransform::transformBoundingBox()
 {

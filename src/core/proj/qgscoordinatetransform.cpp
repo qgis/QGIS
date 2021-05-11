@@ -654,6 +654,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   std::vector< double > zprev( numPoints );
   memcpy( zprev.data(), z, sizeof( double ) * numPoints );
 
+  const bool useTime = !std::isnan( d->mDefaultTime );
+  std::vector< double > t( useTime ? numPoints : 0, d->mDefaultTime );
+
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
@@ -678,7 +681,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                       x, sizeof( double ), numPoints,
                       y, sizeof( double ), numPoints,
                       z, sizeof( double ), numPoints,
-                      nullptr, sizeof( double ), 0 );
+                      useTime ? t.data() : nullptr, sizeof( double ), useTime ? numPoints : 0 );
   // Try to - approximatively - emulate the behavior of pj_transform()...
   // In the case of a single point transform, and a transformation error occurs,
   // pj_transform() would return the errno. In cases of multiple point transform,
@@ -723,7 +726,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                           xprev.data(), sizeof( double ), numPoints,
                           yprev.data(), sizeof( double ), numPoints,
                           zprev.data(), sizeof( double ), numPoints,
-                          nullptr, sizeof( double ), 0 );
+                          useTime ? t.data() : nullptr, sizeof( double ), useTime ? numPoints : 0 );
       // Try to - approximatively - emulate the behavior of pj_transform()...
       // In the case of a single point transform, and a transformation error occurs,
       // pj_transform() would return the errno. In cases of multiple point transform,
@@ -896,7 +899,16 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
-    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj && ( *valIt ).allowFallbackTransforms() == allowFallback )
+    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj
+         && ( *valIt ).allowFallbackTransforms() == allowFallback
+
+         // careful here, nan != nan, so we need to explicitly handle the case when both crses have nan coordinateEpoch
+         && ( std::isnan( ( *valIt ).sourceCrs().coordinateEpoch() ) == std::isnan( src.coordinateEpoch() )
+              && ( std::isnan( src.coordinateEpoch() ) || src.coordinateEpoch() == ( *valIt ).sourceCrs().coordinateEpoch() ) )
+
+         && ( std::isnan( ( *valIt ).destinationCrs().coordinateEpoch() ) == std::isnan( dest.coordinateEpoch() )
+              && ( std::isnan( dest.coordinateEpoch() ) || dest.coordinateEpoch() == ( *valIt ).destinationCrs().coordinateEpoch() ) )
+       )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
       QgsCoordinateTransformContext context = mContext;

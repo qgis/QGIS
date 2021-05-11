@@ -29,6 +29,12 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 
    Since QGIS 3.0 :py:class:`QgsCoordinateReferenceSystem` objects are implicitly shared.
 
+.. warning::
+
+   Since QGIS 3.20 The :py:class:`QgsCoordinateTransform` class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
 .. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:class:`QgsCoordinateTransformContext`
@@ -66,12 +72,19 @@ a :py:class:`QgsProject` instance instead of this constructor.
 
 .. warning::
 
+   Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
+
+.. warning::
+
    Do NOT use an empty/default constructed QgsCoordinateTransformContext()
    object when creating QgsCoordinateTransform objects. This prevents correct
    datum transform handling and may result in inaccurate transformations. Always
    ensure that the :py:class:`QgsCoordinateTransformContext` object is correctly retrieved
    based on the current code context, or use the constructor variant which
    accepts a :py:class:`QgsProject` argument instead.
+
 
 .. versionadded:: 3.0
 %End
@@ -96,6 +109,12 @@ correctly respected during coordinate transforms. E.g.
 
        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
                                           QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
+
+.. warning::
+
+   Since QGIS 3.20 The QgsCoordinateTransform class can perform time-dependent transformations
+   between a static and dynamic CRS based on either the source OR destination CRS coordinate epoch,
+   however dynamic CRS to dynamic CRS transformations are not currently supported.
 
 .. versionadded:: 3.0
 %End

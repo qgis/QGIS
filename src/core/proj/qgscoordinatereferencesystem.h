@@ -783,6 +783,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \param epoch Coordinate epoch as decimal year (e.g. 2021.3)
      *
+     * \warning The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
+     *
      * \see coordinateEpoch()
      *
      * \since QGIS 3.20
@@ -801,6 +805,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * observation, and not to the CRS, however it is often more practical to
      * bind it to the CRS. The coordinate epoch should be specified for dynamic
      * CRS (see isDynamic()).
+     *
+     * \warning The QgsCoordinateTransform class can perform time-dependent transformations
+     * between a static and dynamic CRS based on either the source or destination CRS coordinate epoch,
+     * however dynamic CRS to dynamic CRS transformations are not currently supported.
      *
      * \returns Coordinate epoch as decimal year (e.g. 2021.3), or NaN if not set, or relevant.
      *
