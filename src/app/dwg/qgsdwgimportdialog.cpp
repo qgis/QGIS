@@ -81,7 +81,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
-  mCrsSelector->setShowDatumEnsembleWarnings( true );
+  mCrsSelector->showAccuracyWarnings( true );
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrsId( crsid );
   mCrsSelector->setCrs( crs );
