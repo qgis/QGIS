@@ -2196,7 +2196,7 @@ QString QgsMapLayer::crsHtmlMetadata() const
     // dynamic crs with no epoch?
     if ( c.isDynamic() && std::isnan( c.coordinateEpoch() ) )
     {
-      accuracyString = tr( "Based on a dynamic CRS, but no coordinate epoch is set! Coordinates are ambiguous and of limited accuracy." );
+      accuracyString = tr( "Based on a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy." );
     }
 
     // based on datum ensemble?
