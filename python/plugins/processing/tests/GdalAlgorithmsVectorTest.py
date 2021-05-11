@@ -418,14 +418,14 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source_with_space}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 "' + source_with_space + '" filename_with_spaces '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.filename_with_spaces -nlt PROMOTE_TO_MULTI'])
 
@@ -433,7 +433,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'HOST': 'google.com'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=google.com port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=google.com port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -441,7 +441,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PORT': 3333}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=3333 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=3333 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -449,7 +449,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'USER': 'kevin_bacon'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public user=kevin_bacon" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\' user=kevin_bacon" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -457,7 +457,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'DBNAME': 'secret_stuff'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 dbname=secret_stuff active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 dbname=secret_stuff active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -465,7 +465,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PASSWORD': 'passw0rd'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 password=passw0rd active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 password=passw0rd active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -473,7 +473,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SCHEMA': 'desktop'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=desktop" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'desktop\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln desktop.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -481,7 +481,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'TABLE': 'out_table'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.out_table -nlt PROMOTE_TO_MULTI'])
 
@@ -489,7 +489,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PK': ''}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -497,7 +497,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PK': 'new_fid'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_fid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -506,7 +506,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'PK': '',
                                     'PRIMARY_KEY': 'objectid'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=objectid -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -515,7 +515,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                     'PK': 'new_id',
                                     'PRIMARY_KEY': 'objectid'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=new_id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -523,7 +523,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'GEOCOLUMN': 'my_geom'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=my_geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -531,7 +531,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'DIM': 1}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=3 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -539,7 +539,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SIMPLIFY': 5}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -simplify 5 -nlt PROMOTE_TO_MULTI'])
 
@@ -547,7 +547,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SEGMENTIZE': 4}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -segmentize 4 -nlt PROMOTE_TO_MULTI'])
 
@@ -555,7 +555,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SPAT': QgsRectangle(1, 2, 3, 4)}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -spat 1.0 2.0 3.0 4.0 -nlt PROMOTE_TO_MULTI'])
 
@@ -563,7 +563,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'FIELDS': ['f1', 'f2']}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 -select "f1,f2" '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -571,7 +571,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'WHERE': '0=1'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -where "0=1" -nlt PROMOTE_TO_MULTI'])
 
@@ -579,7 +579,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'GT': 2}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -gt 2 -nlt PROMOTE_TO_MULTI'])
 
@@ -587,7 +587,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'OVERWRITE': False}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -595,7 +595,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'APPEND': True}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-append -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -603,7 +603,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'ADDFIELDS': True}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-addfields -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -611,7 +611,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'LAUNDER': True}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-lco LAUNDER=NO -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -619,7 +619,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'INDEX': True}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-lco SPATIAL_INDEX=OFF -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -627,7 +627,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SKIPFAILURES': True}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -skipfailures -nlt PROMOTE_TO_MULTI'])
 
@@ -635,7 +635,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PROMOTETOMULTI': False}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2'])
 
@@ -643,7 +643,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'PRECISION': False}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI -lco PRECISION=NO'])
 
@@ -651,7 +651,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'OPTIONS': 'blah'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI blah'])
 
@@ -659,7 +659,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'SHAPE_ENCODING': 'blah'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES --config SHAPE_ENCODING blah -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES --config SHAPE_ENCODING blah -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -667,7 +667,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'GTYPE': 4}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -nlt LINESTRING -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -nlt PROMOTE_TO_MULTI'])
 
@@ -675,7 +675,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'A_SRS': 'EPSG:3111'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -683,7 +683,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'A_SRS': QgsCoordinateReferenceSystem('EPSG:3111')}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -692,7 +692,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'A_SRS': custom_crs}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -a_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 
@@ -700,7 +700,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'T_SRS': 'EPSG:3111'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -708,7 +708,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'T_SRS': QgsCoordinateReferenceSystem('EPSG:3111')}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -717,7 +717,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'T_SRS': custom_crs}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -t_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 
@@ -725,7 +725,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'S_SRS': 'EPSG:3111'}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -733,7 +733,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'S_SRS': QgsCoordinateReferenceSystem('EPSG:3111')}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:3111 -nlt PROMOTE_TO_MULTI'])
 
@@ -742,7 +742,7 @@ class TestGdalVectorAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
             alg.getConsoleCommands({'INPUT': source,
                                     'S_SRS': custom_crs}, context, feedback),
             ['ogr2ogr',
-             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=public" '
+             '-progress --config PG_USE_COPY YES -f PostgreSQL "PG:host=localhost port=5432 active_schema=\'public\'" '
              '-lco DIM=2 ' + source + ' polys2 '
              '-overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nln public.polys2 -s_srs EPSG:20936 -nlt PROMOTE_TO_MULTI'])
 

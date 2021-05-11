@@ -257,7 +257,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('PostgreSQL')
 
         connection_parts = QgsDataSourceUri(uri).connectionInfo(executing).split(' ')
-        connection_parts.append('active_schema={}'.format(schema or 'public'))
+        connection_parts.append("active_schema='{}'".format(schema or 'public'))
         arguments.append('PG:{}'.format(' '.join(connection_parts)))
 
         arguments.append(dimstring)

@@ -210,7 +210,7 @@ class OgrToPostGis(GdalAlgorithm):
         if password:
             arguments.append('password=' + password)
         if schema:
-            arguments.append('active_schema=' + schema)
+            arguments.append("active_schema='{}'".format(schema))
         if user:
             arguments.append('user=' + user)
         return GdalUtils.escapeAndJoin(arguments)

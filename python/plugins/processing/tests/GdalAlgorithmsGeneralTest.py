@@ -294,31 +294,31 @@ class TestGdalAlgorithms(unittest.TestCase):
         # NOTE: defaults are debatable, see
         # https://github.com/qgis/QGIS/pull/3607#issuecomment-253971020
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "host=localhost port=5432 active_schema=public")
+                         "host=localhost port=5432 active_schema=\'public\'")
 
         parameters['HOST'] = 'remote'
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "host=remote port=5432 active_schema=public")
+                         "host=remote port=5432 active_schema=\'public\'")
 
         parameters['HOST'] = ''
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "port=5432 active_schema=public")
+                         "port=5432 active_schema=\'public\'")
 
         parameters['PORT'] = '5555'
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "port=5555 active_schema=public")
+                         "port=5555 active_schema=\'public\'")
 
         parameters['PORT'] = ''
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "active_schema=public")
+                         "active_schema=\'public\'")
 
         parameters['USER'] = 'usr'
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "active_schema=public user=usr")
+                         "active_schema=\'public\' user=usr")
 
         parameters['PASSWORD'] = 'pwd'
         self.assertEqual(alg.getConnectionString(parameters, context),
-                         "password=pwd active_schema=public user=usr")
+                         "password=pwd active_schema=\'public\' user=usr")
 
     def testCrsConversion(self):
         self.assertFalse(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem()))
