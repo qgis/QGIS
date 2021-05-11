@@ -200,6 +200,8 @@ void QgsVectorLayerSaveAsDialog::setup()
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
+
+  mCrsSelector->setShowDatumEnsembleWarnings( true );
 }
 
 QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options )
