@@ -67,7 +67,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   warningLayout->insertWidget( 1, mWarningLabel );
   mWarningLabelContainer->setLayout( warningLayout );
   layout->addWidget( mWarningLabelContainer );
-  updateWarning();
+  mWarningLabelContainer->hide();
 
   layout->addSpacing( labelMargin / 2 );
 

@@ -174,7 +174,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QString mNotSetText;
     QString mMessage;
 
-    bool mShowDatumEnsembleWarnings = true;
+    bool mShowDatumEnsembleWarnings = false;
     QWidget *mWarningLabelContainer = nullptr;
     QLabel *mWarningLabel = nullptr;
 
