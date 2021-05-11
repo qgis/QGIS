@@ -1739,6 +1739,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     double mLayerOpacity = 1.0;
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns a HTML fragment containing the layer's CRS metadata, for use
+     * in the htmlMetadata() method.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.20
+     */
+    QString crsHtmlMetadata() const;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;

@@ -351,23 +351,17 @@ QString QgsRasterLayer::htmlMetadata() const
   if ( publicSource() != path || !isLocalPath )
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
 
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) % QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
-    else
-      myMetadata += tr( "Projected" );
-  }
-  myMetadata += QStringLiteral( "</td></tr>\n" ) %
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // CRS
+  myMetadata += crsHtmlMetadata();
+
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Properties" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  myMetadata += QStringLiteral( "\n" ) %
 
                 // Extent
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QStringLiteral( "</td><td>" ) % extent().toString() % QStringLiteral( "</td></tr>\n" ) %
-
-                // unit
-                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QStringLiteral( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QStringLiteral( "</td></tr>\n" ) %
 
                 // Raster Width
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Width" ) % QStringLiteral( "</td><td>" );

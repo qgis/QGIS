@@ -61,6 +61,8 @@
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsprovidermetadata.h"
 #include "qgslayernotesutils.h"
+#include "qgsdatums.h"
+#include "qgsprojoperation.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -2151,4 +2153,94 @@ void QgsMapLayer::invalidateWgs84Extent()
     return;
 
   mWgs84Extent = QgsRectangle();
+}
+
+QString QgsMapLayer::crsHtmlMetadata() const
+{
+  QString metadata = QStringLiteral( "<h1>" ) + tr( "Coordinate Reference System (CRS)" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  metadata += QStringLiteral( "<table class=\"list-view\">\n" );
+
+  // Identifier
+  const QgsCoordinateReferenceSystem c = crs();
+  if ( !c.isValid() )
+    metadata += QStringLiteral( "<tr><td colspan=\"2\" class=\"highlight\">" ) + tr( "Unknown" ) + QStringLiteral( "</td></tr>\n" );
+  else
+  {
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + c.userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( "</td></tr>\n" );
+
+    // map units
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Units" ) + QStringLiteral( "</td><td>" )
+                + ( c.isGeographic() ? tr( "Geographic (uses latitude and longitude for coordinates)" ) : QgsUnitTypes::toString( c.mapUnits() ) )
+                + QStringLiteral( "</td></tr>\n" );
+
+
+    // operation
+    const QgsProjOperation operation = c.operation();
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Method" ) + QStringLiteral( "</td><td>" ) + operation.description() + QStringLiteral( "</td></tr>\n" );
+
+    // celestial body
+    try
+    {
+      const QString celestialBody = c.celestialBodyName();
+      if ( !celestialBody.isEmpty() )
+      {
+        metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Celestial body" ) + QStringLiteral( "</td><td>" ) + celestialBody + QStringLiteral( "</td></tr>\n" );
+      }
+    }
+    catch ( QgsNotSupportedException & )
+    {
+
+    }
+
+    QString accuracyString;
+    // dynamic crs with no epoch?
+    if ( c.isDynamic() && std::isnan( c.coordinateEpoch() ) )
+    {
+      accuracyString = tr( "Based on a dynamic CRS, but no coordinate epoch is set! Coordinates are ambiguous and of limited accuracy." );
+    }
+
+    // based on datum ensemble?
+    try
+    {
+      const QgsDatumEnsemble ensemble = c.datumEnsemble();
+      if ( ensemble.isValid() )
+      {
+        QString id;
+        if ( !ensemble.code().isEmpty() )
+          id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        else
+          id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+
+        if ( ensemble.accuracy() > 0 )
+        {
+          accuracyString = tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
+        }
+        else
+        {
+          accuracyString = tr( "Based on %1, which has a limited accuracy." ).arg( id );
+        }
+      }
+    }
+    catch ( QgsNotSupportedException & )
+    {
+
+    }
+
+    if ( !accuracyString.isEmpty() )
+    {
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Accuracy" ) + QStringLiteral( "</td><td>" ) + accuracyString + QStringLiteral( "</td></tr>\n" );
+    }
+
+    // static/dynamic
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Reference" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.isDynamic() ? tr( "Dynamic (relies on a datum which is not plate-fixed)" ) : tr( "Static (relies on a datum which is plate-fixed)" ) );
+
+    // coordinate epoch
+    if ( !std::isnan( c.coordinateEpoch() ) )
+    {
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Coordinate epoch" ) + QStringLiteral( "</td><td>%1</td></tr>\n" ).arg( c.coordinateEpoch() );
+    }
+  }
+
+  metadata += QLatin1String( "</table>\n<br><br>\n" );
+  return metadata;
 }
