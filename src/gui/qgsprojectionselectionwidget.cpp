@@ -289,6 +289,20 @@ void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
   update();
 }
 
+QString QgsProjectionSelectionWidget::sourceEnsemble() const
+{
+  return mSourceEnsemble;
+}
+
+void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
+{
+  if ( mSourceEnsemble == ensemble )
+    return;
+
+  mSourceEnsemble = ensemble;
+  updateWarning();
+}
+
 bool QgsProjectionSelectionWidget::showAccuracyWarnings() const
 {
   return mShowAccuracyWarnings;
@@ -353,7 +367,7 @@ void QgsProjectionSelectionWidget::updateWarning()
   try
   {
     const QgsDatumEnsemble ensemble = crs().datumEnsemble();
-    if ( !ensemble.isValid() )
+    if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble )
     {
       mWarningLabelContainer->hide();
     }
