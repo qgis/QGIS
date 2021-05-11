@@ -20,6 +20,8 @@
 
 #include "qgsapplication.h"
 #include <QUrl>
+#include <QFileInfo>
+#include <QDir>
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -31,7 +33,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   mFileRegistry.clear();
 }
 
-const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode )
+QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode, const QString &authConfig )
 {
 
   if ( mFileRegistry.contains( url ) )
@@ -39,7 +41,7 @@ const QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString 
     return mFileRegistry.value( url );
   }
 
-  QgsFetchedContent *content = new QgsFetchedContent( url, nullptr, QgsFetchedContent::NotStarted );
+  QgsFetchedContent *content = new QgsFetchedContent( url, nullptr, QgsFetchedContent::NotStarted, authConfig );
 
   mFileRegistry.insert( url, content );
 
@@ -126,9 +128,11 @@ void QgsFetchedContent::download( bool redownload )
        status() == QgsFetchedContent::NotStarted ||
        status() == QgsFetchedContent::Failed )
   {
-    mFetchingTask = new QgsNetworkContentFetcherTask( mUrl );
+    mFetchingTask = new QgsNetworkContentFetcherTask( mUrl, mAuthConfig );
     // use taskCompleted which is main thread rather than fetched signal in worker thread
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskCompleted, this, &QgsFetchedContent::taskCompleted );
+    connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskTerminated, this, &QgsFetchedContent::taskCompleted );
+    connect( mFetchingTask, &QgsNetworkContentFetcherTask::errorOccurred, this, &QgsFetchedContent::errorOccurred );
     QgsApplication::instance()->taskManager()->addTask( mFetchingTask );
     mStatus = QgsFetchedContent::Downloading;
   }
@@ -163,7 +167,12 @@ void QgsFetchedContent::taskCompleted()
     QNetworkReply *reply = mFetchingTask->reply();
     if ( reply->error() == QNetworkReply::NoError )
     {
-      QTemporaryFile *tf = new QTemporaryFile( QStringLiteral( "XXXXXX" ) );
+      // keep extension, it can be usefull when guessing file content
+      // (when loading this file in a Qt WebView for instance)
+      const QString extension = QFileInfo( reply->request().url().fileName() ).completeSuffix();
+
+      QTemporaryFile *tf = new QTemporaryFile( extension.isEmpty() ? QString( "XXXXXX" ) :
+          QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
       mFile = tf;
       tf->open();
       mFile->write( reply->readAll() );

@@ -11,12 +11,20 @@ services:
   httpbin:
     image: kennethreitz/httpbin:latest
 
+  webdav:
+    image: nginx
+    volumes:
+      - ${GH_WORKSPACE}/.docker/webdav/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ${GH_WORKSPACE}/.docker/webdav/passwords.list:/etc/nginx/.passwords.list
+      - /tmp/webdav_tests:/tmp/webdav_tests_root/webdav_tests
+
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
     volumes:
       - ${GH_WORKSPACE}:/root/QGIS
-    # links:
+    links:
+      - webdav
     #  - mssql
     links:
       - httpbin

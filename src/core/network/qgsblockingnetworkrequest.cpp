@@ -27,6 +27,7 @@
 #include <QWaitCondition>
 #include <QNetworkCacheMetaData>
 #include <QAuthenticator>
+#include <QBuffer>
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
@@ -61,6 +62,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::get( QNetworkReq
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh, QgsFeedback *feedback )
 {
+  QByteArray ldata( data );
+  QBuffer buffer( &ldata );
+  buffer.open( QIODevice::ReadOnly );
+  return post( request, &buffer, forceRefresh, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
+{
   mPayloadData = data;
   return doRequest( Post, request, forceRefresh, feedback );
 }
@@ -71,6 +80,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRe
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback )
+{
+  QByteArray ldata( data );
+  QBuffer buffer( &ldata );
+  buffer.open( QIODevice::ReadOnly );
+  return put( request, &buffer, feedback );
+}
+
+QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
   mPayloadData = data;
   return doRequest( Put, request, true, feedback );
@@ -177,6 +194,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
 
       auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty ]()
       {
@@ -288,7 +306,10 @@ void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 byte
     }
   }
 
-  emit downloadProgress( bytesReceived, bytesTotal );
+  if ( mMethod == Put || mMethod == Post )
+    emit uploadProgress( bytesReceived, bytesTotal );
+  else
+    emit downloadProgress( bytesReceived, bytesTotal );
 }
 
 void QgsBlockingNetworkRequest::replyFinished()
@@ -351,6 +372,7 @@ void QgsBlockingNetworkRequest::replyFinished()
 
           connect( mReply, &QNetworkReply::finished, this, &QgsBlockingNetworkRequest::replyFinished, Qt::DirectConnection );
           connect( mReply, &QNetworkReply::downloadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
+          connect( mReply, &QNetworkReply::uploadProgress, this, &QgsBlockingNetworkRequest::replyProgress, Qt::DirectConnection );
           return;
         }
       }

@@ -41,8 +41,13 @@ bool QgsNetworkContentFetcherTask::run()
 {
   mFetcher = new QgsNetworkContentFetcher();
   QEventLoop loop;
+
+  // We need to set the event loop (and not 'this') as receiver for all signal to ensure execution
+  // in the same thread and in the same order of emission. Indeed 'this' and 'loop' lives in
+  // different thread because they have been created in different thread.
+
   connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
-  connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, this, [ = ]( qint64 bytesReceived, qint64 bytesTotal )
+  connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, &loop, [ = ]( qint64 bytesReceived, qint64 bytesTotal )
   {
     if ( !isCanceled() && bytesTotal > 0 )
     {
@@ -53,12 +58,22 @@ bool QgsNetworkContentFetcherTask::run()
         setProgress( progress );
     }
   } );
+
+
+  bool hasErrorOccurred = false;
+  connect( mFetcher, &QgsNetworkContentFetcher::errorOccurred, &loop, [ &hasErrorOccurred, this ]( QNetworkReply::NetworkError code, const QString & errorMsg )
+  {
+    hasErrorOccurred = true;
+    emit errorOccurred( code, errorMsg );
+  } );
+
   mFetcher->fetchContent( mRequest, mAuthcfg );
   loop.exec();
   if ( !isCanceled() )
     setProgress( 100 );
   emit fetched();
-  return true;
+
+  return !isCanceled() && !hasErrorOccurred;
 }
 
 void QgsNetworkContentFetcherTask::cancel()
