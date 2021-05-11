@@ -366,8 +366,10 @@ void QgsProjectionSelectionWidget::updateWarning()
 
   try
   {
+    const double crsAccuracyWarningThreshold = QgsSettings().value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble();
+
     const QgsDatumEnsemble ensemble = crs().datumEnsemble();
-    if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble )
+    if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble || ( ensemble.accuracy() > 0 && ensemble.accuracy() < crsAccuracyWarningThreshold ) )
     {
       mWarningLabelContainer->hide();
     }
