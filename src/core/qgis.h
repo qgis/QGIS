@@ -864,6 +864,26 @@ typedef unsigned long long qgssize;
 #define FINAL final
 #endif
 
+#ifndef SIP_RUN
+#if defined(__GNUC__) && !defined(__clang__)
+// Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
+// like:
+// switch( mVariableThatCanOnlyBeXorY )
+// {
+//    case X:
+//        return "foo";
+//    case Y:
+//        return "foo";
+// }
+// See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
+#define DEFAULT_BUILTIN_UNREACHABLE \
+  default: \
+  __builtin_unreachable();
+#else
+#define DEFAULT_BUILTIN_UNREACHABLE
+#endif
+#endif // SIP_RUN
+
 #ifdef SIP_RUN
 
 /**
