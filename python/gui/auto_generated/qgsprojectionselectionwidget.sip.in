@@ -103,6 +103,30 @@ low accuracy.
 .. versionadded:: 3.20
 %End
 
+    void setSourceEnsemble( const QString &ensemble );
+%Docstring
+Sets the original source ``ensemble`` datum name.
+
+If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+ensemble datum, regardless of the ensemble's accuracy.
+
+.. seealso:: :py:func:`sourceEnsemble`
+
+.. versionadded:: 3.20
+%End
+
+    QString sourceEnsemble() const;
+%Docstring
+Returns the original source ensemble datum name.
+
+If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+ensemble datum, regardless of the ensemble's accuracy.
+
+.. seealso:: :py:func:`setSourceEnsemble`
+
+.. versionadded:: 3.20
+%End
+
   signals:
 
     void crsChanged( const QgsCoordinateReferenceSystem & );

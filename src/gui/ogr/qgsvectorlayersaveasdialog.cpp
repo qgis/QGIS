@@ -34,6 +34,7 @@
 #include <QSpinBox>
 #include <QRegularExpression>
 #include "gdal.h"
+#include "qgsdatums.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -201,7 +202,19 @@ void QgsVectorLayerSaveAsDialog::setup()
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
 
-  mCrsSelector->showAccuracyWarnings( true );
+  try
+  {
+    const QgsDatumEnsemble ensemble = mSelectedCrs.datumEnsemble();
+    if ( ensemble.isValid() )
+    {
+      mCrsSelector->setSourceEnsemble( ensemble.name() );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+  }
+
+  mCrsSelector->setShowAccuracyWarnings( true );
 }
 
 QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options )
