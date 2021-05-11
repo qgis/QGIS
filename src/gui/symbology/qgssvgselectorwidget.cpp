@@ -393,8 +393,6 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
-  setAllowAnyImage( mAllowAnyImage );
-
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
   mImagesListView->setUniformItemSizes( false );
@@ -492,16 +490,6 @@ void QgsSvgSelectorWidget::setBrowserVisible( bool visible )
 
   mBrowserVisible = visible;
   mSvgBrowserGroupBox->setVisible( visible );
-}
-
-void QgsSvgSelectorWidget::setAllowAnyImage( bool allowAnyImage )
-{
-  mAllowAnyImage = allowAnyImage;
-
-  if ( allowAnyImage )
-    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Image );
-  else
-    mSourceLineEdit->setMode( QgsPictureSourceLineEditBase::Svg );
 }
 
 QgsPropertyOverrideButton *QgsSvgSelectorWidget::propertyOverrideToolButton() const

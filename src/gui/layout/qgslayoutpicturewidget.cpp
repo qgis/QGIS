@@ -450,7 +450,11 @@ void QgsLayoutPictureWidget::modeChanged( bool checked )
   bool svg = mRadioSVG->isChecked();
   const QgsLayoutItemPicture::Format newFormat = svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster;
 
-  mSvgSelectorWidget->setAllowAnyImage( !svg );
+  if ( svg )
+    mSvgSelectorWidget->sourceLineEdit()->setMode( QgsPictureSourceLineEditBase::Svg );
+  else
+    mSvgSelectorWidget->sourceLineEdit()->setMode( QgsPictureSourceLineEditBase::Image );
+
   mSvgSelectorWidget->setBrowserVisible( svg );
   mSvgSelectorWidget->setAllowParameters( svg );
   mSVGParamsGroupBox->setVisible( svg );

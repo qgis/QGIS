@@ -44,7 +44,6 @@ class QTreeView;
 
 class QgsExpressionContextGenerator;
 class QgsSvgSelectorListModel;
-class QgsAbstractFileContentSourceLineEdit;
 class QgsPropertyOverrideButton;
 
 
@@ -398,7 +397,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns the source line edit
      * \since QGIS 3.16
      */
-    QgsAbstractFileContentSourceLineEdit *sourceLineEdit() const {return mSourceLineEdit;}
+    QgsPictureSourceLineEditBase *sourceLineEdit() const {return mSourceLineEdit;}
 
     /**
      * Defines if the group box to fill parameters is visible
@@ -423,20 +422,6 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * \since QGIS 3.20
      */
     bool browserVisible() const {return mBrowserVisible;}
-
-    /**
-     * Defines if the widget should allow any raster or SVG image
-     * or if the file chooser will be limited to open SVG files
-     * \since QGIS 3.20
-     */
-    void setAllowAnyImage( bool allowAnyImage );
-
-    /**
-     * Returns if the widget should allow any raster or SVG image
-     * or if the file chooser will be limited to open SVG files
-     * \since QGIS 3.20
-     */
-    bool allowAnyImage() const {return mAllowAnyImage;}
 
     /**
      * Returns the property override tool button of the file line edit
@@ -474,7 +459,6 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 
   private:
     int mIconSize = 30;
-    bool mAllowAnyImage = false;
     QString mCurrentSvgPath; //!< Always stored as absolute path
     bool mAllowParameters = false;
     bool mBrowserVisible = true;
