@@ -1331,23 +1331,8 @@ QString QgsMeshLayer::htmlMetadata() const
   if ( publicSource() != path )
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
-    else
-      myMetadata += tr( "Projected" );
-  }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
-
-  // unit
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
   QLocale locale = QLocale();
@@ -1375,6 +1360,9 @@ QString QgsMeshLayer::htmlMetadata() const
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // CRS
+  myMetadata += crsHtmlMetadata();
 
   // identification section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );

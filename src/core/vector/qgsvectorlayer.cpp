@@ -5116,24 +5116,8 @@ QString QgsVectorLayer::htmlMetadata() const
       myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
     }
 
-    // EPSG
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
-    if ( crs().isValid() )
-    {
-      myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
-      if ( crs().isGeographic() )
-        myMetadata += tr( "Geographic" );
-      else
-        myMetadata += tr( "Projected" );
-    }
-    myMetadata += QLatin1String( "</td></tr>\n" );
-
     // Extent
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
-
-    // unit
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
-
   }
 
   // feature count
@@ -5146,6 +5130,12 @@ QString QgsVectorLayer::htmlMetadata() const
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  if ( isSpatial() )
+  {
+    // CRS
+    myMetadata += crsHtmlMetadata();
+  }
 
   // identification section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
