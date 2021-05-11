@@ -23,6 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsdatums.h"
+#include "qgsprojoperation.h"
 
 //qt includes
 #include <QFileInfo>
@@ -994,6 +995,9 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   {
 
   }
+
+  const QgsProjOperation operation = currentCrs.operation();
+  properties << tr( "Method: %1" ).arg( operation.description() );
 
   const QString propertiesString = QStringLiteral( "<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>" ).arg( tr( "Properties" ),
                                    properties.join( QStringLiteral( "</li><li>" ) ) );
