@@ -289,15 +289,15 @@ void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
   update();
 }
 
-bool QgsProjectionSelectionWidget::showDatumEnsembleWarnings() const
+bool QgsProjectionSelectionWidget::showAccuracyWarnings() const
 {
-  return mShowDatumEnsembleWarnings;
+  return mShowAccuracyWarnings;
 }
 
-void QgsProjectionSelectionWidget::setShowDatumEnsembleWarnings( bool showDatumEnsembleWarnings )
+void QgsProjectionSelectionWidget::showAccuracyWarnings( bool show )
 {
-  mShowDatumEnsembleWarnings = showDatumEnsembleWarnings;
-  if ( !mShowDatumEnsembleWarnings )
+  mShowAccuracyWarnings = show;
+  if ( !mShowAccuracyWarnings )
     mWarningLabelContainer->hide();
   else
     updateWarning();
@@ -343,7 +343,7 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 
 void QgsProjectionSelectionWidget::updateWarning()
 {
-  if ( !mShowDatumEnsembleWarnings )
+  if ( !mShowAccuracyWarnings )
   {
     if ( mWarningLabelContainer->isVisible() )
       mWarningLabelContainer->hide();

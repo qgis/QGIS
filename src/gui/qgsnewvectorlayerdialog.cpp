@@ -87,7 +87,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
     mFileFormatLabel->setVisible( false );
   }
 
-  mCrsSelector->setShowDatumEnsembleWarnings( true );
+  mCrsSelector->showAccuracyWarnings( true );
 
   mFileFormatComboBox->setCurrentIndex( 0 );
 

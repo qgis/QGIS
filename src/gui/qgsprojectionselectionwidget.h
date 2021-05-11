@@ -102,26 +102,22 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     static QString crsOptionText( const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
 
     /**
-     * Returns TRUE if the widget will show a warning to users when they select a CRS which uses
-     * a datum ensemble.
+     * Returns TRUE if the widget will show a warning to users when they select a CRS which has
+     * low accuracy.
      *
-     * \warning Determining datum ensembles requires PROJ 8.0 or later.
-     *
-     * \see setShowDatumEnsembleWarnings()
+     * \see showAccuracyWarnings()
      * \since QGIS 3.20
      */
-    bool showDatumEnsembleWarnings() const;
+    bool showAccuracyWarnings() const;
 
     /**
-     * Sets whether the widget will show a warning to users when they select a CRS which uses
-     * a datum ensemble.
+     * Sets whether the widget will \a show warnings to users when they select a CRS which has
+     * low accuracy.
      *
-     * \warning Determining datum ensembles requires PROJ 8.0 or later.
-     *
-     * \see showDatumEnsembleWarnings()
+     * \see showAccuracyWarnings()
      * \since QGIS 3.20
      */
-    void setShowDatumEnsembleWarnings( bool showDatumEnsembleWarnings );
+    void showAccuracyWarnings( bool show );
 
   signals:
 
@@ -174,7 +170,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QString mNotSetText;
     QString mMessage;
 
-    bool mShowDatumEnsembleWarnings = false;
+    bool mShowAccuracyWarnings = false;
     QWidget *mWarningLabelContainer = nullptr;
     QLabel *mWarningLabel = nullptr;
 

@@ -254,7 +254,7 @@ QgsProcessingCrsParameterDefinitionWidget::QgsProcessingCrsParameterDefinitionWi
   mCrsSelector = new QgsProjectionSelectionWidget();
 
   // possibly we should expose this for parameter by parameter control
-  mCrsSelector->setShowDatumEnsembleWarnings( true );
+  mCrsSelector->showAccuracyWarnings( true );
 
   if ( const QgsProcessingParameterCrs *crsParam = dynamic_cast<const QgsProcessingParameterCrs *>( definition ) )
     mCrsSelector->setCrs( QgsProcessingParameters::parameterAsCrs( crsParam, crsParam->defaultValueForGui(), context ) );

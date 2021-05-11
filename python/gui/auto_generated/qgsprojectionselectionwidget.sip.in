@@ -83,30 +83,22 @@ passed, the message will be a generic
 %End
 
 
-    bool showDatumEnsembleWarnings() const;
+    bool showAccuracyWarnings() const;
 %Docstring
-Returns ``True`` if the widget will show a warning to users when they select a CRS which uses
-a datum ensemble.
+Returns ``True`` if the widget will show a warning to users when they select a CRS which has
+low accuracy.
 
-.. warning::
-
-   Determining datum ensembles requires PROJ 8.0 or later.
-
-.. seealso:: :py:func:`setShowDatumEnsembleWarnings`
+.. seealso:: :py:func:`showAccuracyWarnings`
 
 .. versionadded:: 3.20
 %End
 
-    void setShowDatumEnsembleWarnings( bool showDatumEnsembleWarnings );
+    void showAccuracyWarnings( bool show );
 %Docstring
-Sets whether the widget will show a warning to users when they select a CRS which uses
-a datum ensemble.
+Sets whether the widget will ``show`` warnings to users when they select a CRS which has
+low accuracy.
 
-.. warning::
-
-   Determining datum ensembles requires PROJ 8.0 or later.
-
-.. seealso:: :py:func:`showDatumEnsembleWarnings`
+.. seealso:: :py:func:`showAccuracyWarnings`
 
 .. versionadded:: 3.20
 %End
