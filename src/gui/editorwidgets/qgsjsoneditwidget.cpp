@@ -17,6 +17,8 @@
 
 #include <QJsonArray>
 #include <QPushButton>
+#include <QLabel>
+#include <QDesktopServices>
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )
@@ -26,6 +28,10 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   setView( View::Text );
 
   mCodeEditorJson->setReadOnly( true );
+  mCodeEditorJson->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  mCodeEditorJson->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+
+  mTreeWidget->setFont( QgsCodeEditor::getMonospaceFont() );
 
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
@@ -146,6 +152,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << key );
       refreshTreeViewItemValue( jsonValue, treeWidgetItem );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
+      mTreeWidget->expandItem( treeWidgetItem );
     }
   }
   else if ( jsonDocument.isArray() )
@@ -155,8 +162,11 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
       refreshTreeViewItemValue( jsonDocument.array().at( index ), treeWidgetItem );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
+      mTreeWidget->expandItem( treeWidgetItem );
     }
   }
+
+  mTreeWidget->resizeColumnToContents( static_cast<int>( TreeWidgetColumn::Key ) );
 }
 
 void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent )
@@ -173,8 +183,24 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QString::number( jsonValue.toDouble() ) );
       break;
     case QJsonValue::String:
-      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValue.toString() );
-      break;
+    {
+      const QString jsonValueString = jsonValue.toString();
+      if ( QUrl( jsonValueString ).scheme().isEmpty() )
+      {
+        treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValueString );
+      }
+      else
+      {
+        QLabel *label = new QLabel( QString( "<a href='%1'>%1</a>" ).arg( jsonValueString ) );
+        mTreeWidget->setItemWidget( treeWidgetItemParent, static_cast<int>( TreeWidgetColumn::Value ), label );
+
+        connect( label, &QLabel::linkActivated, this, []( const QString & link )
+        {
+          QDesktopServices::openUrl( link );
+        } );
+      }
+    }
+    break;
     case QJsonValue::Array:
     {
       const QJsonArray jsonArray = jsonValue.toArray();
@@ -183,6 +209,7 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
         QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( treeWidgetItemParent, QStringList() << QString::number( index ) );
         refreshTreeViewItemValue( jsonArray.at( index ), treeWidgetItem );
         treeWidgetItemParent->addChild( treeWidgetItem );
+        treeWidgetItemParent->setExpanded( true );
       }
     }
     break;
@@ -195,6 +222,7 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
         QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( treeWidgetItemParent, QStringList() << key );
         refreshTreeViewItemValue( jsonObject.value( key ), treeWidgetItem );
         treeWidgetItemParent->addChild( treeWidgetItem );
+        treeWidgetItemParent->setExpanded( true );
       }
     }
     break;
