@@ -92,7 +92,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 
     /**
-     * Returns the curve polygon's exterior ring.
+     * Returns a non-const pointer to the curve polygon's exterior ring.
+     * Ownership stays with this QgsCurve.
      *
      * \see interiorRing()
      * \note Not available in Python.
