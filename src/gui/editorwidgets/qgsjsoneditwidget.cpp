@@ -15,10 +15,11 @@
 
 #include "qgsjsoneditwidget.h"
 
-#include <QJsonArray>
-#include <QPushButton>
-#include <QLabel>
 #include <QDesktopServices>
+#include <QJsonArray>
+#include <QLabel>
+#include <QPushButton>
+#include <QUrl>
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )
