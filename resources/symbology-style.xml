@@ -5854,6 +5854,21 @@
       <prop k="stops" v="0.25;254,204,92,255:0.5;253,141,60,255:0.75;240,59,32,255"/>
     </colorramp>
   </colorramps>
+  <textformats>
+    <textformat favorite="1" name="Default" addedVersion="32000">
+      <text-style fontSize="10" fontWeight="50" capitalization="0" textOpacity="1" fontWordSpacing="0" allowHtml="0" blendMode="0" namedStyle="Regular" fontKerning="1" multilineHeight="1" fontStrikeout="0" fontUnderline="0" fontSizeUnit="Point" textColor="50,50,50,255" fontSizeMapUnitScale="3x:0,0,0,0,0,0" previewBkgrdColor="255,255,255,255" fontItalic="0" fontLetterSpacing="0" fontFamily="Open Sans" textOrientation="horizontal">
+        <families>
+          <family name="Open Sans"/>
+          <family name="Liberation Sans"/>
+          <family name="Helvetica"/>
+          <family name="Arial"/>
+          <family name="Sans Serif"/>
+        </families>
+      </text-style>
+      <text-buffer bufferDraw="1" bufferSizeUnits="MM" bufferNoFill="1" bufferColor="255,255,249,255" bufferOpacity="1" bufferJoinStyle="128" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1"/>
+      <shadow shadowRadiusUnit="MM" shadowOffsetGlobal="1" shadowDraw="0" shadowOffsetUnit="MM" shadowScale="100" shadowUnder="0" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowOpacity="0.69999999999999996" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowOffsetAngle="135" shadowOffsetDist="1" shadowBlendMode="6" shadowRadius="1.5" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0"/>
+    </textformat>
+  </textformats>
   <labelsettings>
     <labelsetting favorite="1" name="watercourses" addedVersion="32000">
       <settings calloutType="simple">
