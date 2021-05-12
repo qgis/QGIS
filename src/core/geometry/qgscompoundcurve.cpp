@@ -957,9 +957,9 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
     QgsPointSequence points;
     circularString->points( points );
 
-    QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
-    QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
-    QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
 
     std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
     curveA->setPoints( partA );
