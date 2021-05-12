@@ -983,9 +983,9 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
     lineString->points( points );
 
     // QgsMessageLog::logMessage("TODO : LineString not treated yet", "DEBUG");
-    QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
-    QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
-    QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
 
     QgsLineString *curveA = new QgsLineString();
     curveA->setPoints( partA );
