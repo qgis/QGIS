@@ -2514,7 +2514,18 @@ void QgsVertexTool::toggleVertexCurve()
   }
 
   if ( mDraggingVertex )
+  {
     stopDragging();
+    if( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Could not convert vertex" ),
+        tr( "Cannot convert vertex before it is added." ),
+        Qgis::Warning );
+      return;
+    }
+
+  }
 
   QgsVectorLayer *layer = toConvert.layer;
 
