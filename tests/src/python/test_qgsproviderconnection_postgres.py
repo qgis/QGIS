@@ -449,6 +449,118 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 10)
 
+    def test_create_vector_layer(self):
+        """Test query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.query_layer1;
+        CREATE TABLE qgis_test.query_layer1 (
+            id SERIAL PRIMARY KEY,
+            geom geometry(POINT,4326)
+        );
+        INSERT INTO qgis_test.query_layer1 (id, geom) VALUES (221, ST_GeomFromText('point(9 45)', 4326));
+        INSERT INTO qgis_test.query_layer1 (id, geom) VALUES (201, ST_GeomFromText('point(9.5 45.5)', 4326));
+        """
+
+        conn.executeSql(sql)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id < 200 LIMIT 2'
+        options.primaryKeyColumns = ['id']
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 0)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 200 LIMIT 2'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 LIMIT 2'
+        options.filter = 'id > 210'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # Wrong calls
+        options.primaryKeyColumns = ['DOES_NOT_EXIST']
+        vl = conn.createSqlVectorLayer(options)
+        self.assertFalse(vl.isValid())
+
+        options.primaryKeyColumns = ['id']
+        options.geometryColumn = 'DOES_NOT_EXIST'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertFalse(vl.isValid())
+
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        options.primaryKeyColumns = []
+        options.geometryColumn = ''
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # No geometry and no PK, aspatial layer
+        options.sql = 'SELECT id, geom FROM qgis_test.query_layer1 WHERE id > 210 LIMIT 2'
+        options.primaryKeyColumns = []
+        options.geometryColumn = ''
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertNotEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # Composite keys
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.query_layer2;
+        CREATE TABLE qgis_test.query_layer2 (
+            id SERIAL,
+            id2 SERIAL,
+            geom geometry(POINT,4326),
+            PRIMARY KEY(id, id2)
+        );
+        INSERT INTO qgis_test.query_layer2 (id, id2, geom) VALUES (101, 101, ST_GeomFromText('point(9 45)', 4326));
+        INSERT INTO qgis_test.query_layer2 (id, id2, geom) VALUES (201, 201, ST_GeomFromText('point(9.5 45.5)', 4326));
+        """
+
+        conn.executeSql(sql)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT id, id2, geom FROM qgis_test.query_layer2 ORDER BY id ASC LIMIT 1'
+        options.primaryKeyColumns = ['id', 'id2']
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        # No PKs
+        options.primaryKeyColumns = []
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PointGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

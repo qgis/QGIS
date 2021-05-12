@@ -754,7 +754,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
   }
 
   QgsDataSourceUri tUri( uri( ) );
-  tUri.setKeyColumn( QStringLiteral( "_uid_" ) );
+
   tUri.setSql( options.filter );
 
   if ( ! options.primaryKeyColumns.isEmpty() )
@@ -764,10 +764,27 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
   }
   else
   {
-    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid_, * FROM (%1\n) AS _subq_1_\n)" ).arg( options.sql ) );
+    int pkId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_uid%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      pkId ++;
+    }
+    tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
+
+    int sqlId { 0 };
+    while ( options.sql.contains( QStringLiteral( "_subq_%s_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      sqlId ++;
+    }
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
   }
 
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "sql_layer" ) : options.layerName, mProviderKey };
+  if ( ! options.geometryColumn.isEmpty() )
+  {
+    tUri.setGeometryColumn( options.geometryColumn );
+  }
+
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, mProviderKey };
 }
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const

@@ -1066,7 +1066,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         QAction *sqlAction = new QAction( QObject::tr( "Run SQL command…" ), menu );
 
-        QObject::connect( sqlAction, &QAction::triggered, collectionItem, [ collectionItem ]
+        QObject::connect( sqlAction, &QAction::triggered, collectionItem, [ collectionItem, context ]
         {
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( collectionItem->databaseConnection() );
           // This should never happen but let's play safe
@@ -1083,10 +1083,19 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           widget->layout()->setMargin( 0 );
           dialog.layout()->addWidget( widget );
 
-          connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [collectionItem]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+          connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ collectionItem, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
           {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( collectionItem->databaseConnection() );
-            conn3->createSqlVectorLayer( options );
+            try
+            {
+              QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
+              QgsProject::instance()->addMapLayers( { sqlLayer } );
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating new SQL layer: %1" ).arg( ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+
           } );
           dialog.exec();
         } );
