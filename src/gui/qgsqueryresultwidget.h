@@ -117,7 +117,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
   public slots:
 
     /**
-     * Executes the query
+     * Starts executing the query.
      */
     void executeQuery();
 

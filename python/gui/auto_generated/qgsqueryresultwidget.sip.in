@@ -63,7 +63,7 @@ Returns the sqlVectorLayerOptions
 
     void executeQuery();
 %Docstring
-Executes the query
+Starts executing the query.
 %End
 
     void showError( const QString &title, const QString &message, bool isSqlError = false );
