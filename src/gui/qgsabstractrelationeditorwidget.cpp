@@ -28,25 +28,14 @@
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
 #include "qgsvectorlayerutils.h"
-#include "qgscollapsiblegroupbox.h"
 
 #include <QMessageBox>
 #include <QPushButton>
-#include <QVBoxLayout>
 
 QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )
 {
   Q_UNUSED( config );
-
-  QVBoxLayout *rootLayout = new QVBoxLayout( this );
-  rootLayout->setContentsMargins( 0, 0, 0, 0 );
-
-  mRootCollapsibleGroupBox = new QgsCollapsibleGroupBox( QString(), this );
-  rootLayout->addWidget( mRootCollapsibleGroupBox );
-
-  mTopVBoxLayout = new QVBoxLayout( mRootCollapsibleGroupBox );
-  mTopVBoxLayout->setContentsMargins( 0, 9, 0, 0 );
 }
 
 void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &relation, const QgsFeature &feature )
@@ -141,26 +130,22 @@ QVariant QgsAbstractRelationEditorWidget::nmRelationId() const
 
 QString QgsAbstractRelationEditorWidget::label() const
 {
-  return mLabel;
+  return QString();
 }
 
 void QgsAbstractRelationEditorWidget::setLabel( const QString &label )
 {
-  mLabel = label;
-
-  updateTitle();
+  Q_UNUSED( label )
 }
 
 bool QgsAbstractRelationEditorWidget::showLabel() const
 {
-  return mShowLabel;
+  return false;
 }
 
 void QgsAbstractRelationEditorWidget::setShowLabel( bool showLabel )
 {
-  mShowLabel = showLabel;
-
-  updateTitle();
+  Q_UNUSED( showLabel )
 }
 
 void QgsAbstractRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
@@ -175,18 +160,6 @@ bool QgsAbstractRelationEditorWidget::forceSuppressFormPopup() const
 
 void QgsAbstractRelationEditorWidget::updateTitle()
 {
-  if ( mShowLabel && !mLabel.isEmpty() )
-  {
-    setTitle( mLabel );
-  }
-  else if ( mShowLabel && mRelation.isValid() )
-  {
-    setTitle( mRelation.name() );
-  }
-  else
-  {
-    setTitle( QString() );
-  }
 }
 
 QgsFeature QgsAbstractRelationEditorWidget::feature() const
@@ -617,7 +590,7 @@ void QgsAbstractRelationEditorWidget::updateUi()
 
 void QgsAbstractRelationEditorWidget::setTitle( const QString &title )
 {
-  mRootCollapsibleGroupBox->setTitle( title );
+  Q_UNUSED( title )
 }
 
 void QgsAbstractRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature )
@@ -637,11 +610,6 @@ void QgsAbstractRelationEditorWidget::beforeSetRelations( const QgsRelation &new
 
 void QgsAbstractRelationEditorWidget::afterSetRelations()
 {}
-
-QVBoxLayout *QgsAbstractRelationEditorWidget::rootTopVBoxLayout() const
-{
-  return mTopVBoxLayout;
-}
 
 void QgsAbstractRelationEditorWidget::duplicateFeature( const QgsFeatureId &fid )
 {

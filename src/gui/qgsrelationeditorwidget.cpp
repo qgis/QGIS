@@ -98,6 +98,9 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   : QgsAbstractRelationEditorWidget( config, parent )
   , mButtonsVisibility( qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons ) )
 {
+  QVBoxLayout *rootLayout = new QVBoxLayout( this );
+  rootLayout->setContentsMargins( 0, 9, 0, 0 );
+
   // buttons
   QHBoxLayout *buttonLayout = new QHBoxLayout();
   buttonLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -187,11 +190,11 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mViewModeButtonGroup->addButton( mTableViewButton, QgsDualView::AttributeTable );
 
   // add buttons layout
-  rootTopVBoxLayout()->addLayout( buttonLayout );
+  rootLayout->addLayout( buttonLayout );
 
   mRelationLayout = new QGridLayout();
   mRelationLayout->setContentsMargins( 0, 0, 0, 0 );
-  rootTopVBoxLayout()->addLayout( mRelationLayout );
+  rootLayout->addLayout( mRelationLayout );
 
   connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
            this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );

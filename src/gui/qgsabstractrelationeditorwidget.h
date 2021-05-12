@@ -33,10 +33,8 @@
 % End
 #endif
 
-class QVBoxLayout;
 class QgsFeature;
 class QgsVectorLayer;
-class QgsCollapsibleGroupBox;
 
 /**
  * Base class to build new relation widgets.
@@ -113,13 +111,15 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Defines if a title label should be shown for this widget.
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    bool showLabel() const;
+    Q_DECL_DEPRECATED bool showLabel() const SIP_DEPRECATED;
 
     /**
      * Defines if a title label should be shown for this widget.
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void setShowLabel( bool showLabel );
+    Q_DECL_DEPRECATED void setShowLabel( bool showLabel ) SIP_DEPRECATED;
 
     /**
     * Determines the relation id of the second relation involved in an N:M relation.
@@ -134,8 +134,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Determines the label of this element
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    QString label() const;
+    Q_DECL_DEPRECATED QString label() const SIP_DEPRECATED;
 
     /**
      * Sets \a label for this element
@@ -230,19 +231,15 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     QgsRelation mNmRelation;
     QgsFeature mFeature;
 
-    bool mShowLabel = true;
     bool mLayerInSameTransactionGroup = false;
 
     bool mForceSuppressFormPopup = false;
-    QString mLabel;
-
-    QgsCollapsibleGroupBox *mRootCollapsibleGroupBox = nullptr;
-    QVBoxLayout *mTopVBoxLayout = nullptr;
 
     /**
      * Updates the title contents to reflect the current state of the widget
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    void updateTitle();
+    Q_DECL_DEPRECATED void updateTitle() SIP_DEPRECATED;
 
     /**
      * Deletes the features with \a fids
@@ -266,8 +263,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     /**
      * Sets the title of the widget, if it is wrapped within a QgsCollapsibleGroupBox
+     * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */
-    virtual void setTitle( const QString &title );
+    Q_DECL_DEPRECATED virtual void setTitle( const QString &title ) SIP_DEPRECATED;
 
     /**
      * A hook called right before setRelationFeature() is executed. Used to update the UI once setting the relation feature is done.
@@ -292,11 +290,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Check QgsRealationEditorWidget as an example.
      */
     virtual void afterSetRelations();
-
-    /**
-     * The root collapsible group box to insert content into
-     */
-    QVBoxLayout *rootTopVBoxLayout() const;
 };
 
 

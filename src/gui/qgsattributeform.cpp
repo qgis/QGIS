@@ -49,6 +49,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
+#include "qgscollapsiblegroupbox.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1523,6 +1524,25 @@ void QgsAttributeForm::init()
           tabPageLayout->addWidget( widgetInfo.widget );
         }
       }
+      else if ( widgDef->type() == QgsAttributeEditorElement::AeTypeRelation )
+      {
+        hasRootFields = true;
+        tabWidget = nullptr;
+        WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
+        QgsCollapsibleGroupBox *collapsibleGroupBox = new QgsCollapsibleGroupBox();
+
+        if ( widgetInfo.showLabel )
+          collapsibleGroupBox->setTitle( widgetInfo.labelText );
+
+        QVBoxLayout *collapsibleGroupBoxLayout = new QVBoxLayout();
+        collapsibleGroupBoxLayout->addWidget( widgetInfo.widget );
+        collapsibleGroupBox->setLayout( collapsibleGroupBoxLayout );
+
+        QVBoxLayout *c = new QVBoxLayout();
+        c->addWidget( collapsibleGroupBox );
+        layout->addLayout( c, row, column, 1, 2 );
+        column += 2;
+      }
       else
       {
         hasRootFields = true;
@@ -1710,7 +1730,13 @@ void QgsAttributeForm::init()
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
-      gridLayout->addWidget( formWidget, row++, 0, 1, 2 );
+
+      QgsCollapsibleGroupBox *collapsibleGroupBox = new QgsCollapsibleGroupBox( rel.name() );
+      QVBoxLayout *collapsibleGroupBoxLayout = new QVBoxLayout();
+      collapsibleGroupBoxLayout->addWidget( formWidget );
+      collapsibleGroupBox->setLayout( collapsibleGroupBoxLayout );
+
+      gridLayout->addWidget( collapsibleGroupBox, row++, 0, 1, 2 );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
@@ -2019,17 +2045,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
       // below directly alter the widget and check for it.
       rww->setWidgetConfig( relDef->relationEditorConfiguration() );
-      rww->setShowLabel( relDef->showLabel() );
       rww->setNmRelationId( relDef->nmRelationId() );
       rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
-      rww->setLabel( relDef->label() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
 
       newWidgetInfo.widget = formWidget;
       newWidgetInfo.showLabel = relDef->showLabel();
-      newWidgetInfo.labelText = QString();
+      newWidgetInfo.labelText = relDef->label();
+      if ( newWidgetInfo.labelText.isEmpty() )
+        newWidgetInfo.labelText = rww->relation().name();
       newWidgetInfo.labelOnTop = true;
       break;
     }
