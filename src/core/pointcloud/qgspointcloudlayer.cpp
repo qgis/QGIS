@@ -49,7 +49,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
-    setDataSourcePrivate( uri, baseName, providerLib, providerOptions, providerFlags );
+    setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
 
     if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
       mDataProvider.get()->generateIndex();
@@ -129,7 +129,7 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
-    setDataSourcePrivate( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
+    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
   if ( !isValid() )

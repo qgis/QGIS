@@ -132,7 +132,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   {
     providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
-  setDataSourcePrivate( uri, baseName, providerKey, providerOptions, providerFlags );
+  setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
   {

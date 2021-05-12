@@ -188,8 +188,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
-    setDataSourcePrivate( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
-    emit dataSourceChanged();
+    setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
   for ( const QgsField &field : std::as_const( mFields ) )
