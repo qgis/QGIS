@@ -961,19 +961,19 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
     QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
     QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
 
-    QgsCircularString *curveA = new QgsCircularString();
+    std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
     curveA->setPoints( partA );
-    QgsLineString *curveB = new QgsLineString();
+    std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
     curveB->setPoints( partB );
-    QgsCircularString *curveC = new QgsCircularString();
+    std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
     curveC->setPoints( partC );
 
     removeCurve( curveId );
     if ( subVertexId.vertex < points.length() - 2 )
-      mCurves.insert( curveId, curveC );
-    mCurves.insert( curveId, curveB );
+      mCurves.insert( curveId.release(), curveC.release() );
+    mCurves.insert( curveId, curveB.release() );
     if ( subVertexId.vertex > 1 )
-      mCurves.insert( curveId, curveA );
+      mCurves.insert( curveId, curveA.release() );
   }
   else if ( const QgsLineString *lineString = dynamic_cast<const QgsLineString *>( curve ) )
   {
