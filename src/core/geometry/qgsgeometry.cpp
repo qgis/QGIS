@@ -584,7 +584,7 @@ bool QgsGeometry::convertVertex( int atVertex )
   {
     // TODO : move this block before the above, so we call convertVertex only in one place
     // If the geom is a linestring or cirularstring, we create a compound curve
-    QgsCompoundCurve *cpdCurve = new QgsCompoundCurve();
+    std::unique_ptr<QgsCompoundCurve> cpdCurve = std::make_unique<QgsCompoundCurve>();
     cpdCurve->addCurve( curve->clone() );
     success = cpdCurve->convertVertex( QgsVertexId( -1, -1, id.vertex ) );
 
