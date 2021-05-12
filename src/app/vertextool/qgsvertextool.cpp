@@ -2515,7 +2515,6 @@ void QgsVertexTool::toggleVertexCurve()
 
   if ( mDraggingVertex )
   {
-    stopDragging();
     if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
     {
       QgisApp::instance()->messageBar()->pushMessage(
@@ -2524,7 +2523,7 @@ void QgsVertexTool::toggleVertexCurve()
         Qgis::Warning );
       return;
     }
-
+    stopDragging();
   }
 
   QgsVectorLayer *layer = toConvert.layer;
