@@ -447,7 +447,7 @@ if(WITH_CORE)
     set(QT_VERSION_BASE "Qt6")
   else()
     set(QT_MIN_VERSION 5.12.0)
-    set(QT_VERSION_BASE "Qt5")    
+    set(QT_VERSION_BASE "Qt5")
   endif()
 
   # Use Qt5SerialPort optionally for GPS
@@ -913,6 +913,11 @@ set (QGIS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 
+if (WITH_BINDINGS)
+  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
+endif()
+
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
 file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
@@ -1026,7 +1031,7 @@ if (WITH_CORE)
   add_subdirectory(i18n)
 
   if (WITH_BINDINGS)
-    target_include_directories(qgis PUBLIC python)
+    add_subdirectory(python)
   endif()
 
   if (APPLE)
