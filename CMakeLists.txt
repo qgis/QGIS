@@ -1026,7 +1026,7 @@ if (WITH_CORE)
   add_subdirectory(i18n)
 
   if (WITH_BINDINGS)
-    add_subdirectory(python)
+    target_include_directories(qgis PUBLIC python)
   endif()
 
   if (APPLE)
