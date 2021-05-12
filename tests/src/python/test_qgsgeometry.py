@@ -4580,8 +4580,8 @@ class TestQgsGeometry(unittest.TestCase):
 
         for wkt_before, wkt_expected in test_setup.items():
             geom = QgsGeometry.fromWkt(wkt_before)
-            geom.convertVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
-            self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)), f'convertVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
+            geom.toggleCircularAtVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
+            self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)), f'toggleCircularAtVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
 
     def testSingleSidedBuffer(self):
 
