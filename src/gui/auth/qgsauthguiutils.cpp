@@ -92,12 +92,12 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
     }
   }
 
-  QString fileName = QFileDialog::getSaveFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+  QString filename = QFileDialog::getSaveFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
                      QObject::tr( "XML files (*.xml *.XML)" ) );
-  if ( fileName.isEmpty() )
+  if ( filename.isEmpty() )
     return;
 
-  bool ok = QgsApplication::authManager()->exportAuthenticationConfigsToXml( fileName, authenticationConfigIds, password );
+  bool ok = QgsApplication::authManager()->exportAuthenticationConfigsToXml( filename, authenticationConfigIds, password );
   if ( !ok )
   {
     msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
@@ -109,15 +109,40 @@ void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authentic
 void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
 {
 
-  QString fileName = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+  QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
                      QObject::tr( "XML files (*.xml *.XML)" ) );
-  if ( fileName.isEmpty() )
+  if ( filename.isEmpty() )
     return;
 
-  QString password = QInputDialog::getText( msgbar, QObject::tr( "Import Authentication Configurations" ),
-                     QObject::tr( "Enter the password to decrypt the configurations file:" ), QLineEdit::Password );
 
-  bool ok = QgsApplication::authManager()->importAuthenticationConfigsFromXml( fileName, password );
+  QFile file( filename );
+  if ( !file.open( QFile::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  if ( !document.setContent( &file ) )
+  {
+    file.close();
+    return;
+  }
+  file.close();
+
+  QDomElement root = document.documentElement();
+  if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
+  {
+    return;
+  }
+
+  QString password;
+  if ( root.hasAttribute( QStringLiteral( "salt" ) ) )
+  {
+    password = QInputDialog::getText( msgbar, QObject::tr( "Import Authentication Configurations" ),
+                                      QObject::tr( "Enter the password to decrypt the configurations file:" ), QLineEdit::Password );
+  }
+
+  bool ok = QgsApplication::authManager()->importAuthenticationConfigsFromXml( filename, password );
   if ( !ok )
   {
     msgbar->pushMessage( QgsApplication::authManager()->authManTag(),

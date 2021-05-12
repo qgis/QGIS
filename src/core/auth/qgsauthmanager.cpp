@@ -1386,19 +1386,19 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
 
 bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename, const QString &password )
 {
-  QFile f( filename );
-  if ( !f.open( QFile::ReadOnly ) )
+  QFile file( filename );
+  if ( !file.open( QFile::ReadOnly ) )
   {
     return false;
   }
 
   QDomDocument document( QStringLiteral( "qgis_authentication" ) );
-  if ( !document.setContent( &f ) )
+  if ( !document.setContent( &file ) )
   {
-    f.close();
+    file.close();
     return false;
   }
-  f.close();
+  file.close();
 
   QDomElement root = document.documentElement();
   if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
