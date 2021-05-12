@@ -342,6 +342,22 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
 }
 
 /**
+ * Compare two doubles, treating nan values as equal
+ * \param a first double
+ * \param b second double
+ * \since QGIS 3.20
+ */
+inline bool qgsNanCompatibleEquals( double a, double b )
+{
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
+
+  return a == b;
+}
+
+/**
  * Compare two doubles (but allow some difference)
  * \param a first double
  * \param b second double
@@ -349,8 +365,10 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -364,8 +382,10 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   const float diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -374,8 +394,10 @@ inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   // The most simple would be to print numbers as %.xe and compare as strings
   // but that is probably too costly

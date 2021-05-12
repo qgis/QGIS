@@ -182,6 +182,16 @@ Returns a string representation of a double
 :param precision: number of decimal places to retain
 %End
 
+bool qgsNanCompatibleEquals( double a, double b );
+%Docstring
+Compare two doubles, treating nan values as equal
+
+:param a: first double
+:param b: second double
+
+.. versionadded:: 3.20
+%End
+
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
 %Docstring
 Compare two doubles (but allow some difference)

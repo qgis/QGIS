@@ -1678,9 +1678,7 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !d->mIsValid || !srs.d->mIsValid )
     return false;
 
-  if ( std::isnan( d->mCoordinateEpoch ) != std::isnan( srs.d->mCoordinateEpoch ) )
-    return false;
-  else if ( !std::isnan( d->mCoordinateEpoch ) && d->mCoordinateEpoch != srs.d->mCoordinateEpoch )
+  if ( !qgsNanCompatibleEquals( d->mCoordinateEpoch, srs.d->mCoordinateEpoch ) )
     return false;
 
   const bool isUser = d->mSrsId >= USER_CRS_START_ID;
