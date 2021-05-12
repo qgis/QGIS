@@ -8,3 +8,6 @@ Capabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP see
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapability.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.GeometryColumnCapabilities.baseClass = QgsAbstractDatabaseProviderConnection
 GeometryColumnCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module
+QgsAbstractDatabaseProviderConnection.SqlLayerDefinitionCapability.baseClass = QgsAbstractDatabaseProviderConnection
+QgsAbstractDatabaseProviderConnection.SqlLayerDefinitionCapabilities.baseClass = QgsAbstractDatabaseProviderConnection
+SqlLayerDefinitionCapabilities = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module

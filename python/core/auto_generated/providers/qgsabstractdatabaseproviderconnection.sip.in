@@ -330,7 +330,6 @@ This information is calculated from the geometry columns types.
       DeleteField,
       DeleteFieldCascade,
       AddField,
-      SqlLayerFilters,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -344,6 +343,16 @@ This information is calculated from the geometry columns types.
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
+
+
+    enum SqlLayerDefinitionCapability
+    {
+      Filters,
+      GeometryColumn,
+      PrimaryKeys
+    };
+
+    typedef QFlags<QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
 
 
     QgsAbstractDatabaseProviderConnection( const QString &name );
@@ -374,6 +383,13 @@ Returns connection capabilities
 Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 
 .. versionadded:: 3.16
+%End
+
+    virtual SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
+%Docstring
+Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
+
+.. versionadded:: 3.20
 %End
 
 
@@ -523,10 +539,10 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
 
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
-Creates and returns a vector layer based on the ``sql`` statement and optional ``options``.
+Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered or if SQL layer creation is not supported.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.20
 %End

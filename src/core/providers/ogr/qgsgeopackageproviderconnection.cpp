@@ -168,6 +168,11 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
+QgsVectorLayer *QgsGeoPackageProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
+{
+  return new QgsVectorLayer( QStringLiteral( "%1|subset=%2" ).arg( uri(), options.sql ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+}
+
 QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );

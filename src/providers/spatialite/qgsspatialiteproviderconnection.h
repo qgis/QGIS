@@ -62,6 +62,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
@@ -85,11 +86,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
 
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;
-
 };
-
-
-
 
 
 ///@endcond

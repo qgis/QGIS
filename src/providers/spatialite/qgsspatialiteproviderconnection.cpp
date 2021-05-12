@@ -73,7 +73,7 @@ void QgsSpatiaLiteProviderConnection::remove( const QString &name ) const
 
 QString QgsSpatiaLiteProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
-  const auto tableInfo { table( schema, name ) };
+  Q_UNUSED( schema );  // spatialite does not support schema
   return uri() + QStringLiteral( " table=%1" ).arg( QgsSqliteUtils::quotedIdentifier( name ) );
 }
 
@@ -109,6 +109,26 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QgsVectorLayer *QgsSpatiaLiteProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
+{
+  if ( options.sql.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
+  }
+
+  QgsDataSourceUri tUri( uri( ) );
+
+  tUri.setSql( options.filter );
+  tUri.setTable( '(' + options.sql + ')' );
+
+  if ( ! options.geometryColumn.isEmpty() )
+  {
+    tUri.setGeometryColumn( options.geometryColumn );
+  }
+
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
 }
 
 void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -152,7 +172,7 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
   }
   if ( ! errCause.isEmpty() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name ).arg( errCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Error deleting vector/aspatial table %1: %2" ).arg( name, errCause ) );
   }
 }
 
@@ -391,7 +411,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::SpatialIndexExists,
     Capability::DeleteField,
     Capability::AddField,
-    Capability::SqlLayers
+    Capability::SqlLayers,
   };
   mGeometryColumnCapabilities =
   {
@@ -399,6 +419,12 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::M,
     GeometryColumnCapability::SinglePart,
   };
+  mSqlLayerDefinitionCapabilities =
+  {
+    Filters,
+    GeometryColumn
+  };
+
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const

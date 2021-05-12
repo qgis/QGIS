@@ -43,6 +43,11 @@ QgsAbstractDatabaseProviderConnection::GeometryColumnCapabilities QgsAbstractDat
   return mGeometryColumnCapabilities;
 }
 
+QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlLayerDefinitionCapabilities()
+{
+  return mSqlLayerDefinitionCapabilities;
+}
+
 QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   Q_UNUSED( schema )

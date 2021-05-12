@@ -83,6 +83,12 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SinglePart,
     GeometryColumnCapability::Curves
   };
+  mSqlLayerDefinitionCapabilities =
+  {
+    Filters,
+    PrimaryKeys,
+    GeometryColumn
+  };
 }
 
 void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
@@ -772,7 +778,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
 
     int sqlId { 0 };
-    while ( options.sql.contains( QStringLiteral( "_subq_%s_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    while ( options.sql.contains( QStringLiteral( "_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       sqlId ++;
     }
@@ -784,7 +790,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, mProviderKey };
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
 }
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const

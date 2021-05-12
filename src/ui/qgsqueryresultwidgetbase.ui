@@ -30,6 +30,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="mStatusLabel">
+       <property name="text">
+        <string>Status and errors goes here.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -129,12 +136,16 @@
         <item>
          <widget class="QLabel" name="mLayerNameLabel">
           <property name="text">
-           <string>Layer name (prefix)</string>
+           <string>Layer name</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mLayerNameLineEdit"/>
+         <widget class="QLineEdit" name="mLayerNameLineEdit">
+          <property name="text">
+           <string>QueryLayer</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -163,13 +174,6 @@
        </layout>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="mStatusLabel">
-     <property name="text">
-      <string>Status and errors goes here.</string>
-     </property>
     </widget>
    </item>
   </layout>

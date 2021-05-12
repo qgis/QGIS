@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 14.1.2021
- copyright            : (C) 2021 by ale
- email                : [your-email-here]
+ copyright            : (C) 2021 by Alessandro Pasotti
+ email                : elpaso at itopen dot it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -29,7 +29,10 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   setupUi( this );
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
-  connect( mClearButton, &QPushButton::pressed, this, [ = ] { mSqlEditor->setText( QString() ); } );
+  connect( mClearButton, &QPushButton::pressed, this, [ = ]
+  {
+    mSqlEditor->setText( QString() );
+  } );
   connect( mLoadLayerPushButton, &QPushButton::pressed, this, [ = ]
   {
     if ( mConnection )
@@ -60,6 +63,27 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   mStatusLabel->hide();
   mSqlErrorText->hide();
+
+  // Configure the load layer interface
+  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys ) )
+  {
+    mPkColumnsCheckBox->hide();
+    mPkColumnsComboBox->hide();
+  }
+
+  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn ) )
+  {
+    mGeometryColumnCheckBox->hide();
+    mGeometryColumnComboBox->hide();
+  }
+
+  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) )
+  {
+    mFilterLabel->hide();
+    mFilterToolButton->hide();
+    mFilterLineEdit->hide();
+  }
+
   mLoadAsNewLayerGroupBox->setCollapsed( true );
   setConnection( connection );
 }
@@ -129,7 +153,7 @@ void QgsQueryResultWidget::updateButtons()
 {
   mFilterToolButton->setEnabled( false );
   mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
-  mLoadAsNewLayerGroupBox->setEnabled( mFirstRowFetched && ! mSqlEditor->text().isEmpty() && mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
+  mLoadAsNewLayerGroupBox->setEnabled( mFirstRowFetched && mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
 }
 
 void QgsQueryResultWidget::updateSqlLayerColumns( )

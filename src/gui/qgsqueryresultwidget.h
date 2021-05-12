@@ -40,7 +40,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   public:
 
-    //! Constructs a result fetcher from \a queryResult
+    //! Constructs a result fetcher from \a queryResult.
     QgsConnectionsApiFetcher( const QgsAbstractDatabaseProviderConnection *conn )
       : mConnection( conn )
     {}
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   signals:
 
-    //!! Emitted when \a newTokens have been fetched
+    //!! Emitted when \a newTokens have been fetched.
     void tokensReady( const QStringList &newTokens );
 
     //! Emitted when fetching of tokes has finished or has been interrupted.
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     virtual ~QgsQueryResultWidget();
 
     /**
-     * Set the connection to \a connection, ownership is transferred to the widget.
+     * Sets the connection to \a connection, ownership is transferred to the widget.
      */
     void setConnection( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER );
 
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void setQuery( const QString &sql );
 
     /**
-     * Set the SQL layer \a options. This method automatically populates and shows the "Load as new layer" panel.
+     * Sets the SQL layer \a options. This method automatically populates and shows the "Load as new layer" panel.
      */
     void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
 
@@ -166,23 +166,23 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QString mSqlErrorMessage;
 
     /**
-     * Updates buttons status
+     * Updates buttons status.
      */
     void updateButtons();
 
     /**
-     * Updates SQL layer columns
+     * Updates SQL layer columns.
      */
     void updateSqlLayerColumns();
 
     /**
-     * Cancel and wait for finish
+     * Cancel and wait for finish.
      */
     void cancelRunningQuery();
 
 
     /**
-     * Starts the model population after initial query run
+     * Starts the model population after initial query run.
      */
     void startFetching();
 

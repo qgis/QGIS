@@ -130,6 +130,45 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         fields = conn.fields('', 'cdb_lines')
         self.assertEqual(fields.names(), ['pk', 'geom', 'fid', 'id', 'typ', 'name', 'ortsrat', 'id_long'])
 
+    def test_create_vector_layer(self):
+        """Test query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+        conn = md.createConnection(self.uri, {})
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT fid, name, geom FROM cdb_lines WHERE name LIKE \'S%\' LIMIT 2'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])
+
+    def test_create_vector_layer(self):
+        """Test query layers"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+        conn = md.createConnection(self.uri, {})
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = 'SELECT fid, name, geom FROM cdb_lines WHERE name LIKE \'S%\' LIMIT 2'
+        options.geometryColumn = 'geom'
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])
+
+        options.filter = 'name == \'Sülfeld\''
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.geometryType(), QgsWkbTypes.PolygonGeometry)
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [8, 'Sülfeld'])
+
 
 if __name__ == '__main__':
     unittest.main()
