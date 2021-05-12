@@ -603,21 +603,19 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
         // Replace the ring in the owning polygon
         if ( id.ring == 0 )
         {
-          owningPolygon->setExteriorRing( cpdCurve.get() );
+          owningPolygon->setExteriorRing( cpdCurve.release() );
         }
         else
         {
           owningPolygon->removeInteriorRing( id.ring - 1 );
-          owningPolygon->addInteriorRing( cpdCurve.get() );
-          cpdCurve.release();
+          owningPolygon->addInteriorRing( cpdCurve.release() );
         }
       }
       else if ( owningCollection != nullptr )
       {
         // Replace the curve in the owning collection
         owningCollection->removeGeometry( id.part );
-        owningCollection->insertGeometry( cpdCurve.get(), id.part );
-        cpdCurve.release();
+        owningCollection->insertGeometry( cpdCurve.release(), id.part );
       }
     }
   }
