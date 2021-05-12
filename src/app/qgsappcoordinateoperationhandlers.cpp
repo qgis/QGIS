@@ -314,7 +314,7 @@ void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateRef
     return;
 
   const QString shortMessage = tr( "Cannot transform between dynamic CRS at difference coordinate epochs" );
-  const QString longMessage = tr( "<p>Transformation between %1 and %3 is not currently supported.</p><p><b>The results will be unpredictable and should not be used for high accuracy work.</b>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier() );
+  const QString longMessage = tr( "<p>Transformation between %1 and %2 is not currently supported.</p><p><b>The results will be unpredictable and should not be used for high accuracy work.</b>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier() );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
