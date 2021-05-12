@@ -142,6 +142,8 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
            this, &QgsAuthEditorWidgets::authMessageOut );
 
   // set up utility actions menu
+  mActionImportAuthenticationConfigs = new QAction( tr( "Import authentication configurations from file" ), this );
+  mActionExportSelectedAuthenticationConfigs = new QAction( tr( "Export selected authentication configurations to file" ), this );
   mActionSetMasterPassword = new QAction( tr( "Input master password" ), this );
   mActionClearCachedMasterPassword = new QAction( tr( "Clear cached master password" ), this );
   mActionResetMasterPassword = new QAction( tr( "Reset master password" ), this );
@@ -168,6 +170,8 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionPasswordHelperLoggingEnable->setCheckable( true );
   mActionPasswordHelperLoggingEnable->setChecked( QgsApplication::authManager()->passwordHelperLoggingEnabled() );
 
+  connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::importAuthenticationConfigs );
+  connect( mActionExportSelectedAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::exportSelectedAuthenticationConfigs );
   connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::setMasterPassword );
   connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedMasterPassword );
   connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::resetMasterPassword );
@@ -206,9 +210,25 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mAuthUtilitiesMenu->addAction( mActionClearCachedAuthConfigs );
   mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
   mAuthUtilitiesMenu->addSeparator();
+  mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
+  mAuthUtilitiesMenu->addAction( mActionExportSelectedAuthenticationConfigs );
+  mAuthUtilitiesMenu->addSeparator();
   mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
   btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
+}
+
+void QgsAuthEditorWidgets::importAuthenticationConfigs()
+{
+  QgsAuthGuiUtils::importAuthenticationConfigs( messageBar() );
+}
+
+void QgsAuthEditorWidgets::exportSelectedAuthenticationConfigs()
+{
+  if ( !wdgtConfigEditor )
+    return;
+
+  QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( wdgtConfigEditor->selectedAuthenticationConfigIds(), messageBar() );
 }
 
 void QgsAuthEditorWidgets::setMasterPassword()
