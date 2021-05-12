@@ -913,11 +913,6 @@ set (QGIS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR})
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 
-if (WITH_BINDINGS)
-  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
-  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
-endif()
-
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
 file(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/qgisbuildpath.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
@@ -950,6 +945,9 @@ message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
+
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
