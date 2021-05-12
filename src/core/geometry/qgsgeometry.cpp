@@ -538,7 +538,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
-bool QgsGeometry::convertVertex( int atVertex )
+bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
 
   if ( !d->geometry )
@@ -554,7 +554,7 @@ bool QgsGeometry::convertVertex( int atVertex )
 
   // If the geom is a collection, we get the concerned part, otherwise, the part is just the whole geom
   QgsAbstractGeometry *part = nullptr;
-  QgsGeometryCollection *owningCollection = dynamic_cast<QgsGeometryCollection *>( geom );
+  QgsGeometryCollection *owningCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( owningCollection != nullptr )
     part = owningCollection->geometryN( id.part );
   else
@@ -562,19 +562,19 @@ bool QgsGeometry::convertVertex( int atVertex )
 
   // If the part is a polygon, we get the concerned ring, otherwise, the ring is just the whole part
   QgsAbstractGeometry *ring = nullptr;
-  QgsCurvePolygon *owningPolygon = dynamic_cast<QgsCurvePolygon *>( part );
+  QgsCurvePolygon *owningPolygon = qgsgeometry_cast<QgsCurvePolygon *>( part );
   if ( owningPolygon != nullptr )
     ring = ( id.ring == 0 ) ? owningPolygon->exteriorRing() : owningPolygon->interiorRing( id.ring - 1 );
   else
     ring = part;
 
   // If the ring is not a curve, we're probably on a point geometry
-  QgsCurve *curve = dynamic_cast<QgsCurve *>( ring );  // TODO dynamic_cast -> geom_cast
+  QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( ring );
   if ( curve == nullptr )
     return false;
 
   bool success = false;
-  QgsCompoundCurve *cpdCurve  = dynamic_cast<QgsCompoundCurve *>( curve );
+  QgsCompoundCurve *cpdCurve  = qgsgeometry_cast<QgsCompoundCurve *>( curve );
   if ( cpdCurve != nullptr )
   {
     // If the geom is a already compound curve, we convert inplace, and we're done
@@ -603,19 +603,21 @@ bool QgsGeometry::convertVertex( int atVertex )
         // Replace the ring in the owning polygon
         if ( id.ring == 0 )
         {
-          owningPolygon->setExteriorRing( cpdCurve );
+          owningPolygon->setExteriorRing( cpdCurve.get() );
         }
         else
         {
           owningPolygon->removeInteriorRing( id.ring - 1 );
-          owningPolygon->addInteriorRing( cpdCurve );
+          owningPolygon->addInteriorRing( cpdCurve.get() );
+          cpdCurve.release();
         }
       }
       else if ( owningCollection != nullptr )
       {
         // Replace the curve in the owning collection
         owningCollection->removeGeometry( id.part );
-        owningCollection->insertGeometry( cpdCurve, id.part );
+        owningCollection->insertGeometry( cpdCurve.get(), id.part );
+        cpdCurve.release();
       }
     }
   }
