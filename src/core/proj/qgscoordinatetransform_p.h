@@ -165,6 +165,15 @@ class QgsCoordinateTransformPrivate : public QSharedData
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
+    /**
+     * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
+     * \a destinationCrs is a dynamic CRS to dynamic CRS transform, not currently supported by PROJ.
+     *
+     * \since QGIS 3.20
+     */
+    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
+
   private:
 
     void freeProj();
@@ -185,6 +194,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
                                 const QgsDatumTransform::TransformDetails &desiredOperation )> sMissingGridUsedByContextHandler;
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs )> sDynamicCrsToDynamicCrsWarningHandler;
 
     QgsCoordinateTransformPrivate &operator= ( const QgsCoordinateTransformPrivate & ) = delete;
 };

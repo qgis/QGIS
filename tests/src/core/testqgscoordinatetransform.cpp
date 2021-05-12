@@ -44,6 +44,7 @@ class TestQgsCoordinateTransform: public QObject
 #if PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
     void transformEpoch_data();
     void transformEpoch();
+    void dynamicToDynamicErrorHandler();
 #endif
     void transformLKS();
     void transformContextNormalize();
@@ -462,6 +463,60 @@ void TestQgsCoordinateTransform::transformEpoch()
   ct2.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
+}
+
+void TestQgsCoordinateTransform::dynamicToDynamicErrorHandler()
+{
+  // test that warnings are raised when attempting a dynamic crs to dynamic crs transformation (not supported by PROJ)
+  int counter = 0;
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [&counter]( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )
+  {
+    counter++;
+  } );
+
+  // no warnings -- no coordinate epoch set (although we should consider a different warning in this situation!!)
+  QgsCoordinateReferenceSystem src( QStringLiteral( "EPSG:9000" ) );
+  QgsCoordinateReferenceSystem dest( QStringLiteral( "EPSG:9000" ) );
+  QgsCoordinateTransform t( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 0 );
+
+  // no warnings, static to static
+  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
+  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) );
+  t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 0 );
+
+  // no warnings, static to dynamic
+  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
+  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  dest.setCoordinateEpoch( 2030 );
+  t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 0 );
+
+  // no warnings, dynamic to static
+  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src.setCoordinateEpoch( 2030 );
+  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) );
+  t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 0 );
+
+  // no warnings, same dynamic CRS to same dynamic CRS with same epoch
+  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src.setCoordinateEpoch( 2030 );
+  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  dest.setCoordinateEpoch( 2030 );
+  t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 0 );
+
+  // yes warnings, dynamic CRS to dynamic CRS with different epoch
+  src = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  src.setCoordinateEpoch( 2030 );
+  dest = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:9000" ) );
+  dest.setCoordinateEpoch( 2025 );
+  t = QgsCoordinateTransform( src, dest, QgsCoordinateTransformContext() );
+  QCOMPARE( counter, 1 );
+
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( nullptr );
 }
 #endif
 

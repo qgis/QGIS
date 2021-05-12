@@ -1052,3 +1052,8 @@ void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::fun
 {
   sFallbackOperationOccurredHandler = handler;
 }
+
+void QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
+{
+  QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( handler );
+}

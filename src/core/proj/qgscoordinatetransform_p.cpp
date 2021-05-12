@@ -48,6 +48,9 @@ std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                      const QgsCoordinateReferenceSystem &destinationCrs,
                      const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
 
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs )> QgsCoordinateTransformPrivate::sDynamicCrsToDynamicCrsWarningHandler = nullptr;
+
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
 {
@@ -174,7 +177,10 @@ bool QgsCoordinateTransformPrivate::initialize()
        && !std::isnan( mSourceCoordinateEpoch ) && mSourceCoordinateEpoch != mDestCoordinateEpoch )
   {
     // transforms from dynamic crs to dynamic crs with different coordinate epochs are not yet supported by PROJ
-
+    if ( sDynamicCrsToDynamicCrsWarningHandler )
+    {
+      sDynamicCrsToDynamicCrsWarningHandler( mSourceCRS, mDestCRS );
+    }
   }
 
   // init the projections (destination and source)
@@ -558,6 +564,11 @@ void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHan
 void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
 {
   sMissingGridUsedByContextHandler = handler;
+}
+
+void QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
+{
+  sDynamicCrsToDynamicCrsWarningHandler = handler;
 }
 
 void QgsCoordinateTransformPrivate::freeProj()
