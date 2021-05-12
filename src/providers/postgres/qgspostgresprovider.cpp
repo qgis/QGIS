@@ -623,14 +623,19 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         whereValuesList << whereValues;
       }
     }
+
     if ( 1 ==  pkAttrs.size() )
+    {
       return whereValuesList.isEmpty() ? QString() :
              whereKeys.append( QStringLiteral( " IN " ) ) +
              whereValuesList.join( QLatin1Char( ',' ) ).prepend( QLatin1Char( '(' ) ).append( QLatin1Char( ')' ) );
-
-    return whereValuesList.isEmpty() ? QString() :
-           whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-           whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
+    }
+    else
+    {
+      return whereValuesList.isEmpty() ? QString() :
+             whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
+    }
   };
 
   switch ( pkType )
@@ -666,7 +671,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       QList<int> allowedType;
       allowedType << QVariant::String;
       allowedType << QVariant::Int;
-      //allowedType << QVariant::LongLong;
+      allowedType << QVariant::LongLong;
       bool canUseIN = true;
       for ( int i = 0; i < pkAttrs.size(); i++ )
       {
