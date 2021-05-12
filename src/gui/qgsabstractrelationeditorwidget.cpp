@@ -47,7 +47,6 @@ void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &rel
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
-  updateTitle();
   afterSetRelationFeature();
   updateUi();
 }
@@ -85,8 +84,6 @@ void QgsAbstractRelationEditorWidget::setRelations( const QgsRelation &relation,
         mLayerInSameTransactionGroup = true;
     }
   }
-
-  updateTitle();
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
