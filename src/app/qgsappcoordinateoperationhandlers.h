@@ -53,6 +53,9 @@ class QgsAppMissingGridHandler : public QObject
                                     const QgsCoordinateReferenceSystem &destinationCrs,
                                     const QString &desired );
 
+    void dynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs,
+                                  const QgsCoordinateReferenceSystem &destinationCrs );
+
   private slots:
 
     void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
@@ -76,15 +79,20 @@ class QgsAppMissingGridHandler : public QObject
                                       const QgsCoordinateReferenceSystem &destinationCrs,
                                       const QString &desired );
 
+    void onDynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs,
+                                    const QgsCoordinateReferenceSystem &destinationCrs );
+
   private:
 
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutBallparkPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
+    bool shouldWarnAboutDynamicCrsForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
 
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairs;
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairsForProject;
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedBallparkPairsForProject;
+    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedDynamicCrsForProject;
 };
 
 #endif // QGSAPPCOORDINATEOPERATIONHANDLERS_H
