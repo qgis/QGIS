@@ -40,7 +40,7 @@ gets canceled, the :py:func:`~cancel` method is called on the feedback object of
 Construct a feedback object
 %End
 
-    bool isCanceled() const;
+    bool isCanceled() const /HoldGIL/;
 %Docstring
 Tells whether the operation has been canceled already
 %End
@@ -57,7 +57,7 @@ argument is in percentage and valid values range from 0-100.
 .. versionadded:: 3.0
 %End
 
-    double progress() const;
+    double progress() const /HoldGIL/;
 %Docstring
 Returns the current progress reported by the feedback object. Depending on how the
 feedback object is used progress reporting may not be supported. The returned value

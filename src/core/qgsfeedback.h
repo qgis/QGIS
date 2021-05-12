@@ -51,7 +51,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     {}
 
     //! Tells whether the operation has been canceled already
-    bool isCanceled() const { return mCanceled; }
+    bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
 
     /**
      * Sets the current progress for the feedback object. The \a progress
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \see progressChanged()
      * \since QGIS 3.0
      */
-    double progress() const { return mProgress; }
+    double progress() const SIP_HOLDGIL { return mProgress; }
 
   public slots:
 
