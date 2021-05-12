@@ -345,8 +345,6 @@ void QgsMapToolCapture::resetRubberBand()
   if ( !mRubberBand )
     return;
   QgsLineString *lineString = mCaptureCurve.curveToLine();
-  // maybe ?
-  // mRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType );
   mRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   mRubberBand->addGeometry( QgsGeometry( lineString ), vlayer );

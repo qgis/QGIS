@@ -2587,7 +2587,7 @@ void QgsVertexTool::toggleVertexCurve()
   if ( mDraggingVertex )
   {
     stopDragging();
-    if( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
+    if ( mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Could not convert vertex" ),
