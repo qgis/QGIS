@@ -1,6 +1,7 @@
 {
   "name": "<>",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Compares two values and evaluates to 1 if they are not equal.",
   "arguments": [
         { "arg": "a", "description": "value" },

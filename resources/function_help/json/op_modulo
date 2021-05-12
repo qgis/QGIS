@@ -1,6 +1,7 @@
 {
   "name": "%",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Remainder of division",
   "arguments": [
         { "arg": "a", "description": "value" },
