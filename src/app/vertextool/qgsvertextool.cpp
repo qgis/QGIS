@@ -2579,7 +2579,7 @@ void QgsVertexTool::toggleVertexCurve()
     // TODO support more than just 1 vertex    
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Could not convert vertex" ),
-      tr( "Currently, conversion can only be done on exactly one vertex." ),
+      tr( "Conversion can only be done on exactly one vertex." ),
       Qgis::Info );
     return;
   }
