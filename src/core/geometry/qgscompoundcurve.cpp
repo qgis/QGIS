@@ -937,7 +937,6 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
   if ( subVertexId.vertex == 0 || subVertexId.vertex == curve->numPoints() - 1 )
     return false;
 
-  // TODO factorize circularString and lineString as logic is almost the same
   if ( const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve ) )
   {
     // If it's a circular string, we convert to LineString
@@ -974,7 +973,6 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
     QgsPointSequence points;
     lineString->points( points );
 
-    // QgsMessageLog::logMessage("TODO : LineString not treated yet", "DEBUG");
     const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
     const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
     const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
