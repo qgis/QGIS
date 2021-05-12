@@ -173,8 +173,7 @@ bool QgsCoordinateTransformPrivate::initialize()
                  : ( mDestIsDynamic && !std::isnan( mDestCoordinateEpoch ) && !mSourceIsDynamic )
                  ? mDestCoordinateEpoch : std::numeric_limits< double >::quiet_NaN();
 
-  if ( mSourceIsDynamic && mDestIsDynamic
-       && !std::isnan( mSourceCoordinateEpoch ) && mSourceCoordinateEpoch != mDestCoordinateEpoch )
+  if ( mSourceIsDynamic && mDestIsDynamic && !qgsNanCompatibleEquals( mSourceCoordinateEpoch, mDestCoordinateEpoch ) )
   {
     // transforms from dynamic crs to dynamic crs with different coordinate epochs are not yet supported by PROJ
     if ( sDynamicCrsToDynamicCrsWarningHandler )

@@ -901,13 +901,8 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   {
     if ( ( *valIt ).coordinateOperation() == coordinateOperationProj
          && ( *valIt ).allowFallbackTransforms() == allowFallback
-
-         // careful here, nan != nan, so we need to explicitly handle the case when both crses have nan coordinateEpoch
-         && ( std::isnan( ( *valIt ).sourceCrs().coordinateEpoch() ) == std::isnan( src.coordinateEpoch() )
-              && ( std::isnan( src.coordinateEpoch() ) || src.coordinateEpoch() == ( *valIt ).sourceCrs().coordinateEpoch() ) )
-
-         && ( std::isnan( ( *valIt ).destinationCrs().coordinateEpoch() ) == std::isnan( dest.coordinateEpoch() )
-              && ( std::isnan( dest.coordinateEpoch() ) || dest.coordinateEpoch() == ( *valIt ).destinationCrs().coordinateEpoch() ) )
+         && qgsNanCompatibleEquals( src.coordinateEpoch(), ( *valIt ).sourceCrs().coordinateEpoch() )
+         && qgsNanCompatibleEquals( dest.coordinateEpoch(), ( *valIt ).destinationCrs().coordinateEpoch() )
        )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
