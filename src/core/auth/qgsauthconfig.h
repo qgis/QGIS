@@ -175,7 +175,6 @@ class CORE_EXPORT QgsAuthMethodConfig
     /**
      *  from a DOM element.
      * \param element is the DOM node corresponding to item (e.g. 'LayoutItem' element)
-     * \param document DOM document
      * \since QGIS 3.20
      */
     bool readXml( const QDomElement &element );

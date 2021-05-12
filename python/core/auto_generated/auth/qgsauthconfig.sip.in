@@ -204,7 +204,6 @@ Stores the configuration in a DOM
 from a DOM element.
 
 :param element: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
-:param document: DOM document
 
 .. versionadded:: 3.20
 %End
