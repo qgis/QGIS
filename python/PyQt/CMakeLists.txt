@@ -27,15 +27,16 @@ add_dependencies(pyqtcompat pyutils)
 set(PYQT_PREFIX PyQt5)
 
 foreach(pyfile ${PYQT_COMPAT_FILES})
+  get_filename_component(_dir ${pyfile} PATH)
   set(pyfile ${PYQT_PREFIX}/${pyfile})
   add_custom_command(TARGET pyqtcompat
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt
-    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt/${_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${QGIS_PYTHON_OUTPUT_DIRECTORY}/PyQt/${_dir}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DEPENDS ${pyfile}
   )
-  install(FILES ${pyfile} DESTINATION "${QGIS_PYQT_DIR}")
+  install(FILES ${pyfile} DESTINATION "${QGIS_PYQT_DIR}/${_dir}")
 endforeach(pyfile)
 
 PY_COMPILE(pyqtcompat "${PYTHON_OUTPUT_DIRECTORY}")
