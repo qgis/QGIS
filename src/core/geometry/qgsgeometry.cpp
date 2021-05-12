@@ -597,8 +597,7 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
         // Standalone linestring
         reset( std::make_unique<QgsCompoundCurve>( *cpdCurve ) ); // <- REVIEW PLZ
       }
-
-      if ( owningPolygon != nullptr )
+      else if ( owningPolygon != nullptr )
       {
         // Replace the ring in the owning polygon
         if ( id.ring == 0 )
