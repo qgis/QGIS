@@ -157,6 +157,34 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 }
 
 
+bool QgsAuthMethodConfig::writeXml( QDomElement &parentElement, QDomDocument &document )
+{
+  QDomElement element = document.createElement( QStringLiteral( "AuthMethodConfig" ) );
+  element.setAttribute( QStringLiteral( "method" ), mMethod );
+  element.setAttribute( QStringLiteral( "id" ), mId );
+  element.setAttribute( QStringLiteral( "name" ), mName );
+  element.setAttribute( QStringLiteral( "version" ), QString::number( mVersion ) );
+  element.setAttribute( QStringLiteral( "uri" ), mUri );
+  element.setAttribute( QStringLiteral( "config" ), configString() );
+  parentElement.appendChild( element );
+  return true;
+}
+
+bool QgsAuthMethodConfig::readXml( const QDomElement &element )
+{
+  if ( element.nodeName() != QLatin1String( "AuthMethodConfig" ) )
+    return false;
+
+  mMethod = element.attribute( QStringLiteral( "method" ) );
+  mId = element.attribute( QStringLiteral( "id" ) );
+  mName = element.attribute( QStringLiteral( "name" ) );
+  mVersion = element.attribute( QStringLiteral( "version" ) ).toInt();
+  mUri = element.attribute( QStringLiteral( "uri" ) );
+  loadConfigString( element.attribute( QStringLiteral( "config" ) ) );
+
+  return true;
+}
+
 #ifndef QT_NO_SSL
 
 //////////////////////////////////////////////////////
