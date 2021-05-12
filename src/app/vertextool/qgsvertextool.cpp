@@ -2524,7 +2524,10 @@ void QgsVertexTool::toggleVertexCurve()
     return;
   }
 
+  layer->beginEditCommand( tr( "Toggled vertex to/from curve" ) );
+
   QgsGeometry geom = layer->getFeature( toConvert.fid ).geometry();
+
   bool success = geom.toggleCircularAtVertex( toConvert.vertexId );
 
   if ( success )
