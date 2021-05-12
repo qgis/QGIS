@@ -450,14 +450,6 @@ Returns the path containing qgis_core, qgis_gui, qgispython (and other) librarie
 Returns the path with utility executables (help viewer, crssync, ...)
 %End
 
-    static QString qmlImportPath();
-%Docstring
-Returns the path where QML components are installed for QGIS Quick library. Returns
-empty string when QGIS is built without Quick support
-
-.. versionadded:: 3.2
-%End
-
     static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 %Docstring
 Alters prefix path - used by 3rd party apps

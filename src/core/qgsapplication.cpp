@@ -151,7 +151,6 @@ Q_GLOBAL_STATIC( QString, sPluginPath )
 Q_GLOBAL_STATIC( QString, sPkgDataPath )
 Q_GLOBAL_STATIC( QString, sLibraryPath )
 Q_GLOBAL_STATIC( QString, sLibexecPath )
-Q_GLOBAL_STATIC( QString, sQmlImportPath )
 Q_GLOBAL_STATIC( QString, sThemeName )
 Q_GLOBAL_STATIC( QString, sProfilePath )
 
