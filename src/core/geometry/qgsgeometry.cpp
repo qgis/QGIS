@@ -578,15 +578,15 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
   if ( cpdCurve != nullptr )
   {
     // If the geom is a already compound curve, we convert inplace, and we're done
-    success = cpdCurve->convertVertex( id );
+    success = cpdCurve->toggleCircularAtVertex( id );
   }
   else
   {
-    // TODO : move this block before the above, so we call convertVertex only in one place
+    // TODO : move this block before the above, so we call toggleCircularAtVertex only in one place
     // If the geom is a linestring or cirularstring, we create a compound curve
     std::unique_ptr<QgsCompoundCurve> cpdCurve = std::make_unique<QgsCompoundCurve>();
     cpdCurve->addCurve( curve->clone() );
-    success = cpdCurve->convertVertex( QgsVertexId( -1, -1, id.vertex ) );
+    success = cpdCurve->toggleCircularAtVertex( QgsVertexId( -1, -1, id.vertex ) );
 
     // In that case, we must also reassign the instances
     if ( success )

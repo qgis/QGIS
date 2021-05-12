@@ -907,7 +907,7 @@ QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId 
   return curveIds;
 }
 
-bool QgsCompoundCurve::convertVertex( QgsVertexId position )
+bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
 {
 
   // First we find out the sub-curves that are contain that vertex.
