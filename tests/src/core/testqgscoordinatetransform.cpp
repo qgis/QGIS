@@ -366,8 +366,8 @@ void TestQgsCoordinateTransform::transformEpoch_data()
   QTest::addColumn<double>( "sourceEpoch" );
   QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
   QTest::addColumn<double>( "destEpoch" );
-  QTest::addColumn<double>( "x" );
-  QTest::addColumn<double>( "y" );
+  QTest::addColumn<double>( "srcX" );
+  QTest::addColumn<double>( "srcY" );
   QTest::addColumn<int>( "direction" );
   QTest::addColumn<double>( "outX" );
   QTest::addColumn<double>( "outY" );
@@ -436,8 +436,8 @@ void TestQgsCoordinateTransform::transformEpoch()
   QFETCH( double, sourceEpoch );
   QFETCH( QgsCoordinateReferenceSystem, destCrs );
   QFETCH( double, destEpoch );
-  QFETCH( double, x );
-  QFETCH( double, y );
+  QFETCH( double, srcX );
+  QFETCH( double, srcY );
   QFETCH( int, direction );
   QFETCH( double, outX );
   QFETCH( double, outY );
@@ -449,7 +449,17 @@ void TestQgsCoordinateTransform::transformEpoch()
   double z = 0;
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
 
+  double x = srcX;
+  double y = srcY;
   ct.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
+  QGSCOMPARENEAR( x, outX, precision );
+  QGSCOMPARENEAR( y, outY, precision );
+
+  // make a second transform so that it's fetched from the cache this time
+  QgsCoordinateTransform ct2( sourceCrs, destCrs, QgsProject::instance() );
+  x = srcX;
+  y = srcY;
+  ct2.transformInPlace( x, y, z, static_cast<  QgsCoordinateTransform::TransformDirection >( direction ) );
   QGSCOMPARENEAR( x, outX, precision );
   QGSCOMPARENEAR( y, outY, precision );
 }
