@@ -1,6 +1,7 @@
 {
   "name": "NULL",
   "type": "value",
+  "groups": ["Fields and Values"],
   "description": "Equates to a NULL value.",
   "examples": [
        { "expression":"NULL", "returns":"a NULL value" }
