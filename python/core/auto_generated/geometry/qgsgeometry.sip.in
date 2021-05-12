@@ -725,7 +725,7 @@ Deletes the vertex at the given position number and item
          object to help make the distinction?)
 %End
 
-    bool convertVertex( int atVertex );
+    bool toggleCircularAtVertex( int atVertex );
 %Docstring
 Converts the vertex at the given position from/to circular
 

@@ -792,7 +792,7 @@ class CORE_EXPORT QgsGeometry
      * or if the specified vertex can't be converted (e.g. start/end points).
      * \since QGIS 3.20
      */
-    bool convertVertex( int atVertex );
+    bool toggleCircularAtVertex( int atVertex );
 
     /**
      * Returns coordinates of a vertex.

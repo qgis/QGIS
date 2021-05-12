@@ -2505,27 +2505,27 @@ void QgsVertexTool::toggleVertexCurve()
   }
   else
   {
-    // TODO support more than just 1 vertex    
+    // TODO support more than just 1 vertex
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Could not convert vertex" ),
       tr( "Conversion can only be done on exactly one vertex." ),
       Qgis::Info );
     return;
   }
-  
+
   QgsVectorLayer *layer = toConvert.layer;
 
   if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Could not convert vertex" ),
-      tr( "Layer of type %1 does not support curved geometries." ).arg( layer->wkbType() ),
+      tr( "Layer of type %1 does not support curved geometries." ).arg( QgsWkbTypes::displayString( layer->wkbType() ) ),
       Qgis::Warning );
     return;
   }
 
   QgsGeometry geom = layer->getFeature( toConvert.fid ).geometry();
-  bool success = geom.convertVertex(toConvert.vertexId);
+  bool success = geom.toggleCircularAtVertex( toConvert.vertexId );
 
   if ( success )
   {
@@ -2538,7 +2538,7 @@ void QgsVertexTool::toggleVertexCurve()
     layer->destroyEditCommand();
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Could not convert vertex" ),
-      tr( "Start/end of vertices of features and arcs can not be converted." ).arg( layer->wkbType() ),
+      tr( "Start/end of vertices of features and arcs can not be converted." ),
       Qgis::Warning );
   }
 

@@ -920,7 +920,7 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
   // If on CircularString, we need to check if the vertex is a CurveVertex (odd index).
   // If so, we split the subcurve at vertex -1 and +1, , drop the middle part and insert a LineString/CircularString
   // instead with the same points.
-  
+
   // At the end, we call condenseCurves() to merge successible line/circular strings
 
   QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
@@ -938,7 +938,7 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
     return false;
 
   // TODO factorize circularString and lineString as logic is almost the same
-  if ( const QgsCircularString *circularString = dynamic_cast<const QgsCircularString *>( curve ) )
+  if ( const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve ) )
   {
     // If it's a circular string, we convert to LineString
 
@@ -962,7 +962,7 @@ bool QgsCompoundCurve::convertVertex( QgsVertexId position )
 
     removeCurve( curveId );
     if ( subVertexId.vertex < points.length() - 2 )
-      mCurves.insert( curveId.release(), curveC.release() );
+      mCurves.insert( curveId, curveC.release() );
     mCurves.insert( curveId, curveB.release() );
     if ( subVertexId.vertex > 1 )
       mCurves.insert( curveId, curveA.release() );
