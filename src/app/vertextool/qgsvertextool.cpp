@@ -1374,7 +1374,7 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
       }
       break;
     }
-    case Qt::Key_C:
+    case Qt::Key_O:
     {
       if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
       {
