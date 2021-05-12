@@ -2584,6 +2584,9 @@ void QgsVertexTool::toggleVertexCurve()
     return;
   }
 
+  if ( mDraggingVertex )
+    stopDragging();
+
   QgsVectorLayer *layer = toConvert.layer;
 
   if ( ! QgsWkbTypes::isCurvedType( layer->wkbType() ) )
