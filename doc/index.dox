@@ -55,9 +55,6 @@ website:
 <a href="https://qgis.org/api/1.7">1.7</a> and
 <a href="https://qgis.org/api/1.6">1.6</a>
 
-\section qgsquick_docs QgsQuick library documentation
- 
-See \ref qgsquick for information about QGIS Quick (QML) components library
 
 \section index_maillist Mailing Lists
 

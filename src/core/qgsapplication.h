@@ -453,14 +453,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path with utility executables (help viewer, crssync, ...)
     static QString libexecPath();
 
-    /**
-     * Returns the path where QML components are installed for QGIS Quick library. Returns
-     * empty string when QGIS is built without Quick support
-     *
-     * \since QGIS 3.2
-     */
-    static QString qmlImportPath();
-
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 

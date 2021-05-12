@@ -42,10 +42,6 @@ if (WITH_CUSTOM_WIDGETS)
   add_subdirectory(customwidgets)
 endif()
 
-if (WITH_QUICK)
-  add_subdirectory(quickgui)
-endif()
-
 if (WITH_QGIS_PROCESS)
   add_subdirectory(process)
 endif()

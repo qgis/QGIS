@@ -81,8 +81,6 @@
 
 #cmakedefine QGISDEBUG
 
-#cmakedefine HAVE_QUICK
-
 #cmakedefine HAVE_QT5SERIALPORT
 
 #cmakedefine HAVE_STATIC_PROVIDERS

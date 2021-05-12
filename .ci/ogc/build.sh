@@ -4,7 +4,6 @@ mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit 1
 
 cmake -GNinja \
- -DWITH_QUICK=OFF \
  -DWITH_3D=OFF \
  -DWITH_STAGED_PLUGINS=OFF \
  -DWITH_GRASS=OFF \

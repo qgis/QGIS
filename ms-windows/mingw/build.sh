@@ -97,8 +97,6 @@ mkdir -p "$BUILDDIR"
     -DQGIS_PLUGIN_SUBDIR=lib/qgis/plugins \
     -DQGIS_INCLUDE_SUBDIR=include/qgis \
     -DQGIS_SERVER_MODULE_SUBDIR=lib/qgis/server \
-    -DQGIS_QML_SUBDIR=lib/qt5/qml \
-    -DBINDINGS_GLOBAL_INSTALL=ON \
     -DWITH_SERVER=OFF \
     -DZSTD_INCLUDE_DIR="$MINGWROOT/include/zstd" \
     -DZSTD_LIBRARY="$MINGWROOT/lib/libzstd.dll.a" \

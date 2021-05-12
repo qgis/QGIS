@@ -293,9 +293,6 @@ void QgsApplication::init( QString profileFolder )
 #else
     *sLibexecPath() = *sBuildOutputPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
 #endif
-#if defined( HAVE_QUICK )
-    *sQmlImportPath() = *sBuildOutputPath() + '/' + QGIS_QML_SUBDIR + '/';
-#endif
   }
   else
   {
@@ -540,9 +537,6 @@ void QgsApplication::setPrefixPath( const QString &prefixPath, bool useDefaultPa
   }
   *sLibraryPath() = *sPrefixPath() + '/' + QGIS_LIB_SUBDIR + '/';
   *sLibexecPath() = *sPrefixPath() + '/' + QGIS_LIBEXEC_SUBDIR + '/';
-#if defined( HAVE_QUICK )
-  *sQmlImportPath() = *sPrefixPath() + '/' + QGIS_QML_SUBDIR + '/';
-#endif
 }
 
 void QgsApplication::setPluginPath( const QString &pluginPath )
@@ -1269,11 +1263,6 @@ QString QgsApplication::libraryPath()
 QString QgsApplication::libexecPath()
 {
   return *sLibexecPath();
-}
-
-QString QgsApplication::qmlImportPath()
-{
-  return *sQmlImportPath();
 }
 
 QgsApplication::endian_t QgsApplication::endian()
