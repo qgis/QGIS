@@ -885,6 +885,8 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+
+
     QgsDoubleRange zRange() const;
 %Docstring
 Returns the range of z-values which should be rendered.
@@ -901,6 +903,13 @@ Sets the ``range`` of z-values which should be rendered.
 .. seealso:: :py:func:`zRange`
 
 .. versionadded:: 3.18
+%End
+
+    void addPainterForSymbolLayer( const QgsSymbolLayer *symbolLayer, QPainter *painter );
+%Docstring
+Add a subpainter for a specific symbolLayer
+
+.. versionadded:: 3.16
 %End
 
 };

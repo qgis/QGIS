@@ -911,11 +911,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
-    /*
+    /**
      * Add a subpainter for a specific symbolLayer
      * \since QGIS 3.16
      */
-    void addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter);
+    void addPainterForSymbolLayer( const QgsSymbolLayer *symbolLayer, QPainter *painter );
 
     /**
      * Returns the sub painter for a specifi symbolLayer. Returns nullptr if there is no
