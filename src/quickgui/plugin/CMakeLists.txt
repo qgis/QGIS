@@ -10,24 +10,7 @@ set(QGIS_QUICK_PLUGIN_SRC
 )
 
 set(QGIS_QUICK_PLUGIN_RESOURCES
-  components/qgsquickicontextitem.qml
-  components/qgsquickcheckboxcomponent.qml
-  components/qgsquickswitch.qml
-  editor/qgsquickeditorwidgetcombobox.qml
-  editor/qgsquickcheckbox.qml
-  editor/qgsquickdatetime.qml
-  editor/qgsquickexternalresource.qml
-  editor/qgsquickrange.qml
-  editor/qgsquicktextedit.qml
-  editor/qgsquickvaluemap.qml
-  editor/qgsquickvaluerelation.qml
-  qgsquickfeatureform.qml
-  qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
-  qgsquickmessagelog.qml
-  qgsquickphotopanel.qml
-  qgsquickpositionmarker.qml
-  qgsquickscalebar.qml
 )
 
 if (IOS)
@@ -40,9 +23,7 @@ endif()
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-
   ${CMAKE_SOURCE_DIR}/src/quickgui
-
   ${CMAKE_BINARY_DIR}/src/quickgui
 )
 

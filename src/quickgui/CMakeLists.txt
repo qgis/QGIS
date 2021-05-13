@@ -1,58 +1,24 @@
 ############################################################
 # sources
 set(QGIS_QUICK_GUI_MOC_HDRS
-  attributes/qgsquickattributeformmodel.h
-  attributes/qgsquickattributeformmodelbase.h
-  attributes/qgsquickattributemodel.h
-  attributes/qgsquicksubmodel.h
-
-  qgsquickfeaturelayerpair.h
   qgsquickcoordinatetransformer.h
-  qgsquickfeaturehighlight.h
-  qgsquickidentifykit.h
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
   qgsquickmaptransform.h
-  qgsquickmessagelogmodel.h
-  qgsquickpositionkit.h
-  qgsquickscalebarkit.h
-  qgsquicksimulatedpositionsource.h
   qgsquickutils.h
-  qgsquickfeatureslistmodel.h
-)
-
-set(QGIS_QUICK_GUI_HDRS
-  qgsquickhighlightsgnode.h
 )
 
 set(QGIS_QUICK_GUI_SRC
-  attributes/qgsquickattributeformmodel.cpp
-  attributes/qgsquickattributeformmodelbase.cpp
-  attributes/qgsquickattributemodel.cpp
-  attributes/qgsquicksubmodel.cpp
-
-  qgsquickfeaturelayerpair.cpp
   qgsquickcoordinatetransformer.cpp
-  qgsquickfeaturehighlight.cpp
-  qgsquickhighlightsgnode.cpp
-  qgsquickidentifykit.cpp
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
   qgsquickmaptransform.cpp
-  qgsquickmessagelogmodel.cpp
-  qgsquickpositionkit.cpp
-  qgsquickscalebarkit.cpp
-  qgsquicksimulatedpositionsource.cpp
   qgsquickutils.cpp
-  qgsquickfeatureslistmodel.cpp
 )
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/attributes
   ${CMAKE_CURRENT_BINARY_DIR}
-
-
 )
 
 include_directories(SYSTEM
