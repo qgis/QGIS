@@ -1837,6 +1837,19 @@
                   <string>Accuracy Warnings</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_37" columnstretch="0,1,2">
+                  <item row="0" column="2">
+                   <spacer name="horizontalSpacer_23">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="0" column="1">
                    <widget class="QgsDoubleSpinBox" name="mCrsAccuracySpin">
                     <property name="toolTip">
@@ -1857,18 +1870,15 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="2">
-                   <spacer name="horizontalSpacer_23">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                  <item row="1" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mCrsAccuracyIndicatorCheck">
+                    <property name="toolTip">
+                     <string>If checked, a warning icon will show next to any map layers with CRS accuracy warnings</string>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
+                    <property name="text">
+                     <string>Show CRS accuracy warnings for layers in project legend</string>
                     </property>
-                   </spacer>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
