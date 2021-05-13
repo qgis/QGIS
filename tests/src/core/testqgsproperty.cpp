@@ -1952,8 +1952,8 @@ void TestQgsProperty::mapToMap()
   propertyMap.insert( "key2", p2 );
 
   const QVariantMap variantMap = QgsProperty::propertyMapToVariantMap( propertyMap );
-  QCOMPARE( variantMap.value( "key1" ), "project_color('burnt marigold')" );
-  QCOMPARE( variantMap.value( "key2" ), 1 );
+  QCOMPARE( variantMap.value( "key1" ).toString(), "project_color('burnt marigold')" );
+  QCOMPARE( variantMap.value( "key2" ).toInt(), 1 );
 
   QCOMPARE( QgsProperty::variantMapToPropertyMap( variantMap ), propertyMap );
 }
