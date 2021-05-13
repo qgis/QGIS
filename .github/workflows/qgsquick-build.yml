@@ -1,0 +1,176 @@
+name: QgsQuick build and test
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'mac/**'
+    - '.github/workflows/macos-build.yml'
+    - '.ci/**'
+    - 'CMakeLists.txt'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'mac/**'
+    - '.github/workflows/macos-build.yml'
+    - '.ci/**'
+    - 'CMakeLists.txt'
+
+env:
+  QT_VERSION: 5.14.2
+  QGIS_DEPS_VERSION: 0.7.0
+  CCACHE_DIR: /Users/runner/work/ccache
+  BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
+  # apparently we cannot cache /opt directory as it fails to restore
+  # so we copy the deps in the home directory
+  DEPS_CACHE_DIR: /Users/runner/work/deps-cache
+
+jobs:
+  mac_os_build:
+    if: github.repository == 'qgis/QGIS'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Prepare build cache for pull request
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name == 'pull_request'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: build-mac-ccache-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            build-mac-ccache-${{ github.actor }}-${{ github.head_ref }}-
+            build-mac-ccache-refs/heads/${{ github.base_ref }}-
+            build-mac-ccache-refs/heads/master-
+
+      - name: Prepare build cache for branch/tag
+        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
+        uses: pat-s/always-upload-cache@v2.1.3
+        if: github.event_name != 'pull_request'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: build-mac-ccache-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            build-mac-ccache-${{ github.ref }}-
+            build-mac-ccache-refs/heads/master-
+
+
+      # Qt caching
+      - name: Cache Qt
+        id: cache-qt
+        uses: pat-s/always-upload-cache@v2.1.3
+        with:
+          path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
+          key: mac-qt-v4-${{ env.QT_VERSION }}
+
+      - name: Restore Qt
+        if: steps.cache-qt.outputs.cache-hit == 'true'
+        run: |
+          sudo mkdir -p /opt
+          sudo mkdir -p /opt/Qt
+          sudo cp -r ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} /opt/Qt/${QT_VERSION}
+
+      - name: Download Qt
+        if: steps.cache-qt.outputs.cache-hit != 'true'
+        run: |
+          wget https://qgis.org/downloads/macos/deps/qt-${QT_VERSION}.tar.gz
+          mkdir -p ${DEPS_CACHE_DIR}
+          mkdir -p ${DEPS_CACHE_DIR}/Qt
+
+
+      # QGIS-deps caching
+      - name: Cache qgis-deps
+        id: cache-deps
+        uses: pat-s/always-upload-cache@v2.1.3
+        with:
+          path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}
+          key: mac-qgis-deps-v4-${{ env.QGIS_DEPS_VERSION }}
+
+      - name: Restore qgis-deps
+        if: steps.cache-deps.outputs.cache-hit == 'true'
+        run: |
+          sudo mkdir -p /opt
+          sudo mkdir -p /opt/QGIS
+          sudo cp -r ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}
+
+      - name: Download qgis-deps
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: |
+          wget https://qgis.org/downloads/macos/deps/qgis-deps-${QGIS_DEPS_VERSION}.tar.gz
+          mkdir -p ${DEPS_CACHE_DIR}
+          mkdir -p ${DEPS_CACHE_DIR}/QGIS
+
+
+
+      - name: Install Qt and deps
+        env:
+          QT_ALREADY_CACHED: ${{ steps.cache-qt.outputs.cache-hit }}
+          QGIS_DEPS_ALREADY_CACHED: ${{ steps.cache-deps.outputs.cache-hit }}
+        run: |
+          wget https://qgis.org/downloads/macos/deps/install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          chmod +x ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          echo ::group::Install deps
+          sudo ./install_qgis_deps-${QGIS_DEPS_VERSION}.bash
+          echo ::endgroup::
+          [[ ${QT_ALREADY_CACHED} != "true" ]] && cp -r /opt/Qt/${QT_VERSION} ${DEPS_CACHE_DIR}/Qt/${QT_VERSION} || true
+          [[ ${QGIS_DEPS_ALREADY_CACHED} != "true" ]] && cp -r /opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION} ${DEPS_CACHE_DIR}/QGIS/qgis-deps-${QGIS_DEPS_VERSION} || true
+
+      - name: Install ccache
+        run: |
+          mkdir -p ${CCACHE_DIR}
+          brew install ccache
+          ccache --set-config=max_size=2.0G
+          ccache -s
+
+      - name: Run cmake
+        run: |
+          mkdir -p ${BUILD_DIR}
+          cd ${BUILD_DIR}
+
+          PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH \
+          cmake -DQGIS_MAC_DEPS_DIR=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage \
+               -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
+               -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}/install-qgis \
+               -DWITH_BINDINGS=FALSE \
+               -DENABLE_TESTS=TRUE  \
+               -DWITH_3D=FALSE \
+               -DWITH_DESKTOP=FALSE \
+               -DWITH_QUICK=TRUE \
+               -DWITH_QGIS_PROCESS=FALSE \
+               -DWITH_GUI=FALSE \
+               -DWITH_GRASS=FALSE \
+               -DWITH_EPT=OFF \
+               -DWITH_PDAL=OFF \
+               -DWITH_ANALYSIS=OFF \
+               -DWITH_GEOREFERENCER=OFF \
+               -DWITH_QTMOBILITY=OFF \
+               -DWITH_APIDOC=OFF \
+               -DWITH_ASTYLE=OFF \
+               -DWITH_QSPATIALITE=OFF \
+              ../QGIS
+
+      - name: Build QGIS
+        run: |
+          cd ${BUILD_DIR}
+          make -j $(sysctl -n hw.ncpu)
+          make install
+
+      - name: Run Tests
+        run: |
+          cd ${BUILD_DIR}
+          export DYLD_INSERT_LIBRARIES=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/lib/libsqlite3.dylib
+          cmake -VV

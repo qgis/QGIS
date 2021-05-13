@@ -32,7 +32,6 @@
 #include "qgspointxy.h"
 #include "qgsunittypes.h"
 #include "qgsquickmapsettings.h"
-#include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
 #include "qgscoordinateformatter.h"
 

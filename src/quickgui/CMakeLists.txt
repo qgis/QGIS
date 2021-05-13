@@ -34,8 +34,6 @@ include_directories(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-set(QGIS_QUICK_GUI_IMAGE_RCCS ./images/images.qrc)
-
 ############################################################
 # qgis_quick shared library
 QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
@@ -46,7 +44,6 @@ else()
 endif()
 
 add_library(qgis_quick ${LIBRARY_TYPE}
-    ${QGIS_QUICK_GUI_IMAGE_RCCS}
     ${QGIS_QUICK_GUI_SRC}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}
