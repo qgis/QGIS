@@ -135,12 +135,6 @@ Returns the current configuration
 Defines the current configuration
 %End
 
-    virtual void setTitle( const QString &title );
-
-%Docstring
-Sets the title of the root groupbox
-%End
-
   public slots:
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 

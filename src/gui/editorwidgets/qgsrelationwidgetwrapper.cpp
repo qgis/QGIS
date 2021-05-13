@@ -138,17 +138,12 @@ void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEd
 
 bool QgsRelationWidgetWrapper::showLabel() const
 {
-  if ( mWidget )
-  {
-    return mWidget->showLabel();
-  }
   return false;
 }
 
 void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 {
-  if ( mWidget )
-    mWidget->setShowLabel( showLabel );
+  Q_UNUSED( showLabel )
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
@@ -297,14 +292,11 @@ QVariant QgsRelationWidgetWrapper::nmRelationId() const
 
 void QgsRelationWidgetWrapper::setLabel( const QString &label )
 {
-  if ( mWidget )
-    mWidget->setLabel( label );
+  Q_UNUSED( label )
 }
 
 QString QgsRelationWidgetWrapper::label() const
 {
-  if ( mWidget )
-    return mWidget->label();
   return QString();
 }
 
