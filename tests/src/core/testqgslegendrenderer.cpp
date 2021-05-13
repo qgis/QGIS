@@ -205,7 +205,8 @@ class TestQgsLegendRenderer : public QObject
     void testBasicJson();
     void testOpacityJson();
     void testBigMarkerJson();
-    void testLabelLegendJson();
+
+    void testLabelLegend();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -1546,8 +1547,9 @@ void TestQgsLegendRenderer::testBigMarkerJson()
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
 }
 
-void TestQgsLegendRenderer::testLabelLegendJson()
+void TestQgsLegendRenderer::testLabelLegend()
 {
+  const QString testName( "test_label_legend" );
   QgsPalLayerSettings *labelSettings = new QgsPalLayerSettings();
   labelSettings->fieldName = QStringLiteral( "test_attr" );
   QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr ); //root rule
@@ -1569,6 +1571,7 @@ void TestQgsLegendRenderer::testLabelLegendJson()
   QgsLayerTreeModel legendModel( mRoot );
   QgsLegendSettings settings;
 
+  //first test if label legend nodes are present in json
   const QJsonObject json = _renderJsonLegend( &legendModel, settings );
   const QJsonArray nodes = json["nodes"].toArray();
   const QJsonObject point_layer = nodes[1].toObject();
@@ -1576,10 +1579,15 @@ void TestQgsLegendRenderer::testLabelLegendJson()
   const QJsonObject point_layer_labeling_symbol = point_layer_symbols[3].toObject();
   QString labelTitle = point_layer_labeling_symbol["title"].toString();
 
+  QVERIFY( labelTitle == "labelingRule" );
+
+  //test rendered legend agains reference image
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
   vLayerLegend->setShowLabelLegend( bkLabelLegendEnabled );
   mVL3->setLabelsEnabled( bkLabelsEnabled );
-
-  QVERIFY( labelTitle == "labelingRule" );
 }
 
 
