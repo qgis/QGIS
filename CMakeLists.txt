@@ -449,7 +449,7 @@ if(WITH_CORE)
     set(QT_VERSION_BASE "Qt6")
   else()
     set(QT_MIN_VERSION 5.12.0)
-    set(QT_VERSION_BASE "Qt5")    
+    set(QT_VERSION_BASE "Qt5")
   endif()
 
   # Use Qt5SerialPort optionally for GPS
@@ -947,6 +947,9 @@ message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
+
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
