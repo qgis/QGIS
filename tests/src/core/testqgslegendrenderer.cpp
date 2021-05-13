@@ -1581,7 +1581,7 @@ void TestQgsLegendRenderer::testLabelLegend()
 
   QVERIFY( labelTitle == "labelingRule" );
 
-  //test rendered legend agains reference image
+  //test rendered legend against reference image
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
