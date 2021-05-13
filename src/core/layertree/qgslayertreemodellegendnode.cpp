@@ -1477,12 +1477,14 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
 {
   QStringList textLines( mLabelSettings.legendString() );
   QgsTextFormat textFormat = mLabelSettings.format();
-  textFormat.setSize( textFormat.size() / renderContext.scaleFactor() ); //painter is usually scaled (e.g. mm unit)
   QgsRenderContext ctx( renderContext );
   double textWidth, textHeight;
   textWidthHeight( textWidth, textHeight, ctx, textFormat, textLines );
-  QPointF textPos( xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0, yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0 );
+  textWidth /= renderContext.scaleFactor();
+  textHeight /= renderContext.scaleFactor();
+  QPointF textPos( renderContext.scaleFactor() * ( xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0 ), renderContext.scaleFactor() * ( yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0 ) );
 
+  QgsScopedRenderContextScaleToPixels scopedScaleToPixels( ctx );
   QgsTextRenderer::drawText( textPos, 0.0, QgsTextRenderer::AlignLeft, textLines, ctx, textFormat );
 
   const double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
