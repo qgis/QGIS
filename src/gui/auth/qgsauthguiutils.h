@@ -60,10 +60,16 @@ class GUI_EXPORT QgsAuthGuiUtils
     //! Verify the authentication system is active, else notify user
     static bool isDisabled( QgsMessageBar *msgbar );
 
-    //! Import authentication configurations from a XML file
+    /**
+     * Import authentication configurations from a XML file
+     * \since QGIS 3.20
+     */
     static void importAuthenticationConfigs( QgsMessageBar *msgbar );
 
-    //! Exports selected authentication configurations to a XML file
+    /**
+     * Exports selected authentication configurations to a XML file
+     * \since QGIS 3.20
+     */
     static void exportSelectedAuthenticationConfigs( QStringList authenticationConfigIds, QgsMessageBar *msgbar );
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)

@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgsauthconfig.h"
+#include "qgsauthcertutils.h"
+#include "qgsxmlutils.h"
 
 #include <QtCrypto>
 
@@ -22,8 +24,6 @@
 #include <QObject>
 #include <QCryptographicHash>
 #include <QUrl>
-
-#include "qgsauthcertutils.h"
 
 
 //////////////////////////////////////////////
@@ -165,7 +165,16 @@ bool QgsAuthMethodConfig::writeXml( QDomElement &parentElement, QDomDocument &do
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "version" ), QString::number( mVersion ) );
   element.setAttribute( QStringLiteral( "uri" ), mUri );
-  element.setAttribute( QStringLiteral( "config" ), configString() );
+
+  QDomElement configElements = document.createElement( QStringLiteral( "Config" ) );
+  QgsStringMap::const_iterator i = mConfigMap.constBegin();
+  while ( i != mConfigMap.constEnd() )
+  {
+    configElements.setAttribute( i.key(), i.value() );
+    ++i;
+  }
+  element.appendChild( configElements );
+
   parentElement.appendChild( element );
   return true;
 }
@@ -180,7 +189,14 @@ bool QgsAuthMethodConfig::readXml( const QDomElement &element )
   mName = element.attribute( QStringLiteral( "name" ) );
   mVersion = element.attribute( QStringLiteral( "version" ) ).toInt();
   mUri = element.attribute( QStringLiteral( "uri" ) );
-  loadConfigString( element.attribute( QStringLiteral( "config" ) ) );
+
+  clearConfigMap();
+  QDomNamedNodeMap configAttributes = element.firstChildElement().attributes();
+  for ( int i = 0; i < configAttributes.length(); i++ )
+  {
+    QDomAttr configAttribute = configAttributes.item( i ).toAttr();
+    setConfig( configAttribute.name(), configAttribute.value() );
+  }
 
   return true;
 }

@@ -48,7 +48,10 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     //! Hide the widget's title, e.g. when embedding
     void toggleTitleVisibility( bool visible );
 
-    //! Returns the list of selected authentication configuration IDs
+    /**
+     * Returns the list of selected authentication configuration IDs
+     * \since QGIS 3.20
+     */
     QStringList selectedAuthenticationConfigIds() const;
 
   public slots:

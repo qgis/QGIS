@@ -1428,8 +1428,6 @@ bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename
   {
     QgsAuthMethodConfig authMethodConfig;
     authMethodConfig.readXml( configuration );
-    qDebug() << configuration.nodeName();
-    qDebug() << authMethodConfig.id();
     storeAuthenticationConfig( authMethodConfig );
 
     configuration = configuration.nextSiblingElement();
