@@ -366,7 +366,7 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   geometryGeneratorType = s.geometryGeneratorType;
   layerType = s.layerType;
 
-  legendString = s.legendString;
+  mLegendString = s.mLegendString;
 
   return *this;
 }
@@ -930,7 +930,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   Q_NOWARN_DEPRECATED_POP
   substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
   useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
-  legendString = textStyleElem.attribute( QStringLiteral( "legendString" ), QObject::tr( "Aa" ) );
+  mLegendString = textStyleElem.attribute( QStringLiteral( "legendString" ), QObject::tr( "Aa" ) );
 
   // text formatting
   QDomElement textFormatElem = elem.firstChildElement( QStringLiteral( "text-format" ) );
@@ -1170,7 +1170,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   substitutions.writeXml( replacementElem, doc );
   textStyleElem.appendChild( replacementElem );
   textStyleElem.setAttribute( QStringLiteral( "useSubstitutions" ), useSubstitutions );
-  textStyleElem.setAttribute( QStringLiteral( "legendString" ), legendString );
+  textStyleElem.setAttribute( QStringLiteral( "legendString" ), mLegendString );
 
   // text formatting
   QDomElement textFormatElem = doc.createElement( QStringLiteral( "text-format" ) );
@@ -1345,7 +1345,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
-  const QStringList text = QStringList() << ( previewText.isEmpty() ? settings.legendString : previewText );
+  const QStringList text = QStringList() << ( previewText.isEmpty() ? settings.legendString() : previewText );
   const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
   QRectF textRect = rect;
   textRect.setLeft( xtrans + padding );

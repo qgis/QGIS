@@ -150,7 +150,7 @@ void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
         }
       }
 
-      QTreeWidgetItem *labelItem = new QTreeWidgetItem( QStringList() << description << s.legendString );
+      QTreeWidgetItem *labelItem = new QTreeWidgetItem( QStringList() << description << s.legendString() );
       labelItem->setData( 0, Qt::UserRole, pList.at( i ) );
       mLabelLegendTreeWidget->addTopLevelItem( labelItem );
     }
@@ -285,7 +285,7 @@ void QgsVectorLayerLegendWidget::applyLabelLegend()
       QString legendText = item->text( 1 );
 
       QgsPalLayerSettings *s = new QgsPalLayerSettings( labeling->settings( ids.at( i ) ) );
-      s->legendString = legendText;
+      s->setLegendString( legendText );
       labeling->setSettings( s, ids.at( i ) );
     }
   }

@@ -799,10 +799,16 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
 
     /**
-     * \brief string to show in the legend and in the preview icon
-     * \since QGIS 3.20
+     * \brief setLegendString
+     * \param legendString the string to show in the legend and preview
      */
-    QString legendString = QObject::tr( "Aa" );
+    void setLegendString( const QString &legendString ) { mLegendString = legendString; }
+
+    /**
+     * \brief legendString
+     * \return the string to show in the legend and in the preview icon
+     */
+    QString legendString() const { return mLegendString; }
 
     /**
      * Calculates the space required to render the provided \a text in map units.
@@ -1092,6 +1098,8 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsExpression mGeometryGeneratorExpression;
 
     bool mRenderStarted = false;
+
+    QString mLegendString = QObject::tr( "Aa" );
 
     static void initPropertyDefinitions();
 };
