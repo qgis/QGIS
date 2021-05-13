@@ -32,7 +32,7 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   mCodeEditorJson->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   mCodeEditorJson->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
-  mTreeWidget->setFont( QgsCodeEditor::getMonospaceFont() );
+  mTreeWidget->setStyleSheet( QStringLiteral( "font-family: %1;" ).arg( QgsCodeEditor::getMonospaceFont().family() ) );
 
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );

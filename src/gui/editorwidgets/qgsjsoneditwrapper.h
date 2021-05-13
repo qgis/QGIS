@@ -54,9 +54,8 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
      */
     explicit QgsJsonEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
-    // QgsEditorWidgetWrapper interface
-  public:
     QVariant value() const override;
+
     void showIndeterminateState() override;
 
   protected:

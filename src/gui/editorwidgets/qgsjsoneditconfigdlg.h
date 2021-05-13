@@ -44,9 +44,8 @@ class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui
      */
     explicit QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
-    // QgsEditorConfigWidget interface
-  public:
     QVariantMap config() override;
+
     void setConfig( const QVariantMap &config ) override;
 };
 
