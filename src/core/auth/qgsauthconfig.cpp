@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgsauthconfig.h"
+#include "qgsauthcertutils.h"
+#include "qgsxmlutils.h"
 
 #include <QtCrypto>
 
@@ -22,8 +24,6 @@
 #include <QObject>
 #include <QCryptographicHash>
 #include <QUrl>
-
-#include "qgsauthcertutils.h"
 
 
 //////////////////////////////////////////////
@@ -156,6 +156,50 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
   return ( !res.isEmpty() );
 }
 
+
+bool QgsAuthMethodConfig::writeXml( QDomElement &parentElement, QDomDocument &document )
+{
+  QDomElement element = document.createElement( QStringLiteral( "AuthMethodConfig" ) );
+  element.setAttribute( QStringLiteral( "method" ), mMethod );
+  element.setAttribute( QStringLiteral( "id" ), mId );
+  element.setAttribute( QStringLiteral( "name" ), mName );
+  element.setAttribute( QStringLiteral( "version" ), QString::number( mVersion ) );
+  element.setAttribute( QStringLiteral( "uri" ), mUri );
+
+  QDomElement configElements = document.createElement( QStringLiteral( "Config" ) );
+  QgsStringMap::const_iterator i = mConfigMap.constBegin();
+  while ( i != mConfigMap.constEnd() )
+  {
+    configElements.setAttribute( i.key(), i.value() );
+    ++i;
+  }
+  element.appendChild( configElements );
+
+  parentElement.appendChild( element );
+  return true;
+}
+
+bool QgsAuthMethodConfig::readXml( const QDomElement &element )
+{
+  if ( element.nodeName() != QLatin1String( "AuthMethodConfig" ) )
+    return false;
+
+  mMethod = element.attribute( QStringLiteral( "method" ) );
+  mId = element.attribute( QStringLiteral( "id" ) );
+  mName = element.attribute( QStringLiteral( "name" ) );
+  mVersion = element.attribute( QStringLiteral( "version" ) ).toInt();
+  mUri = element.attribute( QStringLiteral( "uri" ) );
+
+  clearConfigMap();
+  QDomNamedNodeMap configAttributes = element.firstChildElement().attributes();
+  for ( int i = 0; i < configAttributes.length(); i++ )
+  {
+    QDomAttr configAttribute = configAttributes.item( i ).toAttr();
+    setConfig( configAttribute.name(), configAttribute.value() );
+  }
+
+  return true;
+}
 
 #ifndef QT_NO_SSL
 

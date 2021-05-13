@@ -17,6 +17,7 @@
 #include "qgsauthguiutils.h"
 
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
 
@@ -73,6 +74,81 @@ bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar )
     return true;
   }
   return false;
+}
+
+void QgsAuthGuiUtils::exportSelectedAuthenticationConfigs( QStringList authenticationConfigIds, QgsMessageBar *msgbar )
+{
+  QString password = QInputDialog::getText( msgbar, QObject::tr( "Export Authentication Configurations" ),
+                     QObject::tr( "Enter a password encrypt the configuration file:" ), QLineEdit::Password );
+  if ( password.isEmpty() )
+  {
+    if ( QMessageBox::warning( msgbar,
+                               QObject::tr( "Export Authentication Configurations" ),
+                               QObject::tr( "Exporting authentication configurations with a blank password will result in a plain text file which may contain sensitive information. Are you sure you want to do this?" ),
+                               QMessageBox::Ok | QMessageBox::Cancel,
+                               QMessageBox::Cancel ) == QMessageBox::Cancel )
+    {
+      return;
+    }
+  }
+
+  QString filename = QFileDialog::getSaveFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+                     QObject::tr( "XML files (*.xml *.XML)" ) );
+  if ( filename.isEmpty() )
+    return;
+
+  bool ok = QgsApplication::authManager()->exportAuthenticationConfigsToXml( filename, authenticationConfigIds, password );
+  if ( !ok )
+  {
+    msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
+                         QObject::tr( "Export of authentication configurations failed." ),
+                         Qgis::Critical );
+  }
+}
+
+void QgsAuthGuiUtils::importAuthenticationConfigs( QgsMessageBar *msgbar )
+{
+
+  QString filename = QFileDialog::getOpenFileName( msgbar, QObject::tr( "Export Authentication Configurations" ), QDir::homePath(),
+                     QObject::tr( "XML files (*.xml *.XML)" ) );
+  if ( filename.isEmpty() )
+    return;
+
+
+  QFile file( filename );
+  if ( !file.open( QFile::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  if ( !document.setContent( &file ) )
+  {
+    file.close();
+    return;
+  }
+  file.close();
+
+  QDomElement root = document.documentElement();
+  if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
+  {
+    return;
+  }
+
+  QString password;
+  if ( root.hasAttribute( QStringLiteral( "salt" ) ) )
+  {
+    password = QInputDialog::getText( msgbar, QObject::tr( "Import Authentication Configurations" ),
+                                      QObject::tr( "Enter the password to decrypt the configurations file:" ), QLineEdit::Password );
+  }
+
+  bool ok = QgsApplication::authManager()->importAuthenticationConfigsFromXml( filename, password );
+  if ( !ok )
+  {
+    msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
+                         QObject::tr( "Import of authentication configurations failed." ),
+                         Qgis::Critical );
+  }
 }
 
 void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar )

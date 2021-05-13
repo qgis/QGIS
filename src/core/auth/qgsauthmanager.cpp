@@ -31,6 +31,8 @@
 #include <QTimer>
 #include <QVariant>
 #include <QSqlDriver>
+#include <QDomElement>
+#include <QDomDocument>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
@@ -1320,6 +1322,116 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString &authcfg )
 
   QgsDebugMsgLevel( QStringLiteral( "REMOVED config for authcfg: %1" ).arg( authcfg ), 2 );
 
+  return true;
+}
+
+bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password )
+{
+  if ( filename.isEmpty() )
+    return false;
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  QDomElement root = document.createElement( QStringLiteral( "qgis_authentication" ) );
+  document.appendChild( root );
+
+  QString civ;
+  if ( !password.isEmpty() )
+  {
+    QString salt;
+    QString hash;
+    QgsAuthCrypto::passwordKeyHash( password, &salt, &hash, &civ );
+    root.setAttribute( QStringLiteral( "salt" ), salt );
+    root.setAttribute( QStringLiteral( "hash" ), hash );
+    root.setAttribute( QStringLiteral( "civ" ), civ );
+  }
+
+  QDomElement configurations = document.createElement( QStringLiteral( "configurations" ) );
+  for ( const QString &authcfg : authcfgs )
+  {
+    QgsAuthMethodConfig authMethodConfig;
+
+    bool ok = loadAuthenticationConfig( authcfg, authMethodConfig, true );
+    if ( ok )
+    {
+      authMethodConfig.writeXml( configurations, document );
+    }
+  }
+  if ( !password.isEmpty() )
+  {
+    QString configurationsString;
+    QTextStream ts( &configurationsString );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    ts.setCodec( "UTF-8" );
+#endif
+    configurations.save( ts, 2 );
+    root.appendChild( document.createTextNode( QgsAuthCrypto::encrypt( password, civ, configurationsString ) ) );
+  }
+  else
+  {
+    root.appendChild( configurations );
+  }
+
+  QFile file( filename );
+  if ( !file.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    return false;
+
+  QTextStream ts( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  ts.setCodec( "UTF-8" );
+#endif
+  document.save( ts, 2 );
+  file.close();
+  return true;
+}
+
+bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename, const QString &password )
+{
+  QFile file( filename );
+  if ( !file.open( QFile::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  if ( !document.setContent( &file ) )
+  {
+    file.close();
+    return false;
+  }
+  file.close();
+
+  QDomElement root = document.documentElement();
+  if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
+  {
+    return false;
+  }
+
+  QDomElement configurations;
+  if ( root.hasAttribute( QStringLiteral( "salt" ) ) )
+  {
+    QString salt = root.attribute( QStringLiteral( "salt" ) );
+    QString hash = root.attribute( QStringLiteral( "hash" ) );
+    QString civ = root.attribute( QStringLiteral( "civ" ) );
+    if ( !QgsAuthCrypto::verifyPasswordKeyHash( password, salt, hash ) )
+      return false;
+
+    document.setContent( QgsAuthCrypto::decrypt( password, civ, root.text() ) );
+    configurations = document.firstChild().toElement();
+  }
+  else
+  {
+    configurations = root.firstChildElement( QStringLiteral( "configurations" ) );
+  }
+
+  QDomElement configuration = configurations.firstChildElement();
+  while ( !configuration.isNull() )
+  {
+    QgsAuthMethodConfig authMethodConfig;
+    authMethodConfig.readXml( configuration );
+    storeAuthenticationConfig( authMethodConfig );
+
+    configuration = configuration.nextSiblingElement();
+  }
   return true;
 }
 

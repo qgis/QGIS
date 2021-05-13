@@ -300,6 +300,27 @@ Remove an authentication config in the database
 :return: Whether operation succeeded
 %End
 
+    bool exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password = QString() );
+%Docstring
+Export authentication configurations to an XML file
+
+:param filename: The file path to save the XML content to
+:param authcfgs: The list of configuration IDs to export
+:param password: A password string to encrypt the XML content
+
+.. versionadded:: 3.20
+%End
+
+    bool importAuthenticationConfigsFromXml( const QString &filename, const QString &password = QString() );
+%Docstring
+Import authentication configurations from an XML file
+
+:param filename: The file path from which the XML content will be read
+:param password: A password string to decrypt the XML content
+
+.. versionadded:: 3.20
+%End
+
     bool removeAllAuthenticationConfigs();
 %Docstring
 Clear all authentication configs from table in database and from provider caches

@@ -35,6 +35,13 @@ Widget for editing authentication configurations directly in database
 Hide the widget's title, e.g. when embedding
 %End
 
+    QStringList selectedAuthenticationConfigIds() const;
+%Docstring
+Returns the list of selected authentication configuration IDs
+
+.. versionadded:: 3.20
+%End
+
   public slots:
     void setShowUtilitiesButton( bool show = true );
 %Docstring
