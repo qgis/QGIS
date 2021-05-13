@@ -218,6 +218,14 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     void refresh() override;
 
+    /**
+     * Converts the label's text() to a static string, by evaluating any expressions included in the text
+     * and replacing them with their current values.
+     *
+     * \since QGIS 3.20
+     */
+    void convertToStaticText();
+
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
