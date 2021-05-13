@@ -977,7 +977,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     QVariant sortKey() const override;
 
   private:
-    QVector<QgsDataItem *> createChildren( const QString &favDir, const QString &name );
+    QVector<QgsDataItem *> createChildren( const QString &directory, const QString &name );
 };
 
 /**
@@ -1166,8 +1166,22 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
   public:
 
+    /**
+     * Constructor for QgsFavoriteItem.
+     *
+     * \param parent parent favorites item
+     * \param name visible name for item
+     * \param dirPath corresponding directory (folder) path
+     * \param path unique data item path
+     */
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
+    // TODO QGIS 4.0 - don't remove this method when the deprecated base class virtual method is removed, but instead
+    // remove the override!
+
+    /**
+     * Sets a new \a name for the favorite.
+     */
     bool rename( const QString &name ) override;
 
   private:
