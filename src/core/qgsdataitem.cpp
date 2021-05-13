@@ -1547,13 +1547,14 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
 
   const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
+  children.reserve( favDirs.size() );
   for ( const QString &favDir : favDirs )
   {
-    QStringList parts = favDir.split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDir.split( QStringLiteral( "|||" ) );
     if ( parts.empty() )
       continue;
 
-    QString dir = parts.at( 0 );
+    const QString dir = parts.at( 0 );
     QString name = dir;
     if ( parts.count() > 1 )
       name = parts.at( 1 );
@@ -1566,7 +1567,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
 
 void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
 {
-  QString name = n.isEmpty() ? favDir : n;
+  const QString name = n.isEmpty() ? favDir : n;
 
   QgsSettings settings;
   QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
@@ -1575,9 +1576,8 @@ void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
 
   if ( state() == Populated )
   {
-    QVector<QgsDataItem *> items = createChildren( favDir, name );
-    const auto constItems = items;
-    for ( QgsDataItem *item : constItems )
+    const QVector<QgsDataItem *> items = createChildren( favDir, name );
+    for ( QgsDataItem *item : items )
     {
       addChildItem( item, true );
     }
@@ -1593,11 +1593,11 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
   QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
   for ( int i = favDirs.count() - 1; i >= 0; --i )
   {
-    QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
     if ( parts.empty() )
       continue;
 
-    QString dir = parts.at( 0 );
+    const QString dir = parts.at( 0 );
     if ( dir == item->dirPath() )
       favDirs.removeAt( i );
   }
@@ -1621,11 +1621,11 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
   QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
   for ( int i = 0; i < favDirs.count(); ++i )
   {
-    QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    const QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
     if ( parts.empty() )
       continue;
 
-    QString dir = parts.at( 0 );
+    const QString dir = parts.at( 0 );
     if ( dir == path )
     {
       favDirs[i] = QStringLiteral( "%1|||%2" ).arg( path, name );
@@ -1649,19 +1649,18 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
   }
 }
 
-QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, const QString &name )
+QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &directory, const QString &name )
 {
-  QVector<QgsDataItem *> children;
-  QString pathName = pathComponent( favDir );
-  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
-  for ( QgsDataItemProvider *provider : constProviders )
-  {
-    int capabilities = provider->capabilities();
+  const QString pathName = pathComponent( directory );
+  const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
 
-    if ( capabilities & QgsDataProvider::Dir )
+  QVector<QgsDataItem *> children;
+  children.reserve( providers.size() );
+  for ( QgsDataItemProvider *provider : providers )
+  {
+    if ( provider->capabilities() & QgsDataProvider::Dir )
     {
-      QgsDataItem *item = provider->createDataItem( favDir, this );
-      if ( item )
+      if ( QgsDataItem *item = provider->createDataItem( directory, this ) )
       {
         item->setName( name );
         children.append( item );
@@ -1670,11 +1669,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, 
   }
   if ( children.isEmpty() )
   {
-    QgsFavoriteItem *item = new QgsFavoriteItem( this, name, favDir, mPath + '/' + pathName );
-    if ( item )
-    {
-      children.append( item );
-    }
+    children.append( new QgsFavoriteItem( this, name, directory, mPath + '/' + pathName ) );
   }
   return children;
 }
