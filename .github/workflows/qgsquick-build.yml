@@ -161,6 +161,7 @@ jobs:
                -DWITH_APIDOC=OFF \
                -DWITH_ASTYLE=OFF \
                -DWITH_QSPATIALITE=OFF \
+               -DQGIS_MACAPP_BUNDLE=-1 \ 
               ../QGIS
 
       - name: Build QGIS
