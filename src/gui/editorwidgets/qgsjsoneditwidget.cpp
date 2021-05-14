@@ -19,6 +19,7 @@
 #include <QJsonArray>
 #include <QLabel>
 #include <QPushButton>
+#include <QToolTip>
 #include <QUrl>
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
@@ -31,6 +32,9 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   mCodeEditorJson->setReadOnly( true );
   mCodeEditorJson->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   mCodeEditorJson->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  mCodeEditorJson->indicatorDefine( QsciScintilla::PlainIndicator, SCINTILLA_UNDERLINE_INDICATOR_INDEX );
+  mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORCURRENT, SCINTILLA_UNDERLINE_INDICATOR_INDEX );
+  mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETMOUSEDWELLTIME, 400 );
 
   mTreeWidget->setStyleSheet( QStringLiteral( "font-family: %1;" ).arg( QgsCodeEditor::getMonospaceFont().family() ) );
 
@@ -38,11 +42,17 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
 
   connect( mCodeEditorJson, &QgsCodeEditorJson::textChanged, this, &QgsJsonEditWidget::codeEditorJsonTextChanged );
+  // Signal indicatorClicked is used because indicatorReleased has a bug in Scintilla and the keyboard modifier state
+  // parameter is not correct. Merge request was submittet to fix it: https://sourceforge.net/p/scintilla/code/merge-requests/26/
+  connect( mCodeEditorJson, &QsciScintilla::indicatorClicked, this, &QgsJsonEditWidget::codeEditorJsonIndicatorClicked );
+  connect( mCodeEditorJson, &QsciScintillaBase::SCN_DWELLSTART, this, &QgsJsonEditWidget::codeEditorJsonDwellStart );
+  connect( mCodeEditorJson, &QsciScintillaBase::SCN_DWELLEND, this, &QgsJsonEditWidget::codeEditorJsonDwellEnd );
 }
 
 void QgsJsonEditWidget::setJsonText( const QString &jsonText )
 {
   mJsonText = jsonText;
+  mClickableLinkList.clear();
 
   const QJsonDocument jsonDocument = QJsonDocument::fromJson( mJsonText.toUtf8() );
 
@@ -125,6 +135,44 @@ void QgsJsonEditWidget::codeEditorJsonTextChanged()
   refreshTreeView( jsonDocument );
 }
 
+void QgsJsonEditWidget::codeEditorJsonIndicatorClicked( int line, int index, Qt::KeyboardModifiers state )
+{
+  if ( !state.testFlag( Qt::ControlModifier ) )
+    return;
+
+  int position = mCodeEditorJson->positionFromLineIndex( line, index );
+  int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
+                               SCINTILLA_UNDERLINE_INDICATOR_INDEX,
+                               position );
+  if ( clickableLinkListIndex <= 0 )
+    return;
+
+  QDesktopServices::openUrl( mClickableLinkList.at( clickableLinkListIndex - 1 ) );
+}
+
+void QgsJsonEditWidget::codeEditorJsonDwellStart( int position, int x, int y )
+{
+  Q_UNUSED( x )
+  Q_UNUSED( y )
+
+  int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
+                               SCINTILLA_UNDERLINE_INDICATOR_INDEX,
+                               position );
+  if ( clickableLinkListIndex <= 0 )
+    return;
+
+  QToolTip::showText( QCursor::pos(),
+                      tr( "%1\nCTRL + click to follow link" ).arg( mClickableLinkList.at( clickableLinkListIndex - 1 ) ) );
+}
+
+void QgsJsonEditWidget::codeEditorJsonDwellEnd( int position, int x, int y )
+{
+  Q_UNUSED( position )
+  Q_UNUSED( x )
+  Q_UNUSED( y )
+  QToolTip::hideText();
+}
+
 void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
 {
   mTreeWidget->clear();
@@ -199,6 +247,12 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
         {
           QDesktopServices::openUrl( link );
         } );
+
+        mClickableLinkList.append( jsonValueString );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, mClickableLinkList.size() );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORFILLRANGE,
+                                        mCodeEditorJson->text().indexOf( jsonValueString ),
+                                        jsonValueString.size() );
       }
     }
     break;
