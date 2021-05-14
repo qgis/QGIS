@@ -626,27 +626,13 @@ QString QgsLayoutItemPicture::evaluatedPath() const
 QMap<QString, QgsProperty> QgsLayoutItemPicture::svgDynamicParameters() const
 {
   const QVariantMap parameters = mCustomProperties.value( QStringLiteral( "svg-dynamic-parameters" ), QVariantMap() ).toMap();
-
-  QMap<QString, QgsProperty> parametersProperties;
-  QVariantMap::const_iterator it = parameters.constBegin();
-  for ( ; it != parameters.constEnd(); ++it )
-  {
-    QgsProperty property;
-    if ( property.loadVariant( it.value() ) )
-      parametersProperties.insert( it.key(), property );
-  }
-
-  return parametersProperties;
+  return QgsProperty::variantMapToPropertyMap( parameters );
 }
 
 void QgsLayoutItemPicture::setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters )
 {
-  QVariantMap variantParameters;
-  QMap<QString, QgsProperty>::const_iterator it = parameters.constBegin();
-  for ( ; it != parameters.constEnd(); ++it )
-    variantParameters.insert( it.key(), it.value().toVariant() );
-
-  mCustomProperties.setValue( QStringLiteral( "svg-dynamic-parameters" ), variantParameters );
+  const QVariantMap variantMap = QgsProperty::propertyMapToVariantMap( parameters );
+  mCustomProperties.setValue( QStringLiteral( "svg-dynamic-parameters" ), variantMap );
   refreshPicture();
 }
 

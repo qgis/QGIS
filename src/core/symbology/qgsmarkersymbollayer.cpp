@@ -2028,16 +2028,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "parameters" ) ) )
   {
     const QVariantMap parameters = props[QStringLiteral( "parameters" )].toMap();
-    QMap<QString, QgsProperty> parametersProperties;
-    QVariantMap::const_iterator it = parameters.constBegin();
-    for ( ; it != parameters.constEnd(); ++it )
-    {
-      QgsProperty property;
-      if ( property.loadVariant( it.value() ) )
-        parametersProperties.insert( it.key(), property );
-    }
-
-    m->setParameters( parametersProperties );
+    m->setParameters( QgsProperty::variantMapToPropertyMap( parameters ) );
   }
 
   return m;
@@ -2418,11 +2409,7 @@ QVariantMap QgsSvgMarkerSymbolLayer::properties() const
   map[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   map[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
 
-  QVariantMap parameters;
-  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
-  for ( ; it != mParameters.constEnd(); ++it )
-    parameters.insert( it.key(), it.value().toVariant() );
-  map[QStringLiteral( "parameters" )] = parameters;
+  map[QStringLiteral( "parameters" )] = QgsProperty::propertyMapToVariantMap( mParameters );
 
   return map;
 }

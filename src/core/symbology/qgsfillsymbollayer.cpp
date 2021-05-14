@@ -2010,16 +2010,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QVariantMap &properties )
   if ( properties.contains( QStringLiteral( "parameters" ) ) )
   {
     const QVariantMap parameters = properties[QStringLiteral( "parameters" )].toMap();
-    QMap<QString, QgsProperty> parametersProperties;
-    QVariantMap::const_iterator it = parameters.constBegin();
-    for ( ; it != parameters.constEnd(); ++it )
-    {
-      QgsProperty property;
-      if ( property.loadVariant( it.value() ) )
-        parametersProperties.insert( it.key(), property );
-    }
-
-    symbolLayer->setParameters( parametersProperties );
+    symbolLayer->setParameters( QgsProperty::variantMapToPropertyMap( parameters ) );
   }
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
@@ -2145,11 +2136,7 @@ QVariantMap QgsSVGFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
 
-  QVariantMap parameters;
-  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
-  for ( ; it != mParameters.constEnd(); ++it )
-    parameters.insert( it.key(), it.value().toVariant() );
-  map[QStringLiteral( "parameters" )] = parameters;
+  map[QStringLiteral( "parameters" )] = QgsProperty::propertyMapToVariantMap( mParameters );
 
   return map;
 }

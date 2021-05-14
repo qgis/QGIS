@@ -204,6 +204,28 @@ QString QgsPropertyDefinition::trString()
 // QgsProperty
 //
 
+QVariantMap QgsProperty::propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap )
+{
+  QVariantMap variantMap;
+  QMap<QString, QgsProperty>::const_iterator it = propertyMap.constBegin();
+  for ( ; it != propertyMap.constEnd(); ++it )
+    variantMap.insert( it.key(), it.value().toVariant() );
+  return variantMap;
+}
+
+QMap<QString, QgsProperty> QgsProperty::variantMapToPropertyMap( const QVariantMap &variantMap )
+{
+  QMap<QString, QgsProperty> propertyMap;
+  QVariantMap::const_iterator it = variantMap.constBegin();
+  for ( ; it != variantMap.constEnd(); ++it )
+  {
+    QgsProperty property;
+    if ( property.loadVariant( it.value() ) )
+      propertyMap.insert( it.key(), property );
+  }
+  return propertyMap;
+}
+
 QgsProperty::QgsProperty()
 {
   d = new QgsPropertyPrivate();
