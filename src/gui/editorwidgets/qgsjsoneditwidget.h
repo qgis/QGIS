@@ -77,6 +77,11 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
      */
     void setFormatJsonMode( FormatJson formatJson );
 
+    /**
+     * \brief Set the visibility of controls to \a visible.
+     */
+    void setControlsVisible( bool visible );
+
   private slots:
 
     void textToolButtonClicked( bool checked );
