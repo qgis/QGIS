@@ -362,8 +362,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Helper to get a theme icon. It will fall back to the
      * default theme if the active theme does not have the required icon.
+     *
+     * Since QGIS 3.20, the optional \a fillColor and \a strokeColor arguments can be used to
+     * control the color of parameter based SVG icons.
      */
-    static QIcon getThemeIcon( const QString &name );
+    static QIcon getThemeIcon( const QString &name, const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 
     /**
      * \brief The Cursor enum defines constants for QGIS custom
@@ -1069,6 +1072,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static ApplicationMembers *members();
 
     static void invalidateCaches();
+
+    friend class TestQgsApplication;
 };
 
 // clazy:excludeall=qstring-allocations
