@@ -409,7 +409,7 @@ void QgsProjectionSelectionWidget::updateWarning()
           warning += QStringLiteral( "<li>%1</li>" ).arg( id );
         }
 
-        warning += QStringLiteral( "</ul>" );
+        warning += QLatin1String( "</ul>" );
       }
 
       mWarningLabel->setToolTip( warning );

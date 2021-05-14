@@ -1000,7 +1000,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   properties << tr( "Method: %1" ).arg( operation.description() );
 
   const QString propertiesString = QStringLiteral( "<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>" ).arg( tr( "Properties" ),
-                                   properties.join( QStringLiteral( "</li><li>" ) ) );
+                                   properties.join( QLatin1String( "</li><li>" ) ) );
 
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
   const QString wktString = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );

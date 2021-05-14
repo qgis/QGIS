@@ -243,7 +243,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     for ( const QString &layerOption : layerOptions )
     {
-      if ( layerOption.startsWith( QStringLiteral( "FID=" ) ) )
+      if ( layerOption.startsWith( QLatin1String( "FID=" ) ) )
       {
         fidFieldName = layerOption.mid( 4 );
         break;

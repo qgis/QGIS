@@ -5293,7 +5293,7 @@ void QgisApp::about()
 #else
     versionString += tr( "No support" );
 #endif
-    versionString += QStringLiteral( "</td></tr><tr>" );
+    versionString += QLatin1String( "</td></tr><tr>" );
 
     // spatialite
     versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">" ).arg( tr( "SpatiaLite version" ) );
@@ -5302,7 +5302,7 @@ void QgisApp::about()
 #else
     versionString += tr( "No support" );
 #endif
-    versionString += QStringLiteral( "</td></tr><tr>" );
+    versionString += QLatin1String( "</td></tr><tr>" );
 
     // QWT
     versionString += QStringLiteral( "<td>%1</td><td colspan=\"3\">%2</td>" ).arg( tr( "QWT version" ), QWT_VERSION_STR );

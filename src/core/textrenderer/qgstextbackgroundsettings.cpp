@@ -302,7 +302,7 @@ QColor QgsTextBackgroundSettings::fillColor() const
 void QgsTextBackgroundSettings::setFillColor( const QColor &color )
 {
   d->fillColor = color;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setColor( color );
   }
@@ -316,7 +316,7 @@ QColor QgsTextBackgroundSettings::strokeColor() const
 void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
 {
   d->strokeColor = color;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
   }
@@ -330,7 +330,7 @@ double QgsTextBackgroundSettings::strokeWidth() const
 void QgsTextBackgroundSettings::setStrokeWidth( double width )
 {
   d->strokeWidth = width;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
     fill->setStrokeWidth( width );
@@ -346,7 +346,7 @@ QgsUnitTypes::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
 void QgsTextBackgroundSettings::setStrokeWidthUnit( QgsUnitTypes::RenderUnit units )
 {
   d->strokeWidthUnits = units;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
   }
@@ -360,7 +360,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
 void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale )
 {
   d->strokeWidthMapUnitScale = scale;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
   }
@@ -374,7 +374,7 @@ Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
 void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
 {
   d->joinStyle = style;
-  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QStringLiteral( "SimpleFill" ) )
+  if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
     qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
   }
@@ -651,11 +651,11 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
     {
       const QDomElement symbolElement = symbols.at( i ).toElement();
       const QString symbolElementName = symbolElement.attribute( QStringLiteral( "name" ) );
-      if ( symbolElementName == QStringLiteral( "markerSymbol" ) )
+      if ( symbolElementName == QLatin1String( "markerSymbol" ) )
       {
         setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ) );
       }
-      else if ( symbolElementName == QStringLiteral( "fillSymbol" ) )
+      else if ( symbolElementName == QLatin1String( "fillSymbol" ) )
       {
         setFillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ) );
       }
@@ -720,7 +720,7 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
 
 void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollection &properties )
 {
-  if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QStringLiteral( "SimpleFill" ) )
+  if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QLatin1String( "SimpleFill" ) )
     return;
   QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
 

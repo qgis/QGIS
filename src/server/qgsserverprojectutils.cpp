@@ -325,19 +325,19 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
 
   QgsServerRequest::RequestHeader header = QgsServerRequest::RequestHeader::X_QGIS_SERVICE_URL;
-  if ( serviceUpper == QStringLiteral( "WMS" ) )
+  if ( serviceUpper == QLatin1String( "WMS" ) )
   {
     header = QgsServerRequest::RequestHeader::X_QGIS_WMS_SERVICE_URL;
   }
-  else if ( serviceUpper == QStringLiteral( "WFS" ) )
+  else if ( serviceUpper == QLatin1String( "WFS" ) )
   {
     header = QgsServerRequest::RequestHeader::X_QGIS_WFS_SERVICE_URL;
   }
-  else if ( serviceUpper == QStringLiteral( "WCS" ) )
+  else if ( serviceUpper == QLatin1String( "WCS" ) )
   {
     header = QgsServerRequest::RequestHeader::X_QGIS_WCS_SERVICE_URL;
   }
-  else if ( serviceUpper == QStringLiteral( "WMTS" ) )
+  else if ( serviceUpper == QLatin1String( "WMTS" ) )
   {
     header = QgsServerRequest::RequestHeader::X_QGIS_WMTS_SERVICE_URL;
   }

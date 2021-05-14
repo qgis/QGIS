@@ -197,7 +197,7 @@ QString QgsLayerMetadataFormatter::identificationSectionHtml() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Language" ) + QStringLiteral( "</td><td>" ) + mMetadata.language() + QStringLiteral( "</td></tr>\n" );
 
   // Abstract
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.abstract() ).replace( '\n', QStringLiteral( "<br>" ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + QgsStringUtils::insertLinks( mMetadata.abstract() ).replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Categories
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Categories" ) + QStringLiteral( "</td><td>" ) + mMetadata.categories().join( QLatin1String( ", " ) ) + QStringLiteral( "</td></tr>\n" );

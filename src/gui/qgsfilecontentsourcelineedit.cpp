@@ -304,7 +304,7 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       {
         formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
       }
-      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QStringLiteral( " " ) ), tr( "All files" ) );
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
     }
     DEFAULT_BUILTIN_UNREACHABLE
   }

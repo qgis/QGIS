@@ -83,11 +83,11 @@ void TestQgsSettingsRegistry::getSettingsEntriesWithDynamicKeys()
   settingsRegistry.addSettingsEntry( &settingsEntryDouble );
 
   QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey ), &settingsEntryBool );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ) ), &settingsEntryBool );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryBoolKey.replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ) ), &settingsEntryBool );
   QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey ), &settingsEntryInteger );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey.replace( QStringLiteral( "%1" ), QStringLiteral( "Second" ) ) ), &settingsEntryInteger );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryIntegerKey.replace( QLatin1String( "%1" ), QLatin1String( "Second" ) ) ), &settingsEntryInteger );
   QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey ), &settingsEntryDouble );
-  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey.replace( QStringLiteral( "%1" ), QStringLiteral( "1st" ) ).replace( QStringLiteral( "%2" ), QStringLiteral( "2nd" ) ) ), &settingsEntryDouble );
+  QCOMPARE( settingsRegistry.settingsEntry( settingsEntryDoubleKey.replace( QLatin1String( "%1" ), QLatin1String( "1st" ) ).replace( QLatin1String( "%2" ), QLatin1String( "2nd" ) ) ), &settingsEntryDouble );
   QCOMPARE( settingsRegistry.settingsEntry( settingsEntryInexisting ), nullptr );
 }
 
