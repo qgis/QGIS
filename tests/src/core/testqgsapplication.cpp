@@ -107,12 +107,11 @@ void TestQgsApplication::themeIcon()
 
   // with colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
-  QVERIFY( !icon.isNull() );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
   QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_1" ), im, 0 ) );
+
   // different colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );
-  QVERIFY( !icon.isNull() );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
   QVERIFY( renderCheck( QStringLiteral( "theme_icon_colors_2" ), im, 0 ) );
 }

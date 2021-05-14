@@ -130,9 +130,11 @@ QIcon QgsDataCollectionItem::openDirIcon( const QColor &fillColor, const QColor 
          : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpen.svg" ) );
 }
 
-QIcon QgsDataCollectionItem::homeDirIcon()
+QIcon QgsDataCollectionItem::homeDirIcon( const QColor &fillColor, const QColor &strokeColor )
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderHome.svg" ) );
+  return fillColor.isValid() || strokeColor.isValid()
+         ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderHomeParams.svg" ), fillColor, strokeColor )
+         : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderHome.svg" ) );
 }
 
 QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection() const
@@ -1172,7 +1174,7 @@ void QgsDirectoryItem::setCustomColor( const QString &directory, const QColor &c
 QIcon QgsDirectoryItem::icon()
 {
   if ( mDirPath == QDir::homePath() )
-    return homeDirIcon();
+    return homeDirIcon( mIconColor, mIconColor.darker() );
 
   // still loading? show the spinner
   if ( state() == Populating )
@@ -1182,7 +1184,7 @@ QIcon QgsDirectoryItem::icon()
   QFileInfo fi( mDirPath );
   if ( fi.isDir() && fi.isSymLink() )
   {
-    return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
+    return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ), mIconColor, mIconColor.darker() );
   }
 
   // loaded? show the open dir icon
