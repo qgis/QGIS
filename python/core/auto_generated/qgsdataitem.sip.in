@@ -687,9 +687,12 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
 
     void addChild( QgsDataItem *item /Transfer/ );
 
-    static QIcon iconDir();
+    static QIcon iconDir( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
 Returns the standard browser directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
 
 .. seealso:: :py:func:`iconDataCollection`
 %End
@@ -706,9 +709,12 @@ Returns the standard browser data collection icon.
 
   protected:
 
-    static QIcon openDirIcon();
+    static QIcon openDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
 Shared open directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
 
 .. versionadded:: 3.4
 %End
