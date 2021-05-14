@@ -1059,7 +1059,7 @@ QStringList QgsOfflineEditing::convertStringToStringList( const QString &string 
   QStringList stringList = string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
   for ( QString &string : stringList )
   {
-    string.replace( QStringLiteral( "\\," ), QStringLiteral( "," ) );
+    string.replace( QLatin1String( "\\," ), QLatin1String( "," ) );
   }
   return stringList;
 }
@@ -1069,9 +1069,9 @@ QString QgsOfflineEditing::convertStringListToString( const QStringList &stringL
   QStringList modifiedStringList = stringList;
   for ( QString &string : modifiedStringList )
   {
-    string.replace( QStringLiteral( "," ), QStringLiteral( "\\," ) );
+    string.replace( QLatin1String( "," ), QLatin1String( "\\," ) );
   }
-  return modifiedStringList.join( QStringLiteral( "," ) );
+  return modifiedStringList.join( QLatin1Char( ',' ) );
 }
 
 QVariantList QgsOfflineEditing::convertStringToList( const QString &string, QVariant::Type type )

@@ -2158,7 +2158,7 @@ void QgsMapLayer::invalidateWgs84Extent()
 QString QgsMapLayer::crsHtmlMetadata() const
 {
   QString metadata = QStringLiteral( "<h1>" ) + tr( "Coordinate Reference System (CRS)" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  metadata += QStringLiteral( "<table class=\"list-view\">\n" );
+  metadata += QLatin1String( "<table class=\"list-view\">\n" );
 
   // Identifier
   const QgsCoordinateReferenceSystem c = crs();

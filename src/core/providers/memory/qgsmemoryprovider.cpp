@@ -203,7 +203,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
           //array
           subType = type;
           type = type == QVariant::String ? QVariant::StringList : QVariant::List;
-          typeName += QStringLiteral( "list" );
+          typeName += QLatin1String( "list" );
         }
       }
       if ( !name.isEmpty() )

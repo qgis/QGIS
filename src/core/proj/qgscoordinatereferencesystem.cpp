@@ -1295,7 +1295,7 @@ QgsProjectionFactors QgsCoordinateReferenceSystem::factors( const QgsPoint &poin
 
   // we have to make a transformation object corresponding to the crs
   QString projString = toProj();
-  projString.replace( QStringLiteral( "+type=crs" ), QString() );
+  projString.replace( QLatin1String( "+type=crs" ), QString() );
 
   QgsProjUtils::proj_pj_unique_ptr transformation( proj_create( QgsProjContext::get(), projString.toUtf8().constData() ) );
   if ( !transformation )
@@ -1334,7 +1334,7 @@ QgsProjOperation QgsCoordinateReferenceSystem::operation() const
 
   // we have to make a transformation object corresponding to the crs
   QString projString = toProj();
-  projString.replace( QStringLiteral( "+type=crs" ), QString() );
+  projString.replace( QLatin1String( "+type=crs" ), QString() );
 
   QgsProjUtils::proj_pj_unique_ptr transformation( proj_create( QgsProjContext::get(), projString.toUtf8().constData() ) );
   if ( !transformation )
