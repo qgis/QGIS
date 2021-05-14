@@ -939,7 +939,12 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 set(MIN_PYTHON_VERSION "3.7")
 set(Python_FIND_FRAMEWORK "LAST")
 
-find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+set(QGIS_PYTHON_COMPONENTS "Interpreter")
+if (WITH_DESKTOP OR WITH_BINDINGS)
+  set(QGIS_PYTHON_COMPONENTS "${QGIS_PYTHON_COMPONENTS} Development")
+endif()
+find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS ${QGIS_PYTHON_COMPONENTS})
+
 message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
 message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
