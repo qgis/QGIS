@@ -499,8 +499,6 @@ if(WITH_CORE)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
       find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
-    else()
-      find_package(QtQmlTools)
     endif()
 
     # following variable is used in qgsconfig.h

@@ -7,7 +7,6 @@ set(QGIS_QUICK_APP_SRCS
 
 set(QGIS_QUICK_APP_QMLS
   main.qml
-  FeaturePanel.qml
 )
 
 include_directories(
