@@ -703,9 +703,13 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     /**
      * Returns the standard browser directory icon.
+     *
+     * Since QGIS 3.20 the optional \a fillColor and \a strokeColor arguments can be used to specify
+     * a fill and stroke color for the icon.
+     *
      * \see iconDataCollection()
      */
-    static QIcon iconDir();
+    static QIcon iconDir( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 
     /**
      * Returns the standard browser data collection icon.
@@ -719,9 +723,13 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     /**
      * Shared open directory icon.
+     *
+     * Since QGIS 3.20 the optional \a fillColor and \a strokeColor arguments can be used to specify
+     * a fill and stroke color for the icon.
+     *
      * \since QGIS 3.4
      */
-    static QIcon openDirIcon();
+    static QIcon openDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 
     /**
      * Shared home directory icon.

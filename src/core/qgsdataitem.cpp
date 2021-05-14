@@ -123,9 +123,11 @@ QIcon QgsDataCollectionItem::iconDataCollection()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
-QIcon QgsDataCollectionItem::openDirIcon()
+QIcon QgsDataCollectionItem::openDirIcon( const QColor &fillColor, const QColor &strokeColor )
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpen.svg" ) );
+  return fillColor.isValid() || strokeColor.isValid()
+         ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpenParams.svg" ), fillColor, strokeColor )
+         : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpen.svg" ) );
 }
 
 QIcon QgsDataCollectionItem::homeDirIcon()
@@ -171,9 +173,11 @@ QgsAbstractDatabaseProviderConnection *QgsDataCollectionItem::databaseConnection
   return nullptr;
 }
 
-QIcon QgsDataCollectionItem::iconDir()
+QIcon QgsDataCollectionItem::iconDir( const QColor &fillColor, const QColor &strokeColor )
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
+  return fillColor.isValid() || strokeColor.isValid()
+         ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), fillColor, strokeColor )
+         : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
 }
 
 
