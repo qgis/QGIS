@@ -449,7 +449,7 @@ if(WITH_CORE)
     set(QT_VERSION_BASE "Qt6")
   else()
     set(QT_MIN_VERSION 5.12.0)
-    set(QT_VERSION_BASE "Qt5")    
+    set(QT_VERSION_BASE "Qt5")
   endif()
 
   # Use Qt5SerialPort optionally for GPS
@@ -499,8 +499,6 @@ if(WITH_CORE)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
       find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
-    else()
-      find_package(QtQmlTools)
     endif()
 
     # following variable is used in qgsconfig.h
