@@ -121,6 +121,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcss.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
+  codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
@@ -164,6 +165,10 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgshtmlwidgetwrapper.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
+  editorwidgets/qgsjsoneditconfigdlg.cpp
+  editorwidgets/qgsjsoneditwidgetfactory.cpp
+  editorwidgets/qgsjsoneditwrapper.cpp
+  editorwidgets/qgsjsoneditwidget.cpp
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
@@ -915,6 +920,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhtml.h
   codeeditors/qgscodeeditorjs.h
+  codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
   codeeditors/qgscodeeditorsql.h
 
@@ -956,6 +962,10 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgshtmlwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetfactory.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
+  editorwidgets/qgsjsoneditconfigdlg.h
+  editorwidgets/qgsjsoneditwidgetfactory.h
+  editorwidgets/qgsjsoneditwrapper.h
+  editorwidgets/qgsjsoneditwidget.h
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h

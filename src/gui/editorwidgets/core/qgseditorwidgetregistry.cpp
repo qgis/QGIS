@@ -33,6 +33,7 @@
 #include "qgsexternalresourcewidgetfactory.h"
 #include "qgshiddenwidgetfactory.h"
 #include "qgskeyvaluewidgetfactory.h"
+#include "qgsjsoneditwidgetfactory.h"
 #include "qgslistwidgetfactory.h"
 #include "qgsrangewidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
@@ -66,6 +67,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
   registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
+  registerWidget( QStringLiteral( "JsonEdit" ), new QgsJsonEditWidgetFactory( tr( "Json Edit" ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
