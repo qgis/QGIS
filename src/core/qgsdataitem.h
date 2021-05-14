@@ -733,9 +733,13 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     /**
      * Shared home directory icon.
+     *
+     * Since QGIS 3.20 the optional \a fillColor and \a strokeColor arguments can be used to specify
+     * a fill and stroke color for the icon.
+     *
      * \since QGIS 3.4
      */
-    static QIcon homeDirIcon();
+    static QIcon homeDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 
 };
 

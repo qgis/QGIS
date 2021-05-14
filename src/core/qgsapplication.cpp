@@ -173,6 +173,8 @@ Q_GLOBAL_STATIC( QString, sUserFullName )
 Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "desktop" ) )
 Q_GLOBAL_STATIC( QString, sTranslation )
 
+Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
+
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
 {
@@ -648,9 +650,9 @@ QString QgsApplication::iconPath( const QString &iconFile )
 
 QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor, const QColor &strokeColor )
 {
-  const QString cacheKey = name
-                           + ( fillColor.isValid() ? QStringLiteral( ":%1" ).arg( fillColor.name( QColor::HexArgb ) ) :  QString() )
-                           + ( strokeColor.isValid() ? QStringLiteral( ":%1" ).arg( strokeColor.name( QColor::HexArgb ) ) : QString() );
+  const QString cacheKey = ( name.startsWith( '/' ) ? name.mid( 1 ) : name )
+                           + ( fillColor.isValid() ? QStringLiteral( "_%1" ).arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) :  QString() )
+                           + ( strokeColor.isValid() ? QStringLiteral( "_%1" ).arg( strokeColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() );
   QgsApplication *app = instance();
   if ( app && app->mIconCache.contains( cacheKey ) )
     return app->mIconCache.value( cacheKey );
@@ -662,10 +664,20 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
   {
     // sizes are unused here!
     const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
-    QTemporaryFile f;
-    if ( f.open() )
+
+    const QString iconPath = sIconCacheDir()->filePath( cacheKey + QStringLiteral( ".svg" ) );
+    QFile f( iconPath );
+    if ( f.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
       f.write( svgContent );
-    f.close();
+      f.close();
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
+      return QIcon();
+    }
+
     return QIcon( f.fileName() );
   };
 

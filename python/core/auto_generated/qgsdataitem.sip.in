@@ -719,9 +719,12 @@ a fill and stroke color for the icon.
 .. versionadded:: 3.4
 %End
 
-    static QIcon homeDirIcon();
+    static QIcon homeDirIcon( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 %Docstring
 Shared home directory icon.
+
+Since QGIS 3.20 the optional ``fillColor`` and ``strokeColor`` arguments can be used to specify
+a fill and stroke color for the icon.
 
 .. versionadded:: 3.4
 %End
