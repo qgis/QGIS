@@ -806,11 +806,9 @@ void TestQgsVertexTool::testConvertVertex()
   // convert vertex in compoundCurve while moving vertex
   QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
   mouseClick( 10, 10, Qt::LeftButton );
-  keyClick( Qt::Key_C );
-  mouseClick( 10, 10, Qt::LeftButton );
-  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 4 ); // one undo for move, one undo for convert
+  keyClick( Qt::Key_O );
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((14 14, 10 10, 17 10))" ) );
-  mLayerCompoundCurve->undoStack()->undo();
   mLayerCompoundCurve->undoStack()->undo();
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
   QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
@@ -820,7 +818,7 @@ void TestQgsVertexTool::testConvertVertex()
   mousePress( 9.5, 9.5, Qt::LeftButton );
   mouseMove( 10.5, 10.5 );
   mouseRelease( 10.5, 10.5, Qt::LeftButton );
-  keyClick( Qt::Key_C );
+  keyClick( Qt::Key_O );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((14 14, 10 10, 17 10))" ) );
   mLayerCompoundCurve->undoStack()->undo();
