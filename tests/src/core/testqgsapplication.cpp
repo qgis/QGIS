@@ -105,7 +105,7 @@ void TestQgsApplication::themeIcon()
   QImage im( icon.pixmap( 16, 16 ).toImage() );
   QVERIFY( renderCheck( QStringLiteral( "theme_icon" ), im, 0 ) );
 
-  // parameterized
+  // with colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
   QVERIFY( !icon.isNull() );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );

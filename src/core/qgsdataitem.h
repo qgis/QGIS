@@ -858,6 +858,39 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
+
+    /**
+     * Returns the directory's icon color.
+     *
+     * An invalid color will be returned if the default icon color is used.
+     *
+     * \see setIconColor()
+     * \since QGIS 3.20
+     */
+    QColor iconColor() const;
+
+    /**
+     * Sets the directory's icon \a color.
+     *
+     * Setting an invalid color will cause the default icon color to be used.
+     *
+     * This is a transient property, and will not permanently alter the directory's colors
+     * in future QGIS sessions. Use setCustomColor() to permanently set the directory's color.
+     *
+     * \see iconColor()
+     * \since QGIS 3.20
+     */
+    void setIconColor( const QColor &color );
+
+    /**
+     * Sets a custom icon \a color to use for the items for the corresponding \a directory path.
+     *
+     * If \a color is an invalid color then the default icon color will be used.
+     *
+     * \since QGIS 3.20
+     */
+    static void setCustomColor( const QString &directory, const QColor &color );
+
     Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
     bool hasDragEnabled() const override { return true; }
     QgsMimeDataUtils::UriList mimeUris() const override;
@@ -877,6 +910,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QFileSystemWatcher *mFileSystemWatcher = nullptr;
     bool mRefreshLater;
     QDateTime mLastScan;
+    QColor mIconColor;
 };
 
 /**
@@ -1195,6 +1229,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
   private:
 
     QgsFavoritesItem *mFavorites = nullptr;
+
 };
 Q_NOWARN_DEPRECATED_POP
 

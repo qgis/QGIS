@@ -46,6 +46,7 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void addFavorite( QgsDirectoryItem *item );
     void removeFavorite( QgsFavoriteItem *favorite );
     void renameFavorite( QgsFavoriteItem *favorite );
+    void changeDirectoryColor( QgsDirectoryItem *favorite );
     void hideDirectory( QgsDirectoryItem *item );
     void toggleFastScan( QgsDirectoryItem *item );
     void showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context );

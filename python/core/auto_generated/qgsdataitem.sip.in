@@ -859,6 +859,41 @@ Returns the full path to the directory the item represents.
 
     virtual QIcon icon();
 
+
+    QColor iconColor() const;
+%Docstring
+Returns the directory's icon color.
+
+An invalid color will be returned if the default icon color is used.
+
+.. seealso:: :py:func:`setIconColor`
+
+.. versionadded:: 3.20
+%End
+
+    void setIconColor( const QColor &color );
+%Docstring
+Sets the directory's icon ``color``.
+
+Setting an invalid color will cause the default icon color to be used.
+
+This is a transient property, and will not permanently alter the directory's colors
+in future QGIS sessions. Use :py:func:`~QgsDirectoryItem.setCustomColor` to permanently set the directory's color.
+
+.. seealso:: :py:func:`iconColor`
+
+.. versionadded:: 3.20
+%End
+
+    static void setCustomColor( const QString &directory, const QColor &color );
+%Docstring
+Sets a custom icon ``color`` to use for the items for the corresponding ``directory`` path.
+
+If ``color`` is an invalid color then the default icon color will be used.
+
+.. versionadded:: 3.20
+%End
+
  virtual QWidget *paramWidget() /Factory,Deprecated/;
 
     virtual bool hasDragEnabled() const;

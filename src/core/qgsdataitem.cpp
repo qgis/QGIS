@@ -1122,6 +1122,17 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
   , mDirPath( dirPath )
   , mRefreshLater( false )
 {
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
+  QString settingKey = mDirPath;
+  settingKey.replace( '/', QStringLiteral( "|||" ) );
+  if ( settings.childKeys().contains( settingKey ) )
+  {
+    const QString colorString = settings.value( settingKey ).toString();
+    mIconColor = QColor( colorString );
+  }
+  settings.endGroup();
+
   mType = Directory;
   init();
 }
@@ -1129,6 +1140,33 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
 void QgsDirectoryItem::init()
 {
   setToolTip( QDir::toNativeSeparators( mDirPath ) );
+}
+
+QColor QgsDirectoryItem::iconColor() const
+{
+  return mIconColor;
+}
+
+void QgsDirectoryItem::setIconColor( const QColor &color )
+{
+  if ( color == mIconColor )
+    return;
+
+  mIconColor = color;
+  emit dataChanged( this );
+}
+
+void QgsDirectoryItem::setCustomColor( const QString &directory, const QColor &color )
+{
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
+  QString settingKey = directory;
+  settingKey.replace( '/', QStringLiteral( "|||" ) );
+  if ( color.isValid() )
+    settings.setValue( settingKey, color.name( QColor::HexArgb ) );
+  else
+    settings.remove( settingKey );
+  settings.endGroup();
 }
 
 QIcon QgsDirectoryItem::icon()
@@ -1149,10 +1187,10 @@ QIcon QgsDirectoryItem::icon()
 
   // loaded? show the open dir icon
   if ( state() == Populated )
-    return openDirIcon();
+    return openDirIcon( mIconColor, mIconColor.darker() );
 
   // show the closed dir icon
-  return iconDir();
+  return iconDir( mIconColor, mIconColor.darker() );
 }
 
 
@@ -1632,7 +1670,8 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
     const QString dir = parts.at( 0 );
     if ( dir == path )
     {
-      favDirs[i] = QStringLiteral( "%1|||%2" ).arg( path, name );
+      QStringList newParts { path, name };
+      favDirs[i] = newParts.join( QStringLiteral( "|||" ) );
       break;
     }
   }
