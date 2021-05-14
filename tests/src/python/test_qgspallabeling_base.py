@@ -246,7 +246,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         font.setPointSize(32)
         format = QgsTextFormat()
         format.setFont(font)
-        format.setColor(QColor(0,0,0))
+        format.setColor(QColor(0, 0, 0))
         format.setNamedStyle('Roman')
         format.setSize(32)
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
