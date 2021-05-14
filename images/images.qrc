@@ -916,6 +916,8 @@
         <file>themes/default/mActionEditHtml.svg</file>
         <file>themes/default/mIndicatorNotes.svg</file>
         <file>themes/default/mIndicatorLowAccuracy.svg</file>
+        <file>themes/default/mIconFolderParams.svg</file>
+        <file>themes/default/mIconFolderOpenParams.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
