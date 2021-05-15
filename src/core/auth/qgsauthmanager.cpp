@@ -1076,7 +1076,7 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
   return QgsAuthMethod::Expansions();
 }
 
-bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
+bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig, bool overwrite )
 {
   QMutexLocker locker( mMutex.get() );
   if ( !setMasterPassword( true ) )
@@ -1099,10 +1099,16 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
   }
   else if ( configIds().contains( uid ) )
   {
-    const char *err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID is not unique" );
-    QgsDebugMsg( err );
-    emit messageOut( tr( err ), authManTag(), WARNING );
-    return false;
+    if ( !overwrite )
+    {
+      const char *err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID %1 is not unique" );
+      QgsDebugMsg( err );
+      emit messageOut( tr( err ), authManTag(), WARNING );
+      return false;
+    }
+    locker.unlock();
+    removeAuthenticationConfig( uid );
+    locker.relock();
   }
 
   QString configstring = mconfig.configString();
@@ -1142,7 +1148,7 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
   if ( !authDbCommit() )
     return false;
 
-  // passed-in config should now be like as if it was just loaded from db
+// passed-in config should now be like as if it was just loaded from db
   if ( !passedinID )
     mconfig.setId( uid );
 
@@ -1150,7 +1156,6 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
 
   QgsDebugMsgLevel( QStringLiteral( "Store config SUCCESS for authcfg: %1" ).arg( uid ), 2 );
   return true;
-
 }
 
 bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &config )
@@ -1384,7 +1389,7 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
   return true;
 }
 
-bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename, const QString &password )
+bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename, const QString &password, bool overwrite )
 {
   QFile file( filename );
   if ( !file.open( QFile::ReadOnly ) )
@@ -1428,7 +1433,7 @@ bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename
   {
     QgsAuthMethodConfig authMethodConfig;
     authMethodConfig.readXml( configuration );
-    storeAuthenticationConfig( authMethodConfig );
+    storeAuthenticationConfig( authMethodConfig, overwrite );
 
     configuration = configuration.nextSiblingElement();
   }
