@@ -2352,7 +2352,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
 
   const double opacity = dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01;
 
-  QgsDebugMsg("Render polygon");
+  QgsDebugMsg( "Render polygon" );
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
 
   symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
