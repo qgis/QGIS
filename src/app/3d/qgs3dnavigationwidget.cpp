@@ -29,6 +29,7 @@ Q_NOWARN_DEPRECATED_POP
 #include "qgscameracontroller.h"
 #include "qgs3dnavigationwidget.h"
 
+#include <Qt3DRender/QCamera>
 
 Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget( parent )
 {
@@ -186,6 +187,10 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   }
   );
 
+  mNearFarPlaneLabel = new QLabel( this );
+  mCameraPositionLabel = new QLabel( this );
+  mCameraLookAtLabel = new QLabel( this );
+
   QGridLayout *gridLayout = new QGridLayout( this );
   gridLayout->addWidget( mTiltUpButton, 0, 0 );
   gridLayout->addWidget( mTiltDownButton, 3, 0 );
@@ -196,6 +201,12 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   gridLayout->addWidget( mMoveRightButton, 1, 3, 2, 1, Qt::AlignCenter );
   gridLayout->addWidget( mMoveDownButton, 3, 1, 1, 2, Qt::AlignCenter );
   gridLayout->addWidget( mMoveLeftButton, 1, 0, 2, 1, Qt::AlignCenter );
+  gridLayout->addWidget( mTiltDownButton, 3, 4 );
+
+  gridLayout->addWidget( mNearFarPlaneLabel, 4, 0, 1, 4, Qt::AlignLeft );
+  gridLayout->addWidget( mCameraPositionLabel, 5, 0, 1, 4, Qt::AlignLeft );
+  gridLayout->addWidget( mCameraLookAtLabel, 6, 0, 1, 4, Qt::AlignLeft );
+
   gridLayout->setAlignment( Qt::AlignTop );
 }
 
@@ -203,4 +214,9 @@ void Qgs3DNavigationWidget::updateFromCamera()
 {
   // Make sure the angle is between 0 - 359
   whileBlocking( mCompas )->setValue( fmod( mParent3DMapCanvas->cameraController()->yaw() + 360, 360 ) );
+  mNearFarPlaneLabel->setText( QStringLiteral( "near: %1, far: %2" ).arg( mParent3DMapCanvas->cameraController()->camera()->nearPlane() ).arg( mParent3DMapCanvas->cameraController()->camera()->farPlane() ) );
+  QVector3D cameraPosition = mParent3DMapCanvas->cameraController()->camera()->position();
+  QgsVector3D lookingAt = mParent3DMapCanvas->cameraController()->lookingAtPoint();
+  mCameraPositionLabel->setText( QStringLiteral( "Camera position x: %1, y: %2, z: %3" ).arg( cameraPosition.x() ).arg( cameraPosition.y() ).arg( cameraPosition.z() ) );
+  mCameraLookAtLabel->setText( QStringLiteral( "Camera looking at x: %1, y: %2, z: %3" ).arg( lookingAt.x() ).arg( lookingAt.y() ).arg( lookingAt.z() ) );
 }

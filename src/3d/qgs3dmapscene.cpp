@@ -238,8 +238,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
 void Qgs3DMapScene::viewZoomFull()
 {
-  QgsRectangle extent = mMap.terrainGenerator()->extent();
+  QgsRectangle extent = sceneExtent();
   float side = std::max( extent.width(), extent.height() );
+  // TODO: make this work with arbitrary FOV
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
@@ -429,13 +430,12 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   // 1. precision errors - if the range is too great
   // 2. unwanted clipping of scene - if the range is too small
 
+  Qt3DRender::QCamera *camera = cameraController()->camera();
+  QMatrix4x4 viewMatrix = camera->viewMatrix();
+  float fnear = 1e9;
+  float ffar = 0;
   if ( mTerrain )
   {
-    Qt3DRender::QCamera *camera = cameraController()->camera();
-    QMatrix4x4 viewMatrix = camera->viewMatrix();
-    float fnear = 1e9;
-    float ffar = 0;
-
     QList<QgsChunkNode *> activeNodes = mTerrain->activeNodes();
 
     // it could be that there are no active nodes - they could be all culled or because root node
@@ -451,7 +451,12 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
     {
       if ( e != mTerrain )
-        _updateNearFarPlane( e->activeNodes(), viewMatrix, fnear, ffar );
+      {
+        QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
+        if ( activeEntityNodes.empty() )
+          activeEntityNodes << e->rootNode();
+        _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
+      }
     }
 
     if ( fnear < 1 )
@@ -477,7 +482,51 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     }
   }
   else
-    qWarning() << "no terrain - not setting near/far plane";
+  {
+    QList<QgsChunkNode *> activeNodes;
+    for ( QgsMapLayer *layer : mLayerEntities.keys() )
+    {
+      if ( QgsChunkedEntity *entity = dynamic_cast< QgsChunkedEntity * >( mLayerEntities[ layer ] ) )
+      {
+        QList<QgsChunkNode *> layerActiveNodes = entity->activeNodes();
+        activeNodes << layerActiveNodes;
+        if ( layerActiveNodes.empty() )
+          activeNodes << entity->rootNode();
+      }
+    }
+
+    // it could be that there are no active nodes - they could be all culled or because root node
+    // is not yet loaded - we still need at least something to understand bounds of our scene
+    // so lets use the root node
+    if ( !activeNodes.isEmpty() )
+    {
+      _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+    }
+    else
+    {
+      if ( fnear < 1 )
+        fnear = 1;  // does not really make sense to use negative far plane (behind camera)
+
+      if ( fnear == 1e6 && ffar == 0 )
+      {
+        // the update didn't work out... this should not happen
+        // well at least temporarily use some conservative starting values
+        qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+        fnear = 1;
+        ffar = 1e6;
+      }
+
+      // set near/far plane - with some tolerance in front/behind expected near/far planes
+      float newFar = ffar * 2;
+      float newNear = fnear / 2;
+      if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
+      {
+        camera->setFarPlane( newFar );
+        camera->setNearPlane( newNear );
+        return true;
+      }
+    }
+  }
 
   return false;
 }
@@ -527,8 +576,6 @@ void Qgs3DMapScene::createTerrain()
 
     mTerrain->deleteLater();
     mTerrain = nullptr;
-
-    emit terrainEntityChanged();
   }
 
   if ( !mTerrainUpdateScheduled )
@@ -538,28 +585,38 @@ void Qgs3DMapScene::createTerrain()
     mTerrainUpdateScheduled = true;
     setSceneState( Updating );
   }
+  else
+  {
+    emit terrainEntityChanged();
+  }
 }
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  double tile0width = mMap.terrainGenerator()->extent().width();
-  int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
-  QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
-  float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-  mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
+  if ( mMap.terrainGenerator() )
+  {
+    double tile0width = mMap.terrainGenerator()->extent().width();
+    int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+    QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+    float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
+    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
 
-  mTerrain = new QgsTerrainEntity( mMap );
-  //mTerrain->setEnabled(false);
-  mTerrain->setParent( this );
+    mTerrain = new QgsTerrainEntity( mMap );
+    mTerrain->setParent( this );
+    mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
-  if ( mMap.showTerrainBoundingBoxes() )
-    mTerrain->setShowBoundingBoxes( true );
+    mCameraController->setTerrainEntity( mTerrain );
 
-  mCameraController->setTerrainEntity( mTerrain );
+    mChunkEntities << mTerrain;
 
-  mChunkEntities << mTerrain;
-
-  onCameraChanged();  // force update of the new terrain
+    connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+    connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+  }
+  else
+  {
+    mTerrain = nullptr;
+    mCameraController->setTerrainEntity( mTerrain );
+  }
 
   // make sure that renderers for layers are re-created as well
   const QList<QgsMapLayer *> layers = mMap.layers();
@@ -572,12 +629,9 @@ void Qgs3DMapScene::createTerrainDeferred()
     addLayerEntity( layer );
   }
 
-  mTerrainUpdateScheduled = false;
-
-  connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
-  connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
-
   emit terrainEntityChanged();
+  onCameraChanged();  // force update of the new terrain
+  mTerrainUpdateScheduled = false;
 }
 
 void Qgs3DMapScene::onBackgroundColorChanged()
@@ -1106,4 +1160,48 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
       chunks.push_back( n );
   }
   return chunks;
+}
+
+QgsRectangle Qgs3DMapScene::sceneExtent()
+{
+  QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator();
+
+  QVector<const QgsChunkNode *> activeChunkNodes;
+  for ( Qt3DCore::QEntity *layerEntity : mLayerEntities.values() )
+  {
+    if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity ) )
+      activeChunkNodes <<  c->rootNode();
+  }
+
+  float minX = std::numeric_limits<float>::max();
+  float maxX = std::numeric_limits<float>::lowest();
+  float minY = std::numeric_limits<float>::max();
+  float maxY = std::numeric_limits<float>::lowest();
+  for ( const QgsChunkNode *chunkNode : activeChunkNodes )
+  {
+    QgsAABB bbox = chunkNode->bbox();
+    QgsVector3D bboxMin = bbox.minimum();
+    QgsVector3D bboxMax = bbox.maximum();
+    bboxMin = Qgs3DUtils::worldToMapCoordinates( bboxMin, mMap.origin() );
+    bboxMax = Qgs3DUtils::worldToMapCoordinates( bboxMax, mMap.origin() );
+    minX = std::min<float>( bboxMin.x(), minX );
+    maxX = std::max<float>( bboxMax.x(), maxX );
+    minY = std::min<float>( bboxMin.y(), minY );
+    maxY = std::max<float>( bboxMax.y(), maxY );
+  }
+
+  if ( terrainGenerator )
+  {
+    QgsRectangle terrainExtent = terrainGenerator->extent();
+    QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+    terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
+
+    minX = std::min<float>( terrainExtent.xMinimum(), minX );
+    maxX = std::max<float>( terrainExtent.xMaximum(), maxX );
+    minY = std::min<float>( terrainExtent.yMinimum(), minY );
+    maxY = std::max<float>( terrainExtent.yMaximum(), maxY );
+  }
+
+
+  return QgsRectangle( minX, minY, maxX, maxY );
 }

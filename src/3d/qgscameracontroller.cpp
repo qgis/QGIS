@@ -92,9 +92,9 @@ void QgsCameraController::setVerticalAxisInversion( QgsCameraController::Vertica
 void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
 {
   mTerrainEntity = te;
-
   // object picker for terrain for correct map panning
-  connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
+  if ( mTerrainEntity )
+    connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
 }
 
 void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )

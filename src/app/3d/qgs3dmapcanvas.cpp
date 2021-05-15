@@ -139,8 +139,8 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
 {
   if ( resetExtent )
   {
-    if ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
-         map()->terrainGenerator()->type() == QgsTerrainGenerator::Online )
+    if ( map()->terrainGenerator() && ( map()->terrainGenerator()->type() == QgsTerrainGenerator::Flat ||
+                                        map()->terrainGenerator()->type() == QgsTerrainGenerator::Online ) )
     {
       const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
       QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
@@ -154,14 +154,29 @@ void Qgs3DMapCanvas::resetView( bool resetExtent )
       {
         rect = extent;
       }
-      map()->terrainGenerator()->setExtent( rect );
+      if ( map()->terrainGenerator() )
+        map()->terrainGenerator()->setExtent( rect );
 
-      // reproject terrain's extent to map CRS
-      QgsRectangle te = map()->terrainGenerator()->extent();
-      QgsCoordinateTransform terrainToMapTransform( map()->terrainGenerator()->crs(), map()->crs(), QgsProject::instance() );
-      te = terrainToMapTransform.transformBoundingBox( te );
-
+      QgsRectangle te = mScene->sceneExtent();
       QgsPointXY center = te.center();
+      map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
+    }
+    if ( !map()->terrainGenerator() )
+    {
+      const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
+      QgsCoordinateTransform ct( extent.crs(), map()->crs(), QgsProject::instance()->transformContext() );
+      ct.setBallparkTransformsAreAppropriate( true );
+      QgsRectangle rect;
+      try
+      {
+        rect = ct.transformBoundingBox( extent );
+      }
+      catch ( QgsCsException & )
+      {
+        rect = extent;
+      }
+
+      QgsPointXY center = rect.center();
       map()->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
     }
   }
