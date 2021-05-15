@@ -339,7 +339,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
         conn.executeSql(sql)
         fields = conn.fields('qgis_test', 'gh_37666')
-        self.assertEqual([f.name() for f in fields], ['id', 'geom', 'geog'])
+        self.assertEqual(fields.names(), ['id', 'geom', 'geog'])
         self.assertEqual([f.typeName() for f in fields], ['int4', 'geometry', 'geography'])
         table = conn.table('qgis_test', 'gh_37666')
         self.assertEqual(table.primaryKeyColumns(), ['id'])

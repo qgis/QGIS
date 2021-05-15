@@ -319,7 +319,8 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
 
       // Need to store it here because provider (and underlying gaia library) returns views as spatial table if they have geometries
       QStringList viewNames;
-      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ).rows() )
+      const auto viewRows { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ).rows() };
+      for ( const auto &tn : std::as_const( viewRows ) )
       {
         viewNames.push_back( tn.first().toString() );
       }
@@ -327,7 +328,8 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
       // Another weirdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
       // may need LAUNDER on open, but let's try to make it consistent with how GPKG works.
       QgsStringMap tableNotLowercaseNames;
-      for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ).rows() )
+      const auto lowerTables { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ).rows() };
+      for ( const auto &tn : std::as_const( lowerTables ) )
       {
         const QString tName { tn.first().toString() };
         tableNotLowercaseNames.insert( tName.toLower(), tName );
@@ -357,10 +359,26 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
             property.setGeometryColumnTypes( {{ QgsWkbTypes::NoGeometry, QgsCoordinateReferenceSystem() }} );
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::Aspatial );
           }
+
           if ( viewNames.contains( tableName ) )
           {
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::View );
           }
+
+          const auto constPkIdxs { vl->dataProvider()->pkAttributeIndexes() };
+          QStringList pkNames;
+          for ( const auto &pkIdx : std::as_const( constPkIdxs ) )
+          {
+            // Better safe than sorry
+            if ( pkIdx < vl->fields().count() )
+              pkNames.append( vl->fields().at( pkIdx ).name() );
+          }
+
+          if ( ! pkNames.isEmpty() )
+          {
+            property.setPrimaryKeyColumns( pkNames );
+          }
+
           tableInfo.push_back( property );
         }
         else

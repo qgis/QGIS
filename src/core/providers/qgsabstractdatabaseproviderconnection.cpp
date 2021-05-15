@@ -301,6 +301,7 @@ QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, 
   QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options };
   if ( vl.isValid() )
   {
+    // Note: this implementation works for providers that do not hide any "special" field (geometry or PKs)
     return vl.fields();
   }
   else

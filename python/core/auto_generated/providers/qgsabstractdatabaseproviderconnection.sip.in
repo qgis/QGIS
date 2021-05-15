@@ -635,10 +635,12 @@ Returns the fields of a ``table`` and ``schema``.
 
 .. note::
 
-   The default implementation creates a temporary vector layer, providers may
-   choose to override this method for a greater efficiency.
+   the default implementation creates a temporary vector layer, providers may
+   choose to override this method for a greater efficiency of to overcome provider's
+   behavior when the layer does not expose all fields (GPKG for example hides geometry
+   and primary key column).
 
-:raises QgsProviderConnectionException: if any errors are encountered.
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.16
 %End

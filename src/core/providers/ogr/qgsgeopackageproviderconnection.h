@@ -27,6 +27,7 @@
 
 struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
+
     QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
       : mHDS( std::move( hDS ) )
       , mOgrLayer( ogrLayer )
@@ -35,6 +36,8 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
     ~QgsGeoPackageProviderResultIterator();
 
     void setFields( const QgsFields &fields );
+    void setGeometryColumnNames( const QStringList &geometryColumnNames );
+    void setPrimaryKeyColumnName( const QString &primaryKeyColumnName );
 
   private:
 
@@ -42,6 +45,8 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
+    QStringList mGeometryColumnNames;
+    QString mPrimaryKeyColumnName;
 
     QVariantList nextRowPrivate() override;
     QVariantList nextRowInternal();
@@ -76,12 +81,15 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
         const TableFlags &flags = TableFlags() ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QgsFields fields( const QString &schema, const QString &table ) const override;
 
   private:
 
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
+
+
 };
 
 

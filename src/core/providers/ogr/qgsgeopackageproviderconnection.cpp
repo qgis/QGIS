@@ -405,28 +405,64 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
 
-        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
-        iterator->setFields( fields );
+        // May need to prepend PK and append geometries to the columns
+        thread_local const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|fid)[,\s+](.*)from)" ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
+        if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+        {
+          iterator->setPrimaryKeyColumnName( QStringLiteral( "fid" ) );
+          results.appendColumn( QStringLiteral( "fid" ) );
+        }
 
+        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
+
+        // Geometry columns
+        OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
+
+        if ( featureDef )
+        {
+          QStringList geomColumnsList;
+          for ( int idx = 0; idx < OGR_F_GetGeomFieldCount( fet.get() ); ++idx )
+          {
+            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), idx ) };
+            if ( geomFldDef )
+            {
+              const QString geomColumnName { OGR_GFld_GetNameRef( geomFldDef ) };
+              geomColumnsList.append( geomColumnName );
+              results.appendColumn( geomColumnName );
+            }
+          }
+          iterator->setGeometryColumnNames( geomColumnsList );
+        }
+
+        iterator->setFields( fields );
       }
 
       // Check for errors
-      errCause = CPLGetLastErrorMsg( );
+      if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
+      {
+        errCause = CPLGetLastErrorMsg( );
+      }
 
       if ( ! errCause.isEmpty() )
       {
-        throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
+        throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
       }
 
       OGR_L_ResetReading( ogrLayer );
       iterator->nextRow();
       return results;
     }
-    errCause = CPLGetLastErrorMsg( );
+
+    // Check for errors
+    if ( CE_Failure == CPLGetLastErrorType() || CE_Fatal == CPLGetLastErrorType() )
+    {
+      errCause = CPLGetLastErrorMsg( );
+    }
+
   }
   else
   {
@@ -456,6 +492,12 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
     gdal::ogr_feature_unique_ptr fet;
     if ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
     {
+      // PK
+      if ( ! mPrimaryKeyColumnName.isEmpty() )
+      {
+        row.push_back( OGR_F_GetFID( fet.get() ) );
+      }
+
       if ( ! mFields.isEmpty() )
       {
         QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
@@ -464,6 +506,13 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
         {
           row.push_back( attribute );
         }
+
+        // Geoms go last
+        for ( const auto &geomColName : std::as_const( mGeometryColumnNames ) )
+        {
+          row.push_back( f.geometry().asWkb() );
+        }
+
       }
       else // Fallback to strings
       {
@@ -493,6 +542,16 @@ void QgsGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
   mFields = fields;
 }
 
+void QgsGeoPackageProviderResultIterator::setGeometryColumnNames( const QStringList &geometryColumnNames )
+{
+  mGeometryColumnNames = geometryColumnNames;
+}
+
+void QgsGeoPackageProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
+{
+  mPrimaryKeyColumnName = primaryKeyColumnName;
+}
+
 QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
 {
   QgsVectorLayer::LayerOptions options { false, true };
@@ -506,6 +565,53 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
+}
+
+QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table ) const
+{
+
+  Q_UNUSED( schema )
+
+  // Get fields from layer
+  QgsFields fieldList;
+
+  // Prepend PK fid
+  fieldList.append( QgsField{ QStringLiteral( "fid" ), QVariant::LongLong } );
+
+  QgsVectorLayer::LayerOptions options { false, true };
+  options.skipCrsValidation = true;
+  QgsVectorLayer vl { tableUri( schema, table ), QStringLiteral( "temp_layer" ), mProviderKey, options };
+  if ( vl.isValid() )
+  {
+    const auto parentFields { vl.fields() };
+    for ( const auto &pField : std::as_const( parentFields ) )
+    {
+      fieldList.append( pField );
+    }
+    // Append name of the geometry column, the data provider does not expose this information so we need an extra query:/
+    const QString sql = QStringLiteral( "SELECT g.column_name "
+                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "WHERE c.table_name = %1" ).arg( QgsSqliteUtils::quotedString( table ) );
+    try
+    {
+      const auto results = executeSql( sql );
+      if ( ! results.isEmpty() )
+      {
+        fieldList.append( QgsField{ results.first().first().toString(), QVariant::String, QStringLiteral( "geometry" ) } );
+      }
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri %1: %2" ).arg( vl.publicSource(), ex.what() ) );
+    }
+
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving fields information for uri: %1" ).arg( vl.publicSource() ) );
+  }
+
+  return fieldList;
 }
 
 QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()

@@ -736,9 +736,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns the fields of a \a table and \a schema.
      *
-     * \note The default implementation creates a temporary vector layer, providers may
-     * choose to override this method for a greater efficiency.
-     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \note the default implementation creates a temporary vector layer, providers may
+     * choose to override this method for a greater efficiency of to overcome provider's
+     * behavior when the layer does not expose all fields (GPKG for example hides geometry
+     * and primary key column).
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.16
      */
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
