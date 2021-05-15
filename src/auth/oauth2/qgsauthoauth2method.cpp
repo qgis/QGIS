@@ -195,6 +195,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     QEventLoop loop( nullptr );
     connect( o2, &QgsO2::linkingFailed, &loop, &QEventLoop::quit );
     connect( o2, &QgsO2::linkingSucceeded, &loop, &QEventLoop::quit );
+    connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authBrowserAborted, &loop, &QEventLoop::quit );
 
     // add single shot timer to quit linking after an allotted timeout
     // this should keep the local event loop from blocking forever

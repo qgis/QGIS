@@ -468,6 +468,7 @@ void QgsNetworkAccessManager::requestAuthOpenBrowser( const QUrl &url ) const
   if ( this != sMainNAM )
   {
     sMainNAM->requestAuthOpenBrowser( url );
+    connect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
     return;
   }
   mAuthHandler->handleAuthRequestOpenBrowser( url );
@@ -478,9 +479,19 @@ void QgsNetworkAccessManager::requestAuthCloseBrowser() const
   if ( this != sMainNAM )
   {
     sMainNAM->requestAuthCloseBrowser();
+    disconnect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
     return;
   }
   mAuthHandler->handleAuthRequestCloseBrowser();
+}
+
+void QgsNetworkAccessManager::abortAuthBrowser()
+{
+  if ( this != sMainNAM )
+  {
+    disconnect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
+  }
+  emit authBrowserAborted();
 }
 
 void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )

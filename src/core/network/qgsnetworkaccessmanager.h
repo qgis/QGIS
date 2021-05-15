@@ -530,6 +530,15 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void requestAuthCloseBrowser() const;
 
+    /**
+     * Abort any outstanding external browser login request.
+     *
+     * \note Background threads will listen to aborted browser request signals from the network manager on the main thread.
+     * \since QGIS 3.20
+     */
+    void abortAuthBrowser();
+
+
 #ifndef SIP_RUN
     //! Settings entry network timeout
     static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
@@ -678,6 +687,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 ///@endcond
 #endif
 
+    /**
+     * Emitted when external browser logins are to be aborted.
+     *
+     * \since QGIS 3.20
+     */
+    void authBrowserAborted();
 
   private slots:
     void abortRequest();
