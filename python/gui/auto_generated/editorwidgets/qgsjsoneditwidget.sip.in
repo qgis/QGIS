@@ -66,6 +66,11 @@ Set the ``formatJson`` mode.
 .. seealso:: FormatJson
 %End
 
+    void setControlsVisible( bool visible );
+%Docstring
+Set the visibility of controls to ``visible``.
+%End
+
 };
 
 /************************************************************************

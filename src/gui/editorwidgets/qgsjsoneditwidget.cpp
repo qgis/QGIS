@@ -112,6 +112,11 @@ void QgsJsonEditWidget::setFormatJsonMode( QgsJsonEditWidget::FormatJson formatJ
   mFormatJsonMode = formatJson;
 }
 
+void QgsJsonEditWidget::setControlsVisible( bool visible )
+{
+  mControlsWidget->setVisible( visible );
+}
+
 void QgsJsonEditWidget::textToolButtonClicked( bool checked )
 {
   if ( checked )

@@ -87,6 +87,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsidentifymenu.h"
 #include "qgsjsonutils.h"
+#include "qgsjsoneditwidget.h"
 #include "qgspointcloudlayer.h"
 
 #include <nlohmann/json.hpp>
@@ -697,7 +698,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       break;
 
     const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields[i].name() );
-    if ( setup.type() == QLatin1String( "Hidden" ) )
+    if ( setup.type() == QStringLiteral( "Hidden" ) )
     {
       continue;
     }
@@ -720,21 +721,36 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     value = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, value );
     attrItem->setToolTip( 1, value );
-    bool foundLinks = false;
-    QString links = QgsStringUtils::insertLinks( value, &foundLinks );
-    if ( foundLinks )
+
+    if ( setup.type() == QStringLiteral( "JsonEdit" ) )
     {
-      QLabel *valueLabel = new QLabel( links );
-      valueLabel->setOpenExternalLinks( true );
+      QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
+      jsonEditWidget->setJsonText( value );
+      jsonEditWidget->setView( QgsJsonEditWidget::View::Tree );
+      jsonEditWidget->setFormatJsonMode( QgsJsonEditWidget::FormatJson::Indented );
+      jsonEditWidget->setControlsVisible( false );
       attrItem->setData( 1, Qt::DisplayRole, QString() );
-      QTreeWidget *tw = attrItem->treeWidget();
-      tw->setItemWidget( attrItem, 1, valueLabel );
+      QTreeWidget *treeWidget = attrItem->treeWidget();
+      treeWidget->setItemWidget( attrItem, 1, jsonEditWidget );
     }
     else
     {
-      attrItem->setData( 1, Qt::DisplayRole, value );
-      QTreeWidget *tw = attrItem->treeWidget();
-      tw->setItemWidget( attrItem, 1, nullptr );
+      bool foundLinks = false;
+      QString links = QgsStringUtils::insertLinks( value, &foundLinks );
+      if ( foundLinks )
+      {
+        QLabel *valueLabel = new QLabel( links );
+        valueLabel->setOpenExternalLinks( true );
+        attrItem->setData( 1, Qt::DisplayRole, QString() );
+        QTreeWidget *tw = attrItem->treeWidget();
+        tw->setItemWidget( attrItem, 1, valueLabel );
+      }
+      else
+      {
+        attrItem->setData( 1, Qt::DisplayRole, value );
+        QTreeWidget *tw = attrItem->treeWidget();
+        tw->setItemWidget( attrItem, 1, nullptr );
+      }
     }
 
     if ( fields.at( i ).name() == vlayer->displayField() )
