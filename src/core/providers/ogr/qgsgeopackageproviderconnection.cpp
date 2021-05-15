@@ -405,37 +405,47 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
 
-        // May need to prepend PK and append geometries to the columns
-        thread_local const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|fid)[,\s+](.*)from)" ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
-        if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+
+        // pk column name, hardcoded to "fid" (FIXME)
+        QString pkColumnName { QStringLiteral( "fid" ) };
+        // geom column name
+        QString geomColumnName;
+
+        OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
+
+        if ( featureDef )
         {
-          iterator->setPrimaryKeyColumnName( QStringLiteral( "fid" ) );
-          results.appendColumn( QStringLiteral( "fid" ) );
+          if ( OGR_F_GetGeomFieldCount( fet.get() ) > 0 )
+          {
+            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), 0 ) };
+            if ( geomFldDef )
+            {
+              geomColumnName = OGR_GFld_GetNameRef( geomFldDef );
+            }
+          }
+
         }
 
-        QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        // May need to prepend PK and append geometries to the columns
+        thread_local const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|%1)[,\s+](.*)from)" ).arg( pkColumnName ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
+        if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+        {
+          iterator->setPrimaryKeyColumnName( pkColumnName );
+          results.appendColumn( pkColumnName );
+        }
+
+        // Add other fields
         for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
 
-        // Geometry columns
-        OGRFeatureDefnH featureDef = OGR_F_GetDefnRef( fet.get() );
-
-        if ( featureDef )
+        // Append geom
+        if ( ! geomColumnName.isEmpty() )
         {
-          QStringList geomColumnsList;
-          for ( int idx = 0; idx < OGR_F_GetGeomFieldCount( fet.get() ); ++idx )
-          {
-            OGRGeomFieldDefnH geomFldDef { OGR_F_GetGeomFieldDefnRef( fet.get(), idx ) };
-            if ( geomFldDef )
-            {
-              const QString geomColumnName { OGR_GFld_GetNameRef( geomFldDef ) };
-              geomColumnsList.append( geomColumnName );
-              results.appendColumn( geomColumnName );
-            }
-          }
-          iterator->setGeometryColumnNames( geomColumnsList );
+          results.appendColumn( geomColumnName );
+          iterator->setGeometryColumnName( geomColumnName );
         }
 
         iterator->setFields( fields );
@@ -507,8 +517,8 @@ QVariantList QgsGeoPackageProviderResultIterator::nextRowInternal()
           row.push_back( attribute );
         }
 
-        // Geoms go last
-        for ( const auto &geomColName : std::as_const( mGeometryColumnNames ) )
+        // Geom goes last
+        if ( ! mGeometryColumnName.isEmpty( ) )
         {
           row.push_back( f.geometry().asWkb() );
         }
@@ -542,9 +552,9 @@ void QgsGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
   mFields = fields;
 }
 
-void QgsGeoPackageProviderResultIterator::setGeometryColumnNames( const QStringList &geometryColumnNames )
+void QgsGeoPackageProviderResultIterator::setGeometryColumnName( const QString &geometryColumnName )
 {
-  mGeometryColumnNames = geometryColumnNames;
+  mGeometryColumnName = geometryColumnName;
 }
 
 void QgsGeoPackageProviderResultIterator::setPrimaryKeyColumnName( const QString &primaryKeyColumnName )
@@ -575,7 +585,8 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
   // Get fields from layer
   QgsFields fieldList;
 
-  // Prepend PK fid
+  // Prepend PK "fid" hardcoded (FIXME): there might be a way to get the PK name here
+  // but there is probably no way for the general execSql case.
   fieldList.append( QgsField{ QStringLiteral( "fid" ), QVariant::LongLong } );
 
   QgsVectorLayer::LayerOptions options { false, true };

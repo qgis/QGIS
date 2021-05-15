@@ -36,7 +36,7 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
     ~QgsGeoPackageProviderResultIterator();
 
     void setFields( const QgsFields &fields );
-    void setGeometryColumnNames( const QStringList &geometryColumnNames );
+    void setGeometryColumnName( const QString &geometryColumnName );
     void setPrimaryKeyColumnName( const QString &primaryKeyColumnName );
 
   private:
@@ -45,7 +45,7 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
-    QStringList mGeometryColumnNames;
+    QString mGeometryColumnName;
     QString mPrimaryKeyColumnName;
 
     QVariantList nextRowPrivate() override;
