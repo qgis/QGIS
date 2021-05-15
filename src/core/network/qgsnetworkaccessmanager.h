@@ -688,7 +688,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #endif
 
     /**
-     * Emitted when external browser login are to be aborted.
+     * Emitted when external browser logins are to be aborted.
      *
      * \since QGIS 3.20
      */
