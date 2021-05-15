@@ -3643,8 +3643,7 @@ void QgisApp::createToolBars()
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // Cad toolbar
-  mAdvancedDigitizeToolBar->insertAction( mActionRotateFeature, mAdvancedDigitizingDockWidget->enableAction() );
-  mAdvancedDigitizeToolBar->insertAction( mActionScaleFeature, mAdvancedDigitizingDockWidget->enableAction() );
+  mAdvancedDigitizeToolBar->insertAction( mAdvancedDigitizeToolBar->actions().at( 0 ), mAdvancedDigitizingDockWidget->enableAction() );
 
   // move feature tool button
   QToolButton *moveFeatureButton = new QToolButton( mAdvancedDigitizeToolBar );
