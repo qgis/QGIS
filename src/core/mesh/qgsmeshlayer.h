@@ -788,6 +788,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
     QgsMeshDataProvider *mDataProvider = nullptr;
 
+    //! List of extra dataset uri associated with this layer
+    QStringList mExtraDatasetUri;
+
     std::unique_ptr<QgsMeshDatasetGroupStore> mDatasetGroupStore;
 
     //! Pointer to native mesh structure, used as cache for rendering
@@ -808,7 +811,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Simplify mesh configuration
     QgsMeshSimplificationSettings mSimplificationSettings;
 
-    QgsMeshLayerTemporalProperties *mTemporalProperties;
+    QgsMeshLayerTemporalProperties *mTemporalProperties = nullptr;
+
+    //! Temporal unit used by the provider
+    QgsUnitTypes::TemporalUnit mTemporalUnit = QgsUnitTypes::TemporalHours;
 
     int mStaticScalarDatasetIndex = 0;
     int mStaticVectorDatasetIndex = 0;
@@ -825,6 +831,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 
     void updateActiveDatasetGroups();
+
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+                               const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 };
 
 #endif //QGSMESHLAYER_H

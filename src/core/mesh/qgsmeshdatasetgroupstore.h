@@ -112,7 +112,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
  * The native group index is not exposed and global index can be obtained with datasetGroupIndexes() that returns the list of global index available.
  * The dataset index is the same than in the native source (data provider or other dataset source)
  *
- * This class as also the responsibility to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
+ * This class has also the responsibility to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
  *
  * \since QGIS 3.16
  */
@@ -127,8 +127,19 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Constructor
     QgsMeshDatasetGroupStore( QgsMeshLayer *layer );
 
-    //! Sets the persistent mesh data provider
-    void setPersistentProvider( QgsMeshDataProvider *provider );
+    /**
+     *  Sets the persistent mesh data provider
+     *
+     * \deprecated since QGIS 3.20
+     */
+    Q_DECL_DEPRECATED void setPersistentProvider( QgsMeshDataProvider *provider );
+
+    /**
+     *  Sets the persistent mesh data provider with the path of its extra dataset
+     *
+     *  \since QGIS 3.20
+     */
+    void setPersistentProvider( QgsMeshDataProvider *provider, const QStringList &extraDatasetUri );
 
     //! Adds persistent datasets from a file with \a path
     bool addPersistentDatasets( const QString &path );
@@ -220,6 +231,7 @@ class QgsMeshDatasetGroupStore: public QObject
   private:
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
+    QList<int> mPersistentExtraDatasetGroupIndexes;
     std::unique_ptr<QgsMeshExtraDatasetStore> mExtraDatasets;
     QMap < int, DatasetGroup> mRegistery;
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
