@@ -48,7 +48,6 @@ endmacro (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 set(TESTS
- testqgsgcptransformer.cpp
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
  testqgsprocessing.cpp
@@ -63,6 +62,13 @@ set(TESTS
  testqgsmeshcontours.cpp
  testqgstriangulation.cpp
 )
+
+if(HAVE_GSL)
+  set(TESTS
+    ${TESTS}
+    testqgsgcptransformer.cpp
+    )
+endif()
 
 foreach(TESTSRC ${TESTS})
     ADD_QGIS_TEST(${TESTSRC})

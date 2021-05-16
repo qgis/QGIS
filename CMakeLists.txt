@@ -705,9 +705,14 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-if (WITH_GEOREFERENCER OR WITH_ANALYSIS)
+set(WITH_GSL TRUE CACHE BOOL "Determines whether GSL library should be used")
+
+if (WITH_ANALYSIS AND WITH_GSL)
   find_package(GSL REQUIRED)
-  set(HAVE_GEOREFERENCER TRUE)
+  set(HAVE_GSL TRUE)
+  if (WITH_GEOREFERENCER)
+    set(HAVE_GEOREFERENCER TRUE)
+  endif()
 endif()
 
 if(ENABLE_COVERAGE)

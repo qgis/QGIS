@@ -401,9 +401,12 @@ find_package(EXIV2 REQUIRED)
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
-include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
+
+if(HAVE_GSL)
+  include_directories(SYSTEM ${GSL_INCLUDE_DIR})
+endif()
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
@@ -520,8 +523,11 @@ target_link_libraries(
   qgis_analysis
   qgis_core
   ${EXIV2_LIBRARY}
-  ${GSL_LIBRARIES}
   )
+
+if(HAVE_GSL)
+  target_link_libraries(qgis_analysis ${GSL_LIBRARIES})
+endif()
 
 if(HAVE_OPENCL)
     target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
