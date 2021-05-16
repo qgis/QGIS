@@ -48,11 +48,6 @@ QgsMeshDatasetGroupStore::QgsMeshDatasetGroupStore( QgsMeshLayer *layer ):
   mDatasetGroupTreeRootItem( new QgsMeshDatasetGroupTreeItem )
 {}
 
-void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provider )
-{
-  setPersistentProvider( provider, QStringList() );
-}
-
 void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provider, const QStringList &extraDatasetUri )
 {
   removePersistentProvider();
