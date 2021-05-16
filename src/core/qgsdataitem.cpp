@@ -1184,7 +1184,9 @@ QIcon QgsDirectoryItem::icon()
   QFileInfo fi( mDirPath );
   if ( fi.isDir() && fi.isSymLink() )
   {
-    return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ), mIconColor, mIconColor.darker() );
+    return mIconColor.isValid()
+           ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLinkParams.svg" ), mIconColor, mIconColor.darker() )
+           : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLink.svg" ) );
   }
 
   // loaded? show the open dir icon
