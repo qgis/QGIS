@@ -474,8 +474,6 @@ void QgsMeshDatasetGroupStore::checkDatasetConsistency( QgsMeshDatasetSourceInte
 
   if ( !indexes.isEmpty() )
     createDatasetGroupTreeItems( indexes );
-//  for ( int index : std::as_const( indexes ) )
-//    syncItemToDatasetGroup( index );
 
   for ( int globalIndex : mRegistery.keys() )
   {
