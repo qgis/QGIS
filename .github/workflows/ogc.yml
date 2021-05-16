@@ -5,11 +5,12 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
   pull_request:
     branches:
       - master
       - release-**
-
+      - queued_ltr_backports
 jobs:
   build:
     runs-on: ubuntu-latest

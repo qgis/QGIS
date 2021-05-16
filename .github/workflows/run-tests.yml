@@ -19,6 +19,7 @@ on:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     paths:
     - 'src/**'
     - 'external/**'
