@@ -239,6 +239,15 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     changeDirectoryColor( directoryItem );
   } );
   menu->addAction( actionSetIconColor );
+  if ( directoryItem->iconColor().isValid() )
+  {
+    QAction *actionClearIconColor = new QAction( tr( "Clear Custom Color" ), menu );
+    connect( actionClearIconColor, &QAction::triggered, this, [ = ]
+    {
+      clearDirectoryColor( directoryItem );
+    } );
+    menu->addAction( actionClearIconColor );
+  }
 
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), menu );
   connect( fastScanAction, &QAction::triggered, this, [ = ]
@@ -325,6 +334,13 @@ void QgsAppDirectoryItemGuiProvider::changeDirectoryColor( QgsDirectoryItem *ite
   item->setCustomColor( item->dirPath(), color );
   // and update item's color immediately
   item->setIconColor( color );
+}
+
+void QgsAppDirectoryItemGuiProvider::clearDirectoryColor( QgsDirectoryItem *item )
+{
+  item->setCustomColor( item->dirPath(), QColor() );
+  // and update item's color immediately
+  item->setIconColor( QColor() );
 }
 
 void QgsAppDirectoryItemGuiProvider::hideDirectory( QgsDirectoryItem *item )
