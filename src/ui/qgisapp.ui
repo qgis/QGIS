@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1482</width>
-    <height>506</height>
+    <width>1439</width>
+    <height>804</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1482</width>
-     <height>25</height>
+     <width>1439</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -299,6 +299,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="m_viewinprofile"/>
+   <addaction name="separator"/>
+   <addaction name="m_actionStartDianliXian"/>
    <addaction name="m_actionclassification"/>
    <addaction name="actionactionProfile"/>
    <addaction name="mActionDrawRect"/>
@@ -306,11 +308,12 @@
    <addaction name="mActionDrawAnyrect2D"/>
    <addaction name="separator"/>
    <addaction name="mActionMeasureDistance"/>
-   <addaction name="mActionMeasureAreaReal"/>
    <addaction name="mActionMeasureAngle"/>
+   <addaction name="mActionMeasureAreaReal"/>
    <addaction name="separator"/>
    <addaction name="mActionDraw"/>
    <addaction name="mActionIdentify"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
@@ -3686,6 +3689,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>模型离散化</string>
+   </property>
+  </action>
+  <action name="m_actionStartDianliXian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmLineDensity.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmLineDensity.svg</iconset>
+   </property>
+   <property name="text">
+    <string>m_actionStartDianliXian</string>
    </property>
   </action>
  </widget>

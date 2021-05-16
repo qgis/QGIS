@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsProfileWindowDockWidgetBase</class>
- <widget class="QgsDockWidget" name="QgsProfileWindowDockWidgetBase">
+ <class>QgsDLWindowDockWidgetBase</class>
+ <widget class="QgsDockWidget" name="QgsDLWindowDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -32,6 +32,9 @@
     </property>
     <item>
      <widget class="QToolBar" name="mToolbar">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="iconSize">
        <size>
         <width>16</width>
@@ -41,29 +44,28 @@
       <property name="floatable">
        <bool>false</bool>
       </property>
-      <addaction name="mActionToggleEditing"/>
-      <addaction name="mActionPan"/>
+      <addaction name="action_tiqudianlixian"/>
+      <addaction name="m_drawlieonprofile"/>
+      <addaction name="m_selectiononprofile"/>
+      <addaction name="m_drawlieonprofile_2"/>
       <addaction name="mActionSaveEdits"/>
+      <addaction name="mActionViewInTable"/>
+      <addaction name="separator"/>
+      <addaction name="mActionPan"/>
+      <addaction name="showshaderparameter"/>
       <addaction name="mActionMeasureAngle"/>
       <addaction name="mActionMeasureDistance"/>
-      <addaction name="mActionZoomFullExtent"/>
-      <addaction name="mActionZoomIn"/>
-      <addaction name="mActionZoomOut"/>
-      <addaction name="mActionZoomToSelected"/>
       <addaction name="mActionTurnLeft"/>
       <addaction name="mActionTurnRight"/>
       <addaction name="actionmActionUpCenter"/>
       <addaction name="actionmActionDownCenter"/>
-      <addaction name="m_selectiononprofile"/>
-      <addaction name="m_drawlieonprofile"/>
-      <addaction name="m_drawlieonprofile_2"/>
-      <addaction name="mActionSinglePointPen"/>
+      <addaction name="separator"/>
+      <addaction name="action_xiubudianlixian"/>
       <addaction name="mActionPickPoints"/>
       <addaction name="mActionBrush"/>
-      <addaction name="mActionViewInTable"/>
-      <addaction name="showshaderparameter"/>
-      <addaction name="setbeforclass"/>
-      <addaction name="settargetclass"/>
+      <addaction name="mActionSinglePointPen"/>
+      <addaction name="separator"/>
+      <addaction name="action_chongjiandianlixian"/>
      </widget>
     </item>
     <item>
@@ -71,24 +73,6 @@
     </item>
    </layout>
   </widget>
-  <action name="mActionZoomToSelected">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom to &amp;Selection</string>
-   </property>
-  </action>
-  <action name="mActionZoomFullExtent">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom &amp;Full</string>
-   </property>
-  </action>
   <action name="mActionSinglePointPen">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -155,24 +139,6 @@
     <string>分类下侧点</string>
    </property>
   </action>
-  <action name="mActionToggleEditing">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
-   </property>
-   <property name="text">
-    <string>启动编辑</string>
-   </property>
-   <property name="toolTip">
-    <string>启动编辑</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
-   </property>
-  </action>
   <action name="mActionSaveEdits">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -207,27 +173,6 @@
    </property>
    <property name="text">
     <string>shaderparameter</string>
-   </property>
-  </action>
-  <action name="setbeforclass">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/classification_methods/mClassificationEqualCount.svg</normaloff>:/images/themes/default/classification_methods/mClassificationEqualCount.svg</iconset>
-   </property>
-   <property name="text">
-    <string>setbeforclass</string>
-   </property>
-  </action>
-  <action name="settargetclass">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/classification_methods/mClassificationStandardDeviation.svg</normaloff>:/images/themes/default/classification_methods/mClassificationStandardDeviation.svg</iconset>
-   </property>
-   <property name="text">
-    <string>settargetclass</string>
-   </property>
-   <property name="toolTip">
-    <string>settargetclass</string>
    </property>
   </action>
   <action name="actionmAction_Z">
@@ -281,36 +226,6 @@
     <string>右旋转</string>
    </property>
   </action>
-  <action name="mActionZoomIn">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom In</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt++</string>
-   </property>
-  </action>
-  <action name="mActionZoomOut">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom Out</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+-</string>
-   </property>
-  </action>
   <action name="mActionPan">
    <property name="checkable">
     <bool>true</bool>
@@ -342,6 +257,33 @@
    </property>
    <property name="toolTip">
     <string>mActionDownCenter</string>
+   </property>
+  </action>
+  <action name="action_tiqudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/mapIcon.png</normaloff>:/images/cc/mapIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>电力线提取</string>
+   </property>
+  </action>
+  <action name="action_chongjiandianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</iconset>
+   </property>
+   <property name="text">
+    <string>电力线重建</string>
+   </property>
+  </action>
+  <action name="action_xiubudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>模型离散化</string>
    </property>
   </action>
  </widget>

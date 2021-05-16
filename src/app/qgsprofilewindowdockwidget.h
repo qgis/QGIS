@@ -19,6 +19,7 @@
 #include "ui_pointcloudclassselection.h"
 #include "ui_pointcloudtargetclassselection.h"
 #include "ui_qgsclasssettingwindowdockwidgetbase.h"
+#include "ui_qgsDLwindowdockwidgetbase.h"
 #include "qgsdockwidget.h"
 #include "qgspointxy.h"
 #include "qgis_app.h"
@@ -104,11 +105,60 @@ private:
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
     QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
     QCheckBox *mSyncScaleCheckBox = nullptr;
-    QWidget* profile_widget;
+    QWidget* profile_widget = nullptr;
 	  bool Editing = false;
 	  QString m_rule;
 	  QString m_method;
 };
+
+class APP_EXPORT QgsDLWindowDockWidget : public QgsDockWidget, private Ui::QgsDLWindowDockWidgetBase
+{
+  Q_OBJECT
+    friend QgsClassSettingWindowDockWidget;
+public:
+  explicit QgsDLWindowDockWidget(const QString &name, QWidget *parent = nullptr);
+
+  QgsProfileWinow *getmapCanvas();
+  void setProfileWindow(QgsProfileWinow * window);
+  void setMain3DWindow(QgsProfileWinow * window);
+  void setclassdock(QgsClassSettingWindowDockWidget* dock);
+
+private slots:
+  void OnmActionSaveEditsClicked();
+  void OnmselectiononprofileClciekd();
+
+  void OndrawlieonprofileClicked2();
+
+  void OnmActionPickPoints();
+
+  void OnmActionBrushPoints();
+
+
+  void ApplyButtonClicked();
+  void OndrawlieonprofileClicked();
+  void OnmActionToggleEditingClicked();
+  void OnmActionsetshaderClicked();
+  void OnmActionHandClicked();
+  void rotatePointCloudLeft();
+  void rotatePointCloudRight();
+
+private:
+  QgsProfileWinow *mMapCanvas = nullptr;
+  QgsProfileWinow *mMainCanvas = nullptr;
+  QgsClassSettingWindowDockWidget* classdock = nullptr;
+
+  QRadioButton *mSyncExtentRadio = nullptr;
+  QRadioButton *mSyncSelectionRadio = nullptr;
+  QgsScaleComboBox *mScaleCombo = nullptr;
+  QgsDoubleSpinBox *mMagnificationEdit = nullptr;
+  QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
+  QCheckBox *mSyncScaleCheckBox = nullptr;
+  QWidget* profile_widget = nullptr;
+  bool Editing = false;
+  QString m_rule;
+  QString m_method;
+};
+
 
 #endif // QGSPROFILEWINDOWDOCKWIDGET_H
 
