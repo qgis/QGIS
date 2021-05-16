@@ -258,6 +258,7 @@ if(WITH_ANALYSIS)
 
   # analysis module
   file(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
+
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))

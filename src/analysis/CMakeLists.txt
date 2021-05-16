@@ -4,10 +4,6 @@
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
-  georeferencing/qgsgcpgeometrytransformer.cpp
-  georeferencing/qgsgcptransformer.cpp
-  georeferencing/qgsleastsquares.cpp
-
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -289,9 +285,6 @@ set(QGIS_ANALYSIS_SRCS
 set(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
-  georeferencing/qgsgcpgeometrytransformer.h
-  georeferencing/qgsgcptransformer.h
-
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h
@@ -386,6 +379,21 @@ set(QGIS_ANALYSIS_HDRS
   vector/qgszonalstatistics.h
 )
 
+if(HAVE_GEOREFERENCER)
+  set(QGIS_ANALYSIS_SRCS
+    ${QGIS_ANALYSIS_SRCS}
+    georeferencing/qgsgcpgeometrytransformer.cpp
+    georeferencing/qgsgcptransformer.cpp
+    georeferencing/qgsleastsquares.cpp
+  )
+  
+  set(QGIS_ANALYSIS_HDRS
+    ${QGIS_ANALYSIS_HDRS}
+    georeferencing/qgsgcpgeometrytransformer.h
+    georeferencing/qgsgcptransformer.h
+  )
+endif()
+
 if(TARGET Qt5::PrintSupport)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
 
@@ -401,9 +409,12 @@ find_package(EXIV2 REQUIRED)
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(SYSTEM ${SQLITE3_INCLUDE_DIR})
-include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
+
+if(HAVE_GEOREFERENCER)
+  include_directories(SYSTEM ${GSL_INCLUDE_DIR})
+endif()
 
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
@@ -459,7 +470,6 @@ endif()
 
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
-  ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
   ${CMAKE_SOURCE_DIR}/src/analysis/mesh
   ${CMAKE_SOURCE_DIR}/src/analysis/network
@@ -470,6 +480,12 @@ target_include_directories(qgis_analysis PUBLIC
 
   ${CMAKE_BINARY_DIR}/src/analysis
 )
+
+if(HAVE_GEOREFERENCER)
+  target_include_directories(qgis_analysis PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
+  )
+endif()
 
 target_include_directories(qgis_analysis SYSTEM PUBLIC
   ${EXIV2_INCLUDE_DIR}
@@ -520,8 +536,11 @@ target_link_libraries(
   qgis_analysis
   qgis_core
   ${EXIV2_LIBRARY}
-  ${GSL_LIBRARIES}
   )
+
+if(HAVE_GEOREFERENCER)
+  target_link_libraries(qgis_analysis ${GSL_LIBRARIES})
+endif()
 
 if(HAVE_OPENCL)
     target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
