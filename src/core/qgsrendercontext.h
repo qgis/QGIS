@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include <QColor>
 #include <QPainter>
+#include <QPainterPath>
 #include <memory>
 
 #include "qgscoordinatetransform.h"
