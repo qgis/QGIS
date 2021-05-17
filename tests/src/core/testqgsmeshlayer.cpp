@@ -1523,6 +1523,8 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( firstLayer->dataProvider()->extraDatasets().count(), 3 );
   QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 5 );
 
+  firstLayer->dataProvider()->temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalMinutes );
+
   QgsReadWriteContext readWriteContext;
   QDomDocument doc( "savedLayer" );
   QDomElement layerElement = doc.createElement( "maplayer" );
@@ -1537,6 +1539,7 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
 
   QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
@@ -1571,6 +1574,7 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
 
   QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
