@@ -30,6 +30,7 @@
 #include "qgsfillsymbol.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QSvgRenderer>
 #include <QFileInfo>
 #include <QDir>
