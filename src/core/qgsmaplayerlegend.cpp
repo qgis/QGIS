@@ -29,6 +29,8 @@
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
 #include "qgscolorramplegendnode.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsrulebasedlabeling.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -400,6 +402,32 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     }
   }
 
+  if ( mLayer->labelsEnabled() && mShowLabelLegend )
+  {
+    const QgsAbstractVectorLayerLabeling *labeling = mLayer->labeling();
+    if ( labeling )
+    {
+      QStringList pList = labeling->subProviders();
+      for ( int i = 0; i < pList.size(); ++i )
+      {
+        const QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
+        QString description;
+        const QgsRuleBasedLabeling *ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
+        if ( ruleBasedLabeling && ruleBasedLabeling->rootRule() )
+        {
+          const QgsRuleBasedLabeling::Rule *rule = ruleBasedLabeling->rootRule()->findRuleByKey( pList.at( i ) );
+          if ( rule )
+          {
+            description = rule->description();
+          }
+        }
+        QgsVectorLabelLegendNode *node = new QgsVectorLabelLegendNode( nodeLayer, s );
+        node->setUserLabel( description );
+        nodes.append( node );
+      }
+    }
+  }
+
 
   return nodes;
 }
@@ -409,6 +437,8 @@ void QgsDefaultVectorLayerLegend::readXml( const QDomElement &elem, const QgsRea
   mTextOnSymbolEnabled = false;
   mTextOnSymbolTextFormat = QgsTextFormat();
   mTextOnSymbolContent.clear();
+
+  mShowLabelLegend = elem.attribute( QStringLiteral( "showLabelLegend" ), QStringLiteral( "0" ) ).compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0;
 
   QDomElement tosElem = elem.firstChildElement( QStringLiteral( "text-on-symbol" ) );
   if ( !tosElem.isNull() )
@@ -430,6 +460,7 @@ QDomElement QgsDefaultVectorLayerLegend::writeXml( QDomDocument &doc, const QgsR
 {
   QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "default-vector" ) );
+  elem.setAttribute( QStringLiteral( "showLabelLegend" ), mShowLabelLegend );
 
   if ( mTextOnSymbolEnabled )
   {

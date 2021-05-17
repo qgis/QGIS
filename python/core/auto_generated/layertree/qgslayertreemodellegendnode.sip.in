@@ -665,6 +665,65 @@ Construct the node using :py:class:`QgsDataDefinedSizeLegend` as definition of t
 
 };
 
+class QgsVectorLabelLegendNode : QgsLayerTreeModelLegendNode
+{
+%Docstring(signature="appended")
+Produces legend node for a labeling text symbol
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgslayertreemodellegendnode.h"
+%End
+  public:
+
+    QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = 0 );
+%Docstring
+QgsVectorLabelLegendNode
+
+:param nodeLayer: the parent node
+:param labelSettings: setting of the label class
+:param parent: the parent object
+%End
+    ~QgsVectorLabelLegendNode();
+
+    virtual QVariant data( int role ) const;
+
+%Docstring
+data Returns data associated with the item
+
+:param role: the data role
+
+:return: variant containing the data for the role
+%End
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+%Docstring
+drawSymbol
+
+:param settings: the legend settings
+:param ctx: context for the item
+:param itemHeight: the height of the item
+
+:return: size of the item
+%End
+
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
+
+%Docstring
+exportSymbolToJson
+
+:param settings: the legend settings
+:param context: the item context
+
+:return: the json object
+%End
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

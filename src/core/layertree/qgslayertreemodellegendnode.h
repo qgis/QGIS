@@ -27,6 +27,7 @@
 
 #include "qgsexpressioncontext.h"
 #include "qgslegendpatchshape.h"
+#include "qgspallabeling.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -721,5 +722,54 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
     QgsDataDefinedSizeLegend *mSettings = nullptr;
     mutable QImage mImage;
 };
+
+/**
+ * \ingroup core
+ * \brief Produces legend node for a labeling text symbol
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+
+    /**
+     * \brief QgsVectorLabelLegendNode
+     * \param nodeLayer the parent node
+     * \param labelSettings setting of the label class
+     * \param parent the parent object
+     */
+    QgsVectorLabelLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsPalLayerSettings &labelSettings, QObject *parent = nullptr );
+    ~QgsVectorLabelLegendNode() override;
+
+    /**
+     * \brief data Returns data associated with the item
+     * \param role the data role
+     * \returns variant containing the data for the role
+     */
+    QVariant data( int role ) const override;
+
+    /**
+     * \brief drawSymbol
+     * \param settings the legend settings
+     * \param ctx context for the item
+     * \param itemHeight the height of the item
+     * \returns size of the item
+     */
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+
+    /**
+     * \brief exportSymbolToJson
+     * \param settings the legend settings
+     * \param context the item context
+     * \returns the json object
+     */
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
+
+  private:
+    QgsPalLayerSettings mLabelSettings;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, const QgsRenderContext &renderContext, double xOffset = 0.0, double yOffset = 0.0 ) const;
+    void textWidthHeight( double &width, double &height, QgsRenderContext &ctx, const QgsTextFormat &textFormat, const QStringList &textLines ) const;
+};
+
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H
