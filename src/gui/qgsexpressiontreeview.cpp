@@ -279,6 +279,7 @@ void QgsExpressionTreeView::updateFunctionTree()
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS" ), QStringLiteral( " IS " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS NOT" ), QStringLiteral( " IS NOT " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "OR" ), QStringLiteral( " OR " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "AND" ), QStringLiteral( " AND " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "NOT" ), QStringLiteral( " NOT " ) );
