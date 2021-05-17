@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>pointPairRegistrationDlg</class>
+ <widget class="QDialog" name="pointPairRegistrationDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>267</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Point list picking</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="showAlignedCheckBox">
+       <property name="styleSheet">
+        <string notr="true">background-color: red; color: white;</string>
+       </property>
+       <property name="text">
+        <string>show 'to align' entities</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="unstackAlignToolButton">
+       <property name="icon">
+        <iconset>
+         <normaloff>:/CC/images/ccUnstack.png</normaloff>:/CC/images/ccUnstack.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="typeAlignToolButton">
+       <property name="icon">
+        <iconset>
+         <normaloff>:/CC/images/ccPencil.png</normaloff>:/CC/images/ccPencil.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="useSphereToolButton">
+       <property name="toolTip">
+        <string>Pick spheres instead of single points (for clouds only)</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/CC/images/smallSphere.png</normaloff>:/CC/images/smallSphere.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="radiusDoubleSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>search radius (or the spheres radius if you know it)</string>
+       </property>
+       <property name="prefix">
+        <string notr="true">r = </string>
+       </property>
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>0.001000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>1000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>20.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="maxRmsSpinBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Max RMS (as a percentage of the radius)</string>
+       </property>
+       <property name="suffix">
+        <string notr="true">%</string>
+       </property>
+       <property name="prefix">
+        <string notr="true">RMS &lt; </string>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="singleStep">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="alignedPointsTableWidget">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>80</number>
+     </attribute>
+     <attribute name="verticalHeaderDefaultSectionSize">
+      <number>18</number>
+     </attribute>
+     <row>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string notr="true">2</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string notr="true">3</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string notr="true">4</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string notr="true">X</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true">Y</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true">Z</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Error</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QCheckBox" name="adjustScaleCheckBox">
+       <property name="text">
+        <string>adjust scale</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Rotation</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="rotComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Constrains the rotation around a single axis (warning: experimental)</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string notr="true">XYZ</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">X</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">Y</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string notr="true">Z</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="TxCheckBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Constrains the translation along particular axes (warning: experimental)</string>
+       </property>
+       <property name="text">
+        <string notr="true">Tx</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="TyCheckBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Constrains the translation along particular axes (warning: experimental)</string>
+       </property>
+       <property name="text">
+        <string notr="true">Ty</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="TzCheckBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Constrains the translation along particular axes (warning: experimental)</string>
+       </property>
+       <property name="text">
+        <string notr="true">Tz</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="autoZoomCheckBox">
+       <property name="text">
+        <string>auto update zoom</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="alignToolButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>align</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="resetToolButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="validToolButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="statusTip">
+        <string>Convert list to new cloud (and close dialog)</string>
+       </property>
+       <property name="whatsThis">
+        <string>Convert list to new cloud (and close dialog)</string>
+       </property>
+       <property name="text">
+        <string>to cloud</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/CC/images/smallValidate.png</normaloff>:/CC/images/smallValidate.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="cancelToolButton">
+       <property name="toolTip">
+        <string>Close dialog (list will be lost)</string>
+       </property>
+       <property name="statusTip">
+        <string>Close dialog (list will be lost)</string>
+       </property>
+       <property name="text">
+        <string>stop</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/CC/images/smallCancel.png</normaloff>:/CC/images/smallCancel.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>showAlignedCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>unstackAlignToolButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>140</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useSphereToolButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radiusDoubleSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>322</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useSphereToolButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>maxRmsSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
