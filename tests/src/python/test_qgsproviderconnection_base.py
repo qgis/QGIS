@@ -72,6 +72,11 @@ class TestPyQgsProviderConnectionBase():
     def setUp(self):
         QgsSettings().clear()
 
+    def treat_date_as_string(self):
+        """Provider test case can override this to treat DATE type as STRING"""
+
+        return False
+
     def getUniqueSchemaName(self, name):
         """This function must return a schema name with unique prefix/postfix,
         if the tests are run simultaneously on the same machine by different CI instances"""
@@ -500,6 +505,3 @@ class TestPyQgsProviderConnectionBase():
                 QgsApplication.processEvents()
             end = time.time()
             self.assertTrue(end - start < 1)
-
-    def treat_date_as_string(self):
-        return False
