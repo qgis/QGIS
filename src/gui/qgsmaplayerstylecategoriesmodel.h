@@ -21,6 +21,7 @@
 
 #include <QAbstractListModel>
 
+#include "qgscoreenums.h"
 #include "qgsmaplayer.h"
 #include "qgis_gui.h"
 

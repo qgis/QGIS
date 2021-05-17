@@ -26,6 +26,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayerexporter.h"
 #include "qgsprovidermetadata.h"
 #include "qgis_sip.h"
+#include "qgscoreenums.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -309,7 +310,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Whether the next call to featureCount() should refresh the feature count
     mutable bool mRefreshFeatureCount = true;
 
-    mutable long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
+    mutable long mFeaturesCounted = static_cast< long >( FeatureCountState::Uncounted );
 
     mutable QStringList mSubLayerList;
 

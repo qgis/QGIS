@@ -18,9 +18,10 @@
 #include <QObject>
 
 #include "qgslayertreeview.h"
-#include "qgsmaplayer.h"
+#include "qgscoreenums.h"
 
 class QAction;
+class QgsCoordinateReferenceSystem;
 
 struct LegendLayerAction
 {

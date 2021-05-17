@@ -37,4 +37,15 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   PointCloudLayer, //!< Added in 3.18
 };
 
+/**
+ * \ingroup core
+ * \brief Enumeration of feature count states
+ * \since QGIS 3.20
+ */
+enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
+  {
+  Uncounted = -2, //!< Feature count not yet computed
+  UnknownCount = -1, //!< Provider returned an unknown feature count
+};
+
 #endif // QGSCOREENUMS_H

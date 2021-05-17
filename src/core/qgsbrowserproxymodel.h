@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsmaplayer.h"
+#include "qgscoreenums.h"
 #include <QSortFilterProxyModel>
 
 class QgsBrowserModel;

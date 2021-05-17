@@ -259,8 +259,8 @@ void QgsOgrProvider::repack()
 
   }
 
-  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
-       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
   {
     long oldcount = mFeaturesCounted;
     recalculateFeatureCount();
@@ -1842,7 +1842,7 @@ long QgsOgrProvider::featureCount() const
 {
   if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
   {
-    return QgsVectorDataProvider::UnknownCount;
+    return static_cast< long >( FeatureCountState::UnknownCount );
   }
   if ( mRefreshFeatureCount )
   {
@@ -2238,8 +2238,8 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     returnvalue = false;
   }
 
-  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
-       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
   {
     if ( returnvalue )
       mFeaturesCounted += flist.size();
@@ -2584,7 +2584,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOgrOrigLayer )
     return false;
 
-  if ( theSQL == mSubsetString && mFeaturesCounted != QgsVectorDataProvider::Uncounted )
+  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) )
     return true;
 
   const bool subsetStringHasChanged { theSQL != mSubsetString };
@@ -3200,8 +3200,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
   }
   else
   {
-    if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
-         mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+    if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
+         mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
     {
       if ( returnvalue )
         mFeaturesCounted -= id.size();
@@ -5002,7 +5002,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 {
   if ( !mOgrLayer )
   {
-    mFeaturesCounted = QgsVectorDataProvider::Uncounted;
+    mFeaturesCounted = static_cast< long >( FeatureCountState::Uncounted );
     return;
   }
 
@@ -5020,7 +5020,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )
     {
-      mFeaturesCounted = QgsVectorDataProvider::UnknownCount;
+      mFeaturesCounted = static_cast< long >( FeatureCountState::UnknownCount );
     }
   }
   else
@@ -5366,7 +5366,7 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::reloadProviderData()
 {
-  mFeaturesCounted = QgsVectorDataProvider::Uncounted;
+  mFeaturesCounted = static_cast< long >( FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   close();

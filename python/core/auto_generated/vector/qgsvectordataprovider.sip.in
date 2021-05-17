@@ -62,14 +62,6 @@ of feature and attribute information from a spatial datasource.
 
     static const int EditingCapabilities;
 
-    enum FeatureCountState
-    {
-      //! Feature count not yet computed
-      Uncounted,
-      //! Provider returned an unknown feature count
-      UnknownCount,
-    };
-
     QgsVectorDataProvider( const QString &uri = QString(),
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
                            QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );

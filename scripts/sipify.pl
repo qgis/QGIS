@@ -1082,8 +1082,13 @@ while ($LINE_IDX < $LINE_COUNT){
                             {
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
                             }
-                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
-                            push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                            if ( $ACTUAL_CLASS ne "" ){
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                            } else {
+                                push @OUTPUT_PYTHON, "$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
+                                push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                            }
                         }
                     }
                     $enum_decl = fix_annotations($enum_decl);
@@ -1161,10 +1166,10 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # catch Q_DECLARE_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
-        my $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME];
+        my $ACTUAL_CLASS = $#CLASSNAME >= 0 ? $CLASSNAME[$#CLASSNAME].'::' : '';
         dbg_info("Declare flags: $ACTUAL_CLASS");
-        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}::$3> $2;\n";
-        $QFLAG_HASH{"${ACTUAL_CLASS}::$2"} = "${ACTUAL_CLASS}::$3";
+        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}$3> $2;\n";
+        $QFLAG_HASH{"${ACTUAL_CLASS}$2"} = "${ACTUAL_CLASS}$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
