@@ -831,24 +831,6 @@ class CORE_EXPORT QgsGeometryUtils
      * This method is equivalent to successively calling Z and M but avoiding
      * looping twice over the set of points.
      *
-     * \param points List of points in which a Z or M point is searched.
-     * \param point The point to update with Z or M dimension and value.
-     * \returns TRUE if the point is updated, FALSE otherwise
-     *
-     * \warning This method does not copy the z or m value of the coordinate from the
-     * points whose z or m value is closest to the original x/y point, but only the first one found.
-     *
-     * \since QGIS 3.20
-     */
-    static bool transferFirstZOrMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
-
-    /**
-     * A Z or M dimension is added to \a point if one of the points in the list
-     * \a points contains Z or M value.
-     *
-     * This method is equivalent to successively calling Z and M but avoiding
-     * looping twice over the set of points.
-     *
      * \param verticesBegin begin vertex which a Z or M point is searched.
      * \param verticesEnd end vertex which a Z or M point is searched.
      * \param point The point to update with Z or M dimension and value.
@@ -860,7 +842,31 @@ class CORE_EXPORT QgsGeometryUtils
      * \note Not available in Python bindings
      * \since QGIS 3.20
      */
-    static bool transferFirstZOrMValueToPoint( const QgsAbstractGeometry::vertex_iterator &verticesBegin, const QgsAbstractGeometry::vertex_iterator &verticesEnd, QgsPoint &point ) SIP_SKIP;
+    template <class Iterator> static bool transferFirstZOrMValueToPoint( Iterator verticesBegin, Iterator verticesEnd, QgsPoint &point ) SIP_SKIP
+    {
+      bool zFound = false;
+      bool mFound = false;
+
+      for ( auto it = verticesBegin ; it != verticesEnd ; ++it )
+      {
+        if ( !mFound && ( *it ).isMeasure() )
+        {
+          point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
+          point.setM( ( *it ).m() );
+          mFound = true;
+        }
+        if ( !zFound && ( *it ).is3D() )
+        {
+          point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+          point.setZ( ( *it ).z() );
+          zFound = true;
+        }
+        if ( zFound && mFound )
+          break;
+      }
+
+      return zFound || mFound;
+    }
 
     /**
      * A Z or M dimension is added to \a point if one of the points in the list
@@ -869,7 +875,7 @@ class CORE_EXPORT QgsGeometryUtils
      * This method is equivalent to successively calling Z and M but avoiding
      * looping twice over the set of points.
      *
-     * \param geom QgsGeometry in which a Z or M point is searched.
+     * \param points List of points in which a M point is searched.
      * \param point The point to update with Z or M dimension and value.
      * \returns TRUE if the point is updated, FALSE otherwise
      *
@@ -878,7 +884,10 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.20
      */
-    static bool transferFirstZOrMValueToPoint( const QgsGeometry &geom, QgsPoint &point );
+    static bool transferFirstZOrMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
+    {
+      return QgsGeometryUtils::transferFirstZOrMValueToPoint( points.constBegin(), points.constEnd(), point );
+    }
 
     /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)

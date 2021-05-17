@@ -1806,63 +1806,6 @@ void QgsGeometryUtils::weightedPointInTriangle( const double aX, const double aY
   pointY = rBy + rCy + aY;
 }
 
-bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
-{
-  bool zFound = false;
-  bool mFound = false;
-
-  for ( const QgsPoint &pt : points )
-  {
-    if ( !mFound && pt.isMeasure() )
-    {
-      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
-      point.setM( pt.m() );
-      mFound = true;
-    }
-    if ( !zFound && pt.is3D() )
-    {
-      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
-      point.setZ( pt.z() );
-      zFound = true;
-    }
-    if ( zFound && mFound )
-      break;
-  }
-
-  return zFound || mFound;
-}
-
-bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsGeometry &geom, QgsPoint &point )
-{
-  return QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
-}
-
-bool QgsGeometryUtils::transferFirstZOrMValueToPoint( const QgsAbstractGeometry::vertex_iterator &verticesBegin, const QgsAbstractGeometry::vertex_iterator &verticesEnd, QgsPoint &point )
-{
-  bool zFound = false;
-  bool mFound = false;
-
-  for ( QgsAbstractGeometry::vertex_iterator it = verticesBegin ; it != verticesEnd ; ++it )
-  {
-    if ( !mFound && ( *it ).isMeasure() )
-    {
-      point.convertTo( QgsWkbTypes::addM( point.wkbType() ) );
-      point.setM( ( *it ).m() );
-      mFound = true;
-    }
-    if ( !zFound && ( *it ).is3D() )
-    {
-      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
-      point.setZ( ( *it ).z() );
-      zFound = true;
-    }
-    if ( zFound && mFound )
-      break;
-  }
-
-  return zFound || mFound;
-}
-
 bool QgsGeometryUtils::transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point )
 {
   bool rc = false;
