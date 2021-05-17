@@ -890,6 +890,27 @@ class CORE_EXPORT QgsGeometryUtils
     }
 
     /**
+     * A Z or M dimension is added to \a point if one of the points in the list
+     * \a points contains Z or M value.
+     *
+     * This method is equivalent to successively calling Z and M but avoiding
+     * looping twice over the set of points.
+     *
+     * \param geom geometry in which a M point is searched.
+     * \param point The point to update with Z or M dimension and value.
+     * \returns TRUE if the point is updated, FALSE otherwise
+     *
+     * \warning This method does not copy the z or m value of the coordinate from the
+     * points whose z or m value is closest to the original x/y point, but only the first one found.
+     *
+     * \since QGIS 3.20
+     */
+    static bool transferFirstZOrMValueToPoint( const QgsGeometry &geom, QgsPoint &point )
+    {
+      return QgsGeometryUtils::transferFirstZOrMValueToPoint( geom.vertices_begin(), geom.vertices_end(), point );
+    }
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
