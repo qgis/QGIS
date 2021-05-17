@@ -2349,8 +2349,18 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
         id.insert( it2.key() );
         ignoreFeatures.insert( layer, id );
         int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
-        if ( avoidIntersectionsReturn == 3 )
-          emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
+        switch ( avoidIntersectionsReturn )
+        {
+          case 2:
+            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::Warning );
+            break;
+
+          case 3:
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
+            break;
+          default:
+            break;
+        }
       }
       layer->changeGeometry( it2.key(), featGeom );
       edits[layer][it2.key()] = featGeom;
