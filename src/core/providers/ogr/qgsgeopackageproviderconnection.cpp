@@ -13,6 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <sqlite3.h>
+
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
 #include "qgssettings.h"
@@ -24,6 +27,7 @@
 #include "qgsfeedback.h"
 
 #include <QTextCodec>
+
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -278,8 +282,9 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       }
 
       QgsGeoPackageProviderConnection::TableProperty property;
-      property.setTableName( row.at( 0 ).toString() );
-      property.setPrimaryKeyColumns( { QStringLiteral( "fid" ) } );
+      const QString tableName { row.at( 0 ).toString() };
+      property.setTableName( tableName );
+      property.setPrimaryKeyColumns( { primaryKeyColumnName( tableName ) } );
       property.setGeometryColumnCount( 0 );
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
       const QString dataType = row.at( 1 ).toString();
@@ -405,10 +410,25 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
 
+        // pk column name
+        QString pkColumnName;
+
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
 
-        // pk column name, hardcoded to "fid" (FIXME)
-        QString pkColumnName { QStringLiteral( "fid" ) };
+        // We try to guess the table name from the FROM clause
+        thread_local const QRegularExpression tableNameRegexp { QStringLiteral( R"re((?<=from|join)\s+(\w+)|"([^"]+)")re" ), QRegularExpression::PatternOption::CaseInsensitiveOption };
+        const auto match { tableNameRegexp.match( sql ) };
+        if ( match.hasMatch() )
+        {
+          pkColumnName = primaryKeyColumnName( match.captured( match.lastCapturedIndex() ) );
+        }
+
+        // default to "fid"
+        if ( pkColumnName.isEmpty() )
+        {
+          pkColumnName = QStringLiteral( "fid" );
+        }
+
         // geom column name
         QString geomColumnName;
 
@@ -424,15 +444,17 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
               geomColumnName = OGR_GFld_GetNameRef( geomFldDef );
             }
           }
-
         }
 
-        // May need to prepend PK and append geometries to the columns
-        thread_local const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|%1)[,\s+](.*)from)" ).arg( pkColumnName ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
-        if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+        // May need to prepend PK and append geometry to the columns
+        if ( ! pkColumnName.isEmpty() )
         {
-          iterator->setPrimaryKeyColumnName( pkColumnName );
-          results.appendColumn( pkColumnName );
+          const QRegularExpression pkRegExp { QStringLiteral( R"(^select\s+(\*|%1)[,\s+](.*)from)" ).arg( pkColumnName ),  QRegularExpression::PatternOption::CaseInsensitiveOption };
+          if ( pkRegExp.match( sql.trimmed() ).hasMatch() )
+          {
+            iterator->setPrimaryKeyColumnName( pkColumnName );
+            results.appendColumn( pkColumnName );
+          }
         }
 
         // Add other fields
@@ -485,6 +507,47 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
   }
 
   return QgsAbstractDatabaseProviderConnection::QueryResult();
+}
+
+QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &table ) const
+{
+  QString pkName;
+
+  sqlite3_database_unique_ptr sqliteHandle;
+  if ( SQLITE_OK == sqliteHandle.open_v2( uri(), SQLITE_OPEN_READONLY, nullptr ) )
+  {
+    char *errMsg;
+
+    const QString sql { QStringLiteral( "PRAGMA table_info(%1)" )
+                        .arg( QgsSqliteUtils::quotedString( table ) )};
+
+    std::vector<std::string> rows;
+    auto cb = [ ](
+                void *data /* Data provided in the 4th argument of sqlite3_exec() */,
+                int /* The number of columns in row */,
+                char **argv /* An array of strings representing fields in the row */,
+                char ** /* An array of strings representing column names */ ) -> int
+    {
+      if ( std::string( argv[5] ).compare( "1" ) == 0 )
+        static_cast<std::vector<std::string>*>( data )->push_back( argv[1] );
+      return 0;
+    };
+
+    // Columns 'cid', 'name', 'type', 'notnull', 'dflt_value', 'pk']
+    const int ret = sqlite3_exec( sqliteHandle.get(), sql.toUtf8(), cb, ( void * )&rows, &errMsg );
+
+    if ( errMsg )
+    {
+      sqlite3_free( errMsg );
+    }
+
+    if ( SQLITE_OK == ret && rows.size() > 0 )
+    {
+      pkName = QString::fromStdString( rows[0] );
+    }
+  }
+
+  return pkName;
 }
 
 QVariantList QgsGeoPackageProviderResultIterator::nextRowPrivate()
@@ -585,9 +648,12 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
   // Get fields from layer
   QgsFields fieldList;
 
-  // Prepend PK "fid" hardcoded (FIXME): there might be a way to get the PK name here
-  // but there is probably no way for the general execSql case.
-  fieldList.append( QgsField{ QStringLiteral( "fid" ), QVariant::LongLong } );
+  const QString pkname { primaryKeyColumnName( table ) };
+
+  if ( ! pkname.isEmpty() )
+  {
+    fieldList.append( QgsField{ pkname, QVariant::LongLong } );
+  }
 
   QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;

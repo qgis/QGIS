@@ -34,12 +34,15 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 
     void setFields( const QgsFields &fields );
 
+    void setGeometryColumnName( const QString &geometryColumnName );
+
   private:
 
     gdal::ogr_datasource_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
     QVariantList mNextRow;
+    QString mGeometryColumnName;
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;

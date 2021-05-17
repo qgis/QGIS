@@ -88,6 +88,8 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
+    //! Returns PK name for table
+    QString primaryKeyColumnName( const QString &table ) const;
 
 
 };
