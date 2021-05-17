@@ -192,9 +192,14 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   // add buttons layout
   rootLayout->addLayout( buttonLayout );
 
-  mRelationLayout = new QGridLayout();
-  mRelationLayout->setContentsMargins( 0, 0, 0, 0 );
-  rootLayout->addLayout( mRelationLayout );
+  // add dual view
+  QGridLayout *relationLayout = new QGridLayout();
+  relationLayout->setContentsMargins( 0, 0, 0, 0 );
+  mDualView = new QgsDualView( this );
+  mDualView->setView( mViewMode );
+  connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
+  relationLayout->addWidget( mDualView );
+  rootLayout->addLayout( relationLayout );
 
   connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
            this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
@@ -214,14 +219,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  if ( !mDualView )
-  {
-    mDualView = new QgsDualView( this );
-    mDualView->setView( mViewMode );
-    connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
-    mRelationLayout->addWidget( mDualView );
-  }
-
   QgsAttributeEditorContext ctx { mEditorContext };
   ctx.setParentFormFeature( mFeature );
   mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx );
@@ -363,6 +360,9 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
 void QgsRelationEditorWidget::updateUi()
 {
   if ( !mRelation.isValid() || !mFeature.isValid() )
+    return;
+
+  if ( !isVisible() )
     return;
 
   QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );

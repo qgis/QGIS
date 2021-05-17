@@ -626,6 +626,11 @@ void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fi
   }
 }
 
+void QgsAbstractRelationEditorWidget::showEvent( QShowEvent * )
+{
+  updateUi();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
