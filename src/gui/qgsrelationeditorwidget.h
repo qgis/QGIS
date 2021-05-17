@@ -225,7 +225,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QToolButton *mAddFeatureGeometryButton = nullptr;
-    QGridLayout *mRelationLayout = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;

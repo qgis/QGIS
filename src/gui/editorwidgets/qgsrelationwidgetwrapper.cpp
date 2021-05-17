@@ -181,8 +181,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+    if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+         || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
     {
       w->setVisible( false );
       break;

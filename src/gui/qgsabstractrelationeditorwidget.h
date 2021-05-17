@@ -236,6 +236,11 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     bool mForceSuppressFormPopup = false;
 
     /**
+     * Refresh the UI when the widget becomes visible
+     */
+    void showEvent( QShowEvent * );
+
+    /**
      * Updates the title contents to reflect the current state of the widget
      * \deprecated since QGIS 3.20 label is handled directly in QgsAttributeForm.
      */

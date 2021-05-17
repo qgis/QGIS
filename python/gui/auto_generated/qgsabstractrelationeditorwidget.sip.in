@@ -217,6 +217,11 @@ Duplicates features
 
 
 
+    void showEvent( QShowEvent * );
+%Docstring
+Refresh the UI when the widget becomes visible
+%End
+
  void updateTitle() /Deprecated/;
 %Docstring
 Updates the title contents to reflect the current state of the widget
