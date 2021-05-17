@@ -924,7 +924,6 @@ void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QStrin
   if ( ok )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-    mDataProvider->setTemporalUnit( mTemporalUnit );
   }
 }
 
@@ -1191,6 +1190,9 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     }
   }
 
+  if ( pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
+    mTemporalUnit = static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() );
+
   // read dataset group store
   QDomElement elemDatasetGroupsStore = layer_node.firstChildElement( QStringLiteral( "mesh-dataset-groups-store" ) );
   if ( elemDatasetGroupsStore.isNull() )
@@ -1419,8 +1421,8 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     return false;
   }
 
+  mDataProvider->setTemporalUnit( mTemporalUnit );
   mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
-
   setCrs( mDataProvider->crs() );
 
   if ( provider == QLatin1String( "mesh_memory" ) )
