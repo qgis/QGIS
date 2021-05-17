@@ -271,7 +271,6 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       {
         results.appendColumn( rec.field( idx ).name() );
       }
-      iterator->nextRow();
       return results;
     }
 
@@ -279,6 +278,15 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
+
+QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+  : mResolveTypes( resolveTypes )
+  , mColumnCount( columnCount )
+  , mQuery( query )
+{
+  // Load first row
+  nextRow();
+}
 
 QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {

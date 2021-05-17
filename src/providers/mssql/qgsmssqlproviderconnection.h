@@ -25,11 +25,7 @@
 struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
 
-    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
-      : mResolveTypes( resolveTypes )
-      , mColumnCount( columnCount )
-      , mQuery( query )
-    {}
+    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query );
 
   private:
 

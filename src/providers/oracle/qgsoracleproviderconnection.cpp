@@ -113,7 +113,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
+    Capability::AddField,
   };
   mGeometryColumnCapabilities =
   {
