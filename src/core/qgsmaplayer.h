@@ -39,6 +39,7 @@
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
+#include "qgscoreenums.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -62,22 +63,6 @@ class QPainter;
 
 /**
  * \ingroup core
- * \brief Types of layers that can be added to a map
- * \since QGIS 3.8
- */
-enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,      //!< Added in 3.2
-  VectorTileLayer, //!< Added in 3.14
-  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
-  PointCloudLayer, //!< Added in 3.18
-};
-
-/**
- * \ingroup core
  * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
@@ -95,7 +80,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
