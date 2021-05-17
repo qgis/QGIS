@@ -1,4 +1,4 @@
-# The following has been generated automatically from src/core/qgsabstractdatabaseproviderconnection.h
+# The following has been generated automatically from src/core/providers/qgsabstractdatabaseproviderconnection.h
 QgsAbstractDatabaseProviderConnection.TableFlag.baseClass = QgsAbstractDatabaseProviderConnection
 QgsAbstractDatabaseProviderConnection.TableFlags.baseClass = QgsAbstractDatabaseProviderConnection
 TableFlags = QgsAbstractDatabaseProviderConnection  # dirty hack since SIP seems to introduce the flags in module

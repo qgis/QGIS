@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsprovidermetadata.h                                       *
+ * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -602,7 +602,7 @@ QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::P
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsprovidermetadata.h                                       *
+ * src/core/providers/qgsprovidermetadata.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsabstractdatabaseproviderconnection.h                     *
+ * src/core/providers/qgsabstractdatabaseproviderconnection.h           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -663,7 +663,7 @@ QFlags<QgsAbstractDatabaseProviderConnection::Capability> operator|(QgsAbstractD
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsabstractdatabaseproviderconnection.h                     *
+ * src/core/providers/qgsabstractdatabaseproviderconnection.h           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
