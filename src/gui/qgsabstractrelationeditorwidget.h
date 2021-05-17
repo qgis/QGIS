@@ -235,6 +235,9 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
     bool mForceSuppressFormPopup = false;
 
+    /**
+     * Refresh the UI when the widget becomes visible
+     */
     void showEvent( QShowEvent * );
 
     /**

@@ -218,6 +218,9 @@ Duplicates features
 
 
     void showEvent( QShowEvent * );
+%Docstring
+Refresh the UI when the widget becomes visible
+%End
 
  void updateTitle() /Deprecated/;
 %Docstring
