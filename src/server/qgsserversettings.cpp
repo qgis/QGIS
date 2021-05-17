@@ -255,6 +255,18 @@ void QgsServerSettings::initSettings()
 
   mSettings[ sProjectsPgConnections.envVar ] = sProjectsPgConnections;
 
+  // landing page base URL prefix
+  const Setting sLandingPageBaseUrlPrefix = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PREFIX,
+                                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                                              QStringLiteral( "Landing page base URL path prefix" ),
+                                              QStringLiteral( "/qgis/server_landing_page_base_url_prefix" ),
+                                              QVariant::String,
+                                              QVariant( "" ),
+                                              QVariant()
+                                            };
+
+  mSettings[ sLandingPageBaseUrlPrefix.envVar ] = sLandingPageBaseUrlPrefix;
+
   // log profile
   const Setting sLogProfile = { QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE,
                                 QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -539,6 +551,11 @@ QString QgsServerSettings::landingPageProjectsDirectories() const
 QString QgsServerSettings::landingPageProjectsPgConnections() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
+}
+
+QString QgsServerSettings::landingPageBaseUrlPrefix() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PREFIX, true ).toString();
 }
 
 QString QgsServerSettings::apiResourcesDirectory() const

@@ -178,7 +178,7 @@ export default {
         map.fitBounds(jl.getBounds());
       }
 
-      WMS.overlay(`/project/${project.id}/?`, {
+      WMS.overlay(`./project/${project.id}/?`, {
         layers: Utils.getAllLayers(project),
         transparent: true,
         format: "image/png",
