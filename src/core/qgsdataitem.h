@@ -29,7 +29,7 @@
 #include <QVector>
 #include <QDateTime>
 
-#include "qgsmaplayer.h"
+#include "qgscoreenums.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
 #include "qgswkbtypes.h"

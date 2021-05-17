@@ -18,7 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsmaplayer.h"
+#include "qgscoreenums.h"
 
 #include <QList>
 #include <QPainterPath>

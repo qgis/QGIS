@@ -20,6 +20,12 @@ enum class QgsMapLayerType
   PointCloudLayer,
 };
 
+enum class FeatureCountState
+  {
+  Uncounted,
+  UnknownCount,
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
