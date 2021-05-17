@@ -17658,8 +17658,6 @@ void QgisApp::StartCloseProfileMode()
   {   // todo:: 在二维平面 显示  这个四边形 
     const std::vector<Imath::V3f>& quadpoint = m_pointView->Get_Quadpoints();
 
-
-
     if ( m_geometries->rowCount())
     {
       if (!m_pointProfileView)

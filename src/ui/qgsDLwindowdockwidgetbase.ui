@@ -45,27 +45,20 @@
        <bool>false</bool>
       </property>
       <addaction name="action_tiqudianlixian"/>
-      <addaction name="m_drawlieonprofile"/>
-      <addaction name="m_selectiononprofile"/>
-      <addaction name="m_drawlieonprofile_2"/>
       <addaction name="mActionSaveEdits"/>
-      <addaction name="mActionViewInTable"/>
+      <addaction name="separator"/>
+      <addaction name="action_xiubudianlixian"/>
+      <addaction name="mActionPickPoints"/>
+      <addaction name="separator"/>
+      <addaction name="action_chongjiandianlixian"/>
       <addaction name="separator"/>
       <addaction name="mActionPan"/>
-      <addaction name="showshaderparameter"/>
       <addaction name="mActionMeasureAngle"/>
       <addaction name="mActionMeasureDistance"/>
       <addaction name="mActionTurnLeft"/>
       <addaction name="mActionTurnRight"/>
       <addaction name="actionmActionUpCenter"/>
       <addaction name="actionmActionDownCenter"/>
-      <addaction name="separator"/>
-      <addaction name="action_xiubudianlixian"/>
-      <addaction name="mActionPickPoints"/>
-      <addaction name="mActionBrush"/>
-      <addaction name="mActionSinglePointPen"/>
-      <addaction name="separator"/>
-      <addaction name="action_chongjiandianlixian"/>
      </widget>
     </item>
     <item>
@@ -73,33 +66,6 @@
     </item>
    </layout>
   </widget>
-  <action name="mActionSinglePointPen">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cursors/mSampler.svg</normaloff>:/images/themes/default/cursors/mSampler.svg</iconset>
-   </property>
-   <property name="text">
-    <string>刻刀工具</string>
-   </property>
-   <property name="toolTip">
-    <string>刻刀工具</string>
-   </property>
-  </action>
-  <action name="mActionBrush">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
-   </property>
-   <property name="text">
-    <string>刷子工具</string>
-   </property>
-   <property name="toolTip">
-    <string>刷子</string>
-   </property>
-   <property name="shortcut">
-    <string>Del</string>
-   </property>
-  </action>
   <action name="mActionPickPoints">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -112,33 +78,6 @@
     <string>拾取点，并显示在表格中</string>
    </property>
   </action>
-  <action name="m_selectiononprofile">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/square.png</normaloff>:/images/cc/square.png</iconset>
-   </property>
-   <property name="text">
-    <string>在剖面图上框选点云</string>
-   </property>
-  </action>
-  <action name="m_drawlieonprofile">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/checks/MissingVertex.svg</normaloff>:/images/themes/default/checks/MissingVertex.svg</iconset>
-   </property>
-   <property name="text">
-    <string>分类上侧点</string>
-   </property>
-  </action>
-  <action name="m_drawlieonprofile_2">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/cadtools/perpendicular.svg</normaloff>:/images/themes/default/cadtools/perpendicular.svg</iconset>
-   </property>
-   <property name="text">
-    <string>分类下侧点</string>
-   </property>
-  </action>
   <action name="mActionSaveEdits">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -149,39 +88,6 @@
    </property>
    <property name="toolTip">
     <string>保存分类结果</string>
-   </property>
-  </action>
-  <action name="mActionViewInTable">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom map to the selected rows</string>
-   </property>
-   <property name="toolTip">
-    <string>Zoom map to the selected rows (Ctrl+J)</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+J</string>
-   </property>
-  </action>
-  <action name="showshaderparameter">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/cc/ccGear.png</normaloff>:/images/cc/ccGear.png</iconset>
-   </property>
-   <property name="text">
-    <string>shaderparameter</string>
-   </property>
-  </action>
-  <action name="actionmAction_Z">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/icons/z.png</normaloff>:/images/icons/z.png</iconset>
-   </property>
-   <property name="text">
-    <string>Assign_Z</string>
    </property>
   </action>
   <action name="mActionMeasureAngle">
@@ -283,7 +189,7 @@
      <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>
    </property>
    <property name="text">
-    <string>模型离散化</string>
+    <string>补点</string>
    </property>
   </action>
  </widget>

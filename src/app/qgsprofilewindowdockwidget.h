@@ -124,20 +124,14 @@ public:
   void setclassdock(QgsClassSettingWindowDockWidget* dock);
 
 private slots:
+  void OnmActiontiqudianlixianClicked();
   void OnmActionSaveEditsClicked();
   void OnmselectiononprofileClciekd();
-
   void OndrawlieonprofileClicked2();
-
   void OnmActionPickPoints();
-
   void OnmActionBrushPoints();
-
-
   void ApplyButtonClicked();
   void OndrawlieonprofileClicked();
-  void OnmActionToggleEditingClicked();
-  void OnmActionsetshaderClicked();
   void OnmActionHandClicked();
   void rotatePointCloudLeft();
   void rotatePointCloudRight();
@@ -153,7 +147,6 @@ private:
   QgsDoubleSpinBox *mMagnificationEdit = nullptr;
   QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
   QCheckBox *mSyncScaleCheckBox = nullptr;
-  QWidget* profile_widget = nullptr;
   bool Editing = false;
   QString m_rule;
   QString m_method;

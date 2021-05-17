@@ -367,26 +367,26 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
 
   setWindowTitle(name);
   mToolbar->setIconSize(QgisApp::instance()->iconSize(true));
-
+  connect(action_tiqudianlixian, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActiontiqudianlixianClicked);
   connect(mActionSaveEdits, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionSaveEditsClicked);
-  connect(m_selectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmselectiononprofileClciekd);
-  connect(m_drawlieonprofile_2, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked2);
-  connect(m_drawlieonprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked);
+ // connect(m_selectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmselectiononprofileClciekd);
+ // connect(m_drawlieonprofile_2, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked2);
+ // connect(m_drawlieonprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked);
 
   connect(mActionPickPoints, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionPickPoints);
-  connect(mActionBrush, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionBrushPoints);
-  connect(showshaderparameter, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionsetshaderClicked);
+//  connect(mActionBrush, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionBrushPoints);
+//  connect(showshaderparameter, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionsetshaderClicked);
   connect(mActionTurnLeft, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudLeft);
   connect(mActionTurnRight, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudRight);
 
 
   mActionSaveEdits->setDisabled(true);
-  m_selectiononprofile->setDisabled(true);
-  m_drawlieonprofile->setDisabled(true);
-  m_drawlieonprofile_2->setDisabled(true);
-  mActionSinglePointPen->setDisabled(true);
+//  m_selectiononprofile->setDisabled(true);
+//  m_drawlieonprofile->setDisabled(true);
+//  m_drawlieonprofile_2->setDisabled(true);
+//  mActionSinglePointPen->setDisabled(true);
   mActionPickPoints->setDisabled(true);
-  mActionBrush->setDisabled(true);
+//  mActionBrush->setDisabled(true);
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
@@ -397,26 +397,9 @@ QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
 void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow * window)
 {
   mMapCanvas = window;
-
-  if (profile_widget == nullptr)
-  {
-    profile_widget = new QWidget(this);
-    profile_widget->setMaximumWidth(180);
-    profile_widget->setMinimumWidth(100);
-  }
- 
-  ///--------ui------- 
-  mMapCanvas->setShaderParamsUIWidget(profile_widget);
-  QFile shaderFile("shaders:m_las_points.glsl");
-  shaderFile.open(QIODevice::ReadOnly);
-  QByteArray src = shaderFile.readAll();
-  mMapCanvas->shaderProgram().setShader(src);
-  //mMapCanvas->LockXYZ(4);
   horizontalLayout->addWidget(mMapCanvas);
-
   mMapCanvas->setOpenHandCursor();
   connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
-  // connect(mActionPan, &QAction::triggered, mMapCanvas,  SLOT(setOpenHandCursor()));
 }
 
 void QgsDLWindowDockWidget::setMain3DWindow(QgsProfileWinow * window)
@@ -427,6 +410,34 @@ void QgsDLWindowDockWidget::setclassdock(QgsClassSettingWindowDockWidget* dock)
 {
   classdock = dock;
 }
+
+void QgsDLWindowDockWidget::OnmActiontiqudianlixianClicked()
+{
+  Editing = !Editing;
+  if (!Editing)
+  {
+    mActionSaveEdits->setDisabled(true);
+//    m_selectiononprofile->setDisabled(true);
+//    m_drawlieonprofile->setDisabled(true);
+//    m_drawlieonprofile_2->setDisabled(true);
+//    mActionSinglePointPen->setDisabled(true);
+    mActionPickPoints->setDisabled(true);
+//    mActionBrush->setDisabled(true);
+    OnmActionHandClicked();
+    mMapCanvas->resetState();
+  }
+  if (Editing)
+  {
+    mActionSaveEdits->setEnabled(true);
+//    m_selectiononprofile->setEnabled(true);
+//    m_drawlieonprofile->setEnabled(true);
+ //   m_drawlieonprofile_2->setEnabled(true);
+ //   mActionSinglePointPen->setEnabled(true);
+    mActionPickPoints->setEnabled(true);
+  //  mActionBrush->setEnabled(true);
+  }
+}
+
 void QgsDLWindowDockWidget::OnmActionSaveEditsClicked()
 {
   //mTable->selectRow(mTable->rowCount() - 1);
@@ -469,50 +480,7 @@ void QgsDLWindowDockWidget::OndrawlieonprofileClicked()
   m_method = QString("override");
 }
 
-void  QgsDLWindowDockWidget::OnmActionToggleEditingClicked()
-{
-  Editing = !Editing;
-  if (!Editing)
-  {
-    mActionSaveEdits->setDisabled(true);
-    m_selectiononprofile->setDisabled(true);
-    m_drawlieonprofile->setDisabled(true);
-    m_drawlieonprofile_2->setDisabled(true);
-    mActionSinglePointPen->setDisabled(true);
-    mActionPickPoints->setDisabled(true);
-    mActionBrush->setDisabled(true);
-  }
-  if (Editing)
-  {
-    mActionSaveEdits->setEnabled(true);
-    m_selectiononprofile->setEnabled(true);
-    m_drawlieonprofile->setEnabled(true);
-    m_drawlieonprofile_2->setEnabled(true);
-    mActionSinglePointPen->setEnabled(true);
-    mActionPickPoints->setEnabled(true);
-    mActionBrush->setEnabled(true);
-  }
-}
 
-void QgsDLWindowDockWidget::OnmActionsetshaderClicked()
-{
-
-  if (!inserted)
-  {
-    horizontalLayout->addWidget(profile_widget);
-    profile_widget->show();
-    profile_widget->setVisible(true);
-
-  }
-  else
-  {
-    horizontalLayout->removeWidget(profile_widget);
-    profile_widget->hide();
-    profile_widget->setVisible(false);
-  }
-
-  inserted = !inserted;
-}
 
 void QgsDLWindowDockWidget::OnmActionHandClicked()
 {
