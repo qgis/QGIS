@@ -209,6 +209,12 @@ set(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
 
+  providers/qgsabstractproviderconnection.cpp
+  providers/qgsabstractdatabaseproviderconnection.cpp
+  providers/qgsdataprovider.cpp
+  providers/qgsprovidermetadata.cpp
+  providers/qgsproviderregistry.cpp
+
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
   providers/arcgis/qgsarcgisrestutils.cpp
@@ -261,8 +267,6 @@ set(QGIS_CORE_SRCS
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
-  qgsabstractproviderconnection.cpp
-  qgsabstractdatabaseproviderconnection.cpp
   qgsapplication.cpp
   qgsaction.cpp
   qgsactionscope.cpp
@@ -301,7 +305,6 @@ set(QGIS_CORE_SRCS
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
-  qgsdataprovider.cpp
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdbfilterproxymodel.cpp
@@ -407,8 +410,6 @@ set(QGIS_CORE_SRCS
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
   qgsproviderconnectionmodel.cpp
-  qgsprovidermetadata.cpp
-  qgsproviderregistry.cpp
   qgsproxyfeaturesink.cpp
   qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
@@ -854,9 +855,7 @@ set(QGIS_CORE_HDRS
   qgis.h
   qgis_sip.h
   qgsabstractcontentcache.h
-  qgsabstractdatabaseproviderconnection.h
   qgsabstractgeopdfexporter.h
-  qgsabstractproviderconnection.h
   qgsaction.h
   qgsactionmanager.h
   qgsactionscope.h
@@ -894,7 +893,6 @@ set(QGIS_CORE_HDRS
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
-  qgsdataprovider.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
@@ -1016,8 +1014,6 @@ set(QGIS_CORE_HDRS
   qgspropertycollection.h
   qgspropertytransformer.h
   qgsproviderconnectionmodel.h
-  qgsprovidermetadata.h
-  qgsproviderregistry.h
   qgsproxyfeaturesink.h
   qgsproxyprogresstask.h
   qgspythonrunner.h
@@ -1442,6 +1438,12 @@ set(QGIS_CORE_HDRS
   project/qgsprojecttranslator.h
   project/qgsprojectversion.h
   project/qgsprojectviewsettings.h
+
+  providers/qgsabstractdatabaseproviderconnection.h
+  providers/qgsabstractproviderconnection.h
+  providers/qgsdataprovider.h
+  providers/qgsprovidermetadata.h
+  providers/qgsproviderregistry.h
 
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h

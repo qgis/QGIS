@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsproviderregistry.h                                       *
+ * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -632,7 +632,7 @@ register a new vector data provider from its ``providerMetadata``
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsproviderregistry.h                                       *
+ * src/core/providers/qgsproviderregistry.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsabstractproviderconnection.h                             *
+ * src/core/providers/qgsabstractproviderconnection.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -104,7 +104,7 @@ Sets the connection ``configuration``
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsabstractproviderconnection.h                             *
+ * src/core/providers/qgsabstractproviderconnection.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

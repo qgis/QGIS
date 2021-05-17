@@ -1,8 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractcontentcache.sip
-%Include auto_generated/qgsabstractdatabaseproviderconnection.sip
-%Include auto_generated/qgsabstractproviderconnection.sip
 %Include auto_generated/qgsaction.sip
 %Include auto_generated/qgsactionmanager.sip
 %Include auto_generated/qgsactionscope.sip
@@ -38,7 +36,6 @@
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataitemprovider.sip
 %Include auto_generated/qgsdataitemproviderregistry.sip
-%Include auto_generated/qgsdataprovider.sip
 %Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
@@ -147,8 +144,6 @@
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
 %Include auto_generated/qgsproviderconnectionmodel.sip
-%Include auto_generated/qgsprovidermetadata.sip
-%Include auto_generated/qgsproviderregistry.sip
 %Include auto_generated/qgsproxyfeaturesink.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgspythonrunner.sip
@@ -501,6 +496,11 @@
 %Include auto_generated/project/qgsprojecttranslator.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
+%Include auto_generated/providers/qgsabstractproviderconnection.sip
+%Include auto_generated/providers/qgsdataprovider.sip
+%Include auto_generated/providers/qgsprovidermetadata.sip
+%Include auto_generated/providers/qgsproviderregistry.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
