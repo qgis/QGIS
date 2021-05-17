@@ -14,17 +14,6 @@
 
 
 
-enum class QgsMapLayerType
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,
-  VectorTileLayer,
-  AnnotationLayer,
-  PointCloudLayer,
-};
-
 class QgsMapLayer : QObject
 {
 %Docstring(signature="appended")
@@ -36,7 +25,7 @@ This is the base class for all map layer types (vector, raster).
 #include "qgsmaplayer.h"
 %End
 %ConvertToSubClassCode
-    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 

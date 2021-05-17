@@ -882,6 +882,7 @@ set(QGIS_CORE_HDRS
   qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinateutils.h
+  qgscoreenums.h
   qgscredentials.h
   qgsdartmeasurement.h
   qgsdatabaseschemamodel.h

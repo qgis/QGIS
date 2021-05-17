@@ -30,6 +30,7 @@
 %Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
+%Include auto_generated/qgscoreenums.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
 %Include auto_generated/qgsdatabaseschemamodel.sip
