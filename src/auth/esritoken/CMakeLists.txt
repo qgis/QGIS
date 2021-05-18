@@ -18,20 +18,8 @@ if (WITH_GUI)
 endif()
 
 include_directories (
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/metadata
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-
-if (WITH_GUI)
-  include_directories (
-    ../../gui
-    ../../gui/auth
-  )
-endif()
-
 
 if (WITH_GUI)
   set(AUTH_ESRI_TOKEN_UIS qgsauthesritokenedit.ui)

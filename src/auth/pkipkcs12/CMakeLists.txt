@@ -17,23 +17,11 @@ if (WITH_GUI)
   )
 endif()
 
-include_directories (
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/metadata
-)
 include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-if (WITH_GUI)
-  include_directories (
-    ../../gui
-    ../../gui/auth
-  )
-endif()
 
 if (WITH_GUI)
   set(AUTH_PKCS12_UIS qgsauthpkcs12edit.ui)
