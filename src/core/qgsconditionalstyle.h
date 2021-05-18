@@ -22,6 +22,7 @@
 #include <QDomNode>
 #include <QDomDocument>
 #include <QHash>
+#include <memory>
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;
