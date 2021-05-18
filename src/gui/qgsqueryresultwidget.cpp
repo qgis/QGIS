@@ -28,6 +28,11 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 {
   setupUi( this );
 
+  // Unsure :/
+  // mSqlEditor->setLineNumbersVisible( true );
+
+  mSqlEditor->
+
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
   connect( mClearButton, &QPushButton::pressed, this, [ = ]
   {
@@ -133,7 +138,11 @@ void QgsQueryResultWidget::updateButtons()
 {
   mFilterToolButton->setEnabled( false );
   mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
-  mLoadAsNewLayerGroupBox->setEnabled( mFirstRowFetched && mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
+  mLoadAsNewLayerGroupBox->setEnabled(
+    mSqlErrorMessage.isEmpty() &&
+    mFirstRowFetched && mConnection &&
+    mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers )
+  );
 }
 
 void QgsQueryResultWidget::updateSqlLayerColumns( )
@@ -252,8 +261,8 @@ void QgsQueryResultWidget::showError( const QString &title, const QString &messa
 
 void QgsQueryResultWidget::tokensReady( const QStringList &tokens )
 {
-  mSqlEditor->setFieldNames( mSqlEditor->fieldNames() + tokens );
-  mSqlErrorText->setFieldNames( mSqlErrorText->fieldNames() + tokens );
+  mSqlEditor->setExtraKeywords( mSqlEditor->extraKeywords() + tokens );
+  mSqlErrorText->setExtraKeywords( mSqlErrorText->extraKeywords() + tokens );
 }
 
 void QgsQueryResultWidget::syncSqlOptions()
@@ -316,10 +325,19 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
       mFilterLineEdit->hide();
     }
 
-    mSqlEditor->setFieldNames( QStringList( ) );
     // Add provider specific APIs
-    // TODO mSqlEditor->lexer()->apis()
-    mSqlErrorText->setFieldNames( QStringList( ) );
+    const auto keywordsDict { connection->sqlDictionary() };
+    QStringList keywords;
+    for ( auto it = keywordsDict.constBegin(); it != keywordsDict.constEnd(); it++ )
+    {
+      keywords.append( it.value() );
+    }
+
+    // Add static keywords from provider
+    mSqlEditor->setExtraKeywords( keywords );
+    mSqlErrorText->setExtraKeywords( keywords );
+
+    // Add dynamic keywords in a separate thread
     mApiFetcher = new QgsConnectionsApiFetcher( connection );
     mApiFetcher->moveToThread( &mWorkerThread );
     connect( &mWorkerThread, &QThread::started, mApiFetcher, &QgsConnectionsApiFetcher::fetchTokens );

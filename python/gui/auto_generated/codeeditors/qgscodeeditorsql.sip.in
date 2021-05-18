@@ -53,6 +53,28 @@ Set field names to ``fieldNames`` to be added to the lexer API.
 Return field names from the lexer API.
 %End
 
+    void setExtraKeywords( const QStringList &extraKeywords );
+%Docstring
+Set extra keywords to ``extraKeywords``.
+
+Extra keywords are usually added
+from provider connections and represent function and other provider specific
+keywords.
+
+.. versionadded:: 3.20
+%End
+
+    QStringList extraKeywords() const;
+%Docstring
+Returns the extra keywords.
+
+Extra keywords are usually added
+from provider connections and represent function and other provider specific
+keywords.
+
+.. versionadded:: 3.20
+%End
+
   protected:
     virtual void initializeLexer();
 

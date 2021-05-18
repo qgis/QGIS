@@ -61,6 +61,28 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      */
     QStringList fieldNames() const;
 
+    /**
+     * Set extra keywords to \a extraKeywords.
+     *
+     * Extra keywords are usually added
+     * from provider connections and represent function and other provider specific
+     * keywords.
+     *
+     * \since QGIS 3.20
+     */
+    void setExtraKeywords( const QStringList &extraKeywords );
+
+    /**
+     * Returns the extra keywords.
+     *
+     * Extra keywords are usually added
+     * from provider connections and represent function and other provider specific
+     * keywords.
+     *
+     * \since QGIS 3.20
+     */
+    QStringList extraKeywords() const;
+
   protected:
     void initializeLexer() override;
 
@@ -68,8 +90,11 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     void updateApis();
     QsciAPIs *mApis = nullptr;
     QsciLexerSQL *mSqlLexer = nullptr;
+    QStringList mExtraKeywords;
 
     QStringList mFieldNames;
+
+    friend class TestQgsQueryResultWidget;
 };
 
 #ifndef SIP_RUN

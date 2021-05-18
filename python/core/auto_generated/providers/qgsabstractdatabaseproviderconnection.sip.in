@@ -355,6 +355,20 @@ This information is calculated from the geometry columns types.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
 
 
+    enum SqlKeywordCategory
+    {
+      Keyword,
+      Constant,
+      Function,
+      Geospatial,
+      Operator,
+      Math,
+      Aggregate,
+      String,
+      Identifier
+    };
+
+
     QgsAbstractDatabaseProviderConnection( const QString &name );
 %Docstring
 Creates a new connection with ``name`` by reading its configuration from the settings.
@@ -659,6 +673,17 @@ Returns a list of native types supported by the connection.
 Returns the provider key.
 
 .. versionadded:: 3.16
+%End
+
+    virtual QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary();
+%Docstring
+Returns a dictionary of SQL keywords supported by the provider.
+The default implementation returns an list of common reserved words under the
+"Keyword" and "Constant" categories.
+
+Subclasses should add provider- and/or connection- specific words.
+
+.. versionadded:: 3.20
 %End
 
   protected:

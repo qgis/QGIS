@@ -152,6 +152,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void firstResultBatchFetched();
 
+
   private:
 
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;

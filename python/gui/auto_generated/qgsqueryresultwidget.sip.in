@@ -97,6 +97,7 @@ Emitted when the first batch of results has been fetched.
    If the query returns no results this signal is not emitted.
 %End
 
+
 };
 
 /************************************************************************

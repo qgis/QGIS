@@ -100,8 +100,24 @@ void QgsCodeEditorSQL::updateApis()
     mApis->add( fieldName );
   }
 
+  for ( const QString &keyword : std::as_const( mExtraKeywords ) )
+  {
+    mApis->add( keyword );
+  }
+
   mApis->prepare();
   mSqlLexer->setAPIs( mApis );
+}
+
+QStringList QgsCodeEditorSQL::extraKeywords() const
+{
+  return mExtraKeywords;
+}
+
+void QgsCodeEditorSQL::setExtraKeywords( const QStringList &extraKeywords )
+{
+  mExtraKeywords = extraKeywords;
+  updateApis();
 }
 
 QStringList QgsCodeEditorSQL::fieldNames() const
@@ -114,3 +130,5 @@ void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
   mFieldNames = fieldNames;
   updateApis();
 }
+
+

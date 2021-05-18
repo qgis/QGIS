@@ -82,6 +82,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsFields fields( const QString &schema, const QString &table ) const override;
+    QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 
@@ -90,7 +91,6 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     //! Returns PK name for table
     QString primaryKeyColumnName( const QString &table ) const;
-
 
 };
 

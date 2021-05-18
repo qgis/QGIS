@@ -482,6 +482,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
     Q_FLAG( GeometryColumnCapabilities )
 
+    /**
+     * \brief The SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
+     */
     enum SqlLayerDefinitionCapability
     {
       Filters = 1 << 1,           //! SQL layer definition support filters
@@ -492,6 +495,24 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     Q_ENUM( SqlLayerDefinitionCapability )
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
     Q_FLAG( SqlLayerDefinitionCapabilities )
+
+    /**
+     * \brief The SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
+     */
+    enum SqlKeywordCategory
+    {
+      Keyword,      //! SQL keyword
+      Constant,     //! SQL constant
+      Function,     //! SQL generic function
+      Geospatial,   //! SQL spatial function
+      Operator,     //! SQL operator
+      Math,         //! SQL math functions
+      Aggregate,    //! SQL aggregate functions
+      String,       //! SQL string functions
+      Identifier    //! SQL identifier
+    };
+
+    Q_ENUM( SqlKeywordCategory )
 
     /**
      * Creates a new connection with \a name by reading its configuration from the settings.
@@ -759,6 +780,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.16
      */
     QString providerKey() const;
+
+    /**
+    * Returns a dictionary of SQL keywords supported by the provider.
+    * The default implementation returns an list of common reserved words under the
+    * "Keyword" and "Constant" categories.
+    *
+    * Subclasses should add provider- and/or connection- specific words.
+    *
+    * \since QGIS 3.20
+    */
+    virtual QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary();
 
   protected:
 
