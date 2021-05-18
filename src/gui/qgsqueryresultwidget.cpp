@@ -31,8 +31,6 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // Unsure :/
   // mSqlEditor->setLineNumbersVisible( true );
 
-  mSqlEditor->
-
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
   connect( mClearButton, &QPushButton::pressed, this, [ = ]
   {
@@ -70,6 +68,27 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   mSqlErrorText->hide();
 
   mLoadAsNewLayerGroupBox->setCollapsed( true );
+
+  connect( mLoadAsNewLayerGroupBox, &QgsCollapsibleGroupBox::collapsedStateChanged, this, [ = ]( bool collapsed )
+  {
+    if ( ! collapsed )
+    {
+      // Configure the load layer interface
+      const bool showPkConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys )};
+      mPkColumnsCheckBox->setVisible( showPkConfig );
+      mPkColumnsComboBox->setVisible( showPkConfig );
+
+      const bool showGeometryColumnConfig {connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn )};
+      mGeometryColumnCheckBox->setVisible( showGeometryColumnConfig );
+      mGeometryColumnComboBox->setVisible( showGeometryColumnConfig );
+
+      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) };
+      mFilterLabel->setVisible( showFilterConfig );
+      mFilterToolButton->setVisible( showFilterConfig );
+      mFilterLineEdit->setVisible( showFilterConfig );
+    }
+  } );
+
   setConnection( connection );
 }
 
@@ -305,26 +324,6 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
   if ( connection )
   {
 
-    // Configure the load layer interface
-    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys ) )
-    {
-      mPkColumnsCheckBox->hide();
-      mPkColumnsComboBox->hide();
-    }
-
-    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn ) )
-    {
-      mGeometryColumnCheckBox->hide();
-      mGeometryColumnComboBox->hide();
-    }
-
-    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) )
-    {
-      mFilterLabel->hide();
-      mFilterToolButton->hide();
-      mFilterLineEdit->hide();
-    }
-
     // Add provider specific APIs
     const auto keywordsDict { connection->sqlDictionary() };
     QStringList keywords;
@@ -359,11 +358,6 @@ void QgsQueryResultWidget::setQuery( const QString &sql )
   mSqlEditor->setText( sql );
 }
 
-void QgsQueryResultWidget::setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options )
-{
-  mSqlVectorLayerOptions = options;
-// TODO: check items
-}
 
 ///@cond private
 

@@ -49,15 +49,6 @@ Sets the connection to ``connection``, ownership is transferred to the widget.
 Convenience method to set the SQL editor text to ``sql``.
 %End
 
-    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
-%Docstring
-Sets the SQL layer ``options``. This method automatically populates and shows the "Load as new layer" panel.
-%End
-
-    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
-%Docstring
-Returns the sqlVectorLayerOptions
-%End
 
   public slots:
 

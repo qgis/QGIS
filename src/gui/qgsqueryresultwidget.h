@@ -104,15 +104,6 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void setQuery( const QString &sql );
 
-    /**
-     * Sets the SQL layer \a options. This method automatically populates and shows the "Load as new layer" panel.
-     */
-    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
-
-    /**
-     * Returns the sqlVectorLayerOptions
-     */
-    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
 
   public slots:
 
@@ -186,6 +177,12 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      * Starts the model population after initial query run.
      */
     void startFetching();
+
+    /**
+     * Returns the sqlVectorLayerOptions
+     */
+    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
+
 
     friend class TestQgsQueryResultWidget;
 
