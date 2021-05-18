@@ -833,9 +833,7 @@ Clones the item
 
     void appendChild( QgsMeshDatasetGroupTreeItem *item /Transfer/ );
 %Docstring
-Appends a item child
-
-:param item: the item to append
+Appends a child ``item``.
 
 .. note::
 

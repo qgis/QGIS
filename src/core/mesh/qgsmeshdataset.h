@@ -828,8 +828,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
 
     /**
-     * Appends a item child
-     * \param item the item to append
+     * Appends a child \a item.
      *
      * \note takes ownership of item
      */
