@@ -3261,7 +3261,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
     QString update;
     QgsPostgresResult result;
 
-    if ( mSpatialColType == SctTopoGeometry )
     {
       // We will create a new TopoGeometry object with the new shape.
       // Later, we'll replace the old TopoGeometry with the new one,
@@ -3303,14 +3302,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
       }
 
     }
-    else
-    {
-      update = QStringLiteral( "UPDATE %1 SET %2=%3 WHERE %4" )
-               .arg( mQuery,
-                     quotedIdentifier( mGeometryColumn ),
-                     geomParam( 1 ),
-                     pkParamWhereClause( 2 ) );
-    }
 
     QgsDebugMsgLevel( "updating: " + update, 2 );
 
@@ -3332,11 +3323,10 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 
       // Save the id of the current topogeometry
       long old_tg_id = -1;
-      if ( mSpatialColType == SctTopoGeometry )
       {
-        QStringList params;
-        appendPkParams( iter.key(), params );
-        result = connectionRO()->PQexecPrepared( QStringLiteral( "getid" ), params );
+        QStringList paramsTopo;
+        appendPkParams( iter.key(), paramsTopo );
+        result = connectionRO()->PQexecPrepared( QStringLiteral( "getid" ), paramsTopo );
         if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         {
           QgsDebugMsg( QStringLiteral( "Exception thrown due to PQexecPrepared of 'getid' returning != PGRES_TUPLES_OK (%1 != expected %2)" )
@@ -3356,7 +3346,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
       if ( result.PQresultStatus() != PGRES_COMMAND_OK && result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
 
-      if ( mSpatialColType == SctTopoGeometry )
       {
         long new_tg_id = result.PQgetvalue( 0, 0 ).toLong(); // new topogeo_id
 
@@ -3395,7 +3384,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
     } // for each feature
 
     conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeatures" ) );
-    if ( mSpatialColType == SctTopoGeometry )
     {
       connectionRO()->PQexecNR( QStringLiteral( "DEALLOCATE getid" ) );
       conn->PQexecNR( QStringLiteral( "DEALLOCATE replacetopogeom" ) );
@@ -3410,7 +3398,6 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
     pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     conn->rollback();
     conn->PQexecNR( QStringLiteral( "DEALLOCATE updatefeatures" ) );
-    if ( mSpatialColType == SctTopoGeometry )
     {
       connectionRO()->PQexecNR( QStringLiteral( "DEALLOCATE getid" ) );
       conn->PQexecNR( QStringLiteral( "DEALLOCATE replacetopogeom" ) );
