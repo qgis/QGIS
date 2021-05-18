@@ -130,7 +130,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
   {
-    emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::Warning );
+    emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -149,7 +149,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //check we only use this tool for point/multipoint layers
     if ( vlayer->geometryType() != QgsWkbTypes::PointGeometry && mCheckGeometryType )
     {
-      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture point' tool on this vector layer" ), Qgis::Warning );
+      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture point' tool on this vector layer" ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -182,7 +182,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse )
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -244,14 +244,14 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //check we only use the line tool for line/multiline layers
     if ( mode() == CaptureLine && vlayer->geometryType() != QgsWkbTypes::LineGeometry && mCheckGeometryType )
     {
-      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture line' tool on this vector layer" ), Qgis::Warning );
+      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture line' tool on this vector layer" ), Qgis::MessageLevel::Warning );
       return;
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
     if ( mode() == CapturePolygon && vlayer->geometryType() != QgsWkbTypes::PolygonGeometry && mCheckGeometryType )
     {
-      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture polygon' tool on this vector layer" ), Qgis::Warning );
+      emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture polygon' tool on this vector layer" ), Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -267,7 +267,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( error == 2 )
       {
         //problem with coordinate transformation
-        emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
+        emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::MessageLevel::Warning );
         return;
       }
 
@@ -356,11 +356,11 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           f->setGeometry( featGeom );
           if ( avoidIntersectionsReturn == 3 )
           {
-            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
+            emit messageEmitted( tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::MessageLevel::Warning );
           }
           if ( f->geometry().isEmpty() ) //avoid intersection might have removed the whole geometry
           {
-            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::Critical );
+            emit messageEmitted( tr( "The feature cannot be added because its geometry collapsed due to intersection avoidance" ), Qgis::MessageLevel::Critical );
             stopCapturing();
             return;
           }

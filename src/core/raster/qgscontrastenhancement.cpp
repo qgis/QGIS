@@ -100,7 +100,7 @@ bool QgsContrastEnhancement::generateLookupTable()
     return false;
   if ( NoEnhancement == mContrastEnhancementAlgorithm )
     return false;
-  if ( Qgis::Byte != mRasterDataType && Qgis::UInt16 != mRasterDataType && Qgis::Int16 != mRasterDataType )
+  if ( Qgis::DataType::Byte != mRasterDataType && Qgis::DataType::UInt16 != mRasterDataType && Qgis::DataType::Int16 != mRasterDataType )
     return false;
   if ( !mLookupTable )
     return false;

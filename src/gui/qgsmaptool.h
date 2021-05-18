@@ -240,7 +240,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   signals:
     //! emit a message
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 
     //! emit signal to clear previous message
     void messageDiscarded();

@@ -71,7 +71,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
 
-    Qgis::DataType mDataType = Qgis::Float32;
+    Qgis::DataType mDataType = Qgis::DataType::Float32;
     const double mNoDataValue = -9999;
     QgsRasterDataProvider *mDestinationRasterProvider;
 };

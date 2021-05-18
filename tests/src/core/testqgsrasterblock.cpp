@@ -88,7 +88,7 @@ void TestQgsRasterBlock::testBasic()
 
   QVERIFY( block->isValid() );
   QVERIFY( !block->isEmpty() );
-  QCOMPARE( block->dataType(), Qgis::Byte );
+  QCOMPARE( block->dataType(), Qgis::DataType::Byte );
   QCOMPARE( block->dataTypeSize(), 1 );
   QVERIFY( block->hasNoDataValue() );
   QVERIFY( block->hasNoData() );
@@ -172,7 +172,7 @@ void TestQgsRasterBlock::testWrite()
 
   // create a GeoTIFF - this will create data provider in editable mode
   QString filename = tmpFile.fileName();
-  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::Byte, 10, 10, tform, mpRasterLayer->crs() );
+  QgsRasterDataProvider *dp = QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::DataType::Byte, 10, 10, tform, mpRasterLayer->crs() );
 
   QgsRasterBlock *block = mpRasterLayer->dataProvider()->block( 1, mpRasterLayer->extent(), mpRasterLayer->width(), mpRasterLayer->height() );
 
@@ -202,7 +202,7 @@ void TestQgsRasterBlock::testWrite()
   QCOMPARE( newData3.at( 0 ), '\xa0' );
   QCOMPARE( newData3.at( 1 ), '\xa1' );
 
-  QgsRasterBlock *block4 = new QgsRasterBlock( Qgis::Byte, 1, 2 );
+  QgsRasterBlock *block4 = new QgsRasterBlock( Qgis::DataType::Byte, 1, 2 );
   block4->setData( QByteArray( "\xb0\xb1" ) );
 
   // cannot write when provider is not editable

@@ -825,7 +825,7 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   rasterFileWriter.setOutputFormat( outputFormat );
 
   std::unique_ptr<QgsRasterDataProvider> rasterDataProvider(
-    rasterFileWriter.createMultiBandRaster( Qgis::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
+    rasterFileWriter.createMultiBandRaster( Qgis::DataType::Float64, width, height, extent, mTransform.destinationCrs(), mDataPerGroup.count() ) );
   rasterDataProvider->setEditable( true );
 
   for ( int i = 0; i < mDataPerGroup.count(); ++i )

@@ -164,7 +164,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Shows a warning message, allowing users to click a button to see the full details (\a longMessage).
      */
-    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning ) const;
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
 
   signals:
 

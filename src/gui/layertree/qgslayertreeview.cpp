@@ -87,7 +87,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   if ( mMessageBar )
     connect( treeModel, &QgsLayerTreeModel::messageEmitted,
-             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 )
   {
     Q_UNUSED( duration )
     mMessageBar->pushMessage( message, level );
@@ -554,7 +554,7 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
 
   if ( mMessageBar )
     connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
-             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
+             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 )
   {
     Q_UNUSED( duration )
     mMessageBar->pushMessage( message, level );

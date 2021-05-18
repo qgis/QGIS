@@ -58,7 +58,7 @@ int main( int argc, char *argv[] )
   {
     withDisplay = false;
     qputenv( "QT_QPA_PLATFORM", "offscreen" );
-    QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::Info );
+    QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::MessageLevel::Info );
   }
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
   QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );

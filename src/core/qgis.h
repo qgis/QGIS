@@ -101,21 +101,21 @@ class CORE_EXPORT Qgis
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
-    enum MessageLevel
-    {
-      Info = 0,
-      Warning = 1,
-      Critical = 2,
-      Success = 3,
-      None = 4
+    enum class MessageLevel SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, MessageLevel ) : int
+      {
+      Info = 0, //!< Information message
+      Warning = 1, //!< Warning message
+      Critical = 2, //!< Critical/error message
+      Success = 3, //!< Used for reporting a successful operation
+      NoLevel = 4, //!< No level
     };
 
     /**
      * Raster data types.
-     *  This is modified and extended copy of GDALDataType.
+     * This is modified and extended copy of GDALDataType.
      */
-    enum DataType
-    {
+    enum class DataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, DataType ) : int
+      {
       UnknownDataType = 0, //!< Unknown or unspecified type
       Byte = 1, //!< Eight bit unsigned integer (quint8)
       UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)
@@ -137,8 +137,8 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+      {
       Never = 0, //!< Macros are never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
@@ -157,6 +157,7 @@ class CORE_EXPORT Qgis
       Uncounted = -2, //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
+    Q_ENUM( FeatureCountState )
 
     /**
      * \brief Symbol types
@@ -169,6 +170,7 @@ class CORE_EXPORT Qgis
       Fill, //!< Fill symbol
       Hybrid //!< Hybrid symbol
     };
+    Q_ENUM( SymbolType )
 
     /**
      * \brief Scale methods
@@ -180,6 +182,7 @@ class CORE_EXPORT Qgis
       ScaleArea,     //!< Calculate scale by the area
       ScaleDiameter  //!< Calculate scale by the diameter
     };
+    Q_ENUM( ScaleMethod )
 
     /**
      * \brief Flags controlling behavior of symbols during rendering
@@ -190,6 +193,7 @@ class CORE_EXPORT Qgis
       {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
+    Q_ENUM( SymbolRenderHint )
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
 
     /**
@@ -201,6 +205,7 @@ class CORE_EXPORT Qgis
       {
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
+    Q_ENUM( SymbolPreviewFlag )
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**

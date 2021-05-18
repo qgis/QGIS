@@ -64,7 +64,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
 
     std::unique_ptr< QgsRasterInterface > mInterface;
 
-    Qgis::DataType mDataType = Qgis::Float32;
+    Qgis::DataType mDataType = Qgis::DataType::Float32;
     double mNoDataValue = -9999;
     int mBand = 1;
     QgsRectangle mExtent;

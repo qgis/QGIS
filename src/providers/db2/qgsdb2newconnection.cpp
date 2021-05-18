@@ -179,7 +179,7 @@ bool QgsDb2NewConnection::testConnection()
   if ( !rc )
   {
     bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
-                      Qgis::Warning );
+                      Qgis::MessageLevel::Warning );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -189,14 +189,14 @@ bool QgsDb2NewConnection::testConnection()
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
-                      Qgis::Info );
+                      Qgis::MessageLevel::Info );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
-                      Qgis::Warning );
+                      Qgis::MessageLevel::Warning );
     return false;
   }
 }

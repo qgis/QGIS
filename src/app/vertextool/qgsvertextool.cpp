@@ -632,7 +632,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Invisible vertices were not selected" ),
         tr( "Vertices belonging to features that are not displayed on the map canvas were not selected." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
 
     // here's where we give precedence to vertices of selected features in case there's no bound (locked) feature
