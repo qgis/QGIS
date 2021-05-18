@@ -742,7 +742,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         s = QgsMapSettings()
         s.setLayers([points_layer])
         layout = QgsLayout(QgsProject.instance())
-        layout.initializeDefaults
+        layout.initializeDefaults()
 		layout.setUnits(QgsUnitTypes.LayoutMillimeters)
 
         map = QgsLayoutItemMap(layout)
