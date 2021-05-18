@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeedback.h"
-#include "qgssymbol.h"
 #include "qgstaskmanager.h"
 #include "qgsogrutils.h"
 #include "qgsrenderer.h"

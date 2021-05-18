@@ -34,6 +34,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgstextrenderer.h"
+#include "qgsfillsymbol.h"
 
 #include <QPainter>
 
@@ -48,6 +49,8 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
 
   projectRead();
 }
+
+QgsDecorationLayoutExtent::~QgsDecorationLayoutExtent() = default;
 
 void QgsDecorationLayoutExtent::projectRead()
 {
@@ -193,4 +196,3 @@ void QgsDecorationLayoutExtent::setSymbol( QgsFillSymbol *symbol )
 {
   mSymbol.reset( symbol );
 }
-

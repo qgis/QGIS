@@ -50,6 +50,8 @@ a :py:func:`~renderAnnotation` override.
 Constructor for QgsAnnotation.
 %End
 
+    ~QgsAnnotation();
+
     virtual QgsAnnotation *clone() const = 0 /Factory/;
 %Docstring
 Clones the annotation, returning a new copy of the annotation

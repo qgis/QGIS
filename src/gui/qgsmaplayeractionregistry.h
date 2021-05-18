@@ -22,7 +22,7 @@
 #include <QMap>
 #include <QAction>
 
-#include "qgscoreenums.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsFeature;

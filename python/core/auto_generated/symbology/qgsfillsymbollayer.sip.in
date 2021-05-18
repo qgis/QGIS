@@ -11,6 +11,7 @@
 
 
 
+
 class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 {
 
@@ -767,6 +768,7 @@ Base class for polygon renderers generating texture images
 
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
@@ -1801,6 +1803,7 @@ Returns the vertical offset values for points in the pattern.
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QgsSymbol *subSymbol();
+
 
     void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring

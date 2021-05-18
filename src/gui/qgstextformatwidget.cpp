@@ -36,6 +36,8 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgshelp.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -187,11 +189,11 @@ void QgsTextFormatWidget::initWidget()
 
   updateAvailableShadowPositions();
 
-  mBackgroundMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
   mBackgroundMarkerSymbolButton->setDialogTitle( tr( "Background Symbol" ) );
   mBackgroundMarkerSymbolButton->registerExpressionContextGenerator( this );
   mBackgroundMarkerSymbolButton->setMapCanvas( mMapCanvas );
-  mBackgroundFillSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mBackgroundFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundFillSymbolButton->setDialogTitle( tr( "Background Symbol" ) );
   mBackgroundFillSymbolButton->registerExpressionContextGenerator( this );
   mBackgroundFillSymbolButton->setMapCanvas( mMapCanvas );

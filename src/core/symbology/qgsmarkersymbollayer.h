@@ -33,6 +33,9 @@
 #include <QPolygonF>
 #include <QFont>
 
+class QgsFillSymbol;
+class QgsPathResolver;
+
 /**
  * \ingroup core
  * \class QgsSimpleMarkerSymbolLayerBase
@@ -99,7 +102,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /**
      * Returns the shape for the rendered marker symbol.
@@ -219,7 +222,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                 const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
                                 const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
@@ -473,7 +476,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     /**
      * Creates a new QgsFilledMarkerSymbolLayer.
@@ -524,7 +527,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsSvgMarkerSymbolLayer( const QString &path,
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
-                             QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
@@ -713,7 +716,7 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QgsRasterMarkerSymbolLayer( const QString &path = QString(),
                                 double size = DEFAULT_SVGMARKER_SIZE,
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 

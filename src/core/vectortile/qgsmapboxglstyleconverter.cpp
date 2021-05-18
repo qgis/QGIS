@@ -33,6 +33,9 @@
 #include "qgsblureffect.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgstextbackgroundsettings.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QBuffer>
 #include <QRegularExpression>

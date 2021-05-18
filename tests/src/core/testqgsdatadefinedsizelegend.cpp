@@ -19,7 +19,7 @@
 #include "qgsfontutils.h"
 #include "qgsrenderchecker.h"
 #include "qgssymbol.h"
-
+#include "qgsmarkersymbol.h"
 
 static QString _fileNameForTest( const QString &testName )
 {

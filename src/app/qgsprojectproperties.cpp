@@ -2128,16 +2128,16 @@ void QgsProjectProperties::populateStyles()
     QComboBox *cbo = nullptr;
     switch ( symbol->type() )
     {
-      case QgsSymbol::Marker :
+      case Qgis::SymbolType::Marker :
         cbo = cboStyleMarker;
         break;
-      case QgsSymbol::Line :
+      case Qgis::SymbolType::Line :
         cbo = cboStyleLine;
         break;
-      case QgsSymbol::Fill :
+      case Qgis::SymbolType::Fill :
         cbo = cboStyleFill;
         break;
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         // Shouldn't get here
         break;
     }

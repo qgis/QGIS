@@ -24,6 +24,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyle.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     const QgsPropertyDefinition &definition, const QgsProperty &initialState,

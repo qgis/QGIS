@@ -22,6 +22,8 @@
 #include "qgsnumericformat.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
+
 #include <QFontMetricsF>
 #include <QPainter>
 

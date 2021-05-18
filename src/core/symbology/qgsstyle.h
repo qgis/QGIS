@@ -389,7 +389,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      * \since QGIS 3.14
      */
-    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+    Qgis::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 
     /**
      * Returns a new copy of the 3D symbol with the specified \a name.
@@ -712,7 +712,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see defaultPatchAsQPolygonF()
      * \since QGIS 3.14
      */
-    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QgsLegendPatchShape defaultPatch( Qgis::SymbolType type, QSizeF size ) const;
 
     /**
      * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects (parts and rings).
@@ -720,7 +720,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see defaultPatch()
      * \since QGIS 3.14
      */
-    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 
     /**
      * Text format context.
@@ -1097,8 +1097,8 @@ class CORE_EXPORT QgsStyle : public QObject
     std::unique_ptr< QgsSymbol > mPatchLineSymbol;
     std::unique_ptr< QgsSymbol > mPatchFillSymbol;
 
-    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
-    mutable QHash< QgsSymbol::SymbolType, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
+    mutable QHash< int, QHash< QSizeF, QgsLegendPatchShape > > mDefaultPatchCache;
+    mutable QHash< int, QHash< QSizeF, QList< QList< QPolygonF > > > > mDefaultPatchQPolygonFCache;
 
     QMap< QString, QDomElement > mDeferred3DsymbolElements;
     void handleDeferred3DSymbolCreation();

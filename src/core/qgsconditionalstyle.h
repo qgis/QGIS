@@ -21,11 +21,12 @@
 #include <QPixmap>
 #include <QDomNode>
 #include <QDomDocument>
-
-#include "qgssymbol.h"
+#include <QHash>
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;
+class QgsExpressionContext;
+class QgsSymbol;
 
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
@@ -115,6 +116,7 @@ class CORE_EXPORT QgsConditionalStyle
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle &other );
     QgsConditionalStyle( const QString &rule );
+    ~QgsConditionalStyle();
 
     QgsConditionalStyle &operator=( const QgsConditionalStyle &other );
 

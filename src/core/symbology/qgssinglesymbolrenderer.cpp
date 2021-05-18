@@ -30,6 +30,9 @@
 #include "qgspainteffectregistry.h"
 #include "qgsproperty.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -312,7 +315,7 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
 
 QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 {
-  if ( mDataDefinedSizeLegend && mSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSymbol->type() == Qgis::SymbolType::Marker )
   {
     const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
     QgsProperty sizeDD( symbol->dataDefinedSize() );

@@ -549,7 +549,7 @@ Currently clones
 
 
 
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 %Docstring
 
 .. note::

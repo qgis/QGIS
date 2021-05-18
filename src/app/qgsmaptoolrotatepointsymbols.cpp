@@ -24,7 +24,7 @@
 #include "qgsproperty.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
-
+#include "qgsmarkersymbol.h"
 
 #include <QGraphicsPixmapItem>
 
@@ -242,7 +242,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
     std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
     QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
-    pointImage = markerClone->bigSymbolPreviewImage( nullptr, QgsSymbol::PreviewFlags() );
+    pointImage = markerClone->bigSymbolPreviewImage( nullptr, Qgis::SymbolPreviewFlags() );
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );

@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgslayoutundostack.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -97,19 +99,19 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
 
-  mLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::lineSymbolChanged );
 
-  mDivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  mDivisionStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mDivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::divisionSymbolChanged );
 
-  mSubdivisionStyleButton->setSymbolType( QgsSymbol::Line );
+  mSubdivisionStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mSubdivisionStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::subdivisionSymbolChanged );
 
-  mFillSymbol1Button->setSymbolType( QgsSymbol::Fill );
+  mFillSymbol1Button->setSymbolType( Qgis::SymbolType::Fill );
   connect( mFillSymbol1Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol1Changed );
 
-  mFillSymbol2Button->setSymbolType( QgsSymbol::Fill );
+  mFillSymbol2Button->setSymbolType( Qgis::SymbolType::Fill );
   connect( mFillSymbol2Button, &QgsSymbolButton::changed, this, &QgsLayoutScaleBarWidget::fillSymbol2Changed );
 
   mFontButton->setDialogTitle( tr( "Scalebar Font" ) );

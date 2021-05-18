@@ -28,6 +28,7 @@
 #include "qgsexception.h"
 #include "qgswkbtypes.h"
 #include "qgsogrtransaction.h"
+#include "qgssymbol.h"
 
 #include <QTextCodec>
 #include <QFile>

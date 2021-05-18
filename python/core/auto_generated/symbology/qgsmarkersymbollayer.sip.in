@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
@@ -74,7 +75,7 @@ Returns ``True`` if a symbol shape has a fill.
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerBase.
 
@@ -206,7 +207,7 @@ Simple marker symbol layer, consisting of a rendered shape with solid fill color
     QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                 const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
                                 const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
@@ -511,7 +512,7 @@ the symbol to support advanced styling of the interior and stroke of the shape.
     QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayer.
 
@@ -575,7 +576,7 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
     QgsSvgMarkerSymbolLayer( const QString &path,
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
-                             QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
 %End
@@ -785,7 +786,7 @@ Raster marker symbol layer class.
     QgsRasterMarkerSymbolLayer( const QString &path = QString(),
                                 double size = DEFAULT_SVGMARKER_SIZE,
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs raster marker symbol layer with picture from given absolute path to a raster image file
 %End

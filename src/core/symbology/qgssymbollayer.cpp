@@ -31,6 +31,7 @@
 #include "qgslegendpatchshape.h"
 #include "qgsstyle.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
 
 #include <QSize>
 #include <QPainter>
@@ -130,6 +131,17 @@ void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderCont
     subSymbol()->stopFeatureRender( feature, context );
 }
 
+QgsSymbol *QgsSymbolLayer::subSymbol()
+{
+  return nullptr;
+}
+
+bool QgsSymbolLayer::setSubSymbol( QgsSymbol *symbol )
+{
+  delete symbol;
+  return false;
+}
+
 bool QgsSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   Q_UNUSED( e )
@@ -201,7 +213,7 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect.reset( effect );
 }
 
-QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
+QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
   : mType( type )
   , mLocked( locked )
 {
@@ -233,7 +245,7 @@ QgsSymbolLayer::~QgsSymbolLayer() = default;
 
 bool QgsSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
 {
-  if ( symbol->type() == QgsSymbol::Fill && mType == QgsSymbol::Line )
+  if ( symbol->type() == Qgis::SymbolType::Fill && mType == Qgis::SymbolType::Line )
     return true;
 
   return symbol->type() == mType;
@@ -401,7 +413,7 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringM
 
     QgsSymbolLayer::Property key = static_cast< QgsSymbolLayer::Property >( OLD_PROPS.value( propertyName ) );
 
-    if ( type() == QgsSymbol::Line )
+    if ( type() == Qgis::SymbolType::Line )
     {
       //these keys had different meaning for line symbol layers
       if ( propertyName == QLatin1String( "width" ) )
@@ -434,13 +446,13 @@ void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
 }
 
 QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( bool locked )
-  : QgsSymbolLayer( QgsSymbol::Marker, locked )
+  : QgsSymbolLayer( Qgis::SymbolType::Marker, locked )
 {
 
 }
 
 QgsLineSymbolLayer::QgsLineSymbolLayer( bool locked )
-  : QgsSymbolLayer( QgsSymbol::Line, locked )
+  : QgsSymbolLayer( Qgis::SymbolType::Line, locked )
 {
 }
 
@@ -455,7 +467,7 @@ void QgsLineSymbolLayer::setRingFilter( const RenderRingFilter filter )
 }
 
 QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
-  : QgsSymbolLayer( QgsSymbol::Fill, locked )
+  : QgsSymbolLayer( Qgis::SymbolType::Fill, locked )
 {
 }
 
@@ -474,8 +486,8 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
 
-  QPolygonF points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 )
-                     : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
+  QPolygonF points = context.patchShape() ? context.patchShape()->toQPolygonF( Qgis::SymbolType::Marker, size ).value( 0 ).value( 0 )
+                     : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( Qgis::SymbolType::Marker, size ).value( 0 ).value( 0 );
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
@@ -675,8 +687,8 @@ QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 
 void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
-  const QList< QList< QPolygonF > > points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Line, size )
-      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Line, size );
+  const QList< QList< QPolygonF > > points = context.patchShape() ? context.patchShape()->toQPolygonF( Qgis::SymbolType::Line, size )
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( Qgis::SymbolType::Line, size );
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
 
@@ -754,8 +766,8 @@ double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderConte
 
 void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
-  const QList< QList< QPolygonF > > polys = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Fill, size )
-      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Fill, size );
+  const QList< QList< QPolygonF > > polys = context.patchShape() ? context.patchShape()->toQPolygonF( Qgis::SymbolType::Fill, size )
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( Qgis::SymbolType::Fill, size );
 
   startRender( context );
   QgsPaintEffect *effect = paintEffect();

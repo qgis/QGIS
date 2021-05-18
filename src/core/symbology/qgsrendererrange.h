@@ -41,6 +41,7 @@ class CORE_EXPORT QgsRendererRange
      * Constructor for QgsRendererRange.
      */
     QgsRendererRange() = default;
+    ~QgsRendererRange();
 
     /**
      * Creates a renderer symbol range

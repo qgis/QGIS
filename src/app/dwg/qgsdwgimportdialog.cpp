@@ -49,7 +49,8 @@
 #include "qgsfilewidget.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
-
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

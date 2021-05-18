@@ -27,6 +27,8 @@
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsgui.h"
+#include "qgsfillsymbol.h"
+
 #include <QDomElement>
 #include <QDir>
 #include <QFile>

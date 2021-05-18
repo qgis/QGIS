@@ -23,11 +23,11 @@
 #include <QFont>
 #include <QColor>
 #include <QPainter>
-#include "qgssymbol.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
 #include "qgscolorramp.h"
 #include "qgsarrowsymbollayer.h"
+#include "qgssymbol.h"
 
 #include <QFile>
 
@@ -47,6 +47,7 @@ class QPixmap;
 class QPointF;
 class QSize;
 class QMimeData;
+class QgsFeatureRenderer;
 
 /**
  * \ingroup core
@@ -203,8 +204,19 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static double sizeInPixelsFromSldUom( const QString &uom, double size );
 
-    static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
+    /**
+     * Encodes a symbol scale method to a string.
+     *
+     * \see decodeScaleMethod()
+     */
+    static QString encodeScaleMethod( Qgis::ScaleMethod scaleMethod );
+
+    /**
+     * Decodes a symbol scale method from a string.
+     *
+     * \see encodeScaleMethod()
+     */
+    static Qgis::ScaleMethod decodeScaleMethod( const QString &str );
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
@@ -340,13 +352,19 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString symbolProperties( QgsSymbol *symbol );
 
-    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    /**
+     * Creates a symbol layer list from a DOM \a element.
+     */
+    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
 
     static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) SIP_FACTORY;
     static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) SIP_FACTORY;
     static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) SIP_FACTORY;
 
-    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
+    /**
+     * Converts a polygon symbolizer \a element to a list of marker symbol layers.
+     */
+    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
     static bool hasExternalGraphic( QDomElement &element );
     static bool hasWellKnownMark( QDomElement &element );
 
@@ -808,6 +826,32 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.18
      */
     static QgsStringMap evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context );
+
+    ///@cond PRIVATE
+#ifndef SIP_RUN
+    static QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
+    {
+      QString exprString = property.asExpression();
+      return QgsProperty::fromExpression( QString::number( additionalRotation ) + " + (" + exprString + ')' );
+    }
+
+    static QgsProperty scaleWholeSymbol( double scaleFactor, const QgsProperty &property )
+    {
+      QString exprString = property.asExpression();
+      return QgsProperty::fromExpression( QString::number( scaleFactor ) + "*(" + exprString + ')' );
+    }
+
+    static QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsProperty &property )
+    {
+      QString exprString = property.asExpression();
+      return QgsProperty::fromExpression(
+               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
+               "|| ',' || " +
+               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
+    }
+#endif
+    ///@endcond
+
 };
 
 class QPolygonF;

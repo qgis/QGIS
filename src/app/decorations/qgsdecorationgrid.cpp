@@ -34,6 +34,8 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgstextrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QPainter>
 #include <QAction>

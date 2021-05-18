@@ -23,6 +23,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsclassificationquantile.h"
+#include "qgsmarkersymbol.h"
 
 /**
  * \ingroup UnitTests

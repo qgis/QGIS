@@ -109,6 +109,8 @@ Constructor for QgsSimpleLineSymbolLayerWidget.
 :param parent: parent widget
 %End
 
+    ~QgsSimpleLineSymbolLayerWidget();
+
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSimpleLineSymbolLayerWidget.
@@ -150,6 +152,7 @@ Constructor for QgsSimpleMarkerSymbolLayerWidget.
 :param vl: associated vector layer
 :param parent: parent widget
 %End
+    ~QgsSimpleMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
@@ -235,6 +238,7 @@ Constructor for QgsFilledMarkerSymbolLayerWidget.
 :param vl: associated vector layer
 :param parent: parent widget
 %End
+    ~QgsFilledMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
@@ -439,6 +443,7 @@ Constructor for QgsSvgMarkerSymbolLayerWidget.
 :param vl: associated vector layer
 :param parent: parent widget
 %End
+    ~QgsSvgMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
@@ -739,6 +744,7 @@ Constructor for QgsFontMarkerSymbolLayerWidget.
 :param vl: associated vector layer
 :param parent: parent widget
 %End
+    ~QgsFontMarkerSymbolLayerWidget();
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring

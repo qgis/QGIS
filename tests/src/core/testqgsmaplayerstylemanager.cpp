@@ -21,7 +21,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
-
+#include "qgslinesymbol.h"
 
 class TestQgsMapLayerStyleManager : public QObject
 {

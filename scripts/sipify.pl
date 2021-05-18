@@ -1045,7 +1045,11 @@ while ($LINE_IDX < $LINE_COUNT){
         my $enum_mk_base = "";
         $enum_mk_base = $+{emkb} if defined $+{emkb};
         if (defined $+{emkf} and $monkeypatch eq "1"){
+          if ( $ACTUAL_CLASS ne "" ) {
+            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $ACTUAL_CLASS.$enum_qualname\n";
+          } else {
             push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
+          }
         }
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
@@ -1074,9 +1078,15 @@ while ($LINE_IDX < $LINE_COUNT){
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
-		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
-		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
-		                    push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                          if ( $ACTUAL_CLASS ne "" ) {
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                          } else {
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                          }
                         } else {
                             if ( $monkeypatch eq 1 )
                             {

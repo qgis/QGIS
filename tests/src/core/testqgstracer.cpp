@@ -26,6 +26,7 @@
 #include "qgslayertreemodel.h"
 #include "qgsmapsettings.h"
 #include "qgssnappingutils.h"
+#include "qgssymbol.h"
 
 class TestQgsTracer : public QObject
 {

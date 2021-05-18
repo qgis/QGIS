@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgssymbol.h"
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {

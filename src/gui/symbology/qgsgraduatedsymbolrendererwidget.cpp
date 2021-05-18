@@ -53,7 +53,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgstemporalcontroller.h"
 #include "qgsdoublevalidator.h"
-
+#include "qgsmarkersymbol.h"
 
 
 // ------------------------------ Model ------------------------------------
@@ -523,28 +523,28 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
     methodComboBox->addItem( tr( "Color" ), ColorMode );
     switch ( mGraduatedSymbol->type() )
     {
-      case QgsSymbol::Marker:
+      case Qgis::SymbolType::Marker:
       {
         methodComboBox->addItem( tr( "Size" ), SizeMode );
         minSizeSpinBox->setValue( 1 );
         maxSizeSpinBox->setValue( 8 );
         break;
       }
-      case QgsSymbol::Line:
+      case Qgis::SymbolType::Line:
       {
         methodComboBox->addItem( tr( "Size" ), SizeMode );
         minSizeSpinBox->setValue( .1 );
         maxSizeSpinBox->setValue( 2 );
         break;
       }
-      case QgsSymbol::Fill:
+      case Qgis::SymbolType::Fill:
       {
         //set button and label invisible to avoid display of a single item combobox
         methodComboBox->hide();
         labelMethod->hide();
         break;
       }
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         break;
     }
     methodComboBox->blockSignals( false );
@@ -577,7 +577,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
-  if ( mGraduatedSymbol && mGraduatedSymbol->type() == QgsSymbol::Marker )
+  if ( mGraduatedSymbol && mGraduatedSymbol->type() == Qgis::SymbolType::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection

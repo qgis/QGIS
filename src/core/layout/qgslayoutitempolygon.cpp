@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
 
 #include <limits>
 
@@ -38,6 +39,8 @@ QgsLayoutItemPolygon::QgsLayoutItemPolygon( const QPolygonF &polygon, QgsLayout 
 {
   createDefaultPolygonStyleSymbol();
 }
+
+QgsLayoutItemPolygon::~QgsLayoutItemPolygon() = default;
 
 QgsLayoutItemPolygon *QgsLayoutItemPolygon::create( QgsLayout *layout )
 {
@@ -127,6 +130,11 @@ QgsGeometry QgsLayoutItemPolygon::clipPath() const
   return QgsGeometry::fromQPolygonF( path );
 }
 
+QgsFillSymbol *QgsLayoutItemPolygon::symbol()
+{
+  return mPolygonStyleSymbol.get();
+}
+
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   //setup painter scaling to dots so that raster symbology is drawn to scale
@@ -182,3 +190,4 @@ bool QgsLayoutItemPolygon::_removeNode( const int index )
 
   return true;
 }
+

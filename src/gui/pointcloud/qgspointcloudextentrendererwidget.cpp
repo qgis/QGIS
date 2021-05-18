@@ -20,6 +20,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudextentrenderer.h"
 #include "qgsdoublevalidator.h"
+#include "qgsfillsymbol.h"
 
 ///@cond PRIVATE
 
@@ -28,7 +29,7 @@ QgsPointCloudExtentRendererWidget::QgsPointCloudExtentRendererWidget( QgsPointCl
 {
   setupUi( this );
 
-  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
 
   if ( layer )
   {

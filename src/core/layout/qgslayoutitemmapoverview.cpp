@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
 
 #include <QPainter>
 

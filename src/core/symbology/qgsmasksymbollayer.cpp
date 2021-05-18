@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
+#include "qgsmarkersymbol.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
@@ -27,7 +28,7 @@ QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( symbol && symbol->type() == QgsSymbol::Marker )
+  if ( symbol && symbol->type() == Qgis::SymbolType::Marker )
   {
     mSymbol.reset( static_cast<QgsMarkerSymbol *>( symbol ) );
     return true;
@@ -57,6 +58,11 @@ QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;
+}
+
+QgsSymbol *QgsMaskMarkerSymbolLayer::subSymbol()
+{
+  return mSymbol.get();
 }
 
 QString QgsMaskMarkerSymbolLayer::layerType() const

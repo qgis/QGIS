@@ -21,11 +21,14 @@
 #include "qgis_sip.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
+
 #include <QWidget>
 #include <QStandardItemModel>
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsMarkerSymbol;
+class QgsLineSymbol;
 
 /**
  * \ingroup gui
@@ -137,6 +140,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
      */
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsSimpleLineSymbolLayerWidget() override;
+
     /**
      * Creates a new QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
@@ -200,6 +205,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      * \param parent parent widget
      */
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSimpleMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsSimpleMarkerSymbolLayerWidget.
@@ -315,6 +321,7 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      * \param parent parent widget
      */
     QgsFilledMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFilledMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsFilledMarkerSymbolLayerWidget.
@@ -589,6 +596,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
      * \param parent parent widget
      */
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSvgMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsSvgMarkerSymbolLayerWidget.
@@ -980,6 +988,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
      * \param parent parent widget
      */
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFontMarkerSymbolLayerWidget() override;
 
     /**
      * Creates a new QgsFontMarkerSymbolLayerWidget.

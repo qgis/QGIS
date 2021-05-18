@@ -47,6 +47,7 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
+#include "qgslinesymbol.h"
 
 // QWT Charting widget
 
@@ -229,7 +230,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mBtnTrackColor->setAllowOpacity( true );
   mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
 
-  mBearingLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   QgsSettings mySettings;
 

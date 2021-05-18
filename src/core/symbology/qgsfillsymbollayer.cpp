@@ -34,6 +34,9 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QPainter>
 #include <QFile>
@@ -1724,6 +1727,11 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   mBrush.setTransform( bkTransform );
 }
 
+QgsSymbol *QgsImageFillSymbolLayer::subSymbol()
+{
+  return mStroke.get();
+}
+
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( !symbol ) //unset current stroke
@@ -1732,7 +1740,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return true;
   }
 
-  if ( symbol->type() != QgsSymbol::Line )
+  if ( symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;
@@ -2452,7 +2460,7 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return false;
   }
 
-  if ( symbol->type() == QgsSymbol::Line )
+  if ( symbol->type() == Qgis::SymbolType::Line )
   {
     QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
     if ( lineSymbol )
@@ -3679,13 +3687,18 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return false;
   }
 
-  if ( symbol->type() == QgsSymbol::Marker )
+  if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
     delete mMarkerSymbol;
     mMarkerSymbol = markerSymbol;
   }
   return true;
+}
+
+QgsSymbol *QgsPointPatternFillSymbolLayer::subSymbol()
+{
+  return mMarkerSymbol;
 }
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
@@ -4012,7 +4025,7 @@ QgsSymbol *QgsCentroidFillSymbolLayer::subSymbol()
 
 bool QgsCentroidFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -4626,7 +4639,7 @@ QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
 
 bool QgsRandomMarkerFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;

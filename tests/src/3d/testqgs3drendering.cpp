@@ -52,6 +52,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssimplelinematerialsettings.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QFileInfo>
 #include <QDir>

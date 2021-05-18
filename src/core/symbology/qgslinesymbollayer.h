@@ -24,6 +24,8 @@
 #include <QVector>
 
 class QgsExpression;
+class QgsMarkerSymbol;
+class QgsLineSymbol;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH

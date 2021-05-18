@@ -38,6 +38,9 @@
 #include "qgsxmlutils.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QColor>
 #include <QFont>
@@ -717,33 +720,33 @@ QVector<qreal> QgsSymbolLayerUtils::decodeSldRealVector( const QString &s )
   return resultVector;
 }
 
-QString QgsSymbolLayerUtils::encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod )
+QString QgsSymbolLayerUtils::encodeScaleMethod( Qgis::ScaleMethod scaleMethod )
 {
   QString encodedValue;
 
   switch ( scaleMethod )
   {
-    case QgsSymbol::ScaleDiameter:
+    case Qgis::ScaleMethod::ScaleDiameter:
       encodedValue = QStringLiteral( "diameter" );
       break;
-    case QgsSymbol::ScaleArea:
+    case Qgis::ScaleMethod::ScaleArea:
       encodedValue = QStringLiteral( "area" );
       break;
   }
   return encodedValue;
 }
 
-QgsSymbol::ScaleMethod QgsSymbolLayerUtils::decodeScaleMethod( const QString &str )
+Qgis::ScaleMethod QgsSymbolLayerUtils::decodeScaleMethod( const QString &str )
 {
-  QgsSymbol::ScaleMethod scaleMethod;
+  Qgis::ScaleMethod scaleMethod;
 
   if ( str == QLatin1String( "diameter" ) )
   {
-    scaleMethod = QgsSymbol::ScaleDiameter;
+    scaleMethod = Qgis::ScaleMethod::ScaleDiameter;
   }
   else
   {
-    scaleMethod = QgsSymbol::ScaleArea;
+    scaleMethod = Qgis::ScaleMethod::ScaleArea;
   }
 
   return scaleMethod;
@@ -848,7 +851,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
   renderContext.setFlag( QgsRenderContext::RenderSymbolPreview, true );
-  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, QgsSymbol::RenderHints(), nullptr );
+  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
@@ -869,7 +872,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
   renderContext.setExpressionContext( expContext );
 
-  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, QgsSymbol::RenderHints(), nullptr );
+  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
   std::unique_ptr< QgsSymbolLayer > layerClone( layer->clone() );
   layerClone->drawPreviewIcon( symbolContext, size );
   painter.end();
@@ -1200,15 +1203,15 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   }
 }
 
-static QString _nameForSymbolType( QgsSymbol::SymbolType type )
+static QString _nameForSymbolType( Qgis::SymbolType type )
 {
   switch ( type )
   {
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
       return QStringLiteral( "line" );
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
       return QStringLiteral( "marker" );
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
       return QStringLiteral( "fill" );
     default:
       return QString();
@@ -1278,7 +1281,7 @@ QString QgsSymbolLayerUtils::symbolProperties( QgsSymbol *symbol )
 
 bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QgsWkbTypes::GeometryType geomType,
-    QgsSymbolLayerList &layers )
+    QList<QgsSymbolLayer *> &layers )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
@@ -1678,7 +1681,7 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
 }
 
 
-bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList )
+bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 

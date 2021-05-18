@@ -18,6 +18,17 @@
 int QgisEvent = QEvent::User + 1;
 %End
 
+enum class QgsMapLayerType
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer,
+  VectorTileLayer,
+  AnnotationLayer,
+  PointCloudLayer,
+};
+
 
 class Qgis
 {
@@ -100,6 +111,40 @@ The development version
       NotForThisSession,
     };
 
+    enum class FeatureCountState
+      {
+      Uncounted,
+      UnknownCount,
+    };
+
+    enum class SymbolType
+      {
+      Marker,
+      Line,
+      Fill,
+      Hybrid
+    };
+
+    enum class ScaleMethod
+      {
+      ScaleArea,
+      ScaleDiameter
+    };
+
+    enum class SymbolRenderHint
+      {
+      DynamicRotation,
+    };
+    typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
+
+
+    enum class SymbolPreviewFlag
+      {
+      FlagIncludeCrosshairsForMarkerSymbols,
+    };
+    typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -164,6 +209,12 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 };
+
+QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+
 
 
 

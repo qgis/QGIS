@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -66,7 +67,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mLabelFontButton->setMode( QgsFontButton::ModeQFont );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
+  mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
   {

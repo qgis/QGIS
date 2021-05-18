@@ -33,6 +33,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
 #include "qgsfontutils.h"
+#include "qgsmarkersymbol.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"

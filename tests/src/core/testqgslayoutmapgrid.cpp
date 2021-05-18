@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include <QObject>
 #include "qgstest.h"
+#include "qgsmarkersymbol.h"
 
 class TestQgsLayoutMapGrid : public QObject
 {

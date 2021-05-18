@@ -15,7 +15,7 @@
 
 #include "qgsrendererrange.h"
 #include "qgsclassificationmethod.h"
-
+#include "qgssymbol.h"
 #include <QLocale>
 
 
@@ -43,6 +43,9 @@ QgsRendererRange::QgsRendererRange( const QgsRendererRange &range )
   , mLabel( range.mLabel )
   , mRender( range.mRender )
 {}
+
+QgsRendererRange::~QgsRendererRange() = default;
+
 
 // cpy and swap idiom, note that the cpy is done with 'pass by value'
 QgsRendererRange &QgsRendererRange::operator=( QgsRendererRange range )
@@ -258,3 +261,4 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
   element.setAttribute( QStringLiteral( "decimalplaces" ), mPrecision );
   element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 }
+

@@ -37,6 +37,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsembeddedsymbolrenderer.h"
+#include "qgsmarkersymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -65,6 +66,8 @@ QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
   swap( cat );
   return *this;
 }
+
+QgsRendererCategory::~QgsRendererCategory() = default;
 
 void QgsRendererCategory::swap( QgsRendererCategory &cat )
 {
@@ -751,7 +754,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                               sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
     }
-    if ( r->mSourceSymbol && r->mSourceSymbol->type() == QgsSymbol::Marker )
+    if ( r->mSourceSymbol && r->mSourceSymbol->type() == Qgis::SymbolType::Marker )
     {
       convertSymbolSizeScale( r->mSourceSymbol.get(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -877,7 +880,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
-  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == Qgis::SymbolType::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -1133,7 +1136,7 @@ QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() 
   return mDataDefinedSizeLegend.get();
 }
 
-int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymbol::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
 {
   if ( !style )
     return 0;

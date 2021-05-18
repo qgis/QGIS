@@ -32,6 +32,10 @@
 #include <QPen>
 #include <QBrush>
 
+class QgsMarkerSymbol;
+class QgsLineSymbol;
+class QgsPathResolver;
+
 /**
  * \ingroup core
  * \class QgsSimpleFillSymbolLayer
@@ -710,7 +714,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
-    QgsSymbol *subSymbol() override { return mStroke.get(); }
+    QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
@@ -1622,7 +1626,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double offsetY() const { return mOffsetY; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    QgsSymbol *subSymbol() override { return mMarkerSymbol; }
+    QgsSymbol *subSymbol() override;
 
     /**
      * Sets the units for the horizontal distance between points in the pattern.

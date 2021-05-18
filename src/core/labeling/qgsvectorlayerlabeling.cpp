@@ -22,7 +22,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgis.h"
 #include "qgsstyleentityvisitor.h"
-
+#include "qgsmarkersymbol.h"
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {

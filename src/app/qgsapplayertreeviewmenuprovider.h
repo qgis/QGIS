@@ -18,7 +18,7 @@
 #include <QObject>
 
 #include "qgslayertreeview.h"
-#include "qgscoreenums.h"
+#include "qgis.h"
 
 class QAction;
 class QgsCoordinateReferenceSystem;

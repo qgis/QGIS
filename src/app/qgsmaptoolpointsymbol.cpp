@@ -21,7 +21,7 @@
 #include "qgssnappingutils.h"
 #include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsmarkersymbol.h"
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -90,7 +90,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
     const auto constOriginalSymbolsForFeature = renderer->originalSymbolsForFeature( feature, context );
     for ( QgsSymbol *s : constOriginalSymbolsForFeature )
     {
-      if ( s && s->type() == QgsSymbol::Marker )
+      if ( s && s->type() == Qgis::SymbolType::Marker )
       {
         hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
       }
@@ -99,7 +99,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   else
   {
     QgsSymbol *s = renderer->originalSymbolForFeature( feature, context );
-    if ( s && s->type() == QgsSymbol::Marker )
+    if ( s && s->type() == Qgis::SymbolType::Marker )
     {
       hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
     }
