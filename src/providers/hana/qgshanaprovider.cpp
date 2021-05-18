@@ -71,6 +71,24 @@ namespace
     return sql;
   }
 
+  void checkAndCreateUnitOfMeasure( QgsHanaConnection &conn, const QString &name, const QString &type, double conversionFactor )
+  {
+    QString sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ? AND UNIT_TYPE = ?" );
+    size_t numUnits = conn.executeCountQuery( sql, { name, type } );
+    if ( numUnits > 0 )
+      return;
+
+    sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_UNITS_OF_MEASURE WHERE UNIT_NAME = ?" );
+    numUnits = conn.executeCountQuery( sql, { name} );
+    if ( numUnits > 0 )
+      throw QgsHanaException( QObject::tr( "Unable to create a new unit of measure. "
+                                           "Unit of measure with name '%1' and different type already exist." ).arg( name ) );
+
+    sql = QStringLiteral( "CREATE SPATIAL UNIT OF MEASURE %1 TYPE %2 CONVERT USING %3" ).arg(
+            QgsHanaUtils::quotedIdentifier( name ), type, QString::number( conversionFactor ) );
+    conn.execute( sql );
+  }
+
   void createCoordinateSystem( QgsHanaConnection &conn, const QgsCoordinateReferenceSystem &srs )
   {
     QString authName;
@@ -81,13 +99,15 @@ namespace
       throw QgsHanaException( errorMessage.toStdString().c_str() );
     }
 
+    QString units = QgsHanaUtils::toString( srs.mapUnits() );
+    checkAndCreateUnitOfMeasure( conn, units, srs.isGeographic() ? QStringLiteral( "ANGULAR" ) : QStringLiteral( "LINEAR" ), QgsHanaCrsUtils::getAngularUnits( srs ) );
+
     QgsCoordinateReferenceSystem srsWGS84;
     srsWGS84.createFromString( QStringLiteral( "EPSG:4326" ) );
     QgsCoordinateTransformContext coordTransCntx;
     QgsCoordinateTransform ct( srsWGS84, srs, coordTransCntx );
     QgsRectangle bounds = ct.transformBoundingBox( srs.bounds() );
 
-    QString units = QgsHanaUtils::toString( srs.mapUnits() );
     QString linearUnits = srs.isGeographic() ? QStringLiteral( "NULL" ) : QgsHanaUtils::quotedIdentifier( units );
     QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : QStringLiteral( "NULL" ) ;
 
