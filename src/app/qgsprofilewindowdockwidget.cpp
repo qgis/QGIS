@@ -347,20 +347,14 @@ void  QgsClassSettingWindowDockWidget::myHideDock()
 }
 
 
-
-
-
 /////-------------------------------电力线工具-------------------------------------------
-
 
 QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *parent)
   : QgsDockWidget(parent)
 {
   setupUi(this);
   setWindowFlags(Qt::FramelessWindowHint);
-
   this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
-
   mContents->layout()->setContentsMargins(0, 0, 0, 0);
   mContents->layout()->setMargin(0);
   static_cast<QVBoxLayout *>(mContents->layout())->setSpacing(0);
@@ -369,24 +363,16 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   mToolbar->setIconSize(QgisApp::instance()->iconSize(true));
   connect(action_tiqudianlixian, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActiontiqudianlixianClicked);
   connect(mActionSaveEdits, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionSaveEditsClicked);
- // connect(m_selectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmselectiononprofileClciekd);
- // connect(m_drawlieonprofile_2, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked2);
- // connect(m_drawlieonprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OndrawlieonprofileClicked);
-
   connect(mActionPickPoints, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionPickPoints);
-//  connect(mActionBrush, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionBrushPoints);
-//  connect(showshaderparameter, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionsetshaderClicked);
   connect(mActionTurnLeft, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudLeft);
   connect(mActionTurnRight, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudRight);
 
 
   mActionSaveEdits->setDisabled(true);
-//  m_selectiononprofile->setDisabled(true);
-//  m_drawlieonprofile->setDisabled(true);
-//  m_drawlieonprofile_2->setDisabled(true);
-//  mActionSinglePointPen->setDisabled(true);
   mActionPickPoints->setDisabled(true);
-//  mActionBrush->setDisabled(true);
+  polynomial_dialog_widget = new QgsPcdpickeddlgWindowDockWidget("电力线拟合",QgisApp::instance());
+  polynomial_dialog_widget->hide();
+  polynomial_dialog_widget->setVisible(false);
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
@@ -417,31 +403,40 @@ void QgsDLWindowDockWidget::OnmActiontiqudianlixianClicked()
   if (!Editing)
   {
     mActionSaveEdits->setDisabled(true);
-//    m_selectiononprofile->setDisabled(true);
-//    m_drawlieonprofile->setDisabled(true);
-//    m_drawlieonprofile_2->setDisabled(true);
-//    mActionSinglePointPen->setDisabled(true);
     mActionPickPoints->setDisabled(true);
-//    mActionBrush->setDisabled(true);
     OnmActionHandClicked();
     mMapCanvas->resetState();
   }
   if (Editing)
   {
     mActionSaveEdits->setEnabled(true);
-//    m_selectiononprofile->setEnabled(true);
-//    m_drawlieonprofile->setEnabled(true);
- //   m_drawlieonprofile_2->setEnabled(true);
- //   mActionSinglePointPen->setEnabled(true);
     mActionPickPoints->setEnabled(true);
-  //  mActionBrush->setEnabled(true);
   }
+  dockpolynomial_dialog();
+}
+
+static bool polynomial_dialoginserted = false;
+void QgsDLWindowDockWidget::dockpolynomial_dialog()
+{
+  if (!polynomial_dialoginserted)
+  {
+    QgisApp::instance()->addDockWidget(Qt::RightDockWidgetArea, polynomial_dialog_widget);
+    polynomial_dialog_widget->show();
+    polynomial_dialog_widget->setVisible(true);
+    polynomial_dialog_widget->setAutoFillBackground(true);
+  }
+  else
+  {
+    QgisApp::instance()->removeDockWidget(polynomial_dialog_widget);
+    polynomial_dialog_widget->hide();
+    polynomial_dialog_widget->setVisible(false);
+  }
+
+  polynomial_dialoginserted = !polynomial_dialoginserted;
 }
 
 void QgsDLWindowDockWidget::OnmActionSaveEditsClicked()
 {
-  //mTable->selectRow(mTable->rowCount() - 1);
-
   mMapCanvas->applyclass(classdock->getoriginalClass(), classdock->getTargetClass(), m_rule, m_method);
 }
 void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
@@ -463,14 +458,10 @@ void QgsDLWindowDockWidget::OnmActionPickPoints()
 }
 void QgsDLWindowDockWidget::OnmActionBrushPoints()
 {
-  //mMapCanvas->StartBrushMode(originalClass, TargetClass);
 }
 
 void QgsDLWindowDockWidget::ApplyButtonClicked()
 {
-  //int classID = mTable->item(mTable->rowCount() - 1, 1)->data(0).toInt();
-
-  //mMapCanvas->applyclass();
 }
 
 void QgsDLWindowDockWidget::OndrawlieonprofileClicked()

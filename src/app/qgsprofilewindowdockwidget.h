@@ -20,6 +20,7 @@
 #include "ui_pointcloudtargetclassselection.h"
 #include "ui_qgsclasssettingwindowdockwidgetbase.h"
 #include "ui_qgsDLwindowdockwidgetbase.h"
+#include "ui_3DpointsPickedDlg.h"
 #include "qgsdockwidget.h"
 #include "qgspointxy.h"
 #include "qgis_app.h"
@@ -36,6 +37,18 @@ class QRadioButton;
 
 typedef View3D QgsProfileWinow;
 
+class  APP_EXPORT  QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, private Ui::pcdpickeddlg
+{
+  Q_OBJECT
+public:
+  explicit QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent = nullptr)
+  {
+    setupUi(this);
+    setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
+    this->setWindowTitle(name);
+  };
+};
 class APP_EXPORT QgsClassSettingWindowDockWidget : public QgsDockWidget, private Ui::QgsClassSettingWindowDockWidgetBase
 {
   Q_OBJECT
@@ -111,6 +124,7 @@ private:
 	  QString m_method;
 };
 
+
 class APP_EXPORT QgsDLWindowDockWidget : public QgsDockWidget, private Ui::QgsDLWindowDockWidgetBase
 {
   Q_OBJECT
@@ -125,6 +139,7 @@ public:
 
 private slots:
   void OnmActiontiqudianlixianClicked();
+  void dockpolynomial_dialog();
   void OnmActionSaveEditsClicked();
   void OnmselectiononprofileClciekd();
   void OndrawlieonprofileClicked2();
@@ -150,6 +165,7 @@ private:
   bool Editing = false;
   QString m_rule;
   QString m_method;
+  QgsPcdpickeddlgWindowDockWidget* polynomial_dialog_widget = nullptr;
 };
 
 

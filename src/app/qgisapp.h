@@ -2521,8 +2521,6 @@ private:
   HelpDialog *m_helpDialog;
   LogViewer *m_logTextView;
   QAbstractItemView *dataSetOverview;
-  // QgsClassifyTool* Classfifytool = nullptr;
-  // Gui state
   QDir m_currPointCloudFileDir;
   QString m_currShaderFileName;
 
@@ -2538,7 +2536,6 @@ private:
 
   // Custom event registration for dynamic hooks
   HookManager *m_hookManager;
-
   // ---------------------------
   QgsStatusBarCoordinatesWidget *mCoordsEdit3D = nullptr;
 
