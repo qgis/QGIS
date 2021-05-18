@@ -415,7 +415,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
         cl::Device::setDefault( dev );
         QgsMessageLog::logMessage( QObject::tr( "Active OpenCL device: %1" )
                                    .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
-                                   LOGMESSAGE_TAG, Qgis::Success );
+                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Success );
         sAvailable = true;
       }
     }
