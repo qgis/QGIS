@@ -144,6 +144,8 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
+
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")

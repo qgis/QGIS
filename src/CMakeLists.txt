@@ -1,6 +1,9 @@
 add_subdirectory(native)
 add_subdirectory(core)
-add_subdirectory(auth)
+
+if (WITH_AUTH)
+  add_subdirectory(auth)
+endif()
 
 if (WITH_ANALYSIS)
   add_subdirectory(analysis)
