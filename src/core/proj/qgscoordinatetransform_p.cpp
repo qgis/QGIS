@@ -303,7 +303,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid(),
                             mDestCRS.authid(),
                             mProjCoordinateOperation );
-        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
       }
 
       transform.reset();
@@ -386,7 +386,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                   const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid(),
                                       mDestCRS.authid(),
                                       shortName );
-                  QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+                  QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
                 }
                 break;
               }
@@ -401,7 +401,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
             {
               const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
                                   mDestCRS.authid() );
-              QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+              QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
             }
           }
         }
@@ -449,7 +449,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                                 mDestCRS.authid(),
                                 available.proj,
                                 preferred.proj );
-            QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+            QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
           }
         }
 
@@ -460,7 +460,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         {
           const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
                               mDestCRS.authid() );
-          QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+          QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
         }
       }
       proj_list_destroy( ops );
@@ -502,7 +502,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid(),
                           mDestCRS.authid(),
                           nonAvailableError );
-      QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+      QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
     }
   }
 

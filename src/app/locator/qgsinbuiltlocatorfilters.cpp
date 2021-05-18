@@ -1215,7 +1215,7 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
       QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
     } );
     messageWidget->layout()->addWidget( learnMoreButton );
-    QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::Info );
+    QgisApp::instance()->messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info );
   }
   QgsGeocoderLocatorFilter::triggerResult( result );
 }

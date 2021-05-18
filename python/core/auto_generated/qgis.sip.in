@@ -81,7 +81,7 @@ The development version
       Warning,
       Critical,
       Success,
-      None,
+      NoLevel,
     };
 
     enum class DataType

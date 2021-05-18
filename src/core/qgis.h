@@ -107,8 +107,9 @@ class CORE_EXPORT Qgis
       Warning = 1, //!< Warning message
       Critical = 2, //!< Critical/error message
       Success = 3, //!< Used for reporting a successful operation
-      None = 4, //!< No level
+      NoLevel = 4, //!< No level
     };
+    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.

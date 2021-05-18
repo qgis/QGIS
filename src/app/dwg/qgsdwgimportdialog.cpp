@@ -93,7 +93,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   if ( ! QgsVectorFileWriter::supportedFormatExtensions().contains( QStringLiteral( "gpkg" ) ) )
   {
-    bar->pushMessage( tr( "GDAL/OGR not built with GPKG (sqlite3) support. You will not be able to export the DWG in a GPKG." ), Qgis::Critical );
+    bar->pushMessage( tr( "GDAL/OGR not built with GPKG (sqlite3) support. You will not be able to export the DWG in a GPKG." ), Qgis::MessageLevel::Critical );
   }
   pbLoadDatabase_clicked();
   updateUI();
@@ -233,7 +233,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   }
   else
   {
-    bar->pushMessage( tr( "Could not open layer list" ), Qgis::Critical );
+    bar->pushMessage( tr( "Could not open layer list" ), Qgis::MessageLevel::Critical );
   }
 }
 
@@ -260,11 +260,11 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
   QString error;
   if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked(), lblMessage ) )
   {
-    bar->pushMessage( tr( "Drawing import completed." ), Qgis::Info );
+    bar->pushMessage( tr( "Drawing import completed." ), Qgis::MessageLevel::Info );
   }
   else
   {
-    bar->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), Qgis::Critical );
+    bar->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), Qgis::MessageLevel::Critical );
   }
 
   pbLoadDatabase_clicked();

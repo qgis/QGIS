@@ -60,7 +60,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
       catch ( cl::Error &e )
       {
         QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ), QgsOpenClUtils::errorText( e.err( ) ) );
-        QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+        QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
         throw QgsProcessingException( err );
       }
     }
@@ -68,7 +68,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     {
       QString err = QObject::tr( "Error loading OpenCL program sources" );
       QgsMessageLog::logMessage( err,
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       throw QgsProcessingException( err );
     }
   }

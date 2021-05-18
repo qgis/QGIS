@@ -324,7 +324,7 @@ displays.
 
   signals:
 
-    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 );
 %Docstring
 Emits a message than can be displayed to the user in a GUI class
 

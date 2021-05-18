@@ -119,13 +119,13 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
     {
       QgsMessageLog::logMessage( QObject::tr( "Unable to get tile data.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( dataResult.PQresultErrorMessage(),
-                                       sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                                       sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
     }
 
     if ( dataResult.PQntuples() != missingTileIds.size() )
     {
       QgsMessageLog::logMessage( QObject::tr( "Missing tiles were not found while fetching tile data from backend.\nSQL: %1" )
-                                 .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                                 .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
     }
 
     for ( int row = 0; row < dataResult.PQntuples(); ++row )
@@ -136,7 +136,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       {
         QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
                                    .arg( dataResult.PQgetvalue( row, 0 ) )
-                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       }
 
       int dataRead;
@@ -150,7 +150,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
         QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) could not be found in provider storage while fetching tile data "
                                                 "from backend.\nSQL: %2" )
                                    .arg( tileId )
-                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
         Q_ASSERT( tilePtr );  // Abort
       }
       else  // Add to result
@@ -226,7 +226,7 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" )
-                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     return false;
   }
@@ -324,7 +324,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
   if ( dataResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" )
-                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::Critical );
+                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     return response;
   }
