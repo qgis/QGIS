@@ -1,14 +1,15 @@
-set(AUTH_PKCS12_GUI_SRCS}
-    qgsauthpkcs12methodgui.cpp
-    qgsauthpkcs12edit.cpp
-  )
+set(AUTH_PKCS12_GUI_SRCS
+  qgsauthpkcs12methodgui.cpp
+  qgsauthpkcs12edit.cpp
+)
 
 set(AUTH_PKCS12_GUI_HDRS
-    qgsauthpkcs12edit.h
+  qgsauthpkcs12edit.h
 )
 
 set(AUTH_PKCS12_GUI_UIS qgsauthpkcs12edit.ui)
 QT5_WRAP_UI(AUTH_PKCS12_GUI_UIS_H ${AUTH_PKCS12_GUI_UIS})
+
 add_library(pkcs12authmethodgui MODULE ${AUTH_PKCS12_GUI_SRCS} ${AUTH_PKCS12_GUI_HDRS} ${AUTH_PKCS12_GUI_UIS_H})
 
 target_include_directories(pkcs12authmethodgui PUBLIC
@@ -20,7 +21,8 @@ target_include_directories(pkcs12authmethodgui PUBLIC
 target_compile_features(pkcs12authmethodgui PRIVATE cxx_std_17)
 
 target_link_libraries (pkcs12authmethodgui
-    qgis_gui
+  qgis_core
+  qgis_gui
 )
 
 target_compile_definitions(pkcs12authmethodgui PRIVATE "-DQT_NO_FOREACH")

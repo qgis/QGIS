@@ -1,4 +1,4 @@
-set(AUTH_ESRITOKENTOKEN_SRCS
+set(AUTH_ESRITOKEN_SRCS
   qgsauthesritokenmethod.cpp
 )
 

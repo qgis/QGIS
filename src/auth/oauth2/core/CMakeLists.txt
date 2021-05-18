@@ -56,13 +56,18 @@ set(AUTH_OAUTH2_SRCS
 )
 
 set(AUTH_OAUTH2_HDRS
+  qgsauthoauth2config.h
   qgsauthoauth2method.h
+  qgso2.h
+  qjsonwrapper/Json.h
 )
 
 if(WITH_INTERNAL_O2)
-  set(OAUTH2_HDRS ${OAUTH2_HDRS} ${O2_HDRS})
-  set(OAUTH2_SRCS ${OAUTH2_SRCS} ${O2_SRCS})
+  set(AUTH_OAUTH2_HDRS ${OAUTH2_HDRS} ${O2_HDRS})
+  set(AUTH_OAUTH2_SRCS ${OAUTH2_SRCS} ${O2_SRCS})
 endif()
+
+set(AUTH_OAUTH2_RCCS ../resources/oauth2_resources.qrc)
 
 ############################################################
 # Generate files
@@ -82,7 +87,7 @@ set(_library_suffix_STATIC "_static")
 foreach(_library_type MODULE STATIC)
   set(_library_name "oauth2authmethod${_library_suffix_${_library_type}}")
 
-  add_library(${_library_name} ${_library_type} ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS})
+  add_library(${_library_name} ${_library_type} ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_RCCS})
 
   # require c++17
   target_compile_features(${_library_name} PRIVATE cxx_std_17)
@@ -94,8 +99,6 @@ foreach(_library_type MODULE STATIC)
   target_include_directories(${_library_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
   target_link_libraries(${_library_name} qgis_core)
-
-  target_compile_definitions(${_library_name} PRIVATE "-DQT_NO_FOREACH")
 
   if(WIN32)
     add_definitions(-DO2_DLL_EXPORT)

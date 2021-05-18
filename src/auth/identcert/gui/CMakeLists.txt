@@ -1,10 +1,10 @@
-set(AUTH_IDENTCERT_GUI_SRCS}
-    qgsauthidentcertmethodgui.cpp
-    qgsauthidentcertedit.cpp
-  )
+set(AUTH_IDENTCERT_GUI_SRCS
+ qgsauthidentcertmethodgui.cpp
+  qgsauthidentcertedit.cpp
+)
 
 set(AUTH_IDENTCERT_GUI_HDRS
-    qgsauthidentcertedit.h
+  qgsauthidentcertedit.h
 )
 
 set(AUTH_IDENTCERT_GUI_UIS qgsauthidentcertedit.ui)
@@ -20,7 +20,8 @@ target_include_directories(identcertauthmethodgui PUBLIC
 target_compile_features(identcertauthmethodgui PRIVATE cxx_std_17)
 
 target_link_libraries(identcertauthmethodgui
-    qgis_gui
+  qgis_core
+  qgis_gui
 )
 
 target_compile_definitions(identcertauthmethodgui PRIVATE "-DQT_NO_FOREACH")

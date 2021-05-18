@@ -1,14 +1,14 @@
-set(AUTH_OAUTH2_GUI_SRCS}
-    qgsauthoauth2methodgui.cpp
-    qgsauthoauth2edit.cpp
-  )
+set(AUTH_OAUTH2_GUI_SRCS
+  qgsauthoauth2methodgui.cpp
+  qgsauthoauth2edit.cpp
+)
 
 set(AUTH_OAUTH2_GUI_HDRS
-    qgsauthoauth2edit.h
+  qgsauthoauth2edit.h
 )
 
 set(AUTH_OAUTH2_GUI_UIS qgsauthoauth2edit.ui)
-set(AUTH_OAUTH2_GUI_RCCS oauth2_resources.qrc)
+set(AUTH_OAUTH2_GUI_RCCS ../resources/oauth2_resources.qrc)
 
 
 QT5_WRAP_UI(AUTH_OAUTH2_GUI_UIS_H ${AUTH_OAUTH2_GUI_UIS})
@@ -23,6 +23,7 @@ foreach(_library_type MODULE STATIC)
 
   target_include_directories(${_library_name} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core
     ${CMAKE_CURRENT_BINARY_DIR}
   )
 

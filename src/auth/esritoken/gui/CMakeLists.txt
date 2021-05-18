@@ -1,10 +1,10 @@
-set(AUTH_ESRITOKEN_GUI_SRCS}
-    qgsauthesritokenmethodgui.cpp
-    qgsauthesritokenedit.cpp
-  )
+set(AUTH_ESRITOKEN_GUI_SRCS
+  qgsauthesritokenmethodgui.cpp
+  qgsauthesritokenedit.cpp
+)
 
 set(AUTH_ESRITOKEN_GUI_HDRS
-    qgsauthesritokenedit.h
+  qgsauthesritokenedit.h
 )
 
 
@@ -21,7 +21,8 @@ target_include_directories(esritokenauthmethodgui PUBLIC
 )
 
 target_link_libraries (esritokenauthmethodgui
-    qgis_gui
+  qgis_core
+  qgis_gui
 )
 
 target_compile_definitions(esritokenauthmethodgui PRIVATE "-DQT_NO_FOREACH")

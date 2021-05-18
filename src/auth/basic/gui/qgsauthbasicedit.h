@@ -18,6 +18,7 @@
 #define QGSAUTHBASICEDIT_H
 
 #include <QWidget>
+
 #include "qgsauthmethodedit.h"
 #include "ui_qgsauthbasicedit.h"
 

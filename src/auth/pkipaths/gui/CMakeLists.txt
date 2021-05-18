@@ -1,10 +1,10 @@
-set(AUTH_PKIPATHS_GUI_SRCS}
-    qgsauthpkipathsmethodgui.cpp
-    qgsauthpkipathsedit.cpp
-  )
+set(AUTH_PKIPATHS_GUI_SRCS
+  qgsauthpkipathsmethodgui.cpp
+  qgsauthpkipathsedit.cpp
+)
 
 set(AUTH_PKIPATHS_GUI_HDRS
-    qgsauthpkipathsedit.h
+  qgsauthpkipathsedit.h
 )
 
 set(AUTH_PKIPATHS_GUI_UIS qgsauthpkipathsedit.ui)
@@ -20,7 +20,8 @@ target_include_directories(pkipathsauthmethodgui PUBLIC
 target_compile_features(pkipathsauthmethodgui PRIVATE cxx_std_17)
 
 target_link_libraries (pkipathsauthmethodgui
-    qgis_gui
+  qgis_core
+  qgis_gui
 )
 
 target_compile_definitions(pkipathsauthmethodgui PRIVATE "-DQT_NO_FOREACH")
