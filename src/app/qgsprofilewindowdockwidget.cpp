@@ -54,7 +54,7 @@ QgsProfileWindowDockWidget::QgsProfileWindowDockWidget(const QString &name, QWid
   connect(showshaderparameter, &QAction::triggered, this, &QgsProfileWindowDockWidget::OnmActionsetshaderClicked);
   connect(mActionTurnLeft, &QAction::triggered, this, &QgsProfileWindowDockWidget::rotatePointCloudLeft);
   connect(mActionTurnRight, &QAction::triggered, this, &QgsProfileWindowDockWidget::rotatePointCloudRight);
-
+  connect(mActionPan, &QAction::triggered, this, &QgsProfileWindowDockWidget::OnmActionHandClicked);
 
   mActionSaveEdits->setDisabled(true);
   m_selectiononprofile->setDisabled(true);
@@ -104,8 +104,6 @@ void QgsProfileWindowDockWidget::setclassdock(QgsClassSettingWindowDockWidget* d
 }
 void QgsProfileWindowDockWidget::OnmActionSaveEditsClicked()
 {
-  //mTable->selectRow(mTable->rowCount() - 1);
-
   mMapCanvas->applyclass(classdock->getoriginalClass(), classdock->getTargetClass(), m_rule, m_method);
 }
 void QgsProfileWindowDockWidget::OnmselectiononprofileClciekd()
@@ -194,8 +192,10 @@ void QgsProfileWindowDockWidget::OnmActionsetshaderClicked()
 
 void QgsProfileWindowDockWidget::OnmActionHandClicked()
 {
+  mMapCanvas->resetState();
   QCursor mCursor(Qt::PointingHandCursor);
   this->setCursor(mCursor);
+ 
 }
 
 

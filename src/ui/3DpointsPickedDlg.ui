@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
-    <height>362</height>
+    <width>946</width>
+    <height>414</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,80 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTableWidget" name="alignedPointsTableWidget">
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="showDropIndicator" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::NoSelection</enum>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>80</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>19</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string notr="true">2</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string notr="true">3</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string notr="true">4</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>6</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>7</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string notr="true">X</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">Y</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string notr="true">Z</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Error</string>
+       </property>
+      </column>
+     </widget>
+    </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
@@ -94,85 +168,6 @@
        </spacer>
       </item>
      </layout>
-    </item>
-    <item>
-     <widget class="QTableWidget" name="alignedPointsTableWidget">
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="showDropIndicator" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::NoSelection</enum>
-      </property>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>80</number>
-      </attribute>
-      <attribute name="verticalHeaderDefaultSectionSize">
-       <number>19</number>
-      </attribute>
-      <row>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string notr="true">2</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string notr="true">3</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string notr="true">4</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>5</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>6</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>7</string>
-       </property>
-      </row>
-      <column>
-       <property name="text">
-        <string notr="true">X</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string notr="true">Y</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string notr="true">Z</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Error</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string/>
-       </property>
-      </column>
-     </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -271,91 +266,6 @@
          <number>10</number>
         </property>
        </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
-      <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>旋转轴</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="rotComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Constrains the rotation around a single axis (warning: experimental)</string>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-        <item>
-         <property name="text">
-          <string notr="true">XYZ</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">X</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">Y</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string notr="true">Z</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>10</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </item>
