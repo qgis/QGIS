@@ -743,7 +743,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         s.setLayers([points_layer])
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
-		layout.setUnits(QgsUnitTypes.LayoutMillimeters)
+        layout.setUnits(QgsUnitTypes.LayoutMillimeters)
 
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
