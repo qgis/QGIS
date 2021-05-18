@@ -116,7 +116,7 @@ void TestQgsQueryResultWidget::testWidget()
   w->setQuery( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) );
   l->addWidget( w );
   d->setLayout( l );
-  // For interactive testing
+  // Uncomment for interactive testing:
   //d->exec();
   w->executeQuery();
   bool exited = false;
@@ -153,6 +153,7 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
+
 }
 
 
