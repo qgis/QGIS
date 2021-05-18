@@ -26,6 +26,8 @@ QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
   mSymbol.reset( static_cast<QgsMarkerSymbol *>( QgsMarkerSymbol::createSimple( QVariantMap() ) ) );
 }
 
+QgsMaskMarkerSymbolLayer::~QgsMaskMarkerSymbolLayer() = default;
+
 bool QgsMaskMarkerSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( symbol && symbol->type() == Qgis::SymbolType::Marker )

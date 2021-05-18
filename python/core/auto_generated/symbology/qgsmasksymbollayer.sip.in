@@ -27,6 +27,8 @@ Special symbol layer that uses its sub symbol as a selective mask
 Simple constructor
 %End
 
+    ~QgsMaskMarkerSymbolLayer();
+
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
