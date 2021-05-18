@@ -37,6 +37,8 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     //! Simple constructor
     QgsMaskMarkerSymbolLayer();
 
+    ~QgsMaskMarkerSymbolLayer() override;
+
     /**
      * Create a new QgsMaskMarkerSymbolLayer
      *
