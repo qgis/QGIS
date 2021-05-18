@@ -43,11 +43,12 @@ class CORE_EXPORT QgsAuthMethodMetadata
 
     /**
      * Construct an authentication method metadata container
-     * \param _key Textual key of the library plugin
-     * \param _description Description of the library plugin
-     * \param _library File name of library plugin
+     * \param key Textual key of the library plugin
+     * \param description Description of the library plugin
+     * \param library File name of the core library plugin
+     * \param guiLibrary File name of the gui library plugin
      */
-    QgsAuthMethodMetadata( const QString &_key, const QString &_description, const QString &_library );
+    QgsAuthMethodMetadata(const QString &_key, const QString &description, const QString &library, const QString &guiLibrary = QString() );
 
     /**
      * Returns the unique key associated with the method
@@ -70,16 +71,26 @@ class CORE_EXPORT QgsAuthMethodMetadata
      */
     QString library() const;
 
+    /**
+     * Returns the gui library file name.
+     *
+     * This is used to QLibrary calls to load the method.
+     */
+    QString guiLibrary() const;
+
   private:
 
     /// unique key for method
-    QString key_;
+    QString mKey;
 
     /// associated terse description
-    QString description_;
+    QString mDescription;
 
-    /// file path
-    QString library_;
+    /// file path of the core library
+    QString mLibrary;
+
+    /// file path of the gui library, might be an empty string
+    QString mGuiLibrary;
 };
 
 #endif // QGSAUTHMETHODMETADATA_H
