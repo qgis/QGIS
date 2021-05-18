@@ -1176,7 +1176,7 @@ namespace QgsWfs
 
   transactionUpdate parseUpdateActionElement( QDomElement &actionElem, const QgsProject *project )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement" ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     QString typeName = actionElem.attribute( QStringLiteral( "typeName" ) );
     if ( typeName.contains( ':' ) )
       typeName = typeName.section( ':', 1, 1 );
@@ -1216,7 +1216,7 @@ namespace QgsWfs
       QDomElement filterElem = filterNodeList.at( 0 ).toElement();
       featureRequest = parseFilterElement( typeName, filterElem, serverFids, project );
     }
-    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement: serverFids length %1" ).arg( serverFids.count() ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "parseUpdateActionElement: serverFids length %1" ).arg( serverFids.count() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
     transactionUpdate action;
     action.typeName = typeName;

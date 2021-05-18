@@ -60,7 +60,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   if ( !mQDateTimeEdit )
   {
     QgsDebugMsg( QStringLiteral( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ) );
-    QgsMessageLog::logMessage( tr( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ), tr( "UI forms" ), Qgis::Warning );
+    QgsMessageLog::logMessage( tr( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ), tr( "UI forms" ), Qgis::MessageLevel::Warning );
     return;
   }
 

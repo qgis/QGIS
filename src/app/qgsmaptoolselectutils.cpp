@@ -48,7 +48,7 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
       QObject::tr( "To select features, choose a vector layer in the layers panel" ),
-      Qgis::Info );
+      Qgis::MessageLevel::Info );
   }
   return vlayer;
 }
@@ -209,7 +209,7 @@ static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeom
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      Qgis::Warning );
+      Qgis::MessageLevel::Warning );
     return false;
   }
 }
@@ -317,7 +317,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       if ( !errorMessage.isEmpty() )
       {
         // contains relation test still failed, even after trying to make valid!
-        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
       }
 
       if ( notContained )
@@ -335,7 +335,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       if ( !errorMessage.isEmpty() )
       {
         // intersects relation test still failed, even after trying to make valid!
-        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
       }
 
       if ( notIntersects )
@@ -509,7 +509,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
     if ( !errorMessage.isEmpty() )
     {
       // intersects relation test still failed, even after trying to make valid!
-      QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::MessageLevel::Warning );
     }
 
     if ( notIntersects )

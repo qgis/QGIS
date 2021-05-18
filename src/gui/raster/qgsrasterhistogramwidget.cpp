@@ -96,9 +96,9 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     {
       cboHistoBand->addItem( mRasterLayer->bandName( myIteratorInt ) );
       Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
-      if ( !( mySrcDataType == Qgis::Byte ||
-              mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
+      if ( !( mySrcDataType == Qgis::DataType::Byte ||
+              mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+              mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
         isInt = false;
     }
 
@@ -289,9 +289,9 @@ static int getBinCount( QgsRasterInterface *rasterInterface,
                         int sampleSize )
 {
   const Qgis::DataType mySrcDataType = rasterInterface->sourceDataType( bandNo );
-  const double statsMin = mySrcDataType == Qgis::Byte ? 0 :
+  const double statsMin = mySrcDataType == Qgis::DataType::Byte ? 0 :
                           rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Min, QgsRectangle(), sampleSize ).minimumValue;
-  const double statsMax = mySrcDataType == Qgis::Byte ? 255 :
+  const double statsMax = mySrcDataType == Qgis::DataType::Byte ? 255 :
                           rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Max, QgsRectangle(), sampleSize ).maximumValue;
   const QgsRectangle extent( rasterInterface->extent() );
 
@@ -314,8 +314,8 @@ static int getBinCount( QgsRasterInterface *rasterInterface,
   int binCount = static_cast<int>( std::min( static_cast<qint64>( 1000 ),
                                    static_cast<qint64>( histogramWidth ) * histogramHeight ) );
 
-  if ( mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-       mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
+  if ( mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+       mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 )
   {
     binCount = static_cast<int>( std::min( static_cast<qint64>( binCount ),
                                            static_cast<qint64>( std::ceil( statsMax - statsMin + 1 ) ) ) );
@@ -539,9 +539,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
     Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
     bool myDrawLines = true;
     if ( ! mHistoDrawLines &&
-         ( mySrcDataType == Qgis::Byte ||
-           mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-           mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
+         ( mySrcDataType == Qgis::DataType::Byte ||
+           mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+           mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
     {
       myDrawLines = false;
     }
@@ -570,7 +570,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     QVector<QwtIntervalSample> dataHisto;
 
     // calculate first bin x value and bin step size if not Byte data
-    if ( mySrcDataType != Qgis::Byte )
+    if ( mySrcDataType != Qgis::DataType::Byte )
     {
       myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
       myBinX = myHistogram.minimum + myBinXStep / 2.0;

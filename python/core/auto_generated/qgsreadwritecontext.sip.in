@@ -25,7 +25,7 @@ The class is used as a container of context for various read/write operations on
 
     struct ReadWriteMessage
     {
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() );
+        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Warning, const QStringList &categories = QStringList() );
 %Docstring
 Construct a container for QgsReadWriteContext error or warning messages
 %End
@@ -64,7 +64,7 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
-    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Warning );
 %Docstring
 Append a message to the context
 

@@ -84,7 +84,7 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
   checkCapability( Capability::CreateVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   QMap<QString, QVariant> opts { *options };
   opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
@@ -112,7 +112,7 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
   checkCapability( Capability::DropVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   QString errCause;
 
@@ -158,7 +158,7 @@ void QgsSpatiaLiteProviderConnection::renameVectorTable( const QString &schema, 
   checkCapability( Capability::RenameVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   // TODO: maybe an index?
   QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
@@ -194,7 +194,7 @@ void QgsSpatiaLiteProviderConnection::vacuum( const QString &schema, const QStri
   checkCapability( Capability::Vacuum );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   executeSqlDirect( QStringLiteral( "VACUUM" ) );
 }
@@ -206,7 +206,7 @@ void QgsSpatiaLiteProviderConnection::createSpatialIndex( const QString &schema,
 
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
 
   QString geometryColumnName { options.geometryColumnName };
@@ -238,7 +238,7 @@ bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema,
   checkCapability( Capability::CreateSpatialIndex );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   const QList<QVariantList> res = executeSqlPrivate( QStringLiteral( "SELECT spatial_index_enabled FROM geometry_columns WHERE lower(f_table_name) = lower(%1) AND lower(f_geometry_column) = lower(%2)" )
                                   .arg( QgsSqliteUtils::quotedString( name ),
@@ -251,7 +251,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
   checkCapability( Capability::Tables );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   QList<QgsSpatiaLiteProviderConnection::TableProperty> tableInfo;
   QString errCause;

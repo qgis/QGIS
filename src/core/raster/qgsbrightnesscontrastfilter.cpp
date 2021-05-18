@@ -55,7 +55,7 @@ Qgis::DataType QgsBrightnessContrastFilter::dataType( int bandNo ) const
 {
   if ( mOn )
   {
-    return Qgis::ARGB32_Premultiplied;
+    return Qgis::DataType::ARGB32_Premultiplied;
   }
 
   if ( mInput )
@@ -63,7 +63,7 @@ Qgis::DataType QgsBrightnessContrastFilter::dataType( int bandNo ) const
     return mInput->dataType( bandNo );
   }
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
@@ -91,8 +91,8 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
     return false;
@@ -129,7 +129,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
     return inputBlock.release();
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -192,7 +192,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   }
   else
   {
-    // Semi-transparent pixel. We need to adjust the math since we are using Qgis::ARGB32_Premultiplied
+    // Semi-transparent pixel. We need to adjust the math since we are using Qgis::DataType::ARGB32_Premultiplied
     // and color values have been premultiplied by alpha
     double alphaFactor = alpha / 255.;
     double adjustedColor = colorComponent / alphaFactor;

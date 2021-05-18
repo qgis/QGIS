@@ -157,7 +157,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
     return outputBlock.release();
   }
 
-  if ( !inputBlock->convert( Qgis::Float64 ) ) // contouring algorithm requires double
+  if ( !inputBlock->convert( Qgis::DataType::Float64 ) ) // contouring algorithm requires double
     return outputBlock.release();
   double *scanline = reinterpret_cast<double *>( inputBlock->bits() );
 

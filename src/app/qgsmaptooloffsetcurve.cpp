@@ -112,7 +112,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
                                      hasZ ? QStringLiteral( "Z" ) : QString(),
                                      hasZ && hasM ? QStringLiteral( "/" ) : QString(),
                                      hasM ? QStringLiteral( "M" ) : QString() )
-                               , Qgis::Warning );
+                               , Qgis::MessageLevel::Warning );
         }
       }
     }
@@ -325,7 +325,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
 
   if ( !mModifiedGeometry.isGeosValid() )
   {
-    emit messageEmitted( tr( "Generated geometry is not valid." ), Qgis::Critical );
+    emit messageEmitted( tr( "Generated geometry is not valid." ), Qgis::MessageLevel::Critical );
     // no cancel, continue editing.
     return;
   }
@@ -384,7 +384,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   else
   {
     destLayer->destroyEditCommand();
-    emit messageEmitted( QStringLiteral( "Could not apply offset" ), Qgis::Critical );
+    emit messageEmitted( QStringLiteral( "Could not apply offset" ), Qgis::MessageLevel::Critical );
   }
 
   deleteRubberBandAndGeometry();
@@ -641,7 +641,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
     mSourceLayer = nullptr;
     mGeometryModified = false;
     emit messageDiscarded();
-    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), Qgis::Critical );
+    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), Qgis::MessageLevel::Critical );
   }
   else
   {

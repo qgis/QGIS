@@ -457,7 +457,7 @@ void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
     if ( !QgsApplication::authManager()->storeCertAuthorities( certs ) )
     {
       messageBar()->pushMessage( tr( "ERROR storing CA(s) in authentication database" ),
-                                 Qgis::Critical );
+                                 Qgis::MessageLevel::Critical );
     }
 
     QgsApplication::authManager()->rebuildCaCertsCache();
@@ -500,7 +500,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   if ( digest.isEmpty() )
   {
     messageBar()->pushMessage( tr( "Certificate id missing" ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -529,21 +529,21 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   if ( cert.isNull() )
   {
     messageBar()->pushMessage( tr( "Certificate could not be found in database for id %1:" ).arg( digest ),
-                               Qgis::Warning );
+                               Qgis::MessageLevel::Warning );
     return;
   }
 
   if ( !QgsApplication::authManager()->removeCertAuthority( cert ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing CA from authentication database for id %1:" ).arg( digest ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return;
   }
 
   if ( !QgsApplication::authManager()->removeCertTrustPolicy( cert ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing cert trust policy from authentication database for id %1:" ).arg( digest ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -752,7 +752,7 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
       if ( !QgsApplication::authManager()->removeCertTrustPolicies( certs ) )
       {
         messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database." ),
-                                   Qgis::Critical );
+                                   Qgis::MessageLevel::Critical );
         return;
       }
       QgsApplication::authManager()->rebuildCertTrustCache();

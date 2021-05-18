@@ -123,7 +123,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
         if ( rangeGuess > 255 )
         {
           // looks like 16 bit colors, so default to a stretch contrast enhancement
-          QgsContrastEnhancement contrast( Qgis::UnknownDataType );
+          QgsContrastEnhancement contrast( Qgis::DataType::UnknownDataType );
           contrast.setMinimumValue( 0 );
           contrast.setMaximumValue( rangeGuess );
           contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );

@@ -127,7 +127,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -175,7 +175,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     if ( source.isEmpty() )
     {
       useOpenCL = false;
-      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path %1" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Error loading OpenCL program source from path %1" ).arg( QgsOpenClUtils::sourcePath() ), QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     }
   }
 
@@ -357,10 +357,10 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     catch ( cl::Error &e )
     {
       QgsMessageLog::logMessage( QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ) ).arg( QgsOpenClUtils::errorText( e.err( ) ) ),
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       QgsOpenClUtils::setEnabled( false );
       QgsMessageLog::logMessage( QObject::tr( "OpenCL has been disabled, you can re-enable it in the options dialog." ),
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
+                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
     }
 
   } // End of OpenCL processing path

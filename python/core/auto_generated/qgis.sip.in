@@ -75,17 +75,17 @@ The development version
 %End
 
 
-    enum MessageLevel
-    {
+    enum class MessageLevel
+      {
       Info,
       Warning,
       Critical,
       Success,
-      None
+      NoLevel,
     };
 
-    enum DataType
-    {
+    enum class DataType
+      {
       UnknownDataType,
       Byte,
       UInt16,
@@ -102,8 +102,8 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode
+      {
       Never,
       Ask,
       SessionOnly,

@@ -95,8 +95,8 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
   for ( int band = 1; band <= mBandCount; band++ )
   {
     Qgis::DataType dataType = mDataProvider->dataType( band );
-    bool intSafe = ( dataType == Qgis::Byte || dataType == Qgis::UInt16 || dataType == Qgis::Int16 || dataType == Qgis::UInt32 ||
-                     dataType == Qgis::Int32 || dataType == Qgis::CInt16 || dataType == Qgis::CInt32 );
+    bool intSafe = ( dataType == Qgis::DataType::Byte || dataType == Qgis::DataType::UInt16 || dataType == Qgis::DataType::Int16 || dataType == Qgis::DataType::UInt32 ||
+                     dataType == Qgis::DataType::Int32 || dataType == Qgis::DataType::CInt16 || dataType == Qgis::DataType::CInt32 );
 
     newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, QString::number( band ) ), intSafe ? QVariant::Int : QVariant::Double ) );
     emptySampleAttributes += QVariant();

@@ -97,11 +97,11 @@ bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   switch ( mDataType )
   {
-    case Qgis::Byte:
-    case Qgis::Int16:
-    case Qgis::UInt16:
-    case Qgis::Int32:
-    case Qgis::UInt32:
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::UInt32:
       mIsInteger = true;
       if ( mDecimalPrecision > -1 )
         feedback->reportError( QObject::tr( "Input raster is of byte or integer type. The cell values cannot be rounded and will be output using the same data type." ), false );

@@ -149,7 +149,7 @@ class SERVER_EXPORT QgsServerSettings
     /**
      * Returns TRUE if profile information has to be added to the logs, default value is FALSE.
      *
-     * \note this flag is only effective when logLevel() returns Qgis::Info (0)
+     * \note this flag is only effective when logLevel() returns Qgis::MessageLevel::Info (0)
      * \see logLevel()
      * \since QGIS 3.18
      */

@@ -215,6 +215,14 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
     ok = false;
 }
 
+void QgsRasterChecker::compare( const QString &paramName, Qgis::DataType verifiedVal, Qgis::DataType expectedVal, QString &report, bool &ok )
+{
+  bool isEqual = verifiedVal == expectedVal;
+  compareRow( paramName, QString::number( static_cast< int>( verifiedVal ) ), QString::number( static_cast< int >( expectedVal ) ), report, isEqual, QString::number( static_cast< int >( verifiedVal ) - static_cast< int>( expectedVal ) ) );
+  if ( !isEqual )
+    ok = false;
+}
+
 bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double tolerance )
 {
   // values may be nan

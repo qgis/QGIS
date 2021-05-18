@@ -148,7 +148,7 @@ Sets the message ``bar`` associated with the scene.
 .. seealso:: :py:func:`messageBar`
 %End
 
-    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::Warning ) const;
+    void showWarning( const QString &shortMessage, const QString &title, const QString &longMessage, Qgis::MessageLevel level = Qgis::MessageLevel::Warning ) const;
 %Docstring
 Shows a warning message, allowing users to click a button to see the full details (``longMessage``).
 %End

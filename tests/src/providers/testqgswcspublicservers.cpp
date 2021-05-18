@@ -443,7 +443,7 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
             {
-              myLog << provider + "_srcType:" + QString::number( myLayer->dataProvider()->sourceDataType( 1 ) );
+              myLog << provider + "_srcType:" + qgsEnumValueToKey< Qgis::DataType >( myLayer->dataProvider()->sourceDataType( 1 ) );
 
               QgsRasterBandStats myStats = myLayer->dataProvider()->bandStatistics( 1, QgsRasterBandStats::All, QgsRectangle(), myWidth * myHeight );
               myLog << provider + "_min:" + QString::number( myStats.minimumValue );

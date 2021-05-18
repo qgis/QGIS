@@ -41,7 +41,7 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     mFeedback->reportError( e.what() );
     cancel();
   }
@@ -68,7 +68,7 @@ bool QgsProcessingAlgRunnerTask::run()
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::MessageLevel::Critical );
     mFeedback->reportError( e.what() );
     return false;
   }
