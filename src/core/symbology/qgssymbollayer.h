@@ -376,7 +376,20 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
+    /**
+     * Sets whether the layer's colors are locked.
+     *
+     * If \a locked is TRUE then the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+     *
+     * \see isLocked()
+     */
     void setLocked( bool locked ) { mLocked = locked; }
+
+    /**
+     * Returns TRUE if the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+     *
+     * \see setLocked()
+     */
     bool isLocked() const { return mLocked; }
 
     /**
@@ -539,6 +552,11 @@ class CORE_EXPORT QgsSymbolLayer
 
   protected:
 
+    /**
+     * Constructor for QgsSymbolLayer.
+     * \param type specifies the associated symbol type
+     * \param locked if TRUE, then symbol layer colors will be locked and will ignore any symbol-level color changes.
+     */
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
 
     Qgis::SymbolType mType;

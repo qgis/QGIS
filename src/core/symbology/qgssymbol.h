@@ -598,6 +598,12 @@ class CORE_EXPORT QgsSymbol
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
   protected:
+
+    /**
+     * Constructor for a QgsSymbol of the specified \a type.
+     *
+     * Ownership of \a layers will be transferred to the symbol.
+     */
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
 
     /**
