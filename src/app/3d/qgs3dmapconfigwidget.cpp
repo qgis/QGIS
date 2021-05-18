@@ -452,7 +452,7 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::Critical );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::MessageLevel::Critical );
       }
       break;
 
@@ -460,7 +460,7 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::Critical );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::MessageLevel::Critical );
       }
       break;
 
@@ -471,7 +471,7 @@ void Qgs3DMapConfigWidget::validate()
 
   if ( valid && widgetLights->directionalLights().empty() && widgetLights->pointLights().empty() )
   {
-    mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::MessageLevel::Warning );
   }
 
   emit isValidChanged( valid );

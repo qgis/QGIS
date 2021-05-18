@@ -527,7 +527,7 @@ int main( int argc, char *argv[] )
   if ( ! withDisplay )
   {
     QgsMessageLog::logMessage( "DISPLAY environment variable is not set, running in offscreen mode, all printing capabilities will not be available.\n"
-                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::Warning );
+                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::MessageLevel::Warning );
   }
 
 #ifdef Q_OS_WIN

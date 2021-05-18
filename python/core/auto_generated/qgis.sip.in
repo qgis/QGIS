@@ -75,13 +75,13 @@ The development version
 %End
 
 
-    enum MessageLevel
-    {
+    enum class MessageLevel
+      {
       Info,
       Warning,
       Critical,
       Success,
-      None,
+      NoLevel,
     };
 
     enum class DataType

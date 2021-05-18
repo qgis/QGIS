@@ -151,7 +151,7 @@ void TestQgsMessageBar::autoDelete()
   QgsMessageBar bar;
   for ( int i = 0; i < bar.MAX_ITEMS; ++i )
   {
-    bar.pushMessage( QString::number( i ), Qgis::Warning );
+    bar.pushMessage( QString::number( i ), Qgis::MessageLevel::Warning );
   }
   QCOMPARE( bar.items().size(), 100 );
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "99" ) );
@@ -159,7 +159,7 @@ void TestQgsMessageBar::autoDelete()
   QPointer< QgsMessageBarItem > oldest = bar.items().at( 99 );
 
   // push one more item, oldest one should be auto-removed
-  bar.pushMessage( QStringLiteral( "100" ), Qgis::Warning );
+  bar.pushMessage( QStringLiteral( "100" ), Qgis::MessageLevel::Warning );
   QCOMPARE( bar.items().size(), 100 );
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "100" ) );
   QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "1" ) );
@@ -167,12 +167,12 @@ void TestQgsMessageBar::autoDelete()
   QVERIFY( !oldest );
 
   // but if we have a lower priority message we can pop, then do that instead
-  bar.pushMessage( QStringLiteral( "101" ), Qgis::Info );
+  bar.pushMessage( QStringLiteral( "101" ), Qgis::MessageLevel::Info );
   QCOMPARE( bar.items().size(), 100 );
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "101" ) );
   QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "100" ) );
   QCOMPARE( bar.items().at( 99 )->text(), QStringLiteral( "2" ) );
-  bar.pushMessage( QStringLiteral( "102" ), Qgis::Info );
+  bar.pushMessage( QStringLiteral( "102" ), Qgis::MessageLevel::Info );
   QCOMPARE( bar.items().size(), 100 );
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "102" ) );
   QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "100" ) );

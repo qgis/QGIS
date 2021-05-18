@@ -238,7 +238,7 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
   {
     mMessageBar->pushMessage( extractFileTitle(),
                               tr( "Successfully extracted file to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ),
-                              Qgis::Success, 0 );
+                              Qgis::MessageLevel::Success, 0 );
   }
 }
 

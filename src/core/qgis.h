@@ -101,14 +101,15 @@ class CORE_EXPORT Qgis
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
      */
-    enum MessageLevel
-    {
+    enum class MessageLevel SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, MessageLevel ) : int
+      {
       Info = 0, //!< Information message
       Warning = 1, //!< Warning message
       Critical = 2, //!< Critical/error message
       Success = 3, //!< Used for reporting a successful operation
-      None = 4, //!< No level
+      NoLevel = 4, //!< No level
     };
+    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.

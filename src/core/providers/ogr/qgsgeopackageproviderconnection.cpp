@@ -90,7 +90,7 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
   checkCapability( Capability::CreateVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   QMap<QString, QVariant> opts { *options };
   opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
@@ -118,7 +118,7 @@ void QgsGeoPackageProviderConnection::dropVectorTable( const QString &schema, co
   checkCapability( Capability::DropVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   QString errCause;
   const QString layerUri { QStringLiteral( "%1|layername=%2" ).arg( uri(), name ) };
@@ -134,7 +134,7 @@ void QgsGeoPackageProviderConnection::dropRasterTable( const QString &schema, co
   checkCapability( Capability::DropRasterTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   executeGdalSqlPrivate( QStringLiteral( "DROP TABLE %1" ).arg( name ) );
 }
@@ -145,7 +145,7 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   checkCapability( Capability::RenameVectorTable );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   // TODO: maybe an index?
   QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
@@ -177,7 +177,7 @@ void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QStri
   checkCapability( Capability::Vacuum );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   executeGdalSqlPrivate( QStringLiteral( "VACUUM" ) );
 }
@@ -187,7 +187,7 @@ void QgsGeoPackageProviderConnection::createSpatialIndex( const QString &schema,
   checkCapability( Capability::CreateSpatialIndex );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
 
   QString geometryColumnName { options.geometryColumnName };
@@ -219,7 +219,7 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
   checkCapability( Capability::CreateSpatialIndex );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   const QList<QList<QVariant> > res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
                                       QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
@@ -231,7 +231,7 @@ void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema,
   checkCapability( Capability::DeleteSpatialIndex );
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   executeGdalSqlPrivate( QStringLiteral( "SELECT DisableSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
                          QgsSqliteUtils::quotedString( geometryColumn ) ) );
@@ -247,7 +247,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   if ( ! schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
 
   QList<QgsGeoPackageProviderConnection::TableProperty> tableInfo;

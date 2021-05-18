@@ -54,7 +54,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
      * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
      */
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning, bool notifyUser = true );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
 
   signals:
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
     //TODO QGIS 4.0 - remove received argument
 
     /**
-     * Emitted whenever the log receives a message which is not a Qgis::Info level message
+     * Emitted whenever the log receives a message which is not a Qgis::MessageLevel::Info level message
      * and which has the \a notifyUser flag as TRUE.
      *
      * If QgsMessageLogNotifyBlocker objects have been created then this signal may be
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
      * \param level the log level of the message
      * \since QGIS 3.4
      */
-    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
+    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::MessageLevel::Info ) const;
 
   public slots:
 

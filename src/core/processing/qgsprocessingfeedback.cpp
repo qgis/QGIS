@@ -39,7 +39,7 @@ void QgsProcessingFeedback::setProgressText( const QString & )
 void QgsProcessingFeedback::reportError( const QString &error, bool )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::MessageLevel::Critical );
 
   mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) );
   mTextLog.append( error + '\n' );
@@ -48,7 +48,7 @@ void QgsProcessingFeedback::reportError( const QString &error, bool )
 void QgsProcessingFeedback::pushWarning( const QString &warning )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::Warning );
+    QgsMessageLog::logMessage( warning, tr( "Processing" ), Qgis::MessageLevel::Warning );
 
   mHtmlLog.append( QStringLiteral( "<span style=\"color:#b85a20;\">%1</span><br/>" ).arg( warning.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
   mTextLog.append( warning + '\n' );
@@ -57,7 +57,7 @@ void QgsProcessingFeedback::pushWarning( const QString &warning )
 void QgsProcessingFeedback::pushInfo( const QString &info )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
   mTextLog.append( info + '\n' );
@@ -66,7 +66,7 @@ void QgsProcessingFeedback::pushInfo( const QString &info )
 void QgsProcessingFeedback::pushCommandInfo( const QString &info )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
@@ -75,7 +75,7 @@ void QgsProcessingFeedback::pushCommandInfo( const QString &info )
 void QgsProcessingFeedback::pushDebugInfo( const QString &info )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
@@ -84,7 +84,7 @@ void QgsProcessingFeedback::pushDebugInfo( const QString &info )
 void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
 {
   if ( mLogFeedback )
-    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::MessageLevel::Info );
 
   mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );

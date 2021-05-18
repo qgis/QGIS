@@ -23,7 +23,7 @@
 //TODO: tell dock to parse errorlist when feature is deleted
 bool TopolError::fix( const QString &fixName )
 {
-  QgsMessageLog::logMessage( QObject::tr( "Using fix %1." ).arg( fixName ), QObject::tr( "Topology plugin" ), Qgis::Info );
+  QgsMessageLog::logMessage( QObject::tr( "Using fix %1." ).arg( fixName ), QObject::tr( "Topology plugin" ), Qgis::MessageLevel::Info );
   return ( this->*mFixMap[fixName] )();
 }
 
