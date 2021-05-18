@@ -64,26 +64,6 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   mStatusLabel->hide();
   mSqlErrorText->hide();
 
-  // Configure the load layer interface
-  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys ) )
-  {
-    mPkColumnsCheckBox->hide();
-    mPkColumnsComboBox->hide();
-  }
-
-  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn ) )
-  {
-    mGeometryColumnCheckBox->hide();
-    mGeometryColumnComboBox->hide();
-  }
-
-  if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) )
-  {
-    mFilterLabel->hide();
-    mFilterToolButton->hide();
-    mFilterLineEdit->hide();
-  }
-
   mLoadAsNewLayerGroupBox->setCollapsed( true );
   setConnection( connection );
 }
@@ -315,7 +295,30 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 
   if ( connection )
   {
+
+    // Configure the load layer interface
+    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys ) )
+    {
+      mPkColumnsCheckBox->hide();
+      mPkColumnsComboBox->hide();
+    }
+
+    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn ) )
+    {
+      mGeometryColumnCheckBox->hide();
+      mGeometryColumnComboBox->hide();
+    }
+
+    if ( ! connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) )
+    {
+      mFilterLabel->hide();
+      mFilterToolButton->hide();
+      mFilterLineEdit->hide();
+    }
+
     mSqlEditor->setFieldNames( QStringList( ) );
+    // Add provider specific APIs
+    // TODO mSqlEditor->lexer()->apis()
     mSqlErrorText->setFieldNames( QStringList( ) );
     mApiFetcher = new QgsConnectionsApiFetcher( connection );
     mApiFetcher->moveToThread( &mWorkerThread );
