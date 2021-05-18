@@ -9,6 +9,7 @@
 
 
 
+
 class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
 {
 
