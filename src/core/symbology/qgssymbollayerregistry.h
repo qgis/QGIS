@@ -35,6 +35,13 @@ class QDomElement;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
+
+    /**
+     * Constructor for QgsSymbolLayerAbstractMetadata.
+     * \param name internal symbol layer name (unique identifier)
+     * \param visibleName user visible, translated name for symbol layer
+     * \param type associated symbol type
+     */
     QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type )
       : mName( name )
       , mVisibleName( visibleName )

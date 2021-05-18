@@ -25,7 +25,15 @@ Stores metadata about one symbol layer class.
 #include "qgssymbollayerregistry.h"
 %End
   public:
+
     QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type );
+%Docstring
+Constructor for QgsSymbolLayerAbstractMetadata.
+
+:param name: internal symbol layer name (unique identifier)
+:param visibleName: user visible, translated name for symbol layer
+:param type: associated symbol type
+%End
 
     virtual ~QgsSymbolLayerAbstractMetadata();
 

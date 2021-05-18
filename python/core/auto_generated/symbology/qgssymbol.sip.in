@@ -611,6 +611,7 @@ Internally, this notifies all symbol layers which were used via a call to
 %End
 
   protected:
+
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );

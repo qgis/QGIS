@@ -353,7 +353,20 @@ The default implementation returns ``False``.
 %End
 
     void setLocked( bool locked );
+%Docstring
+Sets whether the layer's colors are locked.
+
+If ``locked`` is ``True`` then the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+
+.. seealso:: :py:func:`isLocked`
+%End
+
     bool isLocked() const;
+%Docstring
+Returns ``True`` if the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+
+.. seealso:: :py:func:`setLocked`
+%End
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 %Docstring
@@ -550,6 +563,12 @@ This is a list of symbol layers of other layers that should be occluded.
   protected:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
+%Docstring
+Constructor for QgsSymbolLayer.
+
+:param type: specifies the associated symbol type
+:param locked: if ``True``, then symbol layer colors will be locked and will ignore any symbol-level color changes.
+%End
 
 
 
