@@ -26,6 +26,7 @@
 #include <limits>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgspoint.h"
 #include "qgsdataprovider.h"
 
