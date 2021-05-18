@@ -634,7 +634,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     {
       return whereValuesList.isEmpty() ? QString() :
              whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
+             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( (" ) ).append( QStringLiteral( ") )" ) );
     }
   };
 

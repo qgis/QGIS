@@ -327,7 +327,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
 
 #define CHECK_IN_VALUES_2FLD_CLAUSE(whereClause,expectedValues)         \
   {                                                                     \
-    QRegularExpression inRe("\\( ?\\\"fld1\\\", ?\\\"fld2\\\" ?\\) ?IN ?\\( ?VALUES ?\\(([^)]*)\\),\\(([^)]*)\\) ?\\)");\
+    QRegularExpression inRe("\\( ?\\\"fld1\\\", ?\\\"fld2\\\" ?\\) ?IN ?\\( ?\\(([^)]*)\\),\\(([^)]*)\\) ?\\)");\
     QVERIFY(inRe.isValid());                                            \
     QRegularExpressionMatch match = inRe.match( whereClause );          \
     QVERIFY( match.hasMatch() );                                        \
@@ -422,7 +422,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
                    QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
 
-  // Composite text + int -> IN VALUES clause
+  // Composite text + int -> IN clause
   f0.setName( "fld1" );
   f3.setName( "fld2" );
   pkAttrs.clear();
