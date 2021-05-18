@@ -86,6 +86,10 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
       mFilterLabel->setVisible( showFilterConfig );
       mFilterToolButton->setVisible( showFilterConfig );
       mFilterLineEdit->setVisible( showFilterConfig );
+
+      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::SelectAtId ) };
+      mAvoidSelectingAsFeatureIdCheckBox->setVisible( showDisableSelectAtId );
+
     }
   } );
 
@@ -291,6 +295,7 @@ void QgsQueryResultWidget::syncSqlOptions()
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();
   mSqlVectorLayerOptions.layerName = mLayerNameLineEdit->text();
+  mSqlVectorLayerOptions.disableSelectAtId = mAvoidSelectingAsFeatureIdCheckBox->isChecked();
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const

@@ -99,6 +99,13 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::M,
     GeometryColumnCapability::Curves
   };
+  mSqlLayerDefinitionCapabilities =
+  {
+    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::PrimaryKeys,
+    SqlLayerDefinitionCapability::GeometryColumn,
+    SqlLayerDefinitionCapability::SelectAtId,
+  };
 }
 
 void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const

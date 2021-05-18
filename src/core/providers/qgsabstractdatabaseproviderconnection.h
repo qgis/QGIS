@@ -206,10 +206,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     struct CORE_EXPORT SqlVectorLayerOptions
     {
       QString sql; //! The SQL expression that defines the SQL (query) layer
-      QString filter; //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerFilters capability
+      QString filter; //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
       QString layerName; //! Optional name for the new layer
       QStringList primaryKeyColumns; //! List of primary key column names
       QString geometryColumn; //! Name of the geometry column
+      bool disableSelectAtId; //! If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
     };
 
     /**
@@ -487,9 +488,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum SqlLayerDefinitionCapability
     {
-      Filters = 1 << 1,           //! SQL layer definition support filters
-      GeometryColumn = 1 << 2,    //! SQL layer definition support geometry colum
-      PrimaryKeys = 1 << 3        //! SQL layer definition support primary keys
+      Filters = 1 << 1,           //! SQL layer definition supports filters
+      GeometryColumn = 1 << 2,    //! SQL layer definition supports geometry colum
+      PrimaryKeys = 1 << 3,       //! SQL layer definition supports primary keys
+      SelectAtId = 1 << 4         //! SQL layer definition supports disabling select at id
     };
 
     Q_ENUM( SqlLayerDefinitionCapability )

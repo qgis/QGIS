@@ -121,6 +121,12 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::SinglePart,
     GeometryColumnCapability::Curves
   };
+  mSqlLayerDefinitionCapabilities =
+  {
+    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::GeometryColumn,
+    SqlLayerDefinitionCapability::PrimaryKeys,
+  };
 }
 
 void QgsOracleProviderConnection::store( const QString &name ) const

@@ -85,9 +85,10 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Filters,
-    PrimaryKeys,
-    GeometryColumn
+    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::PrimaryKeys,
+    SqlLayerDefinitionCapability::GeometryColumn,
+    SqlLayerDefinitionCapability::SelectAtId,
   };
 }
 
@@ -762,6 +763,7 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
   QgsDataSourceUri tUri( uri( ) );
 
   tUri.setSql( options.filter );
+  tUri.disableSelectAtId( options.disableSelectAtId );
 
   if ( ! options.primaryKeyColumns.isEmpty() )
   {
