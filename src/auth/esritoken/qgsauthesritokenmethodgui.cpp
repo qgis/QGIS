@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsauthesritokenmethod.cpp
+    qgsauthesritokenmethodgui.cpp
     --------------------------
     begin                : October 2018
     copyright            : (C) 2018 by Nyall Dawson

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsauthbasicmethod.cpp
+    qgsauthbasicmethodgui.cpp
     ---------------------
     begin                : September 1, 2015
     copyright            : (C) 2015 by Boundless Spatial, Inc. USA

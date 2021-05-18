@@ -1,4 +1,6 @@
 /***************************************************************************
+    qgsauthoauth2methodgui.cpp
+    ---------------------
     begin                : July 13, 2016
     copyright            : (C) 2016 by Monsanto Company, USA
     author               : Larry Shaffer, Boundless Spatial
