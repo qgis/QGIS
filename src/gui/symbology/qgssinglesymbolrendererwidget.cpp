@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgssymbolselectordialog.h"
+#include "qgsmarkersymbol.h"
 
 #include <QMenu>
 
@@ -75,7 +76,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
 
   QAction *actionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
   connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
-  if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
+  if ( mSingleSymbol && mSingleSymbol->type() == Qgis::SymbolType::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection

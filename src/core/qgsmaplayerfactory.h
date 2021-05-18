@@ -19,7 +19,7 @@
 #define QGSMAPLAYERFACTORY_H
 
 #include "qgis_core.h"
-#include "qgscoreenums.h"
+#include "qgis.h"
 
 #include <QString>
 

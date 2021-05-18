@@ -22,6 +22,7 @@
 #include "qgssymbollayerreference.h"
 
 class QgsPaintEffect;
+class QgsMarkerSymbol;
 
 /**
  * \ingroup core
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
 
     QgsMaskMarkerSymbolLayer *clone() const override SIP_FACTORY;
-    QgsSymbol *subSymbol() override { return mSymbol.get(); }
+    QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     bool hasDataDefinedProperties() const override;

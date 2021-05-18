@@ -31,7 +31,6 @@ class QgsMeshLayer;
 #include "qgsrasterinterface.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
-#include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshtracerenderer.h"
 #include "qgsmapclippingregion.h"

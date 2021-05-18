@@ -31,6 +31,9 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -74,7 +77,7 @@ QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 QgsStyle::QgsStyle()
 {
   std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( QgsSimpleMarkerSymbolLayerBase::Circle,
-      1.6, 0, QgsSymbol::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
+      1.6, 0, Qgis::ScaleMethod::ScaleArea, QColor( 84, 176, 74 ), QColor( 61, 128, 53 ) );
   simpleMarker->setStrokeWidth( 0.4 );
   mPatchMarkerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << simpleMarker.release() );
 
@@ -1167,22 +1170,22 @@ bool QgsStyle::renameLegendPatchShape( const QString &oldName, const QString &ne
   return result;
 }
 
-QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const
+QgsLegendPatchShape QgsStyle::defaultPatch( Qgis::SymbolType type, QSizeF size ) const
 {
-  if ( type == QgsSymbol::Hybrid )
+  if ( type == Qgis::SymbolType::Hybrid )
     return QgsLegendPatchShape();
 
-  if ( mDefaultPatchCache[ type ].contains( size ) )
-    return mDefaultPatchCache[ type ].value( size );
+  if ( mDefaultPatchCache[ static_cast< int >( type ) ].contains( size ) )
+    return mDefaultPatchCache[ static_cast< int >( type ) ].value( size );
 
   QgsGeometry geom;
   switch ( type )
   {
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
       geom = QgsGeometry( std::make_unique< QgsPoint >( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 ) );
       break;
 
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
     {
       // we're adding 0.5 to get rid of blurred preview:
       // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
@@ -1192,7 +1195,7 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
       break;
     }
 
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
     {
       geom = QgsGeometry( std::make_unique< QgsPolygon >(
                             new QgsLineString( QVector< double >() << 0 << static_cast< int >( size.width() ) << static_cast< int >( size.width() ) << 0 << 0,
@@ -1200,25 +1203,25 @@ QgsLegendPatchShape QgsStyle::defaultPatch( QgsSymbol::SymbolType type, QSizeF s
       break;
     }
 
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 
   QgsLegendPatchShape res = QgsLegendPatchShape( type, geom, false );
-  mDefaultPatchCache[ type ][size ] = res;
+  mDefaultPatchCache[ static_cast< int >( type ) ][size ] = res;
   return res;
 }
 
-QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const
+QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType type, QSizeF size ) const
 {
-  if ( type == QgsSymbol::Hybrid )
+  if ( type == Qgis::SymbolType::Hybrid )
     return QList<QList<QPolygonF> >();
 
-  if ( mDefaultPatchQPolygonFCache[ type ].contains( size ) )
-    return mDefaultPatchQPolygonFCache[ type ].value( size );
+  if ( mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].contains( size ) )
+    return mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].value( size );
 
   QList<QList<QPolygonF> > res = defaultPatch( type, size ).toQPolygonF( type, size );
-  mDefaultPatchQPolygonFCache[ type ][size ] = res;
+  mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ][size ] = res;
   return res;
 }
 
@@ -2151,10 +2154,10 @@ int QgsStyle::legendPatchShapesCount() const
   return mLegendPatchShapes.count();
 }
 
-QgsSymbol::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name ) const
+Qgis::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name ) const
 {
   if ( !mLegendPatchShapes.contains( name ) )
-    return QgsSymbol::Hybrid;
+    return Qgis::SymbolType::Hybrid;
 
   return mLegendPatchShapes.value( name ).symbolType();
 }
@@ -2209,16 +2212,16 @@ const QgsSymbol *QgsStyle::previewSymbolForPatchShape( const QgsLegendPatchShape
 {
   switch ( shape.symbolType() )
   {
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
       return mPatchMarkerSymbol.get();
 
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
       return mPatchLineSymbol.get();
 
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
       return mPatchFillSymbol.get();
 
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
   return nullptr;

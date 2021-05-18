@@ -58,6 +58,8 @@
 #include "qgsrenderchecker.h"
 #include "qgsrelationmanager.h"
 #include "qgsmeshlayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsProcessingAlgs: public QObject
 {

@@ -19,7 +19,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssymbol.h"
 #include "qgslayout.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitem.h"

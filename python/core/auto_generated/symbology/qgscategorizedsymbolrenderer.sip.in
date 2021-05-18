@@ -42,6 +42,7 @@ The ``render`` argument indicates whether the category should initially be rende
 %Docstring
 Copy constructor.
 %End
+    ~QgsRendererCategory();
 
     QVariant value() const;
 %Docstring
@@ -422,7 +423,7 @@ Will return ``None`` if the functionality is disabled.
 .. versionadded:: 3.0
 %End
 
-    int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
+    int matchToSymbols( QgsStyle *style, Qgis::SymbolType type,
                         QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
 %Docstring
 Replaces category symbols with the symbols from a ``style`` that have a matching

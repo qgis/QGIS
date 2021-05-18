@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrenderer.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmarkersymbol.h"
 
 ///@cond PRIVATE
 
@@ -32,7 +33,7 @@ class SetMarkerRotationVisitor : public QgsStyleEntityVisitorInterface
       : mRotationField( rotationField )
     {}
 
-    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity )
+    bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &entity ) override
     {
       if ( const QgsStyleSymbolEntity *symbolEntity = dynamic_cast< const QgsStyleSymbolEntity * >( entity.entity ) )
       {

@@ -27,6 +27,8 @@
 #include "qgspainteffectregistry.h"
 #include "qgspainteffect.h"
 #include "qgsapplication.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QDomElement>
 #include <QPainter>

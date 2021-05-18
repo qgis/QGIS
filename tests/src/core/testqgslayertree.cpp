@@ -29,6 +29,7 @@
 #include <qgslayertreeutils.h>
 #include <qgssettings.h>
 #include "qgslegendsettings.h"
+#include "qgsmarkersymbol.h"
 #include <QSignalSpy>
 
 class TestQgsLayerTree : public QObject

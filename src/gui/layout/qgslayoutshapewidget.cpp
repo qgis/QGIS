@@ -21,6 +21,7 @@
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsfillsymbol.h"
 
 QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   : QgsLayoutItemBaseWidget( nullptr, shape )
@@ -47,7 +48,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   mShapeComboBox->addItem( tr( "Ellipse" ), QgsLayoutItemShape::Ellipse );
   mShapeComboBox->addItem( tr( "Triangle" ), QgsLayoutItemShape::Triangle );
 
-  mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
+  mShapeStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   mRadiusUnitsComboBox->linkToWidget( mCornerRadiusSpinBox );
   mRadiusUnitsComboBox->setConverter( &mShape->layout()->renderContext().measurementConverter() );
 

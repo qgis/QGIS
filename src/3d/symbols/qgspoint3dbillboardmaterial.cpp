@@ -30,6 +30,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgssettings.h"
 #include "qgs3dmapsettings.h"
+#include "qgsmarkersymbol.h"
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )

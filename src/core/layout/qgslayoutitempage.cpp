@@ -24,6 +24,8 @@
 #include "qgslayoutundostack.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 

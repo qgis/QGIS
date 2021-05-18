@@ -29,7 +29,8 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -39,7 +40,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   setupUi( this );
   setPanelTitle( tr( "Data-defined Size Legend" ) );
 
-  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+  mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
   QgsMarkerSymbol *symbol = nullptr;
 

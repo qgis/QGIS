@@ -18,6 +18,10 @@
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgssymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 //
 // QgsMapInfoSymbolConversionContext

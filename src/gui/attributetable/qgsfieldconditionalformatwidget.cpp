@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsguiutils.h"
+#include "qgsmarkersymbol.h"
 
 //
 // QgsFieldConditionalFormatWidget
@@ -284,7 +285,7 @@ QgsEditConditionalFormatRuleWidget::QgsEditConditionalFormatRuleWidget( QWidget 
   mPresetsModel = new QStandardItemModel( mPresetsList );
   mPresetsList->setModel( mPresetsModel );
 
-  btnChangeIcon->setSymbolType( QgsSymbol::Marker );
+  btnChangeIcon->setSymbolType( Qgis::SymbolType::Marker );
   btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   connect( checkIcon, &QCheckBox::toggled, btnChangeIcon, &QWidget::setEnabled );
 }

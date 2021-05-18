@@ -31,6 +31,7 @@
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
 #include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbol.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"

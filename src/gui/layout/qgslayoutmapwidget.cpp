@@ -35,6 +35,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayermodel.h"
+#include "qgsfillsymbol.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -137,7 +138,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use Project CRS" ) );
 
-  mOverviewFrameStyleButton->setSymbolType( QgsSymbol::Fill );
+  mOverviewFrameStyleButton->setSymbolType( Qgis::SymbolType::Fill );
 
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );

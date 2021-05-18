@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
 
@@ -25,7 +26,7 @@ Creates the symbol layer
     virtual QString layerType() const;
 
 
-    void setSymbolType( QgsSymbol::SymbolType symbolType );
+    void setSymbolType( Qgis::SymbolType symbolType );
 %Docstring
 Set the type of symbol which should be created.
 Should match with the return type of the expression.
@@ -33,7 +34,7 @@ Should match with the return type of the expression.
 :param symbolType: The symbol type which shall be used below this symbol.
 %End
 
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 %Docstring
 Access the symbol type. This defines the type of geometry
 that is created by this generator.

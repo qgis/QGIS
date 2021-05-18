@@ -37,6 +37,22 @@ int QgisEvent = QEvent::User + 1;
 % End
 #endif
 
+/**
+ * \ingroup core
+ * \brief Types of layers that can be added to a map
+ * \since QGIS 3.8
+ */
+enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer,      //!< Added in 3.2
+  VectorTileLayer, //!< Added in 3.14
+  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
+  PointCloudLayer, //!< Added in 3.18
+};
+
 
 /**
  * \ingroup core
@@ -130,6 +146,62 @@ class CORE_EXPORT Qgis
       NotForThisSession, //!< Macros will not be run for this session
     };
     Q_ENUM( PythonMacroMode )
+
+    /**
+     * \ingroup core
+     * \brief Enumeration of feature count states
+     * \since QGIS 3.20
+     */
+    enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
+      {
+      Uncounted = -2, //!< Feature count not yet computed
+      UnknownCount = -1, //!< Provider returned an unknown feature count
+    };
+
+    /**
+     * \brief Symbol types
+     * \since QGIS 3.20
+     */
+    enum class SymbolType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, SymbolType ) : int
+      {
+      Marker, //!< Marker symbol
+      Line, //!< Line symbol
+      Fill, //!< Fill symbol
+      Hybrid //!< Hybrid symbol
+    };
+
+    /**
+     * \brief Scale methods
+     *
+     * \since QGIS 3.20
+     */
+    enum class ScaleMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, ScaleMethod ) : int
+      {
+      ScaleArea,     //!< Calculate scale by the area
+      ScaleDiameter  //!< Calculate scale by the diameter
+    };
+
+    /**
+     * \brief Flags controlling behavior of symbols during rendering
+     *
+     * \since QGIS 3.20
+     */
+    enum class SymbolRenderHint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, RenderHint ) : int
+      {
+      DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
+    };
+    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
+
+    /**
+     * Flags for controlling how symbol preview images are generated.
+     *
+     * \since QGIS 3.20
+     */
+    enum class SymbolPreviewFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, PreviewFlag ) : int
+      {
+      FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
+    };
+    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
      * Identify search radius in mm
@@ -244,6 +316,10 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+
+
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
@@ -268,7 +344,7 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
      * Constructor for QgsSignalBlocker
      * \param object QObject to block signals from
      */
-    explicit QgsSignalBlocker( Object *object )
+    explicit QgsSignalBlocker( Object * object )
       : mObject( object )
       , mPreviousState( object->blockSignals( true ) )
     {}

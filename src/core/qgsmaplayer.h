@@ -39,7 +39,7 @@
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
-#include "qgscoreenums.h"
+#include "qgis.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;

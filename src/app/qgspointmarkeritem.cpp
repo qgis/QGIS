@@ -19,6 +19,9 @@
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+
 #include <QPainter>
 #include <cmath>
 
@@ -33,6 +36,8 @@ QgsMapCanvasSymbolItem::QgsMapCanvasSymbolItem( QgsMapCanvas *canvas )
 {
   setCacheMode( QGraphicsItem::ItemCoordinateCache );
 }
+
+QgsMapCanvasSymbolItem::~QgsMapCanvasSymbolItem() = default;
 
 QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
 {

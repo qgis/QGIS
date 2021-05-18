@@ -23,6 +23,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \

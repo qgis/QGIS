@@ -8,7 +8,6 @@
 
 
 
-
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
@@ -98,6 +97,7 @@ Conditional styling for a rule.
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle &other );
     QgsConditionalStyle( const QString &rule );
+    ~QgsConditionalStyle();
 
 
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;

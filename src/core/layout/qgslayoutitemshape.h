@@ -20,7 +20,6 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
-#include "qgssymbol.h"
 #include "qgslayoutmeasurement.h"
 
 /**
@@ -48,6 +47,8 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      * Constructor for QgsLayoutItemShape, with the specified parent \a layout.
      */
     explicit QgsLayoutItemShape( QgsLayout *layout );
+
+    ~QgsLayoutItemShape() override;
 
     /**
      * Returns a new shape item for the specified \a layout.

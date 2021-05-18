@@ -46,6 +46,9 @@
 #include "diagram/qgspiediagram.h"
 #include "qgspropertytransformer.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 static QString _fileNameForTest( const QString &testName )
 {

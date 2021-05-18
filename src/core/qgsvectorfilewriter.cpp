@@ -36,6 +36,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
+#include "qgssymbol.h"
 
 #include <QFile>
 #include <QFileInfo>

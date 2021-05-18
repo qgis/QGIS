@@ -26,6 +26,8 @@
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -2213,7 +2215,7 @@ QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -2270,9 +2272,9 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
@@ -2595,9 +2597,9 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
   mHashSymbol->startRender( context.renderContext(), context.fields() );
@@ -2649,7 +2651,7 @@ QgsSymbol *QgsHashedLineSymbolLayer::subSymbol()
 
 bool QgsHashedLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Line )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;

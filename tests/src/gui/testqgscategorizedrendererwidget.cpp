@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgssymbol.h"
 
 #include <memory>
 

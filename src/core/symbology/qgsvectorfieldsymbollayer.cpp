@@ -19,11 +19,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
 {
   setSubSymbol( new QgsLineSymbol() );
 }
+
+QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer() = default;
 
 void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -119,12 +122,17 @@ QgsSymbolLayer *QgsVectorFieldSymbolLayer::create( const QVariantMap &properties
 
 bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( symbol->type() == QgsSymbol::Line )
+  if ( symbol->type() == Qgis::SymbolType::Line )
   {
     mLineSymbol.reset( static_cast<QgsLineSymbol *>( symbol ) );
     return true;
   }
   return false;
+}
+
+QgsSymbol *QgsVectorFieldSymbolLayer::subSymbol()
+{
+  return mLineSymbol.get();
 }
 
 void QgsVectorFieldSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )

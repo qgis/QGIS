@@ -38,6 +38,7 @@
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
 #include "qgsfileutils.h"
+#include "qgsmarkersymbol.h"
 
 #include <QBuffer>
 
@@ -342,7 +343,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   const int largeIconSize = QgsLayerTreeModel::scaleIconSize( 512 );
   QSize minSz( iconSize, iconSize );
-  if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Marker )
+  if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Marker )
   {
     // unusued width, height variables
     double width = 0.0;
@@ -354,7 +355,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
               minSz,
               true ).size();
   }
-  else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbol::Line )
+  else if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Line )
   {
     double width = 0.0;
     double height = 0.0;
@@ -657,7 +658,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     s = minMaxSizeSymbol.get();
   }
 
-  if ( s->type() == QgsSymbol::Marker )
+  if ( s->type() == Qgis::SymbolType::Marker )
   {
     if ( width < desiredWidth )
     {

@@ -30,7 +30,6 @@
 %Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
-%Include auto_generated/qgscoreenums.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
 %Include auto_generated/qgsdatabaseschemamodel.sip
@@ -568,6 +567,7 @@
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip
 %Include auto_generated/symbology/qgsfeaturerenderergenerator.sip
+%Include auto_generated/symbology/qgsfillsymbol.sip
 %Include auto_generated/symbology/qgsfillsymbollayer.sip
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrenderer.sip
@@ -575,8 +575,10 @@
 %Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
+%Include auto_generated/symbology/qgslinesymbol.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
+%Include auto_generated/symbology/qgsmarkersymbol.sip
 %Include auto_generated/symbology/qgsmarkersymbollayer.sip
 %Include auto_generated/symbology/qgsmergedfeaturerenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip
@@ -597,6 +599,7 @@
 %Include auto_generated/symbology/qgssymbollayerreference.sip
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip
+%Include auto_generated/symbology/qgssymbolrendercontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip

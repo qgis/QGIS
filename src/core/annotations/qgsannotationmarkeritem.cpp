@@ -18,6 +18,7 @@
 #include "qgsannotationmarkeritem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmarkersymbol.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()

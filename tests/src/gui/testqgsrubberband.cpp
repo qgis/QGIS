@@ -27,6 +27,8 @@
 #include <qgslogger.h>
 #include "qgssymbol.h"
 #include "qgsrenderchecker.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsRubberband : public QObject
 {

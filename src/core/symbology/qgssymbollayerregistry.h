@@ -18,11 +18,12 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgssymbol.h"
 
 class QgsPathResolver;
 class QgsVectorLayer;
 class QgsSymbolLayerWidget SIP_EXTERNAL;
+class QgsSymbolLayer;
+class QDomElement;
 
 /**
  * \ingroup core
@@ -34,7 +35,7 @@ class QgsSymbolLayerWidget SIP_EXTERNAL;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
-    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, QgsSymbol::SymbolType type )
+    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, Qgis::SymbolType type )
       : mName( name )
       , mVisibleName( visibleName )
       , mType( type )
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
-    QgsSymbol::SymbolType type() const { return mType; }
+    Qgis::SymbolType type() const { return mType; }
 
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) = 0 SIP_FACTORY;
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
   protected:
     QString mName;
     QString mVisibleName;
-    QgsSymbol::SymbolType mType;
+    Qgis::SymbolType mType;
 };
 
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QVariantMap & ) SIP_SKIP;
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
   public:
     //! \note not available in Python bindings
     QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
-                            QgsSymbol::SymbolType type,
+                            Qgis::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerCreateFromSldFunc pfCreateFromSld = nullptr,
                             QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr,
@@ -174,10 +175,10 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     void resolvePaths( const QString &name, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 
     //! Returns a list of available symbol layers for a specified symbol type
-    QStringList symbolLayersForType( QgsSymbol::SymbolType type );
+    QStringList symbolLayersForType( Qgis::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) SIP_FACTORY;
+    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

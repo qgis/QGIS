@@ -43,7 +43,9 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsnullsymbolrenderer.h"
-
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

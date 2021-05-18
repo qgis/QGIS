@@ -934,7 +934,7 @@ QVariantMap QgsInterpolatedLineSymbolLayer::properties() const
 void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   QgsGeometry geometry = context.patchShape() ? context.patchShape()->geometry()
-                         : QgsStyle::defaultStyle()->defaultPatch( QgsSymbol::Line, size ).geometry();
+                         : QgsStyle::defaultStyle()->defaultPatch( Qgis::SymbolType::Line, size ).geometry();
   QgsFeature feature;
   feature.setGeometry( geometry );
 
@@ -1277,7 +1277,7 @@ void QgsInterpolatedLineSymbolLayer::renderPolyline( const QPolygonF &points, Qg
 
 bool QgsInterpolatedLineSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
 {
-  return symbol && symbol->type() == QgsSymbol::Line;
+  return symbol && symbol->type() == Qgis::SymbolType::Line;
 }
 
 QSet<QString> QgsInterpolatedLineSymbolLayer::usedAttributes( const QgsRenderContext & ) const

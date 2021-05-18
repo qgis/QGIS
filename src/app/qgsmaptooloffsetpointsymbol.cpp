@@ -26,6 +26,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmarkersymbol.h"
 
 #include <QGraphicsPixmapItem>
 

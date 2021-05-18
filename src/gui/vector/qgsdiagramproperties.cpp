@@ -44,6 +44,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgspropertytransformer.h"
 #include "qgspainteffectregistry.h"
+#include "qgspainteffect.h"
+#include "qgslinesymbol.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -118,7 +120,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramTypeComboBox->addItem( pix, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
   mDiagramTypeComboBox->blockSignals( false );
 
-  mAxisLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mAxisLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mAxisLineStyleButton->setDialogTitle( tr( "Axis Line Symbol" ) );
 
   mScaleRangeWidget->setMapCanvas( mMapCanvas );

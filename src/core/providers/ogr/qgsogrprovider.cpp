@@ -50,6 +50,7 @@ email                : sherman at mrcc.com
 #include "qgis.h"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsmetadatautils.h"
+#include "qgssymbol.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -259,8 +260,8 @@ void QgsOgrProvider::repack()
 
   }
 
-  if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
-       mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
+  if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
   {
     long oldcount = mFeaturesCounted;
     recalculateFeatureCount();
@@ -1842,7 +1843,7 @@ long QgsOgrProvider::featureCount() const
 {
   if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
   {
-    return static_cast< long >( FeatureCountState::UnknownCount );
+    return static_cast< long >( Qgis::FeatureCountState::UnknownCount );
   }
   if ( mRefreshFeatureCount )
   {
@@ -2238,8 +2239,8 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     returnvalue = false;
   }
 
-  if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
-       mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
+  if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
   {
     if ( returnvalue )
       mFeaturesCounted += flist.size();
@@ -2584,7 +2585,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOgrOrigLayer )
     return false;
 
-  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) )
+  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) )
     return true;
 
   const bool subsetStringHasChanged { theSQL != mSubsetString };
@@ -3200,8 +3201,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
   }
   else
   {
-    if ( mFeaturesCounted != static_cast< long >( FeatureCountState::Uncounted ) &&
-         mFeaturesCounted != static_cast< long >( FeatureCountState::UnknownCount ) )
+    if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
+         mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
     {
       if ( returnvalue )
         mFeaturesCounted -= id.size();
@@ -5002,7 +5003,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 {
   if ( !mOgrLayer )
   {
-    mFeaturesCounted = static_cast< long >( FeatureCountState::Uncounted );
+    mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::Uncounted );
     return;
   }
 
@@ -5020,7 +5021,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )
     {
-      mFeaturesCounted = static_cast< long >( FeatureCountState::UnknownCount );
+      mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::UnknownCount );
     }
   }
   else
@@ -5366,7 +5367,7 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::reloadProviderData()
 {
-  mFeaturesCounted = static_cast< long >( FeatureCountState::Uncounted );
+  mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   close();

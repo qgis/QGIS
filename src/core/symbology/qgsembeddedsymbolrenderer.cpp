@@ -17,6 +17,8 @@
 #include "qgspainteffectregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgspainteffect.h"
 
 QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
   : QgsFeatureRenderer( QStringLiteral( "embeddedSymbol" ) )

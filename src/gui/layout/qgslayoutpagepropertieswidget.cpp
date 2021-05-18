@@ -21,6 +21,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgsfillsymbol.h"
 
 QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
   : QgsLayoutItemBaseWidget( parent, layoutItem )
@@ -52,7 +53,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mLockAspectRatio->setWidthSpinBox( mWidthSpin );
   mLockAspectRatio->setHeightSpinBox( mHeightSpin );
 
-  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mSymbolButton->setSymbol( mPage->pageStyleSymbol()->clone() );
 
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::pageSizeChanged );

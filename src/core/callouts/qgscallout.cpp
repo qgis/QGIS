@@ -29,6 +29,8 @@
 #include "qgscircularstring.h"
 #include "qgsshapegenerator.h"
 #include "qgspainting.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <mutex>
 

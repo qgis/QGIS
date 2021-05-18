@@ -47,6 +47,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsellipsesymbollayer.cpp
   symbology/qgsembeddedsymbolrenderer.cpp
   symbology/qgsfeaturerenderergenerator.cpp
+  symbology/qgsfillsymbol.cpp
   symbology/qgsfillsymbollayer.cpp
   symbology/qgsgeometrygeneratorsymbollayer.cpp
   symbology/qgsgraduatedsymbolrenderer.cpp
@@ -54,8 +55,10 @@ set(QGIS_CORE_SRCS
   symbology/qgsinterpolatedlinerenderer.cpp
   symbology/qgsinvertedpolygonrenderer.cpp
   symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinesymbol.cpp
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmapinfosymbolconverter.cpp
+  symbology/qgsmarkersymbol.cpp
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
   symbology/qgsmergedfeaturerenderer.cpp
@@ -77,6 +80,7 @@ set(QGIS_CORE_SRCS
   symbology/qgssymbollayerregistry.cpp
   symbology/qgssymbollayerutils.cpp
   symbology/qgssymbol.cpp
+  symbology/qgssymbolrendercontext.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
   simplify/effectivearea.cpp
 
@@ -882,7 +886,6 @@ set(QGIS_CORE_HDRS
   qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinateutils.h
-  qgscoreenums.h
   qgscredentials.h
   qgsdartmeasurement.h
   qgsdatabaseschemamodel.h
@@ -1530,6 +1533,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsellipsesymbollayer.h
   symbology/qgsembeddedsymbolrenderer.h
   symbology/qgsfeaturerenderergenerator.h
+  symbology/qgsfillsymbol.h
   symbology/qgsfillsymbollayer.h
   symbology/qgsgeometrygeneratorsymbollayer.h
   symbology/qgsgraduatedsymbolrenderer.h
@@ -1537,8 +1541,10 @@ set(QGIS_CORE_HDRS
   symbology/qgsinterpolatedlinerenderer.h
   symbology/qgsinvertedpolygonrenderer.h
   symbology/qgslegendsymbolitem.h
+  symbology/qgslinesymbol.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmapinfosymbolconverter.h
+  symbology/qgsmarkersymbol.h
   symbology/qgsmarkersymbollayer.h
   symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
@@ -1559,6 +1565,7 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbollayerreference.h
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h
+  symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
 
   textrenderer/qgstextbackgroundsettings.h

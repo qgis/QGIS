@@ -31,6 +31,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 #include "qgsmessagelog.h"
+#include "qgssymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1180,7 +1184,7 @@ QVariantMap QgsOgrUtils::parseStyleString( const QString &string )
   return styles;
 }
 
-std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &string, QgsSymbol::SymbolType type )
+std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &string, Qgis::SymbolType type )
 {
   const QVariantMap styles = parseStyleString( string );
 
@@ -1618,7 +1622,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
   switch ( type )
   {
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
       if ( styles.contains( QStringLiteral( "symbol" ) ) )
       {
         const QVariantMap symbolStyle = styles.value( QStringLiteral( "symbol" ) ).toMap();
@@ -1629,7 +1633,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         return nullptr;
       }
 
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
       if ( styles.contains( QStringLiteral( "pen" ) ) )
       {
         // line symbol type
@@ -1641,7 +1645,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
         return nullptr;
       }
 
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
     {
       std::unique_ptr< QgsSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
       if ( styles.contains( QStringLiteral( "brush" ) ) )
@@ -1686,7 +1690,7 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       return fillSymbol;
     }
 
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 

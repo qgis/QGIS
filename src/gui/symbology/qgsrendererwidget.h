@@ -18,10 +18,8 @@
 #include <QWidget>
 #include <QMenu>
 #include <QStackedWidget>
-#include "qgssymbol.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
-#include "qgssymbollayer.h"
 
 class QgsDataDefinedSizeLegend;
 class QgsDataDefinedSizeLegendWidget;
@@ -29,6 +27,7 @@ class QgsVectorLayer;
 class QgsStyle;
 class QgsFeatureRenderer;
 class QgsMapCanvas;
+class QgsMarkerSymbol;
 
 /**
  * \ingroup gui
@@ -261,21 +260,12 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
-    {
-      init( QgsSymbolLayer::PropertySize );
-      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
-      {
-        mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
-        mDDBtn->setSymbol( mAssistantSymbol );
-      }
-    }
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->size(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 
@@ -292,16 +282,12 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
-    {
-      init( QgsSymbolLayer::PropertyAngle );
-    }
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->angle(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };
@@ -314,16 +300,12 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
-    {
-      init( QgsSymbolLayer::PropertyStrokeWidth );
-    }
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsLineSymbol *>( symbol )->width(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };

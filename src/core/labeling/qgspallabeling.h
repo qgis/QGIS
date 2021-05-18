@@ -39,7 +39,6 @@
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
-#include "qgssymbol.h"
 #include "qgstextformat.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"

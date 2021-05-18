@@ -180,14 +180,14 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
   for ( const QString &symbolLayerId : constSymbolLayerIds )
     cboLayerType->addItem( QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
-  if ( mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
-    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( QgsSymbol::Line );
+    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( Qgis::SymbolType::Line );
     const auto constLineLayerIds = lineLayerIds;
     for ( const QString &lineLayerId : constLineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata *layerInfo = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( lineLayerId );
-      if ( layerInfo->type() != QgsSymbol::Hybrid )
+      if ( layerInfo->type() != Qgis::SymbolType::Hybrid )
       {
         QString visibleName = layerInfo->visibleName();
         QString name = tr( "Outline: %1" ).arg( visibleName );

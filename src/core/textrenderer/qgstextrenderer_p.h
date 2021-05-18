@@ -29,6 +29,9 @@
 #include "qgspainteffect.h"
 #include "qgssymbollayerreference.h"
 #include "qgsstringutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgspropertycollection.h"
 
 #include <QSharedData>
 #include <QPainter>

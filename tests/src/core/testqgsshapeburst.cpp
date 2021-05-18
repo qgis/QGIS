@@ -34,6 +34,7 @@
 #include <qgscolorramp.h>
 //qgis test includes
 #include "qgsmultirenderchecker.h"
+#include "qgsfillsymbol.h"
 
 /**
  * \ingroup UnitTests

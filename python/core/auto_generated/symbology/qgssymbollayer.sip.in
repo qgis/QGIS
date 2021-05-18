@@ -22,7 +22,7 @@ class QgsSymbolLayer
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
-      case QgsSymbol::Marker:
+      case Qgis::SymbolType::Marker:
         if ( sipCpp->layerType() == "EllipseMarker" )
           sipType = sipType_QgsEllipseSymbolLayer;
         else if ( sipCpp->layerType() == "FontMarker" )
@@ -43,7 +43,7 @@ class QgsSymbolLayer
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
 
-      case QgsSymbol::Line:
+      case Qgis::SymbolType::Line:
         if ( sipCpp->layerType() == "MarkerLine" )
           sipType = sipType_QgsMarkerLineSymbolLayer;
         else if ( sipCpp->layerType() == "SimpleLine" )
@@ -56,7 +56,7 @@ class QgsSymbolLayer
           sipType = sipType_QgsLineSymbolLayer;
         break;
 
-      case QgsSymbol::Fill:
+      case Qgis::SymbolType::Fill:
         if ( sipCpp->layerType() == "SimpleFill" )
           sipType = sipType_QgsSimpleFillSymbolLayer;
         else if ( sipCpp->layerType() == "LinePatternFill" )
@@ -79,7 +79,7 @@ class QgsSymbolLayer
           sipType = sipType_QgsFillSymbolLayer;
         break;
 
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         sipType = sipType_QgsGeometryGeneratorSymbolLayer;
         break;
     }
@@ -335,7 +335,7 @@ Returns the symbol's sub symbol, if present.
 Sets layer's subsymbol. takes ownership of the passed symbol
 %End
 
-    QgsSymbol::SymbolType type() const;
+    Qgis::SymbolType type() const;
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 %Docstring
@@ -549,7 +549,7 @@ This is a list of symbol layers of other layers that should be occluded.
 
   protected:
 
-    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
+    QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
 
 
 
@@ -738,7 +738,7 @@ Returns the map unit scale for the symbol's size.
 .. seealso:: :py:func:`sizeUnit`
 %End
 
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
+    void setScaleMethod( Qgis::ScaleMethod scaleMethod );
 %Docstring
 Sets the method to use for scaling the marker's size.
 
@@ -747,7 +747,7 @@ Sets the method to use for scaling the marker's size.
 .. seealso:: :py:func:`scaleMethod`
 %End
 
-    QgsSymbol::ScaleMethod scaleMethod() const;
+    Qgis::ScaleMethod scaleMethod() const;
 %Docstring
 Returns the method to use for scaling the marker's size.
 

@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrastercontourrenderer.h"
 #include "qgslinesymbollayer.h"
+#include "qgslinesymbol.h"
 
 /**
  * \ingroup UnitTests

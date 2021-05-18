@@ -33,6 +33,7 @@
 #include "pointset.h"
 #include "qgslabelingresults.h"
 #include "qgscallout.h"
+#include "qgslinesymbol.h"
 
 class TestQgsLabelingEngine : public QObject
 {

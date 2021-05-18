@@ -25,6 +25,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsmarkersymbol.h"
 
 QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )
@@ -58,7 +59,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   cboShape->addItem( tr( "3D Model" ), QgsPoint3DSymbol::Model );
   cboShape->addItem( tr( "Billboard" ), QgsPoint3DSymbol::Billboard );
 
-  btnChangeSymbol->setSymbolType( QgsSymbol::Marker );
+  btnChangeSymbol->setSymbolType( Qgis::SymbolType::Marker );
   btnChangeSymbol->setDialogTitle( tr( "Billboard symbol" ) );
 
   QgsPoint3DSymbol defaultSymbol;
