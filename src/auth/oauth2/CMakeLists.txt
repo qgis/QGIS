@@ -26,9 +26,14 @@ set(OAUTH2_SRCS
   qgso2.cpp
   qgsauthoauth2config.cpp
   qgsauthoauth2method.cpp
-  qgsauthoauth2edit.cpp
   qjsonwrapper/Json.cpp
 )
+if(WITH_GUI)
+  set(OAUTH2_SRCS ${OAUTH2_SRCS}
+    qgsauthoauth2methodgui.cpp
+    qgsauthoauth2edit.cpp
+  )
+endif()
 if(WITH_INTERNAL_O2)
   set(O2_SRCS
     ${O2_SOURCE_DIR}/o0baseauth.cpp
@@ -45,11 +50,15 @@ endif()
 
 set(OAUTH2_HDRS
   qgsauthoauth2config.h
-  qgsauthoauth2edit.h
   qgsauthoauth2method.h
   qgso2.h
   qjsonwrapper/Json.h
 )
+if(WITH_GUI)
+  set(OAUTH2_HDRS ${OAUTH2_HDRS}
+    qgsauthoauth2edit.h
+  )
+endif()
 if(WITH_INTERNAL_O2)
   set(O2_HDRS
     ${O2_INCLUDE_DIR}/o0abstractstore.h
@@ -67,8 +76,6 @@ if(WITH_INTERNAL_O2)
   )
   set(OAUTH2_HDRS ${OAUTH2_HDRS} ${O2_HDRS})
 endif()
-
-set(OAUTH2_UIS qgsauthoauth2edit.ui)
 
 set(OAUTH2_RCCS oauth2_resources.qrc)
 
@@ -98,25 +105,40 @@ if(WITH_INTERNAL_O2 AND CMAKE_GENERATOR MATCHES "Ninja")
     COMMAND
   )
 endif()
-QT5_WRAP_UI(OAUTH2_UIS_H ${OAUTH2_UIS})
 
 ############################################################
 # Set up plugin targets
 
-add_library (oauth2authmethod MODULE
-  ${OAUTH2_SRCS}
-  ${OAUTH2_HDRS}
-  ${OAUTH2_RCCS}
-  ${OAUTH2_UIS_H}
-)
 
-# For unit testing
-add_library (oauth2authmethod_static STATIC
-  ${OAUTH2_SRCS}
-  ${OAUTH2_HDRS}
-  ${OAUTH2_RCCS}
-  ${OAUTH2_UIS_H}
-)
+if(WITH_GUI)
+  set(OAUTH2_UIS qgsauthoauth2edit.ui)
+  QT5_WRAP_UI(OAUTH2_UIS_H ${OAUTH2_UIS})
+  add_library (oauth2authmethod MODULE
+    ${OAUTH2_SRCS}
+    ${OAUTH2_HDRS}
+    ${OAUTH2_RCCS}
+    ${OAUTH2_UIS_H}
+  )
+  # For unit testing
+  add_library (oauth2authmethod_static STATIC
+    ${OAUTH2_SRCS}
+    ${OAUTH2_HDRS}
+    ${OAUTH2_RCCS}
+    ${OAUTH2_UIS_H}
+  )
+else()
+  add_library (oauth2authmethod MODULE
+    ${OAUTH2_SRCS}
+    ${OAUTH2_HDRS}
+    ${OAUTH2_RCCS}
+  )
+  # For unit testing
+  add_library (oauth2authmethod_static STATIC
+    ${OAUTH2_SRCS}
+    ${OAUTH2_HDRS}
+    ${OAUTH2_RCCS}
+  )
+endif()
 
 # require c++17
 target_compile_features(oauth2authmethod PRIVATE cxx_std_17)
@@ -137,11 +159,17 @@ endif()
 
 set(OAUTH2_TARGET_LIBS
   qgis_core
-  qgis_gui
   ${OAUTH2_TARGET_LIBS}
 )
 
-target_link_libraries (oauth2authmethod
+if(WITH_GUI)
+  set(OAUTH2_TARGET_LIBS
+    qgis_gui
+    ${OAUTH2_TARGET_LIBS}
+  )
+endif()
+
+target_link_libraries(oauth2authmethod
   ${OAUTH2_TARGET_LIBS}
 )
 target_link_libraries (oauth2authmethod_static

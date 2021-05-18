@@ -1,5 +1,6 @@
 add_subdirectory(native)
 add_subdirectory(core)
+add_subdirectory(auth)
 
 if (WITH_ANALYSIS)
   add_subdirectory(analysis)
@@ -8,7 +9,6 @@ endif()
 if (WITH_GUI)
   add_subdirectory(ui)
   add_subdirectory(gui)
-  add_subdirectory(auth)
 endif()
 
 add_subdirectory(providers)

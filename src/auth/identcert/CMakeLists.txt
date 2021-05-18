@@ -1,14 +1,21 @@
 set(AUTH_IDENTCERT_SRCS
   qgsauthidentcertmethod.cpp
-  qgsauthidentcertedit.cpp
 )
+if (WITH_GUI)
+  set(AUTH_IDENTCERT_SRCS ${AUTH_IDENTCERT_SRCS}
+    qgsauthidentcertmethodgui.cpp
+    qgsauthidentcertedit.cpp
+  )
+endif()
 
 set(AUTH_IDENTCERT_HDRS
-  qgsauthidentcertedit.h
   qgsauthidentcertmethod.h
 )
-
-set(AUTH_IDENTCERT_UIS qgsauthidentcertedit.ui)
+if (WITH_GUI)
+  set(AUTH_IDENTCERT_HDRS ${AUTH_IDENTCERT_HDRS}
+    qgsauthidentcertedit.h
+  )
+endif()
 
 include_directories (
   ../../core
@@ -19,24 +26,37 @@ include_directories (
 include_directories (SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
-)
-include_directories (
-  ../../gui
-  ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-QT5_WRAP_UI (AUTH_IDENTCERT_UIS_H ${AUTH_IDENTCERT_UIS})
+if (WITH_GUI)
+  include_directories (
+    ../../gui
+    ../../gui/auth
+  )
+endif()
 
-add_library (identcertauthmethod MODULE ${AUTH_IDENTCERT_SRCS} ${AUTH_IDENTCERT_HDRS} ${AUTH_IDENTCERT_UIS_H})
+if (WITH_GUI)
+  set(AUTH_IDENTCERT_UIS qgsauthidentcertedit.ui)
+  QT5_WRAP_UI (AUTH_IDENTCERT_UIS_H ${AUTH_IDENTCERT_UIS})
+  add_library (identcertauthmethod MODULE ${AUTH_IDENTCERT_SRCS} ${AUTH_IDENTCERT_HDRS} ${AUTH_IDENTCERT_UIS_H})
+else()
+  add_library (identcertauthmethod MODULE ${AUTH_IDENTCERT_SRCS} ${AUTH_IDENTCERT_HDRS})
+endif()
 
 # require c++17
 target_compile_features(identcertauthmethod PRIVATE cxx_std_17)
 
 target_link_libraries (identcertauthmethod
   qgis_core
-  qgis_gui
 )
+
+if (WITH_GUI)
+  target_link_libraries (identcertauthmethod
+    qgis_gui
+  )
+endif()
+
 target_compile_definitions(identcertauthmethod PRIVATE "-DQT_NO_FOREACH")
 
 install(TARGETS identcertauthmethod

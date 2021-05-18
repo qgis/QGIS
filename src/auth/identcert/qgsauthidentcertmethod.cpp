@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthidentcertmethod.h"
-#include "qgsauthidentcertedit.h"
 
 #include <QDir>
 #include <QFile>
@@ -331,14 +330,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthIdentCertEdit *editWidget( QWidget *parent )
-{
-  return new QgsAuthIdentCertEdit( parent );
 }
 
 /**

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthpkcs12method.h"
-#include "qgsauthpkcs12edit.h"
 
 #include <QDir>
 #include <QFile>
@@ -387,14 +386,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthPkcs12Edit *editWidget( QWidget *parent )
-{
-  return new QgsAuthPkcs12Edit( parent );
 }
 
 /**
