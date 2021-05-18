@@ -42,7 +42,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
   public:
 
     //! Contains properties for a feature within a clustered group.
-    struct GroupedFeature
+    struct CORE_EXPORT GroupedFeature
     {
 
         /**
