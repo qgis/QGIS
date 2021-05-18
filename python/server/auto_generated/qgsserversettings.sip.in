@@ -131,7 +131,7 @@ Returns ``True`` if profile information has to be added to the logs, default val
 
 .. note::
 
-   this flag is only effective when :py:func:`~QgsServerSettings.logLevel` returns Qgis.Info (0)
+   this flag is only effective when :py:func:`~QgsServerSettings.logLevel` returns Qgis.MessageLevel.Info (0)
 
 .. seealso:: :py:func:`logLevel`
 

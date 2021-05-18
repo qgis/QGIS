@@ -228,7 +228,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QString *errorMsg = new QString();
         if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures( vlayer, request, dx, dy, errorMsg, QgsProject::instance()->topologicalEditing(), mSnapIndicator->match().layer() ) )
         {
-          emit messageEmitted( *errorMsg, Qgis::Critical );
+          emit messageEmitted( *errorMsg, Qgis::MessageLevel::Critical );
           delete mRubberBand;
           mRubberBand = nullptr;
           mSnapIndicator->setMatch( QgsPointLocator::Match() );

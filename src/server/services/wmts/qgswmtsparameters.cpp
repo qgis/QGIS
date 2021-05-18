@@ -304,6 +304,6 @@ namespace QgsWmts
 
   void QgsWmtsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
 }

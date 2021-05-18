@@ -138,23 +138,23 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   QString colorName;
   switch ( level )
   {
-    case Qgis::Info:
+    case Qgis::MessageLevel::Info:
       levelString = QStringLiteral( "INFO" );
       colorName = settings.value( QStringLiteral( "colors/info" ), QString() ).toString();
       break;
-    case Qgis::Warning:
+    case Qgis::MessageLevel::Warning:
       levelString = QStringLiteral( "WARNING" );
       colorName = settings.value( QStringLiteral( "colors/warning" ), QString() ).toString();
       break;
-    case Qgis::Critical:
+    case Qgis::MessageLevel::Critical:
       levelString = QStringLiteral( "CRITICAL" );
       colorName = settings.value( QStringLiteral( "colors/critical" ), QString() ).toString();
       break;
-    case Qgis::Success:
+    case Qgis::MessageLevel::Success:
       levelString = QStringLiteral( "SUCCESS" );
       colorName = settings.value( QStringLiteral( "colors/success" ), QString() ).toString();
       break;
-    case Qgis::None:
+    case Qgis::MessageLevel::NoLevel:
       levelString = QStringLiteral( "NONE" );
       colorName = settings.value( QStringLiteral( "colors/default" ), QString() ).toString();
       break;

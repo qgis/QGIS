@@ -38,7 +38,7 @@ namespace QgsWms
     if ( !xsdFileInfo.exists() )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),
-                                 QStringLiteral( "Server" ), Qgis::Critical );
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
     else
     {
@@ -52,7 +52,7 @@ namespace QgsWms
       else
       {
         QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' not readable" ),
-                                   QStringLiteral( "Server" ), Qgis::Critical );
+                                   QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
       }
     }
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );

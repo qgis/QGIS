@@ -86,12 +86,12 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
   auto hasMatch { false };
   for ( const auto &handler : mHandlers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, handler->path().pattern() ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Checking API path %1 for %2 " ).arg( path, handler->path().pattern() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     if ( handler->path().match( path ).hasMatch() )
     {
       hasMatch = true;
       // Execute handler
-      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( handler->operationId() ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "API %1: found handler %2" ).arg( name(), QString::fromStdString( handler->operationId() ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       // May throw QgsServerApiBadRequestException or JSON exceptions on serializing
       try
       {
@@ -167,7 +167,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApi::contenTypeFromExtension( const std
   // Default to JSON, but log a warning!
   QgsMessageLog::logMessage( QStringLiteral( "Content type for extension %1 not found! Returning default (JSON)" ).arg( exts ),
                              QStringLiteral( "Server" ),
-                             Qgis::Warning );
+                             Qgis::MessageLevel::Warning );
   return QgsServerOgcApi::ContentType::JSON;
 }
 

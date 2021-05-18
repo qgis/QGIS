@@ -1963,7 +1963,7 @@ namespace QgsWms
 
   void QgsWmsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
 
   void QgsWmsParameters::raiseError( const QString &msg ) const
