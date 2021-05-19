@@ -20,13 +20,14 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+#include "Json.h"
+
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qjsonwrapper/Json.h"
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

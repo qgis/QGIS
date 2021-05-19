@@ -19,6 +19,10 @@
  * SOFTWARE.
  */
 
+
+#define SIP_NO_FILE
+
+
 #pragma once
 #ifndef QJSONWRAPPER_JSON_H
 #define QJSONWRAPPER_JSON_H

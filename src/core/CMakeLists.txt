@@ -3,6 +3,7 @@
 
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
+
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -851,8 +852,9 @@ endif()
 
 set(QGIS_CORE_HDRS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
-  ${CMAKE_BINARY_DIR}/qgsconfig.h
   ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.h
+
+  ${CMAKE_BINARY_DIR}/qgsconfig.h
 
   ../plugins/qgisplugin.h
 

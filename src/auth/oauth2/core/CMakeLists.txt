@@ -11,7 +11,7 @@ option(WITH_INTERNAL_O2 "Download and locally include source of o2 library" ON)
 
 if(WITH_INTERNAL_O2)
   set(O2_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/o2/src)
-  set(O2_INCLUDE_DIR "${O2_SOURCE_DIR}"  CACHE INTERNAL "Path to o2 library headers" FORCE)
+  set(O2_INCLUDE_DIR "${O2_SOURCE_DIR}" CACHE INTERNAL "Path to o2 library headers" FORCE)
   set(O2_LIBRARY "" CACHE INTERNAL "Path to o2 built shared library" FORCE)
   set(O2_LIBRARY_STATIC "" CACHE INTERNAL "Path to o2 built static library" FORCE)
   set(O2_FOUND TRUE CACHE INTERNAL "Whether O2 has been found" FORCE)
@@ -97,6 +97,15 @@ foreach(_library_type MODULE STATIC)
   target_include_directories(${_library_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
   target_link_libraries(${_library_name} qgis_core)
+
+  if(NOT WITH_INTERNAL_O2)
+    if(NOT "${O2_LIBRARY}" STREQUAL "")
+      # prefer dynamic linking
+      target_link_libraries(${_library_name} ${O2_LIBRARY})
+    else()
+      target_link_libraries(${_library_name} ${O2_LIBRARY_STATIC})
+    endif()
+  endif()
 
   if(WIN32)
     add_definitions(-DO2_DLL_EXPORT)

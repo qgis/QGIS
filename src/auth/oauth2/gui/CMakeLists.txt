@@ -19,7 +19,12 @@ set(_library_suffix_STATIC "_static")
 foreach(_library_type MODULE STATIC)
   set(_library_name "oauth2authmethodgui${_library_suffix_${_library_type}}")
 
+  #find_package(oauth2authmethod${_library_suffix_${_library_type}} REQUIRED PATHS ${QGIS_PLUGIN_DIR})
+
   add_library(${_library_name} ${_library_type} ${AUTH_OAUTH2_GUI_SRCS} ${AUTH_OAUTH2_GUI_HDRS} ${AUTH_OAUTH2_GUI_UIS_H} ${AUTH_OAUTH2_GUI_RCCS})
+
+  add_dependencies(${_library_name} oauth2authmethod_static)
+  target_link_libraries(${_library_name} oauth2authmethod$_static)
 
   target_include_directories(${_library_name} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -31,7 +36,8 @@ foreach(_library_type MODULE STATIC)
   target_compile_features(${_library_name} PRIVATE cxx_std_17)
 
   target_link_libraries (${_library_name}
-      qgis_gui
+    qgis_core
+    qgis_gui
   )
 
   target_compile_definitions(${_library_name} PRIVATE "-DQT_NO_FOREACH")
