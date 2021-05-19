@@ -20,6 +20,7 @@
 
 QgsExternalStorageRegistry::QgsExternalStorageRegistry()
 {
+  registerExternalStorage( new QgsSimpleCopyExternalStorage() );
 }
 
 QgsExternalStorageRegistry::~QgsExternalStorageRegistry()

@@ -106,6 +106,7 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(storedContent.status(), QgsExternalStorageOperation.OnGoing)
 
         spyErrorOccurred = QSignalSpy(storedContent.errorOccurred)
+        spyProgressChanged = QSignalSpy(storedContent.progressChanged)
 
         loop = QEventLoop()
         storedContent.stored.connect(loop.quit)
@@ -116,6 +117,8 @@ class TestPyQgsExternalStorageBase():
         self.assertEqual(storedContent.url(), url)
         self.assertFalse(storedContent.errorString())
         self.assertEqual(storedContent.status(), QgsExternalStorageFetchedContent.Finished)
+        self.assertTrue(len(spyProgressChanged) > 0)
+        self.assertEqual(spyProgressChanged[-1][0], 100)
 
         # fetch
         fetchedContent = self.storage.fetch(self.url + "/" + os.path.basename(f.name), self.auth_config.id())
