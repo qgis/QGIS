@@ -1549,6 +1549,7 @@ int QOCISpatialCols::readPiecewise( QVector<QVariant> &values, int index )
   int            r = 0;
   bool           nullField;
 
+  bool firstPiece = true;
   do
   {
     r = OCIStmtGetPieceInfo( d->sql, d->err, reinterpret_cast<void **>( &dfn ), &typep,
@@ -1589,20 +1590,21 @@ int QOCISpatialCols::readPiecewise( QVector<QVariant> &values, int index )
     {
       if ( isStringField )
       {
-        QString str = values.at( fieldNum + index ).toString();
+        QString str = firstPiece ? QString() : values.at( fieldNum + index ).toString();
         str += QString( reinterpret_cast<const QChar *>( col ), chunkSize / 2 );
         values[fieldNum + index] = str;
         fieldInf[fieldNum].ind = 0;
       }
       else
       {
-        QByteArray ba = values.at( fieldNum + index ).toByteArray();
+        QByteArray ba = firstPiece ? QByteArray() : values.at( fieldNum + index ).toByteArray();
         int sz = ba.size();
         ba.resize( sz + chunkSize );
         memcpy( ba.data() + sz, reinterpret_cast<char *>( col ), chunkSize );
         values[fieldNum + index] = ba;
         fieldInf[fieldNum].ind = 0;
       }
+      firstPiece = false;
     }
   }
   while ( status == OCI_SUCCESS_WITH_INFO || status == OCI_NEED_DATA );
@@ -3413,7 +3415,6 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
   // need to read piecewise before assigning values
   if ( r == OCI_SUCCESS && piecewise )
   {
-    values.clear();
     r = d->cols->readPiecewise( values, index );
   }
 
