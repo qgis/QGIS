@@ -25,8 +25,6 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 
-class QAction;
-
 class QgsLocatorResult;
 class QgsLocator;
 class QgsLocatorContext;

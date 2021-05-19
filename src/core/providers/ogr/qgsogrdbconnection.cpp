@@ -23,10 +23,6 @@
 #include "qgssettings.h"
 
 #include "qgslogger.h"
-#include <QInputDialog>
-#include <QMessageBox>
-
-
 
 QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &settingsKey )
   : mConnName( connName )

@@ -19,10 +19,6 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
-#include <QMenu>
-#include <QMouseEvent>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
 #include <QDomDocument>

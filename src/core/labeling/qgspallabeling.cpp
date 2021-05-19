@@ -43,6 +43,7 @@
 #include <QDesktopWidget>
 #else
 #include <QScreen>
+#include <QWidget>
 #endif
 #include <QTextBoundaryFinder>
 
@@ -75,7 +76,6 @@
 #include "callouts/qgscalloutsregistry.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabeling.h"
-#include <QMessageBox>
 
 using namespace pal;
 

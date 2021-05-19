@@ -48,7 +48,6 @@
 #include <QImage>
 #include <QColor>
 #include <QProcess>
-#include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>

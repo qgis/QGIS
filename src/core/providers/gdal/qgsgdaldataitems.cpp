@@ -28,9 +28,7 @@
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
-#include <QAction>
 #include <mutex>
-#include <QMessageBox>
 #include <QUrlQuery>
 #include <QUrl>
 

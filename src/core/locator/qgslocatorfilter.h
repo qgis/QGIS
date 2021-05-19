@@ -18,7 +18,6 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include <QAction>
 #include <QIcon>
 #include <QString>
 #include <QVariant>

@@ -26,7 +26,6 @@
 #include <QDomElement>
 #include <QMimeData>
 #include <QSettings>
-#include <QMessageBox>
 #include <QIcon>
 #include <QIODevice>
 
