@@ -282,8 +282,6 @@ set(QGIS_CORE_SRCS
   qgsbearingutils.cpp
   qgsbookmarkmanager.cpp
   qgsbookmarkmodel.cpp
-  qgsbrowsermodel.cpp
-  qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
@@ -302,9 +300,6 @@ set(QGIS_CORE_SRCS
   qgsdatabaseschemamodel.cpp
   qgsdatabasetablemodel.cpp
   qgsdatadefinedsizelegend.cpp
-  qgsdataitem.cpp
-  qgsdataitemprovider.cpp
-  qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
   qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
@@ -371,13 +366,6 @@ set(QGIS_CORE_SRCS
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaplayertemporalproperties.cpp
-  qgsmaprenderercache.cpp
-  qgsmaprenderercustompainterjob.cpp
-  qgsmaprendererjob.cpp
-  qgsmaprendererparalleljob.cpp
-  qgsmaprenderersequentialjob.cpp
-  qgsmaprendererstagedrenderjob.cpp
-  qgsmaprenderertask.cpp
   qgsmapsettings.cpp
   qgsmapsettingsutils.cpp
   qgsmaptopixel.cpp
@@ -476,6 +464,12 @@ set(QGIS_CORE_SRCS
   qgstestutils.cpp
   qgsziputils.cpp
 
+  browser/qgsbrowsermodel.cpp
+  browser/qgsbrowserproxymodel.cpp
+  browser/qgsdataitem.cpp
+  browser/qgsdataitemprovider.cpp
+  browser/qgsdataitemproviderregistry.cpp
+
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
@@ -540,6 +534,14 @@ set(QGIS_CORE_SRCS
   layout/qgsreportsectionfieldgroup.cpp
   layout/qgsreportsectionlayout.cpp
   layout/qgscompositionconverter.cpp
+
+  maprenderer/qgsmaprenderercache.cpp
+  maprenderer/qgsmaprenderercustompainterjob.cpp
+  maprenderer/qgsmaprendererjob.cpp
+  maprenderer/qgsmaprendererparalleljob.cpp
+  maprenderer/qgsmaprenderersequentialjob.cpp
+  maprenderer/qgsmaprendererstagedrenderjob.cpp
+  maprenderer/qgsmaprenderertask.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -873,8 +875,6 @@ set(QGIS_CORE_HDRS
   qgsbearingutils.h
   qgsbookmarkmanager.h
   qgsbookmarkmodel.h
-  qgsbrowsermodel.h
-  qgsbrowserproxymodel.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
@@ -893,9 +893,6 @@ set(QGIS_CORE_HDRS
   qgsdatabaseschemamodel.h
   qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
-  qgsdataitem.h
-  qgsdataitemprovider.h
-  qgsdataitemproviderregistry.h
   qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
@@ -976,13 +973,6 @@ set(QGIS_CORE_HDRS
   qgsmaplayerstylemanager.h
   qgsmaplayerelevationproperties.h
   qgsmaplayertemporalproperties.h
-  qgsmaprenderercache.h
-  qgsmaprenderercustompainterjob.h
-  qgsmaprendererjob.h
-  qgsmaprendererparalleljob.h
-  qgsmaprenderersequentialjob.h
-  qgsmaprendererstagedrenderjob.h
-  qgsmaprenderertask.h
   qgsmapsettings.h
   qgsmapsettingsutils.h
   qgsmapthemecollection.h
@@ -1116,6 +1106,12 @@ set(QGIS_CORE_HDRS
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+
+  browser/qgsbrowsermodel.h
+  browser/qgsbrowserproxymodel.h
+  browser/qgsdataitem.h
+  browser/qgsdataitemprovider.h
+  browser/qgsdataitemproviderregistry.h
 
   callouts/qgscallout.h
   callouts/qgscalloutsregistry.h
@@ -1320,6 +1316,14 @@ set(QGIS_CORE_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
   locator/qgslocatormodelbridge.h
+
+  maprenderer/qgsmaprenderercache.h
+  maprenderer/qgsmaprenderercustompainterjob.h
+  maprenderer/qgsmaprendererjob.h
+  maprenderer/qgsmaprendererparalleljob.h
+  maprenderer/qgsmaprenderersequentialjob.h
+  maprenderer/qgsmaprendererstagedrenderjob.h
+  maprenderer/qgsmaprenderertask.h
 
   mesh/qgsmesh3daveraging.h
   mesh/qgsmeshdataprovider.h
@@ -1811,6 +1815,7 @@ target_include_directories(qgis_core PUBLIC
   3d
   annotations
   auth
+  browser
   callouts
   classification
   diagram
@@ -1828,6 +1833,7 @@ target_include_directories(qgis_core PUBLIC
   layertree
   layout
   locator
+  maprenderer
   mesh
   metadata
   network

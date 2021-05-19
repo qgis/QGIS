@@ -15,8 +15,6 @@
 %Include auto_generated/qgsbearingutils.sip
 %Include auto_generated/qgsbookmarkmanager.sip
 %Include auto_generated/qgsbookmarkmodel.sip
-%Include auto_generated/qgsbrowsermodel.sip
-%Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscachedfeatureiterator.sip
 %Include auto_generated/qgscacheindex.sip
 %Include auto_generated/qgscacheindexfeatureid.sip
@@ -33,9 +31,6 @@
 %Include auto_generated/qgsdatabaseschemamodel.sip
 %Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
-%Include auto_generated/qgsdataitem.sip
-%Include auto_generated/qgsdataitemprovider.sip
-%Include auto_generated/qgsdataitemproviderregistry.sip
 %Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
@@ -108,12 +103,6 @@
 %Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmaplayerelevationproperties.sip
 %Include auto_generated/qgsmaplayertemporalproperties.sip
-%Include auto_generated/qgsmaprenderercache.sip
-%Include auto_generated/qgsmaprenderercustompainterjob.sip
-%Include auto_generated/qgsmaprendererjob.sip
-%Include auto_generated/qgsmaprendererparalleljob.sip
-%Include auto_generated/qgsmaprenderersequentialjob.sip
-%Include auto_generated/qgsmaprenderertask.sip
 %Include auto_generated/qgsmapsettings.sip
 %Include auto_generated/qgsmapsettingsutils.sip
 %Include auto_generated/qgsmapthemecollection.sip
@@ -224,6 +213,11 @@
 %Include auto_generated/auth/qgsauthconfig.sip
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
+%Include auto_generated/browser/qgsbrowsermodel.sip
+%Include auto_generated/browser/qgsbrowserproxymodel.sip
+%Include auto_generated/browser/qgsdataitem.sip
+%Include auto_generated/browser/qgsdataitemprovider.sip
+%Include auto_generated/browser/qgsdataitemproviderregistry.sip
 %Include auto_generated/callouts/qgscallout.sip
 %Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/classification/qgsclassificationcustom.sip
@@ -399,6 +393,12 @@
 %Include auto_generated/locator/qgslocatorfilter.sip
 %Include auto_generated/locator/qgslocatormodel.sip
 %Include auto_generated/locator/qgslocatormodelbridge.sip
+%Include auto_generated/maprenderer/qgsmaprenderercache.sip
+%Include auto_generated/maprenderer/qgsmaprenderercustompainterjob.sip
+%Include auto_generated/maprenderer/qgsmaprendererjob.sip
+%Include auto_generated/maprenderer/qgsmaprendererparalleljob.sip
+%Include auto_generated/maprenderer/qgsmaprenderersequentialjob.sip
+%Include auto_generated/maprenderer/qgsmaprenderertask.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip

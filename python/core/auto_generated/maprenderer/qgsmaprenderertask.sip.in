@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderertask.h                                        *
+ * src/core/maprenderer/qgsmaprenderertask.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -99,7 +99,7 @@ Emitted when map rendering failed.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderertask.h                                        *
+ * src/core/maprenderer/qgsmaprenderertask.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

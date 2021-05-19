@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbrowsermodel.h                                           *
+ * src/core/browser/qgsbrowsermodel.h                                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -247,7 +247,7 @@ Populates the model
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbrowsermodel.h                                           *
+ * src/core/browser/qgsbrowsermodel.h                                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
