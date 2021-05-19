@@ -24,8 +24,6 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
-#include <QInputDialog>
-
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
 {

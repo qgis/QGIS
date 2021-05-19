@@ -1379,12 +1379,6 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
   {
-    // want to make this class as GUI independent as possible; so commented out
-#if 0
-    QMessageBox::critical( 0, tr( "Read Project File" ),
-                           tr( "%1 at line %2 column %3" ).arg( errorMsg ).arg( line ).arg( column ) );
-#endif
-
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
                           .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 

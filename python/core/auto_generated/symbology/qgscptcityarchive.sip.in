@@ -95,8 +95,6 @@ Base class for all items in the model
 
     virtual QWidget *paramWidget() /Factory/;
 
-    virtual QList<QAction *> actions();
-
     virtual bool acceptDrop();
 
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );

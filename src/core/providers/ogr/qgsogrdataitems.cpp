@@ -32,8 +32,6 @@
 
 #include <QFileInfo>
 #include <QTextStream>
-#include <QAction>
-#include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QRegularExpression>
