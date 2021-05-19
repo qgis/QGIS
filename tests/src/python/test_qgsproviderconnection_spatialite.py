@@ -50,7 +50,11 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         SELECT i FROM r
         LIMIT 10000000
         )
-    SELECT i FROM r WHERE i = 1;"""
+    SELECT i FROM r WHERE i = 1; """
+
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = ''
+    sqlVectorLayerTable = 'cdb_lines'
 
     @classmethod
     def setUpClass(cls):

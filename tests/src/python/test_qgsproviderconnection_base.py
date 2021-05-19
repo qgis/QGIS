@@ -522,13 +522,13 @@ class TestPyQgsProviderConnectionBase():
 
         try:
             schema = getattr(self, 'sqlVectorLayerSchema')
-        except:
+        except:  # noqa: E722
             print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerSchema for query layers test!")
             return
 
         try:
             table = getattr(self, 'sqlVectorLayerTable')
-        except:
+        except:  # noqa: E722
             print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerTable for query layers test!")
             return
 
