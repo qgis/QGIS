@@ -379,7 +379,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::Filter,
     SqlLayerDefinitionCapability::PrimaryKeys,
     SqlLayerDefinitionCapability::GeometryColumn,
   };

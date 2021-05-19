@@ -42,6 +42,10 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     # Provider test cases can define a slowQuery for executeSql cancellation test
     slowQuery = "select pg_sleep(30)"
 
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = 'qgis_test'
+    sqlVectorLayerTable = 'someData'
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""

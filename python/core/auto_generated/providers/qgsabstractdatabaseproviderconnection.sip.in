@@ -348,7 +348,7 @@ This information is calculated from the geometry columns types.
 
     enum SqlLayerDefinitionCapability
     {
-      Filters,
+      Filter,
       GeometryColumn,
       PrimaryKeys,
       SelectAtId

@@ -56,6 +56,10 @@ class TestPyQgsProviderConnectionBase():
     myUtf8Table = 'myUtf8\U0001f604Table'
     geometryColumnName = 'geom'
 
+    # Provider test cases can define a schema and table name for SQL query layers test
+    sqlVectorLayerSchema = None  # string, empty string for schema-less DBs (SQLite)
+    sqlVectorLayerTable = None   # string
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -505,3 +509,74 @@ class TestPyQgsProviderConnectionBase():
                 QgsApplication.processEvents()
             end = time.time()
             self.assertTrue(end - start < 1)
+
+    def testCreateSqlVectorLayer(self):
+        """Test vector layer creation from SQL query"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        if not conn.capabilities() & QgsAbstractDatabaseProviderConnection.SqlLayers:
+            print(f"FIXME: {self.providerKey} data provider does not support query layers!")
+            return
+
+        try:
+            schema = getattr(self, 'sqlVectorLayerSchema')
+        except:
+            print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerSchema for query layers test!")
+            return
+
+        try:
+            table = getattr(self, 'sqlVectorLayerTable')
+        except:
+            print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerTable for query layers test!")
+            return
+
+        sql_layer_capabilities = conn.sqlLayerDefinitionCapabilities()
+
+        # Try a simple select first
+
+        table_info = conn.table(schema, table)
+
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.layerName = 'My SQL Layer'
+
+        # Some providers do not support schema
+        if schema != '':
+            options.sql = f'SELECT * FROM "{table_info.schema()}"."{table_info.tableName()}"'
+        else:
+            options.sql = f'SELECT * FROM "{table_info.tableName()}"'
+
+        options.geometryColumn = table_info.geometryColumn()
+        options.primaryKeyColumns = table_info.primaryKeyColumns()
+
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.isSpatial())
+        self.assertEqual(vl.name(), options.layerName)
+
+        # Some providers can also create SQL layer without an explicit PK
+        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.PrimaryKeys:
+            options.primaryKeyColumns = []
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            self.assertTrue(vl.isSpatial())
+
+        # Some providers can also create SQL layer without an explicit geometry column
+        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.GeometryColumn:
+            options.primaryKeyColumns = table_info.primaryKeyColumns()
+            options.geometryColumn = ''
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            # This may fail for OGR where the provider is smart enough to guess the geometry column
+            if self.providerKey != 'ogr':
+                self.assertFalse(vl.isSpatial())
+
+        # Some providers can also create SQL layer with filters
+        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.Filter:
+            options.primaryKeyColumns = table_info.primaryKeyColumns()
+            options.geometryColumn = table_info.geometryColumn()
+            options.filter = f'"{options.primaryKeyColumns[0]}" > 0'
+            vl = conn.createSqlVectorLayer(options)
+            self.assertTrue(vl.isValid())
+            self.assertTrue(vl.isSpatial())

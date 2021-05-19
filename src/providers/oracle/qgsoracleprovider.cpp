@@ -2624,7 +2624,7 @@ bool QgsOracleProvider::getGeometryDetails()
       // no data - so take what's requested
       if ( mRequestedGeomType == QgsWkbTypes::Unknown )
       {
-        QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn ).arg( mQuery ) );
+        QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn, mQuery ) );
       }
 
       detectedType = QgsWkbTypes::Unknown;

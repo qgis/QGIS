@@ -407,7 +407,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       private:
 
         //! Holds the list of geometry wkb types and srids supported by the table
-        QList<GeometryColumnType>    mGeometryColumnTypes;
+        QList<GeometryColumnType>     mGeometryColumnTypes;
         //! Table schema
         QString                       mSchema;
         //! Table name
@@ -485,10 +485,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * \brief The SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
+     * \since QGIS 3.22
      */
     enum SqlLayerDefinitionCapability
     {
-      Filters = 1 << 1,           //! SQL layer definition supports filters
+      Filter = 1 << 1,            //! SQL layer definition supports filter
       GeometryColumn = 1 << 2,    //! SQL layer definition supports geometry colum
       PrimaryKeys = 1 << 3,       //! SQL layer definition supports primary keys
       SelectAtId = 1 << 4         //! SQL layer definition supports disabling select at id
@@ -500,6 +501,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * \brief The SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
+     * \note The category has currently no usage, but it was planned for future uses.
+     * \since QGIS 3.22
      */
     enum SqlKeywordCategory
     {
@@ -508,9 +511,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Function,     //! SQL generic function
       Geospatial,   //! SQL spatial function
       Operator,     //! SQL operator
-      Math,         //! SQL math functions
-      Aggregate,    //! SQL aggregate functions
-      String,       //! SQL string functions
+      Math,         //! SQL math function
+      Aggregate,    //! SQL aggregate function
+      String,       //! SQL string function
       Identifier    //! SQL identifier
     };
 

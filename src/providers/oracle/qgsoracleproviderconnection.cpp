@@ -123,7 +123,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::Filter,
     SqlLayerDefinitionCapability::GeometryColumn,
     SqlLayerDefinitionCapability::PrimaryKeys,
   };
@@ -164,7 +164,7 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     {
       sqlId ++;
     }
-    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over (ORDER BY NULL) AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
   }
 
   if ( ! options.geometryColumn.isEmpty() )
@@ -172,8 +172,93 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
+  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 
+  // Try to guess the geometry and srid
+  if ( ! vl->isValid() )
+  {
+    const auto limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
+    const auto sql { QStringLiteral( R"(
+      SELECT DISTINCT a.%1.SDO_GTYPE As gtype,
+                            a.%1.SDO_SRID
+            FROM (%2) a
+            WHERE a.%1 IS NOT NULL %3
+            ORDER BY a.%1.SDO_GTYPE
+    )" ).arg( options.geometryColumn, options.sql, limit ) };
+    const auto candidates { executeSql( sql ) };
+    for ( const auto &row : std::as_const( candidates ) )
+    {
+      bool ok;
+      const auto type { row[ 0 ].toInt( &ok ) };
+      if ( ok )
+      {
+        const auto srid { row[ 0 ].toInt( &ok ) };
+
+        if ( ok )
+        {
+
+          QgsWkbTypes::Type geomType { QgsWkbTypes::Type::Unknown };
+
+          switch ( type )
+          {
+            case 2001:
+              geomType = QgsWkbTypes::Point;
+              break;
+            case 2002:
+              geomType = QgsWkbTypes::LineString;
+              break;
+            case 2003:
+              geomType = QgsWkbTypes::Polygon;
+              break;
+            // Note: 2004 is missing
+            case 2005:
+              geomType = QgsWkbTypes::MultiPoint;
+              break;
+            case 2006:
+              geomType = QgsWkbTypes::MultiLineString;
+              break;
+            case 2007:
+              geomType = QgsWkbTypes::MultiPolygon;
+              break;
+            // 3K...
+            case 3001:
+              geomType = QgsWkbTypes::Point25D;
+              break;
+            case 3002:
+              geomType = QgsWkbTypes::LineString25D;
+              break;
+            case 3003:
+              geomType = QgsWkbTypes::Polygon25D;
+              break;
+            // Note: 3004 is missing
+            case 3005:
+              geomType = QgsWkbTypes::MultiPoint25D;
+              break;
+            case 3006:
+              geomType = QgsWkbTypes::MultiLineString25D;
+              break;
+            case 3007:
+              geomType = QgsWkbTypes::MultiPolygon25D;
+              break;
+            default:
+              geomType = QgsWkbTypes::Type::Unknown;
+          }
+          if ( geomType != QgsWkbTypes::Type::Unknown )
+          {
+            tUri.setSrid( QString::number( srid ) );
+            tUri.setWkbType( geomType );
+            vl = std::make_unique<QgsVectorLayer>( tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+            if ( vl->isValid() )
+            {
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return vl.release();
 }
 
 void QgsOracleProviderConnection::store( const QString &name ) const

@@ -85,7 +85,7 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filters,
+    SqlLayerDefinitionCapability::Filter,
     SqlLayerDefinitionCapability::PrimaryKeys,
     SqlLayerDefinitionCapability::GeometryColumn,
     SqlLayerDefinitionCapability::SelectAtId,

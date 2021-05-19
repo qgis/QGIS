@@ -82,7 +82,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
       mGeometryColumnCheckBox->setVisible( showGeometryColumnConfig );
       mGeometryColumnComboBox->setVisible( showGeometryColumnConfig );
 
-      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filters ) };
+      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filter ) };
       mFilterLabel->setVisible( showFilterConfig );
       mFilterToolButton->setVisible( showFilterConfig );
       mFilterLineEdit->setVisible( showFilterConfig );
