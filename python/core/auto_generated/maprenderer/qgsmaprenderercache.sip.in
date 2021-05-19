@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderercache.h                                       *
+ * src/core/maprenderer/qgsmaprenderercache.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -176,7 +176,7 @@ Invalidates cached images which relate to the specified map ``layer``.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderercache.h                                       *
+ * src/core/maprenderer/qgsmaprenderercache.h                           *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

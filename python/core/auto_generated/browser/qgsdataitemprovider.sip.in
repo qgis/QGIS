@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemprovider.h                                       *
+ * src/core/browser/qgsdataitemprovider.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -80,7 +80,7 @@ The default implementation returns ``False`` for all paths.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemprovider.h                                       *
+ * src/core/browser/qgsdataitemprovider.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderersequentialjob.h                               *
+ * src/core/maprenderer/qgsmaprenderersequentialjob.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -56,7 +56,7 @@ It is safe to call that function while rendering is active to see preview of the
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsmaprenderersequentialjob.h                               *
+ * src/core/maprenderer/qgsmaprenderersequentialjob.h                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

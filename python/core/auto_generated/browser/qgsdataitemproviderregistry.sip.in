@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemproviderregistry.h                               *
+ * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -89,7 +89,7 @@ Emitted when a data item provider is about to be removed
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemproviderregistry.h                               *
+ * src/core/browser/qgsdataitemproviderregistry.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

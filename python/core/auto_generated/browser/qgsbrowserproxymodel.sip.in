@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbrowserproxymodel.h                                      *
+ * src/core/browser/qgsbrowserproxymodel.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -201,7 +201,7 @@ Sets show layers to ``showLayers``
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsbrowserproxymodel.h                                      *
+ * src/core/browser/qgsbrowserproxymodel.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
