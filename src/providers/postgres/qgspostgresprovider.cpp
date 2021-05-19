@@ -591,7 +591,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
-  auto lookupKeyWhereClause = [ = ]
+  auto lookupKeyWhereClause = [ = ]( bool canUseVALUES )
   {
     if ( featureIds.isEmpty() )
       return QString();
@@ -630,6 +630,12 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
              whereKeys.append( QStringLiteral( " IN " ) ) +
              whereValuesList.join( QLatin1Char( ',' ) ).prepend( QLatin1Char( '(' ) ).append( QLatin1Char( ')' ) );
     }
+    else if ( canUseVALUES )
+    {
+      return whereValuesList.isEmpty() ? QString() :
+             whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
+    }
     else
     {
       return whereValuesList.isEmpty() ? QString() :
@@ -663,7 +669,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     }
     case PktInt64:
     case PktUint64:
-      return lookupKeyWhereClause();
+      return lookupKeyWhereClause( false );
 
     case PktFidMap:
     {
@@ -673,13 +679,20 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       allowedType << QVariant::Int;
       allowedType << QVariant::LongLong;
       bool canUseIN = true;
+      QList<int> allowedValuesType;
+      allowedValuesType << QVariant::Int;
+      allowedValuesType << QVariant::LongLong;
+      bool canUseVALUES = true;
       for ( int i = 0; i < pkAttrs.size(); i++ )
       {
         if ( !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
           canUseIN = false;
+
+        if ( !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() ) )
+          canUseVALUES = false;
       }
       if ( canUseIN )
-        return lookupKeyWhereClause();
+        return lookupKeyWhereClause( canUseVALUES );
 
       [[fallthrough]];
     }
