@@ -2643,25 +2643,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             CREATE TABLE qgis_test.multi_column_pk_big_data (
                 id_uuid uuid NOT NULL,
                 id_int bigint NOT NULL,
+                id_int2 bigint NOT NULL,
                 id_str character varying(20) COLLATE pg_catalog."default" NOT NULL,
                 geom geometry(Polygon,3857),
-                CONSTRAINT test_poly_pk PRIMARY KEY (id_uuid, id_int, id_str) );''')
+                CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid, id_int, id_str) );''')
         self.execSQLCommand('''
             CREATE INDEX multi_column_pk_big_data_geom_indx
                 ON qgis_test.multi_column_pk_big_data USING gist
                 (geom);
             CREATE UNIQUE INDEX multi_column_pk_big_data_indx
                 ON qgis_test.multi_column_pk_big_data USING btree
-                (id_uuid ASC NULLS LAST, id_int ASC NULLS LAST, id_str ASC NULLS LAST);
-            CREATE UNIQUE INDEX multi_column_pk_big_data_uuid_indx
-                ON qgis_test.multi_column_pk_big_data USING btree
-                (id_uuid ASC NULLS LAST);''')
+                (id_uuid ASC NULLS LAST, id_int ASC NULLS LAST, id_str ASC NULLS LAST);''')
         self.execSQLCommand('TRUNCATE qgis_test.multi_column_pk_big_data')
         self.execSQLCommand('''
             INSERT INTO qgis_test.multi_column_pk_big_data(
-                id_uuid, id_int, id_str, geom )
+                id_uuid, id_int, id_int2, id_str, geom )
                 SELECT
                     ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+                    dx + 1000000 * dy,
                     dx + 1000000 * dy,
                     dx || E\' ot\\'her \' || dy,
                     ST_Translate(
@@ -2669,28 +2668,57 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                               3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))', 3857 ),
                         100.0 * dx,
                         100.0 * dy )
-                FROM generate_series(1,200) dx, generate_series(1,200) dy;''')
+                FROM generate_series(1,333) dx, generate_series(1,333) dy;''')
+
+        """ Composite PK: uuid, bigint, string
+            if set fids_get_count > 9000 - test FAIL"""
+        fids_get_count = 5000
         vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'"id_uuid","id_int","id_str"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
             'test_multi_column_pk_big_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures()]
-        fids2 = [f.id() for f in vl.getFeatures(fids[0:5000])]
-        self.assertEqual(len(fids), 200 * 200)
-        self.assertEqual(len(fids2), 5000)
+        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+        fids2 = [f.id() for f in vl.getFeatures(fids)]
+        self.assertEqual(len(fids), fids_get_count)
+        self.assertEqual(len(fids2), fids_get_count)
 
+        """ PK: uuid """
+        fids_get_count = 20000
         self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT test_poly_pk;
+            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
             ALTER TABLE qgis_test.multi_column_pk_big_data
-                ADD CONSTRAINT test_poly_pk PRIMARY KEY (id_uuid);''')
-        vl_uuid = QgsVectorLayer(
+                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid);
+            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
+            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
+                ON qgis_test.multi_column_pk_big_data USING btree
+                (id_uuid ASC NULLS LAST);''')
+        vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'"id_uuid"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
-            'test2_multi_column_pk_big_data', 'postgres')
-        fids_uuid = [f.id() for f in vl_uuid.getFeatures()]
-        fids_uuid2 = [f.id() for f in vl_uuid.getFeatures(fids_uuid[0:5000])]
-        self.assertEqual(len(fids_uuid), 200 * 200)
-        self.assertEqual(len(fids_uuid2), 5000)
+            'test_multi_column_pk_big_data', 'postgres')
+        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+        fids2 = [f.id() for f in vl.getFeatures(fids)]
+        self.assertEqual(len(fids), fids_get_count)
+        self.assertEqual(len(fids2), fids_get_count)
+
+        """ Composite PK: bigint, bigint """
+        fids_get_count = 20000
+        self.execSQLCommand('''
+            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
+            ALTER TABLE qgis_test.multi_column_pk_big_data
+                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_int, id_int2);
+            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
+            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
+                ON qgis_test.multi_column_pk_big_data USING btree
+                (id_int ASC NULLS LAST, id_int2 ASC NULLS LAST);''')
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'"id_int","id_int2"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
+            'test_multi_column_pk_big_data', 'postgres')
+        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+        fids2 = [f.id() for f in vl.getFeatures(fids)]
+        self.assertEqual(len(fids), fids_get_count)
+        self.assertEqual(len(fids2), fids_get_count)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
