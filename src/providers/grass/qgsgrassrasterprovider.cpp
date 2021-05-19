@@ -148,7 +148,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   // We have to decide some reasonable block size, not to big to occupate too much
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
   // for statistics
-  int typeSize = dataTypeSize( dataType( 1 ) );
+  int typeSize = QgsRasterBlock::typeSize( dataType( 1 ) );
   if ( mCols > 0 && typeSize > 0 )
   {
     const int cache_size = 10000000; // ~ 10 MB
