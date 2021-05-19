@@ -109,7 +109,6 @@ class CORE_EXPORT Qgis
       Success = 3, //!< Used for reporting a successful operation
       NoLevel = 4, //!< No level
     };
-    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.
@@ -158,7 +157,6 @@ class CORE_EXPORT Qgis
       Uncounted = -2, //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
-    Q_ENUM( FeatureCountState )
 
     /**
      * \brief Symbol types
@@ -171,7 +169,6 @@ class CORE_EXPORT Qgis
       Fill, //!< Fill symbol
       Hybrid //!< Hybrid symbol
     };
-    Q_ENUM( SymbolType )
 
     /**
      * \brief Scale methods
@@ -183,7 +180,6 @@ class CORE_EXPORT Qgis
       ScaleArea,     //!< Calculate scale by the area
       ScaleDiameter  //!< Calculate scale by the diameter
     };
-    Q_ENUM( ScaleMethod )
 
     /**
      * \brief Flags controlling behavior of symbols during rendering
@@ -194,7 +190,6 @@ class CORE_EXPORT Qgis
       {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
-    Q_ENUM( SymbolRenderHint )
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
 
     /**
@@ -206,7 +201,6 @@ class CORE_EXPORT Qgis
       {
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
-    Q_ENUM( SymbolPreviewFlag )
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**

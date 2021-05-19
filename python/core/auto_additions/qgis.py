@@ -30,7 +30,6 @@ Qgis.NoLevel = Qgis.MessageLevel.NoLevel
 Qgis.NoLevel.__doc__ = "No level"
 Qgis.MessageLevel.__doc__ = 'Level for messages\nThis will be used both for message log and message bar in application.\n\n' + '* ``Info``: ' + Qgis.MessageLevel.Info.__doc__ + '\n' + '* ``Warning``: ' + Qgis.MessageLevel.Warning.__doc__ + '\n' + '* ``Critical``: ' + Qgis.MessageLevel.Critical.__doc__ + '\n' + '* ``Success``: ' + Qgis.MessageLevel.Success.__doc__ + '\n' + '* ``NoLevel``: ' + Qgis.MessageLevel.NoLevel.__doc__
 # --
-Qgis.MessageLevel.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.UnknownDataType = Qgis.DataType.UnknownDataType
 Qgis.UnknownDataType.__doc__ = "Unknown or unspecified type"
@@ -85,7 +84,6 @@ QgsVectorDataProvider.UnknownCount = Qgis.FeatureCountState.UnknownCount
 QgsVectorDataProvider.UnknownCount.__doc__ = "Provider returned an unknown feature count"
 Qgis.FeatureCountState.__doc__ = 'Enumeration of feature count states\n\n.. versionadded:: 3.20\n\n' + '* ``Uncounted``: ' + Qgis.FeatureCountState.Uncounted.__doc__ + '\n' + '* ``UnknownCount``: ' + Qgis.FeatureCountState.UnknownCount.__doc__
 # --
-Qgis.FeatureCountState.baseClass = Qgis
 QgsSymbol.SymbolType = Qgis.SymbolType
 # monkey patching scoped based enum
 QgsSymbol.Marker = Qgis.SymbolType.Marker
@@ -98,7 +96,6 @@ QgsSymbol.Hybrid = Qgis.SymbolType.Hybrid
 QgsSymbol.Hybrid.__doc__ = "Hybrid symbol"
 Qgis.SymbolType.__doc__ = 'Symbol types\n\n.. versionadded:: 3.20\n\n' + '* ``Marker``: ' + Qgis.SymbolType.Marker.__doc__ + '\n' + '* ``Line``: ' + Qgis.SymbolType.Line.__doc__ + '\n' + '* ``Fill``: ' + Qgis.SymbolType.Fill.__doc__ + '\n' + '* ``Hybrid``: ' + Qgis.SymbolType.Hybrid.__doc__
 # --
-Qgis.SymbolType.baseClass = Qgis
 QgsSymbol.ScaleMethod = Qgis.ScaleMethod
 # monkey patching scoped based enum
 QgsSymbol.ScaleArea = Qgis.ScaleMethod.ScaleArea
@@ -107,18 +104,15 @@ QgsSymbol.ScaleDiameter = Qgis.ScaleMethod.ScaleDiameter
 QgsSymbol.ScaleDiameter.__doc__ = "Calculate scale by the diameter"
 Qgis.ScaleMethod.__doc__ = 'Scale methods\n\n.. versionadded:: 3.20\n\n' + '* ``ScaleArea``: ' + Qgis.ScaleMethod.ScaleArea.__doc__ + '\n' + '* ``ScaleDiameter``: ' + Qgis.ScaleMethod.ScaleDiameter.__doc__
 # --
-Qgis.ScaleMethod.baseClass = Qgis
 QgsSymbol.RenderHint = Qgis.SymbolRenderHint
 # monkey patching scoped based enum
 QgsSymbol.DynamicRotation = Qgis.SymbolRenderHint.DynamicRotation
 QgsSymbol.DynamicRotation.__doc__ = "Rotation of symbol may be changed during rendering and symbol should not be cached"
 Qgis.SymbolRenderHint.__doc__ = 'Flags controlling behavior of symbols during rendering\n\n.. versionadded:: 3.20\n\n' + '* ``DynamicRotation``: ' + Qgis.SymbolRenderHint.DynamicRotation.__doc__
 # --
-Qgis.SymbolRenderHint.baseClass = Qgis
 QgsSymbol.PreviewFlag = Qgis.SymbolPreviewFlag
 # monkey patching scoped based enum
 QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols = Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols
 QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols.__doc__ = "Include a crosshairs reference image in the background of marker symbol previews"
 Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview images are generated.\n\n.. versionadded:: 3.20\n\n' + '* ``FlagIncludeCrosshairsForMarkerSymbols``: ' + Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols.__doc__
 # --
-Qgis.SymbolPreviewFlag.baseClass = Qgis
