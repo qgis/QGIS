@@ -38,6 +38,7 @@ from qgis.core import (QgsPrintLayout,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsFillSymbol,
+                       QgsUnitTypes,
                        QgsApplication)
 from qgis.testing import (start_app,
                           unittest
@@ -740,7 +741,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([points_layer])
+        s.setLayers([point_layer])
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
         layout.setUnits(QgsUnitTypes.LayoutMillimeters)
