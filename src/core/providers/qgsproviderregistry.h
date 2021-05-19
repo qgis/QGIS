@@ -25,7 +25,6 @@
 #include <QLibrary>
 #include <QString>
 
-#include "qgsvectorlayerexporter.h"
 #include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -39,6 +38,8 @@ class QgsCoordinateReferenceSystem;
 class QgsDataItemProvider;
 class QgsDataItem;
 class QgsRasterDataProvider;
+class QgsTransaction;
+class QgsFields;
 
 /**
  * \ingroup core
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
+    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
 
     /**
      * Creates new instance of raster data provider

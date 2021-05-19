@@ -20,7 +20,10 @@
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
 #include <QRegularExpression>
+#include <QIcon>
 
 extern "C"
 {
@@ -110,17 +113,17 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
-        newUri.uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        options
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
+                                   newUri.uri(),
+                                   fields,
+                                   wkbType,
+                                   srs,
+                                   overwrite,
+                                   &map,
+                                   &errCause,
+                                   options
+                                 );
+  if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }

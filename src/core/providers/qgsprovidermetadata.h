@@ -31,7 +31,6 @@
 #include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include <functional>
-#include "qgsvectorlayerexporter.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
@@ -362,7 +361,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    virtual QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+    virtual Qgis::VectorExportResult createEmptyLayer( const QString &uri,
         const QgsFields &fields,
         QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs,

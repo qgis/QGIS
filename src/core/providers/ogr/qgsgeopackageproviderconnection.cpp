@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -96,17 +97,17 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
   opts[ QStringLiteral( "update" ) ] = true;
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsOgrProvider::createEmptyLayer(
-        uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        &opts
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
+                                       uri(),
+                                       fields,
+                                       wkbType,
+                                       srs,
+                                       overwrite,
+                                       &map,
+                                       &errCause,
+                                       &opts
+                                     );
+  if ( errCode != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }

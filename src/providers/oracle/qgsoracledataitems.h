@@ -23,7 +23,6 @@
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsdataitemprovider.h"
 
 class QSqlDatabase;

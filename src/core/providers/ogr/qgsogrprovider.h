@@ -23,7 +23,6 @@ email                : sherman at mrcc.com
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsprovidermetadata.h"
 #include "qgis_sip.h"
 #include "qgis.h"
@@ -70,7 +69,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
   public:
 
     //! Convert a vector layer to a vector file
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -802,7 +801,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
+    Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

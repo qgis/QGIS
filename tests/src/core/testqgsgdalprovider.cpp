@@ -29,6 +29,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
+#include "qgspoint.h"
 
 /**
  * \ingroup UnitTests

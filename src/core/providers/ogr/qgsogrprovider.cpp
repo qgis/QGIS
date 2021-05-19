@@ -271,7 +271,7 @@ void QgsOgrProvider::repack()
 }
 
 
-QgsVectorLayerExporter::ExportError QgsOgrProviderMetadata::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -343,7 +343,7 @@ static QString AnalyzeURI( QString const &uri,
   return fullPath;
 }
 
-QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -397,7 +397,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
             if ( errorMessage )
               *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
                                .arg( uri, layerName );
-            return QgsVectorLayerExporter::ErrCreateDataSource;
+            return Qgis::VectorExportResult::ErrorCreatingDataSource;
           }
         }
       }
@@ -413,7 +413,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
       if ( errorMessage )
         *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
                          .arg( uri );
-      return QgsVectorLayerExporter::ErrCreateDataSource;
+      return Qgis::VectorExportResult::ErrorCreatingDataSource;
     }
   }
 
@@ -436,7 +436,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     if ( errorMessage )
       *errorMessage += writer->errorMessage();
 
-    return static_cast<QgsVectorLayerExporter::ExportError>( error );
+    return static_cast<Qgis::VectorExportResult>( error );
   }
 
   QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
@@ -484,7 +484,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
 
   QgsOgrProviderUtils::invalidateCachedLastModifiedDate( uri );
 
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
