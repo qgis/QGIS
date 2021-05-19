@@ -589,7 +589,7 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
         // Geom goes last
         if ( ! mGeometryColumnName.isEmpty( ) )
         {
-          row.push_back( f.geometry().asWkb() );
+          row.push_back( f.geometry().asWkt() );
         }
 
       }
