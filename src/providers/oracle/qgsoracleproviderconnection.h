@@ -72,11 +72,13 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
+
 };
 
 
