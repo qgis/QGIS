@@ -65,7 +65,7 @@ void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provi
   //Once everything is in place, initialize the extra dataset groups
   if ( mExtraDatasets )
   {
-    int groupCount = mExtraDatasets->datasetGroupCount();
+    const int groupCount = mExtraDatasets->datasetGroupCount();
     for ( int i = 0; i < groupCount; ++i )
       if ( mExtraDatasets->datasetGroup( i ) )
         mExtraDatasets->datasetGroup( i )->initialize();
