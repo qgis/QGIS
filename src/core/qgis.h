@@ -109,6 +109,7 @@ class CORE_EXPORT Qgis
       Success = 3, //!< Used for reporting a successful operation
       NoLevel = 4, //!< No level
     };
+    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.
