@@ -73,6 +73,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
 
   private:
 

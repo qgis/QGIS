@@ -975,15 +975,15 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
     table += " WHERE " + mSqlWhereClause;
   }
 
+  // This is tricky: in case of SQL query layers we have a generated uid in the form "qgis_generated_uid_%1_" which cannot be quoted as identifier.
+
   QString sql = QString( "SELECT (SELECT count(distinct %1) FROM %2)-(SELECT count(%1) FROM %2) FROM dual" )
-                .arg( quotedIdentifier( colName ) )
-                .arg( mQuery );
+                .arg( colName.startsWith( QStringLiteral( "qgis_generated_uid_" ) ) ? colName : quotedIdentifier( colName ), mQuery );
 
   if ( !exec( qry, sql, QVariantList() ) || !qry.next() )
   {
     QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                               .arg( qry.lastError().text() )
-                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                               .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
     return false;
   }
 
@@ -1002,8 +1002,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     // get the field name
     QgsField fld = field( index );
     QString sql = QString( "SELECT min(%1) FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
-                  .arg( mQuery );
+                  .arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1015,8 +1014,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QVariant( QString() );
     }
 
@@ -1046,8 +1044,7 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
     // get the field name
     QgsField fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
-                  .arg( mQuery );
+                  .arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1067,8 +1064,7 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QSet<QVariant>();
     }
 
@@ -1110,8 +1106,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QVariant( QString() );
     }
 
@@ -1266,7 +1261,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         defaultValues << defaultValueClause( idx );
       }
 
-      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys ).arg( mQuery ) ) )
+      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys, mQuery ) ) )
       {
         throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
       }
@@ -1451,7 +1446,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       QVariantList args;
       QString sql = QString( "DELETE FROM %1 WHERE %2" )
-                    .arg( mQuery ).arg( whereClause( *it, args ) );
+                    .arg( mQuery, whereClause( *it, args ) );
       QgsDebugMsgLevel( "delete sql: " + sql, 2 );
 
       if ( !exec( qry, sql, args ) )
@@ -1522,9 +1517,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       }
 
       QString sql = QString( "ALTER TABLE %1 ADD %2 %3" )
-                    .arg( mQuery )
-                    .arg( quotedIdentifier( iter->name() ) )
-                    .arg( type );
+                    .arg( mQuery, quotedIdentifier( iter->name() ), type );
       QgsDebugMsgLevel( sql, 2 );
 
       if ( !exec( qry, sql, QVariantList() ) )
@@ -1533,8 +1526,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       if ( !iter->comment().isEmpty() )
       {
         sql = QString( "COMMENT ON COLUMN %1.%2 IS ?" )
-              .arg( mQuery )
-              .arg( quotedIdentifier( iter->name() ) );
+              .arg( mQuery, quotedIdentifier( iter->name() ) );
         if ( !exec( qry, sql, QVariantList() << iter->comment() ) )
           throw OracleException( tr( "Setting comment on %1 failed" ).arg( iter->name() ), qry );
       }
@@ -1597,8 +1589,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
       QgsField fld = mAttributeFields.at( id );
 
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
-                    .arg( mQuery )
-                    .arg( quotedIdentifier( fld.name() ) );
+                    .arg( mQuery, quotedIdentifier( fld.name() ) );
 
       //send sql statement and do error handling
       if ( !exec( qry, sql, QVariantList() ) )
@@ -1816,7 +1807,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         }
       }
 
-      for ( const auto &arg : args )
+      for ( const auto &arg : std::as_const( args ) )
         qry.addBindValue( arg );
 
       if ( !qry.exec() )

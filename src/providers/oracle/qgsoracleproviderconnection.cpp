@@ -129,6 +129,53 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
   };
 }
 
+QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
+{
+
+  // Precondition
+  if ( options.sql.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
+  }
+
+  QgsDataSourceUri tUri( uri( ) );
+
+  tUri.setSql( options.filter );
+  tUri.disableSelectAtId( options.disableSelectAtId );
+
+  if ( ! options.primaryKeyColumns.isEmpty() )
+  {
+    tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
+    tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
+  }
+  else
+  {
+    // Disable when there is no pk
+    tUri.setUseEstimatedMetadata( false );
+    int pkId { 0 };
+    while ( options.sql.contains( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      pkId ++;
+    }
+    tUri.setKeyColumn( QStringLiteral( "qgis_generated_uid_%1_" ).arg( pkId ) );
+
+    int sqlId { 0 };
+    while ( options.sql.contains( QStringLiteral( "qgis_generated_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      sqlId ++;
+    }
+    tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS qgis_generated_uid_%1_, qgis_generated_subq_%3_.* FROM (%2\n) qgis_generated_subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
+  }
+
+  if ( ! options.geometryColumn.isEmpty() )
+  {
+    tUri.setGeometryColumn( options.geometryColumn );
+  }
+
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
+
+}
+
 void QgsOracleProviderConnection::store( const QString &name ) const
 {
   QString baseKey = QStringLiteral( "/Oracle/connections/" );
