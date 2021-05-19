@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthesritokenmethod.h"
-#include "qgsauthesritokenedit.h"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -169,14 +168,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthEsriTokenEdit *editWidget( QWidget *parent )
-{
-  return new QgsAuthEsriTokenEdit( parent );
 }
 
 /**

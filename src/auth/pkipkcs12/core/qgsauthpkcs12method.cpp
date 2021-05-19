@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsauthidentcertmethod.cpp
+    qgsauthpkcs12method.cpp
     ---------------------
     begin                : September 1, 2015
     copyright            : (C) 2015 by Boundless Spatial, Inc. USA
@@ -14,8 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthidentcertmethod.h"
-#include "qgsauthidentcertedit.h"
+#include "qgsauthpkcs12method.h"
 
 #include <QDir>
 #include <QFile>
@@ -32,13 +31,14 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
 
-QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
+static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI PKCS#12 authentication" );
+
+QMap<QString, QgsPkiConfigBundle *> QgsAuthPkcs12Method::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
 
-QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
+QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -50,29 +50,28 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
                     << QStringLiteral( "postgres" ) );
 }
 
-QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
+QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
 {
-  QMutexLocker locker( &mMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthIdentCertMethod::key() const
+QString QgsAuthPkcs12Method::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthIdentCertMethod::description() const
+QString QgsAuthPkcs12Method::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthIdentCertMethod::displayDescription() const
+QString QgsAuthPkcs12Method::displayDescription() const
 {
-  return tr( "PKI stored identity certificate" );
+  return tr( "PKI PKCS#12 authentication" );
 }
 
-bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
@@ -102,12 +101,25 @@ bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, con
   sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
+  // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+
   request.setSslConfiguration( sslConfig );
 
   return true;
 }
 
-bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
@@ -143,10 +155,30 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
     return false;
   }
 
+  // add extra CAs from the bundle
+  QList<QSslCertificate> cas;
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+  else
+  {
+    cas = QgsApplication::authManager()->trustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsApplication::authManager()->trustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
+
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -203,12 +235,13 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   return true;
 }
 
-void QgsAuthIdentCertMethod::clearCachedConfig( const QString &authcfg )
+void QgsAuthPkcs12Method::clearCachedConfig( const QString &authcfg )
 {
+  QMutexLocker locker( &mMutex );
   removePkiConfigBundle( authcfg );
 }
 
-void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
+void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
   QMutexLocker locker( &mMutex );
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
@@ -216,14 +249,15 @@ void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
     QgsDebugMsg( QStringLiteral( "Updating old style auth method config" ) );
 
     QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
-    mconfig.setConfig( QStringLiteral( "certid" ), conflist.at( 0 ) );
+    mconfig.setConfig( QStringLiteral( "bundlepath" ), conflist.at( 0 ) );
+    mconfig.setConfig( QStringLiteral( "bundlepass" ), conflist.at( 1 ) );
     mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
   }
 
   // TODO: add updates as method version() increases due to config storage changes
 }
 
-QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &authcfg )
+QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &authcfg )
 {
   QMutexLocker locker( &mMutex );
   QgsPkiConfigBundle *bundle = nullptr;
@@ -248,42 +282,63 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
     return bundle;
   }
 
-  // get identity from database
-  QPair<QSslCertificate, QSslKey> cibundle( QgsApplication::authManager()->certIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
+  QStringList bundlelist = QgsAuthCertUtils::pkcs12BundleToPem( mconfig.config( QStringLiteral( "bundlepath" ) ),
+                           mconfig.config( QStringLiteral( "bundlepass" ) ), false );
+
+  if ( bundlelist.isEmpty() || bundlelist.size() < 2 )
+  {
+    QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, PKCS#12 bundle parsing failed" ).arg( authcfg ) );
+    return bundle;
+  }
 
   // init client cert
   // Note: if this is not valid, no sense continuing
-  QSslCertificate clientcert( cibundle.first );
+  QSslCertificate clientcert( bundlelist.at( 0 ).toLatin1() );
   if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
     QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
     return bundle;
   }
 
+  // !!! DON'T LEAVE THESE UNCOMMENTED !!!
+  // QgsDebugMsg( QStringLiteral( "PKI bundle key for authcfg: \n%1" ).arg( bundlelist.at( 1 ) ) );
+  // QgsDebugMsg( QStringLiteral( "PKI bundle key pass for authcfg: \n%1" )
+  //              .arg( !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ) : QString() ) );
+
   // init key
-  QSslKey clientkey( cibundle.second );
+  QSslKey clientkey( bundlelist.at( 1 ).toLatin1(),
+                     QSsl::Rsa,
+                     QSsl::Pem,
+                     QSsl::PrivateKey,
+                     !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ).toUtf8() : QByteArray() );
+
+
   if ( clientkey.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, PEM cert key could not be created" ).arg( authcfg ) );
+    QgsDebugMsg( QStringLiteral( "PKI bundle for authcfg %1: insert FAILED, cert key is null" ).arg( authcfg ) );
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey,
+                                   QgsAuthCertUtils::pkcs12BundleCas(
+                                     mconfig.config( QStringLiteral( "bundlepath" ) ),
+                                     mconfig.config( QStringLiteral( "bundlepass" ) ) ) );
 
+  locker.unlock();
   // cache bundle
   putPkiConfigBundle( authcfg, bundle );
 
   return bundle;
 }
 
-void QgsAuthIdentCertMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
+void QgsAuthPkcs12Method::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
   QMutexLocker locker( &mMutex );
   QgsDebugMsg( QStringLiteral( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
-void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
+void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
 {
   QMutexLocker locker( &mMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
@@ -303,9 +358,9 @@ void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
 /**
  * Required class factory to return a pointer to a newly created object
  */
-QGISEXTERN QgsAuthIdentCertMethod *classFactory()
+QGISEXTERN QgsAuthPkcs12Method *classFactory()
 {
-  return new QgsAuthIdentCertMethod();
+  return new QgsAuthPkcs12Method();
 }
 
 /**
@@ -331,14 +386,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthIdentCertEdit *editWidget( QWidget *parent )
-{
-  return new QgsAuthIdentCertEdit( parent );
 }
 
 /**

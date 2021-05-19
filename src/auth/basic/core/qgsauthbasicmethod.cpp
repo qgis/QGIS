@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthbasicmethod.h"
-#include "qgsauthbasicedit.h"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -407,14 +406,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthBasicEdit *editWidget( QWidget *parent )
-{
-  return new QgsAuthBasicEdit( parent );
 }
 
 /**

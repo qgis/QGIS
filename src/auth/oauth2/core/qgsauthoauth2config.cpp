@@ -17,7 +17,7 @@
 
 #include <QDir>
 
-#include "qjsonwrapper/Json.h"
+#include "Json.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

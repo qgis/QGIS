@@ -22,7 +22,6 @@
 #include "qgsauthmanager.h"
 #include "qgso2.h"
 #include "qgsauthoauth2config.h"
-#include "qgsauthoauth2edit.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -31,14 +30,15 @@
 #include <algorithm>
 
 #include <QDateTime>
-#include <QInputDialog>
 #include <QDir>
 #include <QEventLoop>
 #include <QPointer>
 #include <QString>
 #include <QMutexLocker>
 #include <QUrlQuery>
-
+#ifdef WITH_GUI
+#include <QInputDialog>
+#endif
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
@@ -480,12 +480,14 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 
 void QgsAuthOAuth2Method::onAuthCode()
 {
+#ifdef WITH_GUI
   bool ok = false;
   QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Authoriation Code" ), QStringLiteral( "Enter the authorization code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
   if ( ok && !code.isEmpty() )
   {
     emit setAuthCode( code );
   }
+#endif
 }
 
 bool QgsAuthOAuth2Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
@@ -690,14 +692,6 @@ QGISEXTERN QString description()
 QGISEXTERN bool isAuthMethod()
 {
   return true;
-}
-
-/**
- * Optional class factory to return a pointer to a newly created edit widget
- */
-QGISEXTERN QgsAuthOAuth2Edit *editWidget( QWidget *parent )
-{
-  return new QgsAuthOAuth2Edit( parent );
 }
 
 /**
