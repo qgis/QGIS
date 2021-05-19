@@ -68,7 +68,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      * from provider connections and represent function and other provider specific
      * keywords.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     void setExtraKeywords( const QStringList &extraKeywords );
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      * from provider connections and represent function and other provider specific
      * keywords.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     QStringList extraKeywords() const;
 

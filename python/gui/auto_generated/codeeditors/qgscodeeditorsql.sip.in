@@ -61,7 +61,7 @@ Extra keywords are usually added
 from provider connections and represent function and other provider specific
 keywords.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     QStringList extraKeywords() const;
@@ -72,7 +72,7 @@ Extra keywords are usually added
 from provider connections and represent function and other provider specific
 keywords.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
   protected:

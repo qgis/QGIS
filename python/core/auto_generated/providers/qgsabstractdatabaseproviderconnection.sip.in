@@ -405,7 +405,7 @@ Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 %Docstring
 Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
 
@@ -560,7 +560,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
 :raises QgsProviderConnectionException: 
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -685,7 +685,7 @@ The default implementation returns an list of common reserved words under the
 
 Subclasses should add provider- and/or connection- specific words.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
   protected:

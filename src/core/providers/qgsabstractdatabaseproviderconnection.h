@@ -201,7 +201,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \brief The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
      * \see createSqlVectorLayer()
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     struct CORE_EXPORT SqlVectorLayerOptions
     {
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     virtual SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 
@@ -670,7 +670,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Creates and returns a (possibly invalid) vector layer based on the \a sql statement and optional \a options.
      * Raises a QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
      * \throws QgsProviderConnectionException
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
@@ -790,7 +790,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     *
     * Subclasses should add provider- and/or connection- specific words.
     *
-    * \since QGIS 3.20
+    * \since QGIS 3.22
     */
     virtual QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary();
 
