@@ -52,14 +52,12 @@ set(AUTH_OAUTH2_SRCS
   qgso2.cpp
   qgsauthoauth2config.cpp
   qgsauthoauth2method.cpp
-  qjsonwrapper/Json.cpp
 )
 
 set(AUTH_OAUTH2_HDRS
   qgsauthoauth2config.h
   qgsauthoauth2method.h
   qgso2.h
-  qjsonwrapper/Json.h
 )
 
 if(WITH_INTERNAL_O2)
