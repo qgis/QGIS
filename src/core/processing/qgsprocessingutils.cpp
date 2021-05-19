@@ -841,7 +841,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         //create empty layer
         std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
-        if ( exporter->errorCode() )
+        if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
         {
           throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
         }

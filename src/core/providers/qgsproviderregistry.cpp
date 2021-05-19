@@ -535,7 +535,7 @@ QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVaria
     return QString();
 }
 
-QgsVectorLayerExporter::ExportError QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
+Qgis::VectorExportResult QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
     const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
@@ -544,18 +544,14 @@ QgsVectorLayerExporter::ExportError QgsProviderRegistry::createEmptyLayer( const
     QString &errorMessage,
     const QMap<QString, QVariant> *options )
 {
-  QgsVectorLayerExporter::ExportError ret;
-
   QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
     return meta->createEmptyLayer( uri, fields, wkbType, srs, overwrite, oldToNewAttrIdxMap, errorMessage, options );
   else
   {
-    ret = QgsVectorLayerExporter::ErrInvalidProvider;
     errorMessage = QObject::tr( "Unable to load %1 provider" ).arg( providerKey );
+    return Qgis::VectorExportResult::ErrorInvalidProvider;
   }
-
-  return ret;
 }
 
 QgsRasterDataProvider *QgsProviderRegistry::createRasterDataProvider( const QString &providerKey, const QString &uri, const QString &format,

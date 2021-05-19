@@ -161,14 +161,14 @@ QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
   return QString();
 }
 
-QgsVectorLayerExporter::ExportError QgsProviderMetadata::createEmptyLayer(
+Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
   const QString &, const QgsFields &,
   QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,
   bool, QMap<int, int> &,
   QString &errorMessage, const QMap<QString, QVariant> * )
 {
   errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createEmptyLayer" ) );
-  return QgsVectorLayerExporter::ExportError::ErrProviderUnsupportedFeature;
+  return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
 }
 
 QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(

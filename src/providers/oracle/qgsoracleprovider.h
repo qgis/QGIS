@@ -20,7 +20,6 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"

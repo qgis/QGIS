@@ -145,6 +145,22 @@ The development version
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
 
 
+    enum class VectorExportResult
+      {
+      Success,
+      ErrorCreatingDataSource,
+      ErrorCreatingLayer,
+      ErrorAttributeTypeUnsupported,
+      ErrorAttributeCreationFailed,
+      ErrorProjectingFeatures,
+      ErrorFeatureWriteFailed,
+      ErrorInvalidLayer,
+      ErrorInvalidProvider,
+      ErrorProviderUnsupportedFeature,
+      ErrorConnectionFailed,
+      UserCanceled,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
