@@ -242,7 +242,7 @@ void QgsQueryResultWidget::startFetching()
           updateButtons();
           updateSqlLayerColumns( );
         }
-        mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
+        mStatusLabel->setText( tr( "Fetched rows: %1 %2." )
                                .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
                                .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
       } );
@@ -262,7 +262,7 @@ void QgsQueryResultWidget::startFetching()
   }
   else
   {
-    mStatusLabel->setText( tr( "SQL command aborted" ) );
+    mStatusLabel->setText( tr( "SQL command aborted." ) );
   }
 }
 
