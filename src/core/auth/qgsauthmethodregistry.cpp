@@ -60,7 +60,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod.dll" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod*.so" ) ) );
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ), 2 );
