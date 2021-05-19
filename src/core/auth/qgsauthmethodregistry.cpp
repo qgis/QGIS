@@ -41,7 +41,7 @@ QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPat
   return sInstance;
 }
 
-QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath, bool loadGuiModules )
+QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 {
   // At startup, examine the libs in the qgis/lib dir and store those that
   // are an auth method shared lib
@@ -58,11 +58,10 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath, bool lo
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
-  const QString libExtension = QStringLiteral( "dll" );
+  mLibraryDirectory.setNameFilters( QStringList( "*authmethod.dll" ) );
 #else
-  const QString libExtension = QStringLiteral( "so" );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
 #endif
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.%1" ).arg(libExtension) ) );
 
   QgsDebugMsgLevel( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ), 2 );
 
@@ -137,58 +136,9 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath, bool lo
       continue;
     }
 
-    QString guiLibPath = fi.filePath().replace(QStringLiteral("authmethod.%1").arg(libExtension), QStringLiteral("authmethodgui.%1").arg(libExtension));
-    bool loadGui = false;
-    if (loadGuiModules)
-    {
-      QLibrary myGuiLib( guiLibPath );
-      if ( !myGuiLib.load() )
-      {
-        QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid gui module (lib not loadable): %2" ).arg( myGuiLib.fileName(), myGuiLib.errorString() ) );
-      }
-      else
-      {
-        // get the description and the key for the auth method plugin
-        isauthmethod_t *isAuthMethodGui = reinterpret_cast< isauthmethod_t * >( cast_to_fptr( myGuiLib.resolve( "isAuthMethodGui" ) ) );
-        if ( !isAuthMethodGui )
-        {
-          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid gui module (no isAuthMethod method)" ).arg( myGuiLib.fileName() ) );
-        }
-        // check to see if this is an auth method plugin
-        else if ( !isAuthMethodGui() )
-        {
-          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid gui module (not a gui auth method)" ).arg( myGuiLib.fileName() ) );
-        }
-        else
-        {
-          methodkey_t *pKeyGui = reinterpret_cast< methodkey_t * >( cast_to_fptr( myGuiLib.resolve( "authMethodKey" ) ) );
-          if ( !pKeyGui )
-          {
-          QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid gui module (no authMethodKey method)" ).arg( myGuiLib.fileName() ) );
-          }
-          else
-          {
-            if (pKeyGui() != pKey() )
-            {
-              Q_ASSERT(pKeyGui() == pKey());
-              QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid gui module (key does not match core one: %2 / %3)" ).arg( myGuiLib.fileName(), pKeyGui(), pKey() ) );
-            }
-            else
-            {
-              guiLibPath = myGuiLib.fileName();
-              loadGui = true;
-            }
-          }
-        }
-      }
-    }
-    if (!loadGui)
-      guiLibPath = QString();
-
-    QgsDebugMsg( QStringLiteral( "Authentication method loaded: %1 (gui: %2)" ).arg( myLib.fileName(), loadGui ? guiLibPath : "not available" ) );
-
     // add this auth method to the method map
-    mAuthMethods[pKey()] = new QgsAuthMethodMetadata( pKey(), pDesc(), myLib.fileName(), guiLibPath );
+    mAuthMethods[pKey()] = new QgsAuthMethodMetadata( pKey(), pDesc(), myLib.fileName() );
+
   }
 }
 
@@ -240,15 +190,12 @@ static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods 
 } // findMetadata_
 
 
-QString QgsAuthMethodRegistry::library( const QString &authMethodKey, bool gui ) const
+QString QgsAuthMethodRegistry::library( const QString &authMethodKey ) const
 {
   QgsAuthMethodMetadata *md = findMetadata_( mAuthMethods, authMethodKey );
 
   if ( md )
   {
-    if (gui)
-      return md->guiLibrary();
-    else
     return md->library();
   }
 
@@ -370,7 +317,7 @@ typedef QWidget *editFactoryFunction_t( QWidget *parent );
 QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
 {
   editFactoryFunction_t *editFactory =
-    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ), true ) ) );
+    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ) ) ) );
 
   if ( !editFactory )
     return nullptr;
@@ -379,9 +326,9 @@ QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidge
 }
 
 QFunctionPointer QgsAuthMethodRegistry::function( QString const &authMethodKey,
-    QString const &functionName, bool gui )
+    QString const &functionName )
 {
-  QLibrary myLib( library( authMethodKey, gui ) );
+  QLibrary myLib( library( authMethodKey ) );
 
   QgsDebugMsgLevel( "Library name is " + myLib.fileName(), 2 );
 

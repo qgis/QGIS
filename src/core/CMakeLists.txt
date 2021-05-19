@@ -14,8 +14,6 @@ set(QGIS_CORE_SRCS
 
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.cpp
-
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -852,7 +850,6 @@ endif()
 
 set(QGIS_CORE_HDRS
   ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.h
 
   ${CMAKE_BINARY_DIR}/qgsconfig.h
 
@@ -1858,7 +1855,6 @@ target_include_directories(qgis_core PUBLIC
   vectortile
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include

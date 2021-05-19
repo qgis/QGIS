@@ -16,29 +16,10 @@
 
 #include "qgsauthbasicedit.h"
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
-
 /**
  * Optional class factory to return a pointer to a newly created edit widget
  */
 QGISEXTERN QgsAuthBasicEdit *editWidget( QWidget *parent )
 {
   return new QgsAuthBasicEdit( parent );
-}
-
-/**
- * Required isAuthMethodGui function. Used to determine if this shared library
- * is an authentication method plugin
- */
-QGISEXTERN bool isAuthMethodGui()
-{
-  return true;
-}
-
-/**
- * Required key function (used to map the plugin to a data store type)
- */
-QGISEXTERN QString authMethodKey()
-{
-  return AUTH_METHOD_KEY;
 }

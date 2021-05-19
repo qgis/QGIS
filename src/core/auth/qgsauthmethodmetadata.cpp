@@ -18,30 +18,26 @@
 #include "qgsauthmethodmetadata.h"
 
 
-QgsAuthMethodMetadata::QgsAuthMethodMetadata(QString const &key, QString const &description, QString const &library , const QString &guiLibrary)
-  : mKey( key )
-  , mDescription( description )
-  , mLibrary( library )
-  , mGuiLibrary( guiLibrary )
+QgsAuthMethodMetadata::QgsAuthMethodMetadata( QString const &_key,
+    QString const &_description,
+    QString const &_library )
+  : key_( _key )
+  , description_( _description )
+  , library_( _library )
 {}
 
 QString QgsAuthMethodMetadata::key() const
 {
-  return mKey;
+  return key_;
 }
 
 QString QgsAuthMethodMetadata::description() const
 {
-  return mDescription;
+  return description_;
 }
 
 QString QgsAuthMethodMetadata::library() const
 {
-  return mLibrary;
-}
-
-QString QgsAuthMethodMetadata::guiLibrary() const
-{
-  return mGuiLibrary;
+  return library_;
 }
 

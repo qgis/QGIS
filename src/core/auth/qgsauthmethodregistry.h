@@ -54,8 +54,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
     virtual ~QgsAuthMethodRegistry();
 
     //! Returns path for the library of the auth method
-    //! if gui is TRUE, it will return the gui module if it exists and is loaded
-    QString library(const QString &authMethodKey , bool gui = false) const;
+    QString library( const QString &authMethodKey ) const;
 
     //! Returns list of auth method plugins found
     QString pluginList( bool asHtml = false ) const;
@@ -93,11 +92,10 @@ class CORE_EXPORT QgsAuthMethodRegistry
      * Gets pointer to auth method function
      * \param authMethodKey identificator of the auth method
      * \param functionName name of function
-     * \param gui determines if the function is in the gui module (core by default).
      * \returns pointer to function or nullptr on error
      */
-    QFunctionPointer function(const QString &authMethodKey,
-                               const QString &functionName , bool gui = false);
+    QFunctionPointer function( const QString &authMethodKey,
+                               const QString &functionName );
 
     //! Returns the library object associated with an auth method key
     std::unique_ptr< QLibrary > authMethodLibrary( const QString &authMethodKey ) const;
@@ -115,8 +113,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
   private:
     //! Ctor private since instance() creates it
-    //! If loadGuiModules is TRUE, the registry will also register the gui module matching the core part
-    QgsAuthMethodRegistry(const QString &pluginPath , bool loadGuiModules = true);
+    QgsAuthMethodRegistry( const QString &pluginPath );
 
     //! Associative container of auth method metadata handles
     AuthMethods mAuthMethods;
