@@ -45,9 +45,10 @@ class TestQgsServerWMTS(QgsServerTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
-    def wmts_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
+    def wmts_request_compare(self, request, version='', extra_query_string='', reference_base_name=None, project=None):
         # project = self.testdata_path + "test_project_wfs.qgs"
-        project = self.projectGroupsPath
+        if not project:
+            project = self.projectGroupsPath
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WMTS&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -117,6 +118,10 @@ class TestQgsServerWMTS(QgsServerTestBase):
         for request in ('GetCapabilities',):
             self.wmts_request_compare(request)
             # self.wmts_request_compare(request, '1.0.0')
+
+    def test_getcapabilities_epsg_axis_inverted(self):
+        project = os.path.join(self.testdata_path, "test_project_wmts_epsg_axis_inverted.qgz")
+        self.wmts_request_compare('GetCapabilities', project=project, reference_base_name="wmts_getcapabilities_axis_inverted")
 
     def test_wmts_gettile(self):
         # Testing project WMTS layer
