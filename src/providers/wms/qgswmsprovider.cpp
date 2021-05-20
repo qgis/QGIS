@@ -67,6 +67,8 @@
 #include <QStringBuilder>
 #include <QUrlQuery>
 #include <QJsonArray>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include <ogr_api.h>
 

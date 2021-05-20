@@ -20,6 +20,10 @@
 #include "qgsconnectionsitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgshanatablemodel.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
+#include "qgsdataprovider.h"
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;

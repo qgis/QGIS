@@ -19,6 +19,9 @@
 #include "qgsdataitem.h"
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgsdatacollectionitem.h"
 
 class QTextEdit;
 class QProgressBar;

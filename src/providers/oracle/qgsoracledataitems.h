@@ -25,6 +25,7 @@
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QSqlDatabase;
 
