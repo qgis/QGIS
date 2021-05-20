@@ -91,7 +91,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       ImaginarySuccess,
       RecursiveSuccess,
       SuccessCombination,
-      PythonName /PyName=DifferentName/,
+      PythonName,
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
