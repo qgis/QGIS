@@ -88,7 +88,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
-    if ( mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.size() > 0 )
+    if ( !mTimeDimensionExtent.datesResolutionList.isEmpty() &&
+         !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
     {
       QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
       QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
