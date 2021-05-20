@@ -25,7 +25,6 @@ email                : jef at norbit dot de
 #include "qgsoracletablecache.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
-#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"

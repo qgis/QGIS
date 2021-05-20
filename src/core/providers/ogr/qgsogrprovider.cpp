@@ -29,7 +29,6 @@ email                : sherman at mrcc.com
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscplhttpfetchoverrider.h"
-#include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"

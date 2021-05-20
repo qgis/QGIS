@@ -17,12 +17,11 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsalignraster.h"
-#include "qgsdataitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgslayeritem.h"
+#include "qgsiconutils.h"
 
 #include <QCheckBox>
 #include <QFileDialog>
@@ -146,7 +145,7 @@ void QgsAlignRasterDialog::populateLayersView()
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
-    QStandardItem *si = new QStandardItem( QgsLayerItem::iconRaster(), layerName );
+    QStandardItem *si = new QStandardItem( QgsIconUtils::iconRaster(), layerName );
     model->appendRow( si );
 
     if ( i == refLayerIndex )

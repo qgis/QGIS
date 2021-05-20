@@ -339,6 +339,7 @@ set(QGIS_CORE_SRCS
   qgshistogram.cpp
   qgshstoreutils.cpp
   qgshtmlutils.cpp
+  qgsiconutils.cpp
   qgsidentifycontext.cpp
   qgsimagecache.cpp
   qgsinterval.cpp
@@ -951,6 +952,7 @@ set(QGIS_CORE_HDRS
   qgshistogram.h
   qgshstoreutils.h
   qgshtmlutils.h
+  qgsiconutils.h
   qgsidentifycontext.h
   qgsimagecache.h
   qgsindexedfeature.h

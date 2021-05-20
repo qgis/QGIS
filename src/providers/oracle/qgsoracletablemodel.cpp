@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsoracletablemodel.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 

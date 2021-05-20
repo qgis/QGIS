@@ -28,7 +28,6 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdaldataitems.h"

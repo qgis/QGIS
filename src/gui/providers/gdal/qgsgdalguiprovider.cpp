@@ -30,7 +30,6 @@
 #include "qgsgdalsourceselect.h"
 #include "qgsapplication.h"
 #include "qgsprovidermetadata.h"
-#include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgsgdaldataitems.h"
 #include "qgsmaplayer.h"

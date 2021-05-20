@@ -15,7 +15,6 @@
  *
  ***************************************************************************/
 #include "qgsapplication.h"
-#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
 #include "qgshanasettings.h"
