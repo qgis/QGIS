@@ -2803,8 +2803,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
         fids2 = [f.id() for f in vl.getFeatures(fids)]
         self.assertEqual(len(fids), fids_get_count)
-        """ ! TEST FAIL ! with OR WHERE string """
-        #self.assertEqual(len(fids2), fids_get_count)
+        """ ! TEST FAIL ! with OR WHERE string
+        self.assertEqual(len(fids2), fids_get_count) """
 
         """ Composite PK: serial, uuid, int, bigint, str, inet4, inet6,cidr4, cidr6, macaddr, macaddr8 """
         fids_get_count = 42
