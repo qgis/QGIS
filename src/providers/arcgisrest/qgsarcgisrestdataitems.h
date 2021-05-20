@@ -233,7 +233,7 @@ class QgsArcGisFeatureServiceLayerItem : public QgsLayerItem
   public:
 
     QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers,
-                                      QgsLayerItem::LayerType geometryType );
+                                      Qgis::BrowserLayerType geometryType );
 
 };
 

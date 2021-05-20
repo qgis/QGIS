@@ -94,7 +94,7 @@ class QgsHanaLayerItem : public QgsLayerItem
 
   public:
     QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
-                      QgsLayerItem::LayerType layerType, const QgsHanaLayerProperty &layerProperties );
+                      Qgis::BrowserLayerType layerType, const QgsHanaLayerProperty &layerProperties );
 
     QVector<QgsDataItem *> createChildren() override;
 

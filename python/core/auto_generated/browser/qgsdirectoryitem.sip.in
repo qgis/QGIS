@@ -52,7 +52,7 @@ items pointing to different ``dirPaths`` should always use a different item ``pa
 The optional ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
 %End
 
-    virtual void setState( State state );
+    virtual void setState( Qgis::BrowserItemState state );
 
 
     virtual QVector<QgsDataItem *> createChildren();

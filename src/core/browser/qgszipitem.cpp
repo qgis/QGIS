@@ -53,7 +53,7 @@ QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name,
 
 void QgsZipItem::init()
 {
-  mType = Collection; //Zip??
+  mType = Qgis::BrowserItemType::Collection; //Zip??
   mIconName = QStringLiteral( "/mIconZip.svg" );
   mVsiPrefix = vsiPrefix( mFilePath );
 

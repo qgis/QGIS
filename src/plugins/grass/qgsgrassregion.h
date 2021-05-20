@@ -49,7 +49,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgisInterface *iface,
-                    QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+                    QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     ~QgsGrassRegion() override;

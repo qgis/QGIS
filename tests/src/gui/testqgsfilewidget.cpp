@@ -121,7 +121,7 @@ void TestQgsFileWidget::testDroppedFiles()
 
   QgsBrowserModel m;
   m.initialize();
-  QgsLayerItem *layerItem = new QgsLayerItem( nullptr, QStringLiteral( "Test" ), QString(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.txt" ), QgsLayerItem::Mesh, "mdal" );
+  QgsLayerItem *layerItem = new QgsLayerItem( nullptr, QStringLiteral( "Test" ), QString(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.txt" ), Qgis::BrowserLayerType::Mesh, "mdal" );
   m.driveItems().first()->addChild( layerItem );
   mime.reset( m.mimeData( QModelIndexList() << m.findItem( layerItem ) ) );
   event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );

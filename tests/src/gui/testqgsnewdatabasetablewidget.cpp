@@ -24,6 +24,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractproviderconnection.h"
+#include "qgsdataitem.h"
 
 class TestQgsNewDatabaseTableNameWidget: public QObject
 {

@@ -152,6 +152,56 @@ The development version
     typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
 
 
+    enum class BrowserItemType
+      {
+      Collection,
+      Directory,
+      Layer,
+      Error,
+      Favorites,
+      Project,
+      Custom,
+      Fields,
+      Field,
+    };
+
+    enum class BrowserItemState
+      {
+      NotPopulated,
+      Populating,
+      Populated,
+    };
+
+    enum class BrowserItemCapability
+      {
+      NoCapabilities,
+      SetCrs,
+      Fertile,
+      Fast,
+      Collapse,
+      Rename,
+      Delete,
+    };
+    typedef QFlags<Qgis::BrowserItemCapability> BrowserItemCapabilities;
+
+
+    enum class BrowserLayerType
+      {
+      NoType,
+      Vector,
+      Raster,
+      Point,
+      Line,
+      Polygon,
+      TableLayer,
+      Database,
+      Table,
+      Plugin,
+      Mesh,
+      VectorTile,
+      PointCloud
+    };
+
     enum class VectorExportResult
       {
       Success,
@@ -255,6 +305,8 @@ QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis:
 QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 
 

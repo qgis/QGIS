@@ -67,7 +67,7 @@ QString QgsAppDirectoryItemGuiProvider::name()
 
 void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
-  if ( item->type() != QgsDataItem::Directory )
+  if ( item->type() != Qgis::BrowserItemType::Directory )
     return;
 
   QgsDirectoryItem *directoryItem = qobject_cast< QgsDirectoryItem * >( item );
@@ -152,7 +152,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   menu->addSeparator();
 
-  bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
+  bool inFavDirs = item->parent() && item->parent()->type() == Qgis::BrowserItemType::Favorites;
   if ( item->parent() && !inFavDirs )
   {
     // only non-root directories can be added as favorites
@@ -441,7 +441,7 @@ QString QgsFavoritesItemGuiProvider::name()
 
 void QgsFavoritesItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
-  if ( item->type() != QgsDataItem::Favorites )
+  if ( item->type() != Qgis::BrowserItemType::Favorites )
     return;
 
   QAction *addAction = new QAction( tr( "Add a Directory…" ), menu );
@@ -467,7 +467,7 @@ QString QgsLayerItemGuiProvider::name()
 
 void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
-  if ( item->type() != QgsDataItem::Layer )
+  if ( item->type() != Qgis::BrowserItemType::Layer )
     return;
 
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
@@ -579,12 +579,12 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
-  if ( item->capabilities2() & QgsDataItem::Delete )
+  if ( item->capabilities2() & Qgis::BrowserItemCapability::Delete )
   {
     QStringList selectedDeletableItemPaths;
     for ( QgsDataItem *selectedItem : selectedItems )
     {
-      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & QgsDataItem::Delete ) )
+      if ( qobject_cast<QgsLayerItem *>( selectedItem ) && ( selectedItem->capabilities2() & Qgis::BrowserItemCapability::Delete ) )
         selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
     }
 
@@ -620,7 +620,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 
 bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( !item || item->type() != QgsDataItem::Layer )
+  if ( !item || item->type() != Qgis::BrowserItemType::Layer )
     return false;
 
   if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
@@ -643,7 +643,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
   // TODO - maybe this logic is wrong?
   for ( const QgsDataItem *item : items )
   {
-    if ( item && item->type() == QgsDataItem::Project )
+    if ( item && item->type() == Qgis::BrowserItemType::Project )
     {
       if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
         QgisApp::instance()->openProject( projectItem->path() );
@@ -658,7 +658,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
   for ( int i = items.size() - 1; i >= 0; i-- )
   {
     QgsDataItem *item = items.at( i );
-    if ( item && item->type() == QgsDataItem::Layer )
+    if ( item && item->type() == Qgis::BrowserItemType::Layer )
     {
       if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
         layerUriList.append( layerItem->mimeUris() );
@@ -726,7 +726,7 @@ QString QgsProjectItemGuiProvider::name()
 
 void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
-  if ( !item || item->type() != QgsDataItem::Project )
+  if ( !item || item->type() != Qgis::BrowserItemType::Project )
     return;
 
   if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
@@ -780,7 +780,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 bool QgsProjectItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( !item || item->type() != QgsDataItem::Project )
+  if ( !item || item->type() != Qgis::BrowserItemType::Project )
     return false;
 
   if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
@@ -803,7 +803,7 @@ void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *me
 {
   Q_UNUSED( selectedItems )
 
-  if ( !item || item->type() != QgsDataItem::Type::Fields )
+  if ( !item || item->type() != Qgis::BrowserItemType::Fields )
     return;
 
 
@@ -861,7 +861,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
 {
   Q_UNUSED( selectedItems )
 
-  if ( !item || item->type() != QgsDataItem::Type::Field )
+  if ( !item || item->type() != Qgis::BrowserItemType::Field )
     return;
 
   if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
@@ -978,9 +978,9 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             const QString schemaName { dlg.schemaName() };
             const QString geometryColumn { dlg.geometryColumnName() };
             const QgsWkbTypes::Type geometryType { dlg.geometryType() };
-            const bool createSpatialIndex { dlg.createSpatialIndex() &&
+            const bool createSpatialIndex = dlg.createSpatialIndex() &&
                                             geometryType != QgsWkbTypes::NoGeometry &&
-                                            geometryType != QgsWkbTypes::Unknown };
+                                            geometryType != QgsWkbTypes::Unknown;
             const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
             // This flag tells to the provider that field types do not need conversion
             // also prevents  GDAL to create a spatial index by default for GPKG, we are

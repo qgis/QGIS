@@ -28,7 +28,7 @@ QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "OWS" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
@@ -143,7 +143,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "OWS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconOws.svg" );
   populate();
 }

@@ -31,8 +31,8 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, co
   : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ), QStringLiteral( "special:Favorites" ) )
 {
   Q_UNUSED( path )
-  mCapabilities |= Fast;
-  mType = Favorites;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
+  mType = Qgis::BrowserItemType::Favorites;
   mIconName = QStringLiteral( "/mIconFavorites.svg" );
   populate();
 }
@@ -72,7 +72,7 @@ void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
   favDirs.append( QStringLiteral( "%1|||%2" ).arg( favDir, name ) );
   settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
-  if ( state() == Populated )
+  if ( state() == Qgis::BrowserItemState::Populated )
   {
     const QVector<QgsDataItem *> items = createChildren( favDir, name );
     for ( QgsDataItem *item : items )
@@ -108,7 +108,7 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
     return;
   }
 
-  if ( state() == Populated )
+  if ( state() == Qgis::BrowserItemState::Populated )
     deleteChildItem( mChildren.at( idx ) );
 }
 
@@ -191,7 +191,7 @@ QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name,
   : QgsDirectoryItem( parent, name, dirPath, path, QStringLiteral( "special:Favorites" ) )
   , mFavorites( parent )
 {
-  mCapabilities |= Rename;
+  mCapabilities |= Qgis::BrowserItemCapability::Rename;
 }
 
 bool QgsFavoriteItem::rename( const QString &name )

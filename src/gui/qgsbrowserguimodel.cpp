@@ -18,6 +18,7 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsgui.h"
 #include "qgsmessagebar.h"
+#include "qgsdataitem.h"
 
 QgsBrowserGuiModel::QgsBrowserGuiModel( QObject *parent )
   : QgsBrowserModel( parent )
@@ -112,7 +113,7 @@ bool QgsBrowserGuiModel::setData( const QModelIndex &index, const QVariant &valu
     return false;
   }
 
-  if ( !( item->capabilities2() & QgsDataItem::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
     return false;
 
   switch ( role )

@@ -123,7 +123,7 @@ class QgsMssqlLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperties );
+    QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsMssqlLayerProperty &layerProperties );
 
     QString createUri();
 

@@ -27,9 +27,9 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
     const QString &name,
     const QString &path,
     const QString &providerKey )
-  : QgsDataItem( Collection, parent, name, path, providerKey )
+  : QgsDataItem( Qgis::BrowserItemType::Collection, parent, name, path, providerKey )
 {
-  mCapabilities = Fertile;
+  mCapabilities = Qgis::BrowserItemCapability::Fertile;
   mIconName = QStringLiteral( "/mIconDbSchema.svg" );
 }
 

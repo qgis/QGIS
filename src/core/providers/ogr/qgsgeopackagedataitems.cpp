@@ -66,7 +66,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mGeoPackage.svg" );
   populate();
 }
@@ -102,7 +102,7 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mToolTip = QString( path ).remove( QLatin1String( "gpkg:/" ) );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 
@@ -114,7 +114,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
     const auto layers = QgsOgrLayerItem::subLayers( mPath.remove( QLatin1String( "gpkg:/" ) ), QStringLiteral( "GPKG" ) );
     for ( const QgsOgrDbLayerInfo *info : layers )
     {
-      if ( info->layerType() == QgsLayerItem::LayerType::Raster )
+      if ( info->layerType() == Qgis::BrowserLayerType::Raster )
       {
         children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
       }
@@ -262,13 +262,13 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 
 }
 
-QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
+QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
   , mCollection( qobject_cast<QgsGeoPackageCollectionItem*>( parent ) )
 {
-  mCapabilities |= Delete;
+  mCapabilities |= Qgis::BrowserItemCapability::Delete;
   mToolTip = uri;
-  setState( Populated ); // no children are expected
+  setState( Qgis::BrowserItemState::Populated ); // no children are expected
 }
 
 
@@ -309,11 +309,11 @@ QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
   return mCollection;
 }
 
-QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
+QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
-  mCapabilities |= ( Rename | Fertile );
-  setState( QgsDataItem::State::NotPopulated );
+  mCapabilities |= ( Qgis::BrowserItemCapability::Rename | Qgis::BrowserItemCapability::Fertile );
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 
@@ -326,7 +326,7 @@ QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
 
 
 QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
-  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )
+  : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
 {
 }
 

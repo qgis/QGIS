@@ -26,10 +26,10 @@
 
 QgsPdalLayerItem::QgsPdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pdal" ) )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::PointCloud, QStringLiteral( "pdal" ) )
 {
   mToolTip = uri;
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QString QgsPdalLayerItem::layerName() const

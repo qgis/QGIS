@@ -39,7 +39,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
   , mDirPath( path )
   , mRefreshLater( false )
 {
-  mType = Directory;
+  mType = Qgis::BrowserItemType::Directory;
   init();
 }
 
@@ -61,7 +61,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
   }
   settings.endGroup();
 
-  mType = Directory;
+  mType = Qgis::BrowserItemType::Directory;
   init();
 }
 
@@ -103,7 +103,7 @@ QIcon QgsDirectoryItem::icon()
     return homeDirIcon( mIconColor, mIconColor.darker() );
 
   // still loading? show the spinner
-  if ( state() == Populating )
+  if ( state() == Qgis::BrowserItemState::Populating )
     return QgsDataItem::icon();
 
   // symbolic link? use link icon
@@ -116,7 +116,7 @@ QIcon QgsDirectoryItem::icon()
   }
 
   // loaded? show the open dir icon
-  if ( state() == Populated )
+  if ( state() == Qgis::BrowserItemState::Populated )
     return openDirIcon( mIconColor, mIconColor.darker() );
 
   // show the closed dir icon
@@ -231,11 +231,11 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
   return children;
 }
 
-void QgsDirectoryItem::setState( State state )
+void QgsDirectoryItem::setState( Qgis::BrowserItemState state )
 {
   QgsDataCollectionItem::setState( state );
 
-  if ( state == Populated )
+  if ( state == Qgis::BrowserItemState::Populated )
   {
     if ( !mFileSystemWatcher )
     {
@@ -245,7 +245,7 @@ void QgsDirectoryItem::setState( State state )
     }
     mLastScan = QDateTime::currentDateTime();
   }
-  else if ( state == NotPopulated )
+  else if ( state == Qgis::BrowserItemState::NotPopulated )
   {
     if ( mFileSystemWatcher )
     {
@@ -262,7 +262,7 @@ void QgsDirectoryItem::directoryChanged()
   {
     return;
   }
-  if ( state() == Populating )
+  if ( state() == Qgis::BrowserItemState::Populating )
   {
     // schedule to refresh later, because refresh() simply returns if Populating
     mRefreshLater = true;
@@ -300,7 +300,7 @@ void QgsDirectoryItem::childrenCreated()
   {
     QgsDebugMsgLevel( QStringLiteral( "directory changed during createChidren() -> refresh() again" ), 3 );
     mRefreshLater = false;
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
     refresh();
   }
   else
@@ -489,7 +489,7 @@ QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name
 
 QIcon QgsProjectHomeItem::icon()
 {
-  if ( state() == Populating )
+  if ( state() == Qgis::BrowserItemState::Populating )
     return QgsDirectoryItem::icon();
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderProject.svg" ) );
 }

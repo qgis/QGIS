@@ -69,7 +69,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      */
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
-    void setState( State state ) override;
+    void setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 

@@ -257,7 +257,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsDropEnabled;
   Q_NOWARN_DEPRECATED_POP
 
-  if ( ptr->capabilities2() & QgsDataItem::Rename )
+  if ( ptr->capabilities2() & Qgis::BrowserItemCapability::Rename )
     flags |= Qt::ItemIsEditable;
 
   return flags;
@@ -295,7 +295,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == QgsBrowserModel::CommentRole )
   {
-    if ( item->type() == QgsDataItem::Layer )
+    if ( item->type() == Qgis::BrowserItemType::Layer )
     {
       QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
       return lyrItem->comments();
@@ -325,7 +325,7 @@ bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, 
     return false;
   }
 
-  if ( !( item->capabilities2() & QgsDataItem::Rename ) )
+  if ( !( item->capabilities2() & Qgis::BrowserItemCapability::Rename ) )
     return false;
 
   switch ( role )
@@ -587,14 +587,14 @@ void QgsBrowserModel::itemDataChanged( QgsDataItem *item )
     return;
   emit dataChanged( idx, idx );
 }
-void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState )
+void QgsBrowserModel::itemStateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState )
 {
   if ( !item )
     return;
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( oldState ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( item->state() ) ), 4 );
   emit stateChanged( idx, oldState );
 }
 
@@ -674,14 +674,14 @@ bool QgsBrowserModel::canFetchMore( const QModelIndex &parent ) const
   QgsDataItem *item = dataItem( parent );
   // if ( item )
   //   QgsDebugMsg( QStringLiteral( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
-  return ( item && item->state() == QgsDataItem::NotPopulated );
+  return ( item && item->state() == Qgis::BrowserItemState::NotPopulated );
 }
 
 void QgsBrowserModel::fetchMore( const QModelIndex &parent )
 {
   QgsDataItem *item = dataItem( parent );
 
-  if ( !item || item->state() == QgsDataItem::Populating || item->state() == QgsDataItem::Populated )
+  if ( !item || item->state() == Qgis::BrowserItemState::Populating || item->state() == Qgis::BrowserItemState::Populated )
     return;
 
   QgsDebugMsgLevel( "path = " + item->path(), 4 );
@@ -700,7 +700,7 @@ void QgsBrowserModel::refresh( const QString &path )
 void QgsBrowserModel::refresh( const QModelIndex &index )
 {
   QgsDataItem *item = dataItem( index );
-  if ( !item || item->state() == QgsDataItem::Populating )
+  if ( !item || item->state() == Qgis::BrowserItemState::Populating )
     return;
 
   QgsDebugMsgLevel( "Refresh " + item->path(), 4 );

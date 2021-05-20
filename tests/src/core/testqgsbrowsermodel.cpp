@@ -96,7 +96,7 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.columnCount( root1Index ), 1 );
   // initially, we say the item has children, until it's populated and we know for sure
   QVERIFY( model.hasChildren( root1Index ) );
-  rootItem1->setState( QgsDataItem::Populated );
+  rootItem1->setState( Qgis::BrowserItemState::Populated );
   QVERIFY( !model.hasChildren( root1Index ) );
   QCOMPARE( model.data( root1Index ).toString(), QStringLiteral( "Test" ) );
   QCOMPARE( model.data( root1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root1" ) );
@@ -193,7 +193,7 @@ class TestDataItemProvider : public QgsDataItemProvider
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       if ( path.isEmpty() )
-        return new QgsDataItem( QgsDataItem::Custom, parentItem, QStringLiteral( "test-root-item" ), path );
+        return new QgsDataItem( Qgis::BrowserItemType::Custom, parentItem, QStringLiteral( "test-root-item" ), path );
       return nullptr;
     }
 };
