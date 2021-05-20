@@ -173,7 +173,6 @@ if(WITH_CORE)
       # keep casual users from updating their source tree via WITH_QSCIAPI
       mark_as_advanced (WITH_QSCIAPI)
     endif()
-    add_definitions(-DWITH_BINDINGS)
   endif()
 
   # server disabled default because it needs FastCGI (which is optional dependency)
