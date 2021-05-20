@@ -1285,7 +1285,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -1308,7 +1308,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
   {
     if ( errorMessage )
       *errorMessage = errMsg;
-    return Qgis::VectorExportResult::ErrorConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   // Get the SRS name using srid, needed to register the spatial column
@@ -1433,7 +1433,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
         {
           *errorMessage = lastError;
         }
-        return Qgis::VectorExportResult::ErrorCreatingLayer;
+        return QgsVectorLayerExporter::ErrCreateLayer;
       }
     }
   }
@@ -1473,7 +1473,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
         {
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
         }
-        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       if ( oldToNewAttrIdxMap )
@@ -1513,7 +1513,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
       {
         *errorMessage = lastError;
       }
-      return Qgis::VectorExportResult::ErrorCreatingLayer;
+      return QgsVectorLayerExporter::ErrCreateLayer;
     }
 
 
@@ -1591,7 +1591,7 @@ Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
 
   }
   QgsDebugMsg( QStringLiteral( "successfully created empty layer" ) );
-  return Qgis::VectorExportResult::Success;
+  return QgsVectorLayerExporter::NoError;
 }
 
 QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
@@ -1746,7 +1746,7 @@ QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-Qgis::VectorExportResult QgsDb2ProviderMetadata::createEmptyLayer(
+QgsVectorLayerExporter::ExportError QgsDb2ProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

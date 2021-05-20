@@ -66,7 +66,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
   public:
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -420,7 +420,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
                     const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     void cleanupProvider() override;
-    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri,
         const QgsFields &fields, QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs, bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
