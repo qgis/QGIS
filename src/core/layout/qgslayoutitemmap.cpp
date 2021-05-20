@@ -1922,9 +1922,15 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     QDateTime end = temporalRange().end();
 
     if ( property == QgsLayoutObject::StartDateTime || property == QgsLayoutObject::AllProperties )
+    {
       begin = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::StartDateTime, context, temporalRange().begin() );
+      begin.setTimeSpec( Qt::UTC );
+    }
     if ( property == QgsLayoutObject::EndDateTime || property == QgsLayoutObject::AllProperties )
+    {
       end = mDataDefinedProperties.valueAsDateTime( QgsLayoutObject::EndDateTime, context, temporalRange().end() );
+      end.setTimeSpec( Qt::UTC );
+    }
 
     setTemporalRange( QgsDateTimeRange( begin, end, true, begin == end ) );
   }
