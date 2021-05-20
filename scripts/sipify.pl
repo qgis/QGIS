@@ -1072,7 +1072,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$5/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$7/r;
                     my $enum_member = $+{em};
                     my $comment = $+{co};
                     my $compat_name = $+{compat} ? $+{compat} : $enum_member;
