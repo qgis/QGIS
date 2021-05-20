@@ -587,10 +587,10 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     QMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
-    const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", nullptr );
+    const QString identifier = GDALGetMetadataItem( layer, "IDENTIFIER", "" );
     if ( !identifier.isEmpty() )
       mLayerMetadata.setTitle( identifier ); // see geopackage specs -- "'identifier' is analogous to 'title'"
-    const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", nullptr );
+    const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", "" );
     if ( !abstract.isEmpty() )
       mLayerMetadata.setAbstract( abstract );
   }
