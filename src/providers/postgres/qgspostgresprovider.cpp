@@ -713,6 +713,11 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         allowedValuesType << QVariant::LongLong;
         bool canUseVALUES = true;
 
+        QList<QString> allowedValuesTypeName;
+        allowedValuesTypeName << QLatin1String( "char" );
+        allowedValuesTypeName << QLatin1String( "varchar" );
+        allowedValuesTypeName << QLatin1String( "character" );
+
         QList<QString> allowedValuesWithCastTypeName;
         allowedValuesWithCastTypeName << QLatin1String( "uuid" );
 
@@ -723,6 +728,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
           if ( canUseVALUES
                && !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() )
+               && !allowedValuesTypeName.contains( fields.at( pkAttrs[i] ).typeName() )
                && !allowedValuesWithCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
             canUseVALUES = false;
         }

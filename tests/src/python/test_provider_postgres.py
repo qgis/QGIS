@@ -2670,9 +2670,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                         100.0 * dy )
                 FROM generate_series(1,333) dx, generate_series(1,333) dy;''')
 
-        """ Composite PK: uuid, bigint, string
-            if set fids_get_count > 9000 - test FAIL"""
-        fids_get_count = 5000
+        """ Composite PK: uuid, bigint, string """
+        fids_get_count = 20000
         vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'"id_uuid","id_int","id_str"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
