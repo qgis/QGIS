@@ -20,6 +20,7 @@
 #include "qgsoracleprovider.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsfeedback.h"
 
 #include <QSqlRecord>
 #include <QSqlField>
@@ -275,17 +276,17 @@ void QgsOracleProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  const QgsVectorLayerExporter::ExportError errCode = QgsOracleProvider::createEmptyLayer(
-        newUri.uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        map,
-        errCause,
-        options
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  const Qgis::VectorExportResult res = QgsOracleProvider::createEmptyLayer(
+                                         newUri.uri(),
+                                         fields,
+                                         wkbType,
+                                         srs,
+                                         overwrite,
+                                         map,
+                                         errCause,
+                                         options
+                                       );
+  if ( res != Qgis::VectorExportResult::Success )
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
 }
 
