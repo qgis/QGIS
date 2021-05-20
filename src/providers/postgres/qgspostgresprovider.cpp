@@ -591,12 +591,37 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
-  auto lookupKeyWhereClause = [ = ]( bool canUseVALUES )
+  auto lookupKeyWhereClause = [ = ]
   {
     if ( featureIds.isEmpty() )
       return QString();
 
     //simple primary key, so prefer to use an "IN (...)" query. These are much faster then multiple chained ...OR... clauses
+    QString delim;
+    QString expr = QStringLiteral( "%1 IN (" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) );
+
+    for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
+    {
+      const QVariantList pkVals = sharedData->lookupKey( featureId );
+      if ( !pkVals.isEmpty() )
+      {
+        expr += delim + QgsPostgresConn::quotedValue( pkVals.at( 0 ) );
+        delim = ',';
+      }
+    }
+    expr += ')';
+
+    return expr;
+  };
+
+  auto lookupComboKeyWhereClause = [ = ]( bool canUseVALUES )
+  {
+    if ( pkAttrs.size() == 1 )
+      return lookupKeyWhereClause();
+
+    if ( featureIds.isEmpty() )
+      return QString();
+
     QString delim;
     QString whereKeys;
     for ( int i = 0; i < pkAttrs.size(); i++ )
@@ -624,13 +649,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       }
     }
 
-    if ( 1 ==  pkAttrs.size() )
-    {
-      return whereValuesList.isEmpty() ? QString() :
-             whereKeys.append( QStringLiteral( " IN " ) ) +
-             whereValuesList.join( QLatin1Char( ',' ) ).prepend( QLatin1Char( '(' ) ).append( QLatin1Char( ')' ) );
-    }
-    else if ( canUseVALUES )
+    if ( canUseVALUES )
     {
       return whereValuesList.isEmpty() ? QString() :
              whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
@@ -669,30 +688,41 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     }
     case PktInt64:
     case PktUint64:
-      return lookupKeyWhereClause( false );
+      return lookupKeyWhereClause();
 
     case PktFidMap:
     {
-      // on simple string primary key we can use IN
-      QList<int> allowedType;
-      allowedType << QVariant::String;
-      allowedType << QVariant::Int;
-      allowedType << QVariant::LongLong;
-      bool canUseIN = true;
-      QList<int> allowedValuesType;
-      allowedValuesType << QVariant::Int;
-      allowedValuesType << QVariant::LongLong;
-      bool canUseVALUES = true;
-      for ( int i = 0; i < pkAttrs.size(); i++ )
+      if ( pkAttrs.size() == 1 )
       {
-        if ( !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
-          canUseIN = false;
-
-        if ( !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() ) )
-          canUseVALUES = false;
+        // on simple string primary key we can use IN
+        if ( fields.at( pkAttrs[0] ).type() == QVariant::String )
+          return lookupKeyWhereClause();
       }
-      if ( canUseIN )
-        return lookupKeyWhereClause( canUseVALUES );
+      else
+      {
+        QList<QVariant::Type> allowedType;
+        allowedType << QVariant::String;
+        allowedType << QVariant::Int;
+        allowedType << QVariant::LongLong;
+        bool canUseIN = true;
+
+        QList<QVariant::Type> allowedValuesType;
+        allowedValuesType << QVariant::Int;
+        allowedValuesType << QVariant::LongLong;
+        bool canUseVALUES = true;
+
+        for ( int i = 0; i < pkAttrs.size(); i++ )
+        {
+          if ( canUseIN && !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
+            canUseIN = false;
+
+          if ( canUseVALUES && !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() ) )
+            canUseVALUES = false;
+        }
+
+        if ( canUseIN )
+          return lookupComboKeyWhereClause( canUseVALUES );
+      }
 
       [[fallthrough]];
     }
