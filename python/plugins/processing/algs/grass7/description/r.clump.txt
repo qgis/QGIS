@@ -5,3 +5,4 @@ QgsProcessingParameterRasterLayer|input|Input layer|None|False
 QgsProcessingParameterString|title|Title for output raster map|None|True
 *QgsProcessingParameterBoolean|-d|Clump also diagonal cells|False
 QgsProcessingParameterRasterDestination|output|Clumps
+QgsProcessingParameterNumber|threshold|Threshold to identify similar cells|QgsProcessingParameterNumber.Double|0|False|0|1
