@@ -28,6 +28,9 @@
 #include "qgsconfig.h"
 #include "qgsrasterrenderer.h"
 #include "qgssettings.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgszipitem.h"
 
 #include <gdal.h>
 

@@ -34,7 +34,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayerdefinition.h"
+#include "qgslayeritem.h"
 
+#include <QPalette>
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )

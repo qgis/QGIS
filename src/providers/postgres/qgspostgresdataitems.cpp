@@ -27,6 +27,8 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsprojectitem.h"
+#include "qgsfieldsitem.h"
 #include <QMessageBox>
 #include <climits>
 

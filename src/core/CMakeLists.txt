@@ -466,9 +466,18 @@ set(QGIS_CORE_SRCS
 
   browser/qgsbrowsermodel.cpp
   browser/qgsbrowserproxymodel.cpp
+  browser/qgsconnectionsitem.cpp
+  browser/qgsdatabaseschemaitem.cpp
+  browser/qgsdatacollectionitem.cpp
   browser/qgsdataitem.cpp
   browser/qgsdataitemprovider.cpp
   browser/qgsdataitemproviderregistry.cpp
+  browser/qgsdirectoryitem.cpp
+  browser/qgsfavoritesitem.cpp
+  browser/qgsfieldsitem.cpp
+  browser/qgslayeritem.cpp
+  browser/qgsprojectitem.cpp
+  browser/qgszipitem.cpp
 
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
@@ -1109,9 +1118,18 @@ set(QGIS_CORE_HDRS
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
+  browser/qgsconnectionsitem.h
+  browser/qgsdatabaseschemaitem.h
+  browser/qgsdatacollectionitem.h
   browser/qgsdataitem.h
   browser/qgsdataitemprovider.h
   browser/qgsdataitemproviderregistry.h
+  browser/qgsdirectoryitem.h
+  browser/qgsfavoritesitem.h
+  browser/qgsfieldsitem.h
+  browser/qgslayeritem.h
+  browser/qgsprojectitem.h
+  browser/qgszipitem.h
 
   callouts/qgscallout.h
   callouts/qgscalloutsregistry.h

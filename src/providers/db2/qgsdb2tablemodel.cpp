@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
+#include "qgslayeritem.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
 {

@@ -20,6 +20,8 @@
 #include "qgsmimedatautils.h"
 #include "qgsdataitem.h"
 #include "qgsbrowsermodel.h"
+#include "qgslayeritem.h"
+#include "qgsdirectoryitem.h"
 #include <memory>
 
 class TestQgsFileWidget: public QObject

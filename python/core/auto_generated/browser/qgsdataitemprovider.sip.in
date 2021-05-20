@@ -11,7 +11,6 @@
 
 
 
-
 class QgsDataItemProvider
 {
 %Docstring(signature="appended")

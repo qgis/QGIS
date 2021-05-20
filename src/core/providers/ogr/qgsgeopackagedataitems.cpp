@@ -17,6 +17,8 @@
 
 #include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsprojectitem.h"
+#include "qgsfieldsitem.h"
 #include "qgsogrdbconnection.h"
 #include "qgslogger.h"
 #include "qgssettings.h"

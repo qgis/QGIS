@@ -15,7 +15,7 @@
 #ifndef QGSMDALDATAITEMS_H
 #define QGSMDALDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 
 #include <QString>

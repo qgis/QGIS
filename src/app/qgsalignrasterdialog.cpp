@@ -22,6 +22,7 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgslayeritem.h"
 
 #include <QCheckBox>
 #include <QFileDialog>

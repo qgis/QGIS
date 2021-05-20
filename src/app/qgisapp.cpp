@@ -404,6 +404,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsuserprofile.h"
 #include "qgsnetworkloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgszipitem.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 

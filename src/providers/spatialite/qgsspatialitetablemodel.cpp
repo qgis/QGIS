@@ -18,6 +18,7 @@
 #include "qgsspatialitetablemodel.h"
 #include "qgsapplication.h"
 #include "qgsdataitem.h" // for icons
+#include "qgslayeritem.h"
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel()
 {

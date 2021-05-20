@@ -27,6 +27,8 @@
 #include "qgsbrowsermodel.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsdirectoryitem.h"
 
 class TestQgsBrowserModel : public QObject
 {

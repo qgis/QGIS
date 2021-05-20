@@ -22,6 +22,7 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgsnative.h"
+#include "qgslayeritem.h"
 
 #include <QPushButton>
 #include <QMenu>

@@ -18,11 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsdataitem.h"
+#include <QString>
+#include <QVector>
 
 class QgsDataItem;
-
-class QString;
 
 //! handlesDirectoryPath function
 typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;

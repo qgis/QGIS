@@ -41,6 +41,7 @@
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayeritem.h"
 
 #include <QAction>
 #include <QFile>

@@ -33,6 +33,7 @@
 #include "qgsogrutils.h"
 #include "qgsgui.h"
 #include "qgsproviderconnectionmodel.h"
+#include "qgslayeritem.h"
 
 #include <QPushButton>
 #include <QLineEdit>

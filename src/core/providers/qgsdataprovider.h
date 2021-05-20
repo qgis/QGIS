@@ -23,7 +23,6 @@
 #include <QStringList>
 #include <QMutex>
 
-//#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"

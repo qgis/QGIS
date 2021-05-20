@@ -43,6 +43,14 @@
 #include "qgsnewvectortabledialog.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgscolordialog.h"
+#include "qgsdirectoryitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgsfavoritesitem.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
+#include "qgsfieldsitem.h"
+#include "qgsconnectionsitem.h"
 
 #include <QFileInfo>
 #include <QMenu>

@@ -26,6 +26,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
 #include "qgsappbrowserproviders.h"
+#include "qgsdirectoryitem.h"
 
 class TestQgsAppBrowserProviders : public QObject
 {

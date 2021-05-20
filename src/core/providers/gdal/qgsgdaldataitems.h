@@ -15,7 +15,7 @@
 #ifndef QGSGDALDATAITEMS_H
 #define QGSGDALDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgis_sip.h"

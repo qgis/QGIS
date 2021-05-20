@@ -37,6 +37,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgslayeritem.h"
 
 #include <QPushButton>
 #include <QLineEdit>
