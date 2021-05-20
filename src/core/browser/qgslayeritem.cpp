@@ -19,69 +19,56 @@
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsiconutils.h"
 
 QIcon QgsLayerItem::iconForWkbType( QgsWkbTypes::Type type )
 {
-  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
-  switch ( geomType )
-  {
-    case QgsWkbTypes::NullGeometry:
-      return iconTable();
-    case QgsWkbTypes::PointGeometry:
-      return iconPoint();
-    case QgsWkbTypes::LineGeometry:
-      return iconLine();
-    case QgsWkbTypes::PolygonGeometry:
-      return iconPolygon();
-    default:
-      break;
-  }
-  return iconDefault();
+  return QgsIconUtils::iconForWkbType( type );
 }
 
 QIcon QgsLayerItem::iconPoint()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+  return QgsIconUtils::iconPoint();
 }
 
 QIcon QgsLayerItem::iconLine()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
+  return QgsIconUtils::iconLine();
 }
 
 QIcon QgsLayerItem::iconPolygon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
+  return QgsIconUtils::iconPolygon();
 }
 
 QIcon QgsLayerItem::iconTable()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
+  return QgsIconUtils::iconTable();
 }
 
 QIcon QgsLayerItem::iconRaster()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRaster.svg" ) );
+  return QgsIconUtils::iconRaster();
 }
 
 QIcon QgsLayerItem::iconMesh()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconMeshLayer.svg" ) );
+  return QgsIconUtils::iconMesh();
 }
 
 QIcon QgsLayerItem::iconVectorTile()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
+  return QgsIconUtils::iconVectorTile();
 }
 
 QIcon QgsLayerItem::iconPointCloud()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
+  return QgsIconUtils::iconPointCloud();
 }
 
 QIcon QgsLayerItem::iconDefault()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+  return QgsIconUtils::iconDefaultLayer();
 }
 
 QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path,

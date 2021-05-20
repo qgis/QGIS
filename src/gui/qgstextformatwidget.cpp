@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
 #include "qgstextformatwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgscharacterselectordialog.h"
@@ -38,7 +37,7 @@
 #include "qgshelp.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
-#include "qgslayeritem.h"
+#include "qgsiconutils.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -481,9 +480,9 @@ void QgsTextFormatWidget::initWidget()
     updateCalloutFrameStatus();
   } );
 
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::Point ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );

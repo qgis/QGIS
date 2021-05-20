@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsfieldsitem.h"
-#include "qgslayeritem.h"
+#include "qgsiconutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgslogger.h"
@@ -163,20 +163,20 @@ QIcon QgsFieldItem::icon()
   {
     if ( mField.typeName() == QLatin1String( "raster" ) )
     {
-      return QgsLayerItem::iconRaster();
+      return QgsIconUtils::iconRaster();
     }
     const QgsWkbTypes::GeometryType geomType { QgsWkbTypes::geometryType( parentFields->tableProperty()->geometryColumnTypes().first().wkbType ) };
     switch ( geomType )
     {
       case QgsWkbTypes::GeometryType::LineGeometry:
-        return QgsLayerItem::iconLine();
+        return QgsIconUtils::iconLine();
       case QgsWkbTypes::GeometryType::PointGeometry:
-        return QgsLayerItem::iconPoint();
+        return QgsIconUtils::iconPoint();
       case QgsWkbTypes::GeometryType::PolygonGeometry:
-        return QgsLayerItem::iconPolygon();
+        return QgsIconUtils::iconPolygon();
       case QgsWkbTypes::GeometryType::UnknownGeometry:
       case QgsWkbTypes::GeometryType::NullGeometry:
-        return QgsLayerItem::iconDefault();
+        return QgsIconUtils::iconDefaultLayer();
     }
   }
   const QIcon icon { QgsFields::iconForFieldType( mField.type() ) };

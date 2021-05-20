@@ -21,7 +21,6 @@
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2geometrycolumns.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgscredentials.h"
 #include "qgsapplication.h"

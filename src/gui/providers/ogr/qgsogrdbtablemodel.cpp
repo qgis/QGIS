@@ -16,7 +16,6 @@
 #include "qgsogrdbtablemodel.h"
 ///@cond PRIVATE
 
-#include "qgsdataitem.h"
 #include "qgsapplication.h"
 
 #include <QIcon>

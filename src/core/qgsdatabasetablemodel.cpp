@@ -16,8 +16,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdataitem.h"
-#include "qgslayeritem.h"
+#include "qgsiconutils.h"
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )
@@ -109,7 +108,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
       if ( table.geometryColumnTypes().empty() )
       {
         if ( role == Qt::DecorationRole )
-          return QgsLayerItem::iconTable();
+          return QgsIconUtils::iconTable();
         else
           return QVariant();
       }
@@ -121,21 +120,21 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
         {
           case QgsWkbTypes::PointGeometry:
           {
-            return QgsLayerItem::iconPoint();
+            return QgsIconUtils::iconPoint();
           }
           case QgsWkbTypes::PolygonGeometry:
           {
-            return QgsLayerItem::iconPolygon();
+            return QgsIconUtils::iconPolygon();
           }
           case QgsWkbTypes::LineGeometry:
           {
-            return QgsLayerItem::iconLine();
+            return QgsIconUtils::iconLine();
           }
           default:
             break;
         }
 
-        return QgsLayerItem::iconTable();
+        return QgsIconUtils::iconTable();
       }
       else if ( role == RoleWkbType )
         return table.geometryColumnTypes().at( 0 ).wkbType;
