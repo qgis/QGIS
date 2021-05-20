@@ -8,6 +8,12 @@ add_definitions(${QT_DEFINITIONS})
 add_definitions(-DQT_PLUGIN)
 add_definitions(-DQT_SHARED)
 
+# QT_NO_DEBUG disable Q_ASSERT() and we need to disable them if we want the provider
+# to run correctly. It would be better to work without this workaround and fix the oracle
+# provider (or maybe oci?), but for now, it's better to let it here
+# If later, you want to remove it, please launch ALL oracle tests.
+add_definitions(-DQT_NO_DEBUG)
+
 include_directories(SYSTEM
 	${OCI_INCLUDE_DIR}
 	${Qt5Sql_PRIVATE_INCLUDE_DIRS}
