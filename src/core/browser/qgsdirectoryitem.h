@@ -165,6 +165,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 /**
  * \ingroup core
  * \brief A directory item showing the current project directory.
+ * \note Not available in Python bindings.
  * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
@@ -173,6 +174,9 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
   public:
 
+    /**
+     * Constructor for QgsProjectHomeItem.
+     */
     QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
     QIcon icon() override;
