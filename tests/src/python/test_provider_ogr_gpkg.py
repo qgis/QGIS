@@ -1059,11 +1059,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
         f = QgsFeature()
         f.setAttributes([1234567890123, None])
+        f2 = QgsFeature()
+        f2.setAttributes([1234567890124, None])
         self.assertTrue(vl.startEditing())
-        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        self.assertTrue(vl.dataProvider().addFeatures([f, f2]))
         self.assertTrue(vl.commitChanges())
 
-        got = [feat for feat in vl.getFeatures()][0]
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
         self.assertEqual(got['fid'], 1234567890123)
 
         self.assertTrue(vl.startEditing())
@@ -1071,10 +1073,35 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.changeAttributeValue(1234567890123, 1, 'foo'))
         self.assertTrue(vl.commitChanges())
 
-        got = [feat for feat in vl.getFeatures()][0]
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
         self.assertEqual(got['str_field'], 'foo')
         got_geom = got.geometry()
         self.assertIsNotNone(got_geom)
+
+        # We don't change the FID, so OK
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.dataProvider().changeAttributeValues({1234567890123: {0: 1234567890123, 1: 'bar'},
+                                                                 1234567890124: {0: 1234567890124, 1: 'bar2'}}))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
+        self.assertEqual(got['str_field'], 'bar')
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890124))][0]
+        self.assertEqual(got['str_field'], 'bar2')
+
+        # We try to change the FID, not allowed
+        # also check that all changes where reverted
+        self.assertTrue(vl.startEditing())
+        self.assertFalse(vl.dataProvider().changeAttributeValues({1234567890123: {0: 1, 1: 'baz'},
+                                                                  1234567890124: {1: 'baz2'}}))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890123))][0]
+        self.assertEqual(got['str_field'], 'bar')
+
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1234567890124))][0]
+        self.assertEqual(got['str_field'], 'bar2')
 
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(1234567890123))

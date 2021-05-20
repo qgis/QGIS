@@ -2385,8 +2385,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           if ( it2->toLongLong() != fid )
           {
             pushError( tr( "Changing feature id of feature %1 is not allowed." ).arg( fid ) );
-            continue;
+            returnValue = false;
           }
+          continue;
         }
         else
         {
