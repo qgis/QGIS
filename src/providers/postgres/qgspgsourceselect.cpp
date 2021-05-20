@@ -32,6 +32,7 @@ email                : sherman at mrcc.com
 #include "qgsproxyprogresstask.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgslayeritem.h"
 
 #include <QFileDialog>
 #include <QInputDialog>

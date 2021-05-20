@@ -44,6 +44,7 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgszipitem.h"
 
 #include <QImage>
 #include <QColor>

@@ -18,7 +18,7 @@
 #ifndef QGSEPTDATAITEMS_H
 #define QGSEPTDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 
 ///@cond PRIVATE

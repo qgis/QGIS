@@ -16,7 +16,6 @@
 #define QGSBROWSERGUIMODEL_H
 
 #include "qgis_gui.h"
-#include "qgsdataitem.h"
 #include "qgsbrowsermodel.h"
 
 class QgsDataItemGuiContext;

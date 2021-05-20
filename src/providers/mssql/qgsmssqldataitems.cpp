@@ -30,6 +30,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsfieldsitem.h"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"

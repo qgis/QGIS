@@ -18,7 +18,7 @@
 #ifndef QGSPDALDATAITEMS_H
 #define QGSPDALDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsprovidermetadata.h"
 

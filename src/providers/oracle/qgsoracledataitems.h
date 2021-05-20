@@ -18,7 +18,8 @@
 #include <QSqlDatabase>
 #include <QMainWindow>
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"

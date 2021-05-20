@@ -35,6 +35,7 @@
 #include "qgsgdaldataitems.h"
 #include "qgsmaplayer.h"
 #include "qgsgdalfilesourcewidget.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
 

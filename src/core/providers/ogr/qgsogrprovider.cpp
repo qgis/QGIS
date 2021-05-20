@@ -51,6 +51,7 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsmetadatautils.h"
 #include "qgssymbol.h"
+#include "qgszipitem.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information

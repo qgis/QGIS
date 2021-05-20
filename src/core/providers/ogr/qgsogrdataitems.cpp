@@ -29,6 +29,9 @@
 #include "qgsproviderregistry.h"
 #include "qgssqliteutils.h"
 #include "symbology/qgsstyle.h"
+#include "qgsfieldsitem.h"
+#include "qgszipitem.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 #include <QFileInfo>
 #include <QTextStream>

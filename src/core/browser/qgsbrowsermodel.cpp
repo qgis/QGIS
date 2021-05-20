@@ -29,6 +29,10 @@
 #include "qgsbrowsermodel.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsdirectoryitem.h"
+#include "qgsprojectitem.h"
+#include "qgslayeritem.h"
+#include "qgsfavoritesitem.h"
 
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"

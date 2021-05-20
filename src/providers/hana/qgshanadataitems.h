@@ -17,7 +17,7 @@
 #ifndef QGSHANADATAITEMS_H
 #define QGSHANADATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgshanatablemodel.h"
 

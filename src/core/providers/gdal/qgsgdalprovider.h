@@ -20,7 +20,6 @@
 #define QGSGDALPROVIDER_H
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdataitem.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"

@@ -17,8 +17,11 @@
 
 #include <QMainWindow>
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgslayeritem.h"
 
 #include "qgspostgresconn.h"
 #include "qgsmimedatautils.h"

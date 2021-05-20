@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgslayeritem.h"
 
 #include <climits>
 

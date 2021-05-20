@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgslayeritem.h"
 #include <QSpinBox>
 #include <QMessageBox>
 #include <QTimer>

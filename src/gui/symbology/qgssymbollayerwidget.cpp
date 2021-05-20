@@ -47,6 +47,7 @@
 #include "qgsimagecache.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayeritem.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>

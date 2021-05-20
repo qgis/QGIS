@@ -15,6 +15,8 @@
 
 #include "qgsbrowserproxymodel.h"
 #include "qgsbrowsermodel.h"
+#include "qgslayeritem.h"
+#include "qgsdatacollectionitem.h"
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

@@ -26,6 +26,10 @@
 #include "qgsdataitem.h"
 
 class QgsDataItemProvider;
+class QgsDataItem;
+class QgsDirectoryItem;
+class QgsFavoriteItem;
+class QgsFavoritesItem;
 
 /**
  * \ingroup core

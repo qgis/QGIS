@@ -21,7 +21,6 @@
 #include <QStandardItemModel>
 #include <QString>
 #include <QObject>
-#include "qgsdataitem.h"
 #include "qgswkbtypes.h"
 
 //! Layer Property structure

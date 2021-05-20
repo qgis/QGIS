@@ -17,11 +17,11 @@
 #define QGSOGRDBTABLEMODEL_H
 
 #include "qgis.h"
-#include "qgsdataitem.h"
 
 #include <QObject>
 #include <QStandardItemModel>
 #include <type_traits>
+#include "qgslayeritem.h"
 #include "qgis_sip.h"
 
 ///@cond PRIVATE

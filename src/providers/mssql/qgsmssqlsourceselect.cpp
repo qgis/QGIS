@@ -32,6 +32,7 @@
 #include "qgsmssqlconnection.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgslayeritem.h"
 
 #include <QFileDialog>
 #include <QInputDialog>

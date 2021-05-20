@@ -26,6 +26,9 @@
 #include "qgssettings.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserproxymodel.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
+
 
 class TestQgsBrowserProxyModel : public QObject
 {

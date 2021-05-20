@@ -38,6 +38,7 @@
 #include "qgshelp.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgslayeritem.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>

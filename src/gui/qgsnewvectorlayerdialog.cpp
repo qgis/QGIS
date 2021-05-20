@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgsogrprovider.h"
 #include "qgsgui.h"
+#include "qgslayeritem.h"
 
 #include <QPushButton>
 #include <QComboBox>
