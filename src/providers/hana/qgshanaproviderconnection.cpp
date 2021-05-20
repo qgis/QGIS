@@ -24,6 +24,7 @@
 #include "qgsexception.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsfeedback.h"
 
 #include "odbc/PreparedStatement.h"
 
