@@ -21,6 +21,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &path,
