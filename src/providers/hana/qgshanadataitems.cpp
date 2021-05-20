@@ -189,9 +189,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
         // when an error occurs:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this,
-                 [ = ]( int error, const QString & errorMessage )
+                 [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
         {
-          if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+          if ( error != Qgis::VectorExportResult::UserCanceled )
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
             output->setTitle( tr( "Import to SAP HANA database" ) );
