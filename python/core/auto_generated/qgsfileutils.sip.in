@@ -138,6 +138,14 @@ Returns the drive type for the given ``path``.
 .. versionadded:: 3.20
 %End
 
+    static bool pathIsSlowDevice( const QString &path );
+%Docstring
+Returns ``True`` if the specified ``path`` is known to reside on a slow device, e.g. a remote
+network drive or other non-fixed device.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************
