@@ -2480,14 +2480,14 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   QByteArray ba;
   union wkbPtr ptr;
 
-  int nElems;
+  int nElems = 0;
   if ( !getArraySize( sdoobj->elem_info, nElems ) )
   {
     qWarning() << "could not determine element info array size";
     return false;
   }
 
-  int nOrds;
+  int nOrds = 0;
   if ( !getArraySize( sdoobj->ordinates, nOrds ) )
   {
     qWarning() << "could not determine ordinate array size";
@@ -2508,7 +2508,6 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
        sdoind->point.x == OCI_IND_NOTNULL &&
        sdoind->point.y == OCI_IND_NOTNULL )
   {
-    Q_ASSERT( nOrds == 0 );
 
     double x, y, z = 0.0;
     if ( !getValue( &sdoobj->point.x, x ) )
