@@ -2195,7 +2195,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         gdal.Unlink(tmpfile)
-        assert 'column_nameIS' not in sql
+        self.assertNotIn('column_nameIS', sql)
 
 
 if __name__ == '__main__':
