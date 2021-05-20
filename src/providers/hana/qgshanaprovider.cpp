@@ -1567,7 +1567,7 @@ QgsCoordinateReferenceSystem QgsHanaProvider::crs() const
   return srs;
 }
 
-QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
+Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -1584,7 +1584,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerExporter::ErrConnectionFailed;
+    return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
 
   QString schemaName = dsUri.schema();
@@ -1594,7 +1594,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Schema name cannot be empty" );
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   QString geometryColumn = dsUri.geometryColumn();
@@ -1637,7 +1637,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
       {
         if ( errorMessage )
           *errorMessage =  QgsHanaUtils::formatErrorMessage( ex.what(), true );
-        return QgsVectorLayerExporter::ErrCreateLayer;
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
     }
   }
@@ -1652,7 +1652,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   {
     if ( errorMessage )
       *errorMessage = QgsHanaUtils::formatErrorMessage( ex.what(), true );
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   if ( numTables != 0 )
@@ -1662,14 +1662,14 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
       QString sql = QStringLiteral( "DROP TABLE %1.%2" )
                     .arg( QgsHanaUtils::quotedIdentifier( schemaName ), QgsHanaUtils::quotedIdentifier( tableName ) );
       if ( !conn->execute( sql, errorMessage ) )
-        return QgsVectorLayerExporter::ErrCreateLayer;
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
     else
     {
       if ( errorMessage )
         *errorMessage = QObject::tr( "Table %1.%2 already exists" ).arg( schemaName, tableName );
 
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
   }
 
@@ -1686,7 +1686,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   }
 
   if ( !conn->execute( sql, errorMessage ) )
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
 
   dsUri.setDataSource( dsUri.schema(), dsUri.table(), geometryColumn, dsUri.sql(), primaryKey );
   dsUri.setSrid( QString::number( srid ) );
@@ -1699,7 +1699,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   // add fields to the layer
@@ -1722,7 +1722,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       if ( fld.name() != primaryKey )
@@ -1737,11 +1737,11 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
   }
 
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 QgsHanaProviderMetadata::QgsHanaProviderMetadata()
@@ -1767,7 +1767,7 @@ QList< QgsDataItemProvider *> QgsHanaProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QgsVectorLayerExporter::ExportError QgsHanaProviderMetadata::createEmptyLayer(
+Qgis::VectorExportResult QgsHanaProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
