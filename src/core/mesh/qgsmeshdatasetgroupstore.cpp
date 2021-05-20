@@ -305,15 +305,16 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
   while ( !datasetElem.isNull() )
   {
     int globalIndex = datasetElem.attribute( QStringLiteral( "global-index" ) ).toInt();
-    int sourceIndex;
+    int sourceIndex = -1;
     QgsMeshDatasetSourceInterface *source = nullptr;
-    if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QLatin1String( "persitent-provider" ) )
+    const QString sourceType = datasetElem.attribute( QStringLiteral( "source-type" ) );
+    if ( sourceType == QLatin1String( "persitent-provider" ) )
     {
       source = mPersistentProvider;
       sourceIndex = datasetElem.attribute( QStringLiteral( "source-index" ) ).toInt();
       mPersistentExtraDatasetGroupIndexes.append( globalIndex );
     }
-    else if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QLatin1String( "virtual" ) )
+    else if ( sourceType == QLatin1String( "virtual" ) )
     {
       source = mExtraDatasets.get();
       QString name = datasetElem.attribute( QStringLiteral( "name" ) );
@@ -325,8 +326,14 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
       extraDatasetGroups[globalIndex] = dsg;
       sourceIndex = mExtraDatasets->addDatasetGroup( dsg );
     }
-
-    mRegistery[globalIndex] = DatasetGroup{source, sourceIndex};
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Unhandled source-type: %1." ).arg( sourceType ) );
+    }
+    if ( source )
+    {
+      mRegistery[globalIndex] = DatasetGroup{source, sourceIndex};
+    }
 
     datasetElem = datasetElem.nextSiblingElement( QStringLiteral( "mesh-dataset" ) );
   }
