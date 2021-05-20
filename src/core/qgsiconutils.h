@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 
+class QgsMapLayer;
 class QIcon;
 
 /**
@@ -83,6 +84,11 @@ class CORE_EXPORT QgsIconUtils
      * Returns an icon representing point cloud layers.
      */
     static QIcon iconPointCloud();
+
+    /**
+     * Returns the icon corresponding to a specified map \a layer.
+     */
+    static QIcon iconForLayer( const QgsMapLayer *layer );
 
 };
 

@@ -17,6 +17,9 @@
 
 #include "qgsiconutils.h"
 #include "qgsapplication.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+
 #include <QIcon>
 
 QIcon QgsIconUtils::iconForWkbType( QgsWkbTypes::Type type )
@@ -81,5 +84,69 @@ QIcon QgsIconUtils::iconPointCloud()
 QIcon QgsIconUtils::iconDefaultLayer()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+}
+
+QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::RasterLayer:
+    {
+      return QgsIconUtils::iconRaster();
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      return QgsIconUtils::iconMesh();
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      return QgsIconUtils::iconVectorTile();
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      return QgsIconUtils::iconPointCloud();
+    }
+
+    case QgsMapLayerType::VectorLayer:
+    {
+      const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
+      if ( !vl )
+      {
+        return QIcon();
+      }
+      const QgsWkbTypes::GeometryType geomType = vl->geometryType();
+      switch ( geomType )
+      {
+        case QgsWkbTypes::PointGeometry:
+        {
+          return QgsIconUtils::iconPoint();
+        }
+        case QgsWkbTypes::PolygonGeometry :
+        {
+          return QgsIconUtils::iconPolygon();
+        }
+        case QgsWkbTypes::LineGeometry :
+        {
+          return QgsIconUtils::iconLine();
+        }
+        case QgsWkbTypes::NullGeometry :
+        {
+          return QgsIconUtils::iconTable();
+        }
+        default:
+        {
+          return QIcon();
+        }
+      }
+    }
+
+    default:
+    {
+      return QIcon();
+    }
+  }
 }
 
