@@ -22,7 +22,7 @@
 #include <QSet>
 #include <QDirIterator>
 
-#ifdef Q_OS_WIN
+#ifdef MSVC
 #include <Windows.h>
 #include <ShlObj.h>
 #pragma comment(lib,"Shell32.lib")
@@ -269,7 +269,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   return foundFiles;
 }
 
-#ifdef Q_OS_WIN
+#ifdef MSVC
 std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
@@ -283,7 +283,7 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 
 QgsFileUtils::DriveType QgsFileUtils::driveType( const QString &path )
 {
-#ifdef Q_OS_WIN
+#ifdef MSVC
   auto pathType = [ = ]( const QString & path ) -> DriveType
   {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
