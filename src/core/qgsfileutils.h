@@ -143,6 +143,14 @@ class CORE_EXPORT QgsFileUtils
      */
     static DriveType driveType( const QString &path ) SIP_THROW( QgsNotSupportedException );
 
+    /**
+     * Returns TRUE if the specified \a path is known to reside on a slow device, e.g. a remote
+     * network drive or other non-fixed device.
+     *
+     * \since QGIS 3.20
+     */
+    static bool pathIsSlowDevice( const QString &path );
+
 };
 
 #endif // QGSFILEUTILS_H

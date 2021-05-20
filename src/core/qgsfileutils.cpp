@@ -335,3 +335,28 @@ QgsFileUtils::DriveType QgsFileUtils::driveType( const QString &path )
 #endif
 }
 
+bool QgsFileUtils::pathIsSlowDevice( const QString &path )
+{
+  try
+  {
+    const DriveType type = driveType( path );
+    switch ( type )
+    {
+      case QgsFileUtils::Unknown:
+      case QgsFileUtils::Invalid:
+      case QgsFileUtils::Fixed:
+      case QgsFileUtils::RamDisk:
+        return false;
+
+      case QgsFileUtils::Removable:
+      case QgsFileUtils::Remote:
+      case QgsFileUtils::CdRom:
+        return true;
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+
+  }
+  return false;
+}
