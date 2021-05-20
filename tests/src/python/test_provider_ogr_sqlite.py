@@ -111,7 +111,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertEqual(got, [(9876543210, 'baw')])
 
         # Not allowed: changing the fid regular field
-        self.assertTrue(vl.dataProvider().changeAttributeValues({9876543210: {0: 12, 1: 'baw'}}))
+        self.assertFalse(vl.dataProvider().changeAttributeValues({9876543210: {0: 12, 1: 'baw'}}))
 
         got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 9876543210"))]
         self.assertEqual(got, [(9876543210, 'baw')])
