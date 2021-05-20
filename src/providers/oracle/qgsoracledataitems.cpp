@@ -25,6 +25,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -375,9 +376,9 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
       {
-        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+        if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to Oracle database" ) );
