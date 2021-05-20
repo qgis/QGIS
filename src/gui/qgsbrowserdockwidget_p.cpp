@@ -98,12 +98,12 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
   QgsBrowserPropertiesWidget *propertiesWidget = nullptr;
   // In general, we would like to show all items' paramWidget, but top level items like
   // WMS etc. have currently too large widgets which do not fit well to browser properties widget
-  if ( item->type() == QgsDataItem::Directory )
+  if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     propertiesWidget = new QgsBrowserDirectoryProperties( parent );
     propertiesWidget->setItem( item );
   }
-  else if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Custom )
+  else if ( item->type() == Qgis::BrowserItemType::Layer || item->type() == Qgis::BrowserItemType::Custom )
   {
     // try new infrastructure of creation of layer widgets
     QWidget *paramWidget = nullptr;
@@ -128,7 +128,7 @@ QgsBrowserPropertiesWidget *QgsBrowserPropertiesWidget::createWidget( QgsDataIte
       propertiesWidget = new QgsBrowserPropertiesWidget( parent );
       propertiesWidget->setWidget( paramWidget );
     }
-    else if ( item->type() == QgsDataItem::Layer )
+    else if ( item->type() == Qgis::BrowserItemType::Layer )
     {
       propertiesWidget = new QgsBrowserLayerProperties( parent );
       propertiesWidget->setItem( item );
@@ -354,7 +354,7 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem *item, const QgsDataItemGu
 
   mPropertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, context, this );
   mLayout->addWidget( mPropertiesWidget );
-  setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
+  setWindowTitle( item->type() == Qgis::BrowserItemType::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }
 
 

@@ -82,9 +82,9 @@ QgsMimeDataUtils::Uri QgsBookmarkItem::mimeUri() const
 //
 
 QgsQlrDataItem::QgsQlrDataItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsLayerItem( parent, name, path, path, QgsLayerItem::NoType, QStringLiteral( "qlr" ) )
+  : QgsLayerItem( parent, name, path, path, Qgis::BrowserLayerType::NoType, QStringLiteral( "qlr" ) )
 {
-  setState( QgsDataItem::Populated ); // no children
+  setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
@@ -201,9 +201,9 @@ bool QgsQptDropHandler::handleFileDrop( const QString &file )
 //
 
 QgsQptDataItem::QgsQptDataItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, path )
 {
-  setState( QgsDataItem::Populated ); // no children
+  setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconQptFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
@@ -244,9 +244,9 @@ QList<QAction *> QgsQptDataItem::actions( QWidget *parent )
 //
 
 QgsPyDataItem::QgsPyDataItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, path )
 {
-  setState( QgsDataItem::Populated ); // no children
+  setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconPythonFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
@@ -346,9 +346,9 @@ bool QgsPyDropHandler::handleFileDrop( const QString &file )
 //
 
 QgsStyleXmlDataItem::QgsStyleXmlDataItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, path )
 {
-  setState( QgsDataItem::Populated ); // no children
+  setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mActionStyleManager.svg" ) );
   setToolTip( QStringLiteral( "<b>%1</b><br>%2" ).arg( tr( "QGIS style library" ), QDir::toNativeSeparators( path ) ) );
 }
@@ -469,8 +469,8 @@ bool QgsStyleXmlDropHandler::handleFileDrop( const QString &file )
 QgsProjectRootDataItem::QgsProjectRootDataItem( QgsDataItem *parent, const QString &path )
   : QgsProjectItem( parent, QFileInfo( path ).completeBaseName(), path )
 {
-  mCapabilities = Collapse | Fertile; // collapse by default to avoid costly population on startup
-  setState( NotPopulated );
+  mCapabilities = Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::Fertile; // collapse by default to avoid costly population on startup
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 
@@ -515,9 +515,9 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
             QgsLayerItem *layerItem = new QgsLayerItem( nullptr, layerNode->name(),
                 layer ? layer->source() : QString(),
                 layer ? layer->source() : QString(),
-                layer ? QgsLayerItem::typeFromMapLayer( layer ) : QgsLayerItem::NoType,
+                layer ? QgsLayerItem::typeFromMapLayer( layer ) : Qgis::BrowserLayerType::NoType,
                 layer ? layer->providerType() : QString() );
-            layerItem->setState( Populated ); // children are not expected
+            layerItem->setState( Qgis::BrowserItemState::Populated ); // children are not expected
             layerItem->setToolTip( layer ? layer->source() : QString() );
             if ( parentItem == this )
               childItems << layerItem;
@@ -533,7 +533,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
           {
             QgsProjectLayerTreeGroupItem *groupItem = new QgsProjectLayerTreeGroupItem( nullptr, groupNode->name() );
             addNodes( groupItem, groupNode );
-            groupItem->setState( Populated );
+            groupItem->setState( Qgis::BrowserItemState::Populated );
             if ( parentItem == this )
               childItems << groupItem;
             else
@@ -558,7 +558,7 @@ QgsProjectLayerTreeGroupItem::QgsProjectLayerTreeGroupItem( QgsDataItem *parent,
   : QgsDataCollectionItem( parent, name )
 {
   mIconName = QStringLiteral( "mActionFolder.svg" );
-  mCapabilities = NoCapabilities;
+  mCapabilities = Qgis::BrowserItemCapability::NoCapabilities;
   setToolTip( name );
 }
 
@@ -609,8 +609,8 @@ QgsDataItem *QgsBookmarksDataItemProvider::createDataItem( const QString &, QgsD
 QgsBookmarksItem::QgsBookmarksItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *applicationManager, QgsBookmarkManager *projectManager )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:" ) )
 {
-  mType = Custom;
-  mCapabilities = Fast;
+  mType = Qgis::BrowserItemType::Custom;
+  mCapabilities = Qgis::BrowserItemCapability::Fast;
   mApplicationManager = applicationManager;
   mProjectManager = projectManager;
   mIconName = QStringLiteral( "/mActionShowBookmarks.svg" );
@@ -630,8 +630,8 @@ QVector<QgsDataItem *> QgsBookmarksItem::createChildren()
 QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QString &name, QgsBookmarkManager *manager )
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
 {
-  mType = Custom;
-  mCapabilities = Fast;
+  mType = Qgis::BrowserItemType::Custom;
+  mCapabilities = Qgis::BrowserItemCapability::Fast;
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
@@ -813,8 +813,8 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
   : QgsDataCollectionItem( parent, name, QStringLiteral( "bookmarks:%1" ).arg( name.toLower() ) )
   , mGroup( name )
 {
-  mType = Custom;
-  mCapabilities = Fast | Rename;
+  mType = Qgis::BrowserItemType::Custom;
+  mCapabilities = Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Rename;
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
   setToolTip( name );
@@ -864,15 +864,15 @@ void QgsBookmarkGroupItem::removeBookmarkChildById( const QString &id )
 }
 
 QgsBookmarkItem::QgsBookmarkItem( QgsDataItem *parent, const QString &name, const QgsBookmark &bookmark, QgsBookmarkManager *manager )
-  : QgsDataItem( Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QStringLiteral( "bookmarks:%1/%2" ).arg( bookmark.group().toLower(), bookmark.id() ) )
   , mManager( manager )
   , mBookmark( bookmark )
 {
-  mType = Custom;
-  mCapabilities = Rename;
+  mType = Qgis::BrowserItemType::Custom;
+  mCapabilities = Qgis::BrowserItemCapability::Rename;
   mIconName = QStringLiteral( "/mItemBookmark.svg" );
   setToolTip( name );
-  setState( Populated ); // no more children
+  setState( Qgis::BrowserItemState::Populated ); // no more children
 }
 
 void QgsBookmarkItem::setBookmark( const QgsBookmark &bookmark )
@@ -1277,9 +1277,9 @@ QgsDataItem *QgsHtmlDataItemProvider::createDataItem( const QString &path, QgsDa
 //
 
 QgsHtmlDataItem::QgsHtmlDataItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, path )
 {
-  setState( QgsDataItem::Populated ); // no children
+  setState( Qgis::BrowserItemState::Populated ); // no children
   setIconName( QStringLiteral( "/mIconHtml.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }

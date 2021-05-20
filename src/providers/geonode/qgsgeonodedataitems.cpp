@@ -200,7 +200,7 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, const QString &befor
 QgsGeoNodeRootItem::QgsGeoNodeRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GeoNode" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   {
     mIconName = QStringLiteral( "mIconGeonode.svg" );
   }

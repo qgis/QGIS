@@ -36,7 +36,7 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   populate();
 }
 
@@ -292,7 +292,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to DB2 database" ), tr( "Import was successful." ) );
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
@@ -308,7 +308,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
@@ -355,13 +355,13 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 }
 
 // ---------------------------------------------------------------------------
-QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
+QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, Qgis::BrowserLayerType layerType, QgsDb2LayerProperty layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
   , mLayerProperty( layerProperty )
 {
-  QgsDebugMsg( QStringLiteral( "new db2 layer created : %1" ).arg( layerType ) );
+  QgsDebugMsg( QStringLiteral( "new db2 layer created : %1" ).arg( qgsEnumValueToKey( layerType ) ) );
   mUri = createUri();
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QgsDb2LayerItem *QgsDb2LayerItem::createClone()
@@ -432,31 +432,31 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
                 QgsWkbTypes::displayString( wkbType ),
                 layerProperty.srid );
   QgsDebugMsg( tip );
-  QgsLayerItem::LayerType layerType;
+  Qgis::BrowserLayerType layerType;
   switch ( wkbType )
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
-      layerType = QgsLayerItem::Point;
+      layerType = Qgis::BrowserLayerType::Point;
       break;
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
-      layerType = QgsLayerItem::Line;
+      layerType = Qgis::BrowserLayerType::Line;
       break;
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygon25D:
-      layerType = QgsLayerItem::Polygon;
+      layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:
       if ( layerProperty.type == QLatin1String( "NONE" ) && layerProperty.geometryColName.isEmpty() )
       {
-        layerType = QgsLayerItem::TableLayer;
+        layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
       }
       else

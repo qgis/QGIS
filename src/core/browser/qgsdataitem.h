@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsmimedatautils.h"
+#include "qgis.h"
 #include <QObject>
 #include <QFutureWatcher>
 #include <QIcon>
@@ -76,20 +77,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_OBJECT
 
   public:
-    enum Type
-    {
-      Collection,
-      Directory,
-      Layer,
-      Error,
-      Favorites, //!< Represents a favorite item
-      Project, //!< Represents a QGIS project
-      Custom, //!< Custom item type
-      Fields, //!< Collection of fields
-      Field, //!< Vector layer field
-    };
-
-    Q_ENUM( Type )
 
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
@@ -102,7 +89,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * The optional \a providerKey string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
      */
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path, const QString &providerKey = QString() );
+    QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path, const QString &providerKey = QString() );
 
     ~QgsDataItem() override;
 
@@ -147,23 +134,15 @@ class CORE_EXPORT QgsDataItem : public QObject
     SIP_END
 #endif
 
-    enum State
-    {
-      NotPopulated, //!< Children not yet created
-      Populating,   //!< Creating children in separate thread (populating or refreshing)
-      Populated     //!< Children created
-    };
-    Q_ENUM( State )
-
     //! \since QGIS 2.8
-    State state() const;
+    Qgis::BrowserItemState state() const;
 
     /**
      * Set item state. It also take care about starting/stopping loading icon animation.
      * \param state
      * \since QGIS 2.8
      */
-    virtual void setState( State state );
+    virtual void setState( Qgis::BrowserItemState state );
 
     /**
      * Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
@@ -276,18 +255,6 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual QgsMimeDataUtils::UriList mimeUris() const { return QgsMimeDataUtils::UriList(); }
 
-    enum Capability
-    {
-      NoCapabilities    = 0,
-      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
-      Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
-      Collapse          = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
-      Rename            = 1 << 4, //!< Item can be renamed
-      Delete            = 1 << 5, //!< Item can be deleted
-    };
-    Q_DECLARE_FLAGS( Capabilities, Capability )
-
     /**
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
@@ -317,14 +284,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see setCapabilities()
      */
-    virtual Capabilities capabilities2() const { return mCapabilities; }
+    virtual Qgis::BrowserItemCapabilities capabilities2() const { return mCapabilities; }
 
     /**
      * Sets the capabilities for the data item.
      *
      * \see capabilities2()
      */
-    virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
+    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) { mCapabilities = capabilities; }
 
     // static methods
 
@@ -333,7 +300,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // members
 
-    Type type() const { return mType; }
+    Qgis::BrowserItemType type() const { return mType; }
 
     /**
      * Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
@@ -453,11 +420,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     */
     bool deferredDelete() { return mDeferredDelete; }
 
-    Type mType;
-    Capabilities mCapabilities;
+    Qgis::BrowserItemType mType;
+    Qgis::BrowserItemCapabilities mCapabilities = Qgis::BrowserItemCapability::NoCapabilities;
     QgsDataItem *mParent = nullptr;
     QVector<QgsDataItem *> mChildren; // easier to have it always
-    State mState;
+    Qgis::BrowserItemState mState = Qgis::BrowserItemState::NotPopulated;
     QString mName;
     QString mProviderKey;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be different if it is
@@ -511,7 +478,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
-    void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    /**
+     * Emitted when an item's state is changed.
+     */
+    void stateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
 
     /**
      * Emitted when the connections of the provider with the specified \a providerKey have changed.
@@ -535,13 +506,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     static QVector<QgsDataItem *> runCreateChildren( QgsDataItem *item );
 
     // Set to true if object has to be deleted when possible (nothing running in threads)
-    bool mDeferredDelete;
-    QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher;
+    bool mDeferredDelete = false;
+    QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher = nullptr;
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 
 /**
  * \ingroup core

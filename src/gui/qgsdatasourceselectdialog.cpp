@@ -212,7 +212,7 @@ void QgsDataSourceSelectWidget::refreshModel( const QModelIndex &index )
     QgsDebugMsg( QStringLiteral( "invalid item" ) );
   }
 
-  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+  if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
   {
     mBrowserModel->refresh( index );
   }
@@ -225,13 +225,13 @@ void QgsDataSourceSelectWidget::refreshModel( const QModelIndex &index )
 
     // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
     // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
-    if ( mBrowserTreeView->isExpanded( proxyIdx ) || mBrowserTreeView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+    if ( mBrowserTreeView->isExpanded( proxyIdx ) || mBrowserTreeView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & Qgis::BrowserItemCapability::Fast ) )
     {
       refreshModel( idx );
     }
     else
     {
-      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      if ( child && ( child->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
       {
         child->depopulate();
       }

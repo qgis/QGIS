@@ -326,7 +326,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
       QgsDebugMsgLevel( QStringLiteral( "invalid item" ), 4 );
     }
 
-    if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+    if ( item && ( item->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
     {
       mModel->refresh( index );
     }
@@ -339,13 +339,13 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
 
       // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
       // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
-      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & Qgis::BrowserItemCapability::Fast ) )
       {
         refreshModel( idx );
       }
       else
       {
-        if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+        if ( child && ( child->capabilities2() & Qgis::BrowserItemCapability::Fertile ) )
         {
           child->depopulate();
         }
@@ -367,7 +367,7 @@ bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
   QgsDebugMsg( QStringLiteral( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
-  if ( item && item->type() == QgsDataItem::Project )
+  if ( item && item->type() == Qgis::BrowserItemType::Project )
   {
     QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
     if ( projectItem )
@@ -378,7 +378,7 @@ bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     }
     return true;
   }
-  else if ( item && item->type() == QgsDataItem::Layer )
+  else if ( item && item->type() == Qgis::BrowserItemType::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( layerItem )
@@ -405,7 +405,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
   for ( const QModelIndex &index : constList )
   {
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
-    if ( item && item->type() == QgsDataItem::Project )
+    if ( item && item->type() == Qgis::BrowserItemType::Project )
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
@@ -420,7 +420,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
   for ( int i = list.size() - 1; i >= 0; i-- )
   {
     QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( list[i] ) );
-    if ( item && item->type() == QgsDataItem::Layer )
+    if ( item && item->type() == Qgis::BrowserItemType::Layer )
     {
       QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
       if ( layerItem )
@@ -438,7 +438,7 @@ void QgsBrowserDockWidget::hideItem()
   if ( ! item )
     return;
 
-  if ( item->type() == QgsDataItem::Directory )
+  if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     mModel->hidePath( item );
   }
@@ -451,7 +451,7 @@ void QgsBrowserDockWidget::showProperties()
   if ( ! item )
     return;
 
-  if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Directory )
+  if ( item->type() == Qgis::BrowserItemType::Layer || item->type() == Qgis::BrowserItemType::Directory )
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -467,7 +467,7 @@ void QgsBrowserDockWidget::toggleFastScan()
   if ( ! item )
     return;
 
-  if ( item->type() == QgsDataItem::Directory )
+  if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     QgsSettings settings;
     QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),

@@ -92,7 +92,7 @@ class QgsPGLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty &layerProperties );
+    QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsPostgresLayerProperty &layerProperties );
 
     QString createUri();
 

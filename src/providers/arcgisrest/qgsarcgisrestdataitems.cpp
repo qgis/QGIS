@@ -38,7 +38,7 @@
 QgsArcGisRestRootItem::QgsArcGisRestRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AFS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconAfs.svg" );
   populate();
 }
@@ -140,9 +140,9 @@ void addLayerItems( QVector< QgsDataItem * > &items, const QVariantMap &serviceD
       switch ( serviceTypeFilter == QgsArcGisRestQueryUtils::AllTypes ? serviceType : serviceTypeFilter )
       {
         case QgsArcGisRestQueryUtils::Vector:
-          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, geometryType == QgsWkbTypes::PolygonGeometry ? QgsLayerItem::Polygon :
-                      geometryType == QgsWkbTypes::LineGeometry ? QgsLayerItem::Line
-                      : geometryType == QgsWkbTypes::PointGeometry ? QgsLayerItem::Point : QgsLayerItem::Vector );
+          layerItem = std::make_unique< QgsArcGisFeatureServiceLayerItem >( parent, name, url, name, authid, authcfg, headers, geometryType == QgsWkbTypes::PolygonGeometry ? Qgis::BrowserLayerType::Polygon :
+                      geometryType == QgsWkbTypes::LineGeometry ? Qgis::BrowserLayerType::Line
+                      : geometryType == QgsWkbTypes::PointGeometry ? Qgis::BrowserLayerType::Point : Qgis::BrowserLayerType::Vector );
           break;
 
         case QgsArcGisRestQueryUtils::Raster:
@@ -182,7 +182,7 @@ QgsArcGisRestConnectionItem::QgsArcGisRestConnectionItem( QgsDataItem *parent, c
   , mConnName( connectionName )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 
   QgsSettings settings;
   const QString key = QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) + mConnName;
@@ -255,7 +255,7 @@ QgsArcGisPortalGroupsItem::QgsArcGisPortalGroupsItem( QgsDataItem *parent, const
   , mPortalContentEndpoint( contentEndpoint )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
 
@@ -310,7 +310,7 @@ QgsArcGisPortalGroupItem::QgsArcGisPortalGroupItem( QgsDataItem *parent, const Q
   , mPortalContentEndpoint( contentEndpoint )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( name );
 }
 
@@ -375,7 +375,7 @@ QgsArcGisRestServicesItem::QgsArcGisRestServicesItem( QgsDataItem *parent, const
   , mHeaders( headers )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 QVector<QgsDataItem *> QgsArcGisRestServicesItem::createChildren()
@@ -419,7 +419,7 @@ QgsArcGisRestFolderItem::QgsArcGisRestFolderItem( QgsDataItem *parent, const QSt
   , mHeaders( headers )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
 
@@ -470,7 +470,7 @@ QgsArcGisFeatureServiceItem::QgsArcGisFeatureServiceItem( QgsDataItem *parent, c
   , mHeaders( headers )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
 
@@ -523,7 +523,7 @@ QgsArcGisMapServiceItem::QgsArcGisMapServiceItem( QgsDataItem *parent, const QSt
   , mServiceType( serviceType )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   setToolTip( path );
 }
 
@@ -567,7 +567,7 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 // QgsArcGisFeatureServiceLayerItem
 //
 
-QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers, LayerType geometryType )
+QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &title, const QString &authid, const QString &authcfg, const QgsStringMap &headers, Qgis::BrowserLayerType geometryType )
   : QgsLayerItem( parent, title, url, QString(), geometryType, QStringLiteral( "arcgisfeatureserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
@@ -575,7 +575,7 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   if ( !headers.value( QStringLiteral( "Referer" ) ).isEmpty() )
     mUri += QStringLiteral( " referer='%1'" ).arg( headers.value( QStringLiteral( "Referer" ) ) );
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
   setToolTip( url );
 }
 
@@ -584,7 +584,7 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
 //
 
 QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg, const QgsStringMap &headers )
-  : QgsLayerItem( parent, title, url, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
+  : QgsLayerItem( parent, title, url, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   QString trimmedUrl = id.isEmpty() ? url : url.left( url.length() - 1 - id.length() ); // trim '/0' from end of url -- AMS provider requires this omitted
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, trimmedUrl );
@@ -592,7 +592,7 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   if ( !headers.value( QStringLiteral( "Referer" ) ).isEmpty() )
     mUri += QStringLiteral( " referer='%1'" ).arg( headers.value( QStringLiteral( "Referer" ) ) );
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
   setToolTip( mPath );
 }
 
@@ -601,11 +601,11 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
 //
 
 QgsArcGisRestParentLayerItem::QgsArcGisRestParentLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &authcfg, const QgsStringMap &headers )
-  : QgsDataItem( QgsDataItem::Collection, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Collection, parent, name, path )
   , mAuthCfg( authcfg )
   , mHeaders( headers )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   setToolTip( path );
 }

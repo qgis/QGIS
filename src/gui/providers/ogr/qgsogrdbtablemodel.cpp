@@ -30,7 +30,7 @@ QgsOgrDbTableModel::QgsOgrDbTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-void QgsOgrDbTableModel::addTableEntry( const QgsLayerItem::LayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
+void QgsOgrDbTableModel::addTableEntry( const Qgis::BrowserLayerType &layerType, const QString &tableName, const QString &uri, const QString &geometryColName, const QString &geometryType, const QString &sql )
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;

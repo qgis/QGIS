@@ -160,7 +160,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
   // wait until populated in separate thread
   QElapsedTimer time;
   time.start();
-  while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
+  while ( myZipItem->state() != Qgis::BrowserItemState::Populated && time.elapsed() < 5000 )
   {
     QTest::qSleep( 100 );
     QCoreApplication::processEvents();

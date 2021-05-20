@@ -794,15 +794,24 @@ void QgsGrassNewMapset::loadRegions()
     if ( coorElem.text().isNull() )
       continue;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList coor = coorElem.text().split( QStringLiteral( " " ), QString::SkipEmptyParts );
+#else
+    QStringList coor = coorElem.text().split( QStringLiteral( " " ), Qt::SkipEmptyParts );
+#endif
     if ( coor.size() != 2 )
     {
       QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );
       continue;
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList ll = coor[0].split( QStringLiteral( "," ), QString::SkipEmptyParts );
     QStringList ur = coor[1].split( QStringLiteral( "," ), QString::SkipEmptyParts );
+#else
+    QStringList ll = coor[0].split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+    QStringList ur = coor[1].split( QStringLiteral( "," ), Qt::SkipEmptyParts );
+#endif
     if ( ll.size() != 2 || ur.size() != 2 )
     {
       QgsDebugMsg( QString( "Cannot parse coordinates: %1" ).arg( coorElem.text() ) );

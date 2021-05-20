@@ -64,11 +64,11 @@ bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableNa
   return true;
 }
 
-QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
+QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
-  mCapabilities |= Delete;
-  setState( NotPopulated );
+  mCapabilities |= Qgis::BrowserItemCapability::Delete;
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 // ------
@@ -78,30 +78,30 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &na
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
-static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
+static Qgis::BrowserLayerType _layerTypeFromDb( const QString &dbType )
 {
   if ( dbType == QLatin1String( "POINT" ) || dbType == QLatin1String( "MULTIPOINT" ) )
   {
-    return QgsLayerItem::Point;
+    return Qgis::BrowserLayerType::Point;
   }
   else if ( dbType == QLatin1String( "LINESTRING" ) || dbType == QLatin1String( "MULTILINESTRING" ) )
   {
-    return QgsLayerItem::Line;
+    return Qgis::BrowserLayerType::Line;
   }
   else if ( dbType == QLatin1String( "POLYGON" ) || dbType == QLatin1String( "MULTIPOLYGON" ) )
   {
-    return QgsLayerItem::Polygon;
+    return Qgis::BrowserLayerType::Polygon;
   }
   else if ( dbType == QLatin1String( "qgis_table" ) )
   {
-    return QgsLayerItem::Table;
+    return Qgis::BrowserLayerType::Table;
   }
   else
   {
-    return QgsLayerItem::NoType;
+    return Qgis::BrowserLayerType::NoType;
   }
 }
 
@@ -168,7 +168,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );
   populate();
 }

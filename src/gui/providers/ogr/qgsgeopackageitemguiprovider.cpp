@@ -47,7 +47,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
     // Check capabilities
-    if ( layerItem->capabilities2() & QgsDataItem::Capability::Rename )
+    if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
       QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), this );
       QVariantMap data;

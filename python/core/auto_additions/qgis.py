@@ -63,6 +63,89 @@ QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols = Qgis.SymbolPreviewFlag.FlagInc
 QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols.__doc__ = "Include a crosshairs reference image in the background of marker symbol previews"
 Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview images are generated.\n\n.. versionadded:: 3.20\n\n' + '* ``FlagIncludeCrosshairsForMarkerSymbols``: ' + Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols.__doc__
 # --
+QgsDataItem.Type = Qgis.BrowserItemType
+# monkey patching scoped based enum
+QgsDataItem.Collection = Qgis.BrowserItemType.Collection
+QgsDataItem.Collection.__doc__ = "A collection of items"
+QgsDataItem.Directory = Qgis.BrowserItemType.Directory
+QgsDataItem.Directory.__doc__ = "Represents a file directory"
+QgsDataItem.Layer = Qgis.BrowserItemType.Layer
+QgsDataItem.Layer.__doc__ = "Represents a map layer"
+QgsDataItem.Error = Qgis.BrowserItemType.Error
+QgsDataItem.Error.__doc__ = "Contains an error message"
+QgsDataItem.Favorites = Qgis.BrowserItemType.Favorites
+QgsDataItem.Favorites.__doc__ = "Represents a favorite item"
+QgsDataItem.Project = Qgis.BrowserItemType.Project
+QgsDataItem.Project.__doc__ = "Represents a QGIS project"
+QgsDataItem.Custom = Qgis.BrowserItemType.Custom
+QgsDataItem.Custom.__doc__ = "Custom item type"
+QgsDataItem.Fields = Qgis.BrowserItemType.Fields
+QgsDataItem.Fields.__doc__ = "Collection of fields"
+QgsDataItem.Field = Qgis.BrowserItemType.Field
+QgsDataItem.Field.__doc__ = "Vector layer field"
+Qgis.BrowserItemType.__doc__ = 'Browser item types.\n\n.. versionadded:: 3.20\n\n' + '* ``Collection``: ' + Qgis.BrowserItemType.Collection.__doc__ + '\n' + '* ``Directory``: ' + Qgis.BrowserItemType.Directory.__doc__ + '\n' + '* ``Layer``: ' + Qgis.BrowserItemType.Layer.__doc__ + '\n' + '* ``Error``: ' + Qgis.BrowserItemType.Error.__doc__ + '\n' + '* ``Favorites``: ' + Qgis.BrowserItemType.Favorites.__doc__ + '\n' + '* ``Project``: ' + Qgis.BrowserItemType.Project.__doc__ + '\n' + '* ``Custom``: ' + Qgis.BrowserItemType.Custom.__doc__ + '\n' + '* ``Fields``: ' + Qgis.BrowserItemType.Fields.__doc__ + '\n' + '* ``Field``: ' + Qgis.BrowserItemType.Field.__doc__
+# --
+Qgis.BrowserItemType.baseClass = Qgis
+QgsDataItem.State = Qgis.BrowserItemState
+# monkey patching scoped based enum
+QgsDataItem.NotPopulated = Qgis.BrowserItemState.NotPopulated
+QgsDataItem.NotPopulated.__doc__ = "Children not yet created"
+QgsDataItem.Populating = Qgis.BrowserItemState.Populating
+QgsDataItem.Populating.__doc__ = "Creating children in separate thread (populating or refreshing)"
+QgsDataItem.Populated = Qgis.BrowserItemState.Populated
+QgsDataItem.Populated.__doc__ = "Children created"
+Qgis.BrowserItemState.__doc__ = 'Browser item states.\n\n.. versionadded:: 3.20\n\n' + '* ``NotPopulated``: ' + Qgis.BrowserItemState.NotPopulated.__doc__ + '\n' + '* ``Populating``: ' + Qgis.BrowserItemState.Populating.__doc__ + '\n' + '* ``Populated``: ' + Qgis.BrowserItemState.Populated.__doc__
+# --
+Qgis.BrowserItemState.baseClass = Qgis
+QgsDataItem.Capability = Qgis.BrowserItemCapability
+# monkey patching scoped based enum
+QgsDataItem.NoCapabilities = Qgis.BrowserItemCapability.NoCapabilities
+QgsDataItem.NoCapabilities.__doc__ = "Item has no capabilities"
+QgsDataItem.SetCrs = Qgis.BrowserItemCapability.SetCrs
+QgsDataItem.SetCrs.__doc__ = "Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0"
+QgsDataItem.Fertile = Qgis.BrowserItemCapability.Fertile
+QgsDataItem.Fertile.__doc__ = "Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors."
+QgsDataItem.Fast = Qgis.BrowserItemCapability.Fast
+QgsDataItem.Fast.__doc__ = "CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings"
+QgsDataItem.Collapse = Qgis.BrowserItemCapability.Collapse
+QgsDataItem.Collapse.__doc__ = "The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)"
+QgsDataItem.Rename = Qgis.BrowserItemCapability.Rename
+QgsDataItem.Rename.__doc__ = "Item can be renamed"
+QgsDataItem.Delete = Qgis.BrowserItemCapability.Delete
+QgsDataItem.Delete.__doc__ = "Item can be deleted"
+Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionadded:: 3.20\n\n' + '* ``NoCapabilities``: ' + Qgis.BrowserItemCapability.NoCapabilities.__doc__ + '\n' + '* ``SetCrs``: ' + Qgis.BrowserItemCapability.SetCrs.__doc__ + '\n' + '* ``Fertile``: ' + Qgis.BrowserItemCapability.Fertile.__doc__ + '\n' + '* ``Fast``: ' + Qgis.BrowserItemCapability.Fast.__doc__ + '\n' + '* ``Collapse``: ' + Qgis.BrowserItemCapability.Collapse.__doc__ + '\n' + '* ``Rename``: ' + Qgis.BrowserItemCapability.Rename.__doc__ + '\n' + '* ``Delete``: ' + Qgis.BrowserItemCapability.Delete.__doc__
+# --
+QgsLayerItem.LayerType = Qgis.BrowserLayerType
+# monkey patching scoped based enum
+QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType
+QgsLayerItem.NoType.__doc__ = "No type"
+QgsLayerItem.Vector = Qgis.BrowserLayerType.Vector
+QgsLayerItem.Vector.__doc__ = "Generic vector layer"
+QgsLayerItem.Raster = Qgis.BrowserLayerType.Raster
+QgsLayerItem.Raster.__doc__ = "Raster layer"
+QgsLayerItem.Point = Qgis.BrowserLayerType.Point
+QgsLayerItem.Point.__doc__ = "Vector point layer"
+QgsLayerItem.Line = Qgis.BrowserLayerType.Line
+QgsLayerItem.Line.__doc__ = "Vector line layer"
+QgsLayerItem.Polygon = Qgis.BrowserLayerType.Polygon
+QgsLayerItem.Polygon.__doc__ = "Vector polygon layer"
+QgsLayerItem.TableLayer = Qgis.BrowserLayerType.TableLayer
+QgsLayerItem.TableLayer.__doc__ = "Vector non-spatial layer"
+QgsLayerItem.Database = Qgis.BrowserLayerType.Database
+QgsLayerItem.Database.__doc__ = "Database layer"
+QgsLayerItem.Table = Qgis.BrowserLayerType.Table
+QgsLayerItem.Table.__doc__ = "Database table"
+QgsLayerItem.Plugin = Qgis.BrowserLayerType.Plugin
+QgsLayerItem.Plugin.__doc__ = "Plugin based layer"
+QgsLayerItem.Mesh = Qgis.BrowserLayerType.Mesh
+QgsLayerItem.Mesh.__doc__ = "Mesh layer"
+QgsLayerItem.VectorTile = Qgis.BrowserLayerType.VectorTile
+QgsLayerItem.VectorTile.__doc__ = "Vector tile layer"
+QgsLayerItem.PointCloud = Qgis.BrowserLayerType.PointCloud
+QgsLayerItem.PointCloud.__doc__ = "Point cloud layer"
+Qgis.BrowserLayerType.__doc__ = 'Browser item layer types\n\n.. versionadded:: 3.20\n\n' + '* ``NoType``: ' + Qgis.BrowserLayerType.NoType.__doc__ + '\n' + '* ``Vector``: ' + Qgis.BrowserLayerType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.BrowserLayerType.Raster.__doc__ + '\n' + '* ``Point``: ' + Qgis.BrowserLayerType.Point.__doc__ + '\n' + '* ``Line``: ' + Qgis.BrowserLayerType.Line.__doc__ + '\n' + '* ``Polygon``: ' + Qgis.BrowserLayerType.Polygon.__doc__ + '\n' + '* ``TableLayer``: ' + Qgis.BrowserLayerType.TableLayer.__doc__ + '\n' + '* ``Database``: ' + Qgis.BrowserLayerType.Database.__doc__ + '\n' + '* ``Table``: ' + Qgis.BrowserLayerType.Table.__doc__ + '\n' + '* ``Plugin``: ' + Qgis.BrowserLayerType.Plugin.__doc__ + '\n' + '* ``Mesh``: ' + Qgis.BrowserLayerType.Mesh.__doc__ + '\n' + '* ``VectorTile``: ' + Qgis.BrowserLayerType.VectorTile.__doc__ + '\n' + '* ``PointCloud``: ' + Qgis.BrowserLayerType.PointCloud.__doc__
+# --
+Qgis.BrowserLayerType.baseClass = Qgis
 QgsVectorLayerExporter.ExportError = Qgis.VectorExportResult
 # monkey patching scoped based enum
 QgsVectorLayerExporter.NoError = Qgis.VectorExportResult.Success

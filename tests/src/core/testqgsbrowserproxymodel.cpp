@@ -150,11 +150,11 @@ void TestQgsBrowserProxyModel::testModel()
   QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child2" ), QStringLiteral( "child2" ) );
   rootItem1->addChildItem( childItem2, true );
 
-  QgsLayerItem *childItem3 = new QgsLayerItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ), QString(), QgsLayerItem::Vector, QString() );
+  QgsLayerItem *childItem3 = new QgsLayerItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ), QString(), Qgis::BrowserLayerType::Vector, QString() );
   childItem2->addChildItem( childItem3, true );
   QCOMPARE( childItem2->rowCount(), 1 );
 
-  QgsLayerItem *childItem4 = new QgsLayerItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ), QString(), QgsLayerItem::Raster, QString() );
+  QgsLayerItem *childItem4 = new QgsLayerItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ), QString(), Qgis::BrowserLayerType::Raster, QString() );
   rootItem2->addChildItem( childItem4, true );
   QCOMPARE( rootItem2->rowCount(), 1 );
 
@@ -315,7 +315,7 @@ void TestQgsBrowserProxyModel::testShowLayers()
   // Add a layer collection item
   QgsDataCollectionItem *containerItem1 = new TestCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
   rootItem1->addChildItem( containerItem1 );
-  QgsLayerItem *childItem1 = new QgsLayerItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QString(), QgsLayerItem::Vector, QString() );
+  QgsLayerItem *childItem1 = new QgsLayerItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QString(), Qgis::BrowserLayerType::Vector, QString() );
   containerItem1->addChildItem( childItem1, true );
   QCOMPARE( proxy.rowCount(), 1 );
   auto root1Index = proxy.index( 0, 0 );

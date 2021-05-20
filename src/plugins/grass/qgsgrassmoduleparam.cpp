@@ -334,7 +334,11 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       }
 
       // List of values to be excluded
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       QStringList exclude = qdesc.attribute( QStringLiteral( "exclude" ) ).split( ',', QString::SkipEmptyParts );
+#else
+      QStringList exclude = qdesc.attribute( QStringLiteral( "exclude" ) ).split( ',', Qt::SkipEmptyParts );
+#endif
 
       QDomNode valueNode = valuesElem.firstChild();
 

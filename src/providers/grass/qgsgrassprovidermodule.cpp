@@ -349,7 +349,7 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem *parent, QString dirPath
   mIconName = QStringLiteral( "grass_location.svg" );
 
   // set Directory type so that when sorted it gets into dirs (after the dir it represents)
-  mType = QgsDataItem::Directory;
+  mType = Qgis::BrowserItemType::Directory;
 }
 
 QVector<QgsDataItem *>QgsGrassLocationItem::createChildren()
@@ -423,11 +423,11 @@ QIcon QgsGrassMapsetItem::icon()
   return QgsApplication::getThemeIcon( "/grass_mapset.svg" );
 }
 
-void QgsGrassMapsetItem::setState( State state )
+void QgsGrassMapsetItem::setState( Qgis::BrowserItemState state )
 {
 
   // TODO: it seems to be causing strange icon switching during import, sometimes
-  if ( state == Populated )
+  if ( state == Qgis::BrowserItemState::Populated )
   {
     if ( !mMapsetFileSystemWatcher )
     {
@@ -437,7 +437,7 @@ void QgsGrassMapsetItem::setState( State state )
       connect( mMapsetFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrassMapsetItem::onDirectoryChanged );
     }
   }
-  else if ( state == NotPopulated )
+  else if ( state == Qgis::BrowserItemState::NotPopulated )
   {
     if ( mMapsetFileSystemWatcher )
     {
@@ -569,16 +569,16 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
       // don't use QDir::separator(), windows work with '/' and backslash may be lost if
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
       QString uri = mDirPath + "/" + name + "/" + layerName;
-      QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
+      Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::Vector;
       QString typeName = layerName.split( '_' ).value( 1 );
       QString baseLayerName = layerName.split( '_' ).value( 0 );
 
       if ( typeName == QLatin1String( "point" ) || typeName == QLatin1String( "node" ) )
-        layerType = QgsLayerItem::Point;
+        layerType = Qgis::BrowserLayerType::Point;
       else if ( typeName == QLatin1String( "line" ) )
-        layerType = QgsLayerItem::Line;
+        layerType = Qgis::BrowserLayerType::Line;
       else if ( typeName == QLatin1String( "polygon" ) )
-        layerType = QgsLayerItem::Polygon;
+        layerType = Qgis::BrowserLayerType::Polygon;
 
       QString layerPath = mapPath + "/" + layerName;
       if ( !map )
@@ -596,7 +596,7 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
     }
     if ( map )
     {
-      map->setState( Populated );
+      map->setState( Qgis::BrowserItemState::Populated );
       items.append( map );
     }
   }
@@ -952,7 +952,7 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport *import )
 
 void QgsGrassMapsetItem::onDirectoryChanged()
 {
-  if ( state() == Populating )
+  if ( state() == Qgis::BrowserItemState::Populating )
   {
     // schedule to refresh later, because refres() simply returns if Populating
     mRefreshLater = true;
@@ -971,7 +971,7 @@ void QgsGrassMapsetItem::childrenCreated()
   {
     QgsDebugMsg( "directory changed during createChidren() -> refresh() again" );
     mRefreshLater = false;
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
     refresh();
   }
   else
@@ -984,11 +984,11 @@ void QgsGrassMapsetItem::childrenCreated()
 
 QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
                                         QString name, QString path, QString uri,
-                                        LayerType layerType, QString providerKey )
+                                        Qgis::BrowserLayerType layerType, QString providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
   , QgsGrassObjectItemBase( grassObject )
 {
-  setState( Populated ); // no children, to show non expandable in browser
+  setState( Qgis::BrowserItemState::Populated ); // no children, to show non expandable in browser
 #ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
 #endif
@@ -1008,11 +1008,11 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
   , mValid( valid )
 {
   QgsDebugMsg( "name = " + grassObject.name() + " path = " + path );
-  mCapabilities = NoCapabilities; // disable Fertile from QgsDataCollectionItem
-  setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+  mCapabilities = Qgis::BrowserItemCapability::NoCapabilities; // disable Fertile from QgsDataCollectionItem
+  setCapabilities( Qgis::BrowserItemCapability::NoCapabilities ); // disable fertility
   if ( !mValid )
   {
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
     setIconName( QStringLiteral( "/mIconDelete.svg" ) );
   }
 #ifdef HAVE_GUI
@@ -1070,7 +1070,7 @@ bool QgsGrassVectorItem::equal( const QgsDataItem *other )
 
 QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject grassObject, QString layerName,
     QString path, QString uri,
-    LayerType layerType, bool singleLayer )
+    Qgis::BrowserLayerType layerType, bool singleLayer )
   : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, QStringLiteral( "grass" ) )
   , mSingleLayer( singleLayer )
 {
@@ -1099,7 +1099,7 @@ bool QgsGrassVectorLayerItem::equal( const QgsDataItem *other )
 
 QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem *parent, QgsGrassObject grassObject,
                                         QString path, QString uri, bool isExternal )
-  : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, QgsLayerItem::Raster, QStringLiteral( "grassraster" ) )
+  : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "grassraster" ) )
   , mExternal( isExternal )
 {
 }
@@ -1123,7 +1123,7 @@ bool QgsGrassRasterItem::equal( const QgsDataItem *other )
 
 QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem *parent, QgsGrassObject grassObject,
                                       QString path, QString uri )
-  : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, QgsLayerItem::Raster, QStringLiteral( "grassraster" ) )
+  : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "grassraster" ) )
 {
 }
 
@@ -1174,12 +1174,12 @@ void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, con
 QgsAnimatedIcon *QgsGrassImportItem::sImportIcon = nullptr;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem *parent, const QString &name, const QString &path, QgsGrassImport *import )
-  : QgsDataItem( QgsDataItem::Layer, parent, name, path )
+  : QgsDataItem( Qgis::BrowserItemType::Layer, parent, name, path )
   , QgsGrassObjectItemBase( import->grassObject() )
   , mImport( import )
 {
-  setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
-  setState( Populated );
+  setCapabilities( Qgis::BrowserItemCapability::NoCapabilities ); // disable fertility
+  setState( Qgis::BrowserItemState::Populated );
 
   QgsGrassImportIcon::instance()->connectFrameChanged( this, &QgsGrassImportItem::updateIcon );
 }

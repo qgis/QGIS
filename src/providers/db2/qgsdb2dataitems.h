@@ -125,7 +125,7 @@ class QgsDb2LayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
+    QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, Qgis::BrowserLayerType layerType, QgsDb2LayerProperty layerProperties );
 
     QString createUri();
 

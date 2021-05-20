@@ -9,7 +9,6 @@
 
 
 
-
 class QgsBrowserModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
@@ -165,7 +164,7 @@ and on Linux the "/" root directory.
 %End
   signals:
 
-    void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
+    void stateChanged( const QModelIndex &index, Qgis::BrowserItemState oldState );
 %Docstring
 Emitted when item children fetch was finished
 %End
@@ -196,7 +195,11 @@ drives and adding newly added drives.
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
     void itemDataChanged( QgsDataItem *item );
-    void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    void itemStateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
+%Docstring
+Emitted when an ``item``'s state is changed.
+%End
 
     void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 %Docstring

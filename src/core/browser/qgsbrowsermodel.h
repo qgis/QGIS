@@ -16,14 +16,13 @@
 #define QGSBROWSERMODEL_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QMimeData>
 #include <QMovie>
 #include <QFuture>
 #include <QFutureWatcher>
-
-#include "qgsdataitem.h"
 
 class QgsDataItemProvider;
 class QgsDataItem;
@@ -185,7 +184,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   signals:
 
     //! Emitted when item children fetch was finished
-    void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
+    void stateChanged( const QModelIndex &index, Qgis::BrowserItemState oldState );
 
     /**
      * Emitted when connections for the specified \a providerKey have changed in the browser.
@@ -211,7 +210,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
     void itemDataChanged( QgsDataItem *item );
-    void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    /**
+     * Emitted when an \a item's state is changed.
+     */
+    void itemStateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
 
     /**
      * Adds a \a directory to the favorites group.

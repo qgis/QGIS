@@ -47,7 +47,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QStri
   , mUseEstimatedMetadata( false )
   , mAllowGeometrylessTables( true )
 {
-  mCapabilities |= Fast | Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast | Qgis::BrowserItemCapability::Collapse;
   mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
@@ -126,7 +126,7 @@ void QgsMssqlConnectionItem::refresh()
 
 QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 {
-  setState( Populating );
+  setState( Qgis::BrowserItemState::Populating );
 
   stop();
 
@@ -213,7 +213,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       if ( !schemaItem )
       {
         schemaItem = new QgsMssqlSchemaItem( this, layer.schemaName, mPath + '/' + layer.schemaName );
-        schemaItem->setState( Populating );
+        schemaItem->setState( Qgis::BrowserItemState::Populating );
         addedSchemas.insert( layer.schemaName );
         children.append( schemaItem );
       }
@@ -270,7 +270,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         continue;
 
       QgsMssqlSchemaItem *schemaItem = new QgsMssqlSchemaItem( this, schema, mPath + '/' + schema );
-      schemaItem->setState( Populated ); // no tables
+      schemaItem->setState( Qgis::BrowserItemState::Populated ); // no tables
       addedSchemas.insert( schema );
       children.append( schemaItem );
     }
@@ -286,7 +286,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       //set all as populated -- we also need to do this for newly created items, because they won't yet be children of this item
       for ( QgsDataItem *child : std::as_const( children ) )
       {
-        child->setState( Populated );
+        child->setState( Qgis::BrowserItemState::Populated );
       }
       setAsPopulated();
     }
@@ -304,9 +304,9 @@ void QgsMssqlConnectionItem::setAsPopulated()
   const auto constMChildren = mChildren;
   for ( QgsDataItem *child : constMChildren )
   {
-    child->setState( Populated );
+    child->setState( Qgis::BrowserItemState::Populated );
   }
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
@@ -433,7 +433,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to MSSQL database" ), tr( "Import was successful." ) );
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
@@ -449,7 +449,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
@@ -477,13 +477,13 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
 
 
 // ---------------------------------------------------------------------------
-QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperty )
+QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsMssqlLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "mssql" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete;
+  mCapabilities |= Qgis::BrowserItemCapability::Delete;
   mUri = createUri();
-  setState( NotPopulated );
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 
@@ -532,7 +532,7 @@ QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
-  mCapabilities &= ~( Fertile );
+  mCapabilities &= ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile );
 }
 
 QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
@@ -562,32 +562,32 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
-  QgsLayerItem::LayerType layerType;
+  Qgis::BrowserLayerType layerType;
   QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
   switch ( flatType )
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::MultiPoint:
-      layerType = QgsLayerItem::Point;
+      layerType = Qgis::BrowserLayerType::Point;
       break;
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::MultiLineString:
-      layerType = QgsLayerItem::Line;
+      layerType = Qgis::BrowserLayerType::Line;
       break;
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::MultiPolygon:
-      layerType = QgsLayerItem::Polygon;
+      layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:
       if ( layerProperty.type == QLatin1String( "NONE" ) && layerProperty.geometryColName.isEmpty() )
       {
-        layerType = QgsLayerItem::TableLayer;
+        layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
       }
       else if ( !layerProperty.geometryColName.isEmpty() && layerProperty.type.isEmpty() )
       {
         // geometry column is there but we failed to determine geometry type (e.g. due to invalid geometries)
-        layerType = QgsLayerItem::Vector;
+        layerType = Qgis::BrowserLayerType::Vector;
       }
       else
       {

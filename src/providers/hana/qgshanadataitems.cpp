@@ -42,7 +42,7 @@ QgsHanaConnectionItem::QgsHanaConnectionItem(
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 
   updateToolTip( QString( ), QString( ) );
 }
@@ -235,14 +235,14 @@ QgsHanaLayerItem::QgsHanaLayerItem(
   QgsDataItem *parent,
   const QString &name,
   const QString &path,
-  QgsLayerItem::LayerType layerType,
+  Qgis::BrowserLayerType layerType,
   const QgsHanaLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "hana" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete | Fertile;
+  mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
   mUri = createUri();
-  setState( NotPopulated );
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 QVector<QgsDataItem *> QgsHanaLayerItem::createChildren()
@@ -355,7 +355,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 {
   QString tip = layerProperty.isView ? QStringLiteral( "View" ) : QStringLiteral( "Table" );
 
-  QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
+  Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::TableLayer;
   if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isGeometryValid() )
   {
     tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName,
@@ -373,13 +373,13 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        layerType = QgsLayerItem::Point;
+        layerType = Qgis::BrowserLayerType::Point;
         break;
       case QgsWkbTypes::LineGeometry:
-        layerType = QgsLayerItem::Line;
+        layerType = Qgis::BrowserLayerType::Line;
         break;
       case QgsWkbTypes::PolygonGeometry:
-        layerType = QgsLayerItem::Polygon;
+        layerType = Qgis::BrowserLayerType::Polygon;
         break;
       default:
         break;
@@ -399,7 +399,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconHana.svg" );
   populate();
 }

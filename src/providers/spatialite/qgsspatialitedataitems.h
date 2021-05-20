@@ -25,7 +25,7 @@ class QgsSLLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
+    QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType );
 
     // QgsDataItem interface
     QVector<QgsDataItem *> createChildren() override;

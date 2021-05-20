@@ -215,6 +215,78 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
+     * Browser item types.
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserItemType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Type ) : int
+      {
+      Collection, //!< A collection of items
+      Directory, //!< Represents a file directory
+      Layer, //!< Represents a map layer
+      Error, //!< Contains an error message
+      Favorites, //!< Represents a favorite item
+      Project, //!< Represents a QGIS project
+      Custom, //!< Custom item type
+      Fields, //!< Collection of fields
+      Field, //!< Vector layer field
+    };
+    Q_ENUM( BrowserItemType )
+
+    /**
+     * Browser item states.
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserItemState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, State ) : int
+      {
+      NotPopulated, //!< Children not yet created
+      Populating, //!< Creating children in separate thread (populating or refreshing)
+      Populated, //!< Children created
+    };
+    Q_ENUM( BrowserItemState )
+
+    /**
+     * Browser item capabilities.
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int
+      {
+      NoCapabilities = 0, //!< Item has no capabilities
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. \deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
+      Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
+      Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Rename = 1 << 4, //!< Item can be renamed
+      Delete = 1 << 5, //!< Item can be deleted
+    };
+    Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
+
+    /**
+     * Browser item layer types
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayerItem, LayerType ) : int
+      {
+      NoType, //!< No type
+      Vector, //!< Generic vector layer
+      Raster, //!< Raster layer
+      Point, //!< Vector point layer
+      Line, //!< Vector line layer
+      Polygon, //!< Vector polygon layer
+      TableLayer, //!< Vector non-spatial layer
+      Database, //!< Database layer
+      Table, //!< Database table
+      Plugin, //!< Plugin based layer
+      Mesh, //!< Mesh layer
+      VectorTile, //!< Vector tile layer
+      PointCloud //!< Point cloud layer
+    };
+    Q_ENUM( BrowserLayerType )
+
+    /**
      * Vector layer export result codes.
      *
      * \since QGIS 3.20
@@ -379,6 +451,7 @@ class CORE_EXPORT Qgis
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 
 
 // hack to workaround warnings when casting void pointers

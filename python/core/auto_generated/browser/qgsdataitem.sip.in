@@ -47,21 +47,8 @@ Parent/children hierarchy is not based on QObject.
       sipType = 0;
 %End
   public:
-    enum Type
-    {
-      Collection,
-      Directory,
-      Layer,
-      Error,
-      Favorites,
-      Project,
-      Custom,
-      Fields,
-      Field,
-    };
 
-
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
+    QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
 %Docstring
 Constructor for QgsDataItem, with the specified ``parent`` item.
 
@@ -119,20 +106,13 @@ Create children. Children are not expected to have parent set.
     }
 %End
 
-    enum State
-    {
-      NotPopulated,
-      Populating,
-      Populated
-    };
-
-    State state() const;
+    Qgis::BrowserItemState state() const;
 %Docstring
 
 .. versionadded:: 2.8
 %End
 
-    virtual void setState( State state );
+    virtual void setState( Qgis::BrowserItemState state );
 %Docstring
 Set item state. It also take care about starting/stopping loading icon animation.
 
@@ -276,19 +256,6 @@ Items that return valid URI will be returned in mime data when dragging a select
 .. versionadded:: 3.18
 %End
 
-    enum Capability
-    {
-      NoCapabilities,
-      SetCrs,
-      Fertile,
-      Fast,
-      Collapse,
-      Rename,
-      Delete,
-    };
-    typedef QFlags<QgsDataItem::Capability> Capabilities;
-
-
  virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Writes the selected crs into data source. The original data source will be modified when calling this
@@ -315,14 +282,14 @@ Use :py:class:`QgsDataItemGuiProvider`:
 %End
 
 
-    virtual Capabilities capabilities2() const;
+    virtual Qgis::BrowserItemCapabilities capabilities2() const;
 %Docstring
 Returns the capabilities for the data item.
 
 .. seealso:: :py:func:`setCapabilities`
 %End
 
-    virtual void setCapabilities( Capabilities capabilities );
+    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities );
 %Docstring
 Sets the capabilities for the data item.
 
@@ -333,7 +300,7 @@ Sets the capabilities for the data item.
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 
 
-    Type type() const;
+    Qgis::BrowserItemType type() const;
 
     QgsDataItem *parent() const;
 %Docstring
@@ -496,7 +463,11 @@ all providers will be refreshed (which is potentially very expensive!).
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
-    void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    void stateChanged( QgsDataItem *item, Qgis::BrowserItemState oldState );
+%Docstring
+Emitted when an item's state is changed.
+%End
 
     void connectionsChanged( const QString &providerKey = QString() );
 %Docstring
@@ -517,9 +488,6 @@ Will request a repaint of this icon.
 %End
 
 };
-
-QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<QgsDataItem::Capability> f2);
-
 
 class QgsErrorItem : QgsDataItem
 {

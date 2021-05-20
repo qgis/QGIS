@@ -101,7 +101,7 @@ void TestQgsAppBrowserProviders::testProjectItemCreation()
 
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {
       child->populate( true );
 

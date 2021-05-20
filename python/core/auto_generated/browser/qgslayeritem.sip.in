@@ -18,25 +18,11 @@ Item that represents a layer that can be opened with one of the providers
 #include "qgslayeritem.h"
 %End
   public:
-    enum LayerType
-    {
-      NoType,
-      Vector,
-      Raster,
-      Point,
-      Line,
-      Polygon,
-      TableLayer,
-      Database,
-      Table,
-      Plugin,
-      Mesh,
-      VectorTile,
-      PointCloud
-    };
 
-
-    QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
+    QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
+%Docstring
+Constructor for QgsLayerItem.
+%End
 
 
     virtual bool equal( const QgsDataItem *other );
@@ -53,7 +39,7 @@ Item that represents a layer that can be opened with one of the providers
 Returns :py:class:`QgsMapLayerType`
 %End
 
-    static LayerType typeFromMapLayer( QgsMapLayer *layer );
+    static Qgis::BrowserLayerType typeFromMapLayer( QgsMapLayer *layer );
 %Docstring
 Returns the layer item type corresponding to a :py:class:`QgsMapLayer` ``layer``.
 
@@ -91,14 +77,14 @@ Returns comments of the layer
 .. versionadded:: 2.12
 %End
 
-    static QString layerTypeAsString( LayerType layerType );
+    static QString layerTypeAsString( Qgis::BrowserLayerType layerType );
 %Docstring
 Returns the string representation of the given ``layerType``
 
 .. versionadded:: 3
 %End
 
-    static QString iconName( LayerType layerType );
+    static QString iconName( Qgis::BrowserLayerType layerType );
 %Docstring
 Returns the icon name of the given ``layerType``
 

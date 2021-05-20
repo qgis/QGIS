@@ -40,7 +40,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri,
                                     QStringList *sublayers )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -49,11 +49,11 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   {
     mSublayers = *sublayers;
     // We have sublayers: we are able to create children!
-    mCapabilities |= Fertile;
-    setState( NotPopulated );
+    mCapabilities |= Qgis::BrowserItemCapability::Fertile;
+    setState( Qgis::BrowserItemState::NotPopulated );
   }
   else
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
 }
 
 
@@ -279,8 +279,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
         QString encodedUri = uq.toString();
-        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
-        item->setState( QgsDataItem::Populated );
+        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
+        item->setState( Qgis::BrowserItemState::Populated );
         return item;
       }
     }

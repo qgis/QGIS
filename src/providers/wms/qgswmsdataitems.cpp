@@ -32,7 +32,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, Q
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
 }
 
@@ -121,8 +121,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
       if ( layerItem != this )
       {
-        layerItem->setCapabilities( layerItem->capabilities2() & ~QgsDataItem::Fertile );
-        layerItem->setState( QgsDataItem::Populated );
+        layerItem->setCapabilities( layerItem->capabilities2() & ~ Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile ) );
+        layerItem->setState( Qgis::BrowserItemState::Populated );
         layerItem->setToolTip( title );
         children << layerItem;
       }
@@ -146,8 +146,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
         if ( styleItem != layerItem )
         {
-          styleItem->setCapabilities( styleItem->capabilities2() & ~QgsDataItem::Fertile );
-          styleItem->setState( QgsDataItem::Populated );
+          styleItem->setCapabilities( styleItem->capabilities2() & ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile ) );
+          styleItem->setState( Qgis::BrowserItemState::Populated );
           styleItem->setToolTip( styleName );
           if ( layerItem == this )
           {
@@ -178,8 +178,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
           if ( linkItem != styleItem )
           {
-            linkItem->setCapabilities( linkItem->capabilities2() & ~QgsDataItem::Fertile );
-            linkItem->setState( QgsDataItem::Populated );
+            linkItem->setCapabilities( linkItem->capabilities2() & ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile ) );
+            linkItem->setState( Qgis::BrowserItemState::Populated );
             linkItem->setToolTip( linkName );
             if ( styleItem == this )
             {
@@ -365,7 +365,7 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
     addChildItem( layer );
   }
 
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 bool QgsWMSLayerCollectionItem::equal( const QgsDataItem *other )
@@ -434,7 +434,7 @@ QgsMimeDataUtils::UriList QgsWMSLayerCollectionItem::mimeUris() const
 // ---------------------------------------------------------------------------
 
 QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) )
   ,  QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
   mSupportedCRS = mLayerProperty.crs;
@@ -443,7 +443,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
 
   mUri = createUri();
   mIconName = QStringLiteral( "mIconWms.svg" );
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 bool QgsWMSLayerItem::equal( const QgsDataItem *other )
@@ -477,7 +477,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
                                     const QString &tileMatrixSet,
                                     const QString &crs,
                                     const QString &title )
-  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) )
   , mDataSourceUri( uri )
   , mId( id )
   , mFormat( format )
@@ -487,7 +487,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
   , mTitle( title )
 {
   mUri = createUri();
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QString QgsWMTSLayerItem::createUri()
@@ -507,7 +507,7 @@ QString QgsWMTSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
   populate();
 }
@@ -532,7 +532,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
   populate();
 
@@ -573,7 +573,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
 QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconXyz.svg" );
   populate();
 }
@@ -596,10 +596,10 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 
 
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
-  : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  : QgsLayerItem( parent, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) )
 {
   mIconName = QStringLiteral( "mIconXyz.svg" );
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 
