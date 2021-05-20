@@ -19,6 +19,7 @@
 #define QGSFILEUTILS_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QString>
 
 /**
@@ -117,6 +118,30 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.12
      */
     static QStringList findFile( const QString &file, const QString &basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString &currentDir = QString() );
+
+    /**
+     * Drive types
+     * \since QGIS 3.20
+     */
+    enum DriveType
+    {
+      Unknown, //!< Unknown type
+      Invalid, //!< Invalid path
+      Removable, //!< Removable drive
+      Fixed, //!< Fixed drive
+      Remote, //!< Remote drive
+      CdRom, //!< CD-ROM
+      RamDisk, //!< RAM disk
+    };
+
+    /**
+     * Returns the drive type for the given \a path.
+     *
+     * \throws QgsNotSupportedException if determining the drive type is not supported on the current platform.
+     *
+     * \since QGIS 3.20
+     */
+    static DriveType driveType( const QString &path ) SIP_THROW( QgsNotSupportedException );
 
 };
 

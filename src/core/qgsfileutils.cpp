@@ -14,12 +14,19 @@
  ***************************************************************************/
 #include "qgsfileutils.h"
 #include "qgis.h"
+#include "qgsexception.h"
 #include <QObject>
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <QDir>
 #include <QSet>
 #include <QDirIterator>
+
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#include <ShlObj.h>
+#pragma comment(lib,"Shell32.lib")
+#endif
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
 {
@@ -260,5 +267,71 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
     QDir::setCurrent( backupDirectory );
 
   return foundFiles;
+}
+
+#ifdef Q_OS_WIN
+std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+{
+  const QString nativePath = QDir::toNativeSeparators( path );
+
+  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  nativePath.toWCharArray( pathArray.get() );
+  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
+  return pathArray;
+}
+#endif
+
+QgsFileUtils::DriveType QgsFileUtils::driveType( const QString &path )
+{
+#ifdef Q_OS_WIN
+  auto pathType = [ = ]( const QString & path ) -> DriveType
+  {
+    std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+    const UINT type = GetDriveTypeW( pathArray.get() );
+    switch ( type )
+    {
+      case DRIVE_UNKNOWN:
+        return Unknown;
+
+      case DRIVE_NO_ROOT_DIR:
+        return Invalid;
+
+      case DRIVE_REMOVABLE:
+        return Removable;
+
+      case DRIVE_FIXED:
+        return Fixed;
+
+      case DRIVE_REMOTE:
+        return Remote;
+
+      case DRIVE_CDROM:
+        return CdRom;
+
+      case DRIVE_RAMDISK:
+        return RamDisk;
+    }
+
+    return Unknown;
+
+  };
+
+  const QString originalPath = QDir::cleanPath( path );
+  QString currentPath = originalPath;
+  QString prevPath;
+  while ( currentPath != prevPath )
+  {
+    prevPath = currentPath;
+    currentPath = QFileInfo( currentPath ).path();
+    const DriveType type = pathType( currentPath );
+    if ( type != Unknown && type != Invalid )
+      return type;
+  }
+  return Unknown;
+
+#else
+  ( void )path;
+  throw QgsNotSupportedException( QStringLiteral( "Determining drive type is not supported on this platform" ) );
+#endif
 }
 

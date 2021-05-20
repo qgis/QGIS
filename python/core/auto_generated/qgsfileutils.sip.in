@@ -118,6 +118,26 @@ Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check
 .. versionadded:: 3.12
 %End
 
+    enum DriveType
+    {
+      Unknown,
+      Invalid,
+      Removable,
+      Fixed,
+      Remote,
+      CdRom,
+      RamDisk,
+    };
+
+    static DriveType driveType( const QString &path ) throw( QgsNotSupportedException );
+%Docstring
+Returns the drive type for the given ``path``.
+
+:raises :: py:class:`QgsNotSupportedException` if determining the drive type is not supported on the current platform.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************
