@@ -118,18 +118,7 @@ Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check
 .. versionadded:: 3.12
 %End
 
-    enum DriveType
-    {
-      Unknown,
-      Invalid,
-      Removable,
-      Fixed,
-      Remote,
-      CdRom,
-      RamDisk,
-    };
-
-    static DriveType driveType( const QString &path ) throw( QgsNotSupportedException );
+    static Qgis::DriveType driveType( const QString &path ) throw( QgsNotSupportedException );
 %Docstring
 Returns the drive type for the given ``path``.
 
@@ -140,7 +129,7 @@ Returns the drive type for the given ``path``.
 
     static bool pathIsSlowDevice( const QString &path );
 %Docstring
-Returns ``True`` if the specified ``path`` is known to reside on a slow device, e.g. a remote
+Returns ``True`` if the specified ``path`` is assumed to reside on a slow device, e.g. a remote
 network drive or other non-fixed device.
 
 .. versionadded:: 3.20
