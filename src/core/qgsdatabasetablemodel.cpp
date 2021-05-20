@@ -17,6 +17,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsiconutils.h"
+#include <QIcon>
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )
