@@ -226,6 +226,22 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * Drive types
+     * \since QGIS 3.20
+     */
+    enum class DriveType : int
+    {
+      Unknown, //!< Unknown type
+      Invalid, //!< Invalid path
+      Removable, //!< Removable drive
+      Fixed, //!< Fixed drive
+      Remote, //!< Remote drive
+      CdRom, //!< CD-ROM
+      RamDisk, //!< RAM disk
+    };
+    Q_ENUM( DriveType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

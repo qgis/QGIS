@@ -281,7 +281,7 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 }
 #endif
 
-QgsFileUtils::DriveType QgsFileUtils::driveType( const QString &path )
+Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
 #ifdef MSVC
   auto pathType = [ = ]( const QString & path ) -> DriveType
@@ -291,25 +291,25 @@ QgsFileUtils::DriveType QgsFileUtils::driveType( const QString &path )
     switch ( type )
     {
       case DRIVE_UNKNOWN:
-        return Unknown;
+        return Qgis::DriveType::Unknown;
 
       case DRIVE_NO_ROOT_DIR:
-        return Invalid;
+        return Qgis::DriveType::Invalid;
 
       case DRIVE_REMOVABLE:
-        return Removable;
+        return Qgis::DriveType::Removable;
 
       case DRIVE_FIXED:
-        return Fixed;
+        return Qgis::DriveType::Fixed;
 
       case DRIVE_REMOTE:
-        return Remote;
+        return Qgis::DriveType::Remote;
 
       case DRIVE_CDROM:
-        return CdRom;
+        return Qgis::DriveType::CdRom;
 
       case DRIVE_RAMDISK:
-        return RamDisk;
+        return Qgis::DriveType::RamDisk;
     }
 
     return Unknown;
@@ -339,18 +339,18 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
 {
   try
   {
-    const DriveType type = driveType( path );
+    const Qgis::DriveType type = driveType( path );
     switch ( type )
     {
-      case QgsFileUtils::Unknown:
-      case QgsFileUtils::Invalid:
-      case QgsFileUtils::Fixed:
-      case QgsFileUtils::RamDisk:
+      case Qgis::DriveType::Unknown:
+      case Qgis::DriveType::Invalid:
+      case Qgis::DriveType::Fixed:
+      case Qgis::DriveType::RamDisk:
         return false;
 
-      case QgsFileUtils::Removable:
-      case QgsFileUtils::Remote:
-      case QgsFileUtils::CdRom:
+      case Qgis::DriveType::Removable:
+      case Qgis::DriveType::Remote:
+      case Qgis::DriveType::CdRom:
         return true;
     }
   }
