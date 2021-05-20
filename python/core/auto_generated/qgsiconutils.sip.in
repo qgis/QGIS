@@ -72,6 +72,11 @@ Returns an icon representing vector tile layers.
 Returns an icon representing point cloud layers.
 %End
 
+    static QIcon iconForLayer( const QgsMapLayer *layer );
+%Docstring
+Returns the icon corresponding to a specified map ``layer``.
+%End
+
 };
 
 

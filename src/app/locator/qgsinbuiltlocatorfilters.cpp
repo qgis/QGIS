@@ -33,7 +33,6 @@
 #include "qgslayertree.h"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
-#include "qgsmaplayermodel.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgslayoutmanager.h"
@@ -44,7 +43,7 @@
 #include "qgssettings.h"
 #include "qgsunittypes.h"
 #include "qgslocatorwidget.h"
-
+#include "qgsiconutils.h"
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -68,7 +67,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
     QgsLocatorResult result;
     result.displayString = layer->layer()->name();
     result.userData = layer->layerId();
-    result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+    result.icon = QgsIconUtils::iconForLayer( layer->layer() );
 
     // return all the layers in case the string query is empty using an equal default score
     if ( context.usingPrefix && string.isEmpty() )
@@ -363,7 +362,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   mFieldIterator = layer->getFeatures( req );
 
   mLayerId = layer->id();
-  mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
+  mLayerIcon = QgsIconUtils::iconForLayer( layer );
   mAttributeAliases.clear();
   for ( int idx = 0; idx < layer->fields().size(); ++idx )
   {
@@ -584,7 +583,7 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
     preparedLayer->request = req;
     preparedLayer->exactMatchRequest = exactMatchRequest;
-    preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
+    preparedLayer->layerIcon = QgsIconUtils::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
   }

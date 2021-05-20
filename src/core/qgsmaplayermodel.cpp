@@ -516,68 +516,8 @@ Qt::DropActions QgsMapLayerModel::supportedDropActions() const
 
 QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
 {
-  switch ( layer->type() )
-  {
-    case QgsMapLayerType::RasterLayer:
-    {
-      return QgsIconUtils::iconRaster();
-    }
-
-    case QgsMapLayerType::MeshLayer:
-    {
-      return QgsIconUtils::iconMesh();
-    }
-
-    case QgsMapLayerType::VectorTileLayer:
-    {
-      return QgsIconUtils::iconVectorTile();
-    }
-
-    case QgsMapLayerType::PointCloudLayer:
-    {
-      return QgsIconUtils::iconPointCloud();
-    }
-
-    case QgsMapLayerType::VectorLayer:
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vl )
-      {
-        return QIcon();
-      }
-      QgsWkbTypes::GeometryType geomType = vl->geometryType();
-      switch ( geomType )
-      {
-        case QgsWkbTypes::PointGeometry:
-        {
-          return QgsIconUtils::iconPoint();
-        }
-        case QgsWkbTypes::PolygonGeometry :
-        {
-          return QgsIconUtils::iconPolygon();
-        }
-        case QgsWkbTypes::LineGeometry :
-        {
-          return QgsIconUtils::iconLine();
-        }
-        case QgsWkbTypes::NullGeometry :
-        {
-          return QgsIconUtils::iconTable();
-        }
-        default:
-        {
-          return QIcon();
-        }
-      }
-    }
-
-    default:
-    {
-      return QIcon();
-    }
-  }
+  return QgsIconUtils::iconForLayer( layer );
 }
-
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
