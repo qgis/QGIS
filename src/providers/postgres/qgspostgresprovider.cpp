@@ -720,6 +720,10 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
         QList<QString> allowedValuesWithCastTypeName;
         allowedValuesWithCastTypeName << QLatin1String( "uuid" );
+        allowedValuesWithCastTypeName << QLatin1String( "inet" );
+        allowedValuesWithCastTypeName << QLatin1String( "cidr" );
+        allowedValuesWithCastTypeName << QLatin1String( "macaddr" );
+        allowedValuesWithCastTypeName << QLatin1String( "macaddr8" );
 
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
