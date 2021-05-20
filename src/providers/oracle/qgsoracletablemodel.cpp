@@ -18,6 +18,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
 {
@@ -69,7 +70,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
     QStandardItem *typeItem = new QStandardItem(
-      QgsLayerItem::iconForWkbType( wkbType ),
+      QgsIconUtils::iconForWkbType( wkbType ),
       wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );

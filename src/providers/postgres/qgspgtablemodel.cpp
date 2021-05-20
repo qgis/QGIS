@@ -21,7 +21,7 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsiconutils.h"
-
+#include <QRegularExpression>
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()

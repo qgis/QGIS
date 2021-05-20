@@ -30,6 +30,7 @@
 #include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsfieldsitem.h"
 
 #include <QMessageBox>
 #include <climits>

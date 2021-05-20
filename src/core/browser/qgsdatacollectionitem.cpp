@@ -21,6 +21,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include <QRegularExpression>
 
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
     const QString &name,

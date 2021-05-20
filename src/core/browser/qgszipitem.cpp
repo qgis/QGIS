@@ -23,6 +23,7 @@
 
 #include <cpl_vsi.h>
 #include <cpl_string.h>
+#include <mutex>
 
 QIcon QgsZipItem::iconZip()
 {
