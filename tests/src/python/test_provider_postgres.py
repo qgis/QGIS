@@ -2720,6 +2720,25 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(fids), fids_get_count)
         self.assertEqual(len(fids2), fids_get_count)
 
+        """ Composite PK: uuid, bigint """
+        fids_get_count = 20000
+        self.execSQLCommand('''
+            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
+            ALTER TABLE qgis_test.multi_column_pk_big_data
+                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid, id_int);
+            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
+            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
+                ON qgis_test.multi_column_pk_big_data USING btree
+                (id_uuid ASC NULLS LAST, id_int ASC NULLS LAST);''')
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'"id_uuid","id_int"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
+            'test_multi_column_pk_big_data', 'postgres')
+        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+        fids2 = [f.id() for f in vl.getFeatures(fids)]
+        self.assertEqual(len(fids), fids_get_count)
+        self.assertEqual(len(fids2), fids_get_count)
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 

@@ -614,7 +614,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     return expr;
   };
 
-  auto lookupComboKeyWhereClause = [ = ]( bool canUseVALUES )
+  auto lookupComboKeyWhereClause = [ = ]( bool canUseVALUES, QList<QString> withCastTypeName )
   {
     if ( pkAttrs.size() == 1 )
       return lookupKeyWhereClause();
@@ -643,6 +643,8 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           whereValues += delim + QgsPostgresConn::quotedValue( pkVals[i] );
+          if ( canUseVALUES && withCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
+            whereValues += QStringLiteral( "::%1" ).arg( fields.at( pkAttrs[i] ).typeName() );
           delim = QStringLiteral( "," );
         }
         whereValuesList << whereValues;
@@ -711,17 +713,22 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         allowedValuesType << QVariant::LongLong;
         bool canUseVALUES = true;
 
+        QList<QString> allowedValuesWithCastTypeName;
+        allowedValuesWithCastTypeName << QLatin1String( "uuid" );
+
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           if ( canUseIN && !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
             canUseIN = false;
 
-          if ( canUseVALUES && !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() ) )
+          if ( canUseVALUES
+               && !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() )
+               && !allowedValuesWithCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
             canUseVALUES = false;
         }
 
         if ( canUseIN )
-          return lookupComboKeyWhereClause( canUseVALUES );
+          return lookupComboKeyWhereClause( canUseVALUES, allowedValuesWithCastTypeName );
       }
 
       [[fallthrough]];
