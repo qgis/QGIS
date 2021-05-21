@@ -31,6 +31,8 @@ symbol in the specified ``color``, ``width`` (in millimeters)
 and ``penStyle``.
 %End
 
+    ~QgsSimpleLineSymbolLayer();
+
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -607,6 +609,8 @@ The ``rotateSymbol`` argument specifies whether individual symbols
 should be rotated to match the line segment alignment.
 %End
 
+    ~QgsTemplatedLineSymbolLayerBase();
+
     bool rotateSymbols() const;
 %Docstring
 Returns ``True`` if the repeating symbols be rotated to match their line segment orientation.
@@ -926,6 +930,8 @@ The ``rotateMarker`` argument specifies whether individual marker symbols
 should be rotated to match the line segment alignment.
 %End
 
+    ~QgsMarkerLineSymbolLayer();
+
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1038,6 +1044,8 @@ with a default hash symbol, placed at the specified ``interval`` (in millimeters
 The ``rotateSymbol`` argument specifies whether individual hash symbols
 should be rotated to match the line segment alignment.
 %End
+
+    ~QgsHashedLineSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring

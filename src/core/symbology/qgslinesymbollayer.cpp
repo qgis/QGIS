@@ -44,6 +44,8 @@ QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double 
   mCustomDashVector << 5 << 2;
 }
 
+QgsSimpleLineSymbolLayer::~QgsSimpleLineSymbolLayer() = default;
+
 void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsLineSymbolLayer::setOutputUnit( unit );
@@ -1206,6 +1208,8 @@ QgsTemplatedLineSymbolLayerBase::QgsTemplatedLineSymbolLayerBase( bool rotateSym
 
 }
 
+QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
+
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   double offset = mOffset;
@@ -2238,6 +2242,8 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
+QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer() = default;
+
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
@@ -2559,6 +2565,8 @@ QgsHashedLineSymbolLayer::QgsHashedLineSymbolLayer( bool rotateSymbol, double in
 {
   setSubSymbol( new QgsLineSymbol() );
 }
+
+QgsHashedLineSymbolLayer::~QgsHashedLineSymbolLayer() = default;
 
 QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
 {

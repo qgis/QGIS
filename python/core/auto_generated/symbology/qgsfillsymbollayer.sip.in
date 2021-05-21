@@ -27,6 +27,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
                               Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                             );
 
+    ~QgsSimpleFillSymbolLayer();
+
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -764,6 +766,8 @@ Base class for polygon renderers generating texture images
   public:
 
     QgsImageFillSymbolLayer();
+    ~QgsImageFillSymbolLayer();
+
     virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
 
@@ -875,6 +879,8 @@ A class for filling symbols with a repeated raster image.
 Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
 specified ``imageFilePath``.
 %End
+
+    ~QgsRasterFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -1153,6 +1159,8 @@ Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified ab
 %Docstring
 Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
 %End
+
+    ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -2051,6 +2059,8 @@ Optionally a specific random number ``seed`` can be used when generating points.
 a truly random sequence will be used on every rendering, causing points to appear in different locations with every map refresh.
 %End
 
+    ~QgsRandomMarkerFillSymbolLayer();
+
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsRandomMarkerFillSymbolLayer using the specified ``properties`` map containing symbol properties (see :py:func:`~QgsRandomMarkerFillSymbolLayer.properties`).
@@ -2235,6 +2245,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 %End
   public:
     QgsCentroidFillSymbolLayer();
+    ~QgsCentroidFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;

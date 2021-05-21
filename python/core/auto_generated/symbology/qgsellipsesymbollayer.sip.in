@@ -49,6 +49,7 @@ Returns ``True`` if a ``shape`` has a fill.
 %End
 
     QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring

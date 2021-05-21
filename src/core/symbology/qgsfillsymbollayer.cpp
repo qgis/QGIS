@@ -60,6 +60,8 @@ QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::Bru
   mColor = color;
 }
 
+QgsSimpleFillSymbolLayer::~QgsSimpleFillSymbolLayer() = default;
+
 void QgsSimpleFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mStrokeWidthUnit = unit;
@@ -1675,6 +1677,8 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
+QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer() = default;
+
 void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -1870,6 +1874,8 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
 }
+
+QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer() = default;
 
 void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -2431,6 +2437,11 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
+QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
+{
+  delete mFillLineSymbol;
+}
+
 void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
 {
   mFillLineSymbol->setWidth( w );
@@ -2446,11 +2457,6 @@ void QgsLinePatternFillSymbolLayer::setColor( const QColor &c )
 QColor QgsLinePatternFillSymbolLayer::color() const
 {
   return mFillLineSymbol ? mFillLineSymbol->color() : mColor;
-}
-
-QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
-{
-  delete mFillLineSymbol;
 }
 
 bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -3794,6 +3800,8 @@ QgsCentroidFillSymbolLayer::QgsCentroidFillSymbolLayer()
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
+QgsCentroidFillSymbolLayer::~QgsCentroidFillSymbolLayer() = default;
+
 QgsSymbolLayer *QgsCentroidFillSymbolLayer::create( const QVariantMap &properties )
 {
   std::unique_ptr< QgsCentroidFillSymbolLayer > sl = std::make_unique< QgsCentroidFillSymbolLayer >();
@@ -4113,6 +4121,8 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }
 
+QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer() = default;
+
 QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties )
 {
   FillCoordinateMode mode = QgsRasterFillSymbolLayer::Feature;
@@ -4406,6 +4416,8 @@ QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, 
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
+
+QgsRandomMarkerFillSymbolLayer::~QgsRandomMarkerFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QVariantMap &properties )
 {

@@ -106,6 +106,8 @@ QgsSimpleMarkerSymbolLayerBase::QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerS
   mOffsetUnit = QgsUnitTypes::RenderMillimeters;
 }
 
+QgsSimpleMarkerSymbolLayerBase::~QgsSimpleMarkerSymbolLayerBase() = default;
+
 bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape )
 {
   switch ( shape )
@@ -841,6 +843,8 @@ QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLay
 {
   mColor = color;
 }
+
+QgsSimpleMarkerSymbolLayer::~QgsSimpleMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::create( const QVariantMap &props )
 {
@@ -1720,6 +1724,8 @@ QgsFilledMarkerSymbolLayer::QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLay
   mFill.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
 }
 
+QgsFilledMarkerSymbolLayer::~QgsFilledMarkerSymbolLayer() = default;
+
 QgsSymbolLayer *QgsFilledMarkerSymbolLayer::create( const QVariantMap &props )
 {
   QString name = DEFAULT_SIMPLEMARKER_NAME;
@@ -1935,6 +1941,7 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double si
   setPath( path );
 }
 
+QgsSvgMarkerSymbolLayer::~QgsSvgMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
 {
@@ -2770,6 +2777,7 @@ QgsRasterMarkerSymbolLayer::QgsRasterMarkerSymbolLayer( const QString &path, dou
   updateDefaultAspectRatio();
 }
 
+QgsRasterMarkerSymbolLayer::~QgsRasterMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRasterMarkerSymbolLayer::create( const QVariantMap &props )
 {
@@ -3177,6 +3185,8 @@ QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, Q
   mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
   mPenJoinStyle = DEFAULT_FONTMARKER_JOINSTYLE;
 }
+
+QgsFontMarkerSymbolLayer::~QgsFontMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
 {
