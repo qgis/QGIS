@@ -234,8 +234,27 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Returns the current zoom extent of the map canvas
     QgsRectangle extent() const;
-    //! Returns the combined extent for all layers on the map canvas
+
+    /**
+     * Returns the combined extent for all layers on the map canvas.
+     *
+     * This method returns the combined extent for all layers which are currently visible in the map canvas.
+     * The returned extent will be in the same CRS as the map canvas.
+     *
+     * \see projectExtent()
+     */
     QgsRectangle fullExtent() const;
+
+    /**
+     * Returns the associated project's full extent, in the canvas' CRS.
+     *
+     * This method returns the full extent for the project associated with this canvas.
+     * Unlike fullExtent(), this method does NOT consider which layers are actually visible in the map canvas.
+     *
+     * \see fullExtent()
+     * \since QGIS 3.20
+     */
+    QgsRectangle projectExtent() const;
 
     /**
      * Sets the extent of the map canvas to the specified rectangle.
@@ -284,8 +303,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsPointXY center() const;
 
-    //! Zoom to the full extent of all layers
+    /**
+     * Zoom to the full extent of all layers currently visible in the canvas.
+     *
+     * \see zoomToProjectExtent()
+     */
     void zoomToFullExtent();
+
+    /**
+     * Zoom to the full extent the project associated with this canvas.
+     *
+     * This method zooms to the full extent for the project associated with this canvas.
+     * Unlike zoomToFullExtent(), this method does NOT consider which layers are actually visible in the map canvas.
+     *
+     * \since QGIS 3.20
+     */
+    void zoomToProjectExtent();
 
     //! Zoom to the previous extent (view)
     void zoomToPreviousExtent();
