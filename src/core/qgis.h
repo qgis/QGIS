@@ -821,6 +821,38 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 #define CONSTLATIN1STRING constexpr QLatin1String
 #endif
 
+///@cond PRIVATE
+class ScopedIntIncrementor
+{
+  public:
+
+    ScopedIntIncrementor( int *variable )
+      : mVariable( variable )
+    {
+      ( *mVariable )++;
+    }
+
+    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
+    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
+
+    void release()
+    {
+      if ( mVariable )
+        ( *mVariable )--;
+
+      mVariable = nullptr;
+    }
+
+    ~ScopedIntIncrementor()
+    {
+      release();
+    }
+
+  private:
+    int *mVariable = nullptr;
+};
+///@endcond
+
 /**
 * Wkt string that represents a geographic coord sys
 * \since QGIS GEOWkt

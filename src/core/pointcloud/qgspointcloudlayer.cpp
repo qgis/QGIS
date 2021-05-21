@@ -644,5 +644,5 @@ void QgsPointCloudLayer::setRenderer( QgsPointCloudRenderer *renderer )
 
   mRenderer.reset( renderer );
   emit rendererChanged();
-  emit styleChanged();
+  emitStyleChanged();
 }
