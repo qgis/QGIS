@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbol.h"
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )
