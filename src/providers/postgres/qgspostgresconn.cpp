@@ -2062,6 +2062,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         continue;
 
       const QStringList sridAndType = sridAndTypeString.split( ':' );
+      Q_ASSERT( sridAndType.size() == 3 );
       const int srid = sridAndType[0].toInt();
       QString typeString = sridAndType[1];
       const int zmFlags = sridAndType[2].toInt();
