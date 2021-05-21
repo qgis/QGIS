@@ -163,12 +163,14 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   PolygonData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
+  const QgsAbstractGeometry *g = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary
-  if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
-    geom = QgsGeometry( geom.constGet()->segmentize() );
-
-  const QgsAbstractGeometry *g = geom.constGet();
+  if ( QgsWkbTypes::isCurvedType( g->wkbType() ) )
+  {
+    geom = QgsGeometry( g->segmentize() );
+    g = geom.constGet()->simplifiedTypeRef();
+  }
 
   const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
   bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );

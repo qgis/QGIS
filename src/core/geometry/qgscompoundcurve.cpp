@@ -562,6 +562,14 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
 }
 
+const QgsAbstractGeometry *QgsCompoundCurve::simplifiedTypeRef() const
+{
+  if ( mCurves.size() == 1 )
+    return mCurves.at( 0 );
+  else
+    return this;
+}
+
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
   if ( i < 0 || i >= mCurves.size() )

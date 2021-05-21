@@ -245,6 +245,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsGeometryCollection *toCurveType() const /Factory/;
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 

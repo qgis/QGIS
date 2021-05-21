@@ -237,6 +237,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
+    const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
