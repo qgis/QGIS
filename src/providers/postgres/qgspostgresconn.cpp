@@ -2350,9 +2350,33 @@ QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromPostgis( const QString &type )
   {
     return QgsWkbTypes::MultiPolygon;
   }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZ" ) ) || ( type == QLatin1String( "TINZ" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonZ;
+  }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEM" ) ) || ( type == QLatin1String( "TINM" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonM;
+  }
+  else if ( ( type == QLatin1String( "POLYHEDRALSURFACEZM" ) ) || ( type == QLatin1String( "TINZM" ) ) )
+  {
+    return QgsWkbTypes::MultiPolygonZM;
+  }
   else if ( type == QLatin1String( "TRIANGLE" ) )
   {
     return QgsWkbTypes::Polygon;
+  }
+  else if ( type == QLatin1String( "TRIANGLEZ" ) )
+  {
+    return QgsWkbTypes::PolygonZ;
+  }
+  else if ( type == QLatin1String( "TRIANGLEM" ) )
+  {
+    return QgsWkbTypes::PolygonM;
+  }
+  else if ( type == QLatin1String( "TRIANGLEZM" ) )
+  {
+    return QgsWkbTypes::PolygonZM;
   }
   return QgsWkbTypes::parseType( type );
 }
