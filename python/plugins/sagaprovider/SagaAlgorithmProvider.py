@@ -53,8 +53,6 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def load(self):
         with QgsRuntimeProfiler.profile('SAGA Provider'):
             ProcessingConfig.settingIcons[self.name()] = self.icon()
-            ProcessingConfig.addSetting(Setting("SAGA", 'ACTIVATE_SAGA',
-                                                self.tr('Activate'), True))
             ProcessingConfig.addSetting(Setting("SAGA",
                                                 SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                                 self.tr('Enable SAGA Import/Export optimizations'), False))
@@ -70,16 +68,9 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting('ACTIVATE_SAGA')
         ProcessingConfig.removeSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
-
-    def isActive(self):
-        return ProcessingConfig.getSetting('ACTIVATE_SAGA')
-
-    def setActive(self, active):
-        ProcessingConfig.setSettingValue('ACTIVATE_SAGA', active)
 
     def canBeActivated(self):
         version = SagaUtils.getInstalledVersion(True)
