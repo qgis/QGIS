@@ -1880,6 +1880,31 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         fids = set([f['fid'] for f in vl.getFeatures()])
         self.assertEqual(len(fids), 1)
 
+    def testForeignKeyViolationAfterOpening(self):
+        """Test that foreign keys are enforced"""
+
+        tmpfile = os.path.join(self.basetestpath, 'testForeignKeyViolationAfterOpening.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        ds.ExecuteSQL(
+            "CREATE TABLE bar(fid INTEGER PRIMARY KEY, fkey INTEGER, CONSTRAINT fkey_constraint FOREIGN KEY (fkey) REFERENCES test(fid))")
+        ds = None
+        vl = QgsVectorLayer('{}'.format(tmpfile) + "|layername=bar", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # OK
+        f = QgsFeature()
+        f.setAttributes([None, 1])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        # violates foreign key
+        f = QgsFeature()
+        f.setAttributes([None, 10])
+        self.assertFalse(vl.dataProvider().addFeature(f))
+
     def testExportMultiFromShp(self):
         """Test if a Point is imported as single geom and MultiPoint as multi"""
 
