@@ -1900,7 +1900,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // SRID is already known
       if ( srid != std::numeric_limits<int>::min() )
       {
-        sql += QStringLiteral( "SELECT %1, array_agg( '%2:RASTER'::text )" )
+        sql += QStringLiteral( "SELECT %1, array_agg( '%2:RASTER:-1'::text )" )
                .arg( i - 1 )
                .arg( srid );
       }
@@ -1909,7 +1909,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         if ( useEstimatedMetadata )
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( srid || ':RASTER') "
+                                "array_agg( srid || ':RASTER:-1') "
                                 "FROM raster_columns "
                                 "WHERE r_raster_column = %2 AND r_table_schema = %3 AND r_table_name = %4" )
                 .arg( i - 1 )
@@ -1920,7 +1920,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         else
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( DISTINCT ST_SRID( %2 ) || ':RASTER' ) "
+                                "array_agg( DISTINCT ST_SRID( %2 ) || ':RASTER:-1' ) "
                                 "FROM %3 "
                                 "%2 IS NOT NULL "
                                 "%4 "   // SQL clause
@@ -1983,13 +1983,13 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         // full table. However SQL does not allow that.
         // So we have to do a subselect on the table to add the LIMIT,
         // see comment in the following code.
-        sql += QStringLiteral( "UPPER(geometrytype(%1%2))" )
+        sql += QStringLiteral( "UPPER(geometrytype(%1%2))  || ':' || ST_Zmflag(%1%2)" )
                .arg( quotedIdentifier( layerProperty.geometryColName ),
                      castToGeometry ?  "::geometry" : "" );
       }
       else
       {
-        sql += QStringLiteral( "%1::text" )
+        sql += QStringLiteral( "%1::text  || ':-1'" )
                .arg( quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) ) );
       }
 
@@ -2061,9 +2061,27 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       if ( sridAndTypeString == "NULL" )
         continue;
 
-      QStringList sridAndType = sridAndTypeString.split( ':' );
-      int srid = sridAndType[0].toInt();
+      const QStringList sridAndType = sridAndTypeString.split( ':' );
+      const int srid = sridAndType[0].toInt();
       QString typeString = sridAndType[1];
+      const int zmFlags = sridAndType[2].toInt();
+
+      switch ( zmFlags )
+      {
+        case 1:
+          typeString.append( 'M' );
+          break;
+        case 2:
+          typeString.append( 'Z' );
+          break;
+        case 3:
+          typeString.append( QStringLiteral( "ZM" ) );
+          break;
+        default:
+        case 0:
+        case -1:
+          break;
+      }
 
       auto type = QgsPostgresConn::wkbTypeFromPostgis( typeString );
       auto flatType = QgsWkbTypes::flatType( type );
