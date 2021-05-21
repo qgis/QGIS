@@ -177,6 +177,8 @@ void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
 
   if ( serializeFeatures )
     mSharedBase->endOfDownload( success, totalDownloadedFeatureCount, truncatedResponse, interrupted, errorMessage );
+  else if ( !errorMessage.isEmpty() )
+    mSharedBase->pushError( errorMessage );
 
   // We must emit the signal *AFTER* the previous call to mShared->endOfDownload()
   // to avoid issues with iterators that would start just now, wouldn't detect

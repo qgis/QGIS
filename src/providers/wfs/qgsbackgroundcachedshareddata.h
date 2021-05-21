@@ -179,6 +179,9 @@ class QgsBackgroundCachedSharedData
     //! Return layer name
     virtual QString layerName() const = 0;
 
+    //! Called when an error must be raised to the provider
+    virtual void pushError( const QString &errorMsg ) = 0;
+
   protected:
 
     //////////// Input members. Implementations should define them to meaningful values
@@ -317,9 +320,6 @@ class QgsBackgroundCachedSharedData
     QSet<QString> getExistingCachedMD5( const QVector<QgsFeatureUniqueIdPair> &featureList );
 
     ///////////////// PURE VIRTUAL METHODS ////////////////////////
-
-    //! Called when an error must be raised to the provider
-    virtual void pushError( const QString &errorMsg ) = 0;
 
     //! Called when the extent is updated
     virtual void emitExtentUpdated() = 0;
