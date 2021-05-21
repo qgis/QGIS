@@ -721,6 +721,22 @@ Converts the geometry to a specified type.
 .. versionadded:: 2.14
 %End
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+%Docstring
+Returns a reference to the simplest lossless representation of this geometry,
+e.g. if the geometry is a multipart geometry type with a single member geometry,
+a reference to that part will be returned.
+
+This method employs the following logic:
+
+- For multipart geometries containing a single part only a direct reference to that part will be returned.
+- For compound curve geometries containing a single curve only a direct reference to that curve will be returned.
+
+This method returns a reference only, and does not involve any geometry cloning.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool isValid( QString &error /Out/, int flags = 0 ) const = 0;
 %Docstring
 Checks validity of the geometry, and returns ``True`` if the geometry is valid.

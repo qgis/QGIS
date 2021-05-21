@@ -85,6 +85,8 @@ of the curve.
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     int nCurves() const /HoldGIL/;
 %Docstring

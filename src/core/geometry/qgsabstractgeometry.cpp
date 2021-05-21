@@ -280,6 +280,11 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   return true;
 }
 
+const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
+{
+  return this;
+}
+
 void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
 {
   // Ideally this would be pure virtual, but SIP has issues with that
