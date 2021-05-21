@@ -27,6 +27,7 @@ Line symbol layer used for representing lines as arrows.
 %Docstring
 Simple constructor
 %End
+    ~QgsArrowSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring

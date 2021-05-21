@@ -27,6 +27,8 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
 }
 
+QgsArrowSymbolLayer::~QgsArrowSymbolLayer() = default;
+
 bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( symbol && symbol->type() == Qgis::SymbolType::Fill )

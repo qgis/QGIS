@@ -104,6 +104,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                     Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
+    ~QgsSimpleMarkerSymbolLayerBase() override;
+
     /**
      * Returns the shape for the rendered marker symbol.
      * \see setShape()
@@ -226,6 +228,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
                                 const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
                                 const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
+
+    ~QgsSimpleMarkerSymbolLayer() override;
 
     // static methods
 
@@ -478,6 +482,8 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
+    ~QgsFilledMarkerSymbolLayer() override;
+
     /**
      * Creates a new QgsFilledMarkerSymbolLayer.
      * \param properties a property map containing symbol properties (see properties())
@@ -528,6 +534,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
                              Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+
+    ~QgsSvgMarkerSymbolLayer() override;
 
     // static stuff
 
@@ -718,6 +726,8 @@ class CORE_EXPORT QgsRasterMarkerSymbolLayer : public QgsMarkerSymbolLayer
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
                                 Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
+    ~QgsRasterMarkerSymbolLayer() override;
+
     // static stuff
 
     /**
@@ -870,6 +880,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
                               double pointSize = DEFAULT_FONTMARKER_SIZE,
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
+
+    ~QgsFontMarkerSymbolLayer() override;
 
     // static stuff
 

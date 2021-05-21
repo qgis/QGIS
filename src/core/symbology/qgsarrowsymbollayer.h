@@ -35,6 +35,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
   public:
     //! Simple constructor
     QgsArrowSymbolLayer();
+    ~QgsArrowSymbolLayer() override;
 
     /**
      * Create a new QgsArrowSymbolLayer

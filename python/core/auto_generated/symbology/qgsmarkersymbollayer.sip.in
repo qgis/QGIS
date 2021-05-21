@@ -85,6 +85,8 @@ Constructor for QgsSimpleMarkerSymbolLayerBase.
 :param scaleMethod: scaling method for data defined scaling
 %End
 
+    ~QgsSimpleMarkerSymbolLayerBase();
+
     QgsSimpleMarkerSymbolLayerBase::Shape shape() const;
 %Docstring
 Returns the shape for the rendered marker symbol.
@@ -222,6 +224,8 @@ Constructor for QgsSimpleMarkerSymbolLayer.
 :param strokeColor: stroke color for symbol
 :param penJoinStyle: join style for stroke pen
 %End
+
+    ~QgsSimpleMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -522,6 +526,8 @@ Constructor for QgsFilledMarkerSymbolLayer.
 :param scaleMethod: size scaling method
 %End
 
+    ~QgsFilledMarkerSymbolLayer();
+
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
@@ -580,6 +586,8 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
 %Docstring
 Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
 %End
+
+    ~QgsSvgMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -791,6 +799,8 @@ Raster marker symbol layer class.
 Constructs raster marker symbol layer with picture from given absolute path to a raster image file
 %End
 
+    ~QgsRasterMarkerSymbolLayer();
+
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -950,6 +960,8 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 %Docstring
 Constructs a font marker symbol layer.
 %End
+
+    ~QgsFontMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
