@@ -47,8 +47,8 @@ from qgis.core import (Qgis,
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.help import shortHelp
 from processing.tools.system import getTempFilename
-from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
-from processing.algs.saga.SagaParameters import Parameters
+from .SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
+from .SagaParameters import Parameters
 from . import SagaUtils
 from .SagaAlgorithmBase import SagaAlgorithmBase
 

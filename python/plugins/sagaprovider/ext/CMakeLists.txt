@@ -1,3 +1,3 @@
 file(GLOB PY_FILES *.py)
 
-PLUGIN_INSTALL(processing algs/saga/ext ${PY_FILES})
+PLUGIN_INSTALL(sagaprovider ./ext ${PY_FILES})

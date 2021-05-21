@@ -23,5 +23,5 @@ __copyright__ = '(C) 2021, Alexander Bruy'
 
 
 def classFactory(iface):
-    from sagaprovider.sagaproviderplugin import SagaProviderPlugin
+    from sagaprovider.SagaProviderPlugin import SagaProviderPlugin
     return SagaProviderPlugin()

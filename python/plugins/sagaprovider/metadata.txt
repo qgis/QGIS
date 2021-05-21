@@ -8,7 +8,7 @@ qgisMinimumVersion=3.0
 
 author=Victor Olaya
 
-icon=:/images/themes/default/processingAlgorithm.svg
+icon=:/images/themes/default/providerSaga.svg
 
 homepage=https://qgis.org
 tracker=https://github.com/qgis/QGIS/issues

@@ -65,9 +65,6 @@ with QgsRuntimeProfiler.profile('Import GDAL Provider'):
 with QgsRuntimeProfiler.profile('Import OTB Provider'):
     from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile('Import SAGA Provider'):
-    from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-
 with QgsRuntimeProfiler.profile('Import Script Provider'):
     from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 
@@ -120,7 +117,6 @@ class Processing(object):
                 Grass7AlgorithmProvider,
                 GdalAlgorithmProvider,
                 OtbAlgorithmProvider,
-                SagaAlgorithmProvider,
                 ScriptAlgorithmProvider,
                 ModelerAlgorithmProvider,
                 ProjectProvider
