@@ -375,7 +375,12 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs
   QgsLineVertexData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
+  // segmentize curved geometries if necessary
+  if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
+    geom = QgsGeometry( geom.constGet()->segmentize() );
+
   const QgsAbstractGeometry *g = geom.constGet();
+
   if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( g ) )
   {
     out.addLineString( *ls );
