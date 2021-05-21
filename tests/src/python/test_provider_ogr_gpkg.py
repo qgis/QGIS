@@ -1167,6 +1167,40 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         g = [f.geometry() for f in layer.getFeatures()][0]
         self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
 
+    def test_SplitFeatureErrorIncompatibleGeometryType2(self):
+        """Test we behave correctly when split a single-part multipolygon of a polygon layer (https://github.com/qgis/QGIS/issues/41283)"""
+        # This is really a non-nominal case. Failing properly would also be understandable.
+        tmpfile = os.path.join(self.basetestpath, 'test_SplitFeatureErrorIncompatibleGeometryType2.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        # For the purpose of this test, we insert a MultiPolygon in a Polygon layer
+        # which is normally not allowed
+        f.SetGeometry(ogr.CreateGeometryFromWkt('MULTIPOLYGON (((0 0,0 1,1 1,1 0,0 0)))'))
+        gdal.PushErrorHandler('CPLQuietErrorHandler')
+        self.assertEqual(lyr.CreateFeature(f), ogr.OGRERR_NONE)
+        gdal.PopErrorHandler()
+        f = None
+        ds = None
+
+        # Split features
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)))')
+        layer.startEditing()
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertTrue(layer.commitChanges())
+        self.assertEqual(layer.featureCount(), 2)
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertEqual(layer.featureCount(), 2)
+        g, g2 = [f.geometry() for f in layer.getFeatures()]
+        g.normalize()
+        g2.normalize()
+        self.assertCountEqual([geom.asWkt() for geom in [g, g2]], ['Polygon ((0 0, 0 1, 0.5 1, 0.5 0, 0 0))',
+                                                                   'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))'])
+
     def testCreateAttributeIndex(self):
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageAttributeIndex.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
