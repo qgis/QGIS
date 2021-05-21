@@ -16,6 +16,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgspainteffect.h"
+#include "qgslogger.h"
+#include "qgspainterswapper.h"
 
 QgsFillSymbol *QgsFillSymbol::createSimple( const QVariantMap &properties )
 {
@@ -28,7 +30,6 @@ QgsFillSymbol *QgsFillSymbol::createSimple( const QVariantMap &properties )
   return new QgsFillSymbol( layers );
 }
 
-
 QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList &layers )
   : QgsSymbol( Qgis::SymbolType::Fill, layers )
 {
@@ -38,9 +39,12 @@ QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList &layers )
 
 void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
+
   const double opacity = dataDefinedProperties().valueAsDouble( QgsSymbol::PropertyOpacity, context.expressionContext(), mOpacity * 100 ) * 0.01;
 
+  QgsDebugMsg( "Render polygon" );
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, opacity, selected, mRenderHints, f );
+
   symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
@@ -50,6 +54,10 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
+      QPainter *symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+      QPainter *painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+      QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+
       if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
       else
@@ -66,6 +74,10 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
+
+    QPainter *symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+    QPainter *painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+    QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
     if ( symbolLayer->type() == Qgis::SymbolType::Fill || symbolLayer->type() == Qgis::SymbolType::Line )
       renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
@@ -168,5 +180,4 @@ void QgsFillSymbol::setAngle( double angle )
       fillLayer->setAngle( angle );
   }
 }
-
 

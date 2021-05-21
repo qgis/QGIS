@@ -17,6 +17,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffect.h"
+#include "qgspainterswapper.h"
 
 QgsLineSymbol *QgsLineSymbol::createSimple( const QVariantMap &properties )
 {
@@ -217,6 +218,10 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
+      QPainter *symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+      QPainter *painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+      QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+
       if ( symbolLayer->type() == Qgis::SymbolType::Line )
       {
         QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
@@ -236,6 +241,10 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
+
+    QPainter *symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+    QPainter *painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+    QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
     if ( symbolLayer->type() == Qgis::SymbolType::Line )
     {
