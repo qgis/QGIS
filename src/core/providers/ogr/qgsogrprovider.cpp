@@ -2565,6 +2565,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     if ( !theOGRFeature )
     {
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
+      returnvalue = false;
       continue;
     }
 
@@ -2587,13 +2588,14 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       {
         pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
         OGR_G_DestroyGeometry( newGeometry );
-        newGeometry = nullptr;
+        returnvalue = false;
         continue;
       }
 
       if ( !newGeometry )
       {
         pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
+        returnvalue = false;
         continue;
       }
 
@@ -2607,6 +2609,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       // Shouldn't happen normally. If it happens, ownership of the geometry
       // may be not really well defined, so better not destroy it, but just
       // the feature.
+      returnvalue = false;
       continue;
     }
 
