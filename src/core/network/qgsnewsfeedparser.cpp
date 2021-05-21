@@ -50,7 +50,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
     feedLanguage = QgsApplication::settingsLocaleUserLocale.value( QString(), true, QStringLiteral( "en" ) );
   }
   if ( !feedLanguage.isEmpty() && feedLanguage != QLatin1String( "C" ) )
-    query.addQueryItem( QStringLiteral( "lang" ), feedLanguage );
+    query.addQueryItem( QStringLiteral( "lang" ), feedLanguage.mid( 0, 2 ) );
 
   if ( settingsFeedLatitude.exists( mSettingsKey ) && settingsFeedLongitude.exists( mSettingsKey ) )
   {
