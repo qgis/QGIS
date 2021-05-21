@@ -34,7 +34,6 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
-#include "qgssymbollayerreference.h"
 #include "qgstemporalrangeobject.h"
 
 class QPainter;

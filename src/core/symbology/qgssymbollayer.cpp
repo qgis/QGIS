@@ -32,6 +32,7 @@
 #include "qgsstyle.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
+#include "qgssymbollayerreference.h"
 
 #include <QSize>
 #include <QPainter>
@@ -847,7 +848,7 @@ void QgsMarkerSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const
   writeSldMarker( doc, symbolizerElem, props );
 }
 
-QgsSymbolLayerReferenceList QgsSymbolLayer::masks() const
+QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 {
   return {};
 }

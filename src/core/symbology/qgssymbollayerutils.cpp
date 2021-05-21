@@ -41,6 +41,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgssymbollayerreference.h"
 
 #include <QColor>
 #include <QFont>

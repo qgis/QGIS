@@ -72,7 +72,8 @@ Create a new QgsMaskMarkerSymbolLayer
 Whether some masked symbol layers are defined
 %End
 
-    virtual QgsSymbolLayerReferenceList masks() const;
+    virtual QList<QgsSymbolLayerReference> masks() const;
+
 %Docstring
 Returns a list of references to symbol layers that are masked by the sub symbol's shape.
 
@@ -81,7 +82,7 @@ Returns a list of references to symbol layers that are masked by the sub symbol'
 .. seealso:: :py:func:`setMasks`
 %End
 
-    void setMasks( QgsSymbolLayerReferenceList maskedLayers );
+    void setMasks( const QList<QgsSymbolLayerReference> &maskedLayers );
 %Docstring
 Sets the symbol layers that will be masked by the sub symbol's shape.
 

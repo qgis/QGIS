@@ -48,6 +48,7 @@ class QPointF;
 class QSize;
 class QMimeData;
 class QgsFeatureRenderer;
+class QgsSymbolLayerId;
 
 /**
  * \ingroup core
