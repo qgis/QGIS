@@ -2197,6 +2197,31 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         gdal.Unlink(tmpfile)
         self.assertNotIn('column_nameIS', sql)
 
+    def testRejectedGeometryUpdate(self):
+        """Test that we correctly behave when a geometry update fails"""
+        tmpfile = os.path.join(self.basetestpath, 'testRejectedGeometryUpdate.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        lyr.CreateFeature(f)
+        ds.ExecuteSQL("CREATE TRIGGER rejectGeometryUpdate BEFORE UPDATE OF geom ON test FOR EACH ROW BEGIN SELECT RAISE(ABORT, 'update forbidden'); END;")
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeGeometry(1, QgsGeometry.fromWkt('Point (0 0)')))
+        self.assertFalse(vl.commitChanges())
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        g = [f.geometry() for f in vl.getFeatures()][0]
+        self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+
 
 if __name__ == '__main__':
     unittest.main()
