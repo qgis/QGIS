@@ -1499,8 +1499,6 @@ void QgsSymbol::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &
     }
   }
 }
-<<<<<<< HEAD
-=======
 
 ////////////////////
 
@@ -2491,4 +2489,3 @@ void QgsFillSymbol::setAngle( double angle )
 }
 
 
->>>>>>> 6319a8471b3... WIP refacto second pass.
