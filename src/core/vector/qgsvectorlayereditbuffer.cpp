@@ -339,10 +339,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // yes                yes                   => changeFeatures
 
   // to fix https://github.com/qgis/QGIS/issues/23663
-  // first of all check if feature to add is compatible with provider type
-  // this check have to be done before all checks to avoid to clear internal
-  // buffer if some of next steps success.
-  if ( success && !mAddedFeatures.isEmpty() )
+  if ( !mAddedFeatures.isEmpty() )
   {
     if ( cap & QgsVectorDataProvider::AddFeatures )
     {
@@ -373,7 +370,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   //
   // update geometries
   //
-  if ( !mChangedGeometries.isEmpty() && ( ( cap & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedAttributeValues.isEmpty() ) )
+  if ( success && !mChangedGeometries.isEmpty() && ( ( cap & QgsVectorDataProvider::ChangeFeatures ) == 0 || mChangedAttributeValues.isEmpty() ) )
   {
     if ( provider->changeGeometryValues( mChangedGeometries ) )
     {
@@ -395,7 +392,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // delete attributes
   //
   bool attributesChanged = false;
-  if ( !mDeletedAttributeIds.isEmpty() )
+  if ( success && !mDeletedAttributeIds.isEmpty() )
   {
     if ( ( cap & QgsVectorDataProvider::DeleteAttributes ) && provider->deleteAttributes( qgis::listToSet( mDeletedAttributeIds ) ) )
     {
@@ -423,7 +420,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   }
 
   // rename attributes
-  if ( !mRenamedAttributes.isEmpty() )
+  if ( success && !mRenamedAttributes.isEmpty() )
   {
     if ( ( cap & QgsVectorDataProvider::RenameAttributes ) && provider->renameAttributes( mRenamedAttributes ) )
     {
@@ -475,7 +472,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   // check that addition/removal went as expected
   //
   bool attributeChangesOk = true;
-  if ( attributesChanged )
+  if ( success && attributesChanged )
   {
     L->updateFields();
     QgsFields newFields = L->fields();
@@ -515,7 +512,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     }
   }
 
-  if ( attributeChangesOk )
+  if ( success && attributeChangesOk )
   {
     if ( cap & QgsVectorDataProvider::ChangeFeatures && !mChangedGeometries.isEmpty() && !mChangedAttributeValues.isEmpty() )
     {

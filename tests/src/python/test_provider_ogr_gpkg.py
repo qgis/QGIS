@@ -1138,6 +1138,35 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertCountEqual([geom.asWkt() for geom in [g, g2]], ['Polygon ((0 0, 0 1, 0.5 1, 0.5 0, 0 0))',
                                                                    'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))'])
 
+    def test_SplitFeatureErrorIncompatibleGeometryType(self):
+        """Test we behave correctly when split feature is not possible due to incompatible geometry type"""
+        tmpfile = os.path.join(self.basetestpath, 'test_SplitFeatureErrorIncompatibleGeometryType.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        # For the purpose of this test, we insert a Polygon in a Point layer
+        # which is normally not allowed
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        gdal.PushErrorHandler('CPLQuietErrorHandler')
+        self.assertEqual(lyr.CreateFeature(f), ogr.OGRERR_NONE)
+        gdal.PopErrorHandler()
+        f = None
+        ds = None
+
+        # Split features
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+        layer.startEditing()
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertFalse(layer.commitChanges())
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertEqual(layer.featureCount(), 1)
+        g = [f.geometry() for f in layer.getFeatures()][0]
+        self.assertEqual(g.asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+
     def testCreateAttributeIndex(self):
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageAttributeIndex.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
