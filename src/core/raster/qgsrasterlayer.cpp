@@ -597,7 +597,7 @@ void QgsRasterLayer::setOpacity( double opacity )
 
   mPipe.renderer()->setOpacity( opacity );
   emit opacityChanged( opacity );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 double QgsRasterLayer::opacity() const
@@ -957,7 +957,7 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
       {
         restoredStyle = true;
         emit repaintRequested();
-        emit styleChanged();
+        emitStyleChanged();
         emit rendererChanged();
       }
     }
@@ -1219,7 +1219,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   if ( rasterRenderer == renderer() )
   {
     emit repaintRequested();
-    emit styleChanged();
+    emitStyleChanged();
     emit rendererChanged();
   }
 }
@@ -1328,7 +1328,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       }
 
       emit repaintRequested();
-      emit styleChanged();
+      emitStyleChanged();
       emit rendererChanged();
       return;
     }
@@ -1364,7 +1364,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
         }
       }
 
-      emit styleChanged();
+      emitStyleChanged();
       emit rendererChanged();
     }
   }
@@ -1741,7 +1741,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 
   mPipe.set( renderer );
   emit rendererChanged();
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 void QgsRasterLayer::showStatusMessage( QString const &message )

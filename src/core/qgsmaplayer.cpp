@@ -217,7 +217,7 @@ void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 QPainter::CompositionMode QgsMapLayer::blendMode() const
@@ -231,7 +231,7 @@ void QgsMapLayer::setOpacity( double opacity )
     return;
   mLayerOpacity = opacity;
   emit opacityChanged( opacity );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 double QgsMapLayer::opacity() const
@@ -2001,7 +2001,8 @@ QDateTime QgsMapLayer::timestamp() const
 
 void QgsMapLayer::emitStyleChanged()
 {
-  emit styleChanged();
+  if ( !mBlockStyleChangedSignal )
+    emit styleChanged();
 }
 
 void QgsMapLayer::setExtent( const QgsRectangle &extent )

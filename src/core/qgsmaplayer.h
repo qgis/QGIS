@@ -1429,6 +1429,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Signal emitted whenever a change affects the layer's style. Ie this may be triggered
      * by renderer changes, label style changes, or other style changes such as blend
      * mode or layer opacity changes.
+     *
+     * \warning This signal should never be manually emitted. Instead call the emitStyleChanged() method
+     * to ensure that the signal is only emitted when appropriate.
+     *
      * \see rendererChanged()
      * \since QGIS 2.16
     */
@@ -1723,6 +1727,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     double mLayerOpacity = 1.0;
+
+    /**
+     * If non-zero, the styleChanged signal should not be emitted.
+     *
+     * \since QGIS 3.20
+     */
+    int mBlockStyleChangedSignal = 0;
 
 #ifndef SIP_RUN
 

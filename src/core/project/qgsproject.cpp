@@ -89,39 +89,6 @@
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
-///@cond PRIVATE
-class ScopedIntIncrementor
-{
-  public:
-
-    ScopedIntIncrementor( int *variable )
-      : mVariable( variable )
-    {
-      ( *mVariable )++;
-    }
-
-    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
-    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
-
-    void release()
-    {
-      if ( mVariable )
-        ( *mVariable )--;
-
-      mVariable = nullptr;
-    }
-
-    ~ScopedIntIncrementor()
-    {
-      release();
-    }
-
-  private:
-    int *mVariable = nullptr;
-};
-///@endcond
-
-
 /**
  * Takes the given scope and key and convert them to a string list of key
  * tokens that will be used to navigate through a Property hierarchy
