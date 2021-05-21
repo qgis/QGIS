@@ -353,6 +353,10 @@ class QgsBackgroundCachedFeatureIterator final: public QObject,
     QgsFeedback *mInterruptionChecker = nullptr;
     bool mTimeoutOrInterruptionOccurred = false;
 
+    //! Cached features for request by fid
+    QVector<QgsFeature> mCachedFeatures;
+    QVector<QgsFeature>::iterator mCachedFeaturesIter;
+
     //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
     QMutex mMutex;
     QWaitCondition mWaitCond;
@@ -379,8 +383,11 @@ class QgsBackgroundCachedFeatureIterator final: public QObject,
 
     ///////////////// METHODS
 
-    //! Translate mRequest to a request compatible of the Spatialite cache
-    QgsFeatureRequest buildRequestCache( int gencounter );
+    //! Translate mRequest to a request compatible of the Spatialite cache (first part)
+    QgsFeatureRequest initRequestCache( int gencounter );
+
+    //! Finishes to fill the request to the cache (second part)
+    void fillRequestCache( QgsFeatureRequest );
 
     bool fetchFeature( QgsFeature &f ) override;
 
