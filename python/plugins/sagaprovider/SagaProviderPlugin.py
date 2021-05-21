@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    __init__.py
+    sagaproviderplugin.py
     ---------------------
     Date                 : May 2021
     Copyright            : (C) 2021 by Alexander Bruy
@@ -22,6 +22,18 @@ __date__ = 'May 2021'
 __copyright__ = '(C) 2021, Alexander Bruy'
 
 
-def classFactory(iface):
-    from sagaprovider.sagaproviderplugin import SagaProviderPlugin
-    return SagaProviderPlugin()
+from qgis.core import QgsApplication
+
+from sagaprovider.SagaAlgorithmProvider import SagaAlgorithmProvider
+
+
+class SagaProviderPlugin:
+
+    def __init__(self):
+        self.provider = SagaAlgorithmProvider()
+
+    def initGui(self):
+        QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def unload(self):
+        QgsApplication.processingRegistry().removeProvider(self.provider)
