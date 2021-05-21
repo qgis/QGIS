@@ -28,6 +28,7 @@
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererRegistry::QgsRendererRegistry()
 {
