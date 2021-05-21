@@ -552,7 +552,7 @@ Returns ``True`` if the symbol layer (or any of its sub-symbols) contains data d
 .. versionadded:: 3.4.5
 %End
 
-    virtual QgsSymbolLayerReferenceList masks() const;
+    virtual QList<QgsSymbolLayerReference> masks() const;
 %Docstring
 Returns masks defined by this symbol layer.
 This is a list of symbol layers of other layers that should be occluded.

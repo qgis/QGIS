@@ -20,6 +20,7 @@
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbol.h"
+#include "qgssymbollayerreference.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
@@ -121,6 +122,16 @@ void QgsMaskMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 void QgsMaskMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   QgsMarkerSymbolLayer::drawPreviewIcon( context, size );
+}
+
+QList<QgsSymbolLayerReference> QgsMaskMarkerSymbolLayer::masks() const
+{
+  return mMaskedSymbolLayers;
+}
+
+void QgsMaskMarkerSymbolLayer::setMasks( const QList<QgsSymbolLayerReference> &maskedLayers )
+{
+  mMaskedSymbolLayers = maskedLayers;
 }
 
 QRectF QgsMaskMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )

@@ -192,7 +192,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Associated vector layer
     QgsVectorLayer *mLayer = nullptr;
 
-    QgsSymbolLayerReferenceList mMaskedSymbolLayers;
+    QList<QgsSymbolLayerReference> mMaskedSymbolLayers;
 
     //! Geometry type for layer, if known
     QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;

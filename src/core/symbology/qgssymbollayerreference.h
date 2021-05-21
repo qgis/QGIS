@@ -58,14 +58,14 @@ class CORE_EXPORT QgsSymbolLayerId
     /**
      * QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
      */
-    QgsSymbolLayerId( QString key, int index )
+    QgsSymbolLayerId( const QString &key, int index )
       : mSymbolKey( key ), mIndexPath( { index } )
     {}
 
     /**
      * QgsSymbolLayerId constructor with a symbol key and an index path
      */
-    QgsSymbolLayerId( QString key, const QVector<int> &indexPath )
+    QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath )
       : mSymbolKey( key ), mIndexPath( { indexPath } )
     {}
 
