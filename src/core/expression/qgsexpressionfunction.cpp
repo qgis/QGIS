@@ -4488,7 +4488,7 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
 
   if ( values.length() >= 1 )
   {
-    double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+    double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
     return QVariant( qlonglong( std::round( number ) ) );
   }
 
