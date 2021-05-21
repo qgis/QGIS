@@ -191,9 +191,27 @@ Returns the mapUnitsPerPixel (map units per pixel) for the canvas
 %Docstring
 Returns the current zoom extent of the map canvas
 %End
+
     QgsRectangle fullExtent() const;
 %Docstring
-Returns the combined extent for all layers on the map canvas
+Returns the combined extent for all layers on the map canvas.
+
+This method returns the combined extent for all layers which are currently visible in the map canvas.
+The returned extent will be in the same CRS as the map canvas.
+
+.. seealso:: :py:func:`projectExtent`
+%End
+
+    QgsRectangle projectExtent() const;
+%Docstring
+Returns the associated project's full extent, in the canvas' CRS.
+
+This method returns the full extent for the project associated with this canvas.
+Unlike :py:func:`~QgsMapCanvas.fullExtent`, this method does NOT consider which layers are actually visible in the map canvas.
+
+.. seealso:: :py:func:`fullExtent`
+
+.. versionadded:: 3.20
 %End
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
@@ -250,7 +268,19 @@ Gets map center, in geographical coordinates
 
     void zoomToFullExtent();
 %Docstring
-Zoom to the full extent of all layers
+Zoom to the full extent of all layers currently visible in the canvas.
+
+.. seealso:: :py:func:`zoomToProjectExtent`
+%End
+
+    void zoomToProjectExtent();
+%Docstring
+Zoom to the full extent the project associated with this canvas.
+
+This method zooms to the full extent for the project associated with this canvas.
+Unlike :py:func:`~QgsMapCanvas.zoomToFullExtent`, this method does NOT consider which layers are actually visible in the map canvas.
+
+.. versionadded:: 3.20
 %End
 
     void zoomToPreviousExtent();

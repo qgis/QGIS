@@ -90,6 +90,7 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerelevationproperties.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgslabelingresults.h"
+#include "qgsmaplayerutils.h"
 
 /**
  * \ingroup gui
@@ -1105,8 +1106,13 @@ QgsRectangle QgsMapCanvas::extent() const
 
 QgsRectangle QgsMapCanvas::fullExtent() const
 {
-  const QgsReferencedRectangle extent = QgsProject::instance()->viewSettings()->fullExtent();
-  QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  return QgsMapLayerUtils::combinedExtent( mSettings.layers(), mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+}
+
+QgsRectangle QgsMapCanvas::projectExtent() const
+{
+  const QgsReferencedRectangle extent = mProject ? mProject->viewSettings()->fullExtent() : QgsProject::instance()->viewSettings()->fullExtent();
+  QgsCoordinateTransform ct( extent.crs(), mapSettings().destinationCrs(), mProject ? mProject->transformContext() : QgsProject::instance()->transformContext() );
   ct.setBallparkTransformsAreAppropriate( true );
   QgsRectangle rect;
   try
@@ -1253,7 +1259,6 @@ void QgsMapCanvas::updateScale()
   emit scaleChanged( mapSettings().scale() );
 }
 
-
 void QgsMapCanvas::zoomToFullExtent()
 {
   QgsRectangle extent = fullExtent();
@@ -1265,9 +1270,21 @@ void QgsMapCanvas::zoomToFullExtent()
     setExtent( extent );
   }
   refresh();
+}
 
-} // zoomToFullExtent
+void QgsMapCanvas::zoomToProjectExtent()
+{
+  QgsRectangle extent = projectExtent();
 
+  // If the full extent is an empty set, don't do the zoom
+  if ( !extent.isEmpty() )
+  {
+    // Add a 5% margin around the full extent
+    extent.scale( 1.05 );
+    setExtent( extent );
+  }
+  refresh();
+}
 
 void QgsMapCanvas::zoomToPreviousExtent()
 {
