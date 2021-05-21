@@ -71,6 +71,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def unload(self):
         ProcessingConfig.removeSetting('ACTIVATE_SAGA')
+        ProcessingConfig.removeSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
