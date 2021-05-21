@@ -269,6 +269,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>( source, ownSource, request )
   , mShared( shared )
+  , mCachedFeaturesIter( mCachedFeatures.begin() )
 {
   if ( !shared->clientSideFilterExpression().isEmpty() )
   {
@@ -303,19 +304,41 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   if ( !threshold.isEmpty() )
     mWriteTransferThreshold = threshold.toInt();
 
-  // Particular case: if a single feature is requested by Fid and we already
-  // have it in cache, no need to interrupt any download
+  // Particular case: if a single feature or a reasonable set of features
+  // are requested by Fid and we already have them in cache, no need to
+  // download anything.
   auto cacheDataProvider = mShared->cacheDataProvider();
   if ( cacheDataProvider &&
-       mRequest.filterType() == QgsFeatureRequest::FilterFid )
+       ( mRequest.filterType() == QgsFeatureRequest::FilterFid ||
+         ( mRequest.filterType() == QgsFeatureRequest::FilterFids && mRequest.filterFids().size() < 100000 ) ) )
   {
-    QgsFeatureRequest requestCache = buildRequestCache( -1 );
-    QgsFeature f;
-    if ( cacheDataProvider->getFeatures( requestCache ).nextFeature( f ) )
+    QgsFeatureRequest requestCache;
+    QgsFeatureIds qgisIds;
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+      qgisIds.insert( mRequest.filterFid() );
+    else
+      qgisIds = mRequest.filterFids();
+    QgsFeatureIds dbIds = mShared->dbIdsFromQgisIds( qgisIds );
+    // Do all requested fids have been known at some point by the provider ?
+    if ( dbIds.size() == qgisIds.size() )
     {
-      mCacheIterator = cacheDataProvider->getFeatures( requestCache );
-      mDownloadFinished = true;
-      return;
+      requestCache.setFilterFids( dbIds );
+      fillRequestCache( requestCache );
+      QgsFeatureIterator cacheIterator = cacheDataProvider->getFeatures( requestCache );
+      QgsFeature f;
+      while ( cacheIterator.nextFeature( f ) )
+      {
+        mCachedFeatures << f;
+      }
+      // Are are the requested fids actually in the cache ?
+      if ( mCachedFeatures.size() == dbIds.size() )
+      {
+        // Yes, no need to download anything.
+        mCachedFeaturesIter = mCachedFeatures.begin();
+        mDownloadFinished = true;
+        return;
+      }
+      mCachedFeatures.clear();
     }
   }
 
@@ -330,10 +353,12 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
 
   QgsDebugMsgLevel( QStringLiteral( "QgsBackgroundCachedFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ), 4 );
 
-  mCacheIterator = cacheDataProvider->getFeatures( buildRequestCache( genCounter ) );
+  QgsFeatureRequest requestCache = initRequestCache( genCounter ) ;
+  fillRequestCache( requestCache );
+  mCacheIterator = cacheDataProvider->getFeatures( requestCache );
 }
 
-QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int genCounter )
+QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genCounter )
 {
   QgsFeatureRequest requestCache;
 
@@ -390,6 +415,11 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
     }
   }
 
+  return requestCache;
+}
+
+void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest requestCache )
+{
   requestCache.setFilterRect( mFilterRect );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
@@ -400,6 +430,8 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
+    const QgsFields fields = mShared->fields();
+    auto cacheDataProvider = mShared->cacheDataProvider();
     QgsFields dataProviderFields = cacheDataProvider->fields();
     QgsAttributeList cacheSubSet;
     const auto subsetOfAttributes = mRequest.subsetOfAttributes();
@@ -458,8 +490,6 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
     }
     requestCache.setSubsetOfAttributes( cacheSubSet );
   }
-
-  return requestCache;
 }
 
 QgsBackgroundCachedFeatureIterator::~QgsBackgroundCachedFeatureIterator()
@@ -570,8 +600,21 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
 
   // First step is to iterate over the on-disk cache
   QgsFeature cachedFeature;
-  while ( mCacheIterator.nextFeature( cachedFeature ) )
+  while ( true )
   {
+    if ( !mCachedFeatures.empty() )
+    {
+      if ( mCachedFeaturesIter == mCachedFeatures.end() )
+        return false;
+      cachedFeature = *mCachedFeaturesIter;
+      ++mCachedFeaturesIter;
+    }
+    else
+    {
+      if ( !mCacheIterator.nextFeature( cachedFeature ) )
+        break;
+    }
+
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
@@ -801,17 +844,25 @@ bool QgsBackgroundCachedFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  cleanupReaderStreamAndFile();
-
-  QgsFeatureRequest requestCache;
-  int genCounter = mShared->getUpdatedCounter();
-  if ( genCounter >= 0 )
-    requestCache.setFilterExpression( QString( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER + " <= %1" ).arg( genCounter ) );
+  if ( !mCachedFeatures.empty() )
+  {
+    mCachedFeaturesIter = mCachedFeatures.begin();
+  }
   else
-    mDownloadFinished = true;
-  auto cacheDataProvider = mShared->cacheDataProvider();
-  if ( cacheDataProvider )
-    mCacheIterator = cacheDataProvider->getFeatures( requestCache );
+  {
+    cleanupReaderStreamAndFile();
+
+    QgsFeatureRequest requestCache;
+    int genCounter = mShared->getUpdatedCounter();
+    if ( genCounter >= 0 )
+      requestCache.setFilterExpression( QString( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER + " <= %1" ).arg( genCounter ) );
+    else
+      mDownloadFinished = true;
+    auto cacheDataProvider = mShared->cacheDataProvider();
+    if ( cacheDataProvider )
+      mCacheIterator = cacheDataProvider->getFeatures( requestCache );
+  }
+
   return true;
 }
 
