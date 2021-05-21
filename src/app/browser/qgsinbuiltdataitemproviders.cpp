@@ -1077,7 +1077,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           }
           QgsDialog dialog;
           dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
-          dialog.setWindowTitle( tr( "Run SQL Commands" ) );
+          dialog.setWindowTitle( tr( "%1 — Run SQL Commands" ).arg( collectionItem->name() ) );
           QgsGui::enableAutoGeometryRestore( &dialog );
           QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
           widget->layout()->setMargin( 0 );
