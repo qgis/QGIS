@@ -4658,9 +4658,6 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
 
-  // TODO QGIS 4 - move the logic from createFromSridInternal to sit within the postgres provider alone
-  srs.createFromPostgisSrid( srid );
-  if ( !srs.isValid() )
   {
     static QMutex sMutex;
     QMutexLocker locker( &sMutex );
@@ -4672,10 +4669,23 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
       QgsPostgresConn *conn = connectionRO();
       if ( conn )
       {
-        QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+        QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT auth_name, auth_srid, srtext, proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
         if ( result.PQresultStatus() == PGRES_TUPLES_OK )
         {
-          srs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 0 ) );
+          const QString authName = result.PQgetvalue( 0, 0 );
+          const QString authSRID = result.PQgetvalue( 0, 1 );
+          const QString srText = result.PQgetvalue( 0, 2 );
+          bool ok = false;
+          if ( authName == QLatin1String( "EPSG" ) || authName == QLatin1String( "ESRI" ) )
+          {
+            ok = srs.createFromUserInput( authName + ':' + authSRID );
+          }
+          if ( !ok && !srText.isEmpty() )
+          {
+            ok = srs.createFromUserInput( srText );
+          }
+          if ( !ok )
+            srs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 3 ) );
           sCrsCache.insert( srid, srs );
         }
       }
