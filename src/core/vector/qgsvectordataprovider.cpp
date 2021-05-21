@@ -837,6 +837,23 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     }
   }
 
+  //convert to single type if there's a single part of compatible type
+  if ( !QgsWkbTypes::isMultiType( providerGeomType ) && QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry );
+    if ( collection )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        const QgsAbstractGeometry *firstGeom = collection->geometryN( 0 );
+        if ( firstGeom && firstGeom->wkbType() == providerGeomType )
+        {
+          outputGeom.reset( firstGeom->clone() );
+        }
+      }
+    }
+  }
+
   //set z/m types
   if ( QgsWkbTypes::hasZ( providerGeomType ) )
   {
