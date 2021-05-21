@@ -2155,6 +2155,48 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(features[0].attributes(), [1, -1, 123])
         self.assertEqual(features[1].attributes(), [2, -4, 125])
 
+    def testFixWrongMetadataReferenceColumnNameUpdate(self):
+        """ Test that we (or GDAL) fixes wrong gpkg_metadata_reference_column_name_update trigger """
+        tmpfile = os.path.join(self.basetestpath, 'testFixWrongMetadataReferenceColumnNameUpdate.gpkg')
+
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        ds.SetMetadata('FOO', 'BAR')
+        ds = None
+
+        ds = ogr.Open(tmpfile, update=1)
+        gdal.PushErrorHandler()
+        ds.ExecuteSQL('DROP TRIGGER gpkg_metadata_reference_column_name_update')
+        gdal.PopErrorHandler()
+        # inject wrong trigger on purpose
+        wrong_trigger = "CREATE TRIGGER 'gpkg_metadata_reference_column_name_update' " + \
+                        "BEFORE UPDATE OF column_name ON 'gpkg_metadata_reference' " + \
+                        "FOR EACH ROW BEGIN " + \
+                        "SELECT RAISE(ABORT, 'update on table gpkg_metadata_reference " + \
+                        "violates constraint: column name must be NULL when reference_scope " + \
+                        "is \"geopackage\", \"table\" or \"row\"') " + \
+                        "WHERE (NEW.reference_scope IN ('geopackage','table','row') " + \
+                        "AND NEW.column_nameIS NOT NULL); END;"
+        ds.ExecuteSQL(wrong_trigger)
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        del vl
+
+        # Check trigger afterwards
+        ds = ogr.Open(tmpfile)
+        sql_lyr = ds.ExecuteSQL(
+            "SELECT sql FROM sqlite_master WHERE type = 'trigger' " +
+            "AND name = 'gpkg_metadata_reference_column_name_update'")
+        f = sql_lyr.GetNextFeature()
+        sql = f['sql']
+        ds.ReleaseResultSet(sql_lyr)
+        ds = None
+
+        gdal.Unlink(tmpfile)
+        self.assertNotIn('column_nameIS', sql)
+
 
 if __name__ == '__main__':
     unittest.main()
