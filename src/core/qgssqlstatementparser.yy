@@ -625,7 +625,15 @@ QgsSQLStatement::Node* parse(const QString& str, QString& parserErrorMsg, bool a
   }
   else // error?
   {
-    parserErrorMsg = !allowFragments && !ctx.rootNode ? QStringLiteral("Expression must begin with SELECT") :  ctx.errorMsg;
+    if( !allowFragments && !ctx.rootNode &&
+        !str.startsWith("SELECT", Qt::CaseInsensitive) )
+    {
+      parserErrorMsg = QObject::tr("Expression must begin with SELECT");
+    }
+    else
+    {
+      parserErrorMsg = ctx.errorMsg;
+    }
     delete ctx.rootNode;
     delete ctx.whereExp;
     qDeleteAll(ctx.joinList);
