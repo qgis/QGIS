@@ -8174,7 +8174,7 @@ void QgisApp::pan()
 
 void QgisApp::zoomFull()
 {
-  mMapCanvas->zoomToFullExtent();
+  mMapCanvas->zoomToProjectExtent();
 }
 
 void QgisApp::zoomToPrevious()
@@ -13295,7 +13295,7 @@ void QgisApp::new3DMapCanvas()
 
   // initialize from project
   QgsProject *prj = QgsProject::instance();
-  QgsRectangle fullExtent = mMapCanvas->fullExtent();
+  QgsRectangle fullExtent = mMapCanvas->projectExtent();
 
   // some layers may go crazy and make full extent unusable
   // we can't go any further - invalid extent would break everything
@@ -16279,7 +16279,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       if ( map->terrainGenerator()->type() == QgsTerrainGenerator::Flat )
       {
         QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
-        flatTerrainGen->setExtent( mMapCanvas->fullExtent() );
+        flatTerrainGen->setExtent( mMapCanvas->projectExtent() );
       }
       map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 

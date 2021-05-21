@@ -433,7 +433,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   }
   else  // flat or online
   {
-    te = mMainCanvas->fullExtent();
+    te = mMainCanvas->projectExtent();
   }
 
   double tile0width = std::max( te.width(), te.height() );
