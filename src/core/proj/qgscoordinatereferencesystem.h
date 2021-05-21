@@ -1091,7 +1091,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static const QHash< long, QgsCoordinateReferenceSystem > &srIdCache();
 
     friend class TestQgsCoordinateReferenceSystem;
-    friend class QgsPostgresProvider;
     friend class QgsCoordinateReferenceSystemRegistry;
     friend bool CORE_EXPORT operator> ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );
     friend bool CORE_EXPORT operator< ( const QgsCoordinateReferenceSystem &c1, const QgsCoordinateReferenceSystem &c2 );

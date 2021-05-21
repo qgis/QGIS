@@ -365,7 +365,9 @@ void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
 void TestQgsCoordinateReferenceSystem::createFromSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromPostgisSrid( GEOSRID );
+  Q_NOWARN_DEPRECATED_PUSH
+  myCrs.createFromSrid( GEOSRID );
+  Q_NOWARN_DEPRECATED_POP
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
@@ -374,30 +376,34 @@ void TestQgsCoordinateReferenceSystem::createFromSrid()
 
 void TestQgsCoordinateReferenceSystem::sridCache()
 {
+  Q_NOWARN_DEPRECATED_PUSH
+
   // test that crs can be retrieved correctly from cache
   QgsCoordinateReferenceSystem crs;
-  crs.createFromPostgisSrid( 3112 );
+  crs.createFromSrid( 3112 );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3112" ) );
   QVERIFY( QgsCoordinateReferenceSystem::srIdCache().contains( 3112 ) );
   // a second time, so crs is fetched from cache
   QgsCoordinateReferenceSystem crs2;
-  crs2.createFromPostgisSrid( 3112 );
+  crs2.createFromSrid( 3112 );
   QVERIFY( crs2.isValid() );
   QCOMPARE( crs2.authid(), QStringLiteral( "EPSG:3112" ) );
 
   // invalid
   QgsCoordinateReferenceSystem crs3;
-  QVERIFY( !crs3.createFromPostgisSrid( -3141 ) );
+  QVERIFY( !crs3.createFromSrid( -3141 ) );
   QVERIFY( !crs3.isValid() );
   QVERIFY( QgsCoordinateReferenceSystem::srIdCache().contains( -3141 ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
-  QVERIFY( !crs4.createFromPostgisSrid( -3141 ) );
+  QVERIFY( !crs4.createFromSrid( -3141 ) );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
   QVERIFY( !QgsCoordinateReferenceSystem::srIdCache().contains( 3112 ) );
+
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void TestQgsCoordinateReferenceSystem::createFromWkt()
@@ -593,7 +599,9 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
 void TestQgsCoordinateReferenceSystem::createFromSrId()
 {
   QgsCoordinateReferenceSystem myCrs;
-  QVERIFY( myCrs.createFromPostgisSrid( GEOSRID ) );
+  Q_NOWARN_DEPRECATED_PUSH
+  QVERIFY( myCrs.createFromSrid( GEOSRID ) );
+  Q_NOWARN_DEPRECATED_POP
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
 }
@@ -1235,7 +1243,9 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 void TestQgsCoordinateReferenceSystem::postgisSrid()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromPostgisSrid( GEOSRID );
+  Q_NOWARN_DEPRECATED_PUSH
+  myCrs.createFromSrid( GEOSRID );
+  Q_NOWARN_DEPRECATED_POP
   QVERIFY( myCrs.postgisSrid() == GEOSRID );
   debugPrint( myCrs );
 }
