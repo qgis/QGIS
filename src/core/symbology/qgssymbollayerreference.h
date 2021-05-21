@@ -99,6 +99,20 @@ class CORE_EXPORT QgsSymbolLayerId
              : mSymbolKey < other.mSymbolKey;
     }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     //! Symbol unique identifier (legend key)
     QString mSymbolKey;
@@ -141,6 +155,20 @@ class CORE_EXPORT QgsSymbolLayerReference
       return mLayerId == other.mLayerId &&
              mSymbolLayerId == other.mSymbolLayerId;
     }
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     QString mLayerId;

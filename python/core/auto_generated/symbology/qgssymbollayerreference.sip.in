@@ -73,6 +73,18 @@ Returns the symbol layer index path inside the symbol
 
     bool operator<( const QgsSymbolLayerId &other ) const;
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 class QgsSymbolLayerReference
@@ -109,6 +121,18 @@ The symbol layer's id
 %End
 
     bool operator==( const QgsSymbolLayerReference &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 
