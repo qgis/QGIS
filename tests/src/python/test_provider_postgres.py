@@ -2637,6 +2637,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     def testMultiColumnPkSmallData(self):
         """Test Multi Column PK & `Small` Data"""
+        from itertools import combinations
+
+        def test_for_pk_combinations(pk_column_name, fids_get_count):
+            set_new_pk = '''
+                ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
+                ALTER TABLE qgis_test.multi_column_pk_small_data
+                    ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY ({});'''
+            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql='
+            error_string = 'for PK - {} : expected {}, got {}'
+
+            self.execSQLCommand(set_new_pk.format(pk_column_name))
+            vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name), 'test_multi_column_pk_small_data', 'postgres')
+            fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+            fids2 = [f.id() for f in vl.getFeatures(fids)]
+            self.assertEqual(fids_get_count, len(fids), "Get with limit " +
+                             error_string.format(pk_column_name, fids_get_count, len(fids)))
+            self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
+                             error_string.format(pk_column_name, fids_get_count, len(fids2)))
 
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data CASCADE;')
         self.execSQLCommand('''
@@ -2681,151 +2699,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
               100.0 * dy )
           FROM generate_series(1,10) dx, generate_series(1,10) dy;''')
 
-        """ Composite PK: serial, uuid, int, bigint, str """
-        fids_get_count = 42
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_serial","id_uuid","id_int","id_bigint","id_str"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: inet4 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_inet4);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_inet4"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: inet6 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_inet6);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_inet6"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: cidr4 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_cidr4);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_cidr4"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: cidr6 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_cidr6);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_cidr6"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: macaddr """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_macaddr);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_macaddr"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: macaddr8 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_macaddr8);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_macaddr8"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ single column PK: timestamp """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_timestamp);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_timestamp"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        """ ! TEST FAIL ! with OR WHERE string
-        self.assertEqual(len(fids2), fids_get_count) """
-
-        """ Composite PK: serial, uuid, int, bigint, str, inet4, inet6,cidr4, cidr6, macaddr, macaddr8 """
-        fids_get_count = 42
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_small_data
-                ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY (id_serial,id_uuid,id_int,id_bigint,id_str,
-                id_inet4,id_inet6,id_cidr4,id_cidr6,id_macaddr, id_macaddr8);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_serial","id_uuid","id_int","id_bigint","id_str",' +
-            '"id_inet4","id_inet6","id_cidr4","id_cidr6","id_macaddr","id_macaddr8"\' ' +
-            'srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql=',
-            'test_multi_column_pk_small_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
+        pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
+        for n in [1, 2, len(pk_col_list)]:
+            pk_col_set_list = list(combinations(pk_col_list, n))
+            for pk_col_set in pk_col_set_list:
+                pk_column_name = ','.join(pk_col_set)
+                test_for_pk_combinations(pk_column_name, 42)
 
     def testMultiColumnPkBigData(self):
         """Test Multi Column PK & `Big` Data"""
+
+        def test_for_pk_from_list(pk_column_name_list, fids_get_count):
+            pk_column_name = ','.join(pk_column_name_list)
+            set_new_pk = '''
+                ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
+                ALTER TABLE qgis_test.multi_column_pk_big_data
+                    ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY ({});
+                DROP INDEX qgis_test.multi_column_pk_big_data_indx;
+                CREATE UNIQUE INDEX multi_column_pk_big_data_indx
+                    ON qgis_test.multi_column_pk_big_data USING btree
+                    ({});'''
+            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql='
+            error_string = 'for PK - {} : expected {}, got {}'
+
+            self.execSQLCommand(set_new_pk.format(pk_column_name, ' ASC NULLS LAST, '.join(pk_column_name_list) + ' ASC NULLS LAST'))
+            vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name), 'test_multi_column_pk_big_data', 'postgres')
+            fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+            fids2 = [f.id() for f in vl.getFeatures(fids)]
+            self.assertEqual(fids_get_count, len(fids), "Get with limit " +
+                             error_string.format(pk_column_name, fids_get_count, len(fids)))
+            self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
+                             error_string.format(pk_column_name, fids_get_count, len(fids2)))
 
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_big_data CASCADE;')
         self.execSQLCommand('''
@@ -2835,14 +2739,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 id_int2 bigint NOT NULL,
                 id_str character varying(20) COLLATE pg_catalog."default" NOT NULL,
                 geom geometry(Polygon,3857),
-                CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid, id_int, id_str) );''')
+                CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_int) );''')
         self.execSQLCommand('''
             CREATE INDEX multi_column_pk_big_data_geom_indx
                 ON qgis_test.multi_column_pk_big_data USING gist
                 (geom);
             CREATE UNIQUE INDEX multi_column_pk_big_data_indx
                 ON qgis_test.multi_column_pk_big_data USING btree
-                (id_uuid ASC NULLS LAST, id_int ASC NULLS LAST, id_str ASC NULLS LAST);''')
+                (id_int ASC NULLS LAST);''')
         self.execSQLCommand('TRUNCATE qgis_test.multi_column_pk_big_data')
         self.execSQLCommand('''
             INSERT INTO qgis_test.multi_column_pk_big_data(
@@ -2859,73 +2763,9 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                         100.0 * dy )
                 FROM generate_series(1,333) dx, generate_series(1,333) dy;''')
 
-        """ Composite PK: uuid, bigint, string """
-        fids_get_count = 20000
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_uuid","id_int","id_str"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
-            'test_multi_column_pk_big_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ PK: uuid """
-        fids_get_count = 20000
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_big_data
-                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid);
-            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
-            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
-                ON qgis_test.multi_column_pk_big_data USING btree
-                (id_uuid ASC NULLS LAST);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_uuid"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
-            'test_multi_column_pk_big_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ Composite PK: bigint, bigint """
-        fids_get_count = 20000
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_big_data
-                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_int, id_int2);
-            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
-            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
-                ON qgis_test.multi_column_pk_big_data USING btree
-                (id_int ASC NULLS LAST, id_int2 ASC NULLS LAST);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_int","id_int2"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
-            'test_multi_column_pk_big_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
-
-        """ Composite PK: uuid, bigint """
-        fids_get_count = 20000
-        self.execSQLCommand('''
-            ALTER TABLE qgis_test.multi_column_pk_big_data DROP CONSTRAINT multi_column_pk_big_data_pk;
-            ALTER TABLE qgis_test.multi_column_pk_big_data
-                ADD CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_uuid, id_int);
-            DROP INDEX qgis_test.multi_column_pk_big_data_indx;
-            CREATE UNIQUE INDEX multi_column_pk_big_data_indx
-                ON qgis_test.multi_column_pk_big_data USING btree
-                (id_uuid ASC NULLS LAST, id_int ASC NULLS LAST);''')
-        vl = QgsVectorLayer(
-            self.dbconn +
-            ' sslmode=disable key=\'"id_uuid","id_int"\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_big_data" (geom) sql=',
-            'test_multi_column_pk_big_data', 'postgres')
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-        fids2 = [f.id() for f in vl.getFeatures(fids)]
-        self.assertEqual(len(fids), fids_get_count)
-        self.assertEqual(len(fids2), fids_get_count)
+        test_for_pk_from_list(['id_uuid', 'id_int', 'id_str', ], 20000)
+        test_for_pk_from_list(['id_uuid', ], 20000)
+        test_for_pk_from_list(['id_int', 'id_int2', ], 20000)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
