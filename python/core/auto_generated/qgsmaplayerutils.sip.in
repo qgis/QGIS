@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapLayerUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for working with map layers.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerutils.h"
+%End
+  public:
+
+    static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Returns the combined extent of a list of ``layers``.
+
+The ``crs`` argument specifies the desired coordinate reference system for the combined extent.
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

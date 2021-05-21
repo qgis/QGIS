@@ -367,6 +367,7 @@ set(QGIS_CORE_SRCS
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaplayertemporalproperties.cpp
+  qgsmaplayerutils.cpp
   qgsmapsettings.cpp
   qgsmapsettingsutils.cpp
   qgsmaptopixel.cpp
@@ -984,6 +985,7 @@ set(QGIS_CORE_HDRS
   qgsmaplayerstylemanager.h
   qgsmaplayerelevationproperties.h
   qgsmaplayertemporalproperties.h
+  qgsmaplayerutils.h
   qgsmapsettings.h
   qgsmapsettingsutils.h
   qgsmapthemecollection.h

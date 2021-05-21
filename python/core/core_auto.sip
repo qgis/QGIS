@@ -104,6 +104,7 @@
 %Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmaplayerelevationproperties.sip
 %Include auto_generated/qgsmaplayertemporalproperties.sip
+%Include auto_generated/qgsmaplayerutils.sip
 %Include auto_generated/qgsmapsettings.sip
 %Include auto_generated/qgsmapsettingsutils.sip
 %Include auto_generated/qgsmapthemecollection.sip
