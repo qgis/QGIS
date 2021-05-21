@@ -21,6 +21,8 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 
+#include <QDomDocument>
+#include <QDomElement>
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
@@ -448,6 +450,20 @@ void QgsBaseNetworkRequest::replyFinished()
     else
     {
       mErrorMessage = errorMessageWithReason( mReply->errorString() );
+      QString replyContent = mReply->readAll();
+      QDomDocument exceptionDoc;
+      QString errorMsg;
+      if ( exceptionDoc.setContent( replyContent, true, &errorMsg ) )
+      {
+        QDomElement exceptionElem = exceptionDoc.documentElement();
+        if ( !exceptionElem.isNull() && exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
+        {
+          QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+          mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" )
+                          .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ),
+                                exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() );
+        }
+      }
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
       logMessageIfEnabled();
       mResponse.clear();
