@@ -308,7 +308,7 @@
      <item row="8" column="0">
       <widget class="QLabel" name="mAnchorPointLbl">
        <property name="text">
-        <string>Anchor point</string>
+        <string>Feature anchor point</string>
        </property>
       </widget>
      </item>
