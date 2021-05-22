@@ -7440,7 +7440,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
         GDALSetMetadataItem( hLayer, "IDENTIFIER", metadata.identifier().toUtf8().constData(), nullptr );
 
       // we write a simple piece of GDAL metadata too -- this is solely to delegate responsibility of
-      // creating all the metadata tables to GDAL!
+      // creating all the metadata tables to GDAL! We will remove it once done.
       if ( GDALSetMetadataItem( hLayer, "QGIS_VERSION", Qgis::version().toLocal8Bit().constData(), nullptr ) == CE_None )
       {
         // so far so good, ready to throw the whole of the QGIS layer XML into the metadata table!
@@ -7483,6 +7483,8 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
           }
           else
           {
+            // Remove QGIS_VERSION now that we are done
+            GDALSetMetadataItem( hLayer, "QGIS_VERSION", nullptr, nullptr );
             return true;
           }
         }
@@ -7517,6 +7519,9 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
                           QgsSqliteUtils::quotedString( layerName ) )
                     .arg( lastRowId );
               userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+
+              // Remove QGIS_VERSION now that we are done
+              GDALSetMetadataItem( hLayer, "QGIS_VERSION", nullptr, nullptr );
               return true;
             }
           }
