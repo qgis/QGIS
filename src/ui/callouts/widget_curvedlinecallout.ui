@@ -76,21 +76,21 @@
       </widget>
      </item>
      <item row="9" column="3">
-     <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
+      <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
        <property name="text">
-       <string>…</string>
+        <string>…</string>
        </property>
-     </widget>
+      </widget>
      </item>
      <item row="9" column="1" colspan="2">
-     <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
+      <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox" native="true"/>
      </item>
      <item row="9" column="0">
-     <widget class="QLabel" name="mCalloutBlendModeLbl">
+      <widget class="QLabel" name="mCalloutBlendModeLbl">
        <property name="text">
-       <string>Blend mode</string>
+        <string>Blend mode</string>
        </property>
-     </widget>
+      </widget>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="mAnchorPointLbl_2">
@@ -533,20 +533,25 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
