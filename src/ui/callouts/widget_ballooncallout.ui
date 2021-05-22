@@ -45,14 +45,14 @@
      <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
      </item>
      <item row="5" column="0">
-     <widget class="QLabel" name="label_18">
+      <widget class="QLabel" name="mCalloutBlendModeLbl">
        <property name="text">
        <string>Blend mode</string>
        </property>
      </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="label_47">
+      <widget class="QLabel" name="mWedgeWidthLbl">
        <property name="text">
         <string>Wedge width</string>
        </property>
@@ -85,14 +85,14 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="mCalloutFillStyleLbl">
        <property name="text">
         <string>Fill style</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_46">
+      <widget class="QLabel" name="mOffsetFromAnchorLbl">
        <property name="text">
         <string>Offset from feature</string>
        </property>
@@ -193,7 +193,7 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_48">
+      <widget class="QLabel" name="mCornerRadiusLbl">
        <property name="text">
         <string>Corner radius</string>
        </property>
