@@ -64,14 +64,14 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
-    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning ) const;
 %Docstring
 Append a message to the context
 
 .. versionadded:: 3.2
 %End
 
-QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) /PyName=_enterCategory/;
+QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
 %Docstring
 Push a category to the stack
 
@@ -148,7 +148,7 @@ This would happen when it gets out of scope.
 #include "qgsreadwritecontext.h"
 %End
   public:
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context );
+    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context );
 %Docstring
 Creates a popper
 %End
