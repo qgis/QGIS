@@ -48,7 +48,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterMarker" ), QObject::tr( "Raster Image Marker" ), Qgis::SymbolType::Marker,
                       QgsRasterMarkerSymbolLayer::create, nullptr, QgsRasterFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FontMarker" ), QObject::tr( "Font Marker" ), Qgis::SymbolType::Marker,
-                      QgsFontMarkerSymbolLayer::create, QgsFontMarkerSymbolLayer::createFromSld ) );
+                      QgsFontMarkerSymbolLayer::create, QgsFontMarkerSymbolLayer::createFromSld, nullptr, nullptr, QgsFontMarkerSymbolLayer::resolveFonts ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "EllipseMarker" ), QObject::tr( "Ellipse Marker" ), Qgis::SymbolType::Marker,
                       QgsEllipseSymbolLayer::create, QgsEllipseSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "VectorField" ), QObject::tr( "Vector Field Marker" ), Qgis::SymbolType::Marker,
@@ -142,6 +142,14 @@ void QgsSymbolLayerRegistry::resolvePaths( const QString &name, QVariantMap &pro
     return;
 
   mMetadata[name]->resolvePaths( properties, pathResolver, saving );
+}
+
+void QgsSymbolLayerRegistry::resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const
+{
+  if ( !mMetadata.contains( name ) )
+    return;
+
+  mMetadata[name]->resolveFonts( properties, context );
 }
 
 QStringList QgsSymbolLayerRegistry::symbolLayersForType( Qgis::SymbolType type )

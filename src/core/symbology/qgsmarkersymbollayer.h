@@ -895,6 +895,14 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
      */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
+    /**
+     * Resolves fonts from a \a properties map, raising warnings in the specified \a context if the
+     * required fonts are not available on the system.
+     *
+     * \since QGIS 3.20
+     */
+    static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+
     // implemented from base classes
 
     QString layerType() const override;

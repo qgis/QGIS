@@ -1171,6 +1171,8 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   // if there are any paths stored in properties, convert them from relative to absolute
   QgsApplication::symbolLayerRegistry()->resolvePaths( layerClass, props, context.pathResolver(), false );
 
+  QgsApplication::symbolLayerRegistry()->resolveFonts( layerClass, props, context );
+
   QgsSymbolLayer *layer = nullptr;
   layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
   if ( layer )

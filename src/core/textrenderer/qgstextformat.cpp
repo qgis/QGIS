@@ -467,6 +467,11 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
     mTextFontFound = true;
   }
 
+  if ( !mTextFontFound )
+  {
+    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( mTextFontFamily ) );
+  }
+
   if ( textStyleElem.hasAttribute( QStringLiteral( "fontSize" ) ) )
   {
     d->fontSize = textStyleElem.attribute( QStringLiteral( "fontSize" ) ).toDouble();

@@ -3666,6 +3666,14 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   return m;
 }
 
+void QgsFontMarkerSymbolLayer::resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context )
+{
+  const QString fontFamily = properties.value( QStringLiteral( "font" ), DEFAULT_FONTMARKER_FONT ).toString();
+  if ( !QgsFontUtils::fontFamilyMatchOnSystem( fontFamily ) )
+  {
+    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( fontFamily ) );
+  }
+}
 
 void QgsSvgMarkerSymbolLayer::prepareExpressions( const QgsSymbolRenderContext &context )
 {
