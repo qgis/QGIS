@@ -65,6 +65,16 @@ instances the paths are always absolute
 .. versionadded:: 3.0
 %End
 
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Resolve fonts from the  symbol layer's ``properties``.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
+%End
+
   protected:
 };
 
@@ -87,7 +97,10 @@ Convenience metadata class that uses static functions to create symbol layer and
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 
+    virtual void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+
   protected:
+
 
   private:
     QgsSymbolLayerMetadata();
@@ -139,6 +152,16 @@ This normally means converting relative paths to absolute paths when loading
 and converting absolute paths to relative paths when saving.
 
 .. versionadded:: 3.0
+%End
+
+    void resolveFonts( const QString &name, QVariantMap &properties, const QgsReadWriteContext &context ) const;
+%Docstring
+Resolve fonts from the ``properties`` of a particular symbol layer.
+
+This tests whether the required fonts from the encoded ``properties`` are available on the system, and records
+warnings in the ``context`` if not.
+
+.. versionadded:: 3.20
 %End
 
     QStringList symbolLayersForType( Qgis::SymbolType type );

@@ -974,6 +974,14 @@ Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFo
 Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
 %End
 
+    static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Resolves fonts from a ``properties`` map, raising warnings in the specified ``context`` if the
+required fonts are not available on the system.
+
+.. versionadded:: 3.20
+%End
+
 
     virtual QString layerType() const;
 
