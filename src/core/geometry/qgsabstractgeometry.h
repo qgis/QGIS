@@ -718,6 +718,10 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * This method returns a reference only, and does not involve any geometry cloning.
      *
+     * \note Ownership of the returned geometry is NOT transferred, and remains with the original
+     * geometry object. Callers must take care to ensure that the original geometry object
+     * exists for the lifespan of the returned object.
+     *
      * \since QGIS 3.20
      */
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
