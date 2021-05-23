@@ -1197,7 +1197,10 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
   };
 
-  getPartGeometry( geom.constGet(), 0 );
+  // Use the simplified type ref when rendering -- this avoids some unnecessary cloning/geometry modification
+  // (e.g. if the original geometry is a compound curve containing only a linestring curve, we don't have
+  // to segmentize the geometry before rendering)
+  getPartGeometry( geom.constGet()->simplifiedTypeRef(), 0 );
 
   // step 2 - determine which layers to render
   std::vector< int > layers;
