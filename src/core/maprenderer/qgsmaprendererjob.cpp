@@ -494,6 +494,8 @@ LayerRenderJobs QgsMapRendererJob::prepareSecondPassJobs( LayerRenderJobs &first
   // and the list of source layers that have a mask
   QHash<QString, QPair<QSet<QgsSymbolLayerId>, QList<MaskSource>>> maskedSymbolLayers;
 
+  // First up, create a mapping of layer id to jobs. We need this to filter out any masking
+  // which refers to layers which we aren't rendering as part of this map render
   for ( LayerRenderJob &job : firstPassJobs )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( job.layer );
@@ -501,6 +503,15 @@ LayerRenderJobs QgsMapRendererJob::prepareSecondPassJobs( LayerRenderJobs &first
       continue;
 
     layerJobMapping[job.layer->id()] = &job;
+  }
+
+  // next, collate a master list of masked layers, skipping over any which refer to layers
+  // which don't have a corresponding render job
+  for ( LayerRenderJob &job : firstPassJobs )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( job.layer );
+    if ( ! vl )
+      continue;
 
     // lambda function to factor code for both label masks and symbol layer masks
     auto collectMasks = [&]( QHash<QString, QSet<QgsSymbolLayerId>> *masks, QString sourceLayerId, QString ruleId = QString(), int labelMaskId = -1 )
@@ -531,12 +542,33 @@ LayerRenderJobs QgsMapRendererJob::prepareSecondPassJobs( LayerRenderJobs &first
     for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
     {
       QString labelRule = it.key();
+      // this is a hash of layer id to masks
       QHash<QString, QSet<QgsSymbolLayerId>> masks = it.value();
+
+      // filter out masks to those which we are actually rendering
+      QHash<QString, QSet<QgsSymbolLayerId>> usableMasks;
+      for ( auto mit = masks.begin(); mit != masks.end(); mit++ )
+      {
+        const QString sourceLayerId = mit.key();
+        // if we aren't rendering the source layer as part of this render, we can't process this mask
+        if ( !layerJobMapping.contains( sourceLayerId ) )
+          continue;
+        else
+          usableMasks.insert( sourceLayerId, mit.value() );
+      }
+
+      if ( usableMasks.empty() )
+        continue;
 
       // group layers by QSet<QgsSymbolLayerReference>
       QSet<QgsSymbolLayerReference> slRefs;
-      for ( auto mit = masks.begin(); mit != masks.end(); mit++ )
+      for ( auto mit = usableMasks.begin(); mit != usableMasks.end(); mit++ )
       {
+        const QString sourceLayerId = mit.key();
+        // if we aren't rendering the source layer as part of this render, we can't process this mask
+        if ( !layerJobMapping.contains( sourceLayerId ) )
+          continue;
+
         for ( auto slIt = mit.value().begin(); slIt != mit.value().end(); slIt++ )
         {
           slRefs.insert( QgsSymbolLayerReference( mit.key(), *slIt ) );
@@ -546,7 +578,7 @@ LayerRenderJobs QgsMapRendererJob::prepareSecondPassJobs( LayerRenderJobs &first
       int labelMaskId = labelJob.maskIdProvider.insertLabelLayer( vl->id(), it.key(), slRefs );
 
       // now collect masks
-      collectMasks( &masks, vl->id(), labelRule, labelMaskId );
+      collectMasks( &usableMasks, vl->id(), labelRule, labelMaskId );
     }
 
     // collect symbol layer masks
