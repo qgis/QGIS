@@ -192,7 +192,10 @@ bool QgsServer::init()
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
-  QgsApplication::init();
+  // TODO: remove QGIS_OPTIONS_PATH from settings and rely on QgsApplication's env var QGIS_CUSTOM_CONFIG_PATH
+  //       Note that QGIS_CUSTOM_CONFIG_PATH gives /tmp/qt_temp-rUpsId/profiles/default/QGIS/QGIS3.ini
+  //       while     QGIS_OPTIONS_PATH gives       /tmp/qt_temp-rUpsId/QGIS/QGIS3.ini
+  QgsApplication::init( qgetenv( "QGIS_OPTIONS_PATH" ) );
 
 #if defined(SERVER_SKIP_ECW)
   QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", Qgis::Info );
