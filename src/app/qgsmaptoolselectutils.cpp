@@ -287,6 +287,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     }
   }
 
+  request.setExpressionContext( context.expressionContext() );
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
   QgsFeature f;
