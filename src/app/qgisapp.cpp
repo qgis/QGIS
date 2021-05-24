@@ -14433,9 +14433,15 @@ void QgisApp::showStatusMessage( const QString &message )
 
 void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages )
 {
-  for ( const auto &message : messages )
+  QVector<QgsReadWriteContext::ReadWriteMessage> shownMessages;
+  for ( const QgsReadWriteContext::ReadWriteMessage &message : messages )
   {
+    if ( shownMessages.contains( message ) )
+      continue;
+
     visibleMessageBar()->pushMessage( layerName, message.message(), message.categories().join( '\n' ), message.level() );
+
+    shownMessages.append( message );
   }
 }
 
