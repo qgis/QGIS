@@ -607,6 +607,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.setExpressionContext( mCanvas->createExpressionContext() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
   if ( renderer )
