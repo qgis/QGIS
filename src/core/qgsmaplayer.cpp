@@ -1743,6 +1743,8 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
 {
   if ( categories.testFlag( Symbology3D ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "3D Symbology" ) );
+
     QgsAbstract3DRenderer *r3D = nullptr;
     QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
     if ( !renderer3DElem.isNull() )
@@ -1803,12 +1805,16 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
 
   if ( categories.testFlag( Temporal ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Temporal" ) );
+
     if ( QgsMapLayerTemporalProperties *properties = temporalProperties() )
       properties->readXml( layerElement.toElement(), context );
   }
 
   if ( categories.testFlag( Elevation ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Elevation" ) );
+
     if ( QgsMapLayerElevationProperties *properties = elevationProperties() )
       properties->readXml( layerElement.toElement(), context );
   }

@@ -2151,8 +2151,6 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
-
   if ( categories.testFlag( Fields ) )
   {
     if ( !mExpressionFieldBuffer )
@@ -2164,6 +2162,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Relations ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Relations" ) );
 
     const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
 
@@ -2346,6 +2345,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   // load field configuration
   if ( categories.testFlag( Fields ) || categories.testFlag( Forms ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Forms" ) );
+
     QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
     QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
     for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
@@ -2427,6 +2428,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   if ( categories.testFlag( Legend ) )
   {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
     const QDomElement legendElem = layerNode.firstChildElement( QStringLiteral( "legend" ) );
     if ( !legendElem.isNull() )
     {
@@ -2458,6 +2461,8 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     // try renderer v2 first
     if ( categories.testFlag( Symbology ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
+
       QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
       if ( !rendererElement.isNull() )
       {
@@ -2481,6 +2486,8 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     // read labeling definition
     if ( categories.testFlag( Labeling ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
+
       QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
       QgsAbstractVectorLayerLabeling *labeling = nullptr;
       if ( labelingElement.isNull() ||
@@ -2571,6 +2578,8 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     //diagram renderer and diagram layer settings
     if ( categories.testFlag( Diagrams ) )
     {
+      QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Diagrams" ) );
+
       delete mDiagramRenderer;
       mDiagramRenderer = nullptr;
       QDomElement singleCatDiagramElem = node.firstChildElement( QStringLiteral( "SingleCategoryDiagramRenderer" ) );
