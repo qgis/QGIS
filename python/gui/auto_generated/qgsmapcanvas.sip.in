@@ -22,7 +22,7 @@
 
 
 
-class QgsMapCanvas : QGraphicsView
+class QgsMapCanvas : QGraphicsView, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Map canvas is a class for displaying all GIS data types on a canvas.
@@ -737,7 +737,7 @@ overrides for expression evaluation for the map canvas render.
 %End
 
 
-    QgsExpressionContextScope *defaultExpressionContextScope() /Factory/;
+    QgsExpressionContextScope *defaultExpressionContextScope() const /Factory/;
 %Docstring
 Creates a new scope which contains default variables and functions relating to the map canvas.
 
@@ -747,6 +747,9 @@ Creates a new scope which contains default variables and functions relating to t
 
 .. versionadded:: 3.4
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
     void setSegmentationTolerance( double tolerance );
 %Docstring
