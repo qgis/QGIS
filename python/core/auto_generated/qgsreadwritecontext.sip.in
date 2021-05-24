@@ -25,7 +25,7 @@ The class is used as a container of context for various read/write operations on
 
     struct ReadWriteMessage
     {
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() );
+        ReadWriteMessage( const QString &message = QString(), Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() );
 %Docstring
 Construct a container for QgsReadWriteContext error or warning messages
 %End
