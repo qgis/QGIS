@@ -2641,24 +2641,25 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         def test_for_pk_combinations(pk_column_name, fids_get_count):
             set_new_pk = '''
-                ALTER TABLE qgis_test.multi_column_pk_small_data DROP CONSTRAINT multi_column_pk_small_data_pk;
-                ALTER TABLE qgis_test.multi_column_pk_small_data
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table DROP CONSTRAINT multi_column_pk_small_data_pk;
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table
                     ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY ({});'''
-            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data" (geom) sql='
-            error_string = 'for PK - {} : expected {}, got {}'
+            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data_{}" (geom) sql='
+            error_string = 'from {} with PK - {} : expected {}, got {}'
 
             self.execSQLCommand(set_new_pk.format(pk_column_name))
-            vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name), 'test_multi_column_pk_small_data', 'postgres')
-            fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
-            fids2 = [f.id() for f in vl.getFeatures(fids)]
-            self.assertEqual(fids_get_count, len(fids), "Get with limit " +
-                             error_string.format(pk_column_name, fids_get_count, len(fids)))
-            self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
-                             error_string.format(pk_column_name, fids_get_count, len(fids2)))
+            for test_type in ['table', 'view', 'mat_view']:
+                vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name, test_type), 'test_multi_column_pk_small_data', 'postgres')
+                fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+                fids2 = [f.id() for f in vl.getFeatures(fids)]
+                self.assertEqual(fids_get_count, len(fids), "Get with limit " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids)))
+                self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids2)))
 
-        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data CASCADE;')
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data_table CASCADE;')
         self.execSQLCommand('''
-        CREATE TABLE qgis_test.multi_column_pk_small_data (
+        CREATE TABLE qgis_test.multi_column_pk_small_data_table (
           id_serial serial NOT NULL,
           id_uuid uuid NOT NULL,
           id_int int NOT NULL,
@@ -2676,8 +2677,14 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
           CONSTRAINT multi_column_pk_small_data_pk
             PRIMARY KEY (id_serial, id_uuid, id_int, id_bigint, id_str) );''')
         self.execSQLCommand('''
-        TRUNCATE qgis_test.multi_column_pk_small_data;
-        INSERT INTO qgis_test.multi_column_pk_small_data(
+        CREATE OR REPLACE VIEW qgis_test.multi_column_pk_small_data_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;
+        DROP MATERIALIZED VIEW IF EXISTS qgis_test.multi_column_pk_small_data_mat_view;
+        CREATE MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;''')
+        self.execSQLCommand('''
+        TRUNCATE qgis_test.multi_column_pk_small_data_table;
+        INSERT INTO qgis_test.multi_column_pk_small_data_table(
           id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
             id_macaddr, id_macaddr8, id_timestamp, geom)
           SELECT
@@ -2697,7 +2704,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                   3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
               100.0 * dx,
               100.0 * dy )
-          FROM generate_series(1,10) dx, generate_series(1,10) dy;''')
+          FROM generate_series(1,10) dx, generate_series(1,10) dy;
+        REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
 
         pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
         for n in [1, 2, len(pk_col_list)]:
