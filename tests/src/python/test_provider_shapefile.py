@@ -22,12 +22,14 @@ import sys
 from osgeo import gdal
 from qgis.core import (
     QgsApplication,
+    QgsDataProvider,
     QgsSettings,
     QgsFeature,
     QgsField,
     QgsGeometry,
     QgsVectorLayer,
     QgsFeatureRequest,
+    QgsRectangle,
     QgsVectorDataProvider,
     QgsWkbTypes,
     QgsVectorLayerExporter,
@@ -1078,6 +1080,30 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(datasource, 'test')
         self.assertTrue(vl.isValid())
         self.assertEqual([f.attributes() for f in vl.dataProvider().getFeatures()], [['abcŐ'], ['abcŐabcŐabcŐ']])
+
+    def testLayersOnSameOGRLayerWithAndWithoutFilter(self):
+        """Test fix for https://github.com/qgis/QGIS/issues/43361"""
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = '{}|layerId=0|subset="name" = \'Apple\''.format(file_path)
+        options = QgsDataProvider.ProviderOptions()
+        vl1 = QgsVectorLayer(uri, 'vl1', 'ogr')
+        vl2 = QgsVectorLayer(uri, 'vl2', 'ogr')
+        vl3 = QgsVectorLayer('{}|layerId=0'.format(file_path), 'vl3', 'ogr')
+        self.assertEqual(vl1.featureCount(), 1)
+        vl1_extent = QgsGeometry.fromRect(vl1.extent())
+        self.assertEqual(vl2.featureCount(), 1)
+        vl2_extent = QgsGeometry.fromRect(vl2.extent())
+        self.assertEqual(vl3.featureCount(), 5)
+        vl3_extent = QgsGeometry.fromRect(vl3.extent())
+
+        reference = QgsGeometry.fromRect(QgsRectangle(-68.2, 70.8, -68.2, 70.8))
+        assert QgsGeometry.compare(vl1_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl1_extent.asWkt())
+        assert QgsGeometry.compare(vl2_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl2_extent.asWkt())
+        reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        assert QgsGeometry.compare(vl3_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl3_extent.asWkt())
 
 
 if __name__ == '__main__':
