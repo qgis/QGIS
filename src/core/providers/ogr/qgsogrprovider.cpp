@@ -5634,7 +5634,6 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
                      ds->hDS, layerIndex );
           if ( hLayer )
           {
-            OGR_L_SetAttributeFilter( hLayer, nullptr );
             layerName = QString::fromUtf8( OGR_L_GetName( hLayer ) );
           }
         }
@@ -5691,7 +5690,6 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
                    ds->hDS, layerIndex );
         if ( hLayer )
         {
-          OGR_L_SetAttributeFilter( hLayer, nullptr );
           layerName = QString::fromUtf8( OGR_L_GetName( hLayer ) );
         }
       }
