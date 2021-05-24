@@ -45,10 +45,10 @@
        <bool>false</bool>
       </property>
       <addaction name="action_tiqudianlixian"/>
-      <addaction name="mActionSaveEdits"/>
       <addaction name="separator"/>
       <addaction name="action_xiubudianlixian"/>
       <addaction name="mActionPickPoints"/>
+      <addaction name="mActionSaveEdits"/>
       <addaction name="separator"/>
       <addaction name="action_chongjiandianlixian"/>
       <addaction name="separator"/>
@@ -84,10 +84,10 @@
      <normaloff>:/images/themes/default/mActionSaveAllEdits.svg</normaloff>:/images/themes/default/mActionSaveAllEdits.svg</iconset>
    </property>
    <property name="text">
-    <string>保存分类结果</string>
+    <string>保存</string>
    </property>
    <property name="toolTip">
-    <string>保存分类结果</string>
+    <string>保存</string>
    </property>
   </action>
   <action name="mActionMeasureAngle">
@@ -171,7 +171,7 @@
      <normaloff>:/images/cc/mapIcon.png</normaloff>:/images/cc/mapIcon.png</iconset>
    </property>
    <property name="text">
-    <string>电力线提取</string>
+    <string>电力线拟合</string>
    </property>
   </action>
   <action name="action_chongjiandianlixian">
