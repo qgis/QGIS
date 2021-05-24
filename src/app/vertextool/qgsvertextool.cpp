@@ -584,6 +584,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
       else
         request.setNoAttributes();
+      request.setExpressionContext( context.expressionContext() );
 
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( request );
