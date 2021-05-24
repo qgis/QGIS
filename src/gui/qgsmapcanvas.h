@@ -82,7 +82,7 @@ class QgsMapMouseEvent;
  * \brief Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
-class GUI_EXPORT QgsMapCanvas : public QGraphicsView
+class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContextGenerator
 {
 
 #ifdef SIP_RUN
@@ -703,7 +703,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \see setExpressionContextScope()
      * \since QGIS 3.4
      */
-    QgsExpressionContextScope *defaultExpressionContextScope() SIP_FACTORY;
+    QgsExpressionContextScope *defaultExpressionContextScope() const SIP_FACTORY;
+
+    QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
