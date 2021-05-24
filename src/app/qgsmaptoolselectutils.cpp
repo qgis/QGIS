@@ -236,7 +236,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
-  QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
+  QgsDebugMsgLevel( "doContains: " + QString( doContains ? QStringLiteral( "T" ) : QStringLiteral( "F" ) ), 3 );
 
   // make sure the selection geometry is valid, or intersection tests won't work correctly...
   if ( !selectGeomTrans.isGeosValid( ) )
@@ -376,7 +376,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
     QgsVectorLayer *vectorLayer,
-    QgsVectorLayer::SelectBehavior behavior, QgsGeometry selectionGeometry,
+    QgsVectorLayer::SelectBehavior behavior, const QgsGeometry &selectionGeometry,
     QObject *parent ):
   QObject( parent ),
   mCanvas( canvas ),
@@ -552,16 +552,15 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
     {
       case QgsVectorLayer::SetSelection:
         return tr( "Select Feature" );
-        break;
+
       case QgsVectorLayer::AddToSelection:
         return tr( "Add to Selection" );
-        break;
+
       case QgsVectorLayer::IntersectSelection:
         return tr( "Intersect with Selection" );
-        break;
+
       case QgsVectorLayer::RemoveFromSelection:
         return tr( "Remove from Selection" );
-        break;
     }
   }
 
@@ -575,16 +574,12 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
   {
     case QgsVectorLayer::SetSelection:
       return tr( "Select All (%1)" ).arg( featureCountText );
-      break;
     case QgsVectorLayer::AddToSelection:
       return tr( "Add All to Selection (%1)" ).arg( featureCountText );
-      break;
     case QgsVectorLayer::IntersectSelection:
       return tr( "Intersect All with Selection (%1)" ).arg( featureCountText );
-      break;
     case QgsVectorLayer::RemoveFromSelection:
       return tr( "Remove All from Selection (%1)" ).arg( featureCountText );
-      break;
   }
 
   return QString();
@@ -596,16 +591,12 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseOneMenu
   {
     case QgsVectorLayer::SetSelection:
       return tr( "Select Feature" );
-      break;
     case QgsVectorLayer::AddToSelection:
       return tr( "Add Feature to Selection" );
-      break;
     case QgsVectorLayer::IntersectSelection:
       return tr( "Intersect Feature with Selection" );
-      break;
     case QgsVectorLayer::RemoveFromSelection:
       return tr( "Remove Feature from Selection" );
-      break;
   }
 
   return QString();
@@ -685,7 +676,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::highlightAllFeatures()
   if ( !mAllFeatureIds.empty() )
   {
     int count = 0;
-    for ( const QgsFeatureId &id : mAllFeatureIds )
+    for ( const QgsFeatureId &id : std::as_const( mAllFeatureIds ) )
     {
       QgsFeature feat = mVectorLayer->getFeature( id );
       QgsGeometry geom = feat.geometry();
