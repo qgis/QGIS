@@ -252,7 +252,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   selectionGeometryEngine->prepareGeometry();
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
-  context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
+
+  QgsExpressionContext expressionContext = canvas->createExpressionContext();
+  expressionContext << QgsExpressionContextUtils::layerScope( vlayer );
+  context.setExpressionContext( expressionContext );
+
   std::unique_ptr< QgsFeatureRenderer > r;
   if ( vlayer->renderer() )
   {
@@ -430,6 +434,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
   mJobData->ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mVectorLayer->crs(), mJobData->context.transformContext() );
   mJobData->featureRenderer.reset( mVectorLayer->renderer()->clone() );
 
+  mJobData->context.setExpressionContext( mCanvas->createExpressionContext() );
   mJobData->context.expressionContext() << QgsExpressionContextUtils::layerScope( mVectorLayer );
   mJobData->selectBehavior = mBehavior;
   if ( mBehavior != QgsVectorLayer::SetSelection )
