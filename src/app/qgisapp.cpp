@@ -7406,10 +7406,50 @@ void QgisApp::dwgImport()
 void QgisApp::openLayerDefinition( const QString &path )
 {
   QString errorMessage;
-  bool loaded = QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
-  if ( !loaded || !errorMessage.isEmpty() )
+  QgsReadWriteContext context;
+  bool loaded = false;
+
+  QFile file( path );
+  if ( !file.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg( errorMessage );
+    errorMessage = QStringLiteral( "Can not open file" );
+  }
+  else
+  {
+    QDomDocument doc;
+    QString message;
+    if ( !doc.setContent( &file, &message ) )
+    {
+      errorMessage = message;
+    }
+    else
+    {
+      QFileInfo fileinfo( file );
+      QDir::setCurrent( fileinfo.absoluteDir().path() );
+
+      context.setPathResolver( QgsPathResolver( path ) );
+      context.setProjectTranslator( QgsProject::instance() );
+
+      loaded = QgsLayerDefinition::loadLayerDefinition( doc, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage, context );
+    }
+  }
+
+  if ( loaded )
+  {
+    const QList< QgsReadWriteContext::ReadWriteMessage > messages = context.takeMessages();
+    QVector< QgsReadWriteContext::ReadWriteMessage > shownMessages;
+    for ( const QgsReadWriteContext::ReadWriteMessage &message : messages )
+    {
+      if ( shownMessages.contains( message ) )
+        continue;
+
+      visibleMessageBar()->pushMessage( QString(), message.message(), message.categories().join( '\n' ), message.level() );
+
+      shownMessages.append( message );
+    }
+  }
+  else if ( !loaded || !errorMessage.isEmpty() )
+  {
     visibleMessageBar()->pushMessage( tr( "Error loading layer definition" ), errorMessage, Qgis::Warning );
   }
 }
