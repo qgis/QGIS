@@ -216,6 +216,73 @@ bool QgsServer::init()
     QgsServerLogger::instance()->setLogStderr();
   }
 
+  // Logging handlers for CRS grid issues
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
+      const QgsCoordinateReferenceSystem & destinationCrs,
+      const QgsDatumTransform::GridDetails & grid )
+  {
+    QgsServerLogger::instance()->logMessage( QStringLiteral( "Cannot use project transform between %1 and %2 - missing grid %3" )
+        .arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+              destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+              grid.shortName ),
+        QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
+  } );
+
+
+  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
+      const QgsCoordinateReferenceSystem & destinationCrs,
+      const QgsDatumTransform::TransformDetails & details )
+  {
+    QgsServerLogger::instance()->logMessage( QStringLiteral( "Cannot use project transform between %1 and %2 - %3" )
+        .arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+              destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+              details.name ),
+        QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
+  } );
+
+
+  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
+      const QgsCoordinateReferenceSystem & destinationCrs,
+      const QgsDatumTransform::TransformDetails & preferredOperation,
+      const QgsDatumTransform::TransformDetails & availableOperation )
+  {
+
+    QString gridMessage;
+    for ( const QgsDatumTransform::GridDetails &grid : preferredOperation.grids )
+    {
+      if ( !grid.isAvailable )
+      {
+        gridMessage.append( QStringLiteral( "This transformation requires the grid file '%1', which is not available for use on the system.\n" ).arg( grid.shortName ) );
+        if ( !grid.url.isEmpty() )
+        {
+          if ( !grid.packageName.isEmpty() )
+          {
+            gridMessage.append( QStringLiteral( "This grid is part of the '%1' package, available for download from %2.\n" ).arg( grid.packageName, grid.url ) );
+          }
+          else
+          {
+            gridMessage.append( QStringLiteral( "This grid is available for download from %1.\n" ).arg( grid.url ) );
+          }
+        }
+      }
+    }
+
+    QString accuracyMessage;
+    if ( availableOperation.accuracy >= 0 && preferredOperation.accuracy >= 0 )
+      accuracyMessage = QStringLiteral( "Current transform '%1' has an accuracy of %2 meters, while the preferred transformation '%3' has accuracy %4 meters.\n" ).arg( availableOperation.name )
+                        .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+    else if ( preferredOperation.accuracy >= 0 )
+      accuracyMessage = QStringLiteral( "Current transform '%1' has an unknown accuracy, while the preferred transformation '%2' has accuracy %3 meters.\n" ).arg( availableOperation.name )
+                        .arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+
+    const QString longMessage = QStringLiteral( "The preferred transform between '%1' and '%2' is not available for use on the system.\n" ).arg( sourceCrs.userFriendlyIdentifier(),
+                                destinationCrs.userFriendlyIdentifier() )
+                                + gridMessage + accuracyMessage;
+
+    QgsServerLogger::instance()->logMessage( longMessage, QStringLiteral( "QGIS Server" ), Qgis::MessageLevel::Warning );
+
+  } );
+
   // Configure locale
   initLocale();
 
