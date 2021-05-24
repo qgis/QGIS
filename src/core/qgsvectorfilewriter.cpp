@@ -931,6 +931,10 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,0)
+      // Support for Atlas BNA was removed in GDAL 3.3
+
       // Atlas BNA
       datasetOptions.clear();
       layerOptions.clear();
@@ -995,6 +999,7 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
+#endif
 
       // Comma Separated Value
       datasetOptions.clear();
