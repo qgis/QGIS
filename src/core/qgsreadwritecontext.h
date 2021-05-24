@@ -57,6 +57,24 @@ class CORE_EXPORT QgsReadWriteContext
         //! Returns the stack of categories of the message
         QStringList categories() const {return mCategories;}
 
+        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const
+        {
+          return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories;
+        }
+
+        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const
+        {
+          return !( *this == other );
+        }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
       private:
         QString mMessage;
         Qgis::MessageLevel mLevel;
