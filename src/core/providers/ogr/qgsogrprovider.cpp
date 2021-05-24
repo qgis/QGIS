@@ -5347,11 +5347,9 @@ void QgsOgrProvider::open( OpenMode mode )
     mValid = false;
 
     // In the case where we deal with a shapefile, it is possible that it has
-    // pre-existing holes in the DBF (see #15407), so if using a GDAL version
-    // recent enough to have reliable packing, do a packing at the first edit
+    // pre-existing holes in the DBF (see #15407), so do a packing at the first edit
     // action.
-    if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" )  &&
-         atoi( GDALVersionInfo( "VERSION_NUM" ) ) >= GDAL_COMPUTE_VERSION( 2, 1, 2 ) )
+    if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
     {
       mShapefileMayBeCorrupted = true;
     }
