@@ -6163,7 +6163,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
       }
     }
   }
-  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "OAPIF" ) )
+  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
   {
     return -1;
   }
