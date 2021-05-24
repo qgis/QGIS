@@ -294,6 +294,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     }
   }
 
+  request.setExpressionContext( context.expressionContext() );
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 
   QgsFeature f;
@@ -489,6 +490,7 @@ QgsFeatureIds QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::search( std::s
       request.combineFilterExpression( filterExpression );
     }
   }
+  request.setExpressionContext( data->context.expressionContext() );
 
   QgsFeatureIterator fit = data->source->getFeatures( request );
 

@@ -256,6 +256,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
       request.combineFilterExpression( filterExpression );
     }
   }
+  request.setExpressionContext( renderCtx.expressionContext() );
 
   QgsFeatureIterator it = vlayer->getFeatures( request );
   QElapsedTimer timer;
