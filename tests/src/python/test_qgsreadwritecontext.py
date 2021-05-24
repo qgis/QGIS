@@ -49,6 +49,16 @@ class TestQgsReadWriteContext(unittest.TestCase):
         self.assertEqual(messages[4].message(), 'msg4')
         self.assertEqual(messages[4].categories(), [])
 
+    def test_message_equality(self):
+        """
+        Test QgsReadWriteContext.ReadWriteMessage equality operator
+        """
+        m1 = QgsReadWriteContext.ReadWriteMessage('m1', Qgis.Info, ['cat1', 'cat2'])
+        self.assertEqual(m1, QgsReadWriteContext.ReadWriteMessage('m1', Qgis.Info, ['cat1', 'cat2']))
+        self.assertNotEqual(m1, QgsReadWriteContext.ReadWriteMessage('m2', Qgis.Info, ['cat1', 'cat2']))
+        self.assertNotEqual(m1, QgsReadWriteContext.ReadWriteMessage('m1', Qgis.Warning, ['cat1', 'cat2']))
+        self.assertNotEqual(m1, QgsReadWriteContext.ReadWriteMessage('m1', Qgis.Info, ['cat3', 'cat2']))
+
 
 if __name__ == '__main__':
     unittest.main()
