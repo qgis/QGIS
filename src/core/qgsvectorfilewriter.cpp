@@ -36,6 +36,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
+#include "qgssymbol.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -236,6 +237,23 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     mOgrDriverName = driverName;
   }
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,1)
+  QString fidFieldName;
+  if ( mOgrDriverName == QLatin1String( "GPKG" ) )
+  {
+    for ( const QString &layerOption : layerOptions )
+    {
+      if ( layerOption.startsWith( QLatin1String( "FID=" ) ) )
+      {
+        fidFieldName = layerOption.mid( 4 );
+        break;
+      }
+    }
+    if ( fidFieldName.isEmpty() )
+      fidFieldName = QStringLiteral( "fid" );
+  }
+#endif
 
   // find driver in OGR
   OGRSFDriverH poDriver;
@@ -650,6 +668,14 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             break;
 
           case QVariant::Double:
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,3,1)
+            if ( mOgrDriverName == QLatin1String( "GPKG" ) && attrField.precision() == 0 && attrField.name().compare( fidFieldName, Qt::CaseInsensitive ) == 0 )
+            {
+              // Convert field to match required FID type
+              ogrType = OFTInteger64;
+              break;
+            }
+#endif
             ogrType = OFTReal;
             break;
 
@@ -1076,7 +1102,8 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "*.fgb" ),
                                QStringLiteral( "fgb" ),
                                datasetOptions,
-                               layerOptions
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
                              )
                            );
 #endif
@@ -2563,12 +2590,13 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             int pos = 0;
             for ( const QString &string : list )
             {
-              lst[pos] = mCodec->fromUnicode( string ).data();
+              lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
               pos++;
             }
           }
           lst[count] = nullptr;
           OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+          CSLDestroy( lst );
         }
         else
         {
@@ -2591,12 +2619,13 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
               int pos = 0;
               for ( const QString &string : list )
               {
-                lst[pos] = mCodec->fromUnicode( string ).data();
+                lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
                 pos++;
               }
             }
             lst[count] = nullptr;
             OGR_F_SetFieldStringList( poFeature.get(), ogrField, lst );
+            CSLDestroy( lst );
           }
           else
           {
@@ -3191,8 +3220,17 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
     }
   }
 
-  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, options, QgsFeatureSink::SinkFlags(), newFilename, newLayer ) );
+  QString tempNewFilename;
+  QString tempNewLayer;
+
+  std::unique_ptr< QgsVectorFileWriter > writer( create( fileName, details.outputFields, destWkbType, details.outputCrs, transformContext, options, QgsFeatureSink::SinkFlags(), &tempNewFilename, &tempNewLayer ) );
   writer->setSymbologyScale( options.symbologyScale );
+
+  if ( newFilename )
+    *newFilename = tempNewFilename;
+
+  if ( newLayer )
+    *newLayer = tempNewLayer;
 
   if ( newFilename )
   {
@@ -3334,7 +3372,44 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
     *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( n - errors ).arg( n );
   }
 
-  return errors == 0 ? NoError : ErrFeatureWriteFailed;
+  writer.reset();
+
+  bool metadataFailure = false;
+  if ( options.saveMetadata )
+  {
+    QString uri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), QVariantMap
+    {
+      {QStringLiteral( "path" ), tempNewFilename },
+      {QStringLiteral( "layerName" ), tempNewLayer }
+    } );
+
+    try
+    {
+      QString error;
+      if ( !QgsProviderRegistry::instance()->saveLayerMetadata( QStringLiteral( "ogr" ), uri, options.layerMetadata, error ) )
+      {
+        if ( errorMessage )
+        {
+          if ( !errorMessage->isEmpty() )
+            *errorMessage += '\n';
+          *errorMessage += error;
+        }
+        metadataFailure = true;
+      }
+    }
+    catch ( QgsNotSupportedException &e )
+    {
+      if ( errorMessage )
+      {
+        if ( !errorMessage->isEmpty() )
+          *errorMessage += '\n';
+        *errorMessage += e.what();
+      }
+      metadataFailure = true;
+    }
+  }
+
+  return errors == 0 ? ( !metadataFailure ? NoError : ErrSavingMetadata ) : ErrFeatureWriteFailed;
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,

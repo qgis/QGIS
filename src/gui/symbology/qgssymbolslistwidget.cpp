@@ -22,6 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+
 #include <QMessageBox>
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
@@ -52,7 +56,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   QgsPropertyOverrideButton *opacityDDBtn = nullptr;
   switch ( symbol->type() )
   {
-    case QgsSymbol::Marker:
+    case Qgis::SymbolType::Marker:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
@@ -69,7 +73,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Line:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 2 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
@@ -83,7 +87,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Fill:
+    case Qgis::SymbolType::Fill:
     {
       stackedWidget->removeWidget( stackedWidget->widget( 1 ) );
       stackedWidget->removeWidget( stackedWidget->widget( 0 ) );
@@ -94,7 +98,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
       break;
     }
 
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 
@@ -183,7 +187,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
       if ( markerSymbol )
       {
         markerSymbol->setDataDefinedSize( button->toProperty() );
-        markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+        markerSymbol->setScaleMethod( Qgis::ScaleMethod::ScaleDiameter );
       }
       break;
 
@@ -380,7 +384,7 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
     || dd )
   {
     markerSymbol->setDataDefinedSize( dd );
-    markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+    markerSymbol->setScaleMethod( Qgis::ScaleMethod::ScaleDiameter );
     emit changed();
   }
 }
@@ -416,9 +420,9 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 void QgsSymbolsListWidget::updateAssistantSymbol()
 {
   mAssistantSymbol.reset( mSymbol->clone() );
-  if ( mSymbol->type() == QgsSymbol::Marker )
+  if ( mSymbol->type() == Qgis::SymbolType::Marker )
     mSizeDDBtn->setSymbol( mAssistantSymbol );
-  else if ( mSymbol->type() == QgsSymbol::Line && mLayer )
+  else if ( mSymbol->type() == Qgis::SymbolType::Line && mLayer )
     mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
@@ -485,7 +489,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     button->registerExpressionContextGenerator( this );
   }
 
-  if ( mSymbol->type() == QgsSymbol::Marker )
+  if ( mSymbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
@@ -506,7 +510,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
       mRotationDDBtn->setEnabled( false );
     }
   }
-  else if ( mSymbol->type() == QgsSymbol::Line )
+  else if ( mSymbol->type() == Qgis::SymbolType::Line )
   {
     QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
@@ -544,12 +548,12 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     }
   }
 
-  if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Line || mSymbol->type() == Qgis::SymbolType::Fill )
   {
     //add clip features option for line or fill symbols
     mStyleItemsListWidget->advancedMenu()->addAction( mClipFeaturesAction );
   }
-  if ( mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
     mStyleItemsListWidget->advancedMenu()->addAction( mStandardizeRingsAction );
   }

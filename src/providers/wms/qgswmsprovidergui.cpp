@@ -25,6 +25,7 @@
 #include "qgsprovidersourcewidgetprovider.h"
 #include "qgsxyzsourcewidget.h"
 #include "qgswmstsettingswidget.h"
+#include "qgsmaplayer.h"
 
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider

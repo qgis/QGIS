@@ -28,7 +28,6 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdaldataitems.h"
@@ -44,11 +43,11 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgszipitem.h"
 
 #include <QImage>
 #include <QColor>
 #include <QProcess>
-#include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
@@ -2359,21 +2358,16 @@ QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, co
 }
 
 /**
-
-  Convenience function for readily creating file filters.
-
-  Given a long name for a file filter and a regular expression, return
-  a file filter string suitable for use in a QFileDialog::OpenFiles()
-  call.  The regular express, glob, will have both all lower and upper
-  case versions added.
-
-  \note
-
-  Copied from qgisapp.cpp.
-
-  \todo XXX This should probably be generalized and moved to a standard
-            utility type thingy.
-
+ * Convenience function for readily creating file filters.
+ *
+ * Given a long name for a file filter and a regular expression, return
+ * a file filter string suitable for use in a QFileDialog::OpenFiles()
+ * call.  The regular express, glob, will have both all lower and upper
+ * case versions added.
+ *
+ * \note Copied from qgisapp.cpp.=
+ * \todo XXX This should probably be generalized and moved to a standard
+ * utility type thingy.
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
@@ -3313,14 +3307,13 @@ bool QgsGdalProvider::remove()
 }
 
 /**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer()
-
-  We query GDAL for a list of supported raster formats; we then build
-  a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a
-  QFileDialog::getOpenFileNames() call.
-
+ * Builds the list of file filter strings to later be used by
+ * QgisApp::addRasterLayer()
+ *
+ * We query GDAL for a list of supported raster formats; we then build
+ * a list of file filter strings from that list.  We return a string
+ * that contains this list that is suitable for use in a
+ * QFileDialog::getOpenFileNames() call.
 */
 QString QgsGdalProviderMetadata::filters( FilterType type )
 {

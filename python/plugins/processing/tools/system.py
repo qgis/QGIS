@@ -94,15 +94,7 @@ def getNumExportedLayers():
 
 
 def mkdir(newdir):
-    newdir = newdir.strip('\n\r ')
-    if os.path.isdir(newdir):
-        pass
-    else:
-        (head, tail) = os.path.split(newdir)
-        if head and not os.path.isdir(head):
-            mkdir(head)
-        if tail:
-            os.mkdir(newdir)
+    os.makedirs(newdir.strip('\n\r '), exist_ok=True)
 
 
 def tempHelpFolder():

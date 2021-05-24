@@ -29,6 +29,9 @@
 #include "geometry/qgsmultisurface.h"
 #include "qgsmulticurve.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QObject>
 

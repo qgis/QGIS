@@ -21,10 +21,8 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
-#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>
@@ -544,7 +542,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 
     /**
      * \note this function is used to convert old rotations expressions to symbol

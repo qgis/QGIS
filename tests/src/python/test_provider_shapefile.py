@@ -618,6 +618,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     def testOpenWithFilter(self):
         file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
         uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        options = QgsDataProvider.ProviderOptions()
         # ensure that no longer required ogr SQL layers are correctly cleaned up
         # we need to run this twice for the incorrect cleanup asserts to trip,
         # since they are triggered only when fetching an existing layer from the ogr
@@ -629,7 +630,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             f = next(vl.getFeatures())
             self.assertEqual(f['name'], 'Apple')
             # force close of data provider
-            vl.setDataSource('', 'test', 'ogr')
+            vl.setDataSource('', 'test', 'ogr', options)
 
     def testEncoding(self):
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')

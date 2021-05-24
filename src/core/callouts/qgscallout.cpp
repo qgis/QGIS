@@ -28,7 +28,10 @@
 #include "qgsgeometryutils.h"
 #include "qgscircularstring.h"
 #include "qgsshapegenerator.h"
-#include <QPainter>
+#include "qgspainting.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+
 #include <mutex>
 
 QgsPropertiesDefinition QgsCallout::sPropertyDefinitions;
@@ -64,6 +67,7 @@ void QgsCallout::initPropertyDefinitions()
     },
     { QgsCallout::WedgeWidth, QgsPropertyDefinition( "WedgeWidth", QObject::tr( "Wedge width" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsCallout::CornerRadius, QgsPropertyDefinition( "CornerRadius", QObject::tr( "Corner radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsCallout::BlendMode, QgsPropertyDefinition( "BlendMode", QObject::tr( "Callout blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
   };
 }
 
@@ -78,6 +82,7 @@ QVariantMap QgsCallout::properties( const QgsReadWriteContext & ) const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "anchorPoint" ), encodeAnchorPoint( mAnchorPoint ) );
   props.insert( QStringLiteral( "labelAnchorPoint" ), encodeLabelAnchorPoint( mLabelAnchorPoint ) );
+  props.insert( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
   props.insert( QStringLiteral( "ddProperties" ), mDataDefinedProperties.toVariant( propertyDefinitions() ) );
   return props;
 }
@@ -87,6 +92,8 @@ void QgsCallout::readProperties( const QVariantMap &props, const QgsReadWriteCon
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mAnchorPoint = decodeAnchorPoint( props.value( QStringLiteral( "anchorPoint" ), QString() ).toString() );
   mLabelAnchorPoint = decodeLabelAnchorPoint( props.value( QStringLiteral( "labelAnchorPoint" ), QString() ).toString() );
+  mBlendMode = QgsPainting::getCompositionMode(
+                 static_cast< QgsPainting::BlendMode >( props.value( QStringLiteral( "blendMode" ), QString::number( QgsPainting::BlendNormal ) ).toUInt() ) );
   mDataDefinedProperties.loadVariant( props.value( QStringLiteral( "ddProperties" ) ), propertyDefinitions() );
 }
 
@@ -122,6 +129,11 @@ void QgsCallout::stopRender( QgsRenderContext & )
 
 }
 
+bool QgsCallout::containsAdvancedEffects() const
+{
+  return mBlendMode != QPainter::CompositionMode_SourceOver || dataDefinedProperties().isActive( QgsCallout::BlendMode );
+}
+
 QSet<QString> QgsCallout::referencedFields( const QgsRenderContext &context ) const
 {
   mDataDefinedProperties.prepare( context.expressionContext() );
@@ -135,8 +147,21 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
 
 void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
-#if 0 // for debugging
   QPainter *painter = context.painter();
+  if ( context.useAdvancedEffects() )
+  {
+
+    QPainter::CompositionMode blendMode = mBlendMode;
+    if ( dataDefinedProperties().isActive( QgsCallout::BlendMode ) )
+    {
+      context.expressionContext().setOriginalValueVariable( QString() );
+      mBlendMode = QgsSymbolLayerUtils::decodeBlendMode( dataDefinedProperties().valueAsString( QgsCallout::BlendMode, context.expressionContext(), QString() ) );
+    }
+
+    painter->setCompositionMode( blendMode );
+  }
+
+#if 0 // for debugging
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing, false );
   painter->translate( rect.center() );
@@ -155,6 +180,8 @@ void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const do
 #endif
 
   draw( context, rect, angle, anchor, calloutContext );
+
+  painter->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
 }
 
 void QgsCallout::setEnabled( bool enabled )
@@ -1263,9 +1290,13 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   const double marginTop = context.convertToPainterUnits( top, mMarginUnit );
   const double marginBottom = context.convertToPainterUnits( bottom, mMarginUnit );
 
-  const QRectF expandedRect( rect.left() - marginLeft, rect.top() + marginBottom,
-                             rect.width() + marginLeft + marginRight,
-                             rect.height() - marginTop - marginBottom );
+  const QRectF expandedRect = rect.height() < 0 ?
+                              QRectF( rect.left() - marginLeft, rect.top() + marginBottom,
+                                      rect.width() + marginLeft + marginRight,
+                                      rect.height() - marginTop - marginBottom ) :
+                              QRectF( rect.left() - marginLeft, rect.top() - marginTop,
+                                      rect.width() + marginLeft + marginRight,
+                                      rect.height() + marginTop + marginBottom );
 
   // IMPORTANT -- check for degenerate height is sometimes >=0, because QRectF are not normalized and we are using painter
   // coordinates with descending vertical axis!

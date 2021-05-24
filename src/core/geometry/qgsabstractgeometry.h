@@ -164,6 +164,13 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Comparator for sorting of geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+
+    /**
      * Clears the geometry, ie reset it to a null geometry
      */
     virtual void clear() = 0;
@@ -227,6 +234,17 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
+
+    /**
+     * Reorganizes the geometry into a normalized form (or "canonical" form).
+     *
+     * Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+     * right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+     * resultant geometry will be geometrically equivalent to the original geometry.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void normalize() = 0;
 
     //import
 
@@ -689,6 +707,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
     /**
+     * Returns a reference to the simplest lossless representation of this geometry,
+     * e.g. if the geometry is a multipart geometry type with a single member geometry,
+     * a reference to that part will be returned.
+     *
+     * This method employs the following logic:
+     *
+     * - For multipart geometries containing a single part only a direct reference to that part will be returned.
+     * - For compound curve geometries containing a single curve only a direct reference to that curve will be returned.
+     *
+     * This method returns a reference only, and does not involve any geometry cloning.
+     *
+     * \note Ownership of the returned geometry is NOT transferred, and remains with the original
+     * geometry object. Callers must take care to ensure that the original geometry object
+     * exists for the lifespan of the returned object.
+     *
+     * \since QGIS 3.20
+     */
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const SIP_HOLDGIL;
+
+    /**
      * Checks validity of the geometry, and returns TRUE if the geometry is valid.
      *
      * \param error will be set to the validity error message
@@ -1025,6 +1063,26 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
+
+    /**
+     * Returns the sort index for the geometry, used in the compareTo() method to compare
+     * geometries of different types.
+     *
+     * \since QGIS 3.20
+     */
+    int sortIndex() const;
+
+    /**
+     * Compares to an \a other geometry of the same class, and returns a integer
+     * for sorting of the two geometries.
+     *
+     * \note The actual logic for the sorting is an internal detail only and is subject to change
+     * between QGIS versions. The result should only be used for direct comparison of geometries
+     * and not stored for later use.
+     *
+     * \since QGIS 3.20
+     */
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
 
     /**
      * Returns whether the geometry has any child geometries (FALSE for point / curve, TRUE otherwise)

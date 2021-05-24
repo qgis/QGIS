@@ -179,6 +179,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 #endif
 
+    void normalize() final SIP_HOLDGIL;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
@@ -236,6 +237,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
+    const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
@@ -325,6 +327,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   protected:
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;

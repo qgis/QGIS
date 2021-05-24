@@ -1,0 +1,129 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgslinesymbol.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLineSymbol : QgsSymbol
+{
+%Docstring(signature="appended")
+
+A line symbol type, for rendering LineString and MultiLineString geometries.
+%End
+
+%TypeHeaderCode
+#include "qgslinesymbol.h"
+%End
+  public:
+
+    static QgsLineSymbol *createSimple( const QVariantMap &properties ) /Factory/;
+%Docstring
+Create a line symbol with one symbol layer: SimpleLine with specified properties.
+This is a convenience method for easier creation of line symbols.
+%End
+
+    QgsLineSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
+%Docstring
+Constructor for QgsLineSymbol, with the specified list of initial symbol ``layers``.
+
+Ownership of the ``layers`` are transferred to the symbol.
+%End
+
+    void setWidth( double width );
+%Docstring
+Sets the ``width`` for the whole line symbol. Individual symbol layer sizes
+will be scaled to maintain their current relative size to the whole symbol size.
+
+.. seealso:: :py:func:`width`
+%End
+
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the width units for the whole symbol (including all symbol layers).
+
+:param unit: size units
+
+.. versionadded:: 3.16
+%End
+
+
+    double width() const;
+%Docstring
+Returns the estimated width for the whole symbol, which is the maximum width of
+all marker symbol layers in the symbol.
+
+.. warning::
+
+   This returned value is inaccurate if the symbol consists of multiple
+   symbol layers with different width units. Use the overload accepting a :py:class:`QgsRenderContext`
+   argument instead for accurate sizes in this case.
+
+.. seealso:: :py:func:`setWidth`
+%End
+
+    double width( const QgsRenderContext &context ) const;
+%Docstring
+Returns the symbol width, in painter units. This is the maximum width of
+all marker symbol layers in the symbol.
+
+This method returns an accurate width by calculating the actual rendered
+width of each symbol layer using the provided render ``context``.
+
+.. seealso:: :py:func:`setWidth`
+
+.. versionadded:: 3.4.5
+%End
+
+    void setDataDefinedWidth( const QgsProperty &property );
+%Docstring
+Set data defined width for whole symbol (including all symbol layers).
+
+.. seealso:: :py:func:`dataDefinedWidth`
+
+.. versionadded:: 3.0
+%End
+
+    QgsProperty dataDefinedWidth() const;
+%Docstring
+Returns data defined width for whole symbol (including all symbol layers).
+
+:return: data defined width, or invalid property if size is not set
+         at the line level. Caller takes responsibility for deleting the returned object.
+
+.. seealso:: :py:func:`setDataDefinedWidth`
+
+.. versionadded:: 3.0
+%End
+
+    void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+%Docstring
+Renders the symbol along the line joining ``points``, using the given render ``context``.
+
+The ``f`` argument is used to pass the feature currently being rendered (when available).
+
+If only a single symbol layer from the symbol should be rendered, it should be specified
+in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
+rendered.
+
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
+style and colors instead of the symbol's normal style.
+%End
+
+    virtual QgsLineSymbol *clone() const /Factory/;
+
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgslinesymbol.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

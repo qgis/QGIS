@@ -21,6 +21,9 @@
 #include "qgscolorramplegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgscolorramp.h"
+#include "qgssymbol.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>

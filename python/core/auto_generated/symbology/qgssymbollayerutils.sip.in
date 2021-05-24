@@ -196,8 +196,19 @@ Returns the size scaled in pixels according to the uom attribute.
 .. versionadded:: 3.0
 %End
 
-    static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
+    static QString encodeScaleMethod( Qgis::ScaleMethod scaleMethod );
+%Docstring
+Encodes a symbol scale method to a string.
+
+.. seealso:: :py:func:`decodeScaleMethod`
+%End
+
+    static Qgis::ScaleMethod decodeScaleMethod( const QString &str );
+%Docstring
+Decodes a symbol scale method from a string.
+
+.. seealso:: :py:func:`encodeScaleMethod`
+%End
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
@@ -346,13 +357,19 @@ between symbols.
 .. versionadded:: 2.12
 %End
 
-    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
+    static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QList<QgsSymbolLayer *> &layers );
+%Docstring
+Creates a symbol layer list from a DOM ``element``.
+%End
 
     static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) /Factory/;
     static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) /Factory/;
     static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) /Factory/;
 
-    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
+    static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QList<QgsSymbolLayer *> &layerList );
+%Docstring
+Converts a polygon symbolizer ``element`` to a list of marker symbol layers.
+%End
     static bool hasExternalGraphic( QDomElement &element );
     static bool hasWellKnownMark( QDomElement &element );
 
@@ -684,6 +701,20 @@ Converts a QColor into a premultiplied ARGB QColor value using a specified alpha
 .. versionadded:: 2.3
 %End
 
+    static bool condenseFillAndOutline( QgsFillSymbolLayer *fill, QgsLineSymbolLayer *outline );
+%Docstring
+Attempts to condense a ``fill`` and ``outline`` layer, by moving the outline layer to the
+fill symbol's stroke.
+
+This will only be done if the ``outline`` can be transformed into a stroke on the fill layer
+losslessly. If so, ``fill`` will be updated in place with the new stroke. Any existing stroke
+settings in ``fill`` will be replaced.
+
+Returns ``True`` if the fill and outline were successfully condensed.
+
+.. versionadded:: 3.20
+%End
+
     static void sortVariantList( QList<QVariant> &list, Qt::SortOrder order );
 %Docstring
 Sorts the passed list in requested order
@@ -885,6 +916,8 @@ Evaluates a map of properties using the given ``context`` and returns a variant 
 
 .. versionadded:: 3.18
 %End
+
+
 };
 
 

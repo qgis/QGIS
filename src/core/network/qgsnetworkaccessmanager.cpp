@@ -463,6 +463,37 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
   }
 }
 
+void QgsNetworkAccessManager::requestAuthOpenBrowser( const QUrl &url ) const
+{
+  if ( this != sMainNAM )
+  {
+    sMainNAM->requestAuthOpenBrowser( url );
+    connect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
+    return;
+  }
+  mAuthHandler->handleAuthRequestOpenBrowser( url );
+}
+
+void QgsNetworkAccessManager::requestAuthCloseBrowser() const
+{
+  if ( this != sMainNAM )
+  {
+    sMainNAM->requestAuthCloseBrowser();
+    disconnect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
+    return;
+  }
+  mAuthHandler->handleAuthRequestCloseBrowser();
+}
+
+void QgsNetworkAccessManager::abortAuthBrowser()
+{
+  if ( this != sMainNAM )
+  {
+    disconnect( sMainNAM, &QgsNetworkAccessManager::authBrowserAborted, this, &QgsNetworkAccessManager::abortAuthBrowser );
+  }
+  emit authBrowserAborted();
+}
+
 void QgsNetworkAccessManager::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
   mAuthHandler->handleAuthRequest( reply, auth );
@@ -654,12 +685,12 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
 int QgsNetworkAccessManager::timeout()
 {
-  return QgsSettings().value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), 60000 ).toInt();
+  return settingsNetworkTimeout.value();
 }
 
 void QgsNetworkAccessManager::setTimeout( const int time )
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), time );
+  settingsNetworkTimeout.setValue( time );
 }
 
 QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
@@ -713,4 +744,15 @@ void QgsNetworkAuthenticationHandler::handleAuthRequest( QNetworkReply *reply, Q
 {
   Q_UNUSED( reply )
   QgsDebugMsg( QStringLiteral( "Network reply required authentication, but no handler was in place to provide this authentication request while accessing the URL:\n%1" ).arg( reply->request().url().toString() ) );
+}
+
+void QgsNetworkAuthenticationHandler::handleAuthRequestOpenBrowser( const QUrl &url )
+{
+  Q_UNUSED( url )
+  QgsDebugMsg( QStringLiteral( "Network authentication required external browser to open URL %1, but no handler was in place" ).arg( url.toString() ) );
+}
+
+void QgsNetworkAuthenticationHandler::handleAuthRequestCloseBrowser()
+{
+  QgsDebugMsg( QStringLiteral( "Network authentication required external browser closed, but no handler was in place" ) );
 }

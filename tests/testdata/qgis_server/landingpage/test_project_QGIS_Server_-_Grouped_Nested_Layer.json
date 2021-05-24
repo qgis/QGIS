@@ -17,14 +17,14 @@ Content-Type: application/json
       "owsServiceOnlineResource": "",
       "owsServiceTitle": "QGIS Server - Grouped Nested Layer",
       "wcsLayerIds": [],
-      "wcsServiceUrl": "",
+      "wcsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfsLayerIds": [
         "as_areas_bbe3c71b_356c_49f5_9fc2_ae771bcdd467",
         "as_symbols_3a1cdeef_9082_4d07_be5c_47c956bd7e76",
         "cdb_labels_8ee74af8_e7ba_4d80_9e0d_5b0b956d3daf",
         "cdb_lines_3f5c3c6d_db6d_4681_9291_7109f8d69f8b"
       ],
-      "wfsServiceUrl": "",
+      "wfsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wfstDeleteLayerIds": [
         "as_areas_bbe3c71b_356c_49f5_9fc2_ae771bcdd467",
         "as_symbols_3a1cdeef_9082_4d07_be5c_47c956bd7e76",
@@ -70,10 +70,10 @@ Content-Type: application/json
       "wmsRestrictedComposers": [],
       "wmsRestrictedLayers": [],
       "wmsRootName": "",
-      "wmsServiceUrl": "",
+      "wmsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
       "wmsTileBuffer": 0,
       "wmsUseLayerIds": false,
-      "wmtsServiceUrl": ""
+      "wmtsServiceUrl": "http://server.qgis.org/map/FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
     },
     "crs": "EPSG:4326",
     "description": "",

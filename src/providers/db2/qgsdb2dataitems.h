@@ -18,8 +18,10 @@
 #include "qgsdb2provider.h"
 #include "qgsdb2tablemodel.h"
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;

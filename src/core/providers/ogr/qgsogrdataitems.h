@@ -16,9 +16,10 @@
 #ifndef QGSOGRDATAITEMS_H
 #define QGSOGRDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsogrprovider.h"
 #include "qgsdataitemprovider.h"
+#include "qgsdatacollectionitem.h"
 #include "qgis_sip.h"
 
 ///@cond PRIVATE

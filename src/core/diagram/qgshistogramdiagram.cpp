@@ -17,6 +17,7 @@
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
 
 #include <QPainter>
 

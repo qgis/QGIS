@@ -34,7 +34,6 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
-#include "qgssymbollayerreference.h"
 #include "qgstemporalrangeobject.h"
 
 class QPainter;
@@ -334,6 +333,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     double scaleFactor() const {return mScaleFactor;}
 
     /**
+     * Returns the targeted DPI for rendering.
+     *
+     * \see setDpiTarget()
+     * \since QGIS 3.20
+     */
+    double dpiTarget() const {return mDpiTarget;}
+
+    /**
      * Returns TRUE if the rendering operation has been stopped and any ongoing
      * rendering should be canceled immediately.
      *
@@ -475,6 +482,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see scaleFactor()
      */
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
+
+    /**
+     * Sets the targeted \a dpi for rendering.
+     *
+     * \see dpiTarget()
+     * \since QGIS 3.20
+     */
+    void setDpiTarget( double dpi ) {mDpiTarget = dpi;}
 
     /**
      * Sets the renderer map scale. This should match the desired scale denominator
@@ -927,6 +942,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     //! Factor to scale line widths and point marker sizes
     double mScaleFactor = 1.0;
+
+    //! Targeted DPI
+    double mDpiTarget = -1.0;
 
     //! Map scale
     double mRendererScale = 1.0;

@@ -6,7 +6,7 @@
   "arguments": [
     {"arg":"geometry","description":"a multi-type geometry"},
     {"arg":"orderby","description":"an expression string defining the order criteria"},
-    {"arg":"ascending","description":"boolean, True for ascending, False for descending"}
+    {"arg":"ascending","optional":true,"default":"true","description":"boolean, True for ascending, False for descending"}
   ],
   "examples": [
     {

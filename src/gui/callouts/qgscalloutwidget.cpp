@@ -21,6 +21,8 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 {
@@ -132,7 +134,7 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mCalloutLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
@@ -174,6 +176,8 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   connect( mLabelAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged );
 
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
+
+  connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 }
 
 void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
@@ -210,12 +214,15 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
   whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast< int >( callout->labelAnchorPoint() ) ) );
 
+  whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
+
   registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
   registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
   registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
   registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
   registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
   registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
 
   registerDataDefinedButton( mOriginXDDBtn, QgsCallout::OriginX );
   registerDataDefinedButton( mOriginYDDBtn, QgsCallout::OriginY );
@@ -296,6 +303,12 @@ void QgsSimpleLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged( 
   emit changed();
 }
 
+void QgsSimpleLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged( int )
+{
+  mCallout->setBlendMode( mCalloutBlendComboBox->blendMode() );
+  emit changed();
+}
+
 void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
 {
   mCallout->setDrawCalloutToAllParts( active );
@@ -324,7 +337,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWid
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mCalloutLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mCalloutLineStyleButton->setDialogTitle( tr( "Callout Symbol" ) );
   mCalloutLineStyleButton->registerExpressionContextGenerator( this );
 
@@ -384,6 +397,7 @@ QgsCurvedLineCalloutWidget::QgsCurvedLineCalloutWidget( QgsVectorLayer *vl, QWid
     emit changed();
   } );
 
+  connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCurvedLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 }
 
 void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
@@ -422,6 +436,8 @@ void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
   whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast< int >( callout->labelAnchorPoint() ) ) );
 
+  whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
+
   whileBlocking( mCurvatureSpinBox )->setValue( mCallout->curvature() * 100.0 );
   whileBlocking( mCurvatureSlider )->setValue( mCallout->curvature() * 1000.0 );
 
@@ -431,6 +447,7 @@ void QgsCurvedLineCalloutWidget::setCallout( QgsCallout *callout )
   registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
   registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
   registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
   registerDataDefinedButton( mCalloutCurvatureDDBtn, QgsCallout::Curvature );
   registerDataDefinedButton( mCalloutOrientationDDBtn, QgsCallout::Orientation );
 
@@ -513,6 +530,12 @@ void QgsCurvedLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged( 
   emit changed();
 }
 
+void QgsCurvedLineCalloutWidget::mCalloutBlendComboBox_currentIndexChanged( int )
+{
+  mCallout->setBlendMode( mCalloutBlendComboBox->blendMode() );
+  emit changed();
+}
+
 void QgsCurvedLineCalloutWidget::drawToAllPartsToggled( bool active )
 {
   mCallout->setDrawCalloutToAllParts( active );
@@ -530,7 +553,7 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
   setupUi( this );
 
   // Callout options - to move to custom widgets when multiple callout styles exist
-  mCalloutFillStyleButton->setSymbolType( QgsSymbol::Fill );
+  mCalloutFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
   mCalloutFillStyleButton->setDialogTitle( tr( "Balloon Symbol" ) );
   mCalloutFillStyleButton->registerExpressionContextGenerator( this );
 
@@ -620,6 +643,8 @@ QgsBalloonCalloutWidget::QgsBalloonCalloutWidget( QgsVectorLayer *vl, QWidget *p
     mCallout->setCornerRadius( value );
     emit changed();
   } );
+
+  connect( mCalloutBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsBalloonCalloutWidget::mCalloutBlendComboBox_currentIndexChanged );
 }
 
 void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
@@ -659,8 +684,11 @@ void QgsBalloonCalloutWidget::setCallout( QgsCallout *callout )
 
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
 
+  whileBlocking( mCalloutBlendComboBox )->setBlendMode( mCallout->blendMode() );
+
   registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
   registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
+  registerDataDefinedButton( mCalloutBlendModeDDBtn, QgsCallout::BlendMode );
 
   registerDataDefinedButton( mDestXDDBtn, QgsCallout::DestinationX );
   registerDataDefinedButton( mDestYDDBtn, QgsCallout::DestinationY );
@@ -707,6 +735,12 @@ void QgsBalloonCalloutWidget::fillSymbolChanged()
 void QgsBalloonCalloutWidget::mAnchorPointComboBox_currentIndexChanged( int index )
 {
   mCallout->setAnchorPoint( static_cast<QgsCallout::AnchorPoint>( mAnchorPointComboBox->itemData( index ).toInt() ) );
+  emit changed();
+}
+
+void QgsBalloonCalloutWidget::mCalloutBlendComboBox_currentIndexChanged( int )
+{
+  mCallout->setBlendMode( mCalloutBlendComboBox->blendMode() );
   emit changed();
 }
 

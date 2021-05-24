@@ -40,7 +40,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Provider temporal handling mode
-     **/
+     */
     enum TemporalMode
     {
       ProviderHasFixedTemporalRange = 0, //!< Entire dataset from provider has a fixed start and end datetime.
@@ -59,14 +59,14 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      * Returns the temporal properties mode.
      *
      *\see setMode()
-    **/
+    */
     TemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
-    **/
+    */
     void setMode( TemporalMode mode );
 
     /**

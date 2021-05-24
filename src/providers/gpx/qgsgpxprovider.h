@@ -34,10 +34,9 @@ class QgsGpsData;
 class QgsGPXFeatureIterator;
 
 /**
-\class QgsGPXProvider
-\brief Data provider for GPX (GPS eXchange) files
-* This provider adds the ability to load GPX files as vector layers.
-*
+ * \class QgsGPXProvider
+ * \brief Data provider for GPX (GPS eXchange) files
+ * This provider adds the ability to load GPX files as vector layers.
 */
 class QgsGPXProvider final: public QgsVectorDataProvider
 {

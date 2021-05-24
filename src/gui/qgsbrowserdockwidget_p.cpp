@@ -51,6 +51,8 @@
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
 #include "qgspointcloudlayer.h"
+#include "qgslayeritem.h"
+#include "qgsdirectoryitem.h"
 
 /// @cond PRIVATE
 

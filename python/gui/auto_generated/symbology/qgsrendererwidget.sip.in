@@ -14,6 +14,7 @@ class QgsRendererWidget : QgsPanelWidget
 Base class for renderer settings widgets.
 
 WORKFLOW:
+
 - open renderer dialog with some RENDERER  (never null!)
 - find out which widget to use
 - instantiate it and set in stacked widget
@@ -234,6 +235,7 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 
     virtual double value( const QgsSymbol *symbol ) const;
 
+
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 
 
@@ -254,6 +256,7 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 
     virtual double value( const QgsSymbol *symbol ) const;
 
+
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 
 };
@@ -272,6 +275,7 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 
 
     virtual double value( const QgsSymbol *symbol ) const;
+
 
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 

@@ -39,6 +39,7 @@ Constructor for GroupedFeature.
 :param isSelected: set to ``True`` if feature is selected and should be rendered in a selected state
 :param label: optional label text, or empty string for no label
 %End
+        ~GroupedFeature();
 
         QgsFeature feature;
 

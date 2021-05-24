@@ -39,6 +39,9 @@
 #include "qgsproject.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -59,9 +62,9 @@ static const int SYMBOL_LAYER_ITEM_TYPE = QStandardItem::UserType + 1;
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbol *symbol, const QgsSymbolLayer *symbolLayer )
 
 {
-  if ( symbolLayer->type() == QgsSymbol::Marker && symbol->type() == QgsSymbol::Marker )
+  if ( symbolLayer->type() == Qgis::SymbolType::Marker && symbol->type() == Qgis::SymbolType::Marker )
   {
-    Q_ASSERT( symbol->type() == QgsSymbol::Marker );
+    Q_ASSERT( symbol->type() == Qgis::SymbolType::Marker );
     mMarker = static_cast<QgsMarkerSymbol *>( symbol );
     mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayer *>( symbolLayer );
     mDDSize = mMarker->dataDefinedSize();
@@ -70,7 +73,7 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbol *symbol, const QgsSymbolLaye
     if ( !mDDSize && !mDDAngle )
       mMarker = nullptr;
   }
-  else if ( symbolLayer->type() == QgsSymbol::Line && symbol->type() == QgsSymbol::Line )
+  else if ( symbolLayer->type() == Qgis::SymbolType::Line && symbol->type() == Qgis::SymbolType::Line )
   {
     mLine = static_cast<QgsLineSymbol *>( symbol );
     mLineSymbolLayer = static_cast<const QgsLineSymbolLayer *>( symbolLayer );
@@ -190,11 +193,11 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case QgsSymbol::Marker :
+            case Qgis::SymbolType::Marker :
               return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
-            case QgsSymbol::Fill   :
+            case Qgis::SymbolType::Fill   :
               return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
-            case QgsSymbol::Line   :
+            case Qgis::SymbolType::Line   :
               return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
@@ -587,13 +590,13 @@ void QgsSymbolSelectorWidget::addLayer()
   QgsSymbol *parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  QgsProperty ddSize( parentSymbol->type() == QgsSymbol::Marker
+  QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker
                       ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
                       : QgsProperty() );
-  QgsProperty ddAngle( parentSymbol->type() == QgsSymbol::Marker
+  QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker
                        ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
                        : QgsProperty() );
-  QgsProperty ddWidth( parentSymbol->type() == QgsSymbol::Line
+  QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line
                        ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
                        : QgsProperty() );
 

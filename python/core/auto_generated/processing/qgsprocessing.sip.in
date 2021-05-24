@@ -52,6 +52,7 @@ Converts a source ``type`` to a string representation.
 %End
 
     static const QString TEMPORARY_OUTPUT;
+
 };
 
 /************************************************************************

@@ -27,8 +27,12 @@
 
 ///@cond PRIVATE
 
-QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
-  : mNode( node ), mDataType( dataType ), mAttributes( attributes ), mRequestedAttributes( requestedAttributes )
+QgsPointCloudBlockRequest::QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri, const QString &dataType,
+    const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
+    const QgsVector3D &scale, const QgsVector3D &offset )
+  : mNode( node ), mDataType( dataType ),
+    mAttributes( attributes ), mRequestedAttributes( requestedAttributes ),
+    mScale( scale ), mOffset( offset )
 {
   QNetworkRequest nr( Uri );
   nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -56,23 +60,25 @@ void QgsPointCloudBlockRequest::blockFinishedLoading()
     try
     {
       mBlock = nullptr;
+#ifdef WITH_EPT
       if ( mDataType == QLatin1String( "binary" ) )
       {
-        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+        mBlock = QgsEptDecoder::decompressBinary( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
       }
       else if ( mDataType == QLatin1String( "zstandard" ) )
       {
-        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+        mBlock = QgsEptDecoder::decompressZStandard( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
       }
       else if ( mDataType == QLatin1String( "laszip" ) )
       {
-        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes );
+        mBlock = QgsEptDecoder::decompressLaz( mTileDownloadManagetReply->data(), mAttributes, mRequestedAttributes, mScale, mOffset );
       }
       else
       {
         mErrorStr = QStringLiteral( "unknown data type %1;" ).arg( mDataType );
         invalidDataType = true;
       }
+#endif
     }
     catch ( std::exception &e )
     {

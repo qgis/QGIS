@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
-#include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
 #include <QSpinBox>
 #include <QMessageBox>
 #include <QTimer>
@@ -137,12 +137,14 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     validate();
   } );
 
+  mCrs->setShowAccuracyWarnings( true );
+
   // geometry types
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type )
   {
-    mGeomTypeCbo->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeomTypeCbo->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   };
 
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );

@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfeaturesink.h"
 #include "qgstaskmanager.h"
@@ -49,22 +50,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 {
   public:
 
-    //! Error codes
-    enum ExportError
-    {
-      NoError = 0, //!< No errors were encountered
-      ErrCreateDataSource, //!< Could not create the destination data source
-      ErrCreateLayer, //!< Could not create destination layer
-      ErrAttributeTypeUnsupported, //!< Source layer has an attribute type which could not be handled by destination
-      ErrAttributeCreationFailed, //!< Destination provider was unable to create an attribute
-      ErrProjection, //!< An error occurred while reprojecting features to destination CRS
-      ErrFeatureWriteFailed, //!< An error occurred while writing a feature to the destination
-      ErrInvalidLayer, //!< Could not access newly created destination layer
-      ErrInvalidProvider, //!< Could not find a matching provider key
-      ErrProviderUnsupportedFeature, //!< Provider does not support creation of empty layers
-      ErrConnectionFailed, //!< Could not connect to destination
-      ErrUserCanceled, //!< User canceled the export
-    };
 
     /**
      * Writes the contents of vector layer to a different datasource.
@@ -79,15 +64,14 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \param feedback optional feedback object to show progress and cancellation of export
      * \returns NoError for a successful export, or encountered error
      */
-    static ExportError exportLayer( QgsVectorLayer *layer,
-                                    const QString &uri,
-                                    const QString &providerKey,
-                                    const QgsCoordinateReferenceSystem &destCRS,
-                                    bool onlySelected = false,
-                                    QString *errorMessage SIP_OUT = nullptr,
-                                    const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                                    QgsFeedback *feedback = nullptr
-                                  );
+    static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
+        const QString &uri,
+        const QString &providerKey,
+        const QgsCoordinateReferenceSystem &destCRS,
+        bool onlySelected = false,
+        QString *errorMessage SIP_OUT = nullptr,
+        const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+        QgsFeedback *feedback = nullptr );
 
     /**
      * Constructor for QgsVectorLayerExporter.
@@ -120,7 +104,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \see errorMessage()
      * \see errorCount()
      */
-    ExportError errorCode() const;
+    Qgis::VectorExportResult errorCode() const;
 
     /**
      * Returns any error message encountered during the export.
@@ -153,7 +137,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     bool createSpatialIndex();
 
     //! Contains error value
-    ExportError mError;
+    Qgis::VectorExportResult mError;
     QString mErrorMessage;
 
     int mErrorCount;
@@ -230,7 +214,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
      * Emitted when an error occurs which prevented the layer being exported (or if
      * the task is canceled). The export \a error and \a errorMessage will be reported.
      */
-    void errorOccurred( int error, const QString &errorMessage );
+    void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
 
   protected:
 
@@ -249,7 +233,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
-    QgsVectorLayerExporter::ExportError mError = QgsVectorLayerExporter::NoError;
+    Qgis::VectorExportResult mError = Qgis::VectorExportResult::Success;
     QString mErrorMessage;
 
 };

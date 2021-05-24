@@ -28,6 +28,8 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
 
 /**
  * \ingroup UnitTests

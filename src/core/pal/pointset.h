@@ -137,6 +137,11 @@ namespace pal
       void extendLineByDistance( double startDistance, double endDistance, double smoothDistance );
 
       /**
+       * Offsets linestrings by the specified \a distance.
+       */
+      void offsetCurveByDistance( double distance );
+
+      /**
        * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
@@ -204,6 +209,11 @@ namespace pal
        * Returns a WKT representation of the point set.
        */
       QString toWkt() const;
+
+      /**
+       * Returns a vector of edge distances as well as its total length
+       */
+      std::tuple< std::vector< double >, double > edgeDistances() const;
 
       int nbPoints;
       std::vector< double > x;

@@ -34,6 +34,8 @@ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 %End
 
+    ~QgsLayoutItemShape();
+
     static QgsLayoutItemShape *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new shape item for the specified ``layout``.

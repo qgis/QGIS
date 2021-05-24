@@ -213,14 +213,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer *mRasterLayer = nullptr;
 
-    /**
-     * \brief If the underlying raster layer doesn't have a provider
-
-        This variable is used to determine if various parts of the Properties UI are
-        included or not
-     */
-    //bool mRasterLayerIsInternal;
-
     QgsRasterRendererWidget *mRendererWidget = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 

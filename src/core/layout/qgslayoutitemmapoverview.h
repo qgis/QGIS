@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitemmapitem.h"
-#include "qgssymbol.h"
 #include <QString>
 #include <QObject>
 #include <QPainter>
@@ -29,6 +28,7 @@
 class QDomDocument;
 class QDomElement;
 class QgsLayoutItemMapOverview;
+class QgsFillSymbol;
 
 /**
  * \ingroup core

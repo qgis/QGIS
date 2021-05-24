@@ -25,6 +25,8 @@
 #include "qgsmapunitscale.h"
 #include "qgscalloutposition.h"
 #include "qgsmargins.h"
+
+#include <QPainter>
 #include <QString>
 #include <QRectF>
 #include <memory>
@@ -94,6 +96,7 @@ class CORE_EXPORT QgsCallout
       Margins, //!< Margin from text (since QGIS 3.20)
       WedgeWidth, //!< Balloon callout wedge width (since QGIS 3.20)
       CornerRadius, //!< Balloon callout corner radius (since QGIS 3.20)
+      BlendMode, //!< Callout blend mode (since QGIS 3.20)
     };
 
     //! Options for draw order (stacking) of callouts
@@ -188,6 +191,13 @@ class CORE_EXPORT QgsCallout
      * \see readProperties()
      */
     virtual void restoreProperties( const QDomElement &element, const QgsReadWriteContext &context );
+
+    /**
+     * Returns TRUE if the callout requires advanced effects such as blend modes, which require
+     * output in raster formats to be fully respected.
+     * \since QGIS 3.20
+     */
+    bool containsAdvancedEffects() const;
 
     /**
      * Prepares the callout for rendering on the specified render \a context.
@@ -409,6 +419,20 @@ class CORE_EXPORT QgsCallout
      */
     static QgsCallout::LabelAnchorPoint decodeLabelAnchorPoint( const QString &name, bool *ok = nullptr );
 
+    /**
+     * Returns the blending mode used for drawing callouts.
+     * \see setBlendMode()
+     * \since QGIS 3.20
+     */
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+
+    /**
+     * Sets the blending \a mode used for drawing callouts.
+     * \see blendMode()
+     * \since QGIS 3.20
+     */
+    void setBlendMode( QPainter::CompositionMode mode ) { mBlendMode = mode; }
+
   protected:
 
     /**
@@ -464,6 +488,8 @@ class CORE_EXPORT QgsCallout
 
     AnchorPoint mAnchorPoint = PoleOfInaccessibility;
     LabelAnchorPoint mLabelAnchorPoint = LabelPointOnExterior;
+
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
     //! Property collection for data defined callout settings
     QgsPropertyCollection mDataDefinedProperties;

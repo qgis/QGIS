@@ -48,8 +48,9 @@ namespace Qt3DCore
  * and will be processed by the parent chunked entity.
  *
  * There are currently two types of queue jobs:
- *  1. chunk loaders: prepares all data needed for creation of entities (ChunkLoader sub-class)
- *  2. chunk updaters: given a chunk with already existing entity, it updates the entity (e.g. update texture or geometry)
+ *
+ * 1. chunk loaders: prepares all data needed for creation of entities (ChunkLoader sub-class)
+ * 2. chunk updaters: given a chunk with already existing entity, it updates the entity (e.g. update texture or geometry)
  *
  * \since QGIS 3.0
  */

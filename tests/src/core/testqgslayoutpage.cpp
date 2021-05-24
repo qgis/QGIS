@@ -29,6 +29,7 @@
 #include "qgslayoutpagecollection.h"
 #include <QObject>
 #include "qgstest.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsLayoutPage : public QObject
 {

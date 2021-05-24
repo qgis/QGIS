@@ -20,6 +20,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>

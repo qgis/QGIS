@@ -14,12 +14,19 @@
  ***************************************************************************/
 #include "qgsfileutils.h"
 #include "qgis.h"
+#include "qgsexception.h"
 #include <QObject>
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <QDir>
 #include <QSet>
 #include <QDirIterator>
+
+#ifdef MSVC
+#include <Windows.h>
+#include <ShlObj.h>
+#pragma comment(lib,"Shell32.lib")
+#endif
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
 {
@@ -262,3 +269,94 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   return foundFiles;
 }
 
+#ifdef MSVC
+std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+{
+  const QString nativePath = QDir::toNativeSeparators( path );
+
+  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  nativePath.toWCharArray( pathArray.get() );
+  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
+  return pathArray;
+}
+#endif
+
+Qgis::DriveType QgsFileUtils::driveType( const QString &path )
+{
+#ifdef MSVC
+  auto pathType = [ = ]( const QString & path ) -> DriveType
+  {
+    std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+    const UINT type = GetDriveTypeW( pathArray.get() );
+    switch ( type )
+    {
+      case DRIVE_UNKNOWN:
+        return Qgis::DriveType::Unknown;
+
+      case DRIVE_NO_ROOT_DIR:
+        return Qgis::DriveType::Invalid;
+
+      case DRIVE_REMOVABLE:
+        return Qgis::DriveType::Removable;
+
+      case DRIVE_FIXED:
+        return Qgis::DriveType::Fixed;
+
+      case DRIVE_REMOTE:
+        return Qgis::DriveType::Remote;
+
+      case DRIVE_CDROM:
+        return Qgis::DriveType::CdRom;
+
+      case DRIVE_RAMDISK:
+        return Qgis::DriveType::RamDisk;
+    }
+
+    return Unknown;
+
+  };
+
+  const QString originalPath = QDir::cleanPath( path );
+  QString currentPath = originalPath;
+  QString prevPath;
+  while ( currentPath != prevPath )
+  {
+    prevPath = currentPath;
+    currentPath = QFileInfo( currentPath ).path();
+    const DriveType type = pathType( currentPath );
+    if ( type != Unknown && type != Invalid )
+      return type;
+  }
+  return Unknown;
+
+#else
+  ( void )path;
+  throw QgsNotSupportedException( QStringLiteral( "Determining drive type is not supported on this platform" ) );
+#endif
+}
+
+bool QgsFileUtils::pathIsSlowDevice( const QString &path )
+{
+  try
+  {
+    const Qgis::DriveType type = driveType( path );
+    switch ( type )
+    {
+      case Qgis::DriveType::Unknown:
+      case Qgis::DriveType::Invalid:
+      case Qgis::DriveType::Fixed:
+      case Qgis::DriveType::RamDisk:
+        return false;
+
+      case Qgis::DriveType::Removable:
+      case Qgis::DriveType::Remote:
+      case Qgis::DriveType::CdRom:
+        return true;
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+
+  }
+  return false;
+}

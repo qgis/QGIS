@@ -400,6 +400,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   private:
 
     /**
+     * Initialize the attribute form to a given \a feature.
+     *
+     * \since QGIS 3.20
+     */
+    void initAttributeForm( const QgsFeature &feature );
+
+    /**
      * Initializes widgets which depend on the attributes of this layer
      */
     void columnBoxInit();
@@ -435,9 +442,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;
-    // If the current feature is set, while the form is still not initialized
-    // we will temporarily save it in here and set it on init
-    QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
     bool mBrowsingAutoPanScaleAllowed = true;
     ViewMode mPreviousView = AttributeTable;

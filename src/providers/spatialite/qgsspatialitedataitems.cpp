@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
+#include "qgsfieldsitem.h"
 
 #ifdef HAVE_GUI
 #include "qgsspatialitesourceselect.h"

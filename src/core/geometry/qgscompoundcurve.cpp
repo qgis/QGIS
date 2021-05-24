@@ -67,6 +67,37 @@ QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
   return result.release();
 }
 
+int QgsCompoundCurve::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsCompoundCurve *otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( other );
+  if ( !otherCurve )
+    return -1;
+
+  int i = 0;
+  int j = 0;
+  while ( i < mCurves.size() && j < otherCurve->mCurves.size() )
+  {
+    const QgsAbstractGeometry *aGeom = mCurves[i];
+    const QgsAbstractGeometry *bGeom = otherCurve->mCurves[j];
+    const int comparison = aGeom->compareTo( bGeom );
+    if ( comparison != 0 )
+    {
+      return comparison;
+    }
+    i++;
+    j++;
+  }
+  if ( i < mCurves.size() )
+  {
+    return 1;
+  }
+  if ( j < otherCurve->mCurves.size() )
+  {
+    return -1;
+  }
+  return 0;
+}
+
 QString QgsCompoundCurve::geometryType() const
 {
   return QStringLiteral( "CompoundCurve" );
@@ -128,6 +159,28 @@ QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
     bbox.combineExtentWith( curveBox );
   }
   return bbox;
+}
+
+void QgsCompoundCurve::scroll( int index )
+{
+  const int size = numPoints();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  auto [p1, p2 ] = splitCurveAtVertex( index );
+
+  mCurves.clear();
+  if ( QgsCompoundCurve *curve2 = qgsgeometry_cast< QgsCompoundCurve *>( p2.get() ) )
+  {
+    // take the curves from the second part and make them our first lot of curves
+    mCurves = std::move( curve2->mCurves );
+  }
+  if ( QgsCompoundCurve *curve1 = qgsgeometry_cast< QgsCompoundCurve *>( p1.get() ) )
+  {
+    // take the curves from the first part and append them to our curves
+    mCurves.append( curve1->mCurves );
+    curve1->mCurves.clear();
+  }
 }
 
 bool QgsCompoundCurve::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -405,6 +458,21 @@ bool QgsCompoundCurve::isValid( QString &error, int flags ) const
   return QgsCurve::isValid( error, flags );
 }
 
+int QgsCompoundCurve::indexOf( const QgsPoint &point ) const
+{
+  int curveStart = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const int curveIndex = curve->indexOf( point );
+    if ( curveIndex >= 0 )
+      return curveStart + curveIndex;
+    // subtract 1 here, because the next curve will start with the same
+    // vertex as this curve ended at
+    curveStart += curve->numPoints() - 1;
+  }
+  return -1;
+}
+
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   QgsLineString *line = new QgsLineString();
@@ -492,6 +560,14 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   // so here we fall back to the non-optimised base class check which has to first calculate
   // the overall bounding box of the compound curve..
   return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
+}
+
+const QgsAbstractGeometry *QgsCompoundCurve::simplifiedTypeRef() const
+{
+  if ( mCurves.size() == 1 )
+    return mCurves.at( 0 );
+  else
+    return this;
 }
 
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
@@ -590,6 +666,35 @@ void QgsCompoundCurve::addVertex( const QgsPoint &pt )
   }
   line->addVertex( pt );
   clearCache();
+}
+
+void QgsCompoundCurve::condenseCurves()
+{
+  QgsCurve *lastCurve = nullptr;
+  QVector< QgsCurve * > newCurves;
+  newCurves.reserve( mCurves.size() );
+  for ( QgsCurve *curve : std::as_const( mCurves ) )
+  {
+    if ( lastCurve && lastCurve->wkbType() == curve->wkbType() )
+    {
+      if ( QgsLineString *ls = qgsgeometry_cast< QgsLineString * >( lastCurve ) )
+      {
+        ls->append( qgsgeometry_cast< QgsLineString * >( curve ) );
+        delete curve;
+      }
+      else if ( QgsCircularString *cs = qgsgeometry_cast< QgsCircularString * >( lastCurve ) )
+      {
+        cs->append( qgsgeometry_cast< QgsCircularString * >( curve ) );
+        delete curve;
+      }
+    }
+    else
+    {
+      lastCurve = curve;
+      newCurves << curve;
+    }
+  }
+  mCurves = newCurves;
 }
 
 void QgsCompoundCurve::draw( QPainter &p ) const
@@ -896,6 +1001,46 @@ void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const Qg
     curve->transformVertices( transform );
   }
   clearCache();
+}
+
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCompoundCurve::splitCurveAtVertex( int index ) const
+{
+  if ( mCurves.empty() )
+    return std::make_tuple( std::make_unique< QgsCompoundCurve >(), std::make_unique< QgsCompoundCurve >() );
+
+  int curveStart = 0;
+
+  std::unique_ptr< QgsCompoundCurve > curve1 = std::make_unique< QgsCompoundCurve >();
+  std::unique_ptr< QgsCompoundCurve > curve2;
+
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const int curveSize = curve->numPoints();
+    if ( !curve2 && index < curveStart + curveSize )
+    {
+      // split the curve
+      auto [ p1, p2 ] = curve->splitCurveAtVertex( index - curveStart );
+      if ( !p1->isEmpty() )
+        curve1->addCurve( p1.release() );
+
+      curve2 = std::make_unique< QgsCompoundCurve >();
+      if ( !p2->isEmpty() )
+        curve2->addCurve( p2.release() );
+    }
+    else
+    {
+      if ( curve2 )
+        curve2->addCurve( curve->clone() );
+      else
+        curve1->addCurve( curve->clone() );
+    }
+
+    // subtract 1 here, because the next curve will start with the same
+    // vertex as this curve ended at
+    curveStart += curve->numPoints() - 1;
+  }
+
+  return std::make_tuple( std::move( curve1 ), curve2 ? std::move( curve2 ) : std::make_unique< QgsCompoundCurve >() );
 }
 
 void QgsCompoundCurve::sumUpArea( double &sum ) const

@@ -75,7 +75,6 @@ email                : tim at linfiniti.com
 #include <QImage>
 #include <QLabel>
 #include <QList>
-#include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
@@ -127,8 +126,12 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   setProviderType( providerKey );
 
   QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-
-  setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
+  QgsDataProvider::ReadFlags providerFlags = QgsDataProvider::ReadFlags();
+  if ( options.loadDefaultStyle )
+  {
+    providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
+  }
+  setDataSourcePrivate( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
   {
@@ -311,6 +314,9 @@ QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
 
 QString QgsRasterLayer::htmlMetadata() const
 {
+  if ( !mDataProvider )
+    return QString();
+
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html><head></head>\n<body>\n" );
 
@@ -344,23 +350,17 @@ QString QgsRasterLayer::htmlMetadata() const
   if ( publicSource() != path || !isLocalPath )
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() != path ? publicSource() : path ) + QStringLiteral( "</td></tr>\n" );
 
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) % QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
-    else
-      myMetadata += tr( "Projected" );
-  }
-  myMetadata += QStringLiteral( "</td></tr>\n" ) %
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // CRS
+  myMetadata += crsHtmlMetadata();
+
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Properties" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  myMetadata += QStringLiteral( "\n" ) %
 
                 // Extent
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Extent" ) % QStringLiteral( "</td><td>" ) % extent().toString() % QStringLiteral( "</td></tr>\n" ) %
-
-                // unit
-                QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Unit" ) % QStringLiteral( "</td><td>" ) % QgsUnitTypes::toString( crs().mapUnits() ) % QStringLiteral( "</td></tr>\n" ) %
 
                 // Raster Width
                 QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Width" ) % QStringLiteral( "</td><td>" );
@@ -597,7 +597,7 @@ void QgsRasterLayer::setOpacity( double opacity )
 
   mPipe.renderer()->setOpacity( opacity );
   emit opacityChanged( opacity );
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 double QgsRasterLayer::opacity() const
@@ -876,13 +876,20 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 }
 
-void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
+    const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   bool hadRenderer( renderer() );
 
   QDomImplementation domImplementation;
   QDomDocumentType documentType;
   QString errorMsg;
+
+  bool loadDefaultStyleFlag = false;
+  if ( flags & QgsDataProvider::FlagLoadDefaultStyle )
+  {
+    loadDefaultStyleFlag = true;
+  }
 
   // Store the original style
   if ( hadRenderer && ! loadDefaultStyleFlag )
@@ -922,12 +929,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   mDataSource = dataSource;
   mLayerName = baseName;
 
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-  {
-    flags |= QgsDataProvider::FlagTrustDataSource;
-  }
-
   setDataProvider( provider, options, flags );
 
   if ( mDataProvider )
@@ -956,7 +957,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
       {
         restoredStyle = true;
         emit repaintRequested();
-        emit styleChanged();
+        emitStyleChanged();
         emit rendererChanged();
       }
     }
@@ -966,8 +967,6 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
       setDefaultContrastEnhancement();
     }
   }
-  emit dataSourceChanged();
-  emit dataChanged();
 }
 
 void QgsRasterLayer::closeDataProvider()
@@ -1220,7 +1219,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
   if ( rasterRenderer == renderer() )
   {
     emit repaintRequested();
-    emit styleChanged();
+    emitStyleChanged();
     emit rendererChanged();
   }
 }
@@ -1329,7 +1328,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       }
 
       emit repaintRequested();
-      emit styleChanged();
+      emitStyleChanged();
       emit rendererChanged();
       return;
     }
@@ -1365,7 +1364,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
         }
       }
 
-      emit styleChanged();
+      emitStyleChanged();
       emit rendererChanged();
     }
   }
@@ -1742,7 +1741,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 
   mPipe.set( renderer );
   emit rendererChanged();
-  emit styleChanged();
+  emitStyleChanged();
 }
 
 void QgsRasterLayer::showStatusMessage( QString const &message )
@@ -2173,6 +2172,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
                                const QgsReadWriteContext &context ) const
 {
+  if ( !mDataProvider )
+    return false;
+
   // first get the layer element so that we can append the type attribute
 
   QDomElement mapLayerNode = layer_node.toElement();

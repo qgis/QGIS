@@ -24,6 +24,7 @@
 #include "qgssvgcache.h"
 #include "qgssettings.h"
 #include "qgssvgselectorwidget.h"
+#include "qgsfilecontentsourcelineedit.h"
 
 #include <QDoubleValidator>
 #include <QFileDialog>
@@ -39,6 +40,11 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   , mPicture( picture )
 {
   setupUi( this );
+
+  mSvgSelectorWidget->setAllowParameters( true );
+  mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->initParametersModel( layoutObject(), coverageLayer() );
 
   mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
   mResizeModeComboBox->addItem( tr( "Stretch" ), QgsLayoutItemPicture::Stretch );
@@ -65,12 +71,12 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mStrokeWidthSpinBox_valueChanged );
   connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
   connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged );
+  connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsLayoutPictureWidget::sourceChanged );
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgDynamicParameters );
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
-  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsLayoutPictureWidget::svgSourceChanged );
-  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsLayoutPictureWidget::rasterSourceChanged );
 
-  mSvgSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastComposerPictureDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastComposerPictureDir" ) );
 
   setPanelTitle( tr( "Picture Properties" ) );
 
@@ -91,16 +97,6 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mPictureRotationOffsetSpinBox->setClearValue( 0.0 );
   mPictureRotationSpinBox->setClearValue( 0.0 );
 
-  viewGroups->setHeaderHidden( true );
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
-  viewImages->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
-  viewImages->setUniformItemSizes( false );
-  populateList();
-
-  connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayoutPictureWidget::setSvgName );
-  connect( viewGroups->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayoutPictureWidget::populateIcons );
-
-
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, picture );
   mainLayout->addWidget( mItemPropertiesWidget );
@@ -114,19 +110,25 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
 
   setGuiElementValues();
 
+  switch ( mPicture->mode() )
+  {
+    case QgsLayoutItemPicture::FormatSVG:
+    case QgsLayoutItemPicture::FormatUnknown:
+      mRadioSVG->setChecked( true );
+      break;
+    case QgsLayoutItemPicture::FormatRaster:
+      mRadioRaster->setChecked( true );
+      break;
+  }
+
   connect( mPicture, &QgsLayoutObject::changed, this, &QgsLayoutPictureWidget::setGuiElementValues );
   connect( mPicture, &QgsLayoutItemPicture::pictureRotationChanged, this, &QgsLayoutPictureWidget::setPicRotationSpinValue );
 
   //connections for data defined buttons
-  mSourceDDBtn->registerEnabledWidget( mImageSourceLineEdit, false );
-  mSourceDDBtn->registerEnabledWidget( mSvgSourceLineEdit, false );
-
-  registerDataDefinedButton( mSourceDDBtn, QgsLayoutObject::PictureSource );
+  registerDataDefinedButton( mSvgSelectorWidget->propertyOverrideToolButton(), QgsLayoutObject::PictureSource );
   registerDataDefinedButton( mFillColorDDBtn, QgsLayoutObject::PictureSvgBackgroundColor );
   registerDataDefinedButton( mStrokeColorDDBtn, QgsLayoutObject::PictureSvgStrokeColor );
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsLayoutObject::PictureSvgStrokeWidth );
-
-  updatePictureTypeWidgets();
 }
 
 void QgsLayoutPictureWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
@@ -327,33 +329,7 @@ void QgsLayoutPictureWidget::setGuiElementValues()
       mAnchorPointComboBox->setEnabled( false );
     }
 
-    whileBlocking( mRadioSVG )->setChecked( mPicture->mode() == QgsLayoutItemPicture::FormatSVG );
-    whileBlocking( mRadioRaster )->setChecked( mPicture->mode() == QgsLayoutItemPicture::FormatRaster );
-    updatePictureTypeWidgets();
-
-    if ( mRadioSVG->isChecked() )
-    {
-      whileBlocking( mSvgSourceLineEdit )->setSource( mPicture->picturePath() );
-
-      mBlockSvgModelChanges++;
-      QAbstractItemModel *m = viewImages->model();
-      QItemSelectionModel *selModel = viewImages->selectionModel();
-      for ( int i = 0; i < m->rowCount(); i++ )
-      {
-        QModelIndex idx( m->index( i, 0 ) );
-        if ( m->data( idx ).toString() == mPicture->picturePath() )
-        {
-          selModel->select( idx, QItemSelectionModel::SelectCurrent );
-          selModel->setCurrentIndex( idx, QItemSelectionModel::SelectCurrent );
-          break;
-        }
-      }
-      mBlockSvgModelChanges--;
-    }
-    else if ( mRadioRaster->isChecked() )
-    {
-      whileBlocking( mImageSourceLineEdit )->setSource( mPicture->picturePath() );
-    }
+    mSvgSelectorWidget->setSvgParameters( mPicture->svgDynamicParameters() );
 
     updateSvgParamGui( false );
     mFillColorButton->setColor( mPicture->svgFillColor() );
@@ -466,78 +442,32 @@ void QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged( int index )
   mPicture->update();
 }
 
-void QgsLayoutPictureWidget::modeChanged()
+void QgsLayoutPictureWidget::modeChanged( bool checked )
 {
-  const QgsLayoutItemPicture::Format newFormat = mRadioSVG->isChecked() ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster;
-  if ( mPicture && mPicture->mode() != newFormat )
-  {
-    whileBlocking( mSvgSourceLineEdit )->setSource( QString() );
-    whileBlocking( mImageSourceLineEdit )->setSource( QString() );
-    mPicture->beginCommand( tr( "Change Picture Type" ) );
-    mPicture->setPicturePath( QString(), newFormat );
-    mPicture->endCommand();
-  }
-  updatePictureTypeWidgets();
-}
-
-void QgsLayoutPictureWidget::updatePictureTypeWidgets()
-{
-  mRasterFrame->setVisible( mRadioRaster->isChecked() );
-  mSVGFrame->setVisible( mRadioSVG->isChecked() );
-  mSVGParamsGroupBox->setVisible( mRadioSVG->isChecked() );
-
-  // need to move the data defined button to the appropriate frame -- we can't have two buttons linked to the one property!
-  if ( mRadioSVG->isChecked() )
-    mSvgDDBtnFrame->layout()->addWidget( mSourceDDBtn );
-  else
-    mRasterDDBtnFrame->layout()->addWidget( mSourceDDBtn );
-}
-
-void QgsLayoutPictureWidget::populateList()
-{
-  QAbstractItemModel *oldModel = viewGroups->model();
-  QgsSvgSelectorGroupsModel *g = new QgsSvgSelectorGroupsModel( viewGroups );
-  viewGroups->setModel( g );
-  delete oldModel;
-
-  // Set the tree expanded at the first level
-  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
-  for ( int i = 0; i < rows; i++ )
-  {
-    viewGroups->setExpanded( g->indexFromItem( g->item( i ) ), true );
-  }
-
-  // Initially load the icons in the List view without any grouping
-  oldModel = viewImages->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, mIconSize );
-  viewImages->setModel( m );
-
-  delete oldModel;
-}
-
-void QgsLayoutPictureWidget::populateIcons( const QModelIndex &idx )
-{
-  QString path = idx.data( Qt::UserRole + 1 ).toString();
-
-  QAbstractItemModel *oldModel = viewImages->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path, mIconSize );
-  viewImages->setModel( m );
-  delete oldModel;
-
-  connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayoutPictureWidget::setSvgName );
-}
-
-void QgsLayoutPictureWidget::setSvgName( const QModelIndex &idx )
-{
-  if ( mBlockSvgModelChanges )
+  if ( !checked )
     return;
 
-  QString name = idx.data( Qt::UserRole ).toString();
-  whileBlocking( mSvgSourceLineEdit )->setSource( name );
-  svgSourceChanged( name );
+  bool svg = mRadioSVG->isChecked();
+  const QgsLayoutItemPicture::Format newFormat = svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster;
+
+  if ( svg )
+    mSvgSelectorWidget->sourceLineEdit()->setMode( QgsPictureSourceLineEditBase::Svg );
+  else
+    mSvgSelectorWidget->sourceLineEdit()->setMode( QgsPictureSourceLineEditBase::Image );
+
+  mSvgSelectorWidget->setBrowserVisible( svg );
+  mSvgSelectorWidget->setAllowParameters( svg );
+  mSVGParamsGroupBox->setVisible( svg );
+
+  if ( mPicture && mPicture->mode() != newFormat )
+  {
+    mPicture->beginCommand( tr( "Change Picture Type" ) );
+    mPicture->setMode( newFormat );
+    mPicture->endCommand();
+  }
 }
 
-void QgsLayoutPictureWidget::svgSourceChanged( const QString &source )
+void QgsLayoutPictureWidget::sourceChanged( const QString &source )
 {
   if ( mPicture )
   {
@@ -549,26 +479,19 @@ void QgsLayoutPictureWidget::svgSourceChanged( const QString &source )
   }
 }
 
-void QgsLayoutPictureWidget::rasterSourceChanged( const QString &source )
+void QgsLayoutPictureWidget::setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters )
 {
-  if ( mPicture )
-  {
-    mPicture->beginCommand( tr( "Change Picture" ) );
-    mPicture->setPicturePath( source, QgsLayoutItemPicture::FormatRaster );
-    mPicture->update();
-    mPicture->endCommand();
-  }
+  mPicture->beginCommand( tr( "Set SVG parameters" ) );
+  mPicture->setSvgDynamicParameters( parameters );
+  mPicture->update();
+  mPicture->endCommand();
 }
 
 void QgsLayoutPictureWidget::populateDataDefinedButtons()
 {
-  updateDataDefinedButton( mSourceDDBtn );
+  updateDataDefinedButton( mSvgSelectorWidget->propertyOverrideToolButton() );
   updateDataDefinedButton( mFillColorDDBtn );
   updateDataDefinedButton( mStrokeColorDDBtn );
   updateDataDefinedButton( mStrokeWidthDDBtn );
-
-  //initial state of controls - disable related controls when dd buttons are active
-  mImageSourceLineEdit->setEnabled( !mSourceDDBtn->isActive() );
-  mSvgSourceLineEdit->setEnabled( !mSourceDDBtn->isActive() );
 }
 

@@ -9,7 +9,6 @@
 
 
 
-
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 class QgsSymbol
@@ -25,49 +24,27 @@ Abstract base class for all rendered symbols.
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
-      case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbol; break;
-      case QgsSymbol::Line: sipType = sipType_QgsLineSymbol; break;
-      case QgsSymbol::Fill: sipType = sipType_QgsFillSymbol; break;
+      case Qgis::SymbolType::Marker: sipType = sipType_QgsMarkerSymbol; break;
+      case Qgis::SymbolType::Line: sipType = sipType_QgsLineSymbol; break;
+      case Qgis::SymbolType::Fill: sipType = sipType_QgsFillSymbol; break;
       default: sipType = 0; break;
     }
 %End
   public:
 
-    enum SymbolType
-    {
-      Marker,
-      Line,
-      Fill,
-      Hybrid
-    };
-
-    static QString symbolTypeToString( SymbolType type );
+    static QString symbolTypeToString( Qgis::SymbolType type );
 %Docstring
 Returns a translated string version of the specified symbol ``type``.
 
 .. versionadded:: 3.20
 %End
 
-    static SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
+    static Qgis::SymbolType symbolTypeForGeometryType( QgsWkbTypes::GeometryType type );
 %Docstring
 Returns the default symbol type required for the specified geometry ``type``.
 
 .. versionadded:: 3.20
 %End
-
-    enum ScaleMethod
-    {
-      ScaleArea,
-      ScaleDiameter
-    };
-
-
-    enum RenderHint
-    {
-      DynamicRotation,
-    };
-    typedef QFlags<QgsSymbol::RenderHint> RenderHints;
-
 
     enum Property
     {
@@ -90,7 +67,7 @@ Returns a new default symbol for the specified geometry type.
 The caller takes ownership of the returned object.
 %End
 
-    SymbolType type() const;
+    Qgis::SymbolType type() const;
 %Docstring
 Returns the symbol's type.
 %End
@@ -348,14 +325,7 @@ matches the settings from that context.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
-    enum PreviewFlag
-    {
-      FlagIncludeCrosshairsForMarkerSymbols,
-    };
-    typedef QFlags<QgsSymbol::PreviewFlag> PreviewFlags;
-
-
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, QgsSymbol::PreviewFlags flags = QgsSymbol::FlagIncludeCrosshairsForMarkerSymbols );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
 %Docstring
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
@@ -455,14 +425,14 @@ Sets the ``opacity`` for the symbol.
 .. seealso:: :py:func:`opacity`
 %End
 
-    void setRenderHints( RenderHints hints );
+    void setRenderHints( Qgis::SymbolRenderHints hints );
 %Docstring
 Sets rendering hint flags for the symbol.
 
 .. seealso:: :py:func:`renderHints`
 %End
 
-    RenderHints renderHints() const;
+    Qgis::SymbolRenderHints renderHints() const;
 %Docstring
 Returns the rendering hint flags for the symbol.
 
@@ -641,7 +611,8 @@ Internally, this notifies all symbol layers which were used via a call to
 %End
 
   protected:
-    QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
+
+    QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
 
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 %Docstring
@@ -700,659 +671,6 @@ Render editing vertex marker at specified point
   private:
     QgsSymbol( const QgsSymbol & );
 };
-
-QFlags<QgsSymbol::RenderHint> operator|(QgsSymbol::RenderHint f1, QFlags<QgsSymbol::RenderHint> f2);
-
-
-
-class QgsSymbolRenderContext
-{
-
-%TypeHeaderCode
-#include "qgssymbol.h"
-%End
-  public:
-
-
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = QgsSymbol::RenderHints(), const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
-%Docstring
-Constructor for QgsSymbolRenderContext
-
-:param c:
-:param u:
-:param opacity: value between 0 (fully transparent) and 1 (fully opaque)
-:param selected: set to ``True`` if symbol should be drawn in a "selected" state
-:param renderHints: flags controlling rendering behavior
-:param f:
-:param fields:
-:param mapUnitScale:
-%End
-
-    ~QgsSymbolRenderContext();
-
-
-    QgsRenderContext &renderContext();
-%Docstring
-Returns a reference to the context's render context.
-%End
-
-
-    void setOriginalValueVariable( const QVariant &value );
-%Docstring
-Sets the original value variable value for data defined symbology
-
-:param value: value for original value variable. This usually represents the symbol property value
-              before any data defined overrides have been applied.
-
-.. versionadded:: 2.12
-%End
-
- QgsUnitTypes::RenderUnit outputUnit() const /Deprecated/;
-%Docstring
-Returns the output unit for the context.
-
-.. deprecated::
-   No longer used and will be removed in QGIS 4.0
-%End
-
- void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
-%Docstring
-Sets the output unit for the context.
-
-.. deprecated::
-   No longer used and will be removed in QGIS 4.0
-%End
-
- QgsMapUnitScale mapUnitScale() const /Deprecated/;
-%Docstring
-
-.. deprecated::
-   Will be removed in QGIS 4.0
-%End
-
- void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
-%Docstring
-
-.. deprecated::
-   Will be removed in QGIS 4.0
-%End
-
-    qreal opacity() const;
-%Docstring
-Returns the opacity for the symbol.
-
-:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
-
-.. seealso:: :py:func:`setOpacity`
-%End
-
-    void setOpacity( qreal opacity );
-%Docstring
-Sets the ``opacity`` for the symbol.
-
-:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
-
-.. seealso:: :py:func:`opacity`
-%End
-
-    bool selected() const;
-%Docstring
-Returns ``True`` if symbols should be rendered using the selected symbol coloring and style.
-
-.. seealso:: :py:func:`setSelected`
-%End
-
-    void setSelected( bool selected );
-%Docstring
-Sets whether symbols should be rendered using the selected symbol coloring and style.
-
-.. seealso:: :py:func:`selected`
-%End
-
-    QgsSymbol::RenderHints renderHints() const;
-%Docstring
-Returns the rendering hint flags for the symbol.
-
-.. seealso:: :py:func:`setRenderHints`
-%End
-
-    void setRenderHints( QgsSymbol::RenderHints hints );
-%Docstring
-Sets rendering hint flags for the symbol.
-
-.. seealso:: :py:func:`renderHints`
-%End
-
-    void setFeature( const QgsFeature *f );
-
-    const QgsFeature *feature() const;
-%Docstring
-Returns the current feature being rendered. This may be ``None``.
-%End
-
-    void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
-%Docstring
-Sets the geometry type for the original feature geometry being rendered.
-
-.. seealso:: :py:func:`originalGeometryType`
-
-.. versionadded:: 3.0
-%End
-
-    QgsWkbTypes::GeometryType originalGeometryType() const;
-%Docstring
-Returns the geometry type for the original feature geometry being rendered. This can be
-useful if symbol layers alter their appearance based on geometry type - eg offsetting a
-simple line style will look different if the simple line is rendering a polygon feature
-(a closed buffer) vs a line feature (an unclosed offset line).
-
-.. seealso:: :py:func:`originalGeometryType`
-
-.. versionadded:: 3.0
-%End
-
-    QgsFields fields() const;
-%Docstring
-Fields of the layer. Currently only available in :py:func:`~QgsSymbolRenderContext.startRender` calls
-to allow symbols with data-defined properties prepare the expressions
-(other times :py:func:`~QgsSymbolRenderContext.fields` returns an empty :py:class:`QgsFields` object).
-
-.. versionadded:: 2.4
-%End
-
-    int geometryPartCount() const;
-%Docstring
-Part count of current geometry
-
-.. versionadded:: 2.16
-%End
-
-    void setGeometryPartCount( int count );
-%Docstring
-Sets the part count of current geometry
-
-.. versionadded:: 2.16
-%End
-
-    int geometryPartNum() const;
-%Docstring
-Part number of current geometry
-
-.. versionadded:: 2.16
-%End
-
-    void setGeometryPartNum( int num );
-%Docstring
-Sets the part number of current geometry
-
-.. versionadded:: 2.16
-%End
-
- double outputLineWidth( double width ) const /Deprecated/;
-%Docstring
-
-.. deprecated::
-   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
-%End
-
- double outputPixelSize( double size ) const /Deprecated/;
-%Docstring
-
-.. deprecated::
-   Use the size conversion methods in :py:class:`QgsRenderContext` instead.
-%End
-
-
-    QgsExpressionContextScope *expressionContextScope();
-%Docstring
-This scope is always available when a symbol of this type is being rendered.
-
-:return: An expression scope for details about this symbol
-%End
-
-    void setExpressionContextScope( QgsExpressionContextScope *contextScope /Transfer/ );
-%Docstring
-Set an expression scope for this symbol.
-
-Will take ownership.
-
-:param contextScope: An expression scope for details about this symbol
-%End
-
-    const QgsLegendPatchShape *patchShape() const;
-%Docstring
-Returns the symbol patch shape, to use if rendering symbol preview icons.
-
-.. seealso:: :py:func:`setPatchShape`
-
-.. versionadded:: 3.14
-%End
-
-    void setPatchShape( const QgsLegendPatchShape &shape );
-%Docstring
-Sets the symbol patch ``shape``, to use if rendering symbol preview icons.
-
-.. seealso:: :py:func:`patchShape`
-
-.. versionadded:: 3.14
-%End
-
-  private:
-    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
-};
-
-
-
-
-
-class QgsMarkerSymbol : QgsSymbol
-{
-%Docstring(signature="appended")
-
-A marker symbol type, for rendering Point and MultiPoint geometries.
-%End
-
-%TypeHeaderCode
-#include "qgssymbol.h"
-%End
-  public:
-
-    static QgsMarkerSymbol *createSimple( const QVariantMap &properties ) /Factory/;
-%Docstring
-Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
-This is a convenience method for easier creation of marker symbols.
-%End
-
-    QgsMarkerSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
-%Docstring
-Constructor for QgsMarkerSymbol, with the specified list of initial symbol ``layers``.
-
-Ownership of the ``layers`` are transferred to the symbol.
-%End
-
-    void setAngle( double symbolAngle );
-%Docstring
-Sets the angle for the whole symbol. Individual symbol layer sizes
-will be rotated to maintain their current relative angle to the whole symbol angle.
-
-:param symbolAngle: new symbol angle
-
-.. seealso:: :py:func:`angle`
-%End
-
-    double angle() const;
-%Docstring
-Returns the marker angle for the whole symbol. Note that for symbols with
-multiple symbol layers, this will correspond just to the angle of
-the first symbol layer.
-
-.. seealso:: :py:func:`setAngle`
-
-.. versionadded:: 2.16
-%End
-
-    void setDataDefinedAngle( const QgsProperty &property );
-%Docstring
-Set data defined angle for whole symbol (including all symbol layers).
-
-.. seealso:: :py:func:`dataDefinedAngle`
-
-.. versionadded:: 3.0
-%End
-
-    QgsProperty dataDefinedAngle() const;
-%Docstring
-Returns data defined angle for whole symbol (including all symbol layers).
-
-:return: data defined angle, or invalid property if angle is not set
-         at the marker level.
-
-.. seealso:: :py:func:`setDataDefinedAngle`
-
-.. versionadded:: 3.0
-%End
-
-    void setLineAngle( double lineAngle );
-%Docstring
-Sets the line angle modification for the symbol's angle. This angle is added to
-the marker's rotation and data defined rotation before rendering the symbol, and
-is usually used for orienting symbols to match a line's angle.
-
-:param lineAngle: Angle in degrees, valid values are between 0 and 360
-
-.. versionadded:: 2.9
-%End
-
-    void setSize( double size );
-%Docstring
-Sets the size for the whole symbol. Individual symbol layer sizes
-will be scaled to maintain their current relative size to the whole symbol size.
-
-:param size: new symbol size
-
-.. seealso:: :py:func:`size`
-
-.. seealso:: :py:func:`setSizeUnit`
-
-.. seealso:: :py:func:`setSizeMapUnitScale`
-%End
-
-    double size() const;
-%Docstring
-Returns the estimated size for the whole symbol, which is the maximum size of
-all marker symbol layers in the symbol.
-
-.. warning::
-
-   This returned value is inaccurate if the symbol consists of multiple
-   symbol layers with different size units. Use the overload accepting a :py:class:`QgsRenderContext`
-   argument instead for accurate sizes in this case.
-
-.. seealso:: :py:func:`setSize`
-
-.. seealso:: :py:func:`sizeUnit`
-
-.. seealso:: :py:func:`sizeMapUnitScale`
-%End
-
-    double size( const QgsRenderContext &context ) const;
-%Docstring
-Returns the symbol size, in painter units. This is the maximum size of
-all marker symbol layers in the symbol.
-
-This method returns an accurate size by calculating the actual rendered
-size of each symbol layer using the provided render ``context``.
-
-.. seealso:: :py:func:`setSize`
-
-.. seealso:: :py:func:`sizeUnit`
-
-.. seealso:: :py:func:`sizeMapUnitScale`
-
-.. versionadded:: 3.4.5
-%End
-
-    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the size units for the whole symbol (including all symbol layers).
-
-:param unit: size units
-
-.. seealso:: :py:func:`sizeUnit`
-
-.. seealso:: :py:func:`setSizeMapUnitScale`
-
-.. seealso:: :py:func:`setSize`
-
-.. versionadded:: 2.16
-%End
-
-    QgsUnitTypes::RenderUnit sizeUnit() const;
-%Docstring
-Returns the size units for the whole symbol (including all symbol layers).
-
-:return: size units, or mixed units if symbol layers have different units
-
-.. seealso:: :py:func:`setSizeUnit`
-
-.. seealso:: :py:func:`sizeMapUnitScale`
-
-.. seealso:: :py:func:`size`
-
-.. versionadded:: 2.16
-%End
-
-    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
-%Docstring
-Sets the size map unit scale for the whole symbol (including all symbol layers).
-
-:param scale: map unit scale
-
-.. seealso:: :py:func:`sizeMapUnitScale`
-
-.. seealso:: :py:func:`setSizeUnit`
-
-.. seealso:: :py:func:`setSize`
-
-.. versionadded:: 2.16
-%End
-
-    QgsMapUnitScale sizeMapUnitScale() const;
-%Docstring
-Returns the size map unit scale for the whole symbol. Note that for symbols with
-multiple symbol layers, this will correspond just to the map unit scale
-for the first symbol layer.
-
-.. seealso:: :py:func:`setSizeMapUnitScale`
-
-.. seealso:: :py:func:`sizeUnit`
-
-.. seealso:: :py:func:`size`
-
-.. versionadded:: 2.16
-%End
-
-    void setDataDefinedSize( const QgsProperty &property );
-%Docstring
-Set data defined size for whole symbol (including all symbol layers).
-
-.. seealso:: :py:func:`dataDefinedSize`
-
-.. versionadded:: 3.0
-%End
-
-    QgsProperty dataDefinedSize() const;
-%Docstring
-Returns data defined size for whole symbol (including all symbol layers).
-
-:return: data defined size, or invalid property if size is not set
-         at the marker level.
-
-.. seealso:: :py:func:`setDataDefinedSize`
-
-.. versionadded:: 3.0
-%End
-
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-    ScaleMethod scaleMethod();
-
-    void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
-%Docstring
-Renders the symbol at the specified ``point``, using the given render ``context``.
-
-The ``f`` argument is used to pass the feature currently being rendered (when available).
-
-If only a single symbol layer from the symbol should be rendered, it should be specified
-in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
-rendered.
-
-If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
-style and colors instead of the symbol's normal style.
-%End
-
-    QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
-%Docstring
-Returns the approximate bounding box of the marker symbol, which includes the bounding box
-of all symbol layers for the symbol. It is recommended to use this method only between :py:func:`~QgsMarkerSymbol.startRender`
-and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and offset will not be correctly calculated.
-
-:param point: location of rendered point in painter units
-:param context: render context
-:param feature: feature being rendered at point (optional). If not specified, the bounds calculation will not
-                include data defined parameters such as offset and rotation
-
-:return: approximate symbol bounds, in painter units
-
-.. versionadded:: 2.14
-%End
-
-    virtual QgsMarkerSymbol *clone() const /Factory/;
-
-
-};
-
-
-class QgsLineSymbol : QgsSymbol
-{
-%Docstring(signature="appended")
-
-A line symbol type, for rendering LineString and MultiLineString geometries.
-%End
-
-%TypeHeaderCode
-#include "qgssymbol.h"
-%End
-  public:
-
-    static QgsLineSymbol *createSimple( const QVariantMap &properties ) /Factory/;
-%Docstring
-Create a line symbol with one symbol layer: SimpleLine with specified properties.
-This is a convenience method for easier creation of line symbols.
-%End
-
-    QgsLineSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
-%Docstring
-Constructor for QgsLineSymbol, with the specified list of initial symbol ``layers``.
-
-Ownership of the ``layers`` are transferred to the symbol.
-%End
-
-    void setWidth( double width );
-%Docstring
-Sets the ``width`` for the whole line symbol. Individual symbol layer sizes
-will be scaled to maintain their current relative size to the whole symbol size.
-
-.. seealso:: :py:func:`width`
-%End
-
-    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
-%Docstring
-Sets the width units for the whole symbol (including all symbol layers).
-
-:param unit: size units
-
-.. versionadded:: 3.16
-%End
-
-
-    double width() const;
-%Docstring
-Returns the estimated width for the whole symbol, which is the maximum width of
-all marker symbol layers in the symbol.
-
-.. warning::
-
-   This returned value is inaccurate if the symbol consists of multiple
-   symbol layers with different width units. Use the overload accepting a :py:class:`QgsRenderContext`
-   argument instead for accurate sizes in this case.
-
-.. seealso:: :py:func:`setWidth`
-%End
-
-    double width( const QgsRenderContext &context ) const;
-%Docstring
-Returns the symbol width, in painter units. This is the maximum width of
-all marker symbol layers in the symbol.
-
-This method returns an accurate width by calculating the actual rendered
-width of each symbol layer using the provided render ``context``.
-
-.. seealso:: :py:func:`setWidth`
-
-.. versionadded:: 3.4.5
-%End
-
-    void setDataDefinedWidth( const QgsProperty &property );
-%Docstring
-Set data defined width for whole symbol (including all symbol layers).
-
-.. seealso:: :py:func:`dataDefinedWidth`
-
-.. versionadded:: 3.0
-%End
-
-    QgsProperty dataDefinedWidth() const;
-%Docstring
-Returns data defined width for whole symbol (including all symbol layers).
-
-:return: data defined width, or invalid property if size is not set
-         at the line level. Caller takes responsibility for deleting the returned object.
-
-.. seealso:: :py:func:`setDataDefinedWidth`
-
-.. versionadded:: 3.0
-%End
-
-    void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
-%Docstring
-Renders the symbol along the line joining ``points``, using the given render ``context``.
-
-The ``f`` argument is used to pass the feature currently being rendered (when available).
-
-If only a single symbol layer from the symbol should be rendered, it should be specified
-in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
-rendered.
-
-If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
-style and colors instead of the symbol's normal style.
-%End
-
-    virtual QgsLineSymbol *clone() const /Factory/;
-
-
-};
-
-
-class QgsFillSymbol : QgsSymbol
-{
-%Docstring(signature="appended")
-
-A fill symbol type, for rendering Polygon and MultiPolygon geometries.
-%End
-
-%TypeHeaderCode
-#include "qgssymbol.h"
-%End
-  public:
-
-    static QgsFillSymbol *createSimple( const QVariantMap &properties ) /Factory/;
-%Docstring
-Create a fill symbol with one symbol layer: SimpleFill with specified properties.
-This is a convenience method for easier creation of fill symbols.
-%End
-
-    QgsFillSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
-%Docstring
-Constructor for QgsFillSymbol, with the specified list of initial symbol ``layers``.
-
-Ownership of the ``layers`` are transferred to the symbol.
-%End
-    void setAngle( double angle );
-
-    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
-%Docstring
-Renders the symbol using the given render ``context``.
-
-The ``points`` list dictates the exterior ring for the polygon to render, and
-interior rings are optionally specified via the ``rings`` argument.
-
-The ``f`` argument is used to pass the feature currently being rendered (when available).
-
-If only a single symbol layer from the symbol should be rendered, it should be specified
-in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
-rendered.
-
-If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
-style and colors instead of the symbol's normal style.
-%End
-
-    virtual QgsFillSymbol *clone() const /Factory/;
-
-
-};
-
-QFlags<QgsSymbol::PreviewFlag> operator|(QgsSymbol::PreviewFlag f1, QFlags<QgsSymbol::PreviewFlag> f2);
-
 
 
 /************************************************************************

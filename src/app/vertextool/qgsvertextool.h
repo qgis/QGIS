@@ -152,8 +152,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     /**
      * Temporarily override snapping config and snap to vertices and edges
-     of any editable vector layer, to allow selection of vertex for editing
-     (if snapped to edge, it would offer creation of a new vertex there).
+    * of any editable vector layer, to allow selection of vertex for editing
+    * (if snapped to edge, it would offer creation of a new vertex there).
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
 

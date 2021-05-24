@@ -54,6 +54,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgssymbol.h"
 
 #include <QMouseEvent>
 #include <QCursor>

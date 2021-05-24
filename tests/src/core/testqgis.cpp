@@ -47,6 +47,8 @@ class TestQgis : public QObject
     void signalBlocker();
     void qVariantCompare_data();
     void qVariantCompare();
+    void testNanCompatibleEquals_data();
+    void testNanCompatibleEquals();
     void testQgsAsConst();
     void testQgsRound();
     void testQgsVariantEqual();
@@ -318,6 +320,29 @@ void TestQgis::qVariantCompare()
 
   QCOMPARE( qgsVariantLessThan( lhs, rhs ), lessThan );
   QCOMPARE( qgsVariantGreaterThan( lhs, rhs ), greaterThan );
+}
+
+void TestQgis::testNanCompatibleEquals_data()
+{
+  QTest::addColumn<double>( "lhs" );
+  QTest::addColumn<double>( "rhs" );
+  QTest::addColumn<bool>( "expected" );
+
+  QTest::newRow( "both nan" ) << std::numeric_limits< double >::quiet_NaN() << std::numeric_limits< double >::quiet_NaN() << true;
+  QTest::newRow( "first is nan" ) << std::numeric_limits< double >::quiet_NaN() << 5.0 << false;
+  QTest::newRow( "second is nan" ) << 5.0 << std::numeric_limits< double >::quiet_NaN() << false;
+  QTest::newRow( "two numbers, not equal" ) << 5.0 << 6.0 << false;
+  QTest::newRow( "two numbers, equal" ) << 5.0 << 5.0 << true;
+}
+
+void TestQgis::testNanCompatibleEquals()
+{
+  QFETCH( double, lhs );
+  QFETCH( double, rhs );
+  QFETCH( bool, expected );
+
+  QCOMPARE( qgsNanCompatibleEquals( lhs, rhs ), expected );
+  QCOMPARE( qgsNanCompatibleEquals( rhs, lhs ), expected );
 }
 
 class ConstTester

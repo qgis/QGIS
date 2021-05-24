@@ -108,5 +108,21 @@ class CORE_EXPORT QgsProviderConnectionException: public QgsException
 
 };
 
+/**
+ * \class QgsNotSupportedException
+ * \ingroup core
+ * \brief Custom exception class which is raised when an operation is not supported.
+ * \since QGIS 3.20
+ */
+class CORE_EXPORT QgsNotSupportedException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsNotSupportedException, with the specified error \a message.
+     */
+    QgsNotSupportedException( const QString &message ) : QgsException( message ) {}
+
+};
 
 #endif

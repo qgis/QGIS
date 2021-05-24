@@ -26,6 +26,8 @@
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -41,6 +43,8 @@ QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double 
   mWidth = width;
   mCustomDashVector << 5 << 2;
 }
+
+QgsSimpleLineSymbolLayer::~QgsSimpleLineSymbolLayer() = default;
 
 void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -1204,6 +1208,8 @@ QgsTemplatedLineSymbolLayerBase::QgsTemplatedLineSymbolLayerBase( bool rotateSym
 
 }
 
+QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
+
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   double offset = mOffset;
@@ -1741,7 +1747,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
   QgsRenderContext &rc = context.renderContext();
 
-  double origAngle = symbolAngle();
   int i = -1, maxCount = 0;
   bool isRing = false;
 
@@ -1796,7 +1801,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
         if ( rotateSymbols() )
         {
           double angle = context.renderContext().geometry()->vertexAngle( vId );
-          setSymbolAngle( angle * 180 / M_PI );
+          setSymbolLineAngle( angle * 180 / M_PI );
         }
         renderSymbol( mapPoint, context.feature(), rc, -1, context.selected() );
       }
@@ -1844,8 +1849,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     double distance;
     distance = placement == QgsTemplatedLineSymbolLayerBase::FirstVertex ? offsetAlongLine : -offsetAlongLine;
     renderOffsetVertexAlongLine( points, i, distance, context );
-    // restore original rotation
-    setSymbolAngle( origAngle );
 
     return;
   }
@@ -1874,7 +1877,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       {
         double angle = std::atan2( currentPoint.y() - prevPoint.y(),
                                    currentPoint.x() - prevPoint.x() );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
       prevPoint = currentPoint;
     }
@@ -1885,15 +1888,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       if ( rotateSymbols() )
       {
         double angle = markerAngle( points, isRing, i );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
     }
 
     renderSymbol( symbolPoint, context.feature(), rc, -1, context.selected() );
   }
-
-  // restore original rotation
-  setSymbolAngle( origAngle );
 }
 
 double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bool isRing, int vertex )
@@ -1977,7 +1977,6 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
     return;
 
   QgsRenderContext &rc = context.renderContext();
-  double origAngle = symbolAngle();
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // rotate marker (if desired)
@@ -1987,7 +1986,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       if ( points.first() == points.last() )
         isRing = true;
       double angle = markerAngle( points, isRing, vertex );
-      setSymbolAngle( origAngle + angle * 180 / M_PI );
+      setSymbolLineAngle( angle * 180 / M_PI );
     }
     renderSymbol( points[vertex], context.feature(), rc, -1, context.selected() );
     return;
@@ -2016,7 +2015,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       // rotate marker (if desired)
       if ( rotateSymbols() )
       {
-        setSymbolAngle( origAngle + ( l.angle() * 180 / M_PI ) );
+        setSymbolLineAngle( l.angle() * 180 / M_PI );
       }
       renderSymbol( markerPoint, context.feature(), rc, -1, context.selected() );
       return;
@@ -2220,7 +2219,7 @@ QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -2242,6 +2241,8 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
+
+QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer() = default;
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 {
@@ -2277,9 +2278,9 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
@@ -2348,14 +2349,17 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     strokeElem.appendChild( graphicStrokeElem );
 
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
-    if ( !markerLayer )
+    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+    }
+    else if ( layer )
+    {
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
     }
     else
     {
-      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "Missing marker line symbol layer. Skip it." ) ) );
     }
 
     if ( !gap.isEmpty() )
@@ -2562,6 +2566,8 @@ QgsHashedLineSymbolLayer::QgsHashedLineSymbolLayer( bool rotateSymbol, double in
   setSubSymbol( new QgsLineSymbol() );
 }
 
+QgsHashedLineSymbolLayer::~QgsHashedLineSymbolLayer() = default;
+
 QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
@@ -2599,9 +2605,9 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
   mHashSymbol->startRender( context.renderContext(), context.fields() );
@@ -2653,7 +2659,7 @@ QgsSymbol *QgsHashedLineSymbolLayer::subSymbol()
 
 bool QgsHashedLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Line )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;

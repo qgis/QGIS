@@ -58,6 +58,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     static bool shapeIsFilled( const QgsEllipseSymbolLayer::Shape &shape );
 
     QgsEllipseSymbolLayer();
+    ~QgsEllipseSymbolLayer() override;
 
     //! Creates the symbol layer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;

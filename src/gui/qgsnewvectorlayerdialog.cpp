@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
 #include "qgsfilewidget.h"
@@ -28,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsogrprovider.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -67,7 +67,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
@@ -86,6 +86,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
     mFileFormatComboBox->setVisible( false );
     mFileFormatLabel->setVisible( false );
   }
+
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mFileFormatComboBox->setCurrentIndex( 0 );
 

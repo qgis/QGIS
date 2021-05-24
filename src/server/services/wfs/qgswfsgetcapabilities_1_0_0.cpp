@@ -94,7 +94,7 @@ namespace QgsWfs
       wfsCapabilitiesElement.appendChild( getServiceElement( doc, project ) );
 
       //wfs:Capability
-      wfsCapabilitiesElement.appendChild( getCapabilityElement( doc, project, request ) );
+      wfsCapabilitiesElement.appendChild( getCapabilityElement( doc, project, request, serverIface->serverSettings() ) );
 
       //wfs:FeatureTypeList
       wfsCapabilitiesElement.appendChild( getFeatureTypeListElement( doc, serverIface, project ) );
@@ -198,7 +198,7 @@ namespace QgsWfs
 
     }
 
-    QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request )
+    QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings )
     {
       //wfs:Capability element
       QDomElement capabilityElement = doc.createElement( QStringLiteral( "Capability" )/*wfs:Capability*/ );
@@ -216,7 +216,7 @@ namespace QgsWfs
       dcpTypeElement.appendChild( httpElement );
 
       //Prepare url
-      QString hrefString = serviceUrl( request, project );
+      QString hrefString = serviceUrl( request, project, *settings );
 
       //only Get supported for the moment
       QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wfs:Get*/ );

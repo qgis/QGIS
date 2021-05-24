@@ -16,11 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslogger.h"
-#include "qgsdataitem.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsvectordataprovider.h"
-#include "qgsogrdataitems.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -28,12 +26,15 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsogrdataitems.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QSpinBox>
 #include <QRegularExpression>
 #include "gdal.h"
+#include "qgsdatums.h"
+#include "qgsiconutils.h"
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -49,13 +50,13 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *par
   setup();
 }
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options, QWidget *parent, Qt::WindowFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, Options options, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
-  , mOptions( static_cast< Options >( options ) )
+  , mOptions( options )
 {
   if ( layer )
   {
@@ -91,6 +92,12 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 
   if ( !( mOptions & Extent ) )
     mExtentGroupBox->hide();
+
+  if ( !( mOptions & Metadata ) )
+  {
+    mCheckPersistMetadata->setChecked( false );
+    mCheckPersistMetadata->hide();
+  }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
   mButtonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
@@ -134,7 +141,7 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type )
   {
-    mGeometryTypeComboBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+    mGeometryTypeComboBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
   };
 
   //add geometry types to combobox
@@ -194,6 +201,20 @@ void QgsVectorLayerSaveAsDialog::setup()
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
+
+  try
+  {
+    const QgsDatumEnsemble ensemble = mSelectedCrs.datumEnsemble();
+    if ( ensemble.isValid() )
+    {
+      mCrsSelector->setSourceEnsemble( ensemble.name() );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+  }
+
+  mCrsSelector->setShowAccuracyWarnings( true );
 }
 
 QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options )
@@ -971,6 +992,11 @@ void QgsVectorLayerSaveAsDialog::setOnlySelected( bool onlySelected )
 bool QgsVectorLayerSaveAsDialog::onlySelected() const
 {
   return mSelectedOnly->isChecked();
+}
+
+bool QgsVectorLayerSaveAsDialog::persistMetadata() const
+{
+  return mCheckPersistMetadata->isChecked();
 }
 
 QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const

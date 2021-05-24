@@ -24,7 +24,7 @@
 #include "qgssnappingutils.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsproject.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
@@ -191,7 +191,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   // snap on a linestringz layer
   utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -233,7 +233,7 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
   // test with default Z value = 333
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 7, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );

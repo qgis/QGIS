@@ -983,7 +983,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   cbtsLocale->addItem( QIcon( QStringLiteral( ":/images/flags/%1.svg" ).arg( QLatin1String( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
-  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( QgsApplication::settingsLocaleUserLocale.value() ) );
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
@@ -2128,16 +2128,16 @@ void QgsProjectProperties::populateStyles()
     QComboBox *cbo = nullptr;
     switch ( symbol->type() )
     {
-      case QgsSymbol::Marker :
+      case Qgis::SymbolType::Marker :
         cbo = cboStyleMarker;
         break;
-      case QgsSymbol::Line :
+      case Qgis::SymbolType::Line :
         cbo = cboStyleLine;
         break;
-      case QgsSymbol::Fill :
+      case Qgis::SymbolType::Fill :
         cbo = cboStyleFill;
         break;
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         // Shouldn't get here
         break;
     }

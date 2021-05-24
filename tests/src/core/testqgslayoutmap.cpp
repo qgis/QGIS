@@ -704,6 +704,10 @@ void TestQgsLayoutMap::expressionContext()
   r = e6.evaluate( &c );
   QCOMPARE( r.toString(), QString( "longlat" ) );
 
+  QgsExpression e6a( QStringLiteral( "@map_crs_projection" ) );
+  r = e6a.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "Lat/long (Geodetic alias)" ) );
+
   QgsExpression e7( QStringLiteral( "@map_crs_proj4" ) );
   r = e7.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );

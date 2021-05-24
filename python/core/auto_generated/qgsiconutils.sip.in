@@ -1,0 +1,90 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsiconutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsIconUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for working with icons.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsiconutils.h"
+%End
+  public:
+
+    static QIcon iconForWkbType( QgsWkbTypes::Type type );
+%Docstring
+Returns the icon for a vector layer whose geometry ``type`` is provided.
+%End
+
+    static QIcon iconPoint();
+%Docstring
+Returns an icon representing point geometries.
+%End
+
+    static QIcon iconLine();
+%Docstring
+Returns an icon representing line geometries.
+%End
+
+    static QIcon iconPolygon();
+%Docstring
+Returns an icon representing polygon geometries.
+%End
+
+    static QIcon iconTable();
+%Docstring
+Returns an icon representing non-spatial layers (tables).
+%End
+
+    static QIcon iconRaster();
+%Docstring
+Returns an icon representing raster layers.
+%End
+
+    static QIcon iconDefaultLayer();
+%Docstring
+Returns a default icon for layers, which aren't the standard raster/vector/... types.
+%End
+
+    static QIcon iconMesh();
+%Docstring
+Returns an icon representing mesh layers.
+%End
+
+    static QIcon iconVectorTile();
+%Docstring
+Returns an icon representing vector tile layers.
+%End
+
+    static QIcon iconPointCloud();
+%Docstring
+Returns an icon representing point cloud layers.
+%End
+
+    static QIcon iconForLayer( const QgsMapLayer *layer );
+%Docstring
+Returns the icon corresponding to a specified map ``layer``.
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsiconutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

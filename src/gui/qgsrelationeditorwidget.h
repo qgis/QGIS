@@ -27,7 +27,6 @@
 #include "qgsabstractrelationeditorwidget.h"
 #include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
-#include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
@@ -185,11 +184,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      */
     void setConfig( const QVariantMap &config ) override;
 
-    /**
-      * Sets the title of the root groupbox
-      */
-    void setTitle( const QString &title ) override;
-
   public slots:
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) override;
 
@@ -206,7 +200,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     void addFeatureGeometry();
     void toggleEditing( bool state );
-    void onCollapsedStateChanged( bool collapsed );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void mapToolDeactivated();
     void onKeyPressed( QKeyEvent *e );
@@ -217,7 +210,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
 
-    QgsCollapsibleGroupBox *mRootCollapsibleGroupBox = nullptr;
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
@@ -233,13 +225,11 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QToolButton *mAddFeatureGeometryButton = nullptr;
-    QGridLayout *mRelationLayout = nullptr;
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
     QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
 
     Buttons mButtonsVisibility = Button::AllButtons;
-    bool mVisible = true;
 };
 
 

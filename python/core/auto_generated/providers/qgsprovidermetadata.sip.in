@@ -1,0 +1,608 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidermetadata.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsMeshDriverMetadata
+{
+%Docstring(signature="appended")
+Holds metadata about mesh driver
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsprovidermetadata.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum MeshDriverCapability
+    {
+      CanWriteFaceDatasets,
+      CanWriteVertexDatasets,
+      CanWriteEdgeDatasets,
+      CanWriteMeshData,
+    };
+
+    typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
+
+
+    QgsMeshDriverMetadata();
+%Docstring
+Constructs default metadata without any capabilities
+%End
+
+    QgsMeshDriverMetadata( const QString &name,
+                           const QString &description,
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix );
+%Docstring
+Constructs driver metadata with selected capabilities
+
+:param name: name/key of the driver
+:param description: short description of the driver
+:param capabilities: driver's capabilities
+:param writeDatasetOnFileSuffix: suffix used to write datasets on file
+%End
+
+    MeshDriverCapabilities capabilities() const;
+%Docstring
+Returns the capabilities for this driver.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name (key) for this driver.
+%End
+
+    QString description() const;
+%Docstring
+Returns the description for this driver.
+%End
+
+    QString writeDatasetOnFileSuffix() const;
+%Docstring
+Returns the suffix used to write datasets on file
+%End
+
+};
+
+QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetadata::MeshDriverCapability f1, QFlags<QgsMeshDriverMetadata::MeshDriverCapability> f2);
+
+
+class QgsProviderMetadata : QObject
+{
+%Docstring(signature="appended")
+Holds data provider key, description, and associated shared library file or function pointer information.
+
+Provider metadata refers either to providers which are loaded via libraries or
+which are native providers that are included in the core QGIS installation
+and accessed through function pointers.
+
+For library based providers, the metadata class is used in a lazy load
+implementation in :py:class:`QgsProviderRegistry`.  To save memory, data providers
+are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
+iteratively loaded once to get their metadata information, and then
+unloaded when the :py:class:`QgsProviderRegistry` is created.)  :py:class:`QgsProviderMetadata`
+supplies enough information to be able to later load the associated shared
+library object.
+%End
+
+%TypeHeaderCode
+#include "qgsprovidermetadata.h"
+%End
+  public:
+
+    enum ProviderMetadataCapability
+    {
+      PriorityForUri,
+      LayerTypesForUri,
+    };
+    typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
+
+
+    enum ProviderCapability
+    {
+      FileBasedUris,
+      SaveLayerMetadata,
+    };
+    typedef QFlags<QgsProviderMetadata::ProviderCapability> ProviderCapabilities;
+
+
+
+    QgsProviderMetadata( const QString &key, const QString &description, const QString &library = QString() );
+%Docstring
+Constructor for provider metadata
+
+:param key: provider key
+:param description: provider description
+:param library: plugin library file name (empty if the provider is not loaded from a library)
+%End
+
+
+    virtual ~QgsProviderMetadata();
+
+    QString key() const;
+%Docstring
+This returns the unique key associated with the provider
+
+This key string is used for the associative container in :py:class:`QgsProviderRegistry`
+%End
+
+    QString description() const;
+%Docstring
+This returns descriptive text for the provider
+
+This is used to provide a descriptive list of available data providers.
+%End
+
+    virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
+%Docstring
+Returns the provider metadata capabilities.
+
+.. versionadded:: 3.18
+%End
+
+    virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
+%Docstring
+Returns the provider's capabilities.
+
+.. versionadded:: 3.18.1
+%End
+
+ QString library() const /Deprecated/;
+%Docstring
+This returns the library file name
+
+This is used to QLibrary calls to load the data provider (only for dynamically loaded libraries)
+
+.. deprecated::
+   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+%End
+
+
+    virtual void initProvider();
+%Docstring
+Initialize the provider
+
+.. versionadded:: 3.10
+%End
+
+    virtual void cleanupProvider();
+%Docstring
+Cleanup the provider
+
+.. versionadded:: 3.10
+%End
+
+    enum class FilterType
+    {
+      FilterVector,
+      FilterRaster,
+      FilterMesh,
+      FilterMeshDataset,
+      FilterPointCloud,
+    };
+
+    virtual QString filters( FilterType type );
+%Docstring
+Builds the list of file filter strings (supported formats)
+
+Suitable for use in a QFileDialog.getOpenFileNames() call.
+
+.. versionadded:: 3.10
+%End
+
+    virtual QList<QgsMeshDriverMetadata> meshDriversMetadata();
+%Docstring
+Builds the list of available mesh drivers metadata
+
+.. versionadded:: 3.12
+%End
+
+    virtual int priorityForUri( const QString &uri ) const;
+%Docstring
+Returns an integer representing the priority which this provider should have when opening
+a dataset with the specified ``uri``.
+
+A larger priority means that the provider should be selected over others with a lower
+priority for the same URI.
+
+The default implementation returns 0 for all URIs.
+
+.. warning::
+
+   Not all providers implement this functionality. Check whether :py:func:`~QgsProviderMetadata.capabilities` returns the
+   ProviderMetadataCapability.PriorityForUri to determine whether a specific provider metadata object
+   supports this method.
+
+.. versionadded:: 3.18
+%End
+
+    virtual QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const;
+%Docstring
+Returns a list of valid layer types which the provider can be used with when
+opening the specified ``uri``.
+
+.. warning::
+
+   Not all providers implement this functionality. Check whether :py:func:`~QgsProviderMetadata.capabilities` returns the
+   ProviderMetadataCapability.LayerTypesForUri to determine whether a specific provider metadata object
+   supports this method.
+
+.. versionadded:: 3.18
+%End
+
+    virtual bool uriIsBlocklisted( const QString &uri ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` is known by this provider to be something which should
+be blocklisted from the QGIS interface, e.g. an internal detail only.
+
+Specifically, this method can be utilized by the browser panel to hide noisy internal details
+by returning ``True`` for URIs which are known to be sidecar files only, such as ".aux.xml" files
+or ".shp.xml" files, or the "ept-build.json" files which sit alongside Entwine "ept.json" point
+cloud sources.
+
+The default method returns ``False`` for all URIs.
+
+.. warning::
+
+   Returning ``True`` from an implementation of this method indicates that ALL providers should
+   ignore the specified ``uri``, not just the provider associated with this metadata!
+
+.. versionadded:: 3.18
+%End
+
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
+%Docstring
+Class factory to return a pointer to a newly created :py:class:`QgsDataProvider` object
+
+:param uri: the datasource uri
+:param options: creation options
+:param flags: creation flags, sing QGIS 3.16
+
+.. versionadded:: 3.10
+%End
+
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+%Docstring
+Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
+eg. "yes" value will be saved as ``True``, 0 will be saved as ``False``
+
+.. versionadded:: 3.14
+%End
+
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+%Docstring
+Returns the ``parameter`` value in the ``uri`` as a bool.
+eg. "yes" value will be returned as ``True``, 0 will be returned as ``False``
+
+.. versionadded:: 3.14
+%End
+
+
+
+    virtual QgsRasterDataProvider *createRasterDataProvider(
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList() ) /Factory/;
+%Docstring
+Creates a new instance of the raster data provider.
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+
+.. versionadded:: 3.16
+%End
+
+    virtual QList<QPair<QString, QString> > pyramidResamplingMethods();
+%Docstring
+Returns pyramid resampling methods available for provider
+
+.. versionadded:: 3.10
+%End
+
+    virtual QVariantMap decodeUri( const QString &uri ) const;
+%Docstring
+Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+
+:param uri: uri string
+
+:return: map containing components. Standard components may include:
+
+         - "path": file path
+         - "layerName"
+         - "url": base URL, for online services
+         - "referer": referrer string, for HTTP requests
+         - "host": hostname, for database services
+         - "bounds": hardcoded layer bounds (as a :py:class:`QgsRectangle`)
+         - "crs": CRS definition
+         - "authcfg": authentication configuration ID
+
+.. note::
+
+   this function may not be supported by all providers, an empty map will be returned in such case
+
+.. versionadded:: 3.10
+%End
+
+    virtual QString encodeUri( const QVariantMap &parts ) const;
+%Docstring
+Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+
+:param parts: parts as returned by decodeUri
+
+:return: datasource uri string
+
+.. note::
+
+   this function may not be supported by all providers, an empty string will be returned in such case
+
+.. seealso:: :py:func:`decodeUri`
+
+.. versionadded:: 3.12
+%End
+
+    virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
+%Docstring
+Returns data item providers. Caller is responsible for ownership of the item providers
+
+.. seealso:: :py:func:`QgsProviderGuiMetadata.dataItemGuiProviders`
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
+
+.. versionadded:: 3.10
+%End
+
+    virtual int listStyles( const QString &uri, QStringList &ids, QStringList &names,
+                            QStringList &descriptions, QString &errCause );
+%Docstring
+Lists stored layer styles in the provider defined by ``uri``
+
+:return: -1 if not implemented by provider, otherwise number of styles stored
+
+.. versionadded:: 3.10
+%End
+
+    virtual QString getStyleById( const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Gets a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool deleteStyleById( const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Deletes a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                            const QString &styleName, const QString &styleDescription,
+                            const QString &uiFileContent, bool useAsDefault, QString &errCause );
+%Docstring
+Saves a layer style to provider
+
+.. versionadded:: 3.10
+%End
+
+    virtual QString loadStyle( const QString &uri, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.20
+%End
+
+    virtual bool createDb( const QString &dbPath, QString &errCause );
+%Docstring
+Creates database by the provider on the path
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsTransaction *createTransaction( const QString &connString ) /Factory/;
+%Docstring
+Returns new instance of transaction. Ownership is transferred to the caller
+
+.. versionadded:: 3.10
+%End
+
+    virtual QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Returns a dictionary of stored provider connections,
+the dictionary key is the connection identifier.
+Ownership is not transferred.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    QMap<QString, QgsAbstractDatabaseProviderConnection *> dbConnections( bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Returns a dictionary of database provider connections,
+the dictionary key is the connection identifier.
+Ownership is not transferred.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    QgsAbstractProviderConnection *findConnection( const QString &name, bool cached = true ) throw( QgsProviderConnectionException );
+%Docstring
+Searches and returns a (possibly NULL) connection from the stored provider connections.
+Ownership is not transferred.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+
+:param name: the connection name
+:param cached: if ``False`` connections will be re-read from the settings
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Creates a new connection from ``uri`` and ``configuration``,
+the newly created connection is not automatically stored in the settings, call
+:py:func:`~QgsProviderMetadata.saveConnection` to save it.
+Ownership is transferred to the caller.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. seealso:: :py:func:`saveConnection`
+
+.. versionadded:: 3.10
+%End
+
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
+%Docstring
+Creates a new connection by loading the connection with the given ``name`` from the settings.
+Ownership is transferred to the caller.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. seealso:: :py:func:`findConnection`
+%End
+
+    virtual void deleteConnection( const QString &name ) throw( QgsProviderConnectionException );
+%Docstring
+Removes the connection with the given ``name`` from the settings.
+Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) throw( QgsProviderConnectionException );
+%Docstring
+Stores the connection in the settings
+
+:param connection: the connection to be stored in the settings
+:param name: the name under which the connection will be stored
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+  signals:
+
+    void connectionCreated( const QString &name );
+%Docstring
+Emitted when a connection with the specified ``name`` is created.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionDeleted( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` was deleted.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionChanged( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` is changed, e.g. the settings
+relating to the connection have been updated.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+  protected:
+
+
+};
+
+QFlags<QgsProviderMetadata::ProviderMetadataCapability> operator|(QgsProviderMetadata::ProviderMetadataCapability f1, QFlags<QgsProviderMetadata::ProviderMetadataCapability> f2);
+
+QFlags<QgsProviderMetadata::ProviderCapability> operator|(QgsProviderMetadata::ProviderCapability f1, QFlags<QgsProviderMetadata::ProviderCapability> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidermetadata.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

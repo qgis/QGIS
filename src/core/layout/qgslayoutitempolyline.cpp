@@ -24,6 +24,8 @@
 #include "qgsreadwritecontext.h"
 #include "qgssvgcache.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgslinesymbol.h"
+
 #include <QSvgRenderer>
 #include <limits>
 #include <QGraphicsPathItem>
@@ -40,6 +42,8 @@ QgsLayoutItemPolyline::QgsLayoutItemPolyline( const QPolygonF &polyline, QgsLayo
 {
   createDefaultPolylineStyleSymbol();
 }
+
+QgsLayoutItemPolyline::~QgsLayoutItemPolyline() = default;
 
 QgsLayoutItemPolyline *QgsLayoutItemPolyline::create( QgsLayout *layout )
 {
@@ -332,6 +336,11 @@ QPainterPath QgsLayoutItemPolyline::shape() const
   QPainterPath strokedOutline = ps.createStroke( path );
 
   return strokedOutline;
+}
+
+QgsLineSymbol *QgsLayoutItemPolyline::symbol()
+{
+  return mPolylineStyleSymbol.get();
 }
 
 void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )

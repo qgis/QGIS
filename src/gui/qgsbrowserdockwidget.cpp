@@ -38,6 +38,9 @@
 #include "qgsnative.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"

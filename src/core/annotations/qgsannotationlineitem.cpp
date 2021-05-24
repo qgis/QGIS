@@ -18,6 +18,7 @@
 #include "qgsannotationlineitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
 
 QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()

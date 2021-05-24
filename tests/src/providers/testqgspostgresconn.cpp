@@ -19,10 +19,67 @@
 #include <qgsfields.h>
 #include <qgspostgresprovider.h>
 
+// Helper function for QCOMPARE
+char *toString( const QgsPostgresGeometryColumnType &t )
+{
+  const char *ptr;
+  switch ( t )
+  {
+    case SctNone:
+      ptr = "None";
+      break;
+    case SctGeometry:
+      ptr = "Geometry";
+      break;
+    case SctGeography:
+      ptr = "Geography";
+      break;
+    case SctTopoGeometry:
+      ptr = "TopoGeometry";
+      break;
+    case SctPcPatch:
+      ptr = "PcPatch";
+      break;
+    case SctRaster:
+      ptr = "Raster";
+      break;
+    default:
+      ptr = "Unknown";
+      break;
+  }
+  char *dst = new char[16];
+  return qstrcpy( dst, ptr );
+}
+
 class TestQgsPostgresConn: public QObject
 {
     Q_OBJECT
+
+  private:
+    QgsPostgresConn *_connection;
+
+    QgsPostgresConn *getConnection()
+    {
+      if ( ! _connection )
+      {
+        const char *connstring = getenv( "QGIS_PGTEST_DB" );
+        if ( NULL == connstring ) connstring = "service=qgis_test";
+        _connection = QgsPostgresConn::connectDb( connstring, true );
+        assert( _connection );
+      }
+      return _connection;
+    }
+
   private slots:
+    void initTestCase() // will be called before the first testfunction is executed.
+    {
+      this->_connection = 0;
+    }
+    void cleanupTestCase() // will be called after the last testfunction was executed.
+    {
+      if ( this->_connection ) this->_connection->unref();
+    }
+
     void quotedValueHstore()
     {
       QVariantMap map;
@@ -91,6 +148,51 @@ class TestQgsPostgresConn: public QObject
       list << QStringLiteral( "{\"hello foo\",b}" ) << QStringLiteral( "{c,\"hello bar\"}" );
       const QString actual = QgsPostgresConn::quotedValue( list );
       QCOMPARE( actual, QString( "E'{{\"hello foo\",b},{c,\"hello bar\"}}'" ) );
+    }
+
+    void supportedLayers()
+    {
+      QgsPostgresConn *conn = getConnection();
+      QVERIFY( conn != 0 );
+      QVector<QgsPostgresLayerProperty> layers;
+      QMap<QString, QgsPostgresLayerProperty> layersMap;
+
+      bool success = conn->supportedLayers(
+                       layers,
+                       false, // searchGeometryColumnsOnly
+                       false, // searchPublicOnly
+                       false, // allowGeometrylessTables
+                       "qgis_test" // schema
+                     );
+      QVERIFY( success );
+
+      // Test no duplicates are reported by supportedLayers
+      for ( auto &l : layers )
+      {
+        QString key = QString( "%1.%2.%3" ).arg( l.schemaName, l.tableName, l.geometryColName );
+        auto i = layersMap.find( key );
+        if ( i != layersMap.end() )
+        {
+          QFAIL(
+            QString(
+              "Layer %1 returned multiple times by supportedLayers"
+            ).arg( key ).toUtf8().data()
+          );
+        }
+        layersMap.insert( key, l );
+      }
+
+      // Test qgis_test.TopoLayer1.topogeom
+      QString key = QString( "qgis_test.TopoLayer1.topogeom" );
+      auto lit = layersMap.find( key );
+      QVERIFY2(
+        lit != layersMap.end(),
+        "Layer qgis_test.TopoLayer1.topogeom not returned by supportedLayers"
+      );
+      QCOMPARE( lit->geometryColName, "topogeom" );
+      QCOMPARE( lit->geometryColType, SctTopoGeometry );
+      // TODO: add more tests
+
     }
 
 };

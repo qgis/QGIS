@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmodel.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
 
 #include <QPainter>
 
@@ -46,6 +47,8 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
     emit clipPathChanged();
   } );
 }
+
+QgsLayoutItemShape::~QgsLayoutItemShape() = default;
 
 QgsLayoutItemShape *QgsLayoutItemShape::create( QgsLayout *layout )
 {

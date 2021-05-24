@@ -15,6 +15,8 @@
 
 #include "qgsarrowsymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsrendercontext.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
 {
@@ -25,9 +27,11 @@ QgsArrowSymbolLayer::QgsArrowSymbolLayer()
   mSymbol.reset( static_cast<QgsFillSymbol *>( QgsFillSymbol::createSimple( QVariantMap() ) ) );
 }
 
+QgsArrowSymbolLayer::~QgsArrowSymbolLayer() = default;
+
 bool QgsArrowSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( symbol && symbol->type() == QgsSymbol::Fill )
+  if ( symbol && symbol->type() == Qgis::SymbolType::Fill )
   {
     mSymbol.reset( static_cast<QgsFillSymbol *>( symbol ) );
     return true;
@@ -114,6 +118,11 @@ QgsArrowSymbolLayer *QgsArrowSymbolLayer::clone() const
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;
+}
+
+QgsSymbol *QgsArrowSymbolLayer::subSymbol()
+{
+  return mSymbol.get();
 }
 
 QString QgsArrowSymbolLayer::layerType() const

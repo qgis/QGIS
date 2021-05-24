@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBlurEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")

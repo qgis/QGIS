@@ -80,9 +80,21 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QgsVector3D scale() const { return mScale; }
 
     /**
+     * Sets the scale of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
+     */
+    void setScale( const QgsVector3D &scale ) { mScale = scale; }
+
+    /**
      * Returns the offset of the layer's int32 coordinates compared to CRS coords.
      */
     QgsVector3D offset() const { return mOffset; }
+
+    /**
+     * Sets the offset of the layer's int32 coordinates compared to CRS coords.
+     * \since QGIS 3.20
+     */
+    void setOffset( const QgsVector3D &offset ) { mOffset = offset; }
 
     /**
      * Returns the total number of points rendered.

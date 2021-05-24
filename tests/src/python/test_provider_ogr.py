@@ -10,16 +10,17 @@ __author__ = 'Even Rouault'
 __date__ = '2016-04-11'
 __copyright__ = 'Copyright 2016, Even Rouault'
 
+import hashlib
 import os
 import shutil
 import sys
 import tempfile
-import hashlib
 from datetime import datetime
-import mockedwebserver
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray, QTemporaryDir
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     NULL,
     QgsAuthMethodConfig,
@@ -39,12 +40,15 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorFileWriter,
     QgsWkbTypes,
-    QgsNetworkAccessManager
+    QgsNetworkAccessManager,
+    QgsLayerMetadata,
+    QgsNotSupportedException
 )
 from qgis.testing import start_app, unittest
-
-from utilities import unitTestDataPath
 from qgis.utils import spatialite_connect
+
+import mockedwebserver
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -555,7 +559,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    def testStringListField(self):
+    def testGmlStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
@@ -587,6 +591,87 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(list_field.type(), QVariant.StringList)
         self.assertEqual(list_field.typeName(), 'StringList')
         self.assertEqual(list_field.subType(), QVariant.String)
+
+    def testStringListField(self):
+        tmpfile = os.path.join(self.basetestpath, 'newstringlistfield.geojson')
+        ds = ogr.GetDriverByName('GeoJSON').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('stringlistfield', ogr.OFTStringList))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('strfield', 'one')
+        f.SetField('intfield', 1)
+        f.SetFieldStringList(2, ['a', 'b', 'c'])
+        lyr.CreateFeature(f)
+
+        lyr = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        list_field = fields[fields.lookupField('stringlistfield')]
+        self.assertEqual(list_field.type(), QVariant.StringList)
+        self.assertEqual(list_field.typeName(), 'StringList')
+        self.assertEqual(list_field.subType(), QVariant.String)
+
+        f = next(vl.getFeatures())
+        self.assertEqual(f.attributes(), ['one', 1, ['a', 'b', 'c']])
+
+        # add features
+        f = QgsFeature()
+        f.setAttributes(['two', 2, ['z', 'y', 'x']])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes(['three', 3, NULL])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+        f.setAttributes(['four', 4, []])
+        self.assertTrue(vl.dataProvider().addFeature(f))
+
+        vl = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, ['a', 'b', 'c']],
+                          ['two', 2, ['z', 'y', 'x']],
+                          ['three', 3, NULL],
+                          ['four', 4, NULL]])
+
+        # change attribute values
+        f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
+        f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
+        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {2: NULL}, f3_id: {2: ['m', 'n', 'o']}}))
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, NULL],
+                          ['two', 2, ['z', 'y', 'x']],
+                          ['three', 3, ['m', 'n', 'o']],
+                          ['four', 4, NULL]])
+
+        # add attribute
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.StringList, subType=QVariant.String)]))
+        f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
+        f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
+        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: ['111', '222']}, f3_id: {3: ['121', '122', '123']}}))
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual([f.attributes() for f in vl.getFeatures()],
+                         [['one', 1, NULL, ['111', '222']],
+                          ['two', 2, ['z', 'y', 'x'], NULL],
+                          ['three', 3, ['m', 'n', 'o'], ['121', '122', '123']],
+                          ['four', 4, NULL, NULL]])
 
     def testIntListField(self):
         tmpfile = os.path.join(self.basetestpath, 'newintlistfield.geojson')
@@ -654,7 +739,8 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Int)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Int)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
         self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [111, 222]}, f3_id: {3: [121, 122, 123]}}))
@@ -734,10 +820,12 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Double)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.Double)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [111.1, 222.2]}, f3_id: {3: [121.1, 122.2, 123.3]}}))
+        self.assertTrue(
+            vl.dataProvider().changeAttributeValues({f1_id: {3: [111.1, 222.2]}, f3_id: {3: [121.1, 122.2, 123.3]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -802,7 +890,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         # change attribute values
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {2: NULL}, f3_id: {2: [3234567890123, 3234567890124, 3234567890125, 3234567890126]}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues(
+            {f1_id: {2: NULL}, f3_id: {2: [3234567890123, 3234567890124, 3234567890125, 3234567890126]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -814,10 +903,12 @@ class PyQgsOGRProvider(unittest.TestCase):
                           ['four', 4, NULL]])
 
         # add attribute
-        self.assertTrue(vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.LongLong)]))
+        self.assertTrue(
+            vl.dataProvider().addAttributes([QgsField('new_list', type=QVariant.List, subType=QVariant.LongLong)]))
         f1_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 1][0]
         f3_id = [f.id() for f in vl.getFeatures() if f.attributes()[1] == 3][0]
-        self.assertTrue(vl.dataProvider().changeAttributeValues({f1_id: {3: [4234567890123, 4234567890124]}, f3_id: {3: [5234567890123, 5234567890124, 5234567890125]}}))
+        self.assertTrue(vl.dataProvider().changeAttributeValues(
+            {f1_id: {3: [4234567890123, 4234567890124]}, f3_id: {3: [5234567890123, 5234567890124, 5234567890125]}}))
 
         vl = QgsVectorLayer(tmpfile)
         self.assertTrue(vl.isValid())
@@ -825,7 +916,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual([f.attributes() for f in vl.getFeatures()],
                          [['one', 1, NULL, [4234567890123, 4234567890124]],
                           ['two', 2, [2234567890123, 2234567890124, 2234567890125, 2234567890126], NULL],
-                          ['three', 3, [3234567890123, 3234567890124, 3234567890125, 3234567890126], [5234567890123, 5234567890124, 5234567890125]],
+                          ['three', 3, [3234567890123, 3234567890124, 3234567890125, 3234567890126],
+                           [5234567890123, 5234567890124, 5234567890125]],
                           ['four', 4, NULL, NULL]])
 
     def testBlobCreation(self):
@@ -1015,15 +1107,58 @@ class PyQgsOGRProvider(unittest.TestCase):
                                    'guid', 'SHAPE_Length', 'SHAPE_Area']
             expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field',
                               'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', '', '']
+            expected_alias_map = {'OBJECTID': '', 'SHAPE_Area': '', 'SHAPE_Length': '', 'blob': 'My Blob Field',
+                                  'date': 'My Date Field', 'double': 'My Double Field', 'float': 'My Float Field',
+                                  'guid': 'My GUID field', 'long_int': 'My Long Int Field',
+                                  'short_int': 'My Short Int Field', 'text': 'My Text Field'}
         else:
             expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob',
                                    'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area']
             expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field',
                               'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field',
                               '', '']
+            expected_alias_map = {'OBJECTID': '', 'SHAPE_Area': '', 'SHAPE_Length': '', 'blob': 'My Blob Field',
+                                  'date': 'My Date Field', 'double': 'My Double Field', 'float': 'My Float Field',
+                                  'guid': 'My GUID field', 'long_int': 'My Long Int Field', 'raster': 'My Raster Field',
+                                  'short_int': 'My Short Int Field', 'text': 'My Text Field'}
 
         self.assertEqual([f.name() for f in fields], expected_fieldnames)
         self.assertEqual([f.alias() for f in fields], expected_alias)
+
+        self.assertEqual(vl.attributeAliases(), expected_alias_map)
+
+    def testGdbLayerMetadata(self):
+        """
+        Test that we translate GDB metadata to QGIS layer metadata on loading a GDB source
+        """
+        datasource = os.path.join(unitTestDataPath(), 'gdb_metadata.gdb')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.metadata().identifier(), 'Test')
+        self.assertEqual(vl.metadata().title(), 'Title')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().language(), 'ENG')
+        self.assertIn('This is the abstract', vl.metadata().abstract())
+        self.assertEqual(vl.metadata().keywords(), {'Search keys': ['Tags']})
+        self.assertEqual(vl.metadata().rights(), ['This is the credits'])
+        self.assertEqual(vl.metadata().constraints()[0].type, 'Limitations of use')
+        self.assertEqual(vl.metadata().constraints()[0].constraint, 'This is the use limitation')
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMinimum(), 1)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.xMaximum(), 2)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 3)
+        self.assertEqual(vl.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 4)
+
+    def testShpLayerMetadata(self):
+        """
+        Test that we translate .shp.xml metadata to QGIS layer metadata on loading a shp file (if present)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'france_parts.shp')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.metadata().identifier(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(vl.metadata().title(), 'QLD_STRUCTURAL_FRAMEWORK_OUTLINE')
+        self.assertEqual(vl.metadata().type(), 'dataset')
+        self.assertEqual(vl.metadata().language(), 'EN')
 
     def testOpenOptions(self):
 
@@ -1162,6 +1297,108 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer(os.path.join(d.path(), 'writetest.shp'))
         self.assertEqual(vl.featureCount(), 1)
 
+    def testFidDoubleSaveAsGeopackage(self):
+        """Test issue GH #25795"""
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=fid:double(20,0)', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+        self.assertEqual(ml.fields()[0].type(), QVariant.Double)
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'fid_double_test'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'fid_double_test.gpkg'),
+                                                           QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'fid_double_test.gpkg')))
+
+        vl = QgsVectorLayer(os.path.join(d.path(), 'fid_double_test.gpkg'))
+        self.assertEqual(vl.fields()[0].type(), QVariant.LongLong)
+
+    def testNonGeopackageSaveMetadata(self):
+        """
+        Save layer metadata for a file-based format which doesn't have native metadata support.
+        In this case we should resort to a sidecar file instead.
+        """
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=pk:integer&field=cnt:int8', 'test', 'memory')
+        self.assertTrue(ml.isValid())
+
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.layerName = 'metadatatest'
+        err, _ = QgsVectorFileWriter.writeAsVectorFormatV2(ml, os.path.join(d.path(), 'metadatatest.shp'),
+                                                           QgsCoordinateTransformContext(), options)
+        self.assertEqual(err, QgsVectorFileWriter.NoError)
+        self.assertTrue(os.path.isfile(os.path.join(d.path(), 'metadatatest.shp')))
+
+        uri = d.path() + '/metadatatest.shp'
+
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', uri, metadata)
+        self.assertTrue(ok)
+
+        self.assertTrue(os.path.exists(os.path.join(d.path(), 'metadatatest.qmd')))
+        with open(os.path.join(d.path(), 'metadatatest.qmd'), 'rt') as f:
+            metadata_xml = ''.join(f.readlines())
+
+        metadata2 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata2.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata2.abstract(), 'my abstract')
+        self.assertEqual(metadata2.identifier(), 'my identifier')
+        self.assertEqual(metadata2.licenses(), ['l1', 'l2'])
+
+        # try updating existing metadata -- file should be overwritten
+        metadata2.setAbstract('my abstract 2')
+        metadata2.setIdentifier('my identifier 2')
+        metadata2.setHistory(['h1', 'h2'])
+        ok, err = QgsProviderRegistry.instance().saveLayerMetadata('ogr', uri, metadata2)
+        self.assertTrue(ok)
+
+        with open(os.path.join(d.path(), 'metadatatest.qmd'), 'rt') as f:
+            metadata_xml = ''.join(f.readlines())
+
+        metadata3 = QgsLayerMetadata()
+        doc = QDomDocument()
+        doc.setContent(metadata_xml)
+        self.assertTrue(metadata3.readMetadataXml(doc.documentElement()))
+        self.assertEqual(metadata3.abstract(), 'my abstract 2')
+        self.assertEqual(metadata3.identifier(), 'my identifier 2')
+        self.assertEqual(metadata3.licenses(), ['l1', 'l2'])
+        self.assertEqual(metadata3.history(), ['h1', 'h2'])
+
+    def testSaveMetadataUnsupported(self):
+        """
+        Test saving metadata to an unsupported URI
+        """
+        metadata = QgsLayerMetadata()
+        # this should raise a QgsNotSupportedException, as we don't support writing metadata to a WFS uri
+        with self.assertRaises(QgsNotSupportedException):
+            QgsProviderRegistry.instance().saveLayerMetadata('ogr', 'WFS:http://www2.dmsolutions.ca/cgi-bin/mswfs_gmap', metadata)
+
+    def testSaveDefaultMetadataUnsupported(self):
+        """
+        Test saving default metadata to an unsupported layer
+        """
+        layer = QgsVectorLayer('WFS:http://www2.dmsolutions.ca/cgi-bin/mswfs_gmap', 'test')
+        # now save some metadata
+        metadata = QgsLayerMetadata()
+        metadata.setAbstract('my abstract')
+        metadata.setIdentifier('my identifier')
+        metadata.setLicenses(['l1', 'l2'])
+        layer.setMetadata(metadata)
+        # save as default
+        msg, res = layer.saveDefaultMetadata()
+        self.assertFalse(res)
+        self.assertEqual(msg, 'Storing metadata for the specified uri is not supported')
+
     def testEmbeddedSymbolsKml(self):
         """
         Test retrieving embedded symbols from a KML file
@@ -1209,6 +1446,57 @@ class PyQgsOGRProvider(unittest.TestCase):
                                  'subset': '"field"=\'value\'', 'vsiPrefix': '/vsizip/'})
         encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
         self.assertEqual(encodedUri, uri)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0), "GDAL 3.3 required")
+    def testFieldDomains(self):
+        """
+        Test that field domains are translated from OGR where available (requires GDAL 3.3 or later)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'domains.gpkg')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        range_int_field = fields[fields.lookupField('with_range_domain_int')]
+        range_int_setup = range_int_field.editorWidgetSetup()
+        self.assertEqual(range_int_setup.type(), 'Range')
+        self.assertTrue(range_int_setup.config()['AllowNull'])
+        self.assertEqual(range_int_setup.config()['Max'], 2)
+        self.assertEqual(range_int_setup.config()['Min'], 1)
+        self.assertEqual(range_int_setup.config()['Precision'], 0)
+        self.assertEqual(range_int_setup.config()['Step'], 1)
+        self.assertEqual(range_int_setup.config()['Style'], 'SpinBox')
+        # make sure editor widget config from provider has been copied to layer!
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_int')).type(), 'Range')
+
+        range_int64_field = fields[fields.lookupField('with_range_domain_int64')]
+        range_int64_setup = range_int64_field.editorWidgetSetup()
+        self.assertEqual(range_int64_setup.type(), 'Range')
+        self.assertTrue(range_int64_setup.config()['AllowNull'])
+        self.assertEqual(range_int64_setup.config()['Max'], 1234567890123)
+        self.assertEqual(range_int64_setup.config()['Min'], -1234567890123)
+        self.assertEqual(range_int64_setup.config()['Precision'], 0)
+        self.assertEqual(range_int64_setup.config()['Step'], 1)
+        self.assertEqual(range_int64_setup.config()['Style'], 'SpinBox')
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_int64')).type(), 'Range')
+
+        range_real_field = fields[fields.lookupField('with_range_domain_real')]
+        range_real_setup = range_real_field.editorWidgetSetup()
+        self.assertEqual(range_real_setup.type(), 'Range')
+        self.assertTrue(range_real_setup.config()['AllowNull'])
+        self.assertEqual(range_real_setup.config()['Max'], 2.5)
+        self.assertEqual(range_real_setup.config()['Min'], 1.5)
+        self.assertEqual(range_real_setup.config()['Precision'], 0)
+        self.assertEqual(range_real_setup.config()['Step'], 1)
+        self.assertEqual(range_real_setup.config()['Style'], 'SpinBox')
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_range_domain_real')).type(), 'Range')
+
+        enum_field = fields[fields.lookupField('with_enum_domain')]
+        enum_setup = enum_field.editorWidgetSetup()
+        self.assertEqual(enum_setup.type(), 'ValueMap')
+        self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'2': '2'}])
+        self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_enum_domain')).type(), 'ValueMap')
 
 
 if __name__ == '__main__':

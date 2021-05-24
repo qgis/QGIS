@@ -1083,6 +1083,7 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
     json.insert( QStringLiteral( "qgis_code_revision" ), Qgis::devVersion() );
   }
   json.insert( QStringLiteral( "qt_version" ), qVersion() );
+  json.insert( QStringLiteral( "python_version" ), PYTHON_VERSION );
   json.insert( QStringLiteral( "gdal_version" ), GDALVersionInfo( "RELEASE_NAME" ) );
   json.insert( QStringLiteral( "geos_version" ), GEOSversion() );
 

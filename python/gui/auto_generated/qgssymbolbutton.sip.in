@@ -8,6 +8,7 @@
 
 
 
+
 class QgsSymbolButton : QToolButton
 {
 %Docstring(signature="appended")
@@ -35,7 +36,7 @@ Use ``dialogTitle`` string to define the title to show in the symbol settings di
     virtual QSize sizeHint() const;
 
 
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 %Docstring
 Sets the symbol ``type`` which the button requires.
 If the type differs from the current symbol type, the symbol will be reset
@@ -44,7 +45,7 @@ to a default symbol style of the new type.
 .. seealso:: :py:func:`symbolType`
 %End
 
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 %Docstring
 Returns the symbol type which the button requires.
 

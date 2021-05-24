@@ -2821,7 +2821,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
   return true;
 }
 
-QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -2845,7 +2845,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( !conn )
   {
     errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerExporter::ErrConnectionFailed;
+    return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
 
   if ( ownerName.isEmpty() )
@@ -2856,7 +2856,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( ownerName.isEmpty() )
   {
     errorMessage = QObject::tr( "No owner name found" );
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QString tableName = dsUri.table();
@@ -2874,7 +2874,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( geometryColumn.isEmpty() && fields.isEmpty() )
   {
     errorMessage = QObject::tr( "Cannot create a table with no columns" );
-    return QgsVectorLayerExporter::ErrCreateDataSource;
+    return Qgis::VectorExportResult::ErrorCreatingDataSource;
   }
 
   // get the pk's name and type
@@ -3001,7 +3001,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
     conn->disconnect();
 
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   conn->disconnect();
@@ -3019,7 +3019,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( !provider->isValid() )
   {
     errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "layer loaded" ), 2 );
@@ -3058,7 +3058,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
         if ( j == 3 )
         {
           errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
-          return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+          return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
         }
       }
 
@@ -3091,7 +3091,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
       if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && ! convertField( fld ) )
       {
         errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Field #%1 name %2 type %3 typename %4 width %5 precision %6" )
@@ -3106,7 +3106,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     if ( !provider->addAttributes( flist ) )
     {
       errorMessage = QObject::tr( "Creation of fields failed" );
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
     QgsDebugMsgLevel( QStringLiteral( "Done creating fields" ), 2 );
@@ -3120,10 +3120,10 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
        && !provider->deleteAttributes( QgsAttributeIds { provider->fields().indexOf( fakeColumn ) } ) )
   {
     errorMessage = QObject::tr( "Remove of temporary column '%1' failed" ).arg( fakeColumn );
-    return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+    return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
   }
 
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &tableName, const QString &geometryColumn, const QgsCoordinateReferenceSystem &srs )
@@ -3295,7 +3295,7 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 // ---------------------------------------------------------------------------
 
-QgsVectorLayerExporter::ExportError QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,

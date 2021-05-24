@@ -128,6 +128,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );
     void copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
 
+    QString convertStringListToString( const QStringList &stringList );
+    QStringList convertStringToStringList( const QString &string );
+
+    QVariantList convertStringToList( const QString &string, QVariant::Type type );
+
     /**
      * Updates all relations that reference or are referenced by the source layer to the targetLayer.
      */

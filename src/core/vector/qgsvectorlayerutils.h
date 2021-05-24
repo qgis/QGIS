@@ -19,11 +19,11 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgssymbollayerreference.h"
 #include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
+class QgsSymbolLayerId;
 
 /**
  * \ingroup core

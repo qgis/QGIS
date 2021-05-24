@@ -18,13 +18,14 @@
 #include <QSqlDatabase>
 #include <QMainWindow>
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QSqlDatabase;
 

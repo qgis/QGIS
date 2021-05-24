@@ -23,7 +23,7 @@
 
 QgsGeometryOptions::QgsGeometryOptions()
 {
-  mGeometryChecks = QgsSettings().value( QStringLiteral( "geometry_validation/default_checks" ) ).toString().split( ',' ) ;
+  mGeometryChecks = settingsGeometryValidationDefaultChecks.value().split( ',' ) ;
 }
 
 bool QgsGeometryOptions::removeDuplicateNodes() const

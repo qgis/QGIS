@@ -69,6 +69,7 @@
 #include "qgsmaptoolpinlabels.h"
 #include "qgsmaptooloffsetpointsymbol.h"
 #include "qgsspinbox.h"
+#include "qgssettingsregistrycore.h"
 
 //
 // QgsStreamDigitizingSettingsAction
@@ -80,9 +81,6 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
 
-  QgsSettings settings;
-  int defaultTolerance = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
-
   mStreamToleranceSpinBox = new QgsSpinBox();
   mStreamToleranceSpinBox->setSuffix( tr( "px" ) );
   mStreamToleranceSpinBox->setKeyboardTracking( false );
@@ -90,15 +88,14 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   mStreamToleranceSpinBox->setWrapping( false );
   mStreamToleranceSpinBox->setSingleStep( 1 );
   mStreamToleranceSpinBox->setClearValue( 2 );
-  mStreamToleranceSpinBox->setValue( defaultTolerance );
+  mStreamToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value() );
 
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
   connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
   {
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), value );
+    QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.setValue( value );
   } );
 
   QWidget *w = new QWidget();

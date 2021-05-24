@@ -32,7 +32,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-
 QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )
 {
@@ -48,7 +47,6 @@ void QgsAbstractRelationEditorWidget::setRelationFeature( const QgsRelation &rel
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
-  updateTitle();
   afterSetRelationFeature();
   updateUi();
 }
@@ -86,8 +84,6 @@ void QgsAbstractRelationEditorWidget::setRelations( const QgsRelation &relation,
         mLayerInSameTransactionGroup = true;
     }
   }
-
-  updateTitle();
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
@@ -131,26 +127,22 @@ QVariant QgsAbstractRelationEditorWidget::nmRelationId() const
 
 QString QgsAbstractRelationEditorWidget::label() const
 {
-  return mLabel;
+  return QString();
 }
 
 void QgsAbstractRelationEditorWidget::setLabel( const QString &label )
 {
-  mLabel = label;
-
-  updateTitle();
+  Q_UNUSED( label )
 }
 
 bool QgsAbstractRelationEditorWidget::showLabel() const
 {
-  return mShowLabel;
+  return false;
 }
 
 void QgsAbstractRelationEditorWidget::setShowLabel( bool showLabel )
 {
-  mShowLabel = showLabel;
-
-  updateTitle();
+  Q_UNUSED( showLabel )
 }
 
 void QgsAbstractRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
@@ -165,18 +157,6 @@ bool QgsAbstractRelationEditorWidget::forceSuppressFormPopup() const
 
 void QgsAbstractRelationEditorWidget::updateTitle()
 {
-  if ( mShowLabel && !mLabel.isEmpty() )
-  {
-    setTitle( mLabel );
-  }
-  else if ( mShowLabel && mRelation.isValid() )
-  {
-    setTitle( mRelation.name() );
-  }
-  else
-  {
-    setTitle( QString() );
-  }
 }
 
 QgsFeature QgsAbstractRelationEditorWidget::feature() const
@@ -644,6 +624,11 @@ void QgsAbstractRelationEditorWidget::duplicateFeatures( const QgsFeatureIds &fi
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
+}
+
+void QgsAbstractRelationEditorWidget::showEvent( QShowEvent * )
+{
+  updateUi();
 }
 
 

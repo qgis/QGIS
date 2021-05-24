@@ -45,8 +45,12 @@ macro (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core
-    qgis_gui
     )
+    if(WITH_GUI)
+      target_link_libraries(qgis_${testname}
+        qgis_gui
+        )
+    endif()
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
 endmacro (ADD_QGIS_TEST)
 

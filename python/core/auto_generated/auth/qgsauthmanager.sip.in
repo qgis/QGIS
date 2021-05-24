@@ -262,11 +262,12 @@ Returns the regular expression for authcfg=.{7} key/value token for authenticati
 Gets list of authentication ids from database
 %End
 
-    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig /In,Out/ );
+    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig /In,Out/, bool overwrite = false );
 %Docstring
 Store an authentication config in the database
 
 :param mconfig: Associated authentication config id
+:param overwrite: If set to ``True``, pre-existing authentication configurations will be overwritten
 
 :return: Whether operation succeeded
 %End
@@ -298,6 +299,28 @@ Remove an authentication config in the database
 :param authcfg: Associated authentication config id
 
 :return: Whether operation succeeded
+%End
+
+    bool exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password = QString() );
+%Docstring
+Export authentication configurations to an XML file
+
+:param filename: The file path to save the XML content to
+:param authcfgs: The list of configuration IDs to export
+:param password: A password string to encrypt the XML content
+
+.. versionadded:: 3.20
+%End
+
+    bool importAuthenticationConfigsFromXml( const QString &filename, const QString &password = QString(), bool overwrite = false );
+%Docstring
+Import authentication configurations from an XML file
+
+:param filename: The file path from which the XML content will be read
+:param password: A password string to decrypt the XML content
+:param overwrite: If set to ``True``, pre-existing authentication configurations will be overwritten
+
+.. versionadded:: 3.20
 %End
 
     bool removeAllAuthenticationConfigs();

@@ -24,6 +24,7 @@ class QgsRendererRange
 %Docstring
 Constructor for QgsRendererRange.
 %End
+    ~QgsRendererRange();
 
     QgsRendererRange( const QgsClassificationRange &range, QgsSymbol *symbol /Transfer/, bool render = true );
 %Docstring

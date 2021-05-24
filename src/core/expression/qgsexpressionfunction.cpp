@@ -1392,10 +1392,25 @@ static QVariant fcnReplace( const QVariantList &values, const QgsExpressionConte
   {
     QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
     QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 1 ), parent );
+    QVector< QPair< QString, QString > > mapItems;
 
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
-      str = str.replace( it.key(), it.value().toString() );
+      mapItems.append( qMakePair( it.key(), it.value().toString() ) );
+    }
+
+    // larger keys should be replaced first since they may contain whole smaller keys
+    std::sort( mapItems.begin(),
+               mapItems.end(),
+               []( const QPair< QString, QString > &pair1,
+                   const QPair< QString, QString > &pair2 )
+    {
+      return ( pair1.first.length() > pair2.first.length() );
+    } );
+
+    for ( auto it = mapItems.constBegin(); it != mapItems.constEnd(); ++it )
+    {
+      str = str.replace( it->first, it->second );
     }
 
     return QVariant( str );
@@ -4473,7 +4488,7 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
 
   if ( values.length() >= 1 )
   {
-    double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+    double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
     return QVariant( qlonglong( std::round( number ) ) );
   }
 
@@ -6570,7 +6585,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
@@ -6961,7 +6976,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     QgsStaticExpressionFunction *orderPartsFunc = new QgsStaticExpressionFunction( QStringLiteral( "order_parts" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "orderby" ) )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "ascending" ) ),
+        << QgsExpressionFunction::Parameter( QStringLiteral( "ascending" ), true, true ),
         fcnOrderParts, QStringLiteral( "GeometryGroup" ), QString() );
 
     orderPartsFunc->setIsStaticFunction(

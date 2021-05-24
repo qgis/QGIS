@@ -30,6 +30,7 @@
 #include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsfieldsitem.h"
 
 #include <QMessageBox>
 #include <climits>
@@ -152,7 +153,15 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
       }
 
       // open the source layer
-      QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+      bool owner;
+      QString error;
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      if ( !srcLayer )
+      {
+        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, error ) );
+        hasError = true;
+        continue;
+      }
 
       if ( srcLayer->isValid() )
       {
@@ -168,8 +177,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
         uri.setWkbType( srcLayer->wkbType() );
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
-          QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ),
-              QStringLiteral( "hana" ), srcLayer->crs() ) );
+          new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ),
+                                          QStringLiteral( "hana" ), srcLayer->crs(), QVariantMap(), owner ) );
+
         // when export is successful:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this,
                  [ = ]()
@@ -180,9 +190,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
         // when an error occurs:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this,
-                 [ = ]( int error, const QString & errorMessage )
+                 [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
         {
-          if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+          if ( error != Qgis::VectorExportResult::UserCanceled )
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
             output->setTitle( tr( "Import to SAP HANA database" ) );
@@ -318,7 +328,16 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
 
     items.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo : layers )
-      items.append( createLayer( layerInfo ) );
+    {
+      if ( layerInfo.isValid )
+        items.append( createLayer( layerInfo ) );
+      else
+      {
+        QgsErrorItem *itemInvalidLayer = new QgsErrorItem( this, layerInfo.defaultName(), mPath + "/error" );
+        itemInvalidLayer->setToolTip( layerInfo.errorMessage );
+        items.append( itemInvalidLayer );
+      }
+    }
   }
   catch ( const QgsHanaException &ex )
   {
@@ -337,7 +356,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
   QString tip = layerProperty.isView ? QStringLiteral( "View" ) : QStringLiteral( "Table" );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
-  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isValid() )
+  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isGeometryValid() )
   {
     tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName,
                                    QgsWkbTypes::displayString( layerProperty.type ) );

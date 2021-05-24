@@ -85,7 +85,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
       if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
       {
         mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
-        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(220, 125, 0, 255);" ) );
         return;
       }
     }
@@ -116,7 +116,7 @@ void QgsExpressionPreviewWidget::refreshPreview()
         tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), mExpression.evalErrorString() );
 
       mPreviewLabel->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
-      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10, 255);" ) );
       setExpressionToolTip( tooltip );
       emit expressionParsed( false );
       setParserError( mExpression.hasParserError() );

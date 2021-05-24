@@ -19,6 +19,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

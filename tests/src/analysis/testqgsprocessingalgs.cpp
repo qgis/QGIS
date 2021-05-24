@@ -58,6 +58,8 @@
 #include "qgsrenderchecker.h"
 #include "qgsrelationmanager.h"
 #include "qgsmeshlayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -79,6 +81,7 @@ class TestQgsProcessingAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
     void saveFeaturesAlg();
     void packageAlg();
+    void rasterLayerProperties();
     void exportToSpreadsheetXlsx();
     void exportToSpreadsheetOds();
     void exportToSpreadsheetOptions();
@@ -290,7 +293,7 @@ void TestQgsProcessingAlgs::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool *ok )
+QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool overwrite, bool selectedFeaturesOnly, bool saveMetadata, bool *ok )
 {
   const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) ) );
 
@@ -304,6 +307,7 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
   parameters.insert( QStringLiteral( "OVERWRITE" ), overwrite );
   parameters.insert( QStringLiteral( "SELECTED_FEATURES_ONLY" ), selectedFeaturesOnly );
+  parameters.insert( QStringLiteral( "SAVE_METADATA" ), saveMetadata );
   return package->run( parameters, *context, &feedback, ok );
 }
 
@@ -390,7 +394,7 @@ void TestQgsProcessingAlgs::packageAlg()
   QVariantMap parameters;
   QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
   bool ok = false;
-  QVariantMap results = pkgAlg( layers, outputGpkg, true, false, &ok );
+  QVariantMap results = pkgAlg( layers, outputGpkg, true, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -408,9 +412,12 @@ void TestQgsProcessingAlgs::packageAlg()
   std::unique_ptr<QgsVectorLayer> rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
       QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
+  QgsLayerMetadata metadata;
+  metadata.setFees( QStringLiteral( "lots of dogecoin" ) );
+  rectangles->setMetadata( metadata );
 
   // Test adding an additional layer (overwrite disabled)
-  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, false, &ok );
+  QVariantMap results2 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, false, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -425,7 +432,7 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer.reset();
 
   // And finally, test with overwrite enabled
-  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, &ok );
+  QVariantMap results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -437,9 +444,21 @@ void TestQgsProcessingAlgs::packageAlg()
   pointLayer = std::make_unique< QgsVectorLayer >( outputGpkg + "|layername=points", "points", "ogr" );
   QVERIFY( !pointLayer->isValid() ); // It's gone -- the gpkg was recreated with a single layer
 
+  QCOMPARE( rectanglesPackagedLayer->metadata().fees(), QString() );
+  rectanglesPackagedLayer.reset();
+
+  // save layer metadata
+  results3 = pkgAlg( QStringList() << rectangles->id(), outputGpkg, true, false, true, &ok );
+  QVERIFY( ok );
+  rectanglesPackagedLayer = std::make_unique< QgsVectorLayer >( outputGpkg + "|layername=rectangles", "points", "ogr" );
+  QVERIFY( rectanglesPackagedLayer->isValid() );
+  QCOMPARE( rectanglesPackagedLayer->wkbType(), rectanglesPackagedLayer->wkbType() );
+  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
+  QCOMPARE( rectanglesPackagedLayer->metadata().fees(), QStringLiteral( "lots of dogecoin" ) );
+
   // Test saving of selected features only
   mPolygonLayer->selectByIds( QgsFeatureIds() << 1 << 2 << 3 );
-  QVariantMap results4 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVariantMap results4 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results4.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -450,7 +469,7 @@ void TestQgsProcessingAlgs::packageAlg()
   selectedPolygonsPackagedLayer.reset();
 
   mPolygonLayer->removeSelection();
-  QVariantMap results5 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, &ok );
+  QVariantMap results5 = pkgAlg( QStringList() << mPolygonLayer->id(), outputGpkg, false, true, false, &ok );
   QVERIFY( ok );
 
   QVERIFY( !results5.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
@@ -458,6 +477,59 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( selectedPolygonsPackagedLayer->isValid() );
   QCOMPARE( selectedPolygonsPackagedLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( selectedPolygonsPackagedLayer->featureCount(), 10 ); // With enabled SELECTED_FEATURES_ONLY all features should be saved when there is no selection
+}
+
+void TestQgsProcessingAlgs::rasterLayerProperties()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:rasterlayerproperties" ) ) );
+
+  QString myDataPath( TEST_DATA_DIR ); //defined in CMakeLists.txt
+
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap parameters;
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/landsat.tif" ) );
+
+  //run alg...
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 781662.375 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 793062.375 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 3339523.125 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 3350923.125 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "781662.3750000000000000,3339523.1250000000000000 : 793062.3750000000000000,3350923.1250000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 57.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "EPSG:32633" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 200 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 9 );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant( myDataPath + "/raster/valueRas3_float64.asc" ) );
+  parameters.insert( QStringLiteral( "BAND" ), 1 );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "X_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "X_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MIN" ) ).toDouble(), 0.0 );
+  QCOMPARE( results.value( QStringLiteral( "Y_MAX" ) ).toDouble(), 4.0 );
+  QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "0.0000000000000000,0.0000000000000000 : 4.0000000000000000,4.0000000000000000" ) );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 1.0 );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) );
+  QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 4 );
+  QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "HAS_NODATA_VALUE" ) ).toInt(), 1 );
+  QCOMPARE( results.value( QStringLiteral( "NODATA_VALUE" ) ).toInt(), -9999 );
 }
 
 void TestQgsProcessingAlgs::exportToSpreadsheetXlsx()

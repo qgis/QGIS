@@ -160,6 +160,24 @@ QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
   return g;
 }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMakeValid_r( geosinit()->ctxt, mGeos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+}
+#endif
+
 geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision )
 {
   if ( geometry.isNull() )
@@ -492,6 +510,65 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
   return distance;
+}
+
+double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
+  ( void )geom;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistance requires a QGIS build based on GEOS 3.7 or later" ) );
+#else
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSFrechetDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
+  }
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
+
+  return distance;
+#endif
+}
+
+double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
+  ( void )geom;
+  ( void )densifyFraction;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.7 or later" ) );
+#else
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  geos::unique_ptr otherGeosGeom( asGeos( geom, mPrecision ) );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSFrechetDistanceDensify_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), densifyFraction, &distance );
+  }
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
+
+  return distance;
+#endif
 }
 
 bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -2085,6 +2162,156 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
       distance = -distance;
     }
     geos.reset( GEOSBufferWithParams_r( geosinit()->ctxt, mGeos.get(), bp.get(), distance ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tolerance, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+  ( void )tolerance;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating maximumInscribedCircle requires a QGIS build based on GEOS 3.9 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMaximumInscribedCircle_r( geosinit()->ctxt, mGeos.get(), tolerance ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
+  ( void )tolerance;
+  ( void )boundary;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating largestEmptyCircle requires a QGIS build based on GEOS 3.9 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos::unique_ptr boundaryGeos;
+    if ( boundary )
+      boundaryGeos = asGeos( boundary );
+
+    geos.reset( GEOSLargestEmptyCircle_r( geosinit()->ctxt, mGeos.get(), boundaryGeos.get(), tolerance ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumWidth requires a QGIS build based on GEOS 3.6 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMinimumWidth_r( geosinit()->ctxt, mGeos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+#endif
+}
+
+double QgsGeos::minimumClearance( QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearance requires a QGIS build based on GEOS 3.6 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return std::numeric_limits< double >::quiet_NaN();
+  }
+
+  geos::unique_ptr geos;
+  double res = 0;
+  try
+  {
+    if ( GEOSMinimumClearance_r( geosinit()->ctxt, mGeos.get(), &res ) != 0 )
+      return std::numeric_limits< double >::quiet_NaN();
+  }
+  CATCH_GEOS_WITH_ERRMSG( std::numeric_limits< double >::quiet_NaN() )
+  return res;
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearanceLine requires a QGIS build based on GEOS 3.6 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMinimumClearanceLine_r( geosinit()->ctxt, mGeos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+#endif
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::node( QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSNode_r( geosinit()->ctxt, mGeos.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg ) const
+{
+  if ( !mGeos || !other )
+  {
+    return nullptr;
+  }
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos::unique_ptr otherGeos = asGeos( other );
+    if ( !otherGeos )
+      return nullptr;
+
+    geos.reset( GEOSSharedPaths_r( geosinit()->ctxt, mGeos.get(), otherGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );

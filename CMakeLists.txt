@@ -33,6 +33,8 @@ endif()
 math(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 message(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps which are only relevant for releases to speed up compilation time for development")
+
 #############################################################
 if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
@@ -142,6 +144,8 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
+
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
 
   set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
@@ -169,7 +173,6 @@ if(WITH_CORE)
       # keep casual users from updating their source tree via WITH_QSCIAPI
       mark_as_advanced (WITH_QSCIAPI)
     endif()
-    add_definitions(-DWITH_BINDINGS)
   endif()
 
   # server disabled default because it needs FastCGI (which is optional dependency)
@@ -233,7 +236,11 @@ if(WITH_CORE)
     set (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
   endif()
 
-  set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  # try to configure and build POSTGRESQL support
+  set (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether Spatialite support should be built (required for spatialite, virtual, wfs providers)")
+  if (WITH_SPATIALITE)
+      set (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  endif()
 
   set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   if(WITH_ORACLE)
@@ -390,7 +397,10 @@ if(WITH_CORE)
     find_package(Poly2Tri REQUIRED)
   endif()
 
-  find_package(SpatiaLite REQUIRED)
+  if (WITH_SPATIALITE)
+    find_package(SpatiaLite REQUIRED)
+    set (HAVE_SPATIALITE TRUE)
+  endif()
 
   if (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
     message (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
@@ -440,7 +450,7 @@ if(WITH_CORE)
     set(QT_VERSION_BASE "Qt6")
   else()
     set(QT_MIN_VERSION 5.12.0)
-    set(QT_VERSION_BASE "Qt5")    
+    set(QT_VERSION_BASE "Qt5")
   endif()
 
   # Use Qt5SerialPort optionally for GPS
@@ -490,8 +500,6 @@ if(WITH_CORE)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
       find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
-    else()
-      find_package(QtQmlTools)
     endif()
 
     # following variable is used in qgsconfig.h
@@ -681,8 +689,8 @@ else()
 endif()
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /std:c++17")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /utf-8 /std:c++17")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
@@ -775,12 +783,6 @@ if (WITH_CORE)
       set (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
       set (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
       set (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
-      # if we have @loader_path, >=OSX 10.5 (darwin 9+)
-      if (CMAKE_SYSTEM_VERSION VERSION_GREATER 9.0.0 OR CMAKE_SYSTEM_VERSION VERSION_EQUAL 9.0.0)
-          set (OSX_HAVE_LOADERPATH 1)
-      else()
-          set (OSX_HAVE_LOADERPATH 0)
-      endif()
 
       set (DEFAULT_BIN_SUBDIR      bin)
       set (QGIS_BIN_SUBDIR_REV     ..)
@@ -938,12 +940,21 @@ set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required s
 set(MIN_PYTHON_VERSION "3.7")
 set(Python_FIND_FRAMEWORK "LAST")
 
-find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+
+if (WITH_BINDINGS)
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter Development)
+else()
+  find_package(Python ${MIN_PYTHON_VERSION} REQUIRED COMPONENTS Interpreter)
+endif()
+
 message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERSION})")
 message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
 if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+  set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+  set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
+
   # python support: check for interpreter, sip, pyqt5
   find_package(PyQt5 REQUIRED)
   set(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
@@ -957,7 +968,7 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 11)
+  set(SIP_CONCAT_PARTS 13)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)

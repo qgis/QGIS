@@ -23,7 +23,13 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometry.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+
+#include <geos_c.h>
+
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<8 )
 #include "qgsgeometrymakevalid.h"
+#endif
+
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
@@ -1833,6 +1839,31 @@ double QgsGeometry::hausdorffDistanceDensify( const QgsGeometry &geom, double de
   return g.hausdorffDistanceDensify( geom.d->geometry.get(), densifyFraction, &mLastError );
 }
 
+
+double QgsGeometry::frechetDistance( const QgsGeometry &geom ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry.get() );
+  mLastError.clear();
+  return g.frechetDistance( geom.d->geometry.get(), &mLastError );
+}
+
+double QgsGeometry::frechetDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry.get() );
+  mLastError.clear();
+  return g.frechetDistanceDensify( geom.d->geometry.get(), densifyFraction, &mLastError );
+}
+
 QgsAbstractGeometry::vertex_iterator QgsGeometry::vertices_begin() const
 {
   if ( !d->geometry || d->geometry.get()->isEmpty() )
@@ -2181,6 +2212,64 @@ QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double *distan
   return engine.poleOfInaccessibility( precision, distanceToBoundary );
 }
 
+QgsGeometry QgsGeometry::largestEmptyCircle( double tolerance,  const QgsGeometry &boundary ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.largestEmptyCircle( tolerance, boundary.constGet(), &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::minimumWidth() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.minimumWidth( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+double QgsGeometry::minimumClearance() const
+{
+  if ( !d->geometry )
+  {
+    return std::numeric_limits< double >::quiet_NaN();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  return geos.minimumClearance( &mLastError );
+}
+
+QgsGeometry QgsGeometry::minimumClearanceLine() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+
+  mLastError.clear();
+  QgsGeometry result( geos.minimumClearanceLine( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
 QgsGeometry QgsGeometry::convexHull() const
 {
   if ( !d->geometry )
@@ -2223,6 +2312,34 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.delaunayTriangulation( tolerance, edgesOnly );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::node() const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.node( &mLastError ) );
+  result.mLastError = mLastError;
+  return result;
+}
+
+QgsGeometry QgsGeometry::sharedPaths( const QgsGeometry &other ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  QgsGeometry result( geos.sharedPaths( other.constGet(), &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -2627,7 +2744,12 @@ QgsGeometry QgsGeometry::makeValid() const
     return QgsGeometry();
 
   mLastError.clear();
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
+  QgsGeos geos( d->geometry.get() );
+  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( &mLastError ) );
+#else
   std::unique_ptr< QgsAbstractGeometry > g( _qgis_lwgeom_make_valid( d->geometry.get(), mLastError ) );
+#endif
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;
@@ -2717,6 +2839,17 @@ void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, const V
   }
 }
 
+void QgsGeometry::normalize()
+{
+  if ( !d->geometry )
+  {
+    return;
+  }
+
+  detach();
+  d->geometry->normalize();
+}
+
 bool QgsGeometry::isGeosValid( const QgsGeometry::ValidityFlags flags ) const
 {
   if ( !d->geometry )
@@ -2735,6 +2868,15 @@ bool QgsGeometry::isSimple() const
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   return geos.isSimple( &mLastError );
+}
+
+bool QgsGeometry::isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly ) const
+{
+  if ( !d->geometry )
+    return false;
+
+  QgsInternalGeometryEngine engine( *this );
+  return engine.isAxisParallelRectangle( maximumDeviation, simpleRectanglesOnly );
 }
 
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const

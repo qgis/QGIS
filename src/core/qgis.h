@@ -37,6 +37,22 @@ int QgisEvent = QEvent::User + 1;
 % End
 #endif
 
+/**
+ * \ingroup core
+ * \brief Types of layers that can be added to a map
+ * \since QGIS 3.8
+ */
+enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer,      //!< Added in 3.2
+  VectorTileLayer, //!< Added in 3.14
+  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
+  PointCloudLayer, //!< Added in 3.18
+};
+
 
 /**
  * \ingroup core
@@ -132,6 +148,100 @@ class CORE_EXPORT Qgis
     Q_ENUM( PythonMacroMode )
 
     /**
+     * \ingroup core
+     * \brief Enumeration of feature count states
+     * \since QGIS 3.20
+     */
+    enum class FeatureCountState SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorDataProvider, FeatureCountState ) : int
+      {
+      Uncounted = -2, //!< Feature count not yet computed
+      UnknownCount = -1, //!< Provider returned an unknown feature count
+    };
+
+    /**
+     * \brief Symbol types
+     * \since QGIS 3.20
+     */
+    enum class SymbolType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, SymbolType ) : int
+      {
+      Marker, //!< Marker symbol
+      Line, //!< Line symbol
+      Fill, //!< Fill symbol
+      Hybrid //!< Hybrid symbol
+    };
+
+    /**
+     * \brief Scale methods
+     *
+     * \since QGIS 3.20
+     */
+    enum class ScaleMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, ScaleMethod ) : int
+      {
+      ScaleArea,     //!< Calculate scale by the area
+      ScaleDiameter  //!< Calculate scale by the diameter
+    };
+
+    /**
+     * \brief Flags controlling behavior of symbols during rendering
+     *
+     * \since QGIS 3.20
+     */
+    enum class SymbolRenderHint SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, RenderHint ) : int
+      {
+      DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
+    };
+    Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
+
+    /**
+     * Flags for controlling how symbol preview images are generated.
+     *
+     * \since QGIS 3.20
+     */
+    enum class SymbolPreviewFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, PreviewFlag ) : int
+      {
+      FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
+    };
+    Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
+
+    /**
+     * Vector layer export result codes.
+     *
+     * \since QGIS 3.20
+     */
+    enum class VectorExportResult SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsVectorLayerExporter, ExportError ) : int
+      {
+      Success SIP_MONKEYPATCH_COMPAT_NAME( NoError ) = 0, //!< No errors were encountered
+      ErrorCreatingDataSource SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateDataSource ), //!< Could not create the destination data source
+      ErrorCreatingLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrCreateLayer ), //!< Could not create destination layer
+      ErrorAttributeTypeUnsupported SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeTypeUnsupported ), //!< Source layer has an attribute type which could not be handled by destination
+      ErrorAttributeCreationFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrAttributeCreationFailed ), //!< Destination provider was unable to create an attribute
+      ErrorProjectingFeatures SIP_MONKEYPATCH_COMPAT_NAME( ErrProjection ), //!< An error occurred while reprojecting features to destination CRS
+      ErrorFeatureWriteFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrFeatureWriteFailed ), //!< An error occurred while writing a feature to the destination
+      ErrorInvalidLayer SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidLayer ), //!< Could not access newly created destination layer
+      ErrorInvalidProvider SIP_MONKEYPATCH_COMPAT_NAME( ErrInvalidProvider ), //!< Could not find a matching provider key
+      ErrorProviderUnsupportedFeature SIP_MONKEYPATCH_COMPAT_NAME( ErrProviderUnsupportedFeature ), //!< Provider does not support creation of empty layers
+      ErrorConnectionFailed SIP_MONKEYPATCH_COMPAT_NAME( ErrConnectionFailed ), //!< Could not connect to destination
+      UserCanceled SIP_MONKEYPATCH_COMPAT_NAME( ErrUserCanceled ), //!< User canceled the export
+    };
+    Q_ENUM( VectorExportResult )
+
+    /**
+     * Drive types
+     * \since QGIS 3.20
+     */
+    enum class DriveType : int
+    {
+      Unknown, //!< Unknown type
+      Invalid, //!< Invalid path
+      Removable, //!< Removable drive
+      Fixed, //!< Fixed drive
+      Remote, //!< Remote drive
+      CdRom, //!< CD-ROM
+      RamDisk, //!< RAM disk
+    };
+    Q_ENUM( DriveType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -169,11 +279,18 @@ class CORE_EXPORT Qgis
     static const double SCALE_PRECISION;
 
     /**
-     * Default Z coordinate value for 2.5d geometry
-     *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  \since QGIS 3.0
+     * Default Z coordinate value.
+     * This value have to be assigned to the Z coordinate for the vertex.
+     * \since QGIS 3.0
      */
     static const double DEFAULT_Z_COORDINATE;
+
+    /**
+     * Default M coordinate value.
+     * This value have to be assigned to the M coordinate for the vertex.
+     * \since QGIS 3.20
+     */
+    static const double DEFAULT_M_COORDINATE;
 
     /**
      * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
@@ -237,6 +354,10 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
+
+
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
@@ -261,7 +382,7 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
      * Constructor for QgsSignalBlocker
      * \param object QObject to block signals from
      */
-    explicit QgsSignalBlocker( Object *object )
+    explicit QgsSignalBlocker( Object * object )
       : mObject( object )
       , mPreviousState( object->blockSignals( true ) )
     {}
@@ -335,6 +456,22 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
 }
 
 /**
+ * Compare two doubles, treating nan values as equal
+ * \param a first double
+ * \param b second double
+ * \since QGIS 3.20
+ */
+inline bool qgsNanCompatibleEquals( double a, double b )
+{
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
+
+  return a == b;
+}
+
+/**
  * Compare two doubles (but allow some difference)
  * \param a first double
  * \param b second double
@@ -342,8 +479,10 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -357,8 +496,10 @@ inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric
  */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   const float diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -367,8 +508,10 @@ inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 //! Compare two doubles using specified number of significant digits
 inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
-  if ( std::isnan( a ) || std::isnan( b ) )
-    return std::isnan( a ) && std::isnan( b ) ;
+  const bool aIsNan = std::isnan( a );
+  const bool bIsNan = std::isnan( b );
+  if ( aIsNan || bIsNan )
+    return aIsNan && bIsNan;
 
   // The most simple would be to print numbers as %.xe and compare as strings
   // but that is probably too costly
@@ -678,6 +821,38 @@ void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 #define CONSTLATIN1STRING constexpr QLatin1String
 #endif
 
+///@cond PRIVATE
+class ScopedIntIncrementor
+{
+  public:
+
+    ScopedIntIncrementor( int *variable )
+      : mVariable( variable )
+    {
+      ( *mVariable )++;
+    }
+
+    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
+    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
+
+    void release()
+    {
+      if ( mVariable )
+        ( *mVariable )--;
+
+      mVariable = nullptr;
+    }
+
+    ~ScopedIntIncrementor()
+    {
+      release();
+    }
+
+  private:
+    int *mVariable = nullptr;
+};
+///@endcond
+
 /**
 * Wkt string that represents a geographic coord sys
 * \since QGIS GEOWkt
@@ -856,6 +1031,26 @@ typedef unsigned long long qgssize;
 #ifndef FINAL
 #define FINAL final
 #endif
+
+#ifndef SIP_RUN
+#if defined(__GNUC__) && !defined(__clang__)
+// Workaround a GCC bug where a -Wreturn-type warning is emitted in constructs
+// like:
+// switch( mVariableThatCanOnlyBeXorY )
+// {
+//    case X:
+//        return "foo";
+//    case Y:
+//        return "foo";
+// }
+// See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87951
+#define DEFAULT_BUILTIN_UNREACHABLE \
+  default: \
+  __builtin_unreachable();
+#else
+#define DEFAULT_BUILTIN_UNREACHABLE
+#endif
+#endif // SIP_RUN
 
 #ifdef SIP_RUN
 

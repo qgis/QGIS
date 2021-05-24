@@ -201,7 +201,6 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
     QgsLayoutAtlas *layoutAtlas() const;
 
   private:
-
     QgsLayoutConfigObject *mConfigObject = nullptr;
 
     QgsLayoutObject *mObject = nullptr;

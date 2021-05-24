@@ -3272,7 +3272,7 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
 
       if ( ! mAllowMultipart )
       {
-        code += QStringLiteral( ", allowMultipart=False" );
+        code += QLatin1String( ", allowMultipart=False" );
       }
 
       QgsProcessingContext c;

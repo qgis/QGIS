@@ -55,6 +55,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_nulls();
     void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
+    void testLongLong();
 
   private:
     std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
@@ -98,6 +99,7 @@ void TestQgsRangeWidgetWrapper::init()
   fields.append( dfield2 );
   // simple int
   fields.append( QgsField( "simplenumber", QVariant::Int ) );
+  fields.append( QgsField( "longlong", QVariant::LongLong ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -465,6 +467,29 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
+}
+
+void TestQgsRangeWidgetWrapper::testLongLong()
+{
+  // test range widget with a long long field type
+  std::unique_ptr< QgsRangeWidgetWrapper >wrapper = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
+
+  // should use a double spin box, as a integer spin box does not have sufficient range
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( wrapper->createWidget( nullptr ) );
+  QVERIFY( editor );
+  wrapper->initWidget( editor );
+  // no decimals, it's for long long value editing!
+  QCOMPARE( editor->decimals(), 0 );
+  QCOMPARE( editor->minimum( ), std::numeric_limits<double>::lowest() );
+  QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
+
+  wrapper->setValue( 1234567890123LL );
+
+  // double spin box value should be lossless
+  QCOMPARE( editor->value(), 1234567890123.0 );
+
+  // wrapper value must be a long long type, not double
+  QCOMPARE( wrapper->value(), 1234567890123LL );
 }
 
 QGSTEST_MAIN( TestQgsRangeWidgetWrapper )

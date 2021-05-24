@@ -128,7 +128,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const FINAL;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
+
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
@@ -171,6 +171,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
   private:
 

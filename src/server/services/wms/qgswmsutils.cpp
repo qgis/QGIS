@@ -26,16 +26,14 @@
 #include "qgsmediancut.h"
 #include "qgsserverprojectutils.h"
 #include "qgswmsserviceexception.h"
+#include "qgsproject.h"
 
 namespace QgsWms
 {
-  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     QUrl href;
-    if ( project )
-    {
-      href.setUrl( QgsServerProjectUtils::wmsServiceUrl( *project ) );
-    }
+    href.setUrl( QgsServerProjectUtils::wmsServiceUrl( project ? *project : *QgsProject::instance(), request, settings ) );
 
     // Build default url
     if ( href.isEmpty() )

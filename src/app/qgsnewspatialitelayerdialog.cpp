@@ -24,7 +24,6 @@
 #include "qgsapplication.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgisapp.h" // <- for theme icons
-#include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -37,6 +36,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -53,7 +53,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type, const QString & sqlType )
   {
-    mGeometryTypeBox->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), sqlType );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), sqlType );
   };
 
   addGeomItem( QgsWkbTypes::NoGeometry, QString() );

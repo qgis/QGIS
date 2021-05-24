@@ -2607,7 +2607,8 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(0.5, 0.5), QgsPoint(0, 1)])),
                          QgsGeometry.Success)
         expWkt = 'Polygon ((0 0, 1 0, 1 1, 0 1, 0.5 0.5, 0 0))'
-        self.assertTrue(compareWkt(g.asWkt(), expWkt),
+        wkt = g.asWkt()
+        self.assertTrue(compareWkt(wkt, expWkt),
                         "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
         # Test reshape a line from first/last vertex
@@ -6011,6 +6012,45 @@ class TestQgsGeometry(unittest.TestCase):
         # test we don't crash when geos returns a point geometry with no points
         QgsGeometry.fromWkt('Polygon ((0 0, 1 1, 1 0, 0 0))').intersection(QgsGeometry.fromWkt('Point (42 0)')).isNull()
 
+    def testIsRectangle(self):
+        """
+        Test checking if geometries are rectangles
+        """
+        # non polygons
+        self.assertFalse(QgsGeometry().isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Point(0 1)').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('LineString(0 1, 1 2)').isAxisParallelRectangle(0))
+
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 0))').isAxisParallelRectangle(0, True))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 1))').isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 0 1))').isAxisParallelRectangle(0, True))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon(())').isAxisParallelRectangle(0))
+
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0, True))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0 1, 1 1, 1 0, 0 0))').isAxisParallelRectangle(0, True))
+        # with rings
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0), (0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))').isAxisParallelRectangle(0))
+        # densified
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0))
+        # not a simple rectangle
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 0.5 0.0, 1 0, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(0, True))
+
+        # starting mid way through a side
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0.5 0, 1 0, 1 1, 0 1, 0 0, 0.5 0))').densifyByCount(
+            5).isAxisParallelRectangle(0))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0.5 0, 1 0, 1 1, 0 1, 0 0, 0.5 0))').densifyByCount(
+            5).isAxisParallelRectangle(0, True))
+
+        # with tolerance
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0.001, 1 1, 0 1, 0 0))').isAxisParallelRectangle(0))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.001, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
+        self.assertFalse(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(1))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').isAxisParallelRectangle(10))
+        self.assertTrue(QgsGeometry.fromWkt('Polygon((0 0, 1 0.1, 1 1, 0 1, 0 0))').densifyByCount(5).isAxisParallelRectangle(10))
+
     def testTransformWithClass(self):
         """
         Test transforming using a python based class (most of the tests for this are in c++, this is just
@@ -6025,6 +6065,81 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10)')
         self.assertTrue(g.get().transform(transformer))
         self.assertEqual(g.asWkt(0), 'LineString (0 1, 20 1, 20 11)')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30900, "GEOS 3.9 required")
+    def testFrechetDistance(self):
+        """
+        Test QgsGeometry.frechetDistance
+        """
+        l1 = QgsGeometry.fromWkt('LINESTRING (0 0, 100 0)')
+        l2 = QgsGeometry.fromWkt('LINESTRING (0 0, 50 50, 100 0)')
+        self.assertAlmostEqual(l1.frechetDistance(l2), 70.711, 3)
+        self.assertAlmostEqual(l2.frechetDistance(l1), 70.711, 3)
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30900, "GEOS 3.9 required")
+    def testFrechetDistanceDensify(self):
+        """
+        Test QgsGeometry.frechetDistanceDensify
+        """
+        l1 = QgsGeometry.fromWkt('LINESTRING (0 0, 100 0)')
+        l2 = QgsGeometry.fromWkt('LINESTRING (0 0, 50 50, 100 0)')
+        self.assertAlmostEqual(l1.frechetDistanceDensify(l2, 0.5), 50.000, 3)
+        self.assertAlmostEqual(l2.frechetDistanceDensify(l1, 0.5), 50.000, 3)
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30900, "GEOS 3.9 required")
+    def testLargestEmptyCircle(self):
+        """
+        Test QgsGeometry.largestEmptyCircle
+        """
+        g1 = QgsGeometry.fromWkt('POLYGON ((50 50, 150 50, 150 150, 50 150, 50 50))')
+        self.assertEqual(g1.largestEmptyCircle(1).asWkt(), 'LineString (100 100, 100 50)')
+        self.assertEqual(g1.largestEmptyCircle(0.1).asWkt(), 'LineString (100 100, 100 50)')
+        g2 = QgsGeometry.fromWkt('MultiPolygon (((95.03667481662591854 163.45354523227382515, 95.03667481662591854 122.0354523227383936, 34.10757946210270575 122.0354523227383936, 34.10757946210270575 163.45354523227382515, 95.03667481662591854 163.45354523227382515)),((35.64792176039119198 76.3386308068459698, 94.52322738386308743 76.3386308068459698, 94.52322738386308743 41.25305623471882654, 35.64792176039119198 41.25305623471882654, 35.64792176039119198 76.3386308068459698)),((185.23227383863081741 108.34352078239608375, 185.23227383863081741 78.56356968215158076, 118.99755501222495013 78.56356968215158076, 118.99755501222495013 108.34352078239608375, 185.23227383863081741 108.34352078239608375)))')
+        self.assertEqual(g2.largestEmptyCircle(0.1).asWkt(1), 'LineString (129.3 142.5, 129.3 108.3)')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30600, "GEOS 3.6 required")
+    def testMinimumClearance(self):
+        """
+        Test QgsGeometry.minimumClearance
+        """
+        l1 = QgsGeometry.fromWkt('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))')
+        self.assertAlmostEqual(l1.minimumClearance(), 0.00032, 5)
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30600, "GEOS 3.6 required")
+    def testMinimumClearanceLine(self):
+        """
+        Test QgsGeometry.minimumClearanceLine
+        """
+        l1 = QgsGeometry.fromWkt('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))')
+        self.assertEqual(l1.minimumClearanceLine().asWkt(6), 'LineString (0.5 0.00032, 0.5 0)')
+
+    @unittest.skipIf(Qgis.geosVersionInt() < 30600, "GEOS 3.6 required")
+    def testMinimumWidth(self):
+        """
+        Test QgsGeometry.minimumWidth
+        """
+        l1 = QgsGeometry.fromWkt('POLYGON ((0 0, 1 0, 1 1, 0.5 3.2e-4, 0 0))')
+        self.assertEqual(l1.minimumWidth().asWkt(6), 'LineString (0.5 0.5, 1 0)')
+
+    def testNode(self):
+        """
+        Test QgsGeometry.node
+        """
+        l1 = QgsGeometry.fromWkt('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)')
+        self.assertEqual(l1.node().asWkt(6), 'MultiLineStringZ ((0 0 0, 5 5 4.5),(5 5 4.5, 10 10 10, 0 10 5, 5 5 4.5),(5 5 4.5, 10 0 3))')
+        l1 = QgsGeometry.fromWkt('MULTILINESTRING ((2 5, 2 1, 7 1), (6 1, 4 1, 2 3, 2 5))')
+        self.assertEqual(l1.node().asWkt(6), 'MultiLineString ((2 5, 2 3),(2 3, 2 1, 4 1),(4 1, 6 1),(6 1, 7 1),(4 1, 2 3))')
+
+    def testSharedPaths(self):
+        """
+        Test QgsGeometry.sharedPaths
+        """
+        l1 = QgsGeometry.fromWkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
+        l2 = QgsGeometry.fromWkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')
+        self.assertEqual(l1.sharedPaths(l2).asWkt(6), 'GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)')
+        l1 = QgsGeometry.fromWkt('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)')
+        l2 = QgsGeometry.fromWkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))')
+        self.assertEqual(l1.sharedPaths(l2).asWkt(6), 'GeometryCollection (MultiLineString EMPTY,MultiLineString ((76 175, 90 161),(90 161, 101 150),(126 125, 126 156.25)))')
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)

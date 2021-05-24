@@ -119,7 +119,14 @@
    <item>
     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
      <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="mTextRenderFormatComboBox"/>
+      <widget class="QComboBox" name="mTextRenderFormatComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+       </property>
+       <property name="minimumContentsLength">
+        <number>8</number>
+       </property>
+      </widget>
      </item>
      <item row="5" column="0" colspan="3">
       <widget class="QCheckBox" name="chkShowCandidates">
@@ -131,7 +138,7 @@
      <item row="4" column="0" colspan="3">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <property name="leftMargin">
-        <number>40</number>
+        <number>20</number>
        </property>
        <item>
         <widget class="QLabel" name="label_6">
@@ -179,7 +186,7 @@
         <set>Qt::ImhNone</set>
        </property>
        <property name="text">
-        <string>Show all labels for all layers (i.e. including colliding objects)</string>
+        <string>Show all labels for all layers (i.e. including collisions)</string>
        </property>
       </widget>
      </item>
@@ -212,7 +219,14 @@
       </widget>
      </item>
      <item row="6" column="1" colspan="2">
-      <widget class="QComboBox" name="mPlacementVersionComboBox"/>
+      <widget class="QComboBox" name="mPlacementVersionComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+       </property>
+       <property name="minimumContentsLength">
+        <number>8</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

@@ -251,7 +251,7 @@ namespace QgsWcs
   }
 
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     static QSet< QString > sFilter
     {
@@ -261,11 +261,7 @@ namespace QgsWcs
       QStringLiteral( "_DC" )
     };
 
-    QString href;
-    if ( project )
-    {
-      href = QgsServerProjectUtils::wcsServiceUrl( *project );
-    }
+    QString href = QgsServerProjectUtils::wcsServiceUrl( project ? *project : *QgsProject::instance(), request, settings );
 
     // Build default url
     if ( href.isEmpty() )

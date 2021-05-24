@@ -23,7 +23,6 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsproject.h"
-#include "qgsdataitem.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
@@ -34,7 +33,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgslayerdefinition.h"
+#include "qgsiconutils.h"
+#include "qgsmimedatautils.h"
 
+#include <QPalette>
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -201,34 +203,34 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       switch ( layer->type() )
       {
         case QgsMapLayerType::RasterLayer:
-          icon = QgsLayerItem::iconRaster();
+          icon = QgsIconUtils::iconRaster();
           break;
 
         case QgsMapLayerType::MeshLayer:
-          icon = QgsLayerItem::iconMesh();
+          icon = QgsIconUtils::iconMesh();
           break;
 
         case QgsMapLayerType::VectorTileLayer:
-          icon = QgsLayerItem::iconVectorTile();
+          icon = QgsIconUtils::iconVectorTile();
           break;
 
         case QgsMapLayerType::PointCloudLayer:
-          icon = QgsLayerItem::iconPointCloud();
+          icon = QgsIconUtils::iconPointCloud();
           break;
 
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
           if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
-            icon = QgsLayerItem::iconPoint();
+            icon = QgsIconUtils::iconPoint();
           else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
-            icon = QgsLayerItem::iconLine();
+            icon = QgsIconUtils::iconLine();
           else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
-            icon = QgsLayerItem::iconPolygon();
+            icon = QgsIconUtils::iconPolygon();
           else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
-            icon = QgsLayerItem::iconTable();
+            icon = QgsIconUtils::iconTable();
           else
-            icon = QgsLayerItem::iconDefault();
+            icon = QgsIconUtils::iconDefaultLayer();
           break;
         }
 

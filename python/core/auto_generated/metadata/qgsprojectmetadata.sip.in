@@ -82,6 +82,8 @@ Sets the project's creation date/timestamp.
 
     virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
+    virtual void combine( const QgsAbstractMetadataBase *other );
+
 
     bool operator==( const QgsProjectMetadata &metadataOther ) const;
 

@@ -28,7 +28,7 @@
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
@@ -2642,7 +2642,9 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
     return false;  // currently not supported for circular edges
 
   QgsRectangle visible_extent = canvas()->mapSettings().visibleExtent();
-  if ( !visible_extent.contains( p0 ) || !visible_extent.contains( p1 ) )
+  // Check if one point is inside and the other outside the visible extent in order to transpose the mid marker
+  // If both are inside or outside there is no such need
+  if ( visible_extent.contains( p0 ) != visible_extent.contains( p1 ) )
   {
     // clip line segment to the extent so the mid-point marker is always visible
     QgsGeometry extentGeom = QgsGeometry::fromRect( visible_extent );
@@ -2726,8 +2728,7 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
   tool = t;
   layer = l;
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
     method = QgsGeometry::ValidatorGeos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
@@ -2776,8 +2777,7 @@ void QgsVertexTool::GeometryValidation::cleanup()
 
 void QgsVertexTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
     return;
 
   QPair<QgsVectorLayer *, QgsFeatureId> id( layer, featureId );

@@ -28,7 +28,7 @@
 #include "qgssnapindicator.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsproject.h"
@@ -284,8 +284,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   resetRubberBand();
 
   // Curves de-approximation
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() )
+  if ( QgsSettingsRegistryCore::settingsDigitizingConvertToCurve.value() )
   {
     // If the tool and the layer support curves
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -293,8 +292,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     {
       QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
       QgsGeometry curved = linear.convertToCurves(
-                             settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve_angle_tolerance" ), 1e-6 ).toDouble(),
-                             settings.value( QStringLiteral( "/qgis/digitizing/convert_to_curve_distance_tolerance" ), 1e-6 ).toDouble()
+                             QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.value(),
+                             QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.value()
                            );
       mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
     }
@@ -316,12 +315,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 
 QgsMapToolCaptureRubberBand *QgsMapToolCapture::createCurveRubberBand() const
 {
-  QgsSettings settings;
   QgsMapToolCaptureRubberBand *rb = new QgsMapToolCaptureRubberBand( mCanvas );
   rb->setStrokeWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
 
-  double alphaScale = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+  double alphaScale = QgsSettingsRegistryCore::settingsDigitizingLineColorAlphaScale.value();
   color.setAlphaF( color.alphaF() * alphaScale );
   rb->setLineStyle( Qt::DotLine );
   rb->setStrokeColor( color );
@@ -370,8 +368,7 @@ void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
   mStartNewCurve = true;
   if ( enable )
   {
-    QgsSettings settings;
-    mStreamingToleranceInPixels = settings.value( QStringLiteral( "/qgis/digitizing/stream_tolerance" ), 2 ).toInt();
+    mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
   }
 }
 
@@ -467,7 +464,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
     if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
       layerPoint.addZValue( defaultZValue() );
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
-      layerPoint.addMValue( 0.0 );
+      layerPoint.addMValue( defaultMValue() );
   }
   catch ( QgsCsException &cse )
   {
@@ -518,7 +515,7 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
           layerPoint.addZValue( defaultZValue() );
         if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
-          layerPoint.addMValue( 0.0 );
+          layerPoint.addMValue( defaultMValue() );
       }
 
       // ZM support depends on the target layer
@@ -865,8 +862,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
     return;
 
   if ( mValidator )
@@ -908,7 +904,7 @@ void QgsMapToolCapture::validateGeometry()
     return;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
     method = QgsGeometry::ValidatorGeos;
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
@@ -1010,6 +1006,11 @@ QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
   if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
   {
     newPoint.setZ( defaultZValue() );
+  }
+  // set m value if necessary
+  if ( QgsWkbTypes::hasM( newPoint.wkbType() ) )
+  {
+    newPoint.setM( defaultMValue() );
   }
 
   return newPoint;

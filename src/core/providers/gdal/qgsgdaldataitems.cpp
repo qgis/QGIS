@@ -23,14 +23,13 @@
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "qgszipitem.h"
 #include "qgsvectortiledataitems.h"
 #include "qgsproviderregistry.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
-#include <QAction>
 #include <mutex>
-#include <QMessageBox>
 #include <QUrlQuery>
 #include <QUrl>
 

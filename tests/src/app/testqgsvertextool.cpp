@@ -26,7 +26,7 @@
 #include "qgslinestring.h"
 #include "qgscircularstring.h"
 #include "qgssnappingconfig.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "testqgsmaptoolutils.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
@@ -373,7 +373,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );

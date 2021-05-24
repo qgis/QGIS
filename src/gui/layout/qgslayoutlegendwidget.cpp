@@ -1549,15 +1549,15 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
     {
       case QgsWkbTypes::PolygonGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Fill );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Fill );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Line );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Line );
         break;
 
       case QgsWkbTypes::PointGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Marker );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Marker );
         break;
 
       default:

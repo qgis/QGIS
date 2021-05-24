@@ -14,17 +14,6 @@
 
 
 
-enum class QgsMapLayerType
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,
-  VectorTileLayer,
-  AnnotationLayer,
-  PointCloudLayer,
-};
-
 class QgsMapLayer : QObject
 {
 %Docstring(signature="appended")
@@ -36,7 +25,7 @@ This is the base class for all map layer types (vector, raster).
 #include "qgsmaplayer.h"
 %End
 %ConvertToSubClassCode
-    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
@@ -108,6 +97,7 @@ This is the base class for all map layer types (vector, raster).
       Temporal,
       Legend,
       Elevation,
+      Notes,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
@@ -1061,12 +1051,28 @@ Write just the symbology information for the layer into the document
 %End
 
 
-    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 %Docstring
 Updates the data source of the layer. The layer's renderer and legend will be preserved only
 if the geometry type of the new data source matches the current geometry type of the layer.
 
-Subclasses should override this method: default implementation does nothing.
+This method was defined in :py:class:`QgsVectorLayer` since 2.10 and was marked as deprecated since 3.2
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param loadDefaultStyleFlag: set to ``True`` to reset the layer's style to the default for the
+                             data source
+
+.. seealso:: :py:func:`dataSourceChanged`
+
+.. versionadded:: 3.20
+%End
+
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+%Docstring
+Updates the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
 
 :param dataSource: new layer data source
 :param baseName: base name of the layer
@@ -1078,6 +1084,24 @@ Subclasses should override this method: default implementation does nothing.
 .. seealso:: :py:func:`dataSourceChanged`
 
 .. versionadded:: 3.6
+%End
+
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+%Docstring
+Updates the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
+
+Subclasses should override setDataSourcePrivate: default implementation does nothing.
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param options: provider options
+:param flags: provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
+
+.. seealso:: :py:func:`dataSourceChanged`
+
+.. versionadded:: 3.20
 %End
 
     QString providerType() const;
@@ -1587,6 +1611,11 @@ Signal emitted whenever a change affects the layer's style. Ie this may be trigg
 by renderer changes, label style changes, or other style changes such as blend
 mode or layer opacity changes.
 
+.. warning::
+
+   This signal should never be manually emitted. Instead call the :py:func:`~QgsMapLayer.emitStyleChanged` method
+   to ensure that the signal is only emitted when appropriate.
+
 .. seealso:: :py:func:`rendererChanged`
 
 .. versionadded:: 2.16
@@ -1839,6 +1868,8 @@ this method is now deprecated and always return ``False``, because circular depe
 
 .. deprecated:: QGIS 3.10
 %End
+
+
 
 
 

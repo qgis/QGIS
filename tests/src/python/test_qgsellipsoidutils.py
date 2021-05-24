@@ -98,6 +98,10 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
         self.assertEqual(gany_defs.acronym, gany_id)
         self.assertEqual(gany_defs.description,
                          'Ganymede 2000 IAU IAG (ESRI:107916)')
+
+        if QgsProjUtils.projVersionMajor() > 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() >= 1):
+            self.assertEqual(gany_defs.celestialBodyName, 'Ganymede')
+
         self.assertTrue(gany_defs.parameters.valid)
         self.assertEqual(gany_defs.parameters.semiMajor,
                          2632345.0)
@@ -107,6 +111,15 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
                          0.0)
         self.assertFalse(gany_defs.parameters.useCustomParameters)
         self.assertEqual(gany_defs.parameters.crs.authid(), '')
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 8 or (QgsProjUtils.projVersionMajor() == 8 and QgsProjUtils.projVersionMinor() < 1), 'Not a proj >= 8.1 build')
+    def testCelestialBodies(self):
+        bodies = QgsEllipsoidUtils.celestialBodies()
+
+        self.assertTrue(bodies)
+
+        ganymede = [body for body in bodies if body.name() == 'Ganymede' and body.authority() == 'ESRI'][0]
+        self.assertTrue(ganymede.isValid())
 
     def testMappingEllipsoidsToProj6(self):
         old_qgis_ellipsoids = {'Adrastea2000': 'Adrastea2000', 'airy': 'Airy 1830', 'Amalthea2000': 'Amalthea2000',

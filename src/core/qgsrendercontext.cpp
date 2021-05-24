@@ -51,6 +51,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mMapToPixel( rh.mMapToPixel )
   , mRenderingStopped( rh.mRenderingStopped )
   , mScaleFactor( rh.mScaleFactor )
+  , mDpiTarget( rh.mDpiTarget )
   , mRendererScale( rh.mRendererScale )
   , mLabelingEngine( rh.mLabelingEngine )
   , mSelectionColor( rh.mSelectionColor )
@@ -88,6 +89,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mMapToPixel = rh.mMapToPixel;
   mRenderingStopped = rh.mRenderingStopped;
   mScaleFactor = rh.mScaleFactor;
+  mDpiTarget = rh.mDpiTarget;
   mRendererScale = rh.mRendererScale;
   mLabelingEngine = rh.mLabelingEngine;
   mSelectionColor = rh.mSelectionColor;
@@ -220,6 +222,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( LosslessImageRendering, mapSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
   ctx.setFlag( Render3DMap, mapSettings.testFlag( QgsMapSettings::Render3DMap ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
+  ctx.setDpiTarget( mapSettings.dpiTarget() >= 0.0 ? mapSettings.dpiTarget() : -1.0 );
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );

@@ -22,7 +22,9 @@ class QgsAppAuthRequestHandler : public QgsNetworkAuthenticationHandler
 
   public:
 
-    void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
+    void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth ) override;
+    void handleAuthRequestOpenBrowser( const QUrl &url ) override;
+    void handleAuthRequestCloseBrowser() override;
 
 };
 

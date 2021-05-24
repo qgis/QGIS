@@ -80,6 +80,7 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
     setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
     mCrsSelector->setCrs( rasterLayer->crs() );
   }
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 

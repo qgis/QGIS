@@ -49,7 +49,8 @@
 #include "qgsfilewidget.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
-
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -81,6 +82,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
   int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
+  mCrsSelector->setShowAccuracyWarnings( true );
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrsId( crsid );
   mCrsSelector->setCrs( crs );

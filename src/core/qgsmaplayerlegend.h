@@ -257,6 +257,19 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     void setTextOnSymbolEnabled( bool enabled ) { mTextOnSymbolEnabled = enabled; }
 
     /**
+     * Returns whether the legend for the labeling is shown
+     * \since QGIS 3.20
+    */
+    bool showLabelLegend() const { return mShowLabelLegend; }
+
+    /**
+     * Sets if a legend for the labeling should be shown
+     * \param enabled true to show label legend entries
+     * \since QGIS 3.20
+     */
+    void setShowLabelLegend( bool enabled ) { mShowLabelLegend = enabled; }
+
+    /**
      * Returns text format of symbol labels for "text on symbol" functionality.
      * \since QGIS 3.2
      */
@@ -291,6 +304,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
     // text on symbol
     bool mTextOnSymbolEnabled = false;
+    bool mShowLabelLegend = false;
     QgsTextFormat mTextOnSymbolTextFormat;
     QHash<QString, QString> mTextOnSymbolContent;
 };

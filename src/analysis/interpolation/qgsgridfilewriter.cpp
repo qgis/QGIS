@@ -48,6 +48,9 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   }
 
   QTextStream outStream( &outputFile );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  outStream.setCodec( "UTF-8" );
+#endif
   outStream.setRealNumberPrecision( 8 );
   writeHeader( outStream );
 

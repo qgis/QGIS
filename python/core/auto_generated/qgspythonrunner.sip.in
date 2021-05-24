@@ -27,7 +27,7 @@ will then work as expected.
     static bool isValid();
 %Docstring
 Returns ``True`` if the runner has an instance
-(and thus is able to run commands) *
+(and thus is able to run commands)
 %End
 
     static bool run( const QString &command, const QString &messageOnError = QString() );

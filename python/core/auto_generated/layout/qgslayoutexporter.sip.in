@@ -381,6 +381,27 @@ Computes the world file parameters for a specified ``region`` of the layout.
 The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 %End
 
+    static bool requiresRasterization( const QgsLayout *layout );
+%Docstring
+Returns ``True`` if the specified ``layout`` contains visible items which have settings
+that require rasterization of the entire export layout in order to reproduce the desired
+appearance.
+
+.. seealso:: :py:func:`containsAdvancedEffects`
+
+.. versionadded:: 3.20
+%End
+
+    static bool containsAdvancedEffects( const QgsLayout *layout );
+%Docstring
+Returns ``True`` if the specified ``layout`` contains visible items which have settings
+such as opacity which will prevent these individual items from being exported as vector artwork.
+
+.. seealso:: :py:func:`requiresRasterization`
+
+.. versionadded:: 3.20
+%End
+
   protected:
 
     virtual QString generateFileName( const PageExportDetails &details ) const;

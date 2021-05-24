@@ -24,6 +24,8 @@
 #include <QFont>
 
 class QgsSpatialIndex;
+class QgsMarkerSymbol;
+class QgsSymbolRenderContext;
 
 /**
  * \class QgsPointDistanceRenderer
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
   public:
 
     //! Contains properties for a feature within a clustered group.
-    struct GroupedFeature
+    struct CORE_EXPORT GroupedFeature
     {
 
         /**
@@ -50,12 +52,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
         * \param isSelected set to TRUE if feature is selected and should be rendered in a selected state
         * \param label optional label text, or empty string for no label
         */
-        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() )
-          : feature( feature )
-          , isSelected( isSelected )
-          , label( label )
-          , mSymbol( symbol )
-        {}
+        GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol SIP_TRANSFER, bool isSelected, const QString &label = QString() );
+        ~GroupedFeature();
 
         //! Feature
         QgsFeature feature;

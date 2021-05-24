@@ -29,7 +29,7 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, 
   mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
-  mCacheManager = new QgsServerCacheManager();
+  mCacheManager = new QgsServerCacheManager( *settings );
 #endif
 }
 

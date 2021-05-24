@@ -19,6 +19,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgssurface.h"
+#include "qgsfillsymbol.h"
 
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()

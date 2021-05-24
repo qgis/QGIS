@@ -227,6 +227,8 @@ void QgsLayoutPropertiesWidget::dpiChanged( int value )
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Default DPI" ), QgsLayout::UndoLayoutDpi );
   mLayout->renderContext().setDpi( value );
   mLayout->undoStack()->endCommand();
+
+  mLayout->refresh();
 }
 
 void QgsLayoutPropertiesWidget::worldFileToggled()

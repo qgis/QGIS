@@ -1,11 +1,13 @@
 module.exports = {
+  publicPath: './',
+  assetsDir: './',
   configureWebpack: {
     devtool: "source-map",
     optimization: {
       splitChunks: {
         chunks: "all",
       },
-    },
+    }
   },
   runtimeCompiler: true,
   devServer: {

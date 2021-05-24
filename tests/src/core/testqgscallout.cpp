@@ -43,7 +43,9 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsnullsymbolrenderer.h"
-
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -176,6 +178,8 @@ class TestQgsCallout: public QObject
     void balloonCalloutMargin();
     void balloonCalloutWedgeWidth();
     void balloonCalloutCornerRadius();
+    void blendMode();
+    void calloutsBlend();
 
   private:
     bool imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount = 0 );
@@ -347,6 +351,60 @@ void TestQgsCallout::calloutsInLabeling()
   vl->setLabeling( nullptr );
 
   QVERIFY( imageCheck( "simple_callout_labels", img2, 20 ) );
+}
+
+void TestQgsCallout::calloutsBlend()
+{
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl );
+  mapSettings.setOutputDpi( 96 );
+
+  // first render the map and labeling separately
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 20;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  QgsSimpleLineCallout *callout = new QgsSimpleLineCallout();
+  callout->setEnabled( true );
+  callout->lineSymbol()->setWidth( 1 );
+  callout->lineSymbol()->setColor( QColor( 200, 200, 200 ) );
+  callout->setBlendMode( QPainter::CompositionMode_Multiply );
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine.run( context );
+
+  p.end();
+
+  QVERIFY( imageCheck( "simple_callout_labels_blend", img, 20 ) );
 }
 
 void TestQgsCallout::calloutsWithRotation()
@@ -4107,6 +4165,22 @@ void TestQgsCallout::balloonCalloutCornerRadius()
   p.end();
 
   QVERIFY( imageCheck( "balloon_callout_corner_radius", img, 20 ) );
+}
+
+void TestQgsCallout::blendMode()
+{
+  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  QCOMPARE( callout->containsAdvancedEffects(), false );
+
+  callout->setBlendMode( QPainter::CompositionMode_Multiply );
+  QCOMPARE( callout->blendMode(), QPainter::CompositionMode_Multiply );
+  QCOMPARE( callout->containsAdvancedEffects(), true );
+
+  callout->setBlendMode( QPainter::CompositionMode_SourceOver );
+  QCOMPARE( callout->containsAdvancedEffects(), false );
+
+  callout->dataDefinedProperties().setProperty( QgsCallout::BlendMode, QStringLiteral( "multiply" ) );
+  QCOMPARE( callout->containsAdvancedEffects(), true );
 }
 
 //

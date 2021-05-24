@@ -16,6 +16,7 @@
 
 #include "qgssettings.h"
 #include "qgsvectortileconnection.h"
+#include "qgsdataprovider.h"
 
 ///@cond PRIVATE
 

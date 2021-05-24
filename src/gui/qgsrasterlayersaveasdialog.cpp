@@ -32,6 +32,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
+#include "qgsdatums.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -139,6 +140,19 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   //mTilesGroupBox->setSaveCheckedState( true );
   // don't restore nodata, it needs user input
   // pyramids are not necessarily built every time
+
+  try
+  {
+    const QgsDatumEnsemble ensemble = mLayerCrs.datumEnsemble();
+    if ( ensemble.isValid() )
+    {
+      mCrsSelector->setSourceEnsemble( ensemble.name() );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+  }
+  mCrsSelector->setShowAccuracyWarnings( true );
 
   mCrsSelector->setLayerCrs( mLayerCrs );
   //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion

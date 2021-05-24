@@ -34,7 +34,7 @@
 
 #include <QProgressDialog>
 
-typedef QgsVectorLayerExporter::ExportError createEmptyLayer_t(
+typedef Qgis::VectorExportResult createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type geometryType,
@@ -108,7 +108,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   mError = pReg->createEmptyLayer( providerKey, uri, fields, geometryType, crs, overwrite, mOldToNewAttrIdx,
                                    errMsg, !modifiedOptions.isEmpty() ? &modifiedOptions : nullptr );
-  if ( errorCode() )
+
+  if ( errorCode() != Qgis::VectorExportResult::Success )
   {
     mErrorMessage = errMsg;
     return;
@@ -150,7 +151,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   QgsVectorDataProvider *vectorProvider = qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
-    mError = ErrInvalidLayer;
+    mError = Qgis::VectorExportResult::ErrorInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
 
     delete vectorProvider;
@@ -174,7 +175,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   }
 
   mProvider = vectorProvider;
-  mError = NoError;
+  mError = Qgis::VectorExportResult::Success;
 }
 
 QgsVectorLayerExporter::~QgsVectorLayerExporter()
@@ -189,7 +190,7 @@ QgsVectorLayerExporter::~QgsVectorLayerExporter()
   delete mProvider;
 }
 
-QgsVectorLayerExporter::ExportError QgsVectorLayerExporter::errorCode() const
+Qgis::VectorExportResult QgsVectorLayerExporter::errorCode() const
 {
   return mError;
 }
@@ -264,7 +265,7 @@ bool QgsVectorLayerExporter::flushBuffer()
                     .arg( mFeatureBuffer.last().id() )
                     .arg( errors.join( QLatin1Char( '\n' ) ) );
 
-    mError = ErrFeatureWriteFailed;
+    mError = Qgis::VectorExportResult::ErrorFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();
 
     mFeatureBuffer.clear();
@@ -289,22 +290,21 @@ bool QgsVectorLayerExporter::createSpatialIndex()
   }
 }
 
-QgsVectorLayerExporter::ExportError
-QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
-                                     const QString &uri,
-                                     const QString &providerKey,
-                                     const QgsCoordinateReferenceSystem &destCRS,
-                                     bool onlySelected,
-                                     QString *errorMessage,
-                                     const QMap<QString, QVariant> &options,
-                                     QgsFeedback *feedback )
+Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
+    const QString &uri,
+    const QString &providerKey,
+    const QgsCoordinateReferenceSystem &destCRS,
+    bool onlySelected,
+    QString *errorMessage,
+    const QMap<QString, QVariant> &options,
+    QgsFeedback *feedback )
 {
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
   bool shallTransform = false;
 
   if ( !layer )
-    return ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
 
   if ( destCRS.isValid() )
   {
@@ -353,8 +353,8 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     new QgsVectorLayerExporter( uri, providerKey, fields, wkbType, outputCRS, overwrite, providerOptions );
 
   // check whether file creation was successful
-  ExportError err = writer->errorCode();
-  if ( err != NoError )
+  Qgis::VectorExportResult err = writer->errorCode();
+  if ( err != Qgis::VectorExportResult::Success )
   {
     if ( errorMessage )
       *errorMessage = writer->errorMessage();
@@ -440,7 +440,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
         if ( errorMessage )
           *errorMessage += '\n' + msg;
 
-        return ErrProjection;
+        return Qgis::VectorExportResult::ErrorProjectingFeatures;
       }
     }
 
@@ -459,14 +459,14 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += '\n' + msg;
-        return ErrFeatureWriteFailed;
+        return Qgis::VectorExportResult::ErrorFeatureWriteFailed;
       }
       fet.setGeometry( singlePartGeometry );
     }
 
     if ( !writer->addFeature( fet ) )
     {
-      if ( writer->errorCode() && errorMessage )
+      if ( writer->errorCode() != Qgis::VectorExportResult::Success && errorMessage )
       {
         *errorMessage += '\n' + writer->errorMessage();
       }
@@ -483,7 +483,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   // flush the buffer to be sure that all features are written
   if ( !writer->flushBuffer() )
   {
-    if ( writer->errorCode() && errorMessage )
+    if ( writer->errorCode() != Qgis::VectorExportResult::Success && errorMessage )
     {
       *errorMessage += '\n' + writer->errorMessage();
     }
@@ -492,7 +492,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
   if ( writer->mCreateSpatialIndex && !writer->createSpatialIndex() )
   {
-    if ( writer->errorCode() && errorMessage )
+    if ( writer->errorCode() != Qgis::VectorExportResult::Success && errorMessage )
     {
       *errorMessage += '\n' + writer->errorMessage();
     }
@@ -513,11 +513,11 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   }
 
   if ( canceled )
-    return ErrUserCanceled;
+    return Qgis::VectorExportResult::UserCanceled;
   else if ( errors > 0 )
-    return ErrFeatureWriteFailed;
+    return Qgis::VectorExportResult::ErrorFeatureWriteFailed;
 
-  return NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 
@@ -564,7 +564,7 @@ bool QgsVectorLayerExporterTask::run()
              mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
              mOptions, mOwnedFeedback.get() );
 
-  return mError == QgsVectorLayerExporter::NoError;
+  return mError == Qgis::VectorExportResult::Success;
 }
 
 void QgsVectorLayerExporterTask::finished( bool result )

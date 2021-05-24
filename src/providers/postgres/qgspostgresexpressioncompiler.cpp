@@ -145,6 +145,10 @@ QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const Q
   {
     args << QStringLiteral( "8" );
   }
+  else if ( fnName == QLatin1String( "round" ) )
+  {
+    args[0] = QStringLiteral( "(%1)::numeric" ).arg( args[0] );
+  }
   // x and y functions have to be adapted
   return args;
 }

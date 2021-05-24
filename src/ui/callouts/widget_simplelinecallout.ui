@@ -182,6 +182,23 @@
        </property>
       </widget>
      </item>
+     <item row="7" column="3">
+     <widget class="QgsPropertyOverrideButton" name="mCalloutBlendModeDDBtn">
+       <property name="text">
+       <string>…</string>
+       </property>
+     </widget>
+     </item>
+     <item row="7" column="1" colspan="2">
+     <widget class="QgsBlendModeComboBox" name="mCalloutBlendComboBox"/>
+     </item>
+     <item row="7" column="0">
+     <widget class="QLabel" name="label_18">
+       <property name="text">
+       <string>Blend mode</string>
+       </property>
+     </widget>
+     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="mAnchorPointLbl_2">
        <property name="text">
@@ -464,6 +481,11 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mCalloutLineStyleButton</tabstop>
@@ -482,6 +504,8 @@
   <tabstop>mAnchorPointDDBtn</tabstop>
   <tabstop>mLabelAnchorPointComboBox</tabstop>
   <tabstop>mLabelAnchorPointDDBtn</tabstop>
+  <tabstop>mCalloutBlendComboBox</tabstop>
+  <tabstop>mCalloutBlendModeDDBtn</tabstop>
   <tabstop>mOriginXDDBtn</tabstop>
   <tabstop>mOriginYDDBtn</tabstop>
   <tabstop>mDestXDDBtn</tabstop>

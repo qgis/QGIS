@@ -841,7 +841,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       {
         //create empty layer
         std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
-        if ( exporter->errorCode() )
+        if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
         {
           throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
         }
@@ -954,7 +954,7 @@ QString QgsProcessingUtils::tempFolder()
   static QString sFolder;
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
-  const QString basePath = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) ).toString();
+  const QString basePath = QgsProcessing::settingsTempPath.value();
   if ( basePath.isEmpty() )
   {
     // default setting -- automatically create a temp folder
@@ -1211,8 +1211,7 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  QgsSettings settings;
-  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), -1 ).toInt();
+  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt.value();
   if ( setting == -1 )
     return QStringLiteral( "gpkg" );
   return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
@@ -1220,8 +1219,7 @@ QString QgsProcessingUtils::defaultVectorExtension()
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  QgsSettings settings;
-  const int setting = settings.value( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), -1 ).toInt();
+  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt.value();
   if ( setting == -1 )
     return QStringLiteral( "tif" );
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );

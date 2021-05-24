@@ -26,7 +26,9 @@
 class QDir;
 
 /**
-The custom projection widget is used to define the projection family, ellipsoid and parameters needed by proj4 to assemble a customized projection definition. The resulting projection will be store in an sqlite backend.
+ * The custom projection widget is used to define the projection family, ellipsoid and parameters needed by proj4 to assemble a customized projection definition.
+ *
+ * The resulting projection will be stored in an sqlite backend.
 */
 class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectionDialogBase
 {

@@ -63,11 +63,18 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
     emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired );
   } );
 
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
+      const QgsCoordinateReferenceSystem & destinationCrs )
+  {
+    emit dynamicToDynamicWarning( sourceCrs, destinationCrs );
+  } );
+
   connect( this, &QgsAppMissingGridHandler::missingRequiredGrid, this, &QgsAppMissingGridHandler::onMissingRequiredGrid, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::missingPreferredGrid, this, &QgsAppMissingGridHandler::onMissingPreferredGrid, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::coordinateOperationCreationError, this, &QgsAppMissingGridHandler::onCoordinateOperationCreationError, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::missingGridUsedByContextHandler, this, &QgsAppMissingGridHandler::onMissingGridUsedByContextHandler, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::fallbackOperationOccurred, this, &QgsAppMissingGridHandler::onFallbackOperationOccurred, Qt::QueuedConnection );
+  connect( this, &QgsAppMissingGridHandler::dynamicToDynamicWarning, this, &QgsAppMissingGridHandler::onDynamicToDynamicWarning, Qt::QueuedConnection );
 
   connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ]
   {
@@ -301,6 +308,30 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   bar->pushWidget( widget, Qgis::Warning, 0 );
 }
 
+void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
+{
+  if ( !shouldWarnAboutDynamicCrsForCurrentProject( sourceCrs, destinationCrs ) )
+    return;
+
+  const QString shortMessage = tr( "Cannot transform between dynamic CRS at difference coordinate epochs" );
+  const QString longMessage = tr( "<p>Transformation between %1 and %2 is not currently supported.</p><p><b>The results will be unpredictable and should not be used for high accuracy work.</b>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier() );
+
+  QgsMessageBar *bar = QgisApp::instance()->messageBar();
+  QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
+  QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
+  {
+    // dlg has deleted on close
+    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
+    dlg->setTitle( tr( "Unsupported Transformation" ) );
+    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->showMessage();
+  } );
+
+  widget->layout()->addWidget( detailsButton );
+  bar->pushWidget( widget, Qgis::Critical, 0 );
+}
+
 bool QgsAppMissingGridHandler::shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest )
 {
   if ( mAlreadyWarnedPairs.contains( qMakePair( source, dest ) ) || mAlreadyWarnedPairs.contains( qMakePair( dest, source ) ) )
@@ -331,5 +362,16 @@ bool QgsAppMissingGridHandler::shouldWarnAboutBallparkPairForCurrentProject( con
   }
 
   mAlreadyWarnedBallparkPairsForProject.append( qMakePair( source, dest ) );
+  return true;
+}
+
+bool QgsAppMissingGridHandler::shouldWarnAboutDynamicCrsForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest )
+{
+  if ( mAlreadyWarnedDynamicCrsForProject.contains( qMakePair( source, dest ) ) || mAlreadyWarnedDynamicCrsForProject.contains( qMakePair( dest, source ) ) )
+  {
+    return false;
+  }
+
+  mAlreadyWarnedDynamicCrsForProject.append( qMakePair( source, dest ) );
   return true;
 }

@@ -139,7 +139,7 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/root/QGIS/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;*****" xlink:type="simple"/>
      </LegendURL>
     </Style>
     <Dimension unitSymbol="m" name="elevation" units="meters" multipleValues="1" nearestValue="0">0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000</Dimension>
@@ -163,7 +163,7 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/root/QGIS/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;*****" xlink:type="simple"/>
      </LegendURL>
     </Style>
     <Dimension unitSymbol="m" name="range_elevation" units="meters" multipleValues="1" nearestValue="0">0, 500, 1000, 1500, 2000, 2500, 3000</Dimension>
@@ -187,7 +187,7 @@ Content-Type: text/xml; charset=utf-8
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.qgis.org/?MAP=/root/QGIS/tests/testdata/qgis_server_accesscontrol/project_with_dimensions.qgs&amp;*****" xlink:type="simple"/>
      </LegendURL>
     </Style>
    </Layer>

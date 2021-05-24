@@ -56,6 +56,9 @@ argument. If ``is25DType`` is ``True`` (and the ``m`` vector is unfilled) then
 the created Linestring will be a LineString25D type. Otherwise, the
 LineString will be LineStringZ (or LineStringZM) type.
 
+If the sizes of ``x`` and ``y`` are non-equal then the resultant linestring
+will be created using the minimum size of these arrays.
+
 .. versionadded:: 3.0
 %End
 
@@ -405,7 +408,6 @@ segment in the line.
 %End
 
 
-
     virtual QString geometryType() const /HoldGIL/;
 
     virtual int dimension() const /HoldGIL/;
@@ -416,6 +418,7 @@ segment in the line.
 
     virtual bool isEmpty() const /HoldGIL/;
 
+    int indexOf( const QgsPoint &point ) const final;
     virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
@@ -458,6 +461,7 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
 
 
     virtual double length() const /HoldGIL/;
+
 
 
     double length3D() const /HoldGIL/;
@@ -549,6 +553,7 @@ of the curve.
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
+    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
@@ -645,6 +650,7 @@ corresponds to the last point in the line.
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

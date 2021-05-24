@@ -49,6 +49,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsdxfexport_p.h"
+#include "qgssymbol.h"
 
 #include "qgswkbtypes.h"
 #include "qgspoint.h"
@@ -647,7 +648,7 @@ void QgsDxfExport::writeEntities()
   // iterate through the maplayers
   for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
-    QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, QgsSymbol::RenderHints(), nullptr );
+    QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
@@ -805,7 +806,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   const QList<QgsExpressionContextScope *> scopes = job->renderContext.expressionContext().scopes();
   for ( QgsExpressionContextScope *scope : scopes )
     ctx.expressionContext().appendScope( new QgsExpressionContextScope( *scope ) );
-  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, QgsSymbol::RenderHints(), nullptr );
+  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
   // get iterator
   QgsFeatureRequest req;
@@ -2064,7 +2065,7 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const Qgs
     return false;
   }
 
-  if ( symbol->renderHints() & QgsSymbol::DynamicRotation )
+  if ( symbol->renderHints() & Qgis::SymbolRenderHint::DynamicRotation )
   {
     return true;
   }

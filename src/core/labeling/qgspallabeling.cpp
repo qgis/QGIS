@@ -20,6 +20,7 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsstyle.h"
 
 #include <list>
 
@@ -42,6 +43,7 @@
 #include <QDesktopWidget>
 #else
 #include <QScreen>
+#include <QWidget>
 #endif
 #include <QTextBoundaryFinder>
 
@@ -74,7 +76,6 @@
 #include "callouts/qgscalloutsregistry.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabeling.h"
-#include <QMessageBox>
 
 using namespace pal;
 
@@ -272,6 +273,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   , mCallout( QgsApplication::calloutRegistry()->defaultCallout() )
 {
   initPropertyDefinitions();
+
+  mFormat = QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -362,6 +365,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
   geometryGeneratorEnabled = s.geometryGeneratorEnabled;
   geometryGeneratorType = s.geometryGeneratorType;
   layerType = s.layerType;
+
+  mLegendString = s.mLegendString;
 
   return *this;
 }
@@ -561,6 +566,11 @@ void QgsPalLayerSettings::stopRender( QgsRenderContext &context )
   }
 
   mRenderStarted = false;
+}
+
+bool QgsPalLayerSettings::containsAdvancedEffects() const
+{
+  return mFormat.containsAdvancedEffects() || mCallout->containsAdvancedEffects();
 }
 
 QgsPalLayerSettings::~QgsPalLayerSettings()
@@ -920,6 +930,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   Q_NOWARN_DEPRECATED_POP
   substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
   useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
+  mLegendString = textStyleElem.attribute( QStringLiteral( "legendString" ), QObject::tr( "Aa" ) );
 
   // text formatting
   QDomElement textFormatElem = elem.firstChildElement( QStringLiteral( "text-format" ) );
@@ -1159,6 +1170,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   substitutions.writeXml( replacementElem, doc );
   textStyleElem.appendChild( replacementElem );
   textStyleElem.setAttribute( QStringLiteral( "useSubstitutions" ), useSubstitutions );
+  textStyleElem.setAttribute( QStringLiteral( "legendString" ), mLegendString );
 
   // text formatting
   QDomElement textFormatElem = doc.createElement( QStringLiteral( "text-format" ) );
@@ -1333,7 +1345,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   if ( tempFormat.background().enabled() )
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
-  const QStringList text = QStringList() << ( previewText.isEmpty() ? QObject::tr( "Aa" ) : previewText );
+  const QStringList text = QStringList() << ( previewText.isEmpty() ? settings.legendString() : previewText );
   const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
   QRectF textRect = rect;
   textRect.setLeft( xtrans + padding );
@@ -3004,7 +3016,10 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( !ddFontFamily.isEmpty() )
     {
       // both family and style are different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, ddFontStyle, appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+
+      QFont styledfont = mFontDB->font( ddFontFamily, ddFontStyle, appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;
@@ -3020,7 +3035,9 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
     if ( ddFontStyle.compare( QLatin1String( "Ignore" ), Qt::CaseInsensitive ) != 0 )
     {
       // just family is different, build font from database
-      QFont styledfont = mFontDB.font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
+      if ( !mFontDB )
+        mFontDB = std::make_unique< QFontDatabase >();
+      QFont styledfont = mFontDB->font( ddFontFamily, mFormat.namedStyle(), appFont.pointSize() );
       if ( appFont != styledfont )
       {
         newFont = styledfont;
@@ -3763,6 +3780,74 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
   }
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+  // much faster code path for GEOS 3.9+
+  const bool mustClip = ( !clipGeometry.isNull() &&
+                          ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.boundingBox().contains( geom.boundingBox() ) )
+                            || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) );
+
+  bool mustClipExact = false;
+  if ( mustClip )
+  {
+    // nice and fast, but can result in invalid geometries. At least it will potentially strip out a bunch of unwanted vertices upfront!
+    QgsGeometry clipGeom = geom.clipped( clipGeometry.boundingBox() );
+    if ( clipGeom.isEmpty() )
+      return QgsGeometry();
+
+    geom = clipGeom;
+
+    // we've now clipped against the BOUNDING BOX of clipGeometry. But if clipGeometry is an axis parallel rectangle, then there's no
+    // need to do an exact (potentially costly) intersection clip as well!
+    mustClipExact = !clipGeometry.isAxisParallelRectangle( 0.001 );
+  }
+
+  // fix invalid polygons
+  if ( geom.type() == QgsWkbTypes::PolygonGeometry )
+  {
+    if ( geom.isMultipart() )
+    {
+      // important -- we need to treat ever part in isolation here. We can't test the validity of the whole geometry
+      // at once, because touching parts would result in an invalid geometry, and buffering this "dissolves" the parts.
+      // because the actual label engine treats parts as separate entities, we aren't bound by the usual "touching parts are invalid" rule
+      // see https://github.com/qgis/QGIS/issues/26763
+      QVector< QgsGeometry> parts;
+      parts.reserve( qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() )->numGeometries() );
+      for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
+      {
+        QgsGeometry partGeom( ( *it )->clone() );
+        if ( !partGeom.isGeosValid() )
+        {
+
+          partGeom = partGeom.makeValid();
+        }
+        parts.append( partGeom );
+      }
+      geom = QgsGeometry::collectGeometry( parts );
+    }
+    else if ( !geom.isGeosValid() )
+    {
+
+      QgsGeometry bufferGeom = geom.makeValid();
+      if ( bufferGeom.isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
+        return QgsGeometry();
+      }
+      geom = bufferGeom;
+    }
+  }
+
+  if ( mustClipExact )
+  {
+    // now do the real intersection against the actual clip geometry
+    QgsGeometry clipGeom = geom.intersection( clipGeometry );
+    if ( clipGeom.isEmpty() )
+    {
+      return QgsGeometry();
+    }
+    geom = clipGeom;
+  }
+#else
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry )
   {
@@ -3808,6 +3893,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     geom = clipGeom;
   }
+#endif
 
   return geom;
 }

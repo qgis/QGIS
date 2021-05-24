@@ -510,7 +510,7 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_segmentcenter', 'markerline_segmentcenter', rendered_image)
 
-    def testMarkerAngleDD(self):
+    def testMarkerDataDefinedAngleLine(self):
         """Test issue https://github.com/qgis/QGIS/issues/38716"""
 
         s = QgsLineSymbol()
@@ -561,6 +561,48 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+
+    def testDataDefinedAnglePolygon(self):
+        # test rendering curve polygon with markers at vertices and curve points
+        s = QgsFillSymbol()
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.SegmentCenter)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker.setAngle(90)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('Polygon (LineString (0 5, 5 0, 10 5, 5 10, 0 5))')
+        self.assertFalse(g.isNull())
+
+        # rendering test with non data-defined angle
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image))
+
+        s = QgsFillSymbol()
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.SegmentCenter)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker.setAngle(38)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_symbol.setDataDefinedAngle(QgsProperty.fromExpression('90'))
+        marker_line.setSubSymbol(marker_symbol)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        # rendering test with data-defined angle
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(self.imageCheck('markerline_datadefinedanglepolygon', 'markerline_datadefinedanglepolygon', rendered_image))
 
     def testOpacityWithDataDefinedColor(self):
         line_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')

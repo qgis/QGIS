@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QVector>
 #include <QList>
+#include <QMutex>
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
@@ -200,7 +201,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
     //! Returns whether the octree contain given node
-    virtual bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
+    virtual bool hasNode( const IndexedPointCloudNode &n ) const;
 
     //! Returns all children of node
     virtual QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
@@ -283,6 +284,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
 
+    mutable QMutex mHierarchyMutex;
     mutable QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords

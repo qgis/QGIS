@@ -15,9 +15,11 @@
 #ifndef QGSGEOPACKAGEDATAITEMS_H
 #define QGSGEOPACKAGEDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
+#include "qgsconnectionsitem.h"
 #include "qgsdataprovider.h"
+#include "qgslayeritem.h"
 #include "qgstaskmanager.h"
 #include "qgis_sip.h"
 

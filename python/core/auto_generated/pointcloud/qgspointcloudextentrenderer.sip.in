@@ -30,6 +30,7 @@ Constructor for QgsPointCloudExtentRenderer.
 Optionally the ``symbol`` to use for showing the extent can be specified. If specified, ownership is
 transferred to the renderer. If no ``symbol`` is specified a default one will be created instead.
 %End
+    ~QgsPointCloudExtentRenderer();
 
     virtual QString type() const;
 

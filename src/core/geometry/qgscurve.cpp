@@ -199,6 +199,33 @@ QgsCurve *QgsCurve::toCurveType() const
   return clone();
 }
 
+void QgsCurve::normalize()
+{
+  if ( isEmpty() )
+    return;
+
+  if ( !isClosed() )
+  {
+    return;
+  }
+
+  int minCoordinateIndex = 0;
+  QgsPoint minCoord;
+  int i = 0;
+  for ( auto it = vertices_begin(); it != vertices_end(); ++it )
+  {
+    const QgsPoint vertex = *it;
+    if ( minCoord.isEmpty() || minCoord.compareTo( &vertex ) > 0 )
+    {
+      minCoord = vertex;
+      minCoordinateIndex = i;
+    }
+    i++;
+  }
+
+  scroll( minCoordinateIndex );
+}
+
 QgsRectangle QgsCurve::boundingBox() const
 {
   if ( mBoundingBox.isNull() )

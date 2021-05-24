@@ -58,6 +58,7 @@ class TestQgsLayoutPicture : public QObject
     void pictureSvgFrameToImage();
 
     void svgParameters();
+    void dynamicSvgParameters();
     void issue_14644();
 
     void pictureExpression();
@@ -72,6 +73,7 @@ class TestQgsLayoutPicture : public QObject
     QString mPngImage;
     QString mSvgImage;
     QString mSvgParamsImage;
+    QString mDynamicSvgParamsImage;
 };
 
 void TestQgsLayoutPicture::initTestCase()
@@ -83,6 +85,7 @@ void TestQgsLayoutPicture::initTestCase()
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
   mSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg_params.svg";
+  mDynamicSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg/test_dynamic_svg.svg";
 
   mLayout = new QgsLayout( QgsProject::instance() );
   mLayout->initializeDefaults();
@@ -401,6 +404,29 @@ void TestQgsLayoutPicture::svgParameters()
   mPicture->setSvgStrokeWidth( 2.2 );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_params" ), mLayout );
+  checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+
+  mLayout->removeItem( mPicture );
+  mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
+  mPicture->setPicturePath( mPngImage );
+}
+
+void TestQgsLayoutPicture::dynamicSvgParameters()
+{
+  //test rendering an SVG file with parameters
+  mLayout->addLayoutItem( mPicture );
+  mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
+  mPicture->setPicturePath( mDynamicSvgParamsImage );
+
+  QMap<QString, QgsProperty> parametersProperties;
+  parametersProperties.insert( QStringLiteral( "text1" ), QgsProperty::fromExpression( QStringLiteral( "'green?'" ) ) );
+  parametersProperties.insert( QStringLiteral( "text2" ), QgsProperty::fromExpression( QStringLiteral( "'supergreen'" ) ) );
+  parametersProperties.insert( QStringLiteral( "align" ), QgsProperty::fromExpression( QStringLiteral( "'middle'" ) ) );
+
+  mPicture->setSvgDynamicParameters( parametersProperties );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpicture_svg_dynamic_params" ), mLayout );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 

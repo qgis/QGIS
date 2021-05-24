@@ -323,6 +323,21 @@ void TestQgsAuthManager::testAuthConfigs()
     QVERIFY( authm->storeAuthenticationConfig( config ) );
     idcfgmap.insert( config.id(), config );
   }
+
+  QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
+
+  // Password-less export / import
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys() ) );
+  QVERIFY( authm->removeAllAuthenticationConfigs() );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ) ) );
+
+  QCOMPARE( authm->availableAuthMethodConfigs().size(), 3 );
+
+  // Password-protected export / import
+  QVERIFY( authm->exportAuthenticationConfigsToXml( mTempDir + QStringLiteral( "/configs.xml" ), idcfgmap.keys(), QStringLiteral( "1234" ) ) );
+  QVERIFY( authm->removeAllAuthenticationConfigs() );
+  QVERIFY( authm->importAuthenticationConfigsFromXml( mTempDir + QStringLiteral( "/configs.xml" ), QStringLiteral( "1234" ) ) );
+
   QgsAuthMethodConfigsMap authmap( authm->availableAuthMethodConfigs() );
   QCOMPARE( authmap.size(), 3 );
 

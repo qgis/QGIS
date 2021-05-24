@@ -25,6 +25,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsProject,
                        QgsMargins,
                        QgsLayoutItemShape,
+                       QgsLayoutItemLabel,
                        QgsLayoutGuide,
                        QgsRectangle,
                        QgsLayoutItemPage,
@@ -1108,6 +1109,50 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('report_page1', 'report_page1', page1_path))
         page2_path = os.path.join(self.basetestpath, 'test_report_0002.png')
         self.assertTrue(self.checkImage('report_page2', 'report_page2', page2_path))
+
+    def testRequiresRasterization(self):
+        """
+        Test QgsLayoutExporter.requiresRasterization
+        """
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add an item
+        label = QgsLayoutItemLabel(l)
+        label.attemptSetSceneRect(QRectF(30, 60, 200, 100))
+        l.addLayoutItem(label)
+
+        self.assertFalse(QgsLayoutExporter.requiresRasterization(l))
+
+        # an item with a blend mode will force the whole layout to be rasterized
+        label.setBlendMode(QPainter.CompositionMode_Overlay)
+        self.assertTrue(QgsLayoutExporter.requiresRasterization(l))
+
+        # but if the item is NOT visible, it won't affect the output in any way..
+        label.setVisibility(False)
+        self.assertFalse(QgsLayoutExporter.requiresRasterization(l))
+
+    def testContainsAdvancedEffects(self):
+        """
+        Test QgsLayoutExporter.containsAdvancedEffects
+        """
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add an item
+        label = QgsLayoutItemLabel(l)
+        label.attemptSetSceneRect(QRectF(30, 60, 200, 100))
+        l.addLayoutItem(label)
+
+        self.assertFalse(QgsLayoutExporter.containsAdvancedEffects(l))
+
+        # an item with transparency will force it to be individually rasterized
+        label.setItemOpacity(0.5)
+        self.assertTrue(QgsLayoutExporter.containsAdvancedEffects(l))
+
+        # but if the item is NOT visible, it won't affect the output in any way..
+        label.setVisibility(False)
+        self.assertFalse(QgsLayoutExporter.containsAdvancedEffects(l))
 
 
 if __name__ == '__main__':

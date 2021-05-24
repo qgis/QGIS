@@ -17,11 +17,11 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsalignraster.h"
-#include "qgsdataitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsiconutils.h"
 
 #include <QCheckBox>
 #include <QFileDialog>
@@ -84,6 +84,8 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   mAlign = new QgsAlignRaster;
   mAlign->setProgressHandler( new QgsAlignRasterDialogProgress( mProgress ) );
 
+  mCrsSelector->setShowAccuracyWarnings( true );
+
   connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::addLayer );
   connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::removeLayer );
   connect( mBtnEdit, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::editLayer );
@@ -143,7 +145,7 @@ void QgsAlignRasterDialog::populateLayersView()
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
-    QStandardItem *si = new QStandardItem( QgsLayerItem::iconRaster(), layerName );
+    QStandardItem *si = new QStandardItem( QgsIconUtils::iconRaster(), layerName );
     model->appendRow( si );
 
     if ( i == refLayerIndex )

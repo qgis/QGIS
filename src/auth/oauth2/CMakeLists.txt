@@ -2,7 +2,6 @@
 
 ########################################################
 # Packages
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 if(NOT QTKEYCHAIN_FOUND)
   find_package(QtKeychain REQUIRED)
@@ -11,7 +10,7 @@ option(WITH_INTERNAL_O2 "Download and locally include source of o2 library" ON)
 
 if(WITH_INTERNAL_O2)
   set(O2_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/o2/src)
-  set(O2_INCLUDE_DIR "${O2_SOURCE_DIR}"  CACHE INTERNAL "Path to o2 library headers" FORCE)
+  set(O2_INCLUDE_DIR "${O2_SOURCE_DIR}" CACHE INTERNAL "Path to o2 library headers" FORCE)
   set(O2_LIBRARY "" CACHE INTERNAL "Path to o2 built shared library" FORCE)
   set(O2_LIBRARY_STATIC "" CACHE INTERNAL "Path to o2 built static library" FORCE)
   set(O2_FOUND TRUE CACHE INTERNAL "Whether O2 has been found" FORCE)
@@ -19,16 +18,6 @@ else()
   find_package(O2 REQUIRED)
 endif()
 
-########################################################
-# Source files
-
-set(OAUTH2_SRCS
-  qgso2.cpp
-  qgsauthoauth2config.cpp
-  qgsauthoauth2method.cpp
-  qgsauthoauth2edit.cpp
-  qjsonwrapper/Json.cpp
-)
 if(WITH_INTERNAL_O2)
   set(O2_SRCS
     ${O2_SOURCE_DIR}/o0baseauth.cpp
@@ -40,17 +29,6 @@ if(WITH_INTERNAL_O2)
     ${O2_SOURCE_DIR}/o2requestor.cpp
     ${O2_SOURCE_DIR}/o2simplecrypt.cpp
   )
-  set(OAUTH2_SRCS ${OAUTH2_SRCS} ${O2_SRCS})
-endif()
-
-set(OAUTH2_HDRS
-  qgsauthoauth2config.h
-  qgsauthoauth2edit.h
-  qgsauthoauth2method.h
-  qgso2.h
-  qjsonwrapper/Json.h
-)
-if(WITH_INTERNAL_O2)
   set(O2_HDRS
     ${O2_INCLUDE_DIR}/o0abstractstore.h
     ${O2_INCLUDE_DIR}/o0baseauth.h
@@ -65,27 +43,47 @@ if(WITH_INTERNAL_O2)
     ${O2_INCLUDE_DIR}/o2replyserver.h
     ${O2_INCLUDE_DIR}/o2requestor.h
   )
-  set(OAUTH2_HDRS ${OAUTH2_HDRS} ${O2_HDRS})
 endif()
 
-set(OAUTH2_UIS qgsauthoauth2edit.ui)
+########################################################
+# Source files
+set(AUTH_OAUTH2_SRCS
+  core/qgso2.cpp
+  core/qgsauthoauth2config.cpp
+  core/qgsauthoauth2method.cpp
+  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.cpp
+)
 
-set(OAUTH2_RCCS oauth2_resources.qrc)
+set(AUTH_OAUTH2_HDRS
+  core/qgsauthoauth2config.h
+  core/qgsauthoauth2method.h
+  core/qgso2.h
+  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.h
+)
 
-# Common includes
-include_directories (
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
-include_directories (SYSTEM
-  ${O2_INCLUDE_DIR}
-)
-include_directories (
-  ${CMAKE_SOURCE_DIR}/src/auth/oauth2
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/ui/auth
-  ${CMAKE_BINARY_DIR}/src/auth/oauth2
-)
+if(WITH_INTERNAL_O2)
+  set(AUTH_OAUTH2_HDRS ${AUTH_OAUTH2_HDRS} ${O2_HDRS})
+  set(AUTH_OAUTH2_SRCS ${AUTH_OAUTH2_SRCS} ${O2_SRCS})
+endif()
+
+set(AUTH_OAUTH2_RCCS resources/oauth2_resources.qrc)
+
+set(AUTH_OAUTH2_UIS_H "")
+
+if (WITH_GUI)
+  set(AUTH_OAUTH2_SRCS ${AUTH_OAUTH2_SRCS}
+    gui/qgsauthoauth2edit.cpp
+    gui/qgsauthoauth2methodgui.cpp
+  )
+
+  set(AUTH_OAUTH2_HDRS ${AUTH_OAUTH2_HDRS}
+    gui/qgsauthoauth2edit.h
+  )
+
+  set(AUTH_OAUTH2_UIS gui/qgsauthoauth2edit.ui)
+
+  QT5_WRAP_UI(AUTH_OAUTH2_UIS_H ${AUTH_OAUTH2_UIS})
+endif()
 
 ############################################################
 # Generate files
@@ -98,65 +96,54 @@ if(WITH_INTERNAL_O2 AND CMAKE_GENERATOR MATCHES "Ninja")
     COMMAND
   )
 endif()
-QT5_WRAP_UI(OAUTH2_UIS_H ${OAUTH2_UIS})
 
-############################################################
-# Set up plugin targets
+set(_library_suffix_MODULE "")
+set(_library_suffix_STATIC "_static")
 
-add_library (oauth2authmethod MODULE
-  ${OAUTH2_SRCS}
-  ${OAUTH2_HDRS}
-  ${OAUTH2_RCCS}
-  ${OAUTH2_UIS_H}
-)
+foreach(_library_type MODULE STATIC)
+  set(_library_name "oauth2authmethod${_library_suffix_${_library_type}}")
 
-# For unit testing
-add_library (oauth2authmethod_static STATIC
-  ${OAUTH2_SRCS}
-  ${OAUTH2_HDRS}
-  ${OAUTH2_RCCS}
-  ${OAUTH2_UIS_H}
-)
+  add_library(${_library_name} ${_library_type} ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_UIS_H} ${AUTH_OAUTH2_RCCS})
 
-# require c++17
-target_compile_features(oauth2authmethod PRIVATE cxx_std_17)
-target_compile_features(oauth2authmethod_static PRIVATE cxx_std_17)
+  # require c++17
+  target_compile_features(${_library_name} PRIVATE cxx_std_17)
 
-# Common linked libs
-set(OAUTH2_TARGET_LIBS ${QTKEYCHAIN_LIBRARY})
-
-if(NOT WITH_INTERNAL_O2)
-  if(NOT "${O2_LIBRARY}" STREQUAL "")
-    # prefer dynamic linking
-    set(OAUTH2_TARGET_LIBS ${OAUTH2_TARGET_LIBS} ${O2_LIBRARY})
-  else()
-    set(OAUTH2_TARGET_LIBS ${OAUTH2_TARGET_LIBS} ${O2_LIBRARY_STATIC})
+  if(WITH_INTERNAL_O2)
+    target_include_directories(${_library_name} SYSTEM PUBLIC ${O2_INCLUDE_DIR})
   endif()
-  #message(STATUS "OAUTH2_TARGET_LIBS: ${OAUTH2_TARGET_LIBS}")
-endif()
 
-set(OAUTH2_TARGET_LIBS
-  qgis_core
-  qgis_gui
-  ${OAUTH2_TARGET_LIBS}
-)
+  target_include_directories(${_library_name} PUBLIC
+    ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
+  )
 
-target_link_libraries (oauth2authmethod
-  ${OAUTH2_TARGET_LIBS}
-)
-target_link_libraries (oauth2authmethod_static
-  ${OAUTH2_TARGET_LIBS}
-)
+  target_link_libraries(${_library_name} qgis_core)
 
-if(WIN32)
-  add_definitions(-DO2_DLL_EXPORT)
-endif()
+  if (WITH_GUI)
+    target_include_directories(${_library_name} PUBLIC
+      ${CMAKE_CURRENT_SOURCE_DIR}/gui
+      ${CMAKE_CURRENT_BINARY_DIR}
+    )
 
-########################################################
-# Install
+    target_link_libraries(${_library_name} qgis_gui)
+  endif()
 
-# don't install static variant, as it's only for unit testing from build directory
-install(TARGETS oauth2authmethod
-  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
-)
+  if(NOT WITH_INTERNAL_O2)
+    if(NOT "${O2_LIBRARY}" STREQUAL "")
+      # prefer dynamic linking
+      target_link_libraries(${_library_name} ${O2_LIBRARY})
+    else()
+      target_link_libraries(${_library_name} ${O2_LIBRARY_STATIC})
+    endif()
+  endif()
+
+  if(WIN32)
+    add_definitions(-DO2_DLL_EXPORT)
+  endif()
+
+  install(TARGETS ${_library_name}
+    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
+  )
+endforeach()
+

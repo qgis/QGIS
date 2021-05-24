@@ -520,6 +520,10 @@ void TestQgsMapSettings::testExpressionContext()
   r = e.evaluate( &c );
   QCOMPARE( r.toString(), QStringLiteral( "longlat" ) );
 
+  QgsExpression e6a( QStringLiteral( "@map_crs_projection" ) );
+  r = e6a.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "Lat/long (Geodetic alias)" ) );
+
   e = QgsExpression( QStringLiteral( "@map_crs_proj4" ) );
   r = e.evaluate( &c );
   QCOMPARE( r.toString(), QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" ) );

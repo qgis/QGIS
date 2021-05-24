@@ -125,7 +125,6 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
   indexes << 0;  // add primitive restart
 }
 
-
 void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset )
 {
   QgsPoint centroid;

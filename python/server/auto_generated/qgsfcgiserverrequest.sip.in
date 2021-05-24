@@ -32,6 +32,18 @@ Class defining fcgi request
 Returns ``True`` if an error occurred during initialization
 %End
 
+    virtual QString header( const QString &name ) const;
+
+%Docstring
+Returns the header value
+
+:param name: of the header
+
+:return: the header value or an empty string
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************

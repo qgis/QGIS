@@ -25,7 +25,6 @@ class QgsVectorLayerEditBuffer : QObject
 Returns ``True`` if the provider has been modified since the last commit
 %End
 
-
     virtual bool addFeature( QgsFeature &f );
 %Docstring
 Adds a feature
@@ -71,13 +70,13 @@ Changes values of attributes (but does not commit it).
 
     virtual bool addAttribute( const QgsField &field );
 %Docstring
-Add an attribute field (but does not commit it)
-returns true if the field was added
+Adds an attribute field (but does not commit it)
+returns ``True`` if the field was added
 %End
 
     virtual bool deleteAttribute( int attr );
 %Docstring
-Delete an attribute field (but does not commit it)
+Deletes an attribute field (but does not commit it)
 %End
 
     virtual bool renameAttribute( int attr, const QString &newName );

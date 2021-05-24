@@ -24,6 +24,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgssettings.h"
 #include "qgsguiutils.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 #include <QRegularExpression>
 #include <QDialogButtonBox>

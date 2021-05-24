@@ -2056,7 +2056,7 @@ void QgsLayoutDesignerDialog::print()
     showWmsPrintingWarning();
   }
 
-  if ( requiresRasterization() )
+  if ( QgsLayoutExporter::requiresRasterization( mLayout ) )
   {
     showRasterizationWarning();
   }
@@ -2260,12 +2260,12 @@ void QgsLayoutDesignerDialog::exportToPdf()
     showWmsPrintingWarning();
   }
 
-  if ( requiresRasterization() )
+  if ( QgsLayoutExporter::requiresRasterization( mLayout ) )
   {
     showRasterizationWarning();
   }
 
-  if ( containsAdvancedEffects() && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
+  if ( QgsLayoutExporter::containsAdvancedEffects( mLayout ) && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
   {
     showForceVectorWarning();
   }
@@ -2644,7 +2644,7 @@ void QgsLayoutDesignerDialog::printAtlas()
     showWmsPrintingWarning();
   }
 
-  if ( requiresRasterization() )
+  if ( QgsLayoutExporter::requiresRasterization( mLayout ) )
   {
     showRasterizationWarning();
   }
@@ -3158,12 +3158,12 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     showWmsPrintingWarning();
   }
 
-  if ( requiresRasterization() )
+  if ( QgsLayoutExporter::requiresRasterization( mLayout ) )
   {
     showRasterizationWarning();
   }
 
-  if ( containsAdvancedEffects() && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
+  if ( QgsLayoutExporter::containsAdvancedEffects( mLayout ) && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
   {
     showForceVectorWarning();
   }
@@ -4075,7 +4075,6 @@ void QgsLayoutDesignerDialog::initializeRegistry()
   } );
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
-
 }
 
 bool QgsLayoutDesignerDialog::containsWmsLayers() const
@@ -4135,35 +4134,8 @@ void QgsLayoutDesignerDialog::showSvgExportWarning()
   }
 }
 
-bool QgsLayoutDesignerDialog::requiresRasterization() const
-{
-  QList< QgsLayoutItem *> items;
-  mLayout->layoutItems( items );
-
-  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
-  {
-    if ( currentItem->requiresRasterization() )
-      return true;
-  }
-  return false;
-}
-
-bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
-{
-  QList< QgsLayoutItem *> items;
-  mLayout->layoutItems( items );
-
-  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
-  {
-    if ( currentItem->containsAdvancedEffects() )
-      return true;
-  }
-  return false;
-}
-
 void QgsLayoutDesignerDialog::showRasterizationWarning()
 {
-
   if ( mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool() ||
        mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() )
     return;

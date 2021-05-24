@@ -110,7 +110,7 @@ class QgsSvgSelectorWidget : QWidget
 Constructor for QgsSvgSelectorWidget
 %End
 
-    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer );
+    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer = 0 );
 %Docstring
 Initialize the parameters model so the context and the layer are referenced.
 
@@ -119,7 +119,7 @@ Initialize the parameters model so the context and the layer are referenced.
 
     QString currentSvgPath() const;
 
-    QgsSvgSourceLineEdit *sourceLineEdit() const;
+    QgsPictureSourceLineEditBase *sourceLineEdit() const;
 %Docstring
 Returns the source line edit
 
@@ -138,6 +138,27 @@ Defines if the group box to fill parameters is visible
 Returns if the group box to fill parameters is visible
 
 .. versionadded:: 3.18
+%End
+
+    void setBrowserVisible( bool visible );
+%Docstring
+Defines if the SVG browser should be visible
+
+.. versionadded:: 3.20
+%End
+
+    bool browserVisible() const;
+%Docstring
+Returns if the SVG browser should be visible
+
+.. versionadded:: 3.20
+%End
+
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const;
+%Docstring
+Returns the property override tool button of the file line edit
+
+.. versionadded:: 3.20
 %End
 
   public slots:

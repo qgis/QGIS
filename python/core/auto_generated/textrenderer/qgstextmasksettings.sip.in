@@ -203,7 +203,7 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QgsSymbolLayerReferenceList maskedSymbolLayers() const;
+    QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
 %Docstring
 Returns a list of references to symbol layers that are masked by this buffer.
 
@@ -212,7 +212,7 @@ Returns a list of references to symbol layers that are masked by this buffer.
 .. seealso:: :py:func:`setMaskedSymbolLayers`
 %End
 
-    void setMaskedSymbolLayers( QgsSymbolLayerReferenceList maskedLayers );
+    void setMaskedSymbolLayers( const QList<QgsSymbolLayerReference> &maskedLayers );
 %Docstring
 Sets the symbol layers that will be masked by this buffer.
 

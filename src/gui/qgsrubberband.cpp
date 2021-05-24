@@ -22,6 +22,8 @@
 #include "qgsrectangle.h"
 #include "qgssymbol.h"
 #include "qgsrendercontext.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QPainter>
 

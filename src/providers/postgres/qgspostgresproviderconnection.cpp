@@ -20,7 +20,10 @@
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
 #include "qgsapplication.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
 #include <QRegularExpression>
+#include <QIcon>
 
 extern "C"
 {
@@ -110,17 +113,17 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsPostgresProvider::createEmptyLayer(
-        newUri.uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        options
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
+                                   newUri.uri(),
+                                   fields,
+                                   wkbType,
+                                   srs,
+                                   overwrite,
+                                   &map,
+                                   &errCause,
+                                   options
+                                 );
+  if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
@@ -453,7 +456,7 @@ void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, c
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
   executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
-              .arg( indexName,
+              .arg( QgsPostgresConn::quotedIdentifier( indexName ),
                     QgsPostgresConn::quotedIdentifier( schema ),
                     QgsPostgresConn::quotedIdentifier( name ),
                     QgsPostgresConn::quotedIdentifier( geometryColumnName ) ) );

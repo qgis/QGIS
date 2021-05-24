@@ -72,11 +72,11 @@ namespace QgsWfs
     QDomElement createFeatureGML3( const QgsFeature &feature, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes );
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
-                        QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames );
+                        QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *serverSettings );
 
     void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
                           QgsWfsParameters::Format format, int prec, QgsCoordinateReferenceSystem &crs,
-                          QgsRectangle *rect, const QStringList &typeNames );
+                          QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings );
 
     void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx,
                         const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes = QgsAttributeList() );
@@ -436,7 +436,7 @@ namespace QgsWfs
         while ( fit.nextFeature( feature ) && ( aRequest.maxFeatures == -1 || sentFeatures < aRequest.maxFeatures ) )
         {
           if ( iteratedFeatures == aRequest.startIndex )
-            startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList );
+            startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
 
           if ( iteratedFeatures >= aRequest.startIndex )
           {
@@ -455,13 +455,13 @@ namespace QgsWfs
 
     if ( mWfsParameters.resultType() == QgsWfsParameters::ResultType::HITS )
     {
-      hitGetFeature( request, response, project, aRequest.outputFormat, sentFeatures, typeNameList );
+      hitGetFeature( request, response, project, aRequest.outputFormat, sentFeatures, typeNameList, serverIface->serverSettings() );
     }
     else
     {
       // End of GetFeature
       if ( iteratedFeatures <= aRequest.startIndex )
-        startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList );
+        startGetFeature( request, response, project, aRequest.outputFormat, requestPrecision, requestCrs, &requestRect, typeNameList, serverIface->serverSettings() );
       endGetFeature( response, aRequest.outputFormat );
     }
 
@@ -1013,7 +1013,7 @@ namespace QgsWfs
 
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
-                        int numberOfFeatures, const QStringList &typeNames )
+                        int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings )
     {
       QDateTime now = QDateTime::currentDateTime();
       QString fcString;
@@ -1034,7 +1034,7 @@ namespace QgsWfs
           response.setHeader( "Content-Type", "text/xml; subtype=gml/3.1.1; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, project );
+        QString hrefString = serviceUrl( request, project, *settings );
 
         QUrl mapUrl( hrefString );
 
@@ -1091,7 +1091,7 @@ namespace QgsWfs
     }
 
     void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
-                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames )
+                          int prec, QgsCoordinateReferenceSystem &crs, QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings )
     {
       QString fcString;
 
@@ -1136,7 +1136,7 @@ namespace QgsWfs
           response.setHeader( "Content-Type", "text/xml; subtype=gml/3.1.1; charset=utf-8" );
 
         //Prepare url
-        QString hrefString = serviceUrl( request, project );
+        QString hrefString = serviceUrl( request, project, *settings );
 
         QUrl mapUrl( hrefString );
 

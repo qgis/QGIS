@@ -614,6 +614,7 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+
   public slots:
 
     void refresh();

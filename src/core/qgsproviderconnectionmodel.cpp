@@ -15,6 +15,7 @@
 #include "qgsproviderconnectionmodel.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include <QIcon>
 
 QgsProviderConnectionModel::QgsProviderConnectionModel( const QString &provider, QObject *parent )
   : QAbstractItemModel( parent )

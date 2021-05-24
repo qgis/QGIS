@@ -187,7 +187,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
-  if ( !mMeshLayer && !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
     return;
 
   if ( mActiveDatasetGroup < 0 )

@@ -15,7 +15,8 @@
 #ifndef QGSOWSDATAITEMS_H
 #define QGSOWSDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsconnectionsitem.h"
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
 

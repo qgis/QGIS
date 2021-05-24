@@ -22,7 +22,6 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
 #include "qgslabelsink.h"
 
@@ -40,6 +39,7 @@ class QgsCurvePolygon;
 class QgsCircularString;
 class QgsCompoundCurve;
 struct DxfLayerJob;
+class QgsSymbolRenderContext;
 
 #define DXF_HANDSEED 100
 #define DXF_HANDMAX 9999999

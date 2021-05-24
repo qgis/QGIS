@@ -126,7 +126,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 
 /**
  * QString gisdbase()
-   Methods for C library initialization and error handling.
+ * Methods for C library initialization and error handling.
 */
 class GRASS_LIB_EXPORT QgsGrass : public QObject
 {

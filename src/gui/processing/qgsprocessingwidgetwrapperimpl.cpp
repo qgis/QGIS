@@ -252,6 +252,10 @@ QgsProcessingCrsParameterDefinitionWidget::QgsProcessingCrsParameterDefinitionWi
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mCrsSelector = new QgsProjectionSelectionWidget();
+
+  // possibly we should expose this for parameter by parameter control
+  mCrsSelector->setShowAccuracyWarnings( true );
+
   if ( const QgsProcessingParameterCrs *crsParam = dynamic_cast<const QgsProcessingParameterCrs *>( definition ) )
     mCrsSelector->setCrs( QgsProcessingParameters::parameterAsCrs( crsParam, crsParam->defaultValueForGui(), context ) );
   else

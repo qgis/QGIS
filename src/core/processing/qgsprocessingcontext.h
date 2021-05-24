@@ -23,12 +23,13 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
-#include "qgsmaplayerlistutils.h"
 #include "qgsexception.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
 
+
 #include <QThread>
+#include <QPointer>
 
 class QgsProcessingLayerPostProcessorInterface;
 

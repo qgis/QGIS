@@ -18,6 +18,7 @@
 #include <QSGSimpleTextureNode>
 #include <QtConcurrent>
 
+#include "qgslabelingresults.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"

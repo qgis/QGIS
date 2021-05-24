@@ -1916,6 +1916,40 @@ void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, 
   f = r[3] * s[2] + r[4] * s[5] + r[5];
 }
 
+bool QgsLayoutExporter::requiresRasterization( const QgsLayout *layout )
+{
+  if ( !layout )
+    return false;
+
+  QList< QgsLayoutItem *> items;
+  layout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
+  {
+    // ignore invisible items, they won't affect the output in any way...
+    if ( currentItem->isVisible() && currentItem->requiresRasterization() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsLayoutExporter::containsAdvancedEffects( const QgsLayout *layout )
+{
+  if ( !layout )
+    return false;
+
+  QList< QgsLayoutItem *> items;
+  layout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : std::as_const( items ) )
+  {
+    // ignore invisible items, they won't affect the output in any way...
+    if ( currentItem->isVisible() && currentItem->containsAdvancedEffects() )
+      return true;
+  }
+  return false;
+}
+
 QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const
 {
   bounds = QRectF();

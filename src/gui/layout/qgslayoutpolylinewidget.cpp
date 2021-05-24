@@ -22,6 +22,7 @@
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
+#include "qgslinesymbol.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -81,7 +82,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   mItemPropertiesWidget->showFrameGroup( false );
   mainLayout->addWidget( mItemPropertiesWidget );
 
-  mLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutPolylineWidget::symbolChanged );
 
   if ( mPolyline )

@@ -77,6 +77,7 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
   }
 
   QVector<double> sample;
+  QVector<double> sorted;
 
   // if we have lots of values, we need to take a random sample
   if ( values.size() > mMaximumSize )
@@ -93,18 +94,22 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
     sample[ 0 ] = minimum;
     sample[ 1 ] = maximum;
 
-    for ( int i = 2; i < sample.size(); i++ )
-    {
-      // pick a random integer from 0 to n
+    sorted = values.toVector();
+    std::sort( sorted.begin(), sorted.end() );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-      double r = QRandomGenerator::global()->generate();
-      int j = std::floor( r / QRandomGenerator::max() * ( values.size() - 1 ) );
-#else
-      double r = qrand();
-      int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
-#endif
-      sample[ i ] = values[ j ];
+    int j = -1;
+
+    // loop through all values in initial array
+    // skip the first value as it is a minimum one
+    // skip the last value as that one is a maximum one
+    // and those are already in the sample as items 0 and 1
+    for ( int i = 1; i < sorted.size() - 2; i++ )
+    {
+      if ( ( i * ( mMaximumSize - 2 ) / ( sorted.size() - 2 ) ) > j )
+      {
+        j++;
+        sample[ j + 2 ] = sorted[ i ];
+      }
     }
   }
   else

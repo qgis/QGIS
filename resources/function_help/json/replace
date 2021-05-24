@@ -13,9 +13,10 @@
                     { "expression":"replace('QGIS ABC',array('A','B','C'),array('X','Y','Z'))", "returns":"'QGIS XYZ'"},
                     { "expression":"replace('QGIS',array('Q','S'),'')", "returns":"'GI'"} ] },
   { "variant": "Map variant",
-      "variant_description": "Returns a string with the supplied map keys replaced by paired values.",
+      "variant_description": "Returns a string with the supplied map keys replaced by paired values. Longer map keys are evaluated first.",
       "arguments": [ {"arg":"string","description":"the input string"},
                      {"arg":"map","description":"the map containing keys and values"} ],
-      "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"} ]
+      "examples": [ { "expression":"replace('APP SHOULD ROCK',map('APP','QGIS','SHOULD','DOES'))", "returns":"'QGIS DOES ROCK'"},
+                    { "expression":"replace('forty two',map('for','4','two','2','forty two','42'))", "returns":"'42'"} ]
   }]
 }

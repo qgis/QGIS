@@ -240,8 +240,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Open the specified project file; prompt to save previous project if necessary.
-      Used to process a commandline argument, FileOpen or Drop event.
-      */
+     * Used to process a commandline argument, FileOpen or Drop event.
+     */
     void openProject( const QString &fileName );
 
     void openLayerDefinition( const QString &filename );
@@ -539,18 +539,30 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
+#ifdef HAVE_SPATIALITE
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
+#else
+    QAction *actionNewSpatialLiteLayer() { return nullptr; }
+#endif
     QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
+#ifdef HAVE_SPATIALITE
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
+#else
+    QAction *actionAddSpatiaLiteLayer() { return nullptr; }
+#endif
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddXyzLayer() { return mActionAddXyzLayer; }
     QAction *actionAddVectorTileLayer() { return mActionAddVectorTileLayer; }
     QAction *actionAddPointCloudLayer() { return mActionAddPointCloudLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
+#ifdef HAVE_SPATIALITE
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
+#else
+    QAction *actionAddWfsLayer() { return nullptr; }
+#endif
     QAction *actionAddAfsLayer() { return mActionAddAfsLayer; }
     QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
@@ -1105,7 +1117,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsBrowserGuiModel *browserModel();
 
-    /*
+    /**
      * Change data source for \a layer, a data source selection dialog
      * will be opened and if accepted the data selected source will be
      * applied.
@@ -1117,22 +1129,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Add a raster layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the \a uri and \a baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The \a baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
+     * The caller must provide information compatible with the provider plugin
+     * using the \a uri and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
 
     /**
      * Add a vector layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the \a vectorLayerPath and \a baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The \a baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
+     * The caller must provide information compatible with the provider plugin
+     * using the \a vectorLayerPath and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
@@ -1561,8 +1573,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newVectorLayer();
     //! Create a new memory layer
     void newMemoryLayer();
+#ifdef HAVE_SPATIALITE
     //! Create a new empty SpatiaLite layer
     void newSpatialiteLayer();
+#endif
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();
 
@@ -2200,7 +2214,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                          const QString &layerName,
                                          const QString &encoding,
                                          const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
-                                     int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
+                                     QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
 
     //! Sets project properties, including map untis
@@ -2469,14 +2483,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * String containing supporting vector file formats
-      Suitable for a QFileDialog file filter.  Build in ctor.
-      */
+     * Suitable for a QFileDialog file filter.  Build in ctor.
+     */
     QString mVectorFileFilter;
 
     /**
      * String containing supporting raster file formats
-      Suitable for a QFileDialog file filter.  Build in ctor.
-      */
+     * Suitable for a QFileDialog file filter.  Build in ctor.
+     */
     QString mRasterFileFilter;
 
     //! Timer for map tips

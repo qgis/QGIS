@@ -22,6 +22,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {

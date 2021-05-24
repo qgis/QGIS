@@ -292,6 +292,14 @@ This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`,
 .. versionadded:: 3.10
 %End
 
+    bool containsAdvancedEffects() const;
+%Docstring
+Returns ``True`` if any component of the label settings requires advanced effects
+such as blend modes, which require output in raster formats to be fully respected.
+
+.. versionadded:: 3.20
+%End
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the labeling property definitions.
@@ -473,6 +481,20 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     bool geometryGeneratorEnabled;
 
     QgsWkbTypes::GeometryType layerType;
+
+    void setLegendString( const QString &legendString );
+%Docstring
+setLegendString
+
+:param legendString: the string to show in the legend and preview
+%End
+
+    QString legendString() const;
+%Docstring
+legendString
+
+:return: the string to show in the legend and in the preview icon
+%End
 
     void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 );
 %Docstring

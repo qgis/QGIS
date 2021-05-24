@@ -67,6 +67,8 @@
 #include <QStringBuilder>
 #include <QUrlQuery>
 #include <QJsonArray>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include <ogr_api.h>
 
@@ -2022,6 +2024,11 @@ int QgsWmsProvider::capabilities() const
   {
     // March 2021: *never* prefetch tile based layers, see: https://github.com/qgis/QGIS/pull/41953
     // capability |= Capability::Prefetch;
+  }
+
+  if ( mSettings.mTiled || mSettings.mXyz )
+  {
+    capability |= DpiDependentData;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );

@@ -45,7 +45,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
     QgsFeatureIds fids;
     for ( const QString &serverFid : serverFids )
     {
-      fids.insert( serverFid.toLongLong() );
+      fids.insert( STRING_TO_FID( serverFid ) );
     }
     featureRequest.setFilterFids( fids );
     return featureRequest;
@@ -59,7 +59,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
 
   if ( expList.count() == 1 )
   {
-    featureRequest.setFilterExpression( expList.at( 0 ) );
+    featureRequest.combineFilterExpression( expList.at( 0 ) );
   }
   else
   {
@@ -74,7 +74,7 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
       fullExpression.append( exp );
       fullExpression.append( QStringLiteral( " )" ) );
     }
-    featureRequest.setFilterExpression( fullExpression );
+    featureRequest.combineFilterExpression( fullExpression );
   }
 
   return featureRequest;

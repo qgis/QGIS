@@ -273,9 +273,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Store an authentication config in the database
      * \param mconfig Associated authentication config id
+     * \param overwrite If set to TRUE, pre-existing authentication configurations will be overwritten
      * \returns Whether operation succeeded
      */
-    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig SIP_INOUT );
+    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig SIP_INOUT, bool overwrite = false );
 
     /**
      * Update an authentication config in the database
@@ -299,6 +300,24 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \returns Whether operation succeeded
      */
     bool removeAuthenticationConfig( const QString &authcfg );
+
+    /**
+     * Export authentication configurations to an XML file
+     * \param filename The file path to save the XML content to
+     * \param authcfgs The list of configuration IDs to export
+     * \param password A password string to encrypt the XML content
+     * \since QGIS 3.20
+     */
+    bool exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password = QString() );
+
+    /**
+     * Import authentication configurations from an XML file
+     * \param filename The file path from which the XML content will be read
+     * \param password A password string to decrypt the XML content
+     * \param overwrite If set to TRUE, pre-existing authentication configurations will be overwritten
+     * \since QGIS 3.20
+     */
+    bool importAuthenticationConfigsFromXml( const QString &filename, const QString &password = QString(), bool overwrite = false );
 
     /**
      * Clear all authentication configs from table in database and from provider caches

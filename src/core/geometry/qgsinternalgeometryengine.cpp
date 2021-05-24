@@ -46,6 +46,139 @@ QString QgsInternalGeometryEngine::lastError() const
   return mLastError;
 }
 
+
+enum class Direction
+{
+  Up,
+  Right,
+  Down,
+  Left,
+  None
+};
+
+/**
+ * Determines the direction of an edge from p1 to p2. maxDev is the tangent of
+ * the maximum allowed edge deviation angle. If the edge deviates more than
+ * the allowed angle, Direction::None will be returned.
+ */
+Direction getEdgeDirection( const QgsPoint &p1, const QgsPoint &p2, double maxDev )
+{
+  double dx = p2.x() - p1.x();
+  double dy = p2.y() - p1.y();
+  if ( ( dx == 0.0 ) && ( dy == 0.0 ) )
+    return Direction::None;
+  if ( fabs( dx ) >= fabs( dy ) )
+  {
+    double dev = fabs( dy ) / fabs( dx );
+    if ( dev > maxDev )
+      return Direction::None;
+    return dx > 0.0 ? Direction::Right : Direction::Left;
+  }
+  else
+  {
+    double dev = fabs( dx ) / fabs( dy );
+    if ( dev > maxDev )
+      return Direction::None;
+    return dy > 0.0 ? Direction::Up : Direction::Down;
+  }
+}
+
+/**
+ * Checks whether the polygon consists of four nearly axis-parallel sides. All
+ * consecutive edges having the same direction are considered to belong to the
+ * same side.
+ */
+std::pair<bool, std::array<Direction, 4>> getEdgeDirections( const QgsPolygon *g, double maxDev )
+{
+  std::pair<bool, std::array<Direction, 4>> ret = { false, { Direction::None, Direction::None, Direction::None, Direction::None } };
+  // The polygon might start in the middle of a side. Hence, we need a fifth
+  // direction to record the beginning of the side when we went around the
+  // polygon.
+  std::array<Direction, 5> dirs;
+
+  int idx = 0;
+  QgsAbstractGeometry::vertex_iterator previous = g->vertices_begin();
+  QgsAbstractGeometry::vertex_iterator current = previous;
+  ++current;
+  QgsAbstractGeometry::vertex_iterator end = g->vertices_end();
+  while ( current != end )
+  {
+    Direction dir = getEdgeDirection( *previous, *current, maxDev );
+    if ( dir == Direction::None )
+      return ret;
+    if ( idx == 0 )
+    {
+      dirs[0] = dir;
+      ++idx;
+    }
+    else if ( dir != dirs[idx - 1] )
+    {
+      if ( idx == 5 )
+        return ret;
+      dirs[idx] = dir;
+      ++idx;
+    }
+    previous = current;
+    ++current;
+  }
+  ret.first = ( idx == 5 ) ? ( dirs[0] == dirs[4] ) : ( idx == 4 );
+  std::copy( dirs.begin(), dirs.begin() + 4, ret.second.begin() );
+  return ret;
+}
+
+bool matchesOrientation( std::array<Direction, 4> dirs, std::array<Direction, 4> oriented )
+{
+  int idx = std::find( oriented.begin(), oriented.end(), dirs[0] ) - oriented.begin();
+  for ( int i = 1; i < 4; ++i )
+  {
+    if ( dirs[i] != oriented[( idx + i ) % 4] )
+      return false;
+  }
+  return true;
+}
+
+/**
+ * Checks whether the 4 directions in dirs make up a clockwise rectangle.
+ */
+bool isClockwise( std::array<Direction, 4> dirs )
+{
+  const std::array<Direction, 4> cwdirs = { Direction::Up, Direction::Right, Direction::Down, Direction::Left };
+  return matchesOrientation( dirs, cwdirs );
+}
+
+/**
+ * Checks whether the 4 directions in dirs make up a counter-clockwise
+ * rectangle.
+ */
+bool isCounterClockwise( std::array<Direction, 4> dirs )
+{
+  const std::array<Direction, 4> ccwdirs = { Direction::Right, Direction::Up, Direction::Left, Direction::Down };
+  return matchesOrientation( dirs, ccwdirs );
+}
+
+
+bool QgsInternalGeometryEngine::isAxisParallelRectangle( double maximumDeviation, bool simpleRectanglesOnly ) const
+{
+  if ( QgsWkbTypes::flatType( mGeometry->wkbType() ) != QgsWkbTypes::Polygon )
+    return false;
+
+  const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( mGeometry );
+  if ( !polygon->exteriorRing() || polygon->numInteriorRings() > 0 )
+    return false;
+
+  const int vertexCount = polygon->exteriorRing()->numPoints();
+  if ( vertexCount < 4 )
+    return false;
+  else if ( simpleRectanglesOnly && ( vertexCount != 5 || !polygon->exteriorRing()->isClosed() ) )
+    return false;
+
+  bool found4Dirs;
+  std::array<Direction, 4> dirs;
+  std::tie( found4Dirs, dirs ) = getEdgeDirections( polygon, std::tan( maximumDeviation * M_PI / 180 ) );
+
+  return found4Dirs && ( isCounterClockwise( dirs ) || isClockwise( dirs ) );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

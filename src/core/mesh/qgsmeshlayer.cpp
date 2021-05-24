@@ -51,31 +51,18 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
-  setProviderType( providerKey );
-  // if we’re given a provider type, try to create and bind one to this layer
-  bool ok = false;
-  if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
+  QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
   {
-    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-    {
-      flags |= QgsDataProvider::FlagTrustDataSource;
-    }
-    ok = setDataProvider( providerKey, providerOptions, flags );
+    flags |= QgsDataProvider::FlagTrustDataSource;
   }
-
+  setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
+  resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-  if ( ok )
-  {
-    setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
-    if ( mDataProvider )
-    {
-      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-      resetDatasetGroupTreeItem();
-    }
-  }
+  if ( isValid() )
+    setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
 
   connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 }
@@ -199,6 +186,7 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
   bool isTemporalBefore = dataProvider()->temporalCapabilities()->hasTemporalCapabilities();
   if ( mDatasetGroupStore->addPersistentDatasets( path ) )
   {
+    mExtraDatasetUri.append( path );
     QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< QgsMeshLayerTemporalProperties * >( mTemporalProperties );
     if ( !isTemporalBefore && dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
     {
@@ -920,6 +908,25 @@ void QgsMeshLayer::updateActiveDatasetGroups()
     emit activeVectorDatasetGroupChanged( settings.activeVectorDatasetGroup() );
 }
 
+void QgsMeshLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  mDataSource = dataSource;
+  mLayerName = baseName;
+  setProviderType( provider );
+
+  // if we’re given a provider type, try to create and bind one to this layer
+  bool ok = false;
+  if ( !mDataSource.isEmpty() && !provider.isEmpty() )
+  {
+    ok = setDataProvider( provider, options, flags );
+  }
+
+  if ( ok )
+  {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+  }
+}
+
 QgsPointXY QgsMeshLayer::snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius )
 {
   switch ( elementType )
@@ -1170,10 +1177,6 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
   }
-  if ( !setDataProvider( mProviderKey, providerOptions, flags ) )
-  {
-    return false;
-  }
 
   QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
   if ( !elemExtraDatasets.isNull() )
@@ -1182,21 +1185,13 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     while ( !elemUri.isNull() )
     {
       QString uri = context.pathResolver().readPath( elemUri.text() );
-
-      bool res = mDataProvider->addDataset( uri );
-#ifdef QGISDEBUG
-      QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
-#else
-      ( void )res; // avoid unused warning in release builds
-#endif
-
+      mExtraDatasetUri.append( uri );
       elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
     }
   }
 
-  if ( mDataProvider && pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
-    mDataProvider->setTemporalUnit(
-      static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() ) );
+  if ( pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
+    mTemporalUnit = static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() );
 
   // read dataset group store
   QDomElement elemDatasetGroupsStore = layer_node.firstChildElement( QStringLiteral( "mesh-dataset-groups-store" ) );
@@ -1204,6 +1199,8 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     resetDatasetGroupTreeItem();
   else
     mDatasetGroupStore->readXml( elemDatasetGroupsStore, context );
+
+  setDataProvider( mProviderKey, providerOptions, flags );
 
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
@@ -1331,23 +1328,8 @@ QString QgsMeshLayer::htmlMetadata() const
   if ( publicSource() != path )
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
-    else
-      myMetadata += tr( "Projected" );
-  }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-
   // Extent
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
-
-  // unit
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
   QLocale locale = QLocale();
@@ -1375,6 +1357,9 @@ QString QgsMeshLayer::htmlMetadata() const
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // CRS
+  myMetadata += crsHtmlMetadata();
 
   // identification section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
@@ -1412,12 +1397,14 @@ QString QgsMeshLayer::htmlMetadata() const
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  delete mDataProvider;
+  mDatasetGroupStore->setPersistentProvider( nullptr, QStringList() );
 
+  delete mDataProvider;
   mProviderKey = provider;
   QString dataSource = mDataSource;
 
   mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
+
   if ( !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );
@@ -1434,6 +1421,8 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     return false;
   }
 
+  mDataProvider->setTemporalUnit( mTemporalUnit );
+  mDatasetGroupStore->setPersistentProvider( mDataProvider, mExtraDatasetUri );
   setCrs( mDataProvider->crs() );
 
   if ( provider == QLatin1String( "mesh_memory" ) )
@@ -1441,8 +1430,6 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     // required so that source differs between memory layers
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
-
-  mDatasetGroupStore->setPersistentProvider( mDataProvider );
 
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     assignDefaultStyleToDatasetGroup( i );

@@ -95,16 +95,24 @@ sub read_line {
 }
 
 sub write_output {
-    my ($dbg_code, $out) = @_;
+    my ($dbg_code, $out, $prepend) = @_;
+    $prepend //= "no";
     if ($debug == 1){
         $dbg_code = sprintf("%d %-4s :: ", $LINE_IDX, $dbg_code);
     }
     else{
         $dbg_code = '';
     }
-    push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
-    push @OUTPUT, $dbg_code.$out;
-    push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    if ($prepend eq "prepend")
+    {
+       unshift @OUTPUT, $dbg_code . $out;
+    }
+    else
+    {
+      push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
+      push @OUTPUT, $dbg_code . $out;
+      push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    }
     $IF_FEATURE_CONDITION = '';
 }
 
@@ -1037,7 +1045,11 @@ while ($LINE_IDX < $LINE_COUNT){
         my $enum_mk_base = "";
         $enum_mk_base = $+{emkb} if defined $+{emkb};
         if (defined $+{emkf} and $monkeypatch eq "1"){
+          if ( $ACTUAL_CLASS ne "" ) {
+            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $ACTUAL_CLASS.$enum_qualname\n";
+          } else {
             push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
+          }
         }
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
@@ -1060,22 +1072,34 @@ while ($LINE_IDX < $LINE_COUNT){
                 next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
 
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$4/r;
+                    my $enum_decl = $LINE =~ s/^(\s*(?<em>\w+))(\s+SIP_PYNAME(?:\(\s*(?<pyname>[^() ]+)\s*\)\s*)?)?(\s+SIP_MONKEY\w+(?:\(\s*(?<compat>[^() ]+)\s*\)\s*)?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?)(:?\s*\/\/!<\s*(?<co>.*)|.*)$/$1$3$7/r;
                     my $enum_member = $+{em};
                     my $comment = $+{co};
+                    my $compat_name = $+{compat} ? $+{compat} : $enum_member;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1" and $enum_member ne "") {
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
-		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member = $enum_qualname.$enum_member\n";
-		                    push @OUTPUT_PYTHON, "$enum_mk_base.$enum_member.__doc__ = \"$comment\"\n" ;
-		                    push @enum_members_doc, "'* ``$enum_member``: ' + $enum_qualname.$enum_member.__doc__";
+                          if ( $ACTUAL_CLASS ne "" ) {
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                          } else {
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
+                            push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
+                          }
                         } else {
                             if ( $monkeypatch eq 1 )
                             {
-                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_member = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
                             }
-                            push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__ = \"$comment\"\n";
-                            push @enum_members_doc, "'* ``$enum_member``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                            if ( $ACTUAL_CLASS ne "" ){
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
+                                push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
+                            } else {
+                                push @OUTPUT_PYTHON, "$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
+                                push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
+                            }
                         }
                     }
                     $enum_decl = fix_annotations($enum_decl);
@@ -1153,10 +1177,10 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # catch Q_DECLARE_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
-        my $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME];
+        my $ACTUAL_CLASS = $#CLASSNAME >= 0 ? $CLASSNAME[$#CLASSNAME].'::' : '';
         dbg_info("Declare flags: $ACTUAL_CLASS");
-        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}::$3> $2;\n";
-        $QFLAG_HASH{"${ACTUAL_CLASS}::$2"} = "${ACTUAL_CLASS}::$3";
+        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}$3> $2;\n";
+        $QFLAG_HASH{"${ACTUAL_CLASS}$2"} = "${ACTUAL_CLASS}$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
@@ -1261,9 +1285,28 @@ while ($LINE_IDX < $LINE_COUNT){
     # fix astyle placing space after % character
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
+    # handle enum/flags QgsSettingsEntryEnumFlag
+    if ( $LINE =~ m/^(\s*)const QgsSettingsEntryEnumFlag<(.*)> (.+);$/ ) {
+      my $prep_line = "class QgsSettingsEntryEnumFlag_$3
+{
+%TypeHeaderCode
+#include \"" .basename($headerfile) . "\"
+#include \"qgssettingsentry.h\"
+typedef QgsSettingsEntryEnumFlag<$2> QgsSettingsEntryEnumFlag_$3;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_$3( const QString &key, QgsSettings::Section section, const $2 &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    $2 value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const $2 &defaultValueOverride = $2() ) const;
+};";
+    $LINE = "$1const QgsSettingsEntryEnumFlag_$3 $3;";
+    $COMMENT = '';
+    write_output("ENF", "$prep_line\n", "prepend");
+    }
+
     write_output("NOR", "$LINE\n");
-    if ($PYTHON_SIGNATURE ne ''){
-        write_output("PSI", "$PYTHON_SIGNATURE\n");
+    if ($PYTHON_SIGNATURE ne '') {
+      write_output("PSI", "$PYTHON_SIGNATURE\n");
     }
 
     # multiline definition (parenthesis left open)

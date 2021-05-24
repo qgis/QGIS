@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeedback.h"
-#include "qgssymbol.h"
 #include "qgstaskmanager.h"
 #include "qgsogrutils.h"
 #include "qgsrenderer.h"
@@ -37,10 +36,12 @@ class QgsFeatureIterator;
 
 /**
  * \ingroup core
-  * \brief A convenience class for writing vector files to disk.
- There are two possibilities how to use this class:
- 1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
- 2. create an instance of the class and issue calls to addFeature(...)
+ * \brief A convenience class for writing vector layers to disk based formats (e.g. Shapefiles, GeoPackage).
+ *
+ * There are two possibilities how to use this class:
+ *
+ * 1. A static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer.
+ * 2. Create an instance of the class and issue calls to addFeature(...).
  */
 class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 {
@@ -175,6 +176,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       ErrProjection,
       ErrFeatureWriteFailed,
       ErrInvalidLayer,
+      ErrSavingMetadata, //!< Metadata saving failed
       Canceled, //!< Writing was interrupted by manual cancellation
     };
 
@@ -531,6 +533,22 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * \since QGIS 3.18
          */
         FieldNameSource fieldNameSource = Original;
+
+        /**
+         * Set to TRUE to save layer metadata for the exported vector file.
+         *
+         * \see layerMetadata
+         * \since QGIS 3.20
+         */
+        bool saveMetadata = false;
+
+        /**
+         * Layer metadata to save for the exported vector file. This will only be used if saveMetadata is TRUE.
+         *
+         * \see saveMetadata
+         * \since QGIS 3.20
+         */
+        QgsLayerMetadata layerMetadata;
     };
 
 #ifndef SIP_RUN

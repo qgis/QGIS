@@ -20,7 +20,10 @@
 #include "qgslogger.h"
 
 #include <sqlite3.h>
+
+#ifdef HAVE_SPATIALITE
 #include <spatialite.h>
+#endif
 
 // Define this variable to print all spatialite SQL statements
 #ifdef SPATIALITE_PRINT_ALL_SQL
@@ -40,15 +43,19 @@ static int trace_callback( unsigned, void *ctx, void *p, void * )
 
 int spatialite_database_unique_ptr::open( const QString &path )
 {
+#ifdef HAVE_SPATIALITE
   auto &deleter = get_deleter();
   deleter.mSpatialiteContext = spatialite_alloc_connection();
+#endif
 
   sqlite3 *database = nullptr;
   int result = sqlite3_open( path.toUtf8(), &database );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
+#ifdef HAVE_SPATIALITE
   if ( result == SQLITE_OK )
     spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
+#endif
 
   return result;
 }
@@ -60,15 +67,19 @@ void spatialite_database_unique_ptr::reset()
 
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
+#ifdef HAVE_SPATIALITE
   auto &deleter = get_deleter();
   deleter.mSpatialiteContext = spatialite_alloc_connection();
+#endif
 
   sqlite3 *database = nullptr;
   int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
+#ifdef HAVE_SPATIALITE
   if ( result == SQLITE_OK )
     spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
+#endif
 
 #ifdef SPATIALITE_PRINT_ALL_SQL
   // Log all queries
@@ -107,6 +118,8 @@ void QgsSpatialiteCloser::operator()( sqlite3 *handle )
     QgsDebugMsg( QStringLiteral( "sqlite3_close_v2() failed: %1" ).arg( res ) );
   }
 
+#ifdef HAVE_SPATIALITE
   spatialite_cleanup_ex( mSpatialiteContext );
+#endif
   mSpatialiteContext = nullptr;
 }

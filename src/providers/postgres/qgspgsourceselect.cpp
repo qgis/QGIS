@@ -18,7 +18,6 @@ email                : sherman at mrcc.com
 
 #include "qgspgsourceselect.h"
 
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgspostgresprovider.h"
@@ -32,6 +31,7 @@ email                : sherman at mrcc.com
 #include "qgsproxyprogresstask.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -68,7 +68,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
         QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
-      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
     return cb;
   }
@@ -163,7 +163,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     {
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }

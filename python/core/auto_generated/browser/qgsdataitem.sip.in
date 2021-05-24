@@ -1,0 +1,547 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdataitem.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsDataItem : QObject
+{
+%Docstring(signature="appended")
+Base class for all items in the model.
+
+Parent/children hierarchy is not based on QObject.
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+#include "qgslayeritem.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfavoritesitem.h"
+#include "qgszipitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsprojectitem.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
+      sipType = sipType_QgsLayerItem;
+    else if ( qobject_cast<QgsErrorItem *>( sipCpp ) )
+      sipType = sipType_QgsErrorItem;
+    else if ( qobject_cast<QgsDirectoryItem *>( sipCpp ) )
+      sipType = sipType_QgsDirectoryItem;
+    else if ( qobject_cast<QgsFavoritesItem *>( sipCpp ) )
+      sipType = sipType_QgsFavoritesItem;
+    else if ( qobject_cast<QgsZipItem *>( sipCpp ) )
+      sipType = sipType_QgsZipItem;
+    else if ( qobject_cast<QgsDataCollectionItem *>( sipCpp ) )
+      sipType = sipType_QgsDataCollectionItem;
+    else if ( qobject_cast<QgsProjectItem *>( sipCpp ) )
+      sipType = sipType_QgsProjectItem;
+    else
+      sipType = 0;
+%End
+  public:
+    enum Type
+    {
+      Collection,
+      Directory,
+      Layer,
+      Error,
+      Favorites,
+      Project,
+      Custom,
+      Fields,
+      Field,
+    };
+
+
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsDataItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+%End
+
+    ~QgsDataItem();
+
+    bool hasChildren();
+
+    virtual bool layerCollection() const;
+%Docstring
+Returns ``True`` if the data item is a collection of layers
+The default implementation returns ``False``, subclasses must implement this method if their children are layers.
+
+.. versionadded:: 3.14
+%End
+
+    int rowCount();
+
+    virtual QVector<QgsDataItem *> createChildren() /TransferBack/;
+%Docstring
+Create children. Children are not expected to have parent set.
+
+.. warning::
+
+   This method MUST BE THREAD SAFE.
+%End
+%VirtualCatcherCode
+    PyObject *sipResObj = sipCallMethod( 0, sipMethod, "" );
+    // H = Convert a Python object to a mapped type instance.
+    // 5 = 1 (disallows the conversion of Py_None to NULL) + 4 (returns a copy of the C/C++ instance)
+    sipIsErr = !sipResObj || sipParseResult( 0, sipMethod, sipResObj, "H5", sipType_QVector_0101QgsDataItem, &sipRes ) < 0;
+    if ( !sipIsErr )
+    {
+      for ( QgsDataItem *item : sipRes )
+      {
+        PyObject *pyItem = sipGetPyObject( item, sipType_QgsDataItem );
+        if ( pyItem != NULL )
+        {
+          // pyItem is given an extra reference which is removed when the C++ instance’s destructor is called.
+          sipTransferTo( pyItem, Py_None );
+        }
+      }
+    }
+    if ( sipResObj != NULL )
+    {
+      Py_DECREF( sipResObj );
+    }
+%End
+
+    enum State
+    {
+      NotPopulated,
+      Populating,
+      Populated
+    };
+
+    State state() const;
+%Docstring
+
+.. versionadded:: 2.8
+%End
+
+    virtual void setState( State state );
+%Docstring
+Set item state. It also take care about starting/stopping loading icon animation.
+
+:param state:
+
+.. versionadded:: 2.8
+%End
+
+    virtual void addChildItem( QgsDataItem *child /Transfer/, bool refresh = false );
+%Docstring
+Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
+
+:param child: child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
+:param refresh: - set to ``True`` to refresh populated item, emitting relevant signals to the model
+
+.. seealso:: :py:func:`deleteChildItem`
+%End
+
+    virtual void deleteChildItem( QgsDataItem *child );
+%Docstring
+Removes and deletes a child item, emitting relevant signals to the model.
+
+:param child: child to remove. Item must exist as a current child.
+
+.. seealso:: :py:func:`addChildItem`
+%End
+
+    virtual QgsDataItem *removeChildItem( QgsDataItem *child ) /TransferBack/;
+%Docstring
+Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
+
+:param child: child to remove
+
+:return: pointer to the removed item or ``None`` if no such item was found
+%End
+
+    virtual bool equal( const QgsDataItem *other );
+%Docstring
+Returns ``True`` if this item is equal to another item (by testing item type and path).
+%End
+
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
+%Docstring
+Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
+
+Use :py:func:`QgsDataItemGuiProvider.createParamWidget()` instead
+
+.. deprecated::
+   QGIS 3.10
+%End
+
+    virtual QList<QAction *> actions( QWidget *parent );
+%Docstring
+Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
+the item. Subclasses should override this to provide actions.
+
+Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+to the specified parent widget.
+%End
+
+    virtual QList<QMenu *> menus( QWidget *parent );
+%Docstring
+Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+created menus is correctly handled by parenting them to the specified parent widget.
+
+:param parent: a parent widget of the menu
+
+:return: list of menus
+
+.. versionadded:: 3.0
+%End
+
+ virtual bool acceptDrop() /Deprecated/;
+%Docstring
+Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
+Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept dropped layers.
+
+.. seealso:: :py:func:`handleDrop`
+
+.. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
+
+.. deprecated::
+   QGIS 3.10
+%End
+
+ virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) /Deprecated/;
+%Docstring
+Attempts to process the mime data dropped on this item. Subclasses must override this and :py:func:`~QgsDataItem.acceptDrop` if they
+accept dropped layers.
+
+.. seealso:: :py:func:`acceptDrop`
+
+.. seealso:: :py:func:`QgsDataItemGuiProvider.handleDrop`
+
+.. deprecated::
+   QGIS 3.10
+%End
+
+    virtual bool handleDoubleClick();
+%Docstring
+Called when a user double clicks on the item. Subclasses should return ``True``
+if they have implemented a double-click handler and do not want the default
+double-click behavior for items.
+
+.. versionadded:: 3.0
+%End
+
+    virtual bool hasDragEnabled() const;
+%Docstring
+Returns ``True`` if the item may be dragged.
+Default implementation returns ``False``.
+A draggable item has to implement :py:func:`~QgsDataItem.mimeUris` that will be used to pass data.
+
+.. seealso:: :py:func:`mimeUris`
+
+.. versionadded:: 3.0
+%End
+
+ virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
+%Docstring
+Returns mime URI for the data item.
+Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+
+.. seealso:: :py:func:`hasDragEnabled`
+
+.. deprecated:: QGIS 3.18
+  use :py:func:`~QgsDataItem.mimeUris` instead
+
+.. versionadded:: 3.0
+%End
+
+    virtual QgsMimeDataUtils::UriList mimeUris() const;
+%Docstring
+Returns mime URIs for the data item, most data providers will only return a single URI
+but some data collection items (e.g. GPKG, OGR) may report multiple URIs (e.g. for vector and
+raster layer types).
+
+Items that return valid URI will be returned in mime data when dragging a selection from browser model.
+
+.. versionadded:: 3.18
+%End
+
+    enum Capability
+    {
+      NoCapabilities,
+      SetCrs,
+      Fertile,
+      Fast,
+      Collapse,
+      Rename,
+      Delete,
+    };
+    typedef QFlags<QgsDataItem::Capability> Capabilities;
+
+
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
+%Docstring
+Writes the selected crs into data source. The original data source will be modified when calling this
+method.
+
+.. deprecated:: QGIS 3.6.
+   This method is no longer used by QGIS and will be removed in QGIS 4.0.
+%End
+
+ virtual bool rename( const QString &name ) /Deprecated/;
+%Docstring
+Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
+
+Items which implement this method should return the QgsDataItem.Rename capability.
+
+The default implementation does nothing.
+
+Use :py:class:`QgsDataItemGuiProvider`:
+
+.. versionadded:: 3.4
+
+.. deprecated::
+   QGIS 3.10
+%End
+
+
+    virtual Capabilities capabilities2() const;
+%Docstring
+Returns the capabilities for the data item.
+
+.. seealso:: :py:func:`setCapabilities`
+%End
+
+    virtual void setCapabilities( Capabilities capabilities );
+%Docstring
+Sets the capabilities for the data item.
+
+.. seealso:: :py:func:`capabilities2`
+%End
+
+
+    static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
+
+
+    Type type() const;
+
+    QgsDataItem *parent() const;
+%Docstring
+Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
+QObject hierarchy.
+%End
+
+    void setParent( QgsDataItem *parent );
+%Docstring
+Set item parent and connect / disconnect parent to / from item signals.
+It does not add itself to parents children (mChildren)
+%End
+    QVector<QgsDataItem *> children() const;
+    virtual QIcon icon();
+
+    QString name() const;
+%Docstring
+Returns the name of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`name`
+%End
+
+    QString path() const;
+    void setPath( const QString &path );
+
+    QString providerKey() const;
+%Docstring
+Returns the provider key that created this item (e.g. "PostGIS")
+
+If key has a prefix "special:", it marks that the item was not created with a provider,
+but manually. For example "special:Favorites", "special:Home"
+
+.. versionadded:: 3.12
+%End
+
+    void setProviderKey( const QString &value );
+%Docstring
+Sets the provider key that created this item (e.g. "PostGIS")
+
+If key has a prefix "special:", it marks that the item was not created with a provider,
+but manually. For example "special:Favorites"
+
+.. versionadded:: 3.12
+%End
+
+    static QString pathComponent( const QString &component );
+%Docstring
+Create path component replacing path separators
+%End
+
+    virtual QVariant sortKey() const;
+%Docstring
+Returns the sorting key for the item. By default :py:func:`~QgsDataItem.name` is returned,
+but :py:func:`~QgsDataItem.setSortKey` can be used to set a custom sort key for the item.
+
+Alternatively subclasses can override this method to return a custom
+sort key.
+
+.. seealso:: :py:func:`setSortKey`
+
+.. versionadded:: 3.0
+%End
+
+    void setSortKey( const QVariant &key );
+%Docstring
+Sets a custom sorting ``key`` for the item.
+
+.. seealso:: :py:func:`sortKey`
+
+.. versionadded:: 3.0
+%End
+
+
+    void setIcon( const QIcon &icon );
+    void setIconName( const QString &iconName );
+
+    void setToolTip( const QString &msg );
+    QString toolTip() const;
+
+    static void deleteLater( QVector<QgsDataItem *> &items );
+
+    void moveToThread( QThread *targetThread );
+%Docstring
+Move object and all its descendants to thread
+%End
+
+    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const /Factory/;
+%Docstring
+For data items that represent a DB connection or one of its children,
+this method returns a connection.
+All other data items will return NULL.
+
+Ownership of the returned objects is transferred to the caller.
+
+.. versionadded:: 3.16
+%End
+
+  protected:
+    virtual void populate( const QVector<QgsDataItem *> &children );
+
+    virtual void refresh( const QVector<QgsDataItem *> &children );
+%Docstring
+Refresh the items from a specified list of child items.
+%End
+
+    bool deferredDelete();
+%Docstring
+The item is scheduled to be deleted. E.g. if :py:func:`~QgsDataItem.deleteLater` is called when
+item is in Populating state (:py:func:`~QgsDataItem.createChildren` running in another thread),
+the :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and item will be deleted once Populating finished.
+Items with slow :py:func:`~QgsDataItem.reateChildren` (for example network or database based) may
+check during :py:func:`~QgsDataItem.createChildren` if :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return from
+:py:func:`~QgsDataItem.createChildren` immediately because result will be useless.
+%End
+
+
+
+  public slots:
+
+    virtual void deleteLater();
+%Docstring
+Safely delete the item:
+
+- disconnects parent
+- unsets parent (but does not remove itself)
+- deletes all its descendants recursively
+- waits until Populating state (:py:func:`~QgsDataItem.createChildren` in thread) finished without blocking main thread
+- calls QObject.deleteLater()
+%End
+
+    virtual void populate( bool foreground = false );
+
+    virtual void depopulate();
+%Docstring
+Remove children recursively and set as not populated. This is used when refreshing collapsed items.
+%End
+
+    virtual void refresh();
+
+    virtual void refreshConnections( const QString &providerKey = QString() );
+%Docstring
+Causes a data item provider to refresh all registered connections.
+
+If ``providerKey`` is specified then only the matching provider will be refreshed. Otherwise,
+all providers will be refreshed (which is potentially very expensive!).
+%End
+
+    virtual void childrenCreated();
+
+  signals:
+    void beginInsertItems( QgsDataItem *parent, int first, int last );
+    void endInsertItems();
+    void beginRemoveItems( QgsDataItem *parent, int first, int last );
+    void endRemoveItems();
+    void dataChanged( QgsDataItem *item );
+    void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    void connectionsChanged( const QString &providerKey = QString() );
+%Docstring
+Emitted when the connections of the provider with the specified ``providerKey`` have changed.
+
+This signal is normally forwarded to the app in order to refresh the connection
+item in the provider dialogs and to refresh the connection items in the other
+open browsers.
+%End
+
+  protected slots:
+
+    void updateIcon();
+%Docstring
+Will request a repaint of this icon.
+
+.. versionadded:: 3.0
+%End
+
+};
+
+QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<QgsDataItem::Capability> f2);
+
+
+class QgsErrorItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Data item that can be used to report problems (e.g. network error)
+%End
+
+%TypeHeaderCode
+#include "qgsdataitem.h"
+%End
+  public:
+
+    QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsdataitem.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

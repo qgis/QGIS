@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojectionfactors.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjectionFactors
+{
+%Docstring(signature="appended")
+contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsprojectionfactors.h"
+%End
+  public:
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the factors are valid, or ``False`` if they could not be calculated.
+%End
+
+    double meridionalScale() const;
+%Docstring
+Meridional scale at coordinate (λ,ϕ).
+%End
+
+    double parallelScale() const;
+%Docstring
+Parallel scale at coordinate (λ,ϕ).
+%End
+
+    double arealScale() const;
+%Docstring
+Areal scale factor at coordinate (λ,ϕ).
+%End
+
+    double angularDistortion() const;
+%Docstring
+Angular distortion at coordinate (λ,ϕ).
+%End
+
+    double meridianParallelAngle() const;
+%Docstring
+Meridian/parallel angle (in degrees), θ′, at coordinate (λ,ϕ).
+%End
+
+    double meridianConvergence() const;
+%Docstring
+Meridian convergence (in degrees) at coordinate (λ,ϕ). Sometimes also described as grid declination.
+%End
+
+    double tissotSemimajor() const;
+%Docstring
+Maximum scale factor.
+%End
+
+    double tissotSemiminor() const;
+%Docstring
+Minimum scale factor.
+%End
+
+    double dxDlam() const;
+%Docstring
+Partial derivative ∂x/∂λ of coordinate (λ,ϕ).
+%End
+
+    double dxDphi() const;
+%Docstring
+Partial derivative ∂x/∂ϕ of coordinate (λ,ϕ).
+%End
+
+    double dyDlam() const;
+%Docstring
+Partial derivative ∂y/∂λ of coordinate (λ,ϕ).
+%End
+
+    double dyDphi() const;
+%Docstring
+Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str;
+    if ( !sipCpp->isValid() )
+    {
+      str = QStringLiteral( "<QgsProjectionFactors: invalid>" );
+    }
+    else
+    {
+      str = QStringLiteral( "<QgsProjectionFactors>" );
+    }
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/proj/qgsprojectionfactors.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

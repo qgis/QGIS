@@ -24,7 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include "qgsrenderer.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
 
 #include <queue>
@@ -484,7 +484,6 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
-  bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
   for ( const QgsVectorLayer *vl : std::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
@@ -492,6 +491,7 @@ bool QgsTracer::initGraph()
     std::unique_ptr< QgsFeatureRenderer > renderer;
     std::unique_ptr<QgsRenderContext> ctx;
 
+    bool enableInvisibleFeature = QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature.value();
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );

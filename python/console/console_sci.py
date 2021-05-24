@@ -533,7 +533,8 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.displayPrompt(self.continuationLine)
 
     def write(self, txt):
-        sys.stderr.write(txt)
+        if sys.stderr:
+            sys.stderr.write(txt)
 
     def writeCMD(self, txt):
         if sys.stdout:

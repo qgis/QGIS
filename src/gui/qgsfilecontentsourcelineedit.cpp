@@ -18,12 +18,14 @@
 #include "qgsmessagebar.h"
 #include "qgsfilterlineedit.h"
 #include "qgspropertyoverridebutton.h"
-#include <QMenu>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QHBoxLayout>
+
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QImageReader>
 #include <QInputDialog>
+#include <QLineEdit>
+#include <QMenu>
+#include <QToolButton>
 #include <QUrl>
 
 //
@@ -269,91 +271,6 @@ QString QgsAbstractFileContentSourceLineEdit::settingsKey() const
   return mLastPathKey.isEmpty() ? defaultSettingsKey() : mLastPathKey;
 }
 
-//
-// QgsSvgSourceLineEdit
-//
-
-///@cond PRIVATE
-
-QString QgsSvgSourceLineEdit::fileFilter() const
-{
-  return tr( "SVG files" ) + " (*.svg)";
-}
-
-QString QgsSvgSourceLineEdit::selectFileTitle() const
-{
-  return tr( "Select SVG File" );
-}
-
-QString QgsSvgSourceLineEdit::fileFromUrlTitle() const
-{
-  return tr( "SVG From URL" );
-}
-
-QString QgsSvgSourceLineEdit::fileFromUrlText() const
-{
-  return tr( "Enter SVG URL" );
-}
-
-QString QgsSvgSourceLineEdit::embedFileTitle() const
-{
-  return tr( "Embed SVG File" );
-}
-
-QString QgsSvgSourceLineEdit::extractFileTitle() const
-{
-  return tr( "Extract SVG File" );
-}
-
-QString QgsSvgSourceLineEdit::defaultSettingsKey() const
-{
-  return QStringLiteral( "/UI/lastSVGDir" );
-}
-///@endcond
-
-//
-// QgsImageSourceLineEdit
-//
-
-///@cond PRIVATE
-
-QString QgsImageSourceLineEdit::fileFilter() const
-{
-  return tr( "All files" ) + " (*.*)";
-}
-
-QString QgsImageSourceLineEdit::selectFileTitle() const
-{
-  return tr( "Select Image File" );
-}
-
-QString QgsImageSourceLineEdit::fileFromUrlTitle() const
-{
-  return tr( "Image From URL" );
-}
-
-QString QgsImageSourceLineEdit::fileFromUrlText() const
-{
-  return tr( "Enter image URL" );
-}
-
-QString QgsImageSourceLineEdit::embedFileTitle() const
-{
-  return tr( "Embed Image File" );
-}
-
-QString QgsImageSourceLineEdit::extractFileTitle() const
-{
-  return tr( "Extract Image File" );
-}
-
-QString QgsImageSourceLineEdit::defaultSettingsKey() const
-{
-  return QStringLiteral( "/UI/lastImageDir" );
-}
-
-///@endcond
-
 void QgsAbstractFileContentSourceLineEdit::setMessageBar( QgsMessageBar *bar )
 {
   mMessageBar = bar;
@@ -363,3 +280,125 @@ QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
 {
   return mMessageBar;
 }
+
+
+
+//
+// QgsPictureSourceLineEditBase
+//
+
+///@cond PRIVATE
+
+
+QString QgsPictureSourceLineEditBase::fileFilter() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "SVG files" ) + " (*.svg)";
+    case Image:
+    {
+      QStringList formatsFilter;
+      const QByteArrayList supportedFormats = QImageReader::supportedImageFormats();
+      for ( const auto &format : supportedFormats )
+      {
+        formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+      }
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+    }
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::selectFileTitle() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "Select SVG File" );
+    case Image:
+    {
+      return tr( "Select Image File" );
+    }
+
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::fileFromUrlTitle() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "SVG From URL" );
+    case Image:
+    {
+      return tr( "Image From URL" );
+    }
+
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::fileFromUrlText() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "Enter SVG URL" );
+    case Image:
+    {
+      return tr( "Enter image URL" );
+    }
+
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::embedFileTitle() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "Embed SVG File" );
+    case Image:
+    {
+      return tr( "Embed Image File" );
+    }
+
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::extractFileTitle() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return tr( "Extract SVG File" );
+    case Image:
+    {
+      return tr( "Extract Image File" );
+    }
+
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+QString QgsPictureSourceLineEditBase::defaultSettingsKey() const
+{
+  switch ( mFormat )
+  {
+    case Svg:
+      return QStringLiteral( "/UI/lastSVGDir" );
+    case Image:
+    {
+      return QStringLiteral( "/UI/lastImageDir" );
+    }
+    DEFAULT_BUILTIN_UNREACHABLE
+  }
+}
+
+///@endcond
+
+

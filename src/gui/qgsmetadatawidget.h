@@ -236,9 +236,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
 #ifndef SIP_RUN
 
+///@cond PRIVATE
 
 /**
- \\\@cond PRIVATE
  * \ingroup gui
  * \class LinkItemDelegate
  * \brief Special delegate for the link view in the metadata wizard.
@@ -290,9 +290,8 @@ class ConstraintItemDelegate : public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
-/**
- \\\@endcond
- */
+
+///@endcond
 
 #endif
 #endif

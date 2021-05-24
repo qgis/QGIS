@@ -18,6 +18,17 @@
 int QgisEvent = QEvent::User + 1;
 %End
 
+enum class QgsMapLayerType
+  {
+  VectorLayer,
+  RasterLayer,
+  PluginLayer,
+  MeshLayer,
+  VectorTileLayer,
+  AnnotationLayer,
+  PointCloudLayer,
+};
+
 
 class Qgis
 {
@@ -100,6 +111,67 @@ The development version
       NotForThisSession,
     };
 
+    enum class FeatureCountState
+      {
+      Uncounted,
+      UnknownCount,
+    };
+
+    enum class SymbolType
+      {
+      Marker,
+      Line,
+      Fill,
+      Hybrid
+    };
+
+    enum class ScaleMethod
+      {
+      ScaleArea,
+      ScaleDiameter
+    };
+
+    enum class SymbolRenderHint
+      {
+      DynamicRotation,
+    };
+    typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
+
+
+    enum class SymbolPreviewFlag
+      {
+      FlagIncludeCrosshairsForMarkerSymbols,
+    };
+    typedef QFlags<Qgis::SymbolPreviewFlag> SymbolPreviewFlags;
+
+
+    enum class VectorExportResult
+      {
+      Success,
+      ErrorCreatingDataSource,
+      ErrorCreatingLayer,
+      ErrorAttributeTypeUnsupported,
+      ErrorAttributeCreationFailed,
+      ErrorProjectingFeatures,
+      ErrorFeatureWriteFailed,
+      ErrorInvalidLayer,
+      ErrorInvalidProvider,
+      ErrorProviderUnsupportedFeature,
+      ErrorConnectionFailed,
+      UserCanceled,
+    };
+
+    enum class DriveType
+    {
+      Unknown,
+      Invalid,
+      Removable,
+      Fixed,
+      Remote,
+      CdRom,
+      RamDisk,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -113,6 +185,8 @@ The development version
     static const double SCALE_PRECISION;
 
     static const double DEFAULT_Z_COORDINATE;
+
+    static const double DEFAULT_M_COORDINATE;
 
     static const double UI_SCALE_FACTOR;
 
@@ -163,6 +237,12 @@ GEOS string version linked
 %End
 };
 
+QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
+
+
+
 
 
 
@@ -178,6 +258,16 @@ Returns a string representation of a double
 
 :param a: double value
 :param precision: number of decimal places to retain
+%End
+
+bool qgsNanCompatibleEquals( double a, double b );
+%Docstring
+Compare two doubles, treating nan values as equal
+
+:param a: first double
+:param b: second double
+
+.. versionadded:: 3.20
 %End
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
@@ -324,6 +414,7 @@ const double DEFAULT_SEGMENT_EPSILON;
 
 
 typedef unsigned long long qgssize;
+
 
 
 

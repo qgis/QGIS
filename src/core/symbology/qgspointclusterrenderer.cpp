@@ -23,6 +23,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmarkersymbol.h"
+
 #include <cmath>
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()

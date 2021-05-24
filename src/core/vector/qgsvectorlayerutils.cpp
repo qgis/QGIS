@@ -41,7 +41,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
-
+#include "qgssymbollayerreference.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {

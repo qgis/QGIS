@@ -635,7 +635,8 @@ void QgsVectorLayerProperties::apply()
     const QString newSource = mSourceWidget->sourceUri();
     if ( newSource != mLayer->source() )
     {
-      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(), QgsDataProvider::ProviderOptions() );
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
+                             QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() );
     }
   }
 
@@ -864,7 +865,6 @@ void QgsVectorLayerProperties::onCancel()
     int errorLine, errorColumn;
     doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
     mLayer->importNamedStyle( doc, myMessage );
-    syncToLayer();
   }
 }
 
@@ -944,7 +944,10 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
   QString msg;
   bool defaultLoadedFlag = false;
 
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+  const QgsVectorDataProvider *provider = mLayer->dataProvider();
+  if ( !provider )
+    return;
+  if ( provider->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Load default style from: " ) );
@@ -999,7 +1002,10 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 {
   apply();
   QString errorMsg;
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+  const QgsVectorDataProvider *provider = mLayer->dataProvider();
+  if ( !provider )
+    return;
+  if ( provider->isSaveAndLoadStyleToDatabaseSupported() )
   {
     QMessageBox askToUser;
     askToUser.setText( tr( "Save default style to: " ) );
@@ -1857,7 +1863,8 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 
 void QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled( bool checked )
 {
-  if ( !( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  const QgsVectorDataProvider *provider = mLayer->dataProvider();
+  if ( !( provider && ( provider->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) != 0 ) )
   {
     mSimplifyDrawingAtProvider->setEnabled( false );
   }

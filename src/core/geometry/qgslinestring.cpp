@@ -312,6 +312,37 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
+int QgsLineString::indexOf( const QgsPoint &point ) const
+{
+  const int size = mX.size();
+  if ( size == 0 )
+    return -1;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+  const double *z = useZ ? mZ.constData() : nullptr;
+  const double *m = useM ? mM.constData() : nullptr;
+
+  for ( int i = 0; i < size; ++i )
+  {
+    if ( qgsDoubleNear( *x, point.x() )
+         && qgsDoubleNear( *y, point.y() )
+         && ( !useZ || qgsDoubleNear( *z, point.z() ) )
+         && ( !useM || qgsDoubleNear( *m, point.m() ) ) )
+      return i;
+
+    x++;
+    y++;
+    if ( useZ )
+      z++;
+    if ( useM )
+      m++;
+  }
+  return -1;
+}
+
 bool QgsLineString::isValid( QString &error, int flags ) const
 {
   if ( !isEmpty() && ( numPoints() < 2 ) )
@@ -550,6 +581,44 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
 }
 
+void QgsLineString::scroll( int index )
+{
+  const int size = mX.size();
+  if ( index < 1 || index >= size - 1 )
+    return;
+
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  QVector<double> newX( size );
+  QVector<double> newY( size );
+  QVector<double> newZ( useZ ? size : 0 );
+  QVector<double> newM( useM ? size : 0 );
+  auto it = std::copy( mX.constBegin() + index, mX.constEnd() - 1, newX.begin() );
+  it = std::copy( mX.constBegin(), mX.constBegin() + index, it );
+  *it = *newX.constBegin();
+  mX = std::move( newX );
+
+  it = std::copy( mY.constBegin() + index, mY.constEnd() - 1, newY.begin() );
+  it = std::copy( mY.constBegin(), mY.constBegin() + index, it );
+  *it = *newY.constBegin();
+  mY = std::move( newY );
+  if ( useZ )
+  {
+    it = std::copy( mZ.constBegin() + index, mZ.constEnd() - 1, newZ.begin() );
+    it = std::copy( mZ.constBegin(), mZ.constBegin() + index, it );
+    *it = *newZ.constBegin();
+    mZ = std::move( newZ );
+  }
+  if ( useM )
+  {
+    it = std::copy( mM.constBegin() + index, mM.constEnd() - 1, newM.begin() );
+    it = std::copy( mM.constBegin(), mM.constBegin() + index, it );
+    *it = *newM.constBegin();
+    mM = std::move( newM );
+  }
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -749,6 +818,65 @@ double QgsLineString::length() const
     prevY = *y++;
   }
   return total;
+}
+
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsLineString::splitCurveAtVertex( int index ) const
+{
+  const bool useZ = is3D();
+  const bool useM = isMeasure();
+
+  const int size = mX.size();
+  if ( size == 0 )
+    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >() );
+
+  index = std::clamp( index, 0, size - 1 );
+
+  const int part1Size = index + 1;
+  QVector< double > x1( part1Size );
+  QVector< double > y1( part1Size );
+  QVector< double > z1( useZ ? part1Size : 0 );
+  QVector< double > m1( useM ? part1Size : 0 );
+
+  const double *sourceX = mX.constData();
+  const double *sourceY = mY.constData();
+  const double *sourceZ = useZ ? mZ.constData() : nullptr;
+  const double *sourceM = useM ? mM.constData() : nullptr;
+
+  double *destX = x1.data();
+  double *destY = y1.data();
+  double *destZ = useZ ? z1.data() : nullptr;
+  double *destM = useM ? m1.data() : nullptr;
+
+  std::copy( sourceX, sourceX + part1Size, destX );
+  std::copy( sourceY, sourceY + part1Size, destY );
+  if ( useZ )
+    std::copy( sourceZ, sourceZ + part1Size, destZ );
+  if ( useM )
+    std::copy( sourceM, sourceM + part1Size, destM );
+
+  const int part2Size = size - index;
+  if ( part2Size < 2 )
+    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >() );
+
+  QVector< double > x2( part2Size );
+  QVector< double > y2( part2Size );
+  QVector< double > z2( useZ ? part2Size : 0 );
+  QVector< double > m2( useM ? part2Size : 0 );
+  destX = x2.data();
+  destY = y2.data();
+  destZ = useZ ? z2.data() : nullptr;
+  destM = useM ? m2.data() : nullptr;
+  std::copy( sourceX + index, sourceX + size, destX );
+  std::copy( sourceY + index, sourceY + size, destY );
+  if ( useZ )
+    std::copy( sourceZ + index, sourceZ + size, destZ );
+  if ( useM )
+    std::copy( sourceM + index, sourceM + size, destM );
+
+  if ( part1Size < 2 )
+    return std::make_tuple( std::make_unique< QgsLineString >(), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
+  else
+    return std::make_tuple( std::make_unique< QgsLineString >( x1, y1, z1, m1 ), std::make_unique< QgsLineString >( x2, y2, z2, m2 ) );
 }
 
 double QgsLineString::length3D() const
@@ -1308,6 +1436,92 @@ QgsLineString *QgsLineString::createEmptyWithSameType() const
   auto result = std::make_unique< QgsLineString >();
   result->mWkbType = mWkbType;
   return result.release();
+}
+
+int QgsLineString::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsLineString *otherLine = qgsgeometry_cast<const QgsLineString *>( other );
+  if ( !otherLine )
+    return -1;
+
+  const int size = mX.size();
+  const int otherSize = otherLine->mX.size();
+  if ( size > otherSize )
+  {
+    return 1;
+  }
+  else if ( size < otherSize )
+  {
+    return -1;
+  }
+
+  if ( is3D() && !otherLine->is3D() )
+    return 1;
+  else if ( !is3D() && otherLine->is3D() )
+    return -1;
+  const bool considerZ = is3D();
+
+  if ( isMeasure() && !otherLine->isMeasure() )
+    return 1;
+  else if ( !isMeasure() && otherLine->isMeasure() )
+    return -1;
+  const bool considerM = isMeasure();
+
+  for ( int i = 0; i < size; i++ )
+  {
+    const double x = mX[i];
+    const double otherX = otherLine->mX[i];
+    if ( x < otherX )
+    {
+      return -1;
+    }
+    else if ( x > otherX )
+    {
+      return 1;
+    }
+
+    const double y = mY[i];
+    const double otherY = otherLine->mY[i];
+    if ( y < otherY )
+    {
+      return -1;
+    }
+    else if ( y > otherY )
+    {
+      return 1;
+    }
+
+    if ( considerZ )
+    {
+      const double z = mZ[i];
+      const double otherZ = otherLine->mZ[i];
+
+      if ( z < otherZ )
+      {
+        return -1;
+      }
+      else if ( z > otherZ )
+      {
+        return 1;
+      }
+    }
+
+    if ( considerM )
+    {
+      const double m = mM[i];
+      const double otherM = otherLine->mM[i];
+
+      if ( m < otherM )
+      {
+        return -1;
+      }
+      else if ( m > otherM )
+      {
+        return 1;
+      }
+    }
+  }
+  return 0;
 }
 
 QString QgsLineString::geometryType() const

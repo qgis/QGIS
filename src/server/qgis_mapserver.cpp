@@ -243,7 +243,7 @@ class TcpServerWorker: public QObject
               }
 
               const QString protocol { firstLinePieces.at( 2 )};
-              if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
+              if ( protocol != QLatin1String( "HTTP/1.0" ) && protocol != QLatin1String( "HTTP/1.1" ) )
               {
                 throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
               }

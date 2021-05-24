@@ -42,6 +42,15 @@
 #include "qgsprovidermetadata.h"
 #include "qgsnewvectortabledialog.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgscolordialog.h"
+#include "qgsdirectoryitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgsfavoritesitem.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
+#include "qgsfieldsitem.h"
+#include "qgsconnectionsitem.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -159,6 +168,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
         renameFavorite( favoriteItem );
       } );
       menu->addAction( actionRename );
+
       QAction *removeFavoriteAction = new QAction( tr( "Remove Favorite" ), menu );
       connect( removeFavoriteAction, &QAction::triggered, this, [ = ]
       {
@@ -224,6 +234,27 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   if ( count > 0 )
   {
     menu->addMenu( hiddenMenu );
+  }
+
+  QAction *actionSetIconColor = new QAction( tr( "Set Color…" ), menu );
+  if ( directoryItem->iconColor().isValid() )
+  {
+    const QPixmap icon = QgsColorButton::createMenuIcon( directoryItem->iconColor(), true );
+    actionSetIconColor->setIcon( icon );
+  }
+  connect( actionSetIconColor, &QAction::triggered, this, [ = ]
+  {
+    changeDirectoryColor( directoryItem );
+  } );
+  menu->addAction( actionSetIconColor );
+  if ( directoryItem->iconColor().isValid() )
+  {
+    QAction *actionClearIconColor = new QAction( tr( "Clear Custom Color" ), menu );
+    connect( actionClearIconColor, &QAction::triggered, this, [ = ]
+    {
+      clearDirectoryColor( directoryItem );
+    } );
+    menu->addAction( actionClearIconColor );
   }
 
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), menu );
@@ -297,6 +328,27 @@ void QgsAppDirectoryItemGuiProvider::renameFavorite( QgsFavoriteItem *favorite )
     return;
 
   favorite->rename( dlg.name() );
+}
+
+void QgsAppDirectoryItemGuiProvider::changeDirectoryColor( QgsDirectoryItem *item )
+{
+  const QColor oldColor = item->iconColor();
+
+  const QColor color = QgsColorDialog::getColor( oldColor, QgisApp::instance(), tr( "Set Color" ), true );
+  if ( !color.isValid() )
+    return;
+
+  // store new color for directory
+  item->setCustomColor( item->dirPath(), color );
+  // and update item's color immediately
+  item->setIconColor( color );
+}
+
+void QgsAppDirectoryItemGuiProvider::clearDirectoryColor( QgsDirectoryItem *item )
+{
+  item->setCustomColor( item->dirPath(), QColor() );
+  // and update item's color immediately
+  item->setIconColor( QColor() );
 }
 
 void QgsAppDirectoryItemGuiProvider::hideDirectory( QgsDirectoryItem *item )

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutItemPolyline: QgsLayoutNodesItem
 {
 %Docstring(signature="appended")
@@ -33,6 +34,7 @@ Layout item for node based polyline shapes.
 %Docstring
 Constructor for QgsLayoutItemPolyline for the specified ``layout``.
 %End
+    ~QgsLayoutItemPolyline();
 
     QgsLayoutItemPolyline( const QPolygonF &polyline, QgsLayout *layout );
 %Docstring

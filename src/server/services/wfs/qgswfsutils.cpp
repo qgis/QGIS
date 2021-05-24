@@ -34,13 +34,10 @@ namespace QgsWfs
     return QStringLiteral( "1.1.0" );
   }
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     QUrl href;
-    if ( project )
-    {
-      href.setUrl( QgsServerProjectUtils::wfsServiceUrl( *project ) );
-    }
+    href.setUrl( QgsServerProjectUtils::wfsServiceUrl( project ? *project : *QgsProject::instance(), request, settings ) );
 
     // Build default url
     if ( href.isEmpty() )

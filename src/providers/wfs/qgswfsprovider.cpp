@@ -1982,8 +1982,12 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   if ( exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
   {
     QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+    // The XML schema at http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd uses
+    // the "exceptionCode" attribute, but http://docs.opengeospatial.org/is/04-094r1/04-094r1.html#36
+    // mentions "code". Accept both...
     pushError( tr( "WFS exception report (code=%1 text=%2)" )
-               .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ),
+               .arg( exception.attribute( QStringLiteral( "exceptionCode" ),
+                                          exception.attribute( QStringLiteral( "code" ), tr( "missing" ) ) ),
                      exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() )
              );
     return;

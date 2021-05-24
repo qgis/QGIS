@@ -88,16 +88,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     QList<QgsFeatureId> selectedFeaturesIds() const;
 
-
     /**
      * Scroll to a feature with a given \a fid.
-
-      Optionally a \a column can be specified, which will also bring that column into view.
-
+     *
+     * Optionally a \a column can be specified, which will also bring that column into view.
+     *
      * \since QGIS 3.16
      */
     void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
-
 
   protected:
 

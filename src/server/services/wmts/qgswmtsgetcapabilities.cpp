@@ -96,7 +96,7 @@ namespace QgsWmts
     wmtsCapabilitiesElement.appendChild( getServiceProviderElement( doc, project ) );
 
     //INSERT OperationsMetadata
-    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request ) );
+    wmtsCapabilitiesElement.appendChild( getOperationsMetadataElement( doc, project, request, serverIface->serverSettings() ) );
 
     //INSERT Contents
     wmtsCapabilitiesElement.appendChild( getContentsElement( doc, serverIface, project ) );
@@ -256,7 +256,7 @@ namespace QgsWmts
     return serviceElem;
   }
 
-  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request )
+  QDomElement getOperationsMetadataElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request, const QgsServerSettings *settings )
   {
     //ows:OperationsMetadata element
     QDomElement operationsMetadataElement = doc.createElement( QStringLiteral( "ows:OperationsMetadata" )/*ows:OperationsMetadata*/ );
@@ -273,7 +273,7 @@ namespace QgsWmts
     dcpElement.appendChild( httpElement );
 
     // Get service URL
-    const QUrl href = serviceUrl( request, project );
+    const QUrl href = serviceUrl( request, project, *settings );
 
     //href needs to be a prefix
     QString hrefString = href.toString();
@@ -414,14 +414,42 @@ namespace QgsWmts
 
           QDomElement bboxElement = doc.createElement( QStringLiteral( "ows:BoundingBox" ) );
           bboxElement.setAttribute( QStringLiteral( "crs" ), tms.ref );
+
+          // lower corner
+          double firstCoord = rect.xMinimum();
+          double secondCoord = rect.yMinimum();
+
+          if ( crs.hasAxisInverted() )
+          {
+            std::swap( firstCoord, secondCoord );
+          }
+
+          QString firstCoordStr = qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( firstCoord, precision ), precision );
+          QString secondCoordStr = qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( secondCoord, precision ), precision );
+          const QDomText lowerCornerText = doc.createTextNode( QString( "%1 %2" ).arg( firstCoordStr, secondCoordStr ) );
+
           QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-          QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.xMinimum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( rect.yMinimum(), precision ), precision ) );
           lowerCornerElement.appendChild( lowerCornerText );
           bboxElement.appendChild( lowerCornerElement );
+
+          // upper corner
+          firstCoord = rect.xMaximum();
+          secondCoord = rect.yMaximum();
+
+          if ( crs.hasAxisInverted() )
+          {
+            std::swap( firstCoord, secondCoord );
+          }
+
+          firstCoordStr = qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( firstCoord, precision ), precision );
+          secondCoordStr = qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( secondCoord, precision ), precision );
+          const QDomText upperCornerText = doc.createTextNode( QString( "%1 %2" ).arg( firstCoordStr, secondCoordStr ) );
+
           QDomElement upperCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-          QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.xMaximum(), precision ), precision ) + ' ' + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( rect.yMaximum(), precision ), precision ) );
           upperCornerElement.appendChild( upperCornerText );
           bboxElement.appendChild( upperCornerElement );
+
+          // update layer element
           layerElem.appendChild( bboxElement );
         }
 

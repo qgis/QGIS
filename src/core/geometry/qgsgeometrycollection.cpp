@@ -291,6 +291,18 @@ bool QgsGeometryCollection::removeGeometry( int nr )
   return true;
 }
 
+void QgsGeometryCollection::normalize()
+{
+  for ( QgsAbstractGeometry *geometry : std::as_const( mGeometries ) )
+  {
+    geometry->normalize();
+  }
+  std::sort( mGeometries.begin(), mGeometries.end(), []( const QgsAbstractGeometry * a, const QgsAbstractGeometry * b )
+  {
+    return a->compareTo( b ) > 0;
+  } );
+}
+
 int QgsGeometryCollection::dimension() const
 {
   int maxDim = 0;
@@ -1008,6 +1020,14 @@ QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
   return newCollection.release();
 }
 
+const QgsAbstractGeometry *QgsGeometryCollection::simplifiedTypeRef() const
+{
+  if ( mGeometries.size() == 1 )
+    return mGeometries.at( 0 )->simplifiedTypeRef();
+  else
+    return this;
+}
+
 bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   if ( !transformer )
@@ -1044,4 +1064,35 @@ QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
   if ( index < 0 || index > mGeometries.count() )
     return nullptr;
   return mGeometries.at( index );
+}
+
+int QgsGeometryCollection::compareToSameClass( const QgsAbstractGeometry *other ) const
+{
+  const QgsGeometryCollection *otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( other );
+  if ( !otherCollection )
+    return -1;
+
+  int i = 0;
+  int j = 0;
+  while ( i < mGeometries.size() && j < otherCollection->mGeometries.size() )
+  {
+    const QgsAbstractGeometry *aGeom = mGeometries[i];
+    const QgsAbstractGeometry *bGeom = otherCollection->mGeometries[j];
+    const int comparison = aGeom->compareTo( bGeom );
+    if ( comparison != 0 )
+    {
+      return comparison;
+    }
+    i++;
+    j++;
+  }
+  if ( i < mGeometries.size() )
+  {
+    return 1;
+  }
+  if ( j < otherCollection->mGeometries.size() )
+  {
+    return -1;
+  }
+  return 0;
 }

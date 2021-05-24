@@ -19,7 +19,7 @@
 #define QGSMAPLAYERFACTORY_H
 
 #include "qgis_core.h"
-#include "qgsmaplayer.h"
+#include "qgis.h"
 
 #include <QString>
 

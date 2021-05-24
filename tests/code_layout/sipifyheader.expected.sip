@@ -5,6 +5,18 @@
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+class QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType
+{
+%TypeHeaderCode
+#include "sipifyheader.h"
+#include "qgssettingsentry.h"
+typedef QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType;
+%End
+  public:
+    QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType( const QString &key, QgsSettings::Section section, const QgsSnappingConfig::SnappingTypes &defaultValue, const QString &description = QString() );
+    QString key( const QString &dynamicKeyPart = QString() ) const;
+    QgsSnappingConfig::SnappingTypes value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, const QgsSnappingConfig::SnappingTypes &defaultValueOverride = QgsSnappingConfig::SnappingTypes() ) const;
+};
 
 
 
@@ -80,11 +92,14 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       RecursiveSuccess,
       SuccessCombination,
       PythonName /PyName=DifferentName/,
+      MonkeyName,
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
 
     enum OneLiner { Success, NoSuccess };
+
+    const QgsSettingsEntryEnumFlag_settingsDigitizingDefaultSnapType settingsDigitizingDefaultSnapType;
 
     struct Data
     {

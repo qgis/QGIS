@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGeometrySnapper : QObject
 {
 %Docstring(signature="appended")

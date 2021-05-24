@@ -15,11 +15,12 @@
 
 #include <QIcon>
 
-#include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsiconutils.h"
+#include <QMimeData>
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
@@ -515,68 +516,8 @@ Qt::DropActions QgsMapLayerModel::supportedDropActions() const
 
 QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
 {
-  switch ( layer->type() )
-  {
-    case QgsMapLayerType::RasterLayer:
-    {
-      return QgsLayerItem::iconRaster();
-    }
-
-    case QgsMapLayerType::MeshLayer:
-    {
-      return QgsLayerItem::iconMesh();
-    }
-
-    case QgsMapLayerType::VectorTileLayer:
-    {
-      return QgsLayerItem::iconVectorTile();
-    }
-
-    case QgsMapLayerType::PointCloudLayer:
-    {
-      return QgsLayerItem::iconPointCloud();
-    }
-
-    case QgsMapLayerType::VectorLayer:
-    {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vl )
-      {
-        return QIcon();
-      }
-      QgsWkbTypes::GeometryType geomType = vl->geometryType();
-      switch ( geomType )
-      {
-        case QgsWkbTypes::PointGeometry:
-        {
-          return QgsLayerItem::iconPoint();
-        }
-        case QgsWkbTypes::PolygonGeometry :
-        {
-          return QgsLayerItem::iconPolygon();
-        }
-        case QgsWkbTypes::LineGeometry :
-        {
-          return QgsLayerItem::iconLine();
-        }
-        case QgsWkbTypes::NullGeometry :
-        {
-          return QgsLayerItem::iconTable();
-        }
-        default:
-        {
-          return QIcon();
-        }
-      }
-    }
-
-    default:
-    {
-      return QIcon();
-    }
-  }
+  return QgsIconUtils::iconForLayer( layer );
 }
-
 
 bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {

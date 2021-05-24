@@ -163,8 +163,7 @@ void TestQgsCompositionConverter::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "svg/searchPathsForSVG" ), QStringLiteral( TEST_DATA_DIR ) ) ;
+  QgsApplication::settingsSearchPathsForSVG.setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
 }
 
 void TestQgsCompositionConverter::cleanupTestCase()
