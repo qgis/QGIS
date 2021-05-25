@@ -1179,24 +1179,7 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
     if ( enabled && !vlayer->labeling() )
     {
       // no labeling setup - create default labeling for layer
-      QgsPalLayerSettings settings;
-      settings.fieldName = vlayer->displayField();
-      switch ( vlayer->geometryType() )
-      {
-        case QgsWkbTypes::PointGeometry:
-        case QgsWkbTypes::PolygonGeometry:
-          settings.placement = QgsPalLayerSettings::AroundPoint;
-          break;
-
-        case QgsWkbTypes::LineGeometry:
-          settings.placement = QgsPalLayerSettings::Line;
-          break;
-
-        case QgsWkbTypes::UnknownGeometry:
-        case QgsWkbTypes::NullGeometry:
-          break;
-      }
-
+      QgsPalLayerSettings settings = QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( vlayer );
       vlayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
       vlayer->setLabelsEnabled( true );
     }

@@ -46,6 +46,30 @@ bool QgsAbstractVectorLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) 
   return true;
 }
 
+QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( const QgsVectorLayer *layer )
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = layer->displayField();
+
+  switch ( layer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      settings.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
+      break;
+    case QgsWkbTypes::LineGeometry:
+      settings.placement = QgsPalLayerSettings::Line;
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      settings.placement = QgsPalLayerSettings::AroundPoint;
+      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+  return settings;
+}
+
 QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer *layer ) const
 {
   return new QgsVectorLayerLabelProvider( layer, QString(), false, mSettings.get() );

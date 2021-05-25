@@ -133,8 +133,7 @@ void QgsRuleBasedLabelingWidget::setDockMode( bool dockMode )
 
 void QgsRuleBasedLabelingWidget::addRule()
 {
-
-  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings );
+  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) ) );
 
   QgsRuleBasedLabeling::Rule *current = currentRule();
   if ( current )

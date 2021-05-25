@@ -105,6 +105,13 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    static QgsPalLayerSettings defaultSettingsForLayer( const QgsVectorLayer *layer );
+%Docstring
+Returns the default layer settings to use for the specified vector ``layer``.
+
+.. versionadded:: 3.20
+%End
+
   protected:
 
     virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QVariantMap &props ) const;
