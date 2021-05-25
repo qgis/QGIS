@@ -55,10 +55,14 @@ def setupenv():
 
     with open(envfile) as f:
         for line in f:
-            linedata = line.split("=")
-            name = linedata[0]
-            data = linedata[1]
-            os.environ[name] = data
+            line = line.rstrip("\n")
+            if line.startswith("#") or not line:
+                continue
+            try:
+                env_key, env_value = line.split("=", maxsplit=1)
+                os.environ[env_key] = env_value
+            except ValueError:
+                pass
 
 
 if os.name == 'nt':
