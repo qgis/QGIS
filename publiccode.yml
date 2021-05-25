@@ -1,0 +1,184 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - data-visualization
+  - data-analytics
+  - geographic-information-systems
+description:
+  it:
+    features:
+      - Geospatial analysis
+      - Spatial data management
+      - Cartography
+    genericName: QGIS
+    longDescription: |
+      ## Features
+
+
+      ### 1. Flexible and powerful spatial data management
+
+
+      - Supports raster, vector, mesh, and point cloud data in a range of
+      industry-standard formats 
+          - _Raster formats include_: GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
+          - _Vector formats include_: GeoPackage, ESRI Shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html).
+          - _Mesh formats include_: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
+          - _Point-cloud format_: LAS/LAZ and EPT datasets.
+      - Access and display local files, spatial databases (PostGIS,  SpatiaLite,
+      SQL Server, Oracle, SAP HANA), web services (WMS, WCS, WFS,  ArcGIS REST
+      services), tile services, etc. 
+
+      - Visual and numerical digitizing and editing
+
+      - On-the-fly reprojection between coordinate reference systems (CRS)
+
+      - Temporal support
+
+
+      ### 2. Beautiful cartography
+
+
+      - Large variety of rendering options in 2D and 3D
+
+      - Fine control over symbology, labeling, legends and additional graphical
+      elements for beautifully rendered maps
+
+      - Advanced styling using data-defined overrides, blending modes, and draw
+      effects
+
+      - 500+ built-in color ramps (cpt-city, ColorBrewer, etc.)
+
+      - Create and update maps with specified scale, extent, style, and
+      decorations via saved layouts
+
+      - Generate multiple maps (and reports) automatically using QGIS Atlas and
+      QGIS Reports
+
+      - Flexible output direct to printer, or as image (raster), PDF, or SVG for
+      further customization
+
+      - On-the-fly rendering enhancements using geometry generators (e.g. create
+      and style new geometries from existing features)
+
+      - Preview modes for inclusive map making (e.g. monochrome, color
+      blindness)
+
+
+      ### 3. Advanced and robust geospatial analysis
+
+
+      - Powerful processing framework with 200+ native processing algorithms
+
+      - Access to 1000+ processing algorithms via providers such as GDAL,  SAGA,
+      GRASS, OrfeoToolbox, as well as custom models and processing  scripts
+
+      - Geospatial database engine (filters, joins, relations, forms, etc.), as
+      close to datasource- and format-independent as possible
+
+      - Immediate visualization of geospatial query and geoprocessing results
+
+      - Graphical modeler and batch processing
+
+
+      ### 4. Powerful customization and extensibility
+
+
+      - Fully customizable user experience, including user interface and 
+      application settings that cater to power-users and beginners alike
+
+      - Rich [expression
+      engine](https://docs.qgis.org/testing/en/docs/user_manual/working_with_vector/expression.html)
+      for maximum flexibility in visualization and processing
+
+      - Broad and varied [plugin ecosystem](https://plugins.qgis.org/) that
+      includes data connectors, digitizing aids, advanced analysis and charting
+      tools, in-the-field data capture, etc.
+
+      - Style manager for creating, storing, and managing styles
+
+      - [QGIS style hub](https://plugins.qgis.org/styles/) for easy sharing of
+      styles
+
+      - Python and C++ API for standalone (headless) applications as well as
+      in-application comprehensive scripting (PyQGIS)
+
+
+      ### 5. QGIS Server
+
+
+      Headless map server -- running on Linux, macOS, Windows, or in a docker
+      container -- that shares the same code base as QGIS.
+
+
+      - Industry-standard protocols (WMS, WFS, WFS3/OGC API for Features and
+      WCS) allow plug-n-play with any software stack
+
+      - Works with any web server (Apache, nginx, etc) or standalone
+
+      - All beautiful QGIS cartography is supported with best-in-class support
+      for printing
+
+      - Fully customizable with Python scripting support
+    screenshots:
+      - |-
+        https://raw.githubusercontent.com/qgis/QGIS/master/images/README-md/network_analysis_2.png
+    shortDescription: |-
+      QGIS is a full-featured, user-friendly, free-and-open-source geographical
+      information system (GIS) that runs on Unix platforms, Windows and MacOS
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - agriculture
+    - education
+    - emergency-services
+    - energy
+    - environment
+    - government
+    - infrastructures
+    - local-authorities
+    - transportation
+    - tourism
+    - welfare
+it:
+  conforme:
+    gdpr: false
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: false
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+landingURL: 'https://qgis.org/funding'
+legal:
+  license: LGPL-2.0-only
+localisation:
+  availableLanguages:
+    - en
+    - it
+    - es
+    - fr
+    - de
+  localisationReady: true
+logo: |-
+  https://raw.githubusercontent.com/qgis/QGIS/master/images/README-md/main_logo.png
+maintenance:
+  contacts:
+    - email: qgis-community-team@lists.osgeo.org
+      name: QGIS developers
+  type: community
+name: QGIS
+platforms:
+  - linux
+  - windows
+  - mac
+releaseDate: '2021-05-14'
+roadmap: 'https://www.qgis.org/en/site/getinvolved/development/roadmap.html'
+softwareType: standalone/desktop
+softwareVersion: 3.18.3
+url: 'https://github.com/qgis/QGIS'
