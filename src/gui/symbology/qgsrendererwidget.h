@@ -82,6 +82,14 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     void setDockMode( bool dockMode ) override;
 
+    /**
+     * Disables symbol level modification on the widget.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.20
+     */
+    virtual void disableSymbolLevels() SIP_SKIP;
+
   signals:
 
     /**

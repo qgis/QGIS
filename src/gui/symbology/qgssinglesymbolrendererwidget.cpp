@@ -66,7 +66,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  QAction *actionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
+  mActionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
   connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
   if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
   {
@@ -100,6 +100,12 @@ void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )
   QgsRendererWidget::setDockMode( dockMode );
   if ( mSelector )
     mSelector->setDockMode( dockMode );
+}
+
+void QgsSingleSymbolRendererWidget::disableSymbolLevels()
+{
+  delete mActionLevels;
+  mActionLevels = nullptr;
 }
 
 void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled )

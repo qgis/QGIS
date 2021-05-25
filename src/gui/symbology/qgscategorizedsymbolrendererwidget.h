@@ -100,6 +100,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
+    void disableSymbolLevels() override SIP_SKIP;
 
     /**
      * Replaces category symbols with the symbols from a style that have a matching
@@ -219,6 +220,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     QMenu *mContextMenu = nullptr;
     QAction *mMergeCategoriesAction = nullptr;
     QAction *mUnmergeCategoriesAction = nullptr;
+    QAction *mActionLevels = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 

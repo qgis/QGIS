@@ -278,6 +278,7 @@ void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
     QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
     scopes << scope;
     context.setAdditionalExpressionContextScopes( scopes );
+    w->disableSymbolLevels();
     w->setContext( context );
 
     connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateRendererFromWidget );
