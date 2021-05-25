@@ -617,14 +617,14 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
+        QList<QgsMapLayer *> layerSet;
         if ( cMapParams.mLayers.isEmpty() )
         {
-          map->setLayers( mapSettings.layers() );
+          layerSet = mapSettings.layers();
         }
         else
         {
-          QList<QgsMapLayer *> layerSet;
-          for ( auto layer : cMapParams.mLayers )
+          for ( const auto &layer : std::as_const( cMapParams.mLayers ) )
           {
             if ( mContext.isValidGroup( layer.mNickname ) )
             {
@@ -660,11 +660,10 @@ namespace QgsWms
               layerSet << mlayer;
             }
           }
-
-          layerSet << highlightLayers( cMapParams.mHighlightLayers );
-          std::reverse( layerSet.begin(), layerSet.end() );
-          map->setLayers( layerSet );
         }
+        layerSet << highlightLayers( cMapParams.mHighlightLayers );
+        std::reverse( layerSet.begin(), layerSet.end() );
+        map->setLayers( layerSet );
         map->setKeepLayerSet( true );
       }
 
@@ -2639,13 +2638,21 @@ namespace QgsWms
     {
       // create sld document from symbology
       QDomDocument sldDoc;
-      if ( !sldDoc.setContent( param.mSld, true ) )
+      QString errorMsg;
+      int errorLine;
+      int errorColumn;
+      if ( !sldDoc.setContent( param.mSld, true, &errorMsg, &errorLine, &errorColumn ) )
       {
+        QgsMessageLog::logMessage( QStringLiteral( "Error parsing SLD for layer %1 at line %2, column %3:\n%4" )
+                                   .arg( param.mName )
+                                   .arg( errorLine )
+                                   .arg( errorColumn )
+                                   .arg( errorMsg ),
+                                   QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
         continue;
       }
 
       // create renderer from sld document
-      QString errorMsg;
       std::unique_ptr<QgsFeatureRenderer> renderer;
       QDomElement el = sldDoc.documentElement();
       renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
