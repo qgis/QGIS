@@ -2176,7 +2176,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
@@ -2184,12 +2184,27 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     const auto editKeys = edits.keys();
     for ( QgsVectorLayer *layer : editKeys )
     {
-      if ( layer->crs() == mapPointMatch->layer()->crs() )
+      const auto editGeom = edits[layer].values();
+      for ( QgsGeometry g : editGeom )
       {
-        if ( !layerPoint.is3D() )
-          layerPoint.addZValue( defaultZValue() );
-        layer->addTopologicalPoints( layerPoint );
-        mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
+        if ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && ( layer->crs() == mapPointMatch->layer()->crs() ) )
+        {
+          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
+          {
+            if ( !layerPoint.is3D() )
+              layerPoint.addZValue( defaultZValue() );
+            layer->addTopologicalPoints( layerPoint );
+            mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+          }
+        }
+        if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
+        {
+          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
+          {
+            layer->addTopologicalPoints( *it );
+          }
+        }
       }
     }
   }
@@ -2297,7 +2312,60 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
-      layer->changeGeometry( it2.key(), it2.value() );
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
+    }
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+  }
+
+
+
+  for ( it = edits.begin() ; it != edits.end(); ++it )
+  {
+    QgsVectorLayer *layer = it.key();
+    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
+    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
+    for ( ; it2 != layerEdits.end(); ++it2 )
+    {
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( layer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+        QSet<QgsFeatureId> id;
+        id.insert( it2.key() );
+        ignoreFeatures.insert( layer, id );
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+        switch ( avoidIntersectionsReturn )
+        {
+          case 2:
+            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::Warning );
+            break;
+
+          case 3:
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
+            break;
+          default:
+            break;
+        }
+      }
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
     }
     layer->endEditCommand();
     layer->triggerRepaint();
@@ -2305,6 +2373,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     if ( mVertexEditor )
       mVertexEditor->updateEditor( mLockedFeature.get() );
   }
+
 }
 
 
