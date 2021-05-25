@@ -62,7 +62,6 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags = Flags() );
     ~QgsMapRendererStagedRenderJob() override;
 
-    void start() override;
     void cancel() override;
     void cancelWithoutBlocking() override;
     void waitForFinished() override;
@@ -115,6 +114,8 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     RenderStage currentStage() const;
 
   private:
+
+    void startPrivate() override;
 
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 

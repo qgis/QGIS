@@ -40,7 +40,7 @@ QgsMapRendererParallelJob::~QgsMapRendererParallelJob()
   }
 }
 
-void QgsMapRendererParallelJob::start()
+void QgsMapRendererParallelJob::startPrivate()
 {
   if ( isActive() )
     return;
