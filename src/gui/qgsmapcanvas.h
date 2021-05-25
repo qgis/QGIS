@@ -133,9 +133,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     /**
-     * Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
-     * update the canvas temporal range.
+     * Sets the temporal \a controller for this canvas.
      *
+     * The controller will be used to update the canvas' temporal range.
      * \since QGIS 3.14
      */
     void setTemporalController( QgsTemporalController *controller );
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     const QgsTemporalController *temporalController() const;
 
     /**
-     * sets destination coordinate reference system
+     * Sets destination coordinate reference system
      * \since QGIS 2.4
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
