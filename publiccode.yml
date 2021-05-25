@@ -156,7 +156,7 @@ it:
     spid: false
 landingURL: 'https://qgis.org'
 legal:
-  license: LGPL-2.0-only
+  license: GPL-2.0-or-later
 localisation:
   availableLanguages:
     - en
