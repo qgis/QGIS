@@ -347,6 +347,10 @@ void QgsLayoutItemMap::setFollowVisibilityPreset( bool follow )
     return;
 
   mFollowVisibilityPreset = follow;
+  if ( follow )
+  {
+    mLayers.clear();
+  }
   if ( !mFollowVisibilityPresetName.isEmpty() )
     emit themeChanged( mFollowVisibilityPreset ? mFollowVisibilityPresetName : QString() );
 }
