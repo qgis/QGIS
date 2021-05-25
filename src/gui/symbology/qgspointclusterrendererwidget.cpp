@@ -162,6 +162,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
     QgsSymbolWidgetContext context = mContext;
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
+    w->disableSymbolLevels();
     connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
     w->setDockMode( this->dockMode() );
     openPanel( w );

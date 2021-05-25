@@ -67,8 +67,8 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  QAction *actionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
-  connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  mActionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
+  connect( mActionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
   if ( mSingleSymbol && mSingleSymbol->type() == Qgis::SymbolType::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
@@ -101,6 +101,12 @@ void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )
   QgsRendererWidget::setDockMode( dockMode );
   if ( mSelector )
     mSelector->setDockMode( dockMode );
+}
+
+void QgsSingleSymbolRendererWidget::disableSymbolLevels()
+{
+  delete mActionLevels;
+  mActionLevels = nullptr;
 }
 
 void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled )
