@@ -47,7 +47,7 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
 }
 
 
-void QgsMapRendererSequentialJob::start()
+void QgsMapRendererSequentialJob::startPrivate()
 {
   if ( isActive() )
     return; // do nothing if we are already running

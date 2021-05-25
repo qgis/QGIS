@@ -37,7 +37,6 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     QgsMapRendererSequentialJob( const QgsMapSettings &settings );
     ~QgsMapRendererSequentialJob() override;
 
-    void start() override;
     void cancel() override;
     void cancelWithoutBlocking() override;
     void waitForFinished() override;
@@ -54,6 +53,8 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     void internalFinished();
 
   private:
+
+    void startPrivate() override;
 
     QgsMapRendererCustomPainterJob *mInternalJob = nullptr;
     QImage mImage;
