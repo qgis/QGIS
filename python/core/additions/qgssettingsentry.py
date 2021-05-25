@@ -23,7 +23,7 @@ import qgis  # required to get base class of enums
 
 
 class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
-    """ 
+    """
     class PyQgsSettingsEntryEnumFlag
     An enum settings entry.
     since QGIS 3.20
