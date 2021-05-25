@@ -668,6 +668,24 @@ Returns a pixmap preview for label ``settings``.
 .. versionadded:: 3.10
 %End
 
+    Qgis::UnplacedLabelVisibility unplacedVisibility() const;
+%Docstring
+Returns the layer's unplaced label visibility.
+
+.. seealso:: :py:func:`setUnplacedVisibility`
+
+.. versionadded:: 3.20
+%End
+
+    void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+%Docstring
+Sets the layer's unplaced label ``visibility``.
+
+.. seealso:: :py:func:`unplacedVisibility`
+
+.. versionadded:: 3.20
+%End
+
     const QgsFeature *mCurFeat;
     QgsFields mCurFields;
     int fieldIndex;
@@ -680,6 +698,7 @@ Returns a pixmap preview for label ``settings``.
     int mFeaturesToLabel;
     int mFeatsSendingToPal;
     int mFeatsRegPal;
+
 };
 
 class QgsLabelCandidate

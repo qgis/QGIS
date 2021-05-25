@@ -994,6 +994,22 @@ class CORE_EXPORT QgsPalLayerSettings
     */
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
+    /**
+     * Returns the layer's unplaced label visibility.
+     *
+     * \see setUnplacedVisibility()
+     * \since QGIS 3.20
+     */
+    Qgis::UnplacedLabelVisibility unplacedVisibility() const;
+
+    /**
+     * Sets the layer's unplaced label \a visibility.
+     *
+     * \see unplacedVisibility()
+     * \since QGIS 3.20
+     */
+    void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;
     QgsFields mCurFields;
@@ -1007,6 +1023,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+
   private:
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
@@ -1099,6 +1116,8 @@ class CORE_EXPORT QgsPalLayerSettings
     bool mRenderStarted = false;
 
     QString mLegendString = QObject::tr( "Aa" );
+
+    Qgis::UnplacedLabelVisibility mUnplacedVisibility = Qgis::UnplacedLabelVisibility::FollowEngineSetting;
 
     static void initPropertyDefinitions();
 };
