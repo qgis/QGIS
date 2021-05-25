@@ -1000,7 +1000,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         if count > 0:
             # We should have just 1 but for obscure reasons
             # uniqueFields() (sometimes?) leaves one behind
-            self.assertTrue(count == 1 or count == 2)
+            self.assertIn(count, (1, 2))
 
         for i in range(70):
             got = [feat for feat in vl.getFeatures()]
