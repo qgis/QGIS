@@ -166,7 +166,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsRuleBasedRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsRuleBasedRenderer > mRenderer;
     QgsRuleBasedRendererModel *mModel = nullptr;
 
     QMenu *mRefineMenu = nullptr;
