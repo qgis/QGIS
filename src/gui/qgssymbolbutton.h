@@ -18,6 +18,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgssymbol.h"
 
 #include <QToolButton>
 #include <QPointer>
@@ -29,7 +30,6 @@ class QgsExpressionContextGenerator;
 class QgsPanelWidget;
 class QgsMessageBar;
 class QMimeData;
-class QgsSymbol;
 
 /**
  * \ingroup gui
