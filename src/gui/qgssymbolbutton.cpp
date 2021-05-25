@@ -59,6 +59,8 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
+QgsSymbolButton::~QgsSymbolButton() = default;
+
 QSize QgsSymbolButton::minimumSizeHint() const
 {
 

@@ -30,6 +30,7 @@ panel widget) when clicked.
 Construct a new symbol button.
 Use ``dialogTitle`` string to define the title to show in the symbol settings dialog.
 %End
+    ~QgsSymbolButton();
 
     virtual QSize minimumSizeHint() const;
 
