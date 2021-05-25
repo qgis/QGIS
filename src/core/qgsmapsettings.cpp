@@ -194,12 +194,16 @@ void QgsMapSettings::updateDerived()
   mScaleCalculator.setDpi( mDpi * mDevicePixelRatio );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
-  mMapToPixel.setParameters( mapUnitsPerPixel(),
-                             visibleExtent().center().x(),
-                             visibleExtent().center().y(),
-                             outputSize().width(),
-                             outputSize().height(),
-                             mRotation );
+  bool ok = true;
+  mMapToPixel.setParameters(
+    mapUnitsPerPixel(),
+    visibleExtent().center().x(),
+    visibleExtent().center().y(),
+    outputSize().width(),
+    outputSize().height(),
+    mRotation, &ok );
+
+  mValid = ok;
 
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
@@ -228,7 +232,6 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1" ).arg( mMagnificationFactor ), 5 );
 
-  mValid = true;
 }
 
 
