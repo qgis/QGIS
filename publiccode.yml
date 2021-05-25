@@ -154,7 +154,7 @@ it:
     cie: false
     pagopa: false
     spid: false
-landingURL: 'https://qgis.org/funding'
+landingURL: 'https://qgis.org'
 legal:
   license: LGPL-2.0-only
 localisation:
