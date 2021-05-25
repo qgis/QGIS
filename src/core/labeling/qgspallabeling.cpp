@@ -368,6 +368,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   mLegendString = s.mLegendString;
 
+  mUnplacedVisibility = s.mUnplacedVisibility;
+
   return *this;
 }
 
@@ -1096,6 +1098,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mObstacleSettings.setFactor( renderingElem.attribute( QStringLiteral( "obstacleFactor" ), QStringLiteral( "1" ) ).toDouble() );
   mObstacleSettings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( renderingElem.attribute( QStringLiteral( "obstacleType" ), QString::number( PolygonInterior ) ).toUInt() ) );
   zIndex = renderingElem.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0.0" ) ).toDouble();
+  mUnplacedVisibility = static_cast< Qgis::UnplacedLabelVisibility >( renderingElem.attribute( QStringLiteral( "unplacedVisibility" ), QString::number( static_cast< int >( Qgis::UnplacedLabelVisibility::FollowEngineSetting ) ) ).toInt() );
 
   QDomElement ddElem = elem.firstChildElement( QStringLiteral( "dd_properties" ) );
   if ( !ddElem.isNull() )
@@ -1248,6 +1251,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   renderingElem.setAttribute( QStringLiteral( "obstacleFactor" ), mObstacleSettings.factor() );
   renderingElem.setAttribute( QStringLiteral( "obstacleType" ), static_cast< unsigned int >( mObstacleSettings.type() ) );
   renderingElem.setAttribute( QStringLiteral( "zIndex" ), zIndex );
+  renderingElem.setAttribute( QStringLiteral( "unplacedVisibility" ), static_cast< int >( mUnplacedVisibility ) );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
   mDataDefinedProperties.writeXml( ddElem, *sPropertyDefinitions() );
@@ -1398,6 +1402,16 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
 
   painter.end();
   return pixmap;
+}
+
+Qgis::UnplacedLabelVisibility QgsPalLayerSettings::unplacedVisibility() const
+{
+  return mUnplacedVisibility;
+}
+
+void QgsPalLayerSettings::setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility )
+{
+  mUnplacedVisibility = visibility;
 }
 
 bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const

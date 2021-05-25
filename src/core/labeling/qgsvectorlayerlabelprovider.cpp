@@ -466,7 +466,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
-  if ( !mSettings.drawLabels )
+  if ( !mSettings.drawLabels || mSettings.unplacedVisibility() == Qgis::UnplacedLabelVisibility::NeverShow )
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );

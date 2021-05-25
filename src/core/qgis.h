@@ -242,6 +242,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( DriveType )
 
     /**
+     * Unplaced label visibility.
+     *
+     * \since QGIS 3.20
+     */
+    enum class UnplacedLabelVisibility : int
+    {
+      FollowEngineSetting, //!< Respect the label engine setting
+      NeverShow, //!< Never show unplaced labels, regardless of the engine setting
+    };
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
