@@ -97,6 +97,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   }
 }
 
+QgsMergedFeatureRendererWidget::~QgsMergedFeatureRendererWidget() = default;
+
 QgsFeatureRenderer *QgsMergedFeatureRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )

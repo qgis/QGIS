@@ -464,7 +464,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // setup user interface
   setupUi( this );
 
-  mSymmetryPointValidator = new QDoubleValidator();
+  mSymmetryPointValidator = new QDoubleValidator( this );
   cboSymmetryPoint->setEditable( true );
   cboSymmetryPoint->setValidator( mSymmetryPointValidator );
 

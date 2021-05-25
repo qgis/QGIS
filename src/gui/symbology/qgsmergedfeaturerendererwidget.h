@@ -17,11 +17,11 @@
 
 #include "ui_qgsmergedfeaturerendererwidgetbase.h"
 #include "qgis_sip.h"
-#include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererwidget.h"
 #include "qgis_gui.h"
 
 class QMenu;
+class QgsMergedFeatureRenderer;
 
 /**
  * \ingroup gui
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsMergedFeatureRendererWidget : public QgsRendererWidget, priv
      * \param renderer the merged feature renderer (will not take ownership)
      */
     QgsMergedFeatureRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    ~QgsMergedFeatureRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;

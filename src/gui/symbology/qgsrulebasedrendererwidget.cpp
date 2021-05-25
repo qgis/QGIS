@@ -61,20 +61,20 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   if ( renderer )
   {
-    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer, layer );
+    mRenderer.reset( QgsRuleBasedRenderer::convertFromRenderer( renderer, layer ) );
   }
   if ( !mRenderer )
   {
     // some default options
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = new QgsRuleBasedRenderer( symbol );
+    mRenderer = std::make_unique< QgsRuleBasedRenderer >( symbol );
   }
 
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsRuleBasedRendererModel( mRenderer, viewRules );
+  mModel = new QgsRuleBasedRendererModel( mRenderer.get(), viewRules );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this ); // for model validity checking
 #endif
@@ -135,12 +135,11 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
 {
   qDeleteAll( mCopyBuffer );
-  delete mRenderer;
 }
 
 QgsFeatureRenderer *QgsRuleBasedRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
@@ -452,7 +451,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
     connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
@@ -463,7 +462,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
   }
   else
   {
-    QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
+    QgsSymbolLevelsDialog dlg( mRenderer.get(), true, panel );
     dlg.setForceOrderingEnabled( true );
     if ( dlg.exec() )
     {

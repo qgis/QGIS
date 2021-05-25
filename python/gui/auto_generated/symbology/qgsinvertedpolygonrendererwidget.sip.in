@@ -38,6 +38,7 @@ Constructor
 :param style:
 :param renderer: the mask renderer (will not take ownership)
 %End
+    ~QgsInvertedPolygonRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
 
