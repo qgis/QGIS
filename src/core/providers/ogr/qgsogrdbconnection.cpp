@@ -21,6 +21,8 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettings.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 #include "qgslogger.h"
 
@@ -89,6 +91,9 @@ void QgsOgrDbConnection::deleteConnection( const QString &connName, const QStrin
 {
   QgsSettings settings;
   settings.remove( QStringLiteral( "%1/%2" ).arg( connectionsPath( settingsKey ), connName ) );
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  providerMetadata->deleteConnection( connName );
 }
 
 ///@endcond

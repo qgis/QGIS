@@ -219,7 +219,9 @@ void QgsPostgresDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsPostgresConn::deleteConnection( item->name() );
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  md->deleteConnection( item->name() );
+
   // the parent should be updated
   if ( item->parent() )
     item->parent()->refreshConnections();

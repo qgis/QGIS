@@ -28,6 +28,8 @@ email                : a.furieri@lqt.it
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsprovidermetadata.h"
+#include "qgsspatialiteproviderconnection.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -312,6 +314,11 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   // inserting this SQLite DB path
   settings.setValue( baseKey + "selected", savedName );
   settings.setValue( baseKey + savedName + "/sqlitepath", myFI.canonicalFilePath() );
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+  QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( savedName ) );
+  providerMetadata->saveConnection( providerConnection, savedName );
+
   return true;
 }
 

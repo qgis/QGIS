@@ -21,6 +21,9 @@
 #include <QRegularExpression>
 
 #include "qgspgnewconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgspostgresproviderconnection.h"
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
@@ -173,6 +176,10 @@ void QgsPgNewConnection::accept()
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+  QgsPostgresProviderConnection *providerConnection =  static_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  providerMetadata->saveConnection( providerConnection, txtName->text() );
 
   QDialog::accept();
 }
