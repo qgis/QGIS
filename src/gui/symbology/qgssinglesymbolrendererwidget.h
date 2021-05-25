@@ -61,9 +61,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 
   private:
 
-    QgsSingleSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsSingleSymbolRenderer > mRenderer;
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    QgsSymbol *mSingleSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mSingleSymbol;
 };
 
 
