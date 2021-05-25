@@ -136,6 +136,7 @@ void QgsMergedFeatureRendererWidget::mRendererComboBox_currentIndexChanged( int 
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsMergedFeatureRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
+    mEmbeddedRendererWidget->disableSymbolLevels();
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );
     connect( mEmbeddedRendererWidget.get(), &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 

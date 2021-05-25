@@ -100,6 +100,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
+    void disableSymbolLevels() override SIP_SKIP;
 
   public slots:
     void graduatedColumnChanged( const QString &field );
@@ -197,7 +198,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     QgsRangeList mCopyBuffer;
 
     QDoubleValidator *mSymmetryPointValidator = nullptr;
-
+    QAction *mActionLevels = nullptr;
     std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
 

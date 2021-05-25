@@ -366,6 +366,10 @@ void QgsRendererWidget::setDockMode( bool dockMode )
   QgsPanelWidget::setDockMode( dockMode );
 }
 
+void QgsRendererWidget::disableSymbolLevels()
+{
+}
+
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
   QgsProperty ddSize = symbol->dataDefinedSize();
