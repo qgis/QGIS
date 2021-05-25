@@ -60,12 +60,6 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, &QgsSingleSymbolRendererWidget::changeSingleSymbol );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( this, &QgsRendererWidget::symbolLevelsChanged, [ = ]()
-  {
-    delete mSingleSymbol;
-    mSingleSymbol = mRenderer->symbol()->clone();
-    mSelector->loadSymbol( mSingleSymbol );
-  } );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -111,6 +105,15 @@ void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )
   QgsRendererWidget::setDockMode( dockMode );
   if ( mSelector )
     mSelector->setDockMode( dockMode );
+}
+
+void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled )
+{
+  mSingleSymbol.reset( levels.at( 0 ).symbol()->clone() );
+  mRenderer->setSymbol( mSingleSymbol->clone() );
+  mRenderer->setUsingSymbolLevels( enabled );
+  mSelector->loadSymbol( mSingleSymbol.get() );
+  emit widgetChanged();
 }
 
 void QgsSingleSymbolRendererWidget::changeSingleSymbol()

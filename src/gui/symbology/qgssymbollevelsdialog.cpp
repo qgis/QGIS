@@ -30,9 +30,13 @@
 ////////////////
 
 QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
+  : QgsSymbolLevelsWidget( renderer->legendSymbolItems(), usingSymbolLevels, parent )
+{
+  mRenderer = renderer;
+}
+
+QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent )
   : QgsPanelWidget( parent )
-  , mRenderer( renderer )
-  , mForceOrderingEnabled( false )
 {
   setupUi( this );
 
@@ -42,15 +46,11 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
 
   connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsWidget::updateUi );
 
-  if ( mRenderer )
+  // only consider entries with symbols
+  for ( const QgsLegendSymbolItem &item : symbols )
   {
-    // only consider entries with symbols
-    const auto constLegendSymbolItems = mRenderer->legendSymbolItems();
-    for ( const QgsLegendSymbolItem &item : constLegendSymbolItems )
-    {
-      if ( item.symbol() )
-        mLegendSymbols << item;
-    }
+    if ( item.symbol() )
+      mLegendSymbols << item;
   }
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
@@ -90,13 +90,14 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
   connect( tableLevels, &QTableWidget::cellChanged, this, &QgsSymbolLevelsWidget::renderingPassChanged );
 }
 
+
 void QgsSymbolLevelsWidget::populateTable()
 {
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   for ( int row = 0; row < mLegendSymbols.count(); row++ )
   {
     QgsSymbol *sym = mLegendSymbols.at( row ).symbol();
-    QString label = mLegendSymbols.at( row ).label();
+    const QString label = mLegendSymbols.at( row ).label();
     QTableWidgetItem *itemLabel = new QTableWidgetItem( label );
     itemLabel->setFlags( itemLabel->flags() ^ Qt::ItemIsEditable );
     tableLevels->setItem( row, 0, itemLabel );
@@ -110,15 +111,14 @@ void QgsSymbolLevelsWidget::populateTable()
       }
       else
       {
-        QgsSymbolLayer *sl = sym->symbolLayer( layer );
-        QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
+        const QgsSymbolLayer *sl = sym->symbolLayer( layer );
+        const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
         item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer + 1, item );
       tableLevels->resizeColumnToContents( 0 );
     }
   }
-
 }
 
 void QgsSymbolLevelsWidget::updateUi()
@@ -129,6 +129,9 @@ void QgsSymbolLevelsWidget::updateUi()
 
 void QgsSymbolLevelsWidget::apply()
 {
+  if ( !mRenderer )
+    return;
+
   for ( const QgsLegendSymbolItem &legendSymbol : std::as_const( mLegendSymbols ) )
   {
     QgsSymbol *sym = legendSymbol.symbol();
@@ -143,9 +146,9 @@ void QgsSymbolLevelsWidget::apply()
 
 void QgsSymbolLevelsWidget::setDefaultLevels()
 {
-  for ( int i = 0; i < mLegendSymbols.count(); i++ )
+  for ( const QgsLegendSymbolItem &item : std::as_const( mLegendSymbols ) )
   {
-    QgsSymbol *sym = mLegendSymbols.at( i ).symbol();
+    QgsSymbol *sym = item.symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
     {
       sym->symbolLayer( layer )->setRenderingPass( layer );
@@ -156,6 +159,11 @@ void QgsSymbolLevelsWidget::setDefaultLevels()
 bool QgsSymbolLevelsWidget::usingLevels() const
 {
   return chkEnable->isChecked();
+}
+
+QgsLegendSymbolList QgsSymbolLevelsWidget::symbolLevels() const
+{
+  return mLegendSymbols;
 }
 
 void QgsSymbolLevelsWidget::renderingPassChanged( int row, int column )
@@ -182,6 +190,11 @@ void QgsSymbolLevelsWidget::setForceOrderingEnabled( bool enabled )
     chkEnable->show();
 }
 
+
+//
+// QgsSymbolLevelsDialog
+//
+
 QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
   : QDialog( parent )
 {
@@ -189,7 +202,6 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool
   mWidget = new QgsSymbolLevelsWidget( renderer, usingSymbolLevels );
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, mWidget, &QgsSymbolLevelsWidget::apply );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsSymbolLevelsDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsSymbolLevelsDialog::reject );
   connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsSymbolLevelsDialog::showHelp );
@@ -201,6 +213,16 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool
 void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 {
   mWidget->setForceOrderingEnabled( enabled );
+}
+
+bool QgsSymbolLevelsDialog::usingLevels() const
+{
+  return mWidget->usingLevels();
+}
+
+QgsLegendSymbolList QgsSymbolLevelsDialog::symbolLevels() const
+{
+  return mWidget->symbolLevels();
 }
 
 void QgsSymbolLevelsDialog::showHelp()

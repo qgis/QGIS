@@ -107,6 +107,17 @@ Returns newly created panel - may be ``None`` if it could not be opened. Ownersh
 .. versionadded:: 3.0
 %End
 
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+%Docstring
+Sets the symbol levels for the renderer defined in the widget.
+
+The ``levels`` argument defines the updated list of symbols with rendering passes set.
+
+The ``enabled`` arguments specifies if symbol levels should be enabled for the renderer.
+
+.. versionadded:: 3.20
+%End
+
   protected slots:
     void  contextMenuViewCategories( QPoint p );
     void changeSymbolColor();
