@@ -1397,7 +1397,7 @@ void TestQgsLayoutMap::testLayeredExport()
 
   l.renderContext().setExportThemes( QStringList() << QStringLiteral( "test preset2" ) << QStringLiteral( "test preset" ) << QStringLiteral( "test preset3" ) );
 
-
+  map->setLayers( {} );
   map->startLayeredExport();
   QVERIFY( map->nextExportPart() );
   map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
