@@ -575,7 +575,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
-  advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
+  mActionLevels = advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mGraduatedSymbol && mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
@@ -619,6 +619,12 @@ void QgsGraduatedSymbolRendererWidget::setContext( const QgsSymbolWidgetContext 
   QgsRendererWidget::setContext( context );
   btnChangeGraduatedSymbol->setMapCanvas( context.mapCanvas() );
   btnChangeGraduatedSymbol->setMessageBar( context.messageBar() );
+}
+
+void QgsGraduatedSymbolRendererWidget::disableSymbolLevels()
+{
+  delete mActionLevels;
+  mActionLevels = nullptr;
 }
 
 // Connect/disconnect event handlers which trigger updating renderer

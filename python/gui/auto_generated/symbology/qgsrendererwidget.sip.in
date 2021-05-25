@@ -34,7 +34,7 @@ Returns pointer to the renderer (no transfer of ownership)
 
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 %Docstring
-show a dialog with renderer's symbol level settings
+Show a dialog with renderer's symbol level settings.
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
@@ -72,6 +72,7 @@ This method should be called whenever the renderer is actually set on the layer.
     virtual void setDockMode( bool dockMode );
 
 
+
   signals:
 
     void layerVariablesChanged();
@@ -81,9 +82,12 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
-    void symbolLevelsChanged();
+ void symbolLevelsChanged() /Deprecated/;
 %Docstring
 Emitted when the symbol levels settings have been changed.
+
+.. deprecated:: QGIS 3.20
+   -- no longer emitted.
 %End
 
   protected:
