@@ -55,6 +55,7 @@ QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( con
   {
     case QgsWkbTypes::PointGeometry:
       settings.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
+      settings.offsetType = QgsPalLayerSettings::FromSymbolBounds;
       break;
     case QgsWkbTypes::LineGeometry:
       settings.placement = QgsPalLayerSettings::Line;
