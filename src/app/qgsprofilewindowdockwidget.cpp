@@ -391,6 +391,10 @@ void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow * window)
   horizontalLayout->addWidget(mMapCanvas);
   mMapCanvas->setOpenHandCursor();
   connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
+  if (!(dltable ==nullptr))
+  {
+    dltable->setProfileWindow(window);
+  }
 }
 
 void QgsDLWindowDockWidget::setMain3DWindow(QgsProfileWinow * window)
@@ -495,4 +499,11 @@ void QgsDLWindowDockWidget::rotatePointCloudLeft()
 void QgsDLWindowDockWidget::rotatePointCloudRight()
 {
   mMapCanvas->RotateCamera(10, false);
+}
+
+void QgsDLWindowDockWidget::GetModelDataFromAoi()
+{
+  modeldatas.clear();
+  // 从aoi中获取 相应的点 构成 datas
+
 }

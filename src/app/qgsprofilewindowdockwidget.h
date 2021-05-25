@@ -70,6 +70,11 @@ public:
       m_parent = parent;
   }
 
+  void setProfileWindow( QgsProfileWinow * window) 
+  {
+    mMapCanvas = window;
+    //connect(mMapCanvas,);
+  }
   //自定义导入导出数据的接口
   void setModelData(const std::vector<ModelItem> &datas)
   {
@@ -334,6 +339,7 @@ private slots:
   void OnmActionHandClicked();
   void rotatePointCloudLeft();
   void rotatePointCloudRight();
+  void GetModelDataFromAoi();
 
 private:
   QgsProfileWinow *mMapCanvas = nullptr;
@@ -351,6 +357,7 @@ private:
   QString m_method;
   QgsPcdpickeddlgWindowDockWidget* polynomial_dialog_widget = nullptr;
   std::shared_ptr<QgsDLAttributeTableModel> dltable = nullptr;
+  std::vector<ModelItem> modeldatas; // 选中的电力线点
 };
 
 
