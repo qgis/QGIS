@@ -36,6 +36,10 @@ widgets and not open dialogs
 :param dockMode: ``True`` to enable dock mode.
 %End
 
+  protected:
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+
+
 };
 
 
