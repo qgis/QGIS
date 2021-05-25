@@ -331,7 +331,8 @@ void QgsPgSourceSelect::btnDelete_clicked()
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
-  QgsPostgresConn::deleteConnection( cmbConnections->currentText() );
+  QgsPostgresProviderMetadata md = QgsPostgresProviderMetadata();
+  md.deleteConnection( cmbConnections->currentText() );
 
   populateConnectionList();
   emit connectionsChanged();

@@ -17,6 +17,8 @@
 #include "qgsspatialiteconnection.h"
 #include "qgsspatialitedataitems.h"
 #include "qgsspatialitesourceselect.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
@@ -134,7 +136,9 @@ void QgsSpatiaLiteDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsSpatiaLiteConnection::deleteConnection( item->name() );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+  providerMetadata->deleteConnection( item->name() );
+
   // the parent should be updated
   item->parent()->refreshConnections();
 }

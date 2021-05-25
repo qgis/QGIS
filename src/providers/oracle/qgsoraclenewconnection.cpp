@@ -21,6 +21,9 @@
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsoracleproviderconnection.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
@@ -155,6 +158,10 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/dboptions" ), txtOptions->text() );
   settings.setValue( baseKey + QStringLiteral( "/dbworkspace" ), txtWorkspace->text() );
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
+  QgsOracleProviderConnection *providerConnection =  static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  providerMetadata->saveConnection( providerConnection, txtName->text() );
 
   QDialog::accept();
 }
