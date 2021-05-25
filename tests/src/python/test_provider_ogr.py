@@ -1245,19 +1245,22 @@ class PyQgsOGRProvider(unittest.TestCase):
                         '{ "type": "FeatureCollection", "features": [] }')
             handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
                         '{ "type": "FeatureCollection", "features": [] }')
-            handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
-                        '{ "type": "FeatureCollection", "features": [] }')
+            if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 3, 0):
+                handler.add('GET', '/collections/foo/items?limit=10', 200, {'Content-Type': 'application/geo+json'},
+                            '{ "type": "FeatureCollection", "features": [] }')
             with mockedwebserver.install_http_handler(handler):
                 vl = QgsVectorLayer("OAPIF:http://127.0.0.1:%d/collections/foo" % port, 'test', 'ogr')
                 assert vl.isValid()
 
             # More complicated test using an anthentication configuration
+            authm = QgsApplication.authManager()
+            self.assertTrue(authm.setMasterPassword('masterpassword', True))
             config = QgsAuthMethodConfig()
             config.setName('Basic')
             config.setMethod('Basic')
             config.setConfig('username', 'username')
             config.setConfig('password', 'password')
-            QgsApplication.authManager().storeAuthenticationConfig(config)
+            self.assertTrue(authm.storeAuthenticationConfig(config, True))
 
             handler = mockedwebserver.SequentialHandler()
             # Check that the authcfg gets expanded during the network request !
