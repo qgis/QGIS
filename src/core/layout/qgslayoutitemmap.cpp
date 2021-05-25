@@ -2127,16 +2127,16 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   QList<QgsMapLayer *> renderLayers;
 
   QString presetName = themeToRender( *evalContext );
-  if ( !presetName.isEmpty() )
+  if ( !layers().isEmpty() )
+  {
+    renderLayers = layers();
+  }
+  else if ( !presetName.isEmpty() )
   {
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
       renderLayers = mLayout->project()->mapThemeCollection()->masterVisibleLayers();
-  }
-  else if ( !layers().isEmpty() )
-  {
-    renderLayers = layers();
   }
   else
   {
