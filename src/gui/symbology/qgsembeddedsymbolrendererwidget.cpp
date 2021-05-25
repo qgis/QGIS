@@ -79,6 +79,8 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   } );
 }
 
+QgsEmbeddedSymbolRendererWidget::~QgsEmbeddedSymbolRendererWidget() = default;
+
 QgsFeatureRenderer *QgsEmbeddedSymbolRendererWidget::renderer()
 {
   return mRenderer.get();

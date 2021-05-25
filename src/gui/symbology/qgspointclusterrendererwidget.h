@@ -64,7 +64,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    QgsPointClusterRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsPointClusterRenderer > mRenderer;
 
     void blockAllSignals( bool block );
     void setupBlankUi( const QString &layerName );

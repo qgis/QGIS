@@ -44,7 +44,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    QgsPointDisplacementRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsPointDisplacementRenderer > mRenderer;
 
     void blockAllSignals( bool block );
     void setupBlankUi( const QString &layerName );
