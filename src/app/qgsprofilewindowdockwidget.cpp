@@ -373,6 +373,11 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   polynomial_dialog_widget = new QgsPcdpickeddlgWindowDockWidget("电力线拟合",QgisApp::instance());
   polynomial_dialog_widget->hide();
   polynomial_dialog_widget->setVisible(false);
+
+  dltable = std::make_shared< QgsDLAttributeTableModel>(this);
+
+  polynomial_dialog_widget->alignedPointsTableView->setModel(dltable.get());
+
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()

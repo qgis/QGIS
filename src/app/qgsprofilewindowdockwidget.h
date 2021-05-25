@@ -58,15 +58,16 @@ class  QgsDLAttributeTableModel : public QAbstractTableModel
   Q_OBJECT
 public:
 
-  QgsDLAttributeTableModel(QgsProfileWinow *mapCanvas, QObject *parent = nullptr)
+  QgsDLAttributeTableModel(QWidget *parent = nullptr)
     : QAbstractTableModel(parent)
-    , mMapCanvas(mapCanvas)
   {
-      m_header.push_back("类型");
       m_header.push_back("X");
       m_header.push_back("Y");
       m_header.push_back("Z");
+      m_header.push_back("类型");
+      m_header.push_back("误差");
       modelData.clear();
+      m_parent = parent;
   }
 
   //自定义导入导出数据的接口
@@ -135,10 +136,10 @@ public:
       const int row = index.row();
       switch (index.column())
       {
-          case 0: return modelData.at(row).type;
-          case 1: return modelData.at(row).XYZ.x;
-          case 2: return  modelData.at(row).XYZ.y;
-          case 3: return  modelData.at(row).XYZ.z;
+          case 0: return modelData.at(row).XYZ.x;
+          case 1: return  modelData.at(row).XYZ.y;
+          case 2: return  modelData.at(row).XYZ.z;
+          case 3: return modelData.at(row).type;
           case 4: return  modelData.at(row).error;
       }
     }
@@ -163,10 +164,10 @@ public:
       const int row = index.row();
       switch (index.column())
       {
-          case 0:  modelData.at(row).type = PointType(value.toInt());
-          case 1:  modelData.at(row).XYZ.x = value.toDouble() ;
-          case 2:  modelData.at(row).XYZ.y = value.toDouble(); 
-          case 3:  modelData.at(row).XYZ.z = value.toDouble(); 
+          case 0:  modelData.at(row).XYZ.x = value.toDouble();
+          case 1:  modelData.at(row).XYZ.y = value.toDouble();
+          case 2:  modelData.at(row).XYZ.z = value.toDouble();
+          case 3:  modelData.at(row).type = PointType(value.toInt());
           case 4:  modelData.at(row).error =  value.toDouble();
       }
       //发送信号触发刷新
@@ -178,12 +179,12 @@ public:
 
 private:
   QgsProfileWinow * mMapCanvas = nullptr;
-
+  QWidget *m_parent = nullptr;
   QStringList m_header;
   std::vector<ModelItem> modelData;
 };
 
-class  APP_EXPORT  QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, private Ui::pcdpickeddlg
+class  APP_EXPORT  QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, public Ui::pcdpickeddlg
 {
   Q_OBJECT
 
@@ -194,17 +195,21 @@ public:
     setWindowFlags(Qt::FramelessWindowHint);
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
     this->setWindowTitle(name);
-    this->alignedPointsTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
-    this->alignedPointsTableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
+    this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
+    this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
     this->pushButton->setEnabled(false);
-  };
-private :
-  bool insert_pt_table_(Point3D xyz , PointType type)
-  {
-    //this->alignedPointsTableWidget->setModel();
-    return true;
-  }
 
+  };
+  void setModel(QAbstractItemModel *model)
+  {
+    this->alignedPointsTableView->setModel(model);
+  }
+private :
+    bool insert_pt_table_(Point3D xyz , PointType type)
+    {
+      //this->alignedPointsTableWidget->setModel();
+      return true;
+    }
 public  slots:
   void OnStartPointPicked(Point3D xyz)
   {
@@ -345,6 +350,7 @@ private:
   QString m_rule;
   QString m_method;
   QgsPcdpickeddlgWindowDockWidget* polynomial_dialog_widget = nullptr;
+  std::shared_ptr<QgsDLAttributeTableModel> dltable = nullptr;
 };
 
 
