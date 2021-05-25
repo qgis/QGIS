@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * in the vector.
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPoint> &points ) SIP_HOLDGIL;
+    QgsLineString( const QVector<QgsPoint> &points );
 
     /**
      * Construct a linestring from list of points.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPointXY> &points ) SIP_HOLDGIL;
+    QgsLineString( const QVector<QgsPointXY> &points );
 #else
 
     /**
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.20
      */
-    QgsLineString( SIP_PYOBJECT points SIP_TYPEHINT( Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]] ) ) [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
+    QgsLineString( SIP_PYOBJECT points SIP_TYPEHINT( Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]] ) ) SIP_HOLDGIL [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
     % MethodCode
     if ( !PySequence_Check( a0 ) )
     {
