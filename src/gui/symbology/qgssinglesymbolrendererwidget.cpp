@@ -34,29 +34,28 @@ QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer,
 
 QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
 
   if ( renderer )
   {
-    mRenderer = QgsSingleSymbolRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsSingleSymbolRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     if ( symbol )
-      mRenderer = new QgsSingleSymbolRenderer( symbol );
+      mRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol );
   }
 
   // load symbol from it
   if ( mRenderer )
-    mSingleSymbol = mRenderer->symbol()->clone();
+    mSingleSymbol.reset( mRenderer->symbol()->clone() );
 
   // setup ui
-  mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
+  mSelector = new QgsSymbolSelectorWidget( mSingleSymbol.get(), mStyle, mLayer, nullptr );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, &QgsSingleSymbolRendererWidget::changeSingleSymbol );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
@@ -72,24 +71,21 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
-    // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
   }
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
 {
-  delete mSingleSymbol;
-
-  delete mRenderer;
+  mSingleSymbol.reset();
+  mRenderer.reset();
 
   delete mSelector;
 }
 
-
 QgsFeatureRenderer *QgsSingleSymbolRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsSingleSymbolRendererWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -124,12 +120,12 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
-  showSymbolLevelsDialog( mRenderer );
+  showSymbolLevelsDialog( mRenderer.get() );
 }
 
 void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol.get() ); // this should be only enabled for marker symbols
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
