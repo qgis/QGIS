@@ -38,11 +38,28 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 {
     Q_OBJECT
   public:
-    //! Constructor for QgsSymbolLevelsWidget
+
+    /**
+     * Constructor for QgsSymbolLevelsWidget
+     */
     QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsSymbolLevelsWidget, which takes a list of \a symbols to show in the dialog.
+     *
+     * \since QGIS 3.20
+     */
+    QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns whether the level ordering is enabled
     bool usingLevels() const;
+
+    /**
+     * Returns the current legend symbols with rendering passes set, as defined in the widget.
+     *
+     * \since QGIS 3.20
+     */
+    QgsLegendSymbolList symbolLevels() const;
 
     /**
      * Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
@@ -51,35 +68,33 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     void setForceOrderingEnabled( bool enabled );
 
   public slots:
-    //! Apply button
-    void apply();
+
+    /**
+     * Apply button.
+     *
+     * \deprecated since QGIS 3.20. Use symbolLevels() and manually apply the changes to the renderer as appropriate.
+     */
+    Q_DECL_DEPRECATED void apply() SIP_DEPRECATED;
 
   private slots:
     void updateUi();
 
     void renderingPassChanged( int row, int column );
 
-  protected:
-    //! \note not available in Python bindings
-    void populateTable() SIP_SKIP;
-    //! \note not available in Python bindings
-    void setDefaultLevels() SIP_SKIP;
+  private:
+    void populateTable();
+    void setDefaultLevels();
 
     //! maximal number of layers from all symbols
-    int mMaxLayers;
+    int mMaxLayers = 0;
 
     QgsFeatureRenderer *mRenderer = nullptr;
     QgsLegendSymbolList mLegendSymbols;
 
     //! whether symbol layers always should be used (default FALSE)
-    bool mForceOrderingEnabled;
-
-  private:
-#ifdef SIP_RUN
-    QgsSymbolLevelsWidget();
-
-#endif
+    bool mForceOrderingEnabled = false;
 };
+
 
 /**
  * \class QgsSymbolLevelsDialog
@@ -97,6 +112,20 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
 
     // used by rule-based renderer (to hide checkbox to enable/disable ordering)
     void setForceOrderingEnabled( bool enabled );
+
+    /**
+     * Returns whether the level ordering is enabled.
+     *
+     * \since QGIS 3.20
+     */
+    bool usingLevels() const;
+
+    /**
+     * Returns the current legend symbols with rendering passes set, as defined in the widget.
+     *
+     * \since QGIS 3.20
+     */
+    QgsLegendSymbolList symbolLevels() const;
 
   private:
 
