@@ -159,11 +159,42 @@ legal:
   license: GPL-2.0-or-later
 localisation:
   availableLanguages:
-    - en
-    - it
-    - es
-    - fr
+    - ar
+    - bg
+    - bs
+    - ca
+    - cs
+    - da
     - de
+    - el
+    - en
+    - es
+    - et
+    - eu
+    - fi
+    - fr
+    - gl
+    - hu
+    - is
+    - it
+    - ja
+    - ko
+    - ky
+    - lt
+    - lv
+    - nb
+    - nl
+    - pl
+    - pt_BR
+    - pt_PT
+    - ro
+    - ru
+    - sc
+    - sv
+    - uk
+    - vi
+    - zh-Hans
+    - zh-Hant
   localisationReady: true
 logo: |-
   https://raw.githubusercontent.com/qgis/QGIS/master/images/README-md/main_logo.png
