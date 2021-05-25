@@ -911,6 +911,21 @@ void QgsGraduatedSymbolRendererWidget::refreshRanges( bool )
   emit widgetChanged();
 }
 
+void QgsGraduatedSymbolRendererWidget::setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled )
+{
+  for ( const QgsLegendSymbolItem &legendSymbol : levels )
+  {
+    QgsSymbol *sym = legendSymbol.symbol();
+    for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
+    {
+      mRenderer->setLegendSymbolItem( legendSymbol.ruleKey(), sym->clone() );
+    }
+  }
+  mRenderer->setUsingSymbolLevels( enabled );
+  mModel->updateSymbology();
+  emit widgetChanged();
+}
+
 void QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *container )
 {
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );

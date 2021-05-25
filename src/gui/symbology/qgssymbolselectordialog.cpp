@@ -404,6 +404,12 @@ void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *pa
   layersTree->setExpanded( symbolItem->index(), true );
 }
 
+  if ( mSymbol == symbol && !layersTree->currentIndex().isValid() )
+  {
+    // make sure root item for symbol is selected in tree
+    layersTree->setCurrentIndex( symbolItem->index() );
+  }
+}
 
 void QgsSymbolSelectorWidget::reloadSymbol()
 {

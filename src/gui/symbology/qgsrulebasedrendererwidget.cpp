@@ -349,6 +349,23 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
   mModel->finishedAddingRules();
 }
 
+void QgsRuleBasedRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool )
+{
+  if ( !mRenderer )
+    return;
+
+  for ( const QgsLegendSymbolItem &legendSymbol : std::as_const( levels ) )
+  {
+    QgsSymbol *sym = legendSymbol.symbol();
+    for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
+    {
+      mRenderer->setLegendSymbolItem( legendSymbol.ruleKey(), sym->clone() );
+    }
+  }
+
+  emit widgetChanged();
+}
+
 QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
 {
   QList<QgsSymbol *> symbolList;
@@ -438,17 +455,20 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
+    {
+      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
+    } );
     panel->openPanel( widget );
-    return;
   }
-
-  QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
-  dlg.setForceOrderingEnabled( true );
-  if ( dlg.exec() )
+  else
   {
-    emit widgetChanged();
+    QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
+    dlg.setForceOrderingEnabled( true );
+    if ( dlg.exec() )
+    {
+      setSymbolLevels( dlg.symbolLevels(), dlg.usingLevels() );
+    }
   }
 }
 

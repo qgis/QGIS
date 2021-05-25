@@ -320,19 +320,21 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]() { emit widgetChanged(); emit symbolLevelsChanged(); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
+    {
+      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
+    } );
     panel->openPanel( widget );
-    return;
   }
-
-  QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
-  if ( dlg.exec() )
+  else
   {
-    emit widgetChanged();
-    emit symbolLevelsChanged();
+    QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
+    if ( dlg.exec() )
+    {
+      setSymbolLevels( dlg.symbolLevels(), dlg.usingLevels() );
+    }
   }
 }
 
@@ -378,6 +380,10 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
   return panel;
 }
 
+void QgsRendererWidget::setSymbolLevels( const QList< QgsLegendSymbolItem > &, bool )
+{
+
+}
 
 //
 // QgsDataDefinedValueDialog

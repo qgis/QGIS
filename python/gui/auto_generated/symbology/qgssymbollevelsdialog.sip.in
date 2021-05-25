@@ -23,14 +23,29 @@ A widget which allows the user to modify the rendering order of symbol layers.
 #include "qgssymbollevelsdialog.h"
 %End
   public:
+
     QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLevelsWidget
 %End
 
+    QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSymbolLevelsWidget, which takes a list of ``symbols`` to show in the dialog.
+
+.. versionadded:: 3.20
+%End
+
     bool usingLevels() const;
 %Docstring
 Returns whether the level ordering is enabled
+%End
+
+    QgsLegendSymbolList symbolLevels() const;
+%Docstring
+Returns the current legend symbols with rendering passes set, as defined in the widget.
+
+.. versionadded:: 3.20
 %End
 
     void setForceOrderingEnabled( bool enabled );
@@ -41,20 +56,17 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 %End
 
   public slots:
-    void apply();
+
+ void apply() /Deprecated/;
 %Docstring
-Apply button
+Apply button.
+
+.. deprecated:: QGIS 3.20.
+   Use :py:func:`~QgsSymbolLevelsWidget.symbolLevels` and manually apply the changes to the renderer as appropriate.
 %End
 
-  protected:
-
-
-
-
-  private:
-    QgsSymbolLevelsWidget();
-
 };
+
 
 class QgsSymbolLevelsDialog : QDialog
 {
@@ -75,6 +87,20 @@ Constructor for QgsSymbolLevelsDialog.
 %End
 
     void setForceOrderingEnabled( bool enabled );
+
+    bool usingLevels() const;
+%Docstring
+Returns whether the level ordering is enabled.
+
+.. versionadded:: 3.20
+%End
+
+    QgsLegendSymbolList symbolLevels() const;
+%Docstring
+Returns the current legend symbols with rendering passes set, as defined in the widget.
+
+.. versionadded:: 3.20
+%End
 
 };
 
