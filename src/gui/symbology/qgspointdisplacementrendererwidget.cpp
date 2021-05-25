@@ -70,11 +70,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   if ( renderer )
   {
-    mRenderer = QgsPointDisplacementRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsPointDisplacementRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsPointDisplacementRenderer();
+    mRenderer = std::make_unique< QgsPointDisplacementRenderer >();
   }
 
   blockAllSignals( true );
@@ -175,14 +175,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
-QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget()
-{
-  delete mRenderer;
-}
+QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget() = default;
 
 QgsFeatureRenderer *QgsPointDisplacementRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext &context )

@@ -100,6 +100,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
 }
 
+QgsInvertedPolygonRendererWidget::~QgsInvertedPolygonRendererWidget() = default;
+
 QgsFeatureRenderer *QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )

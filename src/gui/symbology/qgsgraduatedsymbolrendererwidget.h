@@ -196,7 +196,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsRangeList mCopyBuffer;
 
-    QDoubleValidator *mSymmetryPointValidator;
+    QDoubleValidator *mSymmetryPointValidator = nullptr;
 
     std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 };
