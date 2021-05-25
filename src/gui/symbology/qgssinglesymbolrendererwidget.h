@@ -49,6 +49,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
      */
     void setDockMode( bool dockMode ) override;
 
+  protected:
+    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
+
   private slots:
     void changeSingleSymbol();
 

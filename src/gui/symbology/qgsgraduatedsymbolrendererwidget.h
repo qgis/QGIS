@@ -133,6 +133,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
      */
     void refreshRanges( bool reset );
 
+  protected:
+    void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled ) override;
+
   private slots:
     void mSizeUnitWidget_changed();
     void methodComboBox_currentIndexChanged( int );

@@ -149,6 +149,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     void matchToSymbolsFromXml();
 
+  protected:
+    void setSymbolLevels( const QgsLegendSymbolList &levels, bool enabled ) override;
+
   protected slots:
 
     void pasteSymbolToSelection() override;
