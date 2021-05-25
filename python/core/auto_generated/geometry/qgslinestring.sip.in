@@ -31,7 +31,7 @@ Line string geometry type, with support for z-dimension and m-values.
 Constructor for an empty linestring geometry.
 %End
 
-    QgsLineString( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
+    QgsLineString( SIP_PYOBJECT points /TypeHint="Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]]"/ ) /HoldGIL/ [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
 %Docstring
 Construct a linestring from a sequence of points (:py:class:`QgsPoint` objects, :py:class:`QgsPointXY` objects, or sequences of float values).
 
