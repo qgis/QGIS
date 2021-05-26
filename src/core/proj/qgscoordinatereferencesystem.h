@@ -108,7 +108,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * This will produce the following output:
  *
- * \code
+ * \code{.unparsed}
  * CRS Description: OSGB 1936 / British National Grid
  * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
@@ -137,7 +137,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
  *   underlying proj library. For example, the definition of WGS84 looks like this:
  *
- *   \code
+ *   \code{.unparsed}
  *   +proj=longlat +datum=WGS84 +no_defs
  *   \endcode
  *
@@ -147,7 +147,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
  *   format to define CRS. For WGS84 the OGC WKT definition is the following:
  *
- *   \code
+ *   \code{.unparsed}
  *       GEOGCS["WGS 84",
  *              DATUM["WGS_1984",
  *                SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
