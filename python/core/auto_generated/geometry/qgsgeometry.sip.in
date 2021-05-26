@@ -440,6 +440,8 @@ Example
        for v in geometry.vertices():
            print(v.x(), v.y())
 
+
+
 .. seealso:: :py:func:`parts`
 
 .. versionadded:: 3.0

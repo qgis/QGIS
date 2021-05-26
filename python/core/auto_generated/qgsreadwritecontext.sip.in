@@ -92,6 +92,7 @@ Push a category to the stack
 .. note::
 
    It is not aimed at being used in Python. Instead use the context manager.
+
 .. code-block:: python
 
        context = QgsReadWriteContext()
