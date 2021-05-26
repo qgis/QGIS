@@ -191,7 +191,7 @@ sub processDoxygenLine {
         $COMMENT_CODE_SNIPPET = CODE_SNIPPET_CPP if ($codelang =~ m/cpp/ );
         $codelang =~ s/py/python/;
         return "\n" if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP );
-        return ".. code-block::$codelang\n\n";
+        return "\n.. code-block::$codelang\n\n";
     }
     if ( $line =~ m/\\endcode/ ) {
         $COMMENT_CODE_SNIPPET = 0;
@@ -199,6 +199,7 @@ sub processDoxygenLine {
     }
     if ($COMMENT_CODE_SNIPPET != 0){
         if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP ){
+            # cpp code is stripped out
             return "";
         } else {
             if ( $line ne ''){
