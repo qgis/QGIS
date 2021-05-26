@@ -138,6 +138,13 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
+    enum class SymbolFlag
+    {
+      RendererShouldUseSymbolLevels,
+    };
+    typedef QFlags<Qgis::SymbolFlag> SymbolFlags;
+
+
     enum class SymbolPreviewFlag
       {
       FlagIncludeCrosshairsForMarkerSymbols,
@@ -244,6 +251,8 @@ GEOS string version linked
 };
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::SymbolFlag> operator|(Qgis::SymbolFlag f1, QFlags<Qgis::SymbolFlag> f2);
 
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 

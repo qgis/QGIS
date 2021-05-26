@@ -112,6 +112,12 @@ void QgsSingleSymbolRendererWidget::disableSymbolLevels()
 void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled )
 {
   mSingleSymbol.reset( levels.at( 0 ).symbol()->clone() );
+  if ( !enabled )
+  {
+    // remove the renderer symbol levels flag (if present), as we don't symbol levels automatically re-enabling when other changes
+    // are made to the symbol
+    mSingleSymbol->setFlags( mSingleSymbol->flags() & ~Qgis::SymbolFlags( Qgis::SymbolFlag::RendererShouldUseSymbolLevels ) );
+  }
   mRenderer->setSymbol( mSingleSymbol->clone() );
   mRenderer->setUsingSymbolLevels( enabled );
   mSelector->loadSymbol( mSingleSymbol.get() );
@@ -122,6 +128,10 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
+
+  if ( mSingleSymbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
+    mRenderer->setUsingSymbolLevels( true );
+
   emit widgetChanged();
 }
 

@@ -439,6 +439,24 @@ Returns the rendering hint flags for the symbol.
 .. seealso:: :py:func:`setRenderHints`
 %End
 
+    void setFlags( Qgis::SymbolFlags flags );
+%Docstring
+Sets ``flags`` for the symbol.
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.320
+%End
+
+    Qgis::SymbolFlags flags() const;
+%Docstring
+Returns flags for the symbol.
+
+.. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.20
+%End
+
     void setClipFeaturesToExtent( bool clipFeaturesToExtent );
 %Docstring
 Sets whether features drawn by the symbol should be clipped to the render context's
@@ -663,6 +681,8 @@ Render editing vertex marker at specified point
 
 .. versionadded:: 2.16
 %End
+
+
 
 
 

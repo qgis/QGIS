@@ -448,6 +448,22 @@ class CORE_EXPORT QgsSymbol
     Qgis::SymbolRenderHints renderHints() const { return mRenderHints; }
 
     /**
+     * Sets \a flags for the symbol.
+     *
+     * \see flags()
+     * \since QGIS 3.320
+     */
+    void setFlags( Qgis::SymbolFlags flags ) { mSymbolFlags = flags; }
+
+    /**
+     * Returns flags for the symbol.
+     *
+     * \see setFlags()
+     * \since QGIS 3.20
+     */
+    Qgis::SymbolFlags flags() const { return mSymbolFlags; }
+
+    /**
      * Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
@@ -680,6 +696,14 @@ class CORE_EXPORT QgsSymbol
     qreal mOpacity = 1.0;
 
     Qgis::SymbolRenderHints mRenderHints;
+
+    /**
+     * Symbol flags.
+     *
+     * \since QGIS 3.20
+     */
+    Qgis::SymbolFlags mSymbolFlags = Qgis::SymbolFlags();
+
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
 

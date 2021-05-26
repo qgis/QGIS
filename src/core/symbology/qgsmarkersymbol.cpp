@@ -484,6 +484,7 @@ QgsMarkerSymbol *QgsMarkerSymbol::clone() const
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   cloneSymbol->setForceRHR( mForceRHR );
   cloneSymbol->setDataDefinedProperties( dataDefinedProperties() );
+  cloneSymbol->setFlags( mSymbolFlags );
   return cloneSymbol;
 }
 
