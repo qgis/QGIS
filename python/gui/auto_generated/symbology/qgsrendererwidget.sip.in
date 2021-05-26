@@ -34,7 +34,7 @@ Returns pointer to the renderer (no transfer of ownership)
 
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 %Docstring
-Show a dialog with renderer's symbol level settings.
+show a dialog with renderer's symbol level settings
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
@@ -86,7 +86,7 @@ to re-synchronize with the variables.
 %Docstring
 Emitted when the symbol levels settings have been changed.
 
-.. deprecated:: QGIS 3.20
+.. deprecated:: QGIS 3.16.9
    -- no longer emitted.
 %End
 
@@ -118,7 +118,7 @@ The ``levels`` argument defines the updated list of symbols with rendering passe
 
 The ``enabled`` arguments specifies if symbol levels should be enabled for the renderer.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.16.9
 %End
 
   protected slots:
