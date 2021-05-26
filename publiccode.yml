@@ -211,5 +211,4 @@ platforms:
 releaseDate: '2021-05-14'
 roadmap: 'https://www.qgis.org/en/site/getinvolved/development/roadmap.html'
 softwareType: standalone/desktop
-softwareVersion: 3.18.3
 url: 'https://github.com/qgis/QGIS'
