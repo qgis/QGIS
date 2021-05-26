@@ -55,7 +55,8 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
                        QgsArrowSymbolLayer,
-                       QgsSymbol
+                       QgsSymbol,
+                       Qgis
                        )
 
 from qgis.testing import unittest, start_app
@@ -167,6 +168,27 @@ class TestQgsSymbol(unittest.TestCase):
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PolygonGeometry), QgsSymbol.Fill)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.NullGeometry), QgsSymbol.Hybrid)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.UnknownGeometry), QgsSymbol.Hybrid)
+
+    def testFlags(self):
+        """
+        Test symbol flags
+        """
+        s = QgsLineSymbol.createSimple({})
+        self.assertEqual(s.flags(), Qgis.SymbolFlags())
+
+        s.setFlags(Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+        self.assertEqual(s.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+
+        s2 = s.clone()
+        self.assertEqual(s2.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
+
+        # test that flags are saved/restored via XML
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertEqual(s2.flags(), Qgis.SymbolFlag.RendererShouldUseSymbolLevels)
 
     def testCanCauseArtifactsBetweenAdjacentTiles(self):
         """
