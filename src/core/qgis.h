@@ -193,6 +193,17 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
 
     /**
+     * \brief Flags controlling behavior of symbols
+     *
+     * \since QGIS 3.20
+     */
+    enum class SymbolFlag : int
+    {
+      RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
+    };
+    Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
+
+    /**
      * Flags for controlling how symbol preview images are generated.
      *
      * \since QGIS 3.20
@@ -366,6 +377,7 @@ class CORE_EXPORT Qgis
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 
 

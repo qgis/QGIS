@@ -581,6 +581,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::St
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setOpacity( s->opacity() );
+  mSymbol->setFlags( s->flags() );
 
   updateSymbolInfo();
   emit changed();
