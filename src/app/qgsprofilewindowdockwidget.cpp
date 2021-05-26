@@ -464,6 +464,14 @@ void QgsDLWindowDockWidget::OndrawlieonprofileClicked2()
 void QgsDLWindowDockWidget::OnmActionPickPoints()
 {
   mMapCanvas->StartPickingMode();
+  if (mMapCanvas->ViewStateID == View3D::ViewState::PickingPoint) 
+  {
+    connect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
+  }
+  else
+  {
+    disconnect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
+  }
 }
 void QgsDLWindowDockWidget::OnmActionBrushPoints()
 {

@@ -29,6 +29,7 @@
 #include <memory>
 
 #include "View3D.h"
+#include <QVector3D>
 
 class QgsScaleComboBox;
 class QgsDoubleSpinBox;
@@ -38,20 +39,20 @@ class QRadioButton;
 typedef View3D QgsProfileWinow;
 typedef Imath::V3d Point3D;
 
-enum PointType
-{
-  Start = 0,
-  End = 0x1,
-  XuanDuan = 0x2,
-  Other = 0x3
-};
+  enum PointType
+  {
+    Start = 0,
+    End = 0x1,
+    XuanDuan = 0x2,
+    Other = 0x3
+  };
 
-struct ModelItem
-{
-  Point3D XYZ;
-  PointType type;
-  double error;
-};
+  struct ModelItem
+  {
+    Point3D XYZ;
+    PointType type;
+    double error;
+  };
 
 class  QgsDLAttributeTableModel : public QAbstractTableModel
 {
@@ -68,6 +69,16 @@ public:
       m_header.push_back("误差");
       modelData.clear();
       m_parent = parent;
+  }
+
+  void receivepickedpoints(QVector3D pointxyz)
+  {
+    ModelItem temp;
+    temp.XYZ = Point3D(pointxyz.x(), pointxyz.y(), pointxyz.z());
+    temp.error = 0;
+    temp.type = PointType::Other;
+    modelData.push_back( temp);
+    setModelData(modelData);
   }
 
   void setProfileWindow( QgsProfileWinow * window) 
@@ -194,21 +205,21 @@ class  APP_EXPORT  QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, publi
   Q_OBJECT
 
 public:
-  explicit QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent = nullptr)
-  {
-    setupUi(this);
-    setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
-    this->setWindowTitle(name);
-    this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
-    this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
-    this->pushButton->setEnabled(false);
+    explicit QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent = nullptr)
+    {
+      setupUi(this);
+      setWindowFlags(Qt::FramelessWindowHint);
+      this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
+      this->setWindowTitle(name);
+      this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
+      this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
+      this->pushButton->setEnabled(false);
 
-  };
-  void setModel(QAbstractItemModel *model)
-  {
-    this->alignedPointsTableView->setModel(model);
-  }
+    };
+    void setModel(QAbstractItemModel *model)
+    {
+      this->alignedPointsTableView->setModel(model);
+    }
 private :
     bool insert_pt_table_(Point3D xyz , PointType type)
     {
@@ -216,53 +227,53 @@ private :
       return true;
     }
 public  slots:
-  void OnStartPointPicked(Point3D xyz)
-  {
+    void OnStartPointPicked(Point3D xyz)
+    {
 
-  }
-  void OnEndPointPvicked(Point3D xyz)
-  {
+    }
+    void OnEndPointPvicked(Point3D xyz)
+    {
 
-  }
-  void OnXuanDuanPointPvicked(Point3D xyz)
-  {
-  }
-  void OnOtherPointPvicked(Point3D xyz)
-  {
-  }
-  void OnNiheButtonClicked(Point3D xyz)
-  {
+    }
+    void OnXuanDuanPointPvicked(Point3D xyz)
+    {
+    }
+    void OnOtherPointPvicked(Point3D xyz)
+    {
+    }
+    void OnNiheButtonClicked(Point3D xyz)
+    {
 
-  }
-  void OnBuDianButtonClicked(Point3D xyz)
-  {
-  }
+    }
+    void OnBuDianButtonClicked(Point3D xyz)
+    {
+    }
 };
 class APP_EXPORT QgsClassSettingWindowDockWidget : public QgsDockWidget, private Ui::QgsClassSettingWindowDockWidgetBase
 {
   Q_OBJECT
 public:
-  explicit QgsClassSettingWindowDockWidget(const QString &name, QWidget *parent = nullptr);
-  std::map<int, bool> getoriginalClass()
-  {
-    return originalClass;
-  }
-  QString getTargetClass()
-  {
-    return TargetClass;
-  }
+    explicit QgsClassSettingWindowDockWidget(const QString &name, QWidget *parent = nullptr);
+    std::map<int, bool> getoriginalClass()
+    {
+      return originalClass;
+    }
+    QString getTargetClass()
+    {
+      return TargetClass;
+    }
 private slots:
-  void OnCheckChanged();
-  void OnCheckChanged2();
-  void CheckAll();
-  void UnCheckAll();
-  void myShowDock();
-  void myHideDock();
+    void OnCheckChanged();
+    void OnCheckChanged2();
+    void CheckAll();
+    void UnCheckAll();
+    void myShowDock();
+    void myHideDock();
 private:
-  bool initialized;
-  QWidget* profile_widget;
-  std::map<int, bool> originalClass;
-  QString TargetClass;
+    bool initialized;
+    QWidget* profile_widget;
+    std::map<int, bool> originalClass;
+    QString TargetClass;
 };
 
 class APP_EXPORT QgsProfileWindowDockWidget : public QgsDockWidget, private Ui::QgsProfileWindowDockWidgetBase
