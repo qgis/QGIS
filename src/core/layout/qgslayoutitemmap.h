@@ -513,10 +513,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Sets the stored \a layers set. If empty, the current project layers will
-     * be used instead.
+     * Sets the stored \a layers set. If empty, the current project layers or the
+     * layer specified in the map theme (if the follow visibility preset flag is set)
+     * will be used instead.
      * \see layers()
      * \see keepLayerSet()
+     * \see followVisibilityPreset()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
