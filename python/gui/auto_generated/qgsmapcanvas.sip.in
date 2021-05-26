@@ -21,7 +21,6 @@
 
 
 
-
 class QgsMapCanvas : QGraphicsView, QgsExpressionContextGenerator
 {
 %Docstring
