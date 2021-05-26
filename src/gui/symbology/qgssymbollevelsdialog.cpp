@@ -37,7 +37,6 @@ QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool
 
 QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent )
   : QgsPanelWidget( parent )
-  , mRenderer( renderer )
   , mForceOrderingEnabled( false )
 {
   setupUi( this );

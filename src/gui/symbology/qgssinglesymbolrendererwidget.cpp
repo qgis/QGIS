@@ -47,7 +47,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     if ( symbol )
-      mRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol );
+      mRenderer = qgis::make_unique< QgsSingleSymbolRenderer >( symbol );
   }
 
   // load symbol from it
@@ -67,7 +67,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   QMenu *advMenu = mSelector->advancedMenu();
 
   mActionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
-  connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  connect( mActionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
   if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );

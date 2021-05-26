@@ -353,7 +353,7 @@ void QgsRuleBasedRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolIte
   if ( !mRenderer )
     return;
 
-  for ( const QgsLegendSymbolItem &legendSymbol : std::as_const( levels ) )
+  for ( const QgsLegendSymbolItem &legendSymbol : qgis::as_const( levels ) )
   {
     QgsSymbol *sym = legendSymbol.symbol();
     for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )

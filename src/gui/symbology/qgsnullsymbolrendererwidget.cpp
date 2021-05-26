@@ -33,7 +33,7 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer,
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsNullSymbolRenderer >();
+    mRenderer = qgis::make_unique< QgsNullSymbolRenderer >();
   }
 
   QGridLayout *layout = new QGridLayout( this );
