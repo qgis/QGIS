@@ -74,6 +74,12 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QgsSettings settings;
 
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+  connect( actionRefresh, &QAction::triggered, this, [ = ] { directoryItem->refresh(); } );
+  menu->addAction( actionRefresh );
+
+  menu->addSeparator();
+
   QMenu *newMenu = new QMenu( tr( "New" ), menu );
 
   QAction *createFolder = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewFolder.svg" ) ), tr( "Directory…" ), menu );
