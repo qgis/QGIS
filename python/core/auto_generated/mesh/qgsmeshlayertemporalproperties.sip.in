@@ -22,7 +22,7 @@ The time in a mesh layer is defined by :
 - each dataset is associated with a relative times
 - time extent is defined by the first time and the last time of all dataset
 
-.. code-block:: unparsed
+.. code-block:: raw
 
      Reference time :          AT
      Dataset 1 time            o-----RT------RT-----RT-----------RT
@@ -32,6 +32,8 @@ The time in a mesh layer is defined by :
 
      AT : absolute time (QDateTime)
      RT : relative time (qint64)
+
+
 
 .. versionadded:: 3.14
 %End

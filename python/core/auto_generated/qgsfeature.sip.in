@@ -375,6 +375,7 @@ Set the feature's ``geometry``. Ownership of the geometry is transferred to the 
 The feature will be made valid after calling this method.
 
 This method is a shortcut for calling:
+
 .. code-block:: python
 
        feature.setGeometry( QgsGeometry( geometry ) )
@@ -393,6 +394,8 @@ Example
        feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
        print(feature.geometry())
        # output: <QgsGeometry: LineString (210 41, 301 55)>
+
+
 
 .. seealso:: :py:func:`geometry`
 
