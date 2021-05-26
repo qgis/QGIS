@@ -653,7 +653,7 @@ namespace QgsWms
         }
         else
         {
-          for ( const auto &layer : std::as_const( cMapParams.mLayers ) )
+          for ( auto layer : cMapParams.mLayers )
           {
             if ( mContext.isValidGroup( layer.mNickname ) )
             {
@@ -689,9 +689,30 @@ namespace QgsWms
               layerSet << mlayer;
             }
           }
+          std::reverse( layerSet.begin(), layerSet.end() );
         }
-        layerSet << highlightLayers( cMapParams.mHighlightLayers );
-        std::reverse( layerSet.begin(), layerSet.end() );
+
+        // If the map is set to follow preset we need to disable follow preset and manually
+        // configure the layers here or the map item internal logic will override and get
+        // the layers from the map theme.
+        if ( map->followVisibilityPreset() )
+        {
+          if ( layerSet.isEmpty() )
+          {
+            // Get the layers from the theme
+            const QgsExpressionContext ex { map->createExpressionContext() };
+            layerSet = map->layersToRender( &ex );
+          }
+          map->setFollowVisibilityPreset( false );
+        }
+
+        // Handle highlight layers
+        const QList< QgsMapLayer *> highlights = highlightLayers( cMapParams.mHighlightLayers );
+        for ( const auto &hl : std::as_const( highlights ) )
+        {
+          layerSet.prepend( hl );
+        }
+
         map->setLayers( layerSet );
         map->setKeepLayerSet( true );
       }
