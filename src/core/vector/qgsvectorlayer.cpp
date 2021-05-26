@@ -188,7 +188,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
-    setDataSourcePrivate( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
+    setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
   for ( const QgsField &field : std::as_const( mFields ) )
@@ -1611,9 +1611,13 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   // read extent
+  if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    mReadExtentFromXml = true;
+  }
   if ( mReadExtentFromXml )
   {
-    QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )
     {
       mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
@@ -1634,6 +1638,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   return isValid();               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
+
 
 void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
     const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

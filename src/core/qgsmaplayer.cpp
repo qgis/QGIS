@@ -416,6 +416,16 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &cont
   Q_UNUSED( context )
   // NOP by default; children will over-ride with behavior specific to them
 
+  // read Extent
+  if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+  {
+    const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      mExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+  }
+
   return true;
 } // void QgsMapLayer::readXml
 

@@ -30,6 +30,7 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsxmlutils.h"
 #include "qgsmaplayerfactory.h"
 #include <QUrl>
 
@@ -48,7 +49,7 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
-    setDataSourcePrivate( uri, baseName, providerLib, providerOptions, providerFlags );
+    setDataSource( uri, baseName, providerLib, providerOptions, providerFlags );
 
     if ( !options.skipIndexGeneration && mDataProvider && mDataProvider->isValid() )
       mDataProvider.get()->generateIndex();
@@ -108,11 +109,27 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   {
     QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    // read extent
+    if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+    {
+      const QDomNode extentNode = layerNode.namedItem( QStringLiteral( "extent" ) );
+      if ( !extentNode.isNull() )
+      {
+        // get the extent
+        const QgsRectangle mbr = QgsXmlUtils::readRectangle( extentNode.toElement() );
+
+        // store the extent
+        setExtent( mbr );
+
+        // skip get extent
+        flags |= QgsDataProvider::SkipGetExtent;
+      }
+    }
     if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
-    setDataSourcePrivate( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
+    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
   }
 
   if ( !isValid() )
@@ -325,7 +342,10 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   // Load initial extent, crs and renderer
   setCrs( mDataProvider->crs() );
-  setExtent( mDataProvider->extent() );
+  if ( !( flags & QgsDataProvider::SkipGetExtent ) )
+  {
+    setExtent( mDataProvider->extent() );
+  }
 
   bool loadDefaultStyleFlag = false;
   if ( flags & QgsDataProvider::FlagLoadDefaultStyle )

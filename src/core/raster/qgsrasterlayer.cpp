@@ -43,6 +43,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterresamplefilter.h"
 #include "qgsrastershader.h"
 #include "qgsreadwritecontext.h"
+#include "qgsxmlutils.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgssinglebandcolordatarenderer.h"
@@ -131,7 +132,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   {
     providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
-  setDataSourcePrivate( uri, baseName, providerKey, providerOptions, providerFlags );
+  setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
   {
@@ -673,13 +674,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     mDataSource = mDataProvider->dataSourceUri();
   }
 
-  // get the extent
-  QgsRectangle mbr = mDataProvider->extent();
+  if ( !( flags & QgsDataProvider::SkipGetExtent ) )
+  {
+    // get the extent
+    const QgsRectangle mbr = mDataProvider->extent();
 
-  // show the extent
-  QgsDebugMsgLevel( "Extent of layer: " + mbr.toString(), 4 );
-  // store the extent
-  setExtent( mbr );
+    // store the extent
+    setExtent( mbr );
+  }
 
   // upper case the first letter of the layer name
   QgsDebugMsgLevel( "mLayerName: " + name(), 4 );
@@ -2030,6 +2032,22 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    // read extent
+    if ( mReadFlags & QgsMapLayer::FlagReadExtentFromXml )
+    {
+      const QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+      if ( !extentNode.isNull() )
+      {
+        // get the extent
+        const QgsRectangle mbr = QgsXmlUtils::readRectangle( extentNode.toElement() );
+
+        // store the extent
+        setExtent( mbr );
+
+        // skip get extent
+        flags |= QgsDataProvider::SkipGetExtent;
+      }
     }
     setDataProvider( mProviderKey, providerOptions, flags );
   }
