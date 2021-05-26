@@ -37,9 +37,9 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
 
     def test_wms_getprint_maptheme(self):
         """Test project has 2 layer: red and green and three templates:
-            red: map theme red
-            green: map theme green
-            blank: non map theme
+            red: follow map theme red
+            green: follow map theme green
+            blank: no map theme
         """
 
         tmp_dir = QTemporaryDir()
@@ -67,6 +67,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         ######################################################
         # Template map theme tests, no HIGHLIGHT
 
+        # blank template, specified layer is red
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
         self.server.handleRequest(request, response, project)
@@ -77,6 +78,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.assertEqual(color.green(), 0)
         self.assertEqual(color.blue(), 0)
 
+        # blank template, specified layer is green
         params["map0:LAYERS"] = "green"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
@@ -88,6 +90,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.assertEqual(color.green(), 255)
         self.assertEqual(color.blue(), 0)
 
+        # red template, no specified layers
         params["map0:LAYERS"] = ""
         params["TEMPLATE"] = "red"
         response = QgsBufferServerResponse()
@@ -100,6 +103,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.assertEqual(color.green(), 0)
         self.assertEqual(color.blue(), 0)
 
+        # green template, no specified layers
         params["map0:LAYERS"] = ""
         params["TEMPLATE"] = "green"
         response = QgsBufferServerResponse()
@@ -110,6 +114,21 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         color = image.pixelColor(100, 100)
         self.assertEqual(color.red(), 0)
         self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 0)
+
+        # green template, specified layer is red
+        # This is a conflict situation: the green template map is set to follow green theme
+        # but we tell the server to render the red layer, red is what we get.
+        params["map0:LAYERS"] = "red"
+        params["TEMPLATE"] = "green"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        color = image.pixelColor(100, 100)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
         self.assertEqual(color.blue(), 0)
 
         ######################################################
