@@ -66,7 +66,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsPointClusterRenderer >();
+    mRenderer = qgis::make_unique< QgsPointClusterRenderer >();
   }
 
   blockAllSignals( true );
