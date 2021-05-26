@@ -52,7 +52,28 @@ typedef Imath::V3d Point3D;
     Point3D XYZ;
     PointType type;
     double error;
+
+    bool compAsendingX(ModelItem firsrt, ModelItem second)
+    {
+      return firsrt.XYZ.x > second.XYZ.x;
+    }
+
+    bool compDesendingX(ModelItem firsrt, ModelItem second)
+    {
+      return firsrt.XYZ.x < second.XYZ.x;
+    }
+
+    bool compAsendingY(ModelItem firsrt, ModelItem second)
+    {
+      return firsrt.XYZ.y > second.XYZ.y;
+    }
+
+    bool compDesendinY(ModelItem firsrt, ModelItem second)
+    {
+      return firsrt.XYZ.y < second.XYZ.y;
+    }
   };
+
 
 class  QgsDLAttributeTableModel : public QAbstractTableModel
 {
@@ -70,7 +91,6 @@ public:
       modelData.clear();
       m_parent = parent;
   }
-
   void receivepickedpoints(QVector3D pointxyz)
   {
     ModelItem temp;
@@ -78,6 +98,19 @@ public:
     temp.error = 0;
     temp.type = PointType::Other;
     modelData.push_back( temp);
+    setModelData(modelData);
+  }
+
+  void sortByColumn(int col)
+  {
+    switch (col)
+    {
+   /*
+    case 0: std::sort(modelData.begin(), modelData.end(), &ModelItem::compAsendingX); break;
+    case 1: std::sort(modelData.begin(), modelData.end(), &ModelItem::compAsendingY); break;
+    default: std::sort(modelData.begin(), modelData.end(), &ModelItem::compAsendingX); break;
+    */
+    }
     setModelData(modelData);
   }
 
@@ -99,10 +132,6 @@ public:
      return modelData;
   };
 
-  /**
- * Returns the number of rows
- * \param parent parent index
- */
   int rowCount(const QModelIndex &parent = QModelIndex()) const override
   {
     if (parent.isValid())
@@ -110,10 +139,6 @@ public:
     return modelData.size();
   };
 
-  /**
- * Returns the number of columns
- * \param parent parent index
- */
   int columnCount(const QModelIndex &parent = QModelIndex()) const override
   {
     if (parent.isValid())
@@ -152,11 +177,11 @@ public:
       const int row = index.row();
       switch (index.column())
       {
-          case 0: return modelData.at(row).XYZ.x;
-          case 1: return  modelData.at(row).XYZ.y;
-          case 2: return  modelData.at(row).XYZ.z;
-          case 3: return modelData.at(row).type;
-          case 4: return  modelData.at(row).error;
+      case 0: return  QString::number(modelData.at(row).XYZ.x, 'f', 3);// .toFloat();
+      case 1: return  QString::number(modelData.at(row).XYZ.y, 'f', 3);// .toFloat();
+      case 2: return  QString::number(modelData.at(row).XYZ.z, 'f', 3);// .toFloat();
+          case 3: return  modelData.at(row).type;
+          case 4: return  QString::number(modelData.at(row).error, 'f', 3);// .toFloat();
       }
     }
     return QVariant();
@@ -214,7 +239,8 @@ public:
       this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
       this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
       this->pushButton->setEnabled(false);
-
+      this->alignedPointsTableView->sortByColumn(1,Qt::AscendingOrder); // x 列按照升序排序
+      this->alignedPointsTableView->setSortingEnabled(true);
     };
     void setModel(QAbstractItemModel *model)
     {
@@ -227,6 +253,15 @@ private :
       return true;
     }
 public  slots:
+   void OnPaiXuClicked(int column)
+   {
+     bool ascending = (this->alignedPointsTableView->horizontalHeader()->sortIndicatorSection() == column && this->alignedPointsTableView->horizontalHeader()->sortIndicatorOrder() == Qt::DescendingOrder);
+      Qt::SortOrder order = ascending ? Qt::AscendingOrder : Qt::DescendingOrder;
+      this->alignedPointsTableView->horizontalHeader()->setSortIndicator(column, order);
+
+     this->alignedPointsTableView->model()->sort(column, order);
+     this->alignedPointsTableView->setSortingEnabled(false);
+   }
     void OnStartPointPicked(Point3D xyz)
     {
 

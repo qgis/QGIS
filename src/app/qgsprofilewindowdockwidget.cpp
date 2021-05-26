@@ -367,7 +367,6 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   connect(mActionTurnLeft, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudLeft);
   connect(mActionTurnRight, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudRight);
 
-
   mActionSaveEdits->setDisabled(true);
   mActionPickPoints->setDisabled(true);
   polynomial_dialog_widget = new QgsPcdpickeddlgWindowDockWidget("电力线拟合",QgisApp::instance());
@@ -375,9 +374,10 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   polynomial_dialog_widget->setVisible(false);
 
   dltable = std::make_shared< QgsDLAttributeTableModel>(this);
-
   polynomial_dialog_widget->alignedPointsTableView->setModel(dltable.get());
 
+  //QHeaderView *headerGoods = polynomial_dialog_widget->alignedPointsTableView->horizontalHeader();
+  //connect(headerGoods, SIGNAL(sectionClicked(int)), dltable.get(), SLOT(sortByColumn(int)));
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
