@@ -4879,7 +4879,7 @@
         </data_defined_properties>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" name="topo main road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo main road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="1" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
@@ -5186,7 +5186,7 @@
         </symbol>
       </layer>
     </symbol>
-    <symbol favorite="1" force_rhr="0" name="topo road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
+    <symbol favorite="1" force_rhr="0" renderer_should_use_levels="1" name="topo road" alpha="1" tags="Topology" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="1" pass="0">
         <prop k="capstyle" v="round"/>
         <prop k="customdash" v="5;2"/>
