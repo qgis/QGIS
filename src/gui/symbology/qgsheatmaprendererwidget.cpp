@@ -109,7 +109,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsHeatmapRenderer >();
+    mRenderer = qgis::make_unique< QgsHeatmapRenderer >();
   }
 
   btnColorRamp->setShowGradientOnly( true );
