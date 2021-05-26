@@ -600,6 +600,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
     mProperty.setStaticValue( QVariant() );
     mProperty.setTransformer( nullptr );
     mExpressionString.clear();
+    mFieldName.clear();
     updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();
