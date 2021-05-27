@@ -274,7 +274,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   QDomElement redContrastElem = elem.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
   if ( !redContrastElem.isNull() )
   {
-    redContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     redContrastEnhancement->readXml( redContrastElem );
     setRedContrastEnhancement( redContrastEnhancement );
   }
@@ -283,7 +283,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   QDomElement greenContrastElem = elem.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
   if ( !greenContrastElem.isNull() )
   {
-    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     greenContrastEnhancement->readXml( greenContrastElem );
     setGreenContrastEnhancement( greenContrastEnhancement );
   }
@@ -292,7 +292,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
   QDomElement blueContrastElem = elem.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
   if ( !blueContrastElem.isNull() )
   {
-    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     blueContrastEnhancement->readXml( blueContrastElem );
     setBlueContrastEnhancement( blueContrastEnhancement );
   }

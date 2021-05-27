@@ -1593,7 +1593,7 @@ Qgis::DataType QgsWmsProvider::dataType( int bandNo ) const
 Qgis::DataType QgsWmsProvider::sourceDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo )
-  return Qgis::ARGB32;
+  return Qgis::DataType::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const

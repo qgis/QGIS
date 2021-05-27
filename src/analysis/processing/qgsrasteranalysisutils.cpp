@@ -188,17 +188,17 @@ void populateDataTypes()
 {
   if ( sDataTypes.empty() )
   {
-    sDataTypes.append( qMakePair( QStringLiteral( "Byte" ), Qgis::Byte ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int16" ), Qgis::Int16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt16" ), Qgis::UInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Int32" ), Qgis::Int32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "UInt32" ), Qgis::UInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float32" ), Qgis::Float32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "Float64" ), Qgis::Float64 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt16" ), Qgis::CInt16 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::CInt32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::CFloat32 ) );
-    sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::CFloat64 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Byte" ), Qgis::DataType::Byte ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Int16" ), Qgis::DataType::Int16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "UInt16" ), Qgis::DataType::UInt16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Int32" ), Qgis::DataType::Int32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "UInt32" ), Qgis::DataType::UInt32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Float32" ), Qgis::DataType::Float32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Float64" ), Qgis::DataType::Float64 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CInt16" ), Qgis::DataType::CInt16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::DataType::CInt32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::DataType::CFloat32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::DataType::CFloat64 ) );
   }
 }
 
@@ -223,7 +223,7 @@ std::unique_ptr<QgsProcessingParameterDefinition> QgsRasterAnalysisUtils::create
 Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
 {
   if ( choice < 0 || choice >= sDataTypes.count() )
-    return Qgis::Float32;
+    return Qgis::DataType::Float32;
 
   return sDataTypes.value( choice ).second;
 }

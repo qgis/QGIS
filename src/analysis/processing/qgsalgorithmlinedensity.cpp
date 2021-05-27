@@ -140,7 +140,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   QgsRasterFileWriter writer = QgsRasterFileWriter( outputFile );
   writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer.setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::Float32, cols, rows, rasterExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::DataType::Float32, cols, rows, rasterExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -151,7 +151,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
-  std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::Float32, cols, 1 );
+  std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, cols, 1 );
 
   for ( int row = 0; row < rows; row++ )
   {

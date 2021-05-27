@@ -180,7 +180,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   QDomElement redContrastElem = element.firstChildElement( QStringLiteral( "redContrastEnhancement" ) );
   if ( !redContrastElem.isNull() )
   {
-    redContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     redContrastEnhancement->readXml( redContrastElem );
     r->setRedContrastEnhancement( redContrastEnhancement );
   }
@@ -189,7 +189,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   QDomElement greenContrastElem = element.firstChildElement( QStringLiteral( "greenContrastEnhancement" ) );
   if ( !greenContrastElem.isNull() )
   {
-    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     greenContrastEnhancement->readXml( greenContrastElem );
     r->setGreenContrastEnhancement( greenContrastEnhancement );
   }
@@ -198,7 +198,7 @@ QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, c
   QDomElement blueContrastElem = element.firstChildElement( QStringLiteral( "blueContrastEnhancement" ) );
   if ( !blueContrastElem.isNull() )
   {
-    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueContrastEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     blueContrastEnhancement->readXml( blueContrastElem );
     r->setBlueContrastEnhancement( blueContrastEnhancement );
   }
