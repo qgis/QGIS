@@ -103,19 +103,19 @@ class CORE_EXPORT Qgis
      */
     enum MessageLevel
     {
-      Info = 0,
-      Warning = 1,
-      Critical = 2,
-      Success = 3,
-      None = 4
+      Info = 0, //!< Information message
+      Warning = 1, //!< Warning message
+      Critical = 2, //!< Critical/error message
+      Success = 3, //!< Used for reporting a successful operation
+      None = 4, //!< No level
     };
 
     /**
      * Raster data types.
-     *  This is modified and extended copy of GDALDataType.
+     * This is modified and extended copy of GDALDataType.
      */
-    enum DataType
-    {
+    enum class DataType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, DataType ) : int
+      {
       UnknownDataType = 0, //!< Unknown or unspecified type
       Byte = 1, //!< Eight bit unsigned integer (quint8)
       UInt16 = 2, //!< Sixteen bit unsigned integer (quint16)

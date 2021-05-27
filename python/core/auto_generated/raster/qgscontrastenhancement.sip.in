@@ -33,7 +33,10 @@ ContrastEnhancementAlgorithm.
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::DataType::Byte );
+%Docstring
+Constructor for QgsContrastEnhancement, for the specified data type.
+%End
     QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
 

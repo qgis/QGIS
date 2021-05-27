@@ -15154,8 +15154,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
 
       if ( dprovider
-           && dprovider->dataType( 1 ) != Qgis::ARGB32
-           && dprovider->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
+           && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32
+           && dprovider->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied )
       {
         if ( dprovider->capabilities() & QgsRasterDataProvider::Size )
         {

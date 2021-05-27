@@ -1049,7 +1049,9 @@ while ($LINE_IDX < $LINE_COUNT){
         $enum_mk_base = $+{emkb} if defined $+{emkb};
         if (defined $+{emkf} and $monkeypatch eq "1"){
           if ( $ACTUAL_CLASS ne "" ) {
-            push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $ACTUAL_CLASS.$enum_qualname\n";
+            if ($enum_mk_base.$+{emkf} ne $ACTUAL_CLASS.$enum_qualname) {
+              push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $ACTUAL_CLASS.$enum_qualname\n";
+            }
           } else {
             push @OUTPUT_PYTHON, "$enum_mk_base.$+{emkf} = $enum_qualname\n";
           }

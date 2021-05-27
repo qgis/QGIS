@@ -81,11 +81,11 @@ The development version
       Warning,
       Critical,
       Success,
-      None
+      None,
     };
 
-    enum DataType
-    {
+    enum class DataType
+      {
       UnknownDataType,
       Byte,
       UInt16,

@@ -259,35 +259,35 @@ bool QgsGrassRasterImport::import()
       blueBand = band;
     }
 
-    Qgis::DataType qgis_out_type = Qgis::UnknownDataType;
+    Qgis::DataType qgis_out_type = Qgis::DataType::UnknownDataType;
 #ifdef QGISDEBUG
     RASTER_MAP_TYPE data_type = -1;
 #endif
     switch ( provider->dataType( band ) )
     {
-      case Qgis::Byte:
-      case Qgis::UInt16:
-      case Qgis::Int16:
-      case Qgis::UInt32:
-      case Qgis::Int32:
-        qgis_out_type = Qgis::Int32;
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+        qgis_out_type = Qgis::DataType::Int32;
         break;
-      case Qgis::Float32:
-        qgis_out_type = Qgis::Float32;
+      case Qgis::DataType::Float32:
+        qgis_out_type = Qgis::DataType::Float32;
         break;
-      case Qgis::Float64:
-        qgis_out_type = Qgis::Float64;
+      case Qgis::DataType::Float64:
+        qgis_out_type = Qgis::DataType::Float64;
         break;
-      case Qgis::ARGB32:
-      case Qgis::ARGB32_Premultiplied:
-        qgis_out_type = Qgis::Int32;  // split to multiple bands?
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+        qgis_out_type = Qgis::DataType::Int32;  // split to multiple bands?
         break;
-      case Qgis::CInt16:
-      case Qgis::CInt32:
-      case Qgis::CFloat32:
-      case Qgis::CFloat64:
-      case Qgis::UnknownDataType:
-        setError( tr( "Data type %1 not supported" ).arg( provider->dataType( band ) ) );
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::UnknownDataType:
+        setError( tr( "Data type %1 not supported" ).arg( static_cast< int >( provider->dataType( band ) ) ) );
         return false;
     }
 
@@ -359,7 +359,7 @@ bool QgsGrassRasterImport::import()
 
         if ( !block->convert( qgis_out_type ) )
         {
-          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgis_out_type ) );
+          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgsEnumValueToKey< Qgis::DataType >( qgis_out_type ) ) );
           delete block;
           return false;
         }
@@ -373,13 +373,13 @@ bool QgsGrassRasterImport::import()
         {
           switch ( qgis_out_type )
           {
-            case Qgis::Int32:
+            case Qgis::DataType::Int32:
               noDataValue = -2147483648.0;
               break;
-            case Qgis::Float32:
+            case Qgis::DataType::Float32:
               noDataValue = std::numeric_limits<float>::max() * -1.0;
               break;
-            case Qgis::Float64:
+            case Qgis::DataType::Float64:
               noDataValue = std::numeric_limits<double>::max() * -1.0;
               break;
             default: // should not happen
