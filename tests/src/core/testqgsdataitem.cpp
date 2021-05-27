@@ -53,6 +53,7 @@ class TestQgsDataItem : public QObject
     void testDirItem();
     void testDirItemChildren();
     void testDirItemMonitoring();
+    void testDirItemMonitoringSlowDrive();
     void testLayerItemType();
     void testProjectItemCreation();
 
@@ -339,6 +340,57 @@ void TestQgsDataItem::testDirItemMonitoring()
   QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
   QVERIFY( !childItem3->isMonitored() );
   QVERIFY( !childItem3->mFileSystemWatcher );
+}
+
+void TestQgsDataItem::testDirItemMonitoringSlowDrive()
+{
+  QTemporaryDir dir;
+
+  // fake a directory on a slow drive -- this is a special hardcoded path which always reports to be on a slow drive. See QgsFileUtils::pathIsSlowDevice
+  const QString parentDir = dir.path() + QStringLiteral( "/fake_slow_path_for_unit_tests" );
+  const QString child1 = parentDir + QStringLiteral( "/child1" );
+  QVERIFY( QDir().mkpath( child1 ) );
+  const QString child2 = parentDir + QStringLiteral( "/child2" );
+  QVERIFY( QDir().mkpath( child2 ) );
+  const QString child2child = child2 + QStringLiteral( "/child" );
+  QVERIFY( QDir().mkpath( child2child ) );
+
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( parentDir ) );
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child1 ) );
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2 ) );
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2child ) );
+
+  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
+  // user has not explicitly set the path to be monitored or not, so Default should be returned here:
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  // but directory should NOT be monitored
+  QVERIFY( !dirItem->isMonitored() );
+
+  dirItem->populate( true );
+  QVERIFY( !dirItem->mFileSystemWatcher );
+
+  QCOMPARE( dirItem->rowCount(), 2 );
+  QPointer< QgsDirectoryItem > childItem1( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 0 ) ) );
+  QPointer< QgsDirectoryItem > childItem2( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 1 ) ) );
+  QVERIFY( childItem1 );
+  QVERIFY( childItem2 );
+  // neither of these should be monitored either!
+  QVERIFY( !childItem1->isMonitored() );
+  QVERIFY( !childItem2->isMonitored() );
+  childItem1->populate( true );
+  childItem2->populate( true );
+  QVERIFY( !childItem1->mFileSystemWatcher );
+  QVERIFY( !childItem2->mFileSystemWatcher );
+
+  // explicitly opt in to monitoring a directory on a slow drive
+  childItem2->setMonitoring( Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->mFileSystemWatcher );
+
+  // this means that subdirectories of childItem2 should now return true to being monitored by default
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( parentDir ) );
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child1 ) );
+  QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2 ) );
+  QVERIFY( QgsDirectoryItem::pathShouldByMonitoredByDefault( child2child ) );
 }
 
 void TestQgsDataItem::testLayerItemType()

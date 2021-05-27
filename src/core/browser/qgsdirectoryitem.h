@@ -150,8 +150,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * manually enabled or disabled. As soon as a parent directory is found which has monitoring
      * manually enabled or disabled then the corresponding value will be returned.
      *
-     * Paths are monitored by default, so if no explicit setting is in place for a parent directory then
-     * the function will return TRUE.
+     * If no explicit setting is in place for a parent directory, then a check will be made to determine
+     * whether the path resides on a known slow drive. If so, monitoring is disabled by default and
+     * FALSE will be returned. Otherwise paths are monitored by default and the function will return TRUE.
      *
      * \see isMonitored()
      * \see setMonitoring()
