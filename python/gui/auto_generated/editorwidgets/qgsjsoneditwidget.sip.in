@@ -9,6 +9,7 @@
 
 
 
+
 class QgsJsonEditWidget : QWidget
 {
 %Docstring(signature="appended")
