@@ -53,7 +53,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="lisanhuaToolButton">
+       <widget class="QToolButton" name="resetToolButton">
         <property name="enabled">
          <bool>false</bool>
         </property>

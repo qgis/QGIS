@@ -117,6 +117,8 @@ public:
   void setProfileWindow( QgsProfileWinow * window) 
   {
     mMapCanvas = window;
+
+    connect(mMapCanvas, &View3D::EmitPointXYZ, this, &QgsDLAttributeTableModel::receivepickedpoints);
     //connect(mMapCanvas,);
   }
   //自定义导入导出数据的接口
@@ -127,6 +129,10 @@ public:
       endResetModel();
   };
 
+ bool ClearModelData()
+  {
+    modelData.clear();
+  }
   std::vector<ModelItem> getModelData() const
   {
      return modelData;
@@ -239,12 +245,17 @@ public:
       this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
       this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
       this->pushButton->setEnabled(false);
+      this->resetToolButton->setEnabled(true);
       this->alignedPointsTableView->sortByColumn(1,Qt::AscendingOrder); // x 列按照升序排序
       this->alignedPointsTableView->setSortingEnabled(true);
+      connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
+      connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetPicked);
     };
     void setModel(QAbstractItemModel *model)
     {
       this->alignedPointsTableView->setModel(model);
+      
+
     }
 private :
     bool insert_pt_table_(Point3D xyz , PointType type)
@@ -262,6 +273,11 @@ public  slots:
      this->alignedPointsTableView->model()->sort(column, order);
      this->alignedPointsTableView->setSortingEnabled(false);
    }
+   void OnResetPicked()
+   {
+     dynamic_cast<QgsDLAttributeTableModel*>( this->alignedPointsTableView->model())->ClearModelData();
+     this->resetToolButton->setEnabled(false);
+   }
     void OnStartPointPicked(Point3D xyz)
     {
 
@@ -276,12 +292,13 @@ public  slots:
     void OnOtherPointPvicked(Point3D xyz)
     {
     }
-    void OnNiheButtonClicked(Point3D xyz)
+    void OnNiheButtonClicked()
     {
 
     }
     void OnBuDianButtonClicked(Point3D xyz)
     {
+
     }
 };
 class APP_EXPORT QgsClassSettingWindowDockWidget : public QgsDockWidget, private Ui::QgsClassSettingWindowDockWidgetBase

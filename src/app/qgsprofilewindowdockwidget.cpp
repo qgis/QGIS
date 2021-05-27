@@ -378,6 +378,7 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
 
   //QHeaderView *headerGoods = polynomial_dialog_widget->alignedPointsTableView->horizontalHeader();
   //connect(headerGoods, SIGNAL(sectionClicked(int)), dltable.get(), SLOT(sortByColumn(int)));
+
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
@@ -391,6 +392,7 @@ void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow * window)
   horizontalLayout->addWidget(mMapCanvas);
   mMapCanvas->setOpenHandCursor();
   connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
+ 
   if (!(dltable ==nullptr))
   {
     dltable->setProfileWindow(window);
@@ -464,7 +466,8 @@ void QgsDLWindowDockWidget::OndrawlieonprofileClicked2()
 void QgsDLWindowDockWidget::OnmActionPickPoints()
 {
   mMapCanvas->StartPickingMode();
-  if (mMapCanvas->ViewStateID == View3D::ViewState::PickingPoint) 
+  /*
+   if (mMapCanvas->ViewStateID == View3D::ViewState::PickingPoint)
   {
     connect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
   }
@@ -472,6 +475,7 @@ void QgsDLWindowDockWidget::OnmActionPickPoints()
   {
     disconnect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
   }
+  */
 }
 void QgsDLWindowDockWidget::OnmActionBrushPoints()
 {
