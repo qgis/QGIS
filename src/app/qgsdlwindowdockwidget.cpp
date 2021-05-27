@@ -25,14 +25,14 @@
 #include <QToolButton>
 #include <QRadioButton>
 
-#ifdef GTE_MATH
+#ifdef USE_GTE_MATH
 #include <Mathematics/ApprPolynomial3.h>
 using namespace gte;
 #endif // DEBUG
 
 /////-------------------------------电力线点ViewModel-------------------------------------------
 
-QgsDLAttributeTableModel::QgsDLAttributeTableModel(QWidget *parent = nullptr)
+QgsDLAttributeTableModel::QgsDLAttributeTableModel(QWidget *parent )
     : QAbstractTableModel(parent)
 {
   m_header.push_back("X");
@@ -94,14 +94,14 @@ std::vector<ModelItem> QgsDLAttributeTableModel::getModelData() const
   return modelData;
 };
 
-int QgsDLAttributeTableModel::rowCount(const QModelIndex &parent = QModelIndex()) const
+int QgsDLAttributeTableModel::rowCount(const QModelIndex &parent ) const
 {
   if (parent.isValid())
     return 0;
   return modelData.size();
 };
 
-int QgsDLAttributeTableModel::columnCount(const QModelIndex &parent = QModelIndex()) const
+int QgsDLAttributeTableModel::columnCount(const QModelIndex &parent) const
 {
   if (parent.isValid())
     return 0;
@@ -109,7 +109,7 @@ int QgsDLAttributeTableModel::columnCount(const QModelIndex &parent = QModelInde
   return m_header.size();
 };
 
-QVariant QgsDLAttributeTableModel::headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const
+QVariant QgsDLAttributeTableModel::headerData(int section, Qt::Orientation orientation, int role ) const
 {
   if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
     return m_header[section];
@@ -163,7 +163,7 @@ Qt::ItemFlags QgsDLAttributeTableModel::flags(const QModelIndex &index) const
   return flags;
 };
 
-bool QgsDLAttributeTableModel::setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)
+bool QgsDLAttributeTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
   //将界面修改的值进行保存
   if (index.isValid() && role == Qt::EditRole)

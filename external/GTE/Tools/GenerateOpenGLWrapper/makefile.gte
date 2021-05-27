@@ -1,0 +1,32 @@
+CFG ?= Debug
+
+CC := /usr/bin/g++
+CFLAGS := -c -D__LINUX__ -DGTE_DEV_OPENGL -std=c++14
+
+ifeq (Debug,$(findstring Debug,$(CFG)))
+CFLAGS += -g -D_DEBUG
+else
+CFLAGS += -O2 -DNDEBUG
+endif
+
+INCPATH := -I ../../../Include
+SRC := $(notdir $(wildcard *.cpp))
+OBJ := $(SRC:%.cpp=$(CFG)/%.o)
+LIBPATH := -L ../../../lib/$(CFG)
+LDFLAGS := -Wl,--no-as-needed
+LIBS := -lgtengine -lX11 -lXext -lGL -lpng -lm 
+
+build : createdir compile
+
+createdir :
+	@mkdir -p $(CFG)
+
+compile : $(OBJ)
+	$(CC) $(LDFLAGS) $(LIBPATH) $(OBJ) -o $(APP).$(CFG) $(LIBS)
+
+clean :
+	rm -rf $(CFG)
+	rm -f $(APP).$(CFG)
+
+$(CFG)/%.o : %.cpp
+	$(CC) $(CFLAGS) $(INCPATH) $< -o $@

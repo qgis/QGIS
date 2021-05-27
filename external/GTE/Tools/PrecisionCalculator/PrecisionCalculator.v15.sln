@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrecisionCalculator.v15", "PrecisionCalculator.v15.vcxproj", "{67C8DE4D-1934-4852-821C-B6C69621BD45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Required", "Required", "{988E40C3-D8B6-40E4-8939-D81319C6CBF2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GTMathematics.v15", "..\..\GTMathematics.v15.vcxproj", "{49616508-0E21-4645-AC0B-7FE8E3628AB0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Debug|x64.ActiveCfg = Debug|x64
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Debug|x64.Build.0 = Debug|x64
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Debug|x86.ActiveCfg = Debug|Win32
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Debug|x86.Build.0 = Debug|Win32
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Release|x64.ActiveCfg = Release|x64
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Release|x64.Build.0 = Release|x64
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Release|x86.ActiveCfg = Release|Win32
+		{67C8DE4D-1934-4852-821C-B6C69621BD45}.Release|x86.Build.0 = Release|Win32
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Debug|x64.ActiveCfg = Debug|x64
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Debug|x64.Build.0 = Debug|x64
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Debug|x86.ActiveCfg = Debug|Win32
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Debug|x86.Build.0 = Debug|Win32
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Release|x64.ActiveCfg = Release|x64
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Release|x64.Build.0 = Release|x64
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Release|x86.ActiveCfg = Release|Win32
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{49616508-0E21-4645-AC0B-7FE8E3628AB0} = {988E40C3-D8B6-40E4-8939-D81319C6CBF2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB1A2183-9BDB-4737-ACAF-C0BCA43DA098}
+	EndGlobalSection
+EndGlobal

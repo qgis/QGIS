@@ -511,6 +511,9 @@ endif()
 
 set(CMAKE_AUTOMOC ON)
 
+# GTE 工具 
+set(WITH_GTE  TRUE)
+
 # build our version of astyle
 set (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
@@ -946,6 +949,7 @@ if (WITH_CORE)
   link_directories(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 endif()
 
+
 ####################################################
 # clang-tidy
 set (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
@@ -1019,6 +1023,11 @@ if (ENABLE_TESTS)
   add_subdirectory(tests)
   set (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
   message (STATUS "Ctest Binary Directory set to: ${CTEST_BINARY_DIRECTORY}")
+endif()
+
+if (WITH_GTE)
+  add_subdirectory(external/GTE)
+  add_definitions(-DUSE_GTE_MATH)
 endif()
 
 #############################################################

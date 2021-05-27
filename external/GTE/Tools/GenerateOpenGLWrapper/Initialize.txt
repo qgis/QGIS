@@ -1,0 +1,130 @@
+void InitializeOpenGL(int& major, int& minor, char const* infofile)
+{
+#if !defined(GTE_USE_MSWINDOWS)
+    Initialize_OPENGL_VERSION_1_0();
+    Initialize_OPENGL_VERSION_1_1();
+#endif
+
+    Initialize_OPENGL_VERSION_1_2();
+    Initialize_OPENGL_VERSION_1_3();
+    Initialize_OPENGL_VERSION_1_4();
+    Initialize_OPENGL_VERSION_1_5();
+    Initialize_OPENGL_VERSION_2_0();
+    Initialize_OPENGL_VERSION_2_1();
+    Initialize_OPENGL_VERSION_3_0();
+    Initialize_OPENGL_VERSION_3_1();
+    Initialize_OPENGL_VERSION_3_2();
+    Initialize_OPENGL_VERSION_3_3();
+    Initialize_OPENGL_VERSION_4_0();
+    Initialize_OPENGL_VERSION_4_1();
+    Initialize_OPENGL_VERSION_4_2();
+    Initialize_OPENGL_VERSION_4_3();
+    Initialize_OPENGL_VERSION_4_4();
+    Initialize_OPENGL_VERSION_4_5();
+
+    if (infofile)
+    {
+        std::ofstream output(infofile);
+        if (output)
+        {
+            char const* vendor = (char const*)glGetString(GL_VENDOR);
+            if (vendor)
+            {
+                output << "vendor = " << vendor;
+            }
+            else
+            {
+                output << "vendor = <null>";
+            }
+            output << std::endl;
+
+            char const* renderer = (char const*)glGetString(GL_RENDERER);
+            if (vendor)
+            {
+                output << "renderer = " << renderer;
+            }
+            else
+            {
+                output << "renderer = <null>";
+            }
+            output << std::endl;
+
+            char const* version = (char const*)glGetString(GL_VERSION);
+            if (version)
+            {
+                output << "version = " << version;
+            }
+            else
+            {
+                output << "version = <null>";
+            }
+            output << std::endl;
+
+            if (GetOpenGLVersion() >= OPENGL_VERSION_3_0)
+            {
+                GLint numExtensions;
+                glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+                for (int i = 0; i < numExtensions; ++i)
+                {
+                    output << glGetStringi(GL_EXTENSIONS, i) << std::endl;
+                }
+            }
+            else
+            {
+                char const* extensions = (char const*)glGetString(GL_EXTENSIONS);
+                if (extensions)
+                {
+                    output << "extensions =" << std::endl;
+                    std::string tokenString(extensions);
+                    std::vector<std::string> tokens;
+                    tokens.clear();
+                    while (tokenString.length() > 0)
+                    {
+                        // Find the beginning of a token.
+                        auto begin = tokenString.find_first_not_of(" \t");
+                        if (begin == std::string::npos)
+                        {
+                            // All tokens have been found.
+                            break;
+                        }
+
+                        // Strip off the white space.
+                        if (begin > 0)
+                        {
+                            tokenString = tokenString.substr(begin);
+                        }
+
+                        // Find the end of the token.
+                        auto end = tokenString.find_first_of(" \t");
+                        if (end != std::string::npos)
+                        {
+                            std::string token = tokenString.substr(0, end);
+                            tokens.push_back(token);
+                            tokenString = tokenString.substr(end);
+                        }
+                        else
+                        {
+                            // This is the last token.
+                            tokens.push_back(tokenString);
+                            break;
+                        }
+                    }
+
+                    for (auto const& token : tokens)
+                    {
+                        output << "    " << token << std::endl;
+                    }
+                }
+                else
+                {
+                    output << "extensions = <null>" << std::endl;
+                }
+            }
+
+            output.close();
+        }
+    }
+
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+}

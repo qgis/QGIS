@@ -1,0 +1,44 @@
+﻿{
+  "build_type": {
+    "default": "debug",
+    "description": "The CMake build type to use",
+    "choices": {
+      "debug": {
+        "short": "Debug",
+        "long": "Emit debug information without performing optimizations",
+        "buildType": "Debug",
+        "settings": {
+          "BUILD_RELEASE_LIB": false
+        }
+      },
+      "release": {
+        "short": "Release",
+        "long": "Enable optimizations, omit debug info",
+        "buildType": "Release",
+        "settings": {
+          "BUILD_RELEASE_LIB": true
+        }
+      }
+    }
+  },
+  "library_type": {
+    "default": "static",
+    "description": "Selects the library type to build for",
+    "choices": {
+      "static": {
+        "short": "Static",
+        "long": "Builds the static library",
+        "settings": {
+          "BUILD_SHARED_LIB": false
+        }
+      },
+      "shared": {
+        "short": "Shared",
+        "long": "Builds the shared library",
+        "settings": {
+          "BUILD_SHARED_LIB": true
+        }
+      }
+    }
+  }
+}

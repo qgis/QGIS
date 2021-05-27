@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenerateApproximations.v14", "GenerateApproximations.v14.vcxproj", "{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Required", "Required", "{275DE102-73CC-4746-9878-FE87B2FF4AAD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GTMathematics.v14", "..\..\GTMathematics.v14.vcxproj", "{10A02379-886E-46F8-93F1-1E14235D42F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Debug|Win32.Build.0 = Debug|Win32
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Debug|x64.ActiveCfg = Debug|x64
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Debug|x64.Build.0 = Debug|x64
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Release|Win32.ActiveCfg = Release|Win32
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Release|Win32.Build.0 = Release|Win32
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Release|x64.ActiveCfg = Release|x64
+		{2DAA3A00-BE9F-4CBB-9D6D-9AE99B031DE2}.Release|x64.Build.0 = Release|x64
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Debug|Win32.Build.0 = Debug|Win32
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Debug|x64.ActiveCfg = Debug|x64
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Debug|x64.Build.0 = Debug|x64
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Release|Win32.ActiveCfg = Release|Win32
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Release|Win32.Build.0 = Release|Win32
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Release|x64.ActiveCfg = Release|x64
+		{10A02379-886E-46F8-93F1-1E14235D42F9}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10A02379-886E-46F8-93F1-1E14235D42F9} = {275DE102-73CC-4746-9878-FE87B2FF4AAD}
+	EndGlobalSection
+EndGlobal
