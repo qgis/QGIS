@@ -35,6 +35,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgscollapsiblegroupbox.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -98,13 +99,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   , mButtonsVisibility( qgsFlagKeysToValue( config.value( QStringLiteral( "buttons" ) ).toString(), QgsRelationEditorWidget::Button::AllButtons ) )
 {
   QVBoxLayout *rootLayout = new QVBoxLayout( this );
-  rootLayout->setContentsMargins( 0, 0, 0, 0 );
-
-  mRootCollapsibleGroupBox = new QgsCollapsibleGroupBox( QString(), this );
-  rootLayout->addWidget( mRootCollapsibleGroupBox );
-
-  QVBoxLayout *topLayout = new QVBoxLayout( mRootCollapsibleGroupBox );
-  topLayout->setContentsMargins( 0, 9, 0, 0 );
+  rootLayout->setContentsMargins( 0, 9, 0, 0 );
 
   // buttons
   QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -195,18 +190,17 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mViewModeButtonGroup->addButton( mTableViewButton, QgsDualView::AttributeTable );
 
   // add buttons layout
-  topLayout->addLayout( buttonLayout );
+  rootLayout->addLayout( buttonLayout );
 
-  mRelationLayout = new QGridLayout();
-  mRelationLayout->setContentsMargins( 0, 0, 0, 0 );
-  topLayout->addLayout( mRelationLayout );
-
+  // add dual view
+  QGridLayout *relationLayout = new QGridLayout();
+  relationLayout->setContentsMargins( 0, 0, 0, 0 );
   mDualView = new QgsDualView( this );
   mDualView->setView( mViewMode );
+  connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
+  relationLayout->addWidget( mDualView );
+  rootLayout->addLayout( relationLayout );
 
-  mRelationLayout->addWidget( mDualView );
-
-  connect( mRootCollapsibleGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsRelationEditorWidget::onCollapsedStateChanged );
   connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
            this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::toggleEditing );
@@ -218,8 +212,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
-
-  connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
@@ -365,49 +357,36 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
   updateButtons();
 }
 
-void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
-{
-  if ( !collapsed )
-  {
-    mVisible = true;
-    updateUi();
-  }
-}
-
 void QgsRelationEditorWidget::updateUi()
 {
-  // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
-  // If it is already initialized, it has been set visible before and the currently shown feature is changing
-  // and the widget needs updating
+  if ( !mRelation.isValid() || !mFeature.isValid() )
+    return;
 
-  if ( mVisible )
+  if ( !isVisible() )
+    return;
+
+  QgsFeatureRequest request = mRelation.getRelatedFeaturesRequest( mFeature );
+
+  if ( mNmRelation.isValid() )
   {
-    QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
+    QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
+    QgsFeature fet;
+    QStringList filters;
 
-    if ( mNmRelation.isValid() )
+    while ( it.nextFeature( fet ) )
     {
-      QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( myRequest );
-
-      QgsFeature fet;
-
-      QStringList filters;
-
-      while ( it.nextFeature( fet ) )
-      {
-        QString filter = mNmRelation.getReferencedFeatureRequest( fet ).filterExpression()->expression();
-        filters << filter.prepend( '(' ).append( ')' );
-      }
-
-      QgsFeatureRequest nmRequest;
-
-      nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
-
-      initDualView( mNmRelation.referencedLayer(), nmRequest );
+      QString filter = mNmRelation.getReferencedFeatureRequest( fet ).filterExpression()->expression();
+      filters << filter.prepend( '(' ).append( ')' );
     }
-    else if ( mRelation.referencingLayer() )
-    {
-      initDualView( mRelation.referencingLayer(), myRequest );
-    }
+
+    QgsFeatureRequest nmRequest;
+    nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
+
+    initDualView( mNmRelation.referencedLayer(), nmRequest );
+  }
+  else if ( mRelation.referencingLayer() )
+  {
+    initDualView( mRelation.referencingLayer(), request );
   }
 }
 
@@ -510,11 +489,6 @@ void QgsRelationEditorWidget::setConfig( const QVariantMap &config )
   updateButtons();
 }
 
-void QgsRelationEditorWidget::setTitle( const QString &title )
-{
-  mRootCollapsibleGroupBox->setTitle( title );
-}
-
 void QgsRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature )
 {
   Q_UNUSED( newRelation );
@@ -549,15 +523,8 @@ void QgsRelationEditorWidget::afterSetRelationFeature()
     mToggleEditingButton->setEnabled( false );
   }
 
-  // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
-  // If it is already initialized, it has been set visible before and the currently shown feature is changing
-  // and the widget needs updating
-
-  if ( mVisible )
-  {
-    QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
-    initDualView( mRelation.referencingLayer(), myRequest );
-  }
+  QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
+  initDualView( mRelation.referencingLayer(), myRequest );
 }
 
 void QgsRelationEditorWidget::beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation )

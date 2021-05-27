@@ -103,8 +103,8 @@ bool QgsCellStatisticsAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
 
   //determine output raster data type
   //initially raster data type to most primitive data type that is possible
-  mDataType = Qgis::Byte;
-  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+  mDataType = Qgis::DataType::Byte;
+  for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
   {
     for ( int band : i.bands )
     {
@@ -245,12 +245,12 @@ bool QgsCellStatisticsAlgorithm::prepareSpecificAlgorithmParameters( const QVari
   )
   {
     if ( static_cast<int>( mDataType ) < 6 )
-      mDataType = Qgis::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
+      mDataType = Qgis::DataType::Float32; //force float on mean, stddev and median with equal number of input layers if all inputs are integer
   }
   else if ( mMethod == QgsRasterAnalysisUtils::Count || mMethod == QgsRasterAnalysisUtils::Variety ) //count, variety
   {
     if ( static_cast<int>( mDataType ) > 5 ) //if is floating point type
-      mDataType = Qgis::Int32; //force integer on variety if all inputs are float or complex
+      mDataType = Qgis::DataType::Int32; //force integer on variety if all inputs are float or complex
   }
   return true;
 }
@@ -275,7 +275,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -425,7 +425,7 @@ bool QgsCellStatisticsPercentileAlgorithm::prepareSpecificAlgorithmParameters( c
 
   //default percentile output data type to float32 raster if interpolation method is chosen
   //otherwise use the most potent data type in the intput raster stack (see prepareAlgorithm() in base class)
-  if ( mMethod != QgsRasterAnalysisUtils::CellValuePercentileMethods::NearestRankPercentile && mDataType < 6 )
+  if ( mMethod != QgsRasterAnalysisUtils::CellValuePercentileMethods::NearestRankPercentile && static_cast< int >( mDataType ) < 6 )
     mDataType = Qgis::DataType::Float32;
 
   return true;
@@ -452,7 +452,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -590,7 +590,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
   while ( outputIter.readNextRasterPart( 1, iterCols, iterRows, outputBlock, iterLeft, iterTop, &blockExtent ) )
   {
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded
@@ -735,7 +735,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
     std::unique_ptr< QgsRasterBlock > valueBlock( mValueRasterInterface->block( mValueRasterBand, blockExtent, iterCols, iterRows ) );
 
     std::vector< std::unique_ptr< QgsRasterBlock > > inputBlocks;
-    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : qgis::as_const( mInputs ) )
+    for ( const QgsRasterAnalysisUtils::RasterLogicInput &i : std::as_const( mInputs ) )
     {
       if ( feedback->isCanceled() )
         break; //in case some slow data sources are loaded

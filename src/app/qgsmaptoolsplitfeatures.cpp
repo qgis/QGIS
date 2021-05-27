@@ -36,6 +36,7 @@ bool QgsMapToolSplitFeatures::supportsTechnique( QgsMapToolCapture::CaptureTechn
   {
     case QgsMapToolCapture::StraightSegments:
     case QgsMapToolCapture::CircularString:
+    case QgsMapToolCapture::Streaming:
       return true;
   }
   return false;

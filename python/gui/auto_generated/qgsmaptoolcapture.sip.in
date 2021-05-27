@@ -33,6 +33,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
     {
       StraightSegments,
       CircularString,
+      Streaming,
     };
 
     enum Capability
@@ -137,6 +138,13 @@ transfers ownership to the caller.
 Enable the digitizing with curve
 %End
 
+    void setStreamDigitizingEnabled( bool enable );
+%Docstring
+Toggles the stream digitizing mode.
+
+.. versionadded:: 3.20
+%End
+
   protected:
 
 
@@ -224,9 +232,12 @@ Variant to supply more information in the case of snapping
 .. versionadded:: 2.14
 %End
 
-    void undo();
+    void undo( bool isAutoRepeat = false );
 %Docstring
-Removes the last vertex from mRubberBand and mCaptureList
+Removes the last vertex from mRubberBand and mCaptureList.
+
+Since QGIS 3.20, if ``isAutoRepeat`` is set to ``True`` then the undo operation will be treated
+as a auto repeated undo as if the user has held down the undo key for an extended period of time.
 %End
 
     void startCapturing();

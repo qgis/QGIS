@@ -445,15 +445,15 @@ void QgsGradientColorRampDialog::plotMouseMove( QPointF point )
   QColor newColor = mStopEditor->selectedStop().color;
 
   if ( mCurrentPlotColorComponent == 0 )
-    newColor = QColor::fromHslF( qBound( qreal( 0.0 ), point.y(), qreal( 1.0 ) ), newColor.hslSaturationF(), newColor.lightnessF(), newColor.alphaF() );
+    newColor = QColor::fromHslF( std::clamp( point.y(), qreal( 0.0 ), qreal( 1.0 ) ), newColor.hslSaturationF(), newColor.lightnessF(), newColor.alphaF() );
   else if ( mCurrentPlotColorComponent == 1 )
-    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), qBound( qreal( 0.0 ), point.y(), qreal( 1.0 ) ), newColor.alphaF() );
+    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), std::clamp( point.y(), qreal( 0.0 ), qreal( 1.0 ) ), newColor.alphaF() );
   else if ( mCurrentPlotColorComponent == 2 )
-    newColor = QColor::fromHslF( newColor.hslHueF(), qBound( qreal( 0.0 ), point.y(), qreal( 1.0 ) ), newColor.lightnessF(), newColor.alphaF() );
+    newColor = QColor::fromHslF( newColor.hslHueF(), std::clamp( point.y(), qreal( 0.0 ), qreal( 1.0 ) ), newColor.lightnessF(), newColor.alphaF() );
   else if ( mCurrentPlotColorComponent == 3 )
-    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), newColor.lightnessF(), qBound( qreal( 0.0 ), point.y(), qreal( 1.0 ) ) );
+    newColor = QColor::fromHslF( newColor.hslHueF(), newColor.hslSaturationF(), newColor.lightnessF(), std::clamp( point.y(), qreal( 0.0 ), qreal( 1.0 ) ) );
 
-  mStopEditor->setSelectedStopDetails( newColor, qBound( qreal( 0.0 ), point.x(), qreal( 1.0 ) ) );
+  mStopEditor->setSelectedStopDetails( newColor, std::clamp( point.x(), qreal( 0.0 ), qreal( 1.0 ) ) );
 }
 
 bool byX( QPointF p1, QPointF p2 )

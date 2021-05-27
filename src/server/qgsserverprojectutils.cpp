@@ -17,6 +17,7 @@
 
 #include "qgsserverprojectutils.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
 
 double  QgsServerProjectUtils::ceilWithPrecision( double number, int places )
 {
@@ -314,9 +315,120 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   return crsList;
 }
 
-QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
+  const QString serviceUpper = service.toUpper();
+  QString url = settings.serviceUrl( serviceUpper );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+
+  QgsServerRequest::RequestHeader header = QgsServerRequest::RequestHeader::X_QGIS_SERVICE_URL;
+  if ( serviceUpper == QLatin1String( "WMS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WMS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WFS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WFS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WCS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WCS_SERVICE_URL;
+  }
+  else if ( serviceUpper == QLatin1String( "WMTS" ) )
+  {
+    header = QgsServerRequest::RequestHeader::X_QGIS_WMTS_SERVICE_URL;
+  }
+  url = request.header( header );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+  url = request.header( QgsServerRequest::RequestHeader::X_QGIS_SERVICE_URL );
+  if ( ! url.isEmpty() )
+  {
+    return url;
+  }
+
+  QString proto;
+  QString host;
+
+  QString  forwarded = request.header( QgsServerRequest::FORWARDED );
+  if ( ! forwarded.isEmpty() )
+  {
+    forwarded = forwarded.split( QLatin1Char( ',' ) )[0];
+    QStringList elements = forwarded.split( ';' );
+    for ( const QString &element : elements )
+    {
+      QStringList splited_element = element.trimmed().split( QLatin1Char( '=' ) );
+      if ( splited_element[0] == "host" )
+      {
+        host = splited_element[1];
+      }
+      if ( splited_element[0] == "proto" )
+      {
+        proto = splited_element[1];
+      }
+    }
+  }
+
+  if ( host.isEmpty() )
+  {
+    host = request.header( QgsServerRequest::RequestHeader::X_FORWARDED_HOST );
+    proto = request.header( QgsServerRequest::RequestHeader::X_FORWARDED_PROTO );
+  }
+
+  if ( host.isEmpty() )
+  {
+    host = request.header( QgsServerRequest::RequestHeader::HOST );
+  }
+
+  QUrl urlQUrl = request.baseUrl();
+  if ( ! proto.isEmpty() )
+  {
+    urlQUrl.setScheme( proto );
+  }
+
+  if ( ! host.isEmpty() )
+  {
+    QStringList hostPort = host.split( QLatin1Char( ':' ) );
+    if ( hostPort.length() == 1 )
+    {
+      urlQUrl.setHost( hostPort[0] );
+      urlQUrl.setPort( -1 );
+    }
+    if ( hostPort.length() == 2 )
+    {
+      urlQUrl.setHost( hostPort[0] );
+      urlQUrl.setPort( hostPort[1].toInt() );
+    }
+  }
+
+  // https://docs.qgis.org/3.16/en/docs/server_manual/services.html#wms-map
+  const QString map = request.parameter( QStringLiteral( "MAP" ) );
+  if ( ! map.isEmpty() )
+  {
+    QUrlQuery query;
+    query.setQueryItems( {{"MAP", map}} );
+    urlQUrl.setQuery( query );
+  }
+  else
+  {
+    urlQUrl.setQuery( NULL );
+  }
+  return urlQUrl.url();
+}
+
+QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project, const  QgsServerRequest &request, const QgsServerSettings &settings )
+{
+  QString url = project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WMS" ), request, settings );
+  }
+  return url;
 }
 
 QString QgsServerProjectUtils::wmsRootName( const QgsProject &project )
@@ -345,9 +457,14 @@ QgsRectangle QgsServerProjectUtils::wmsExtent( const QgsProject &project )
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WFS" ), request, settings );
+  }
+  return url;
 }
 
 QStringList QgsServerProjectUtils::wfsLayerIds( const QgsProject &project )
@@ -375,9 +492,14 @@ QStringList QgsServerProjectUtils::wfstDeleteLayerIds( const QgsProject &project
   return project.readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
 }
 
-QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WCS" ), request, settings );
+  }
+  return url;
 }
 
 QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
@@ -385,9 +507,14 @@ QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
   return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 }
 
-QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
+QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project, const QgsServerRequest &request, const QgsServerSettings &settings )
 {
-  return project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
+  QString url = project.readEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), "" );
+  if ( url.isEmpty() )
+  {
+    url = serviceUrl( QStringLiteral( "WMTS" ), request, settings );
+  }
+  return url;
 }
 
 bool QgsServerProjectUtils::wmsRenderMapTiles( const QgsProject &project )

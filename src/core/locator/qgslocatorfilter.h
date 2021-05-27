@@ -18,7 +18,6 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include <QAction>
 #include <QIcon>
 #include <QString>
 #include <QVariant>
@@ -197,6 +196,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see name()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns a translated, description for the filter.
+     * \since QGIS 3.20
+     */
+    virtual QString description() const { return QString(); }
 
     /**
      * Returns flags which specify the filter's behavior.

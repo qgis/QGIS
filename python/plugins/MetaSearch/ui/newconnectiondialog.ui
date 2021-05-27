@@ -68,7 +68,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="lePassword"/>
+       <widget class="QgsPasswordLineEdit" name="lePassword"/>
       </item>
      </layout>
     </widget>
@@ -125,4 +125,11 @@
    </hints>
   </connection>
  </connections>
+  <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
 </ui>

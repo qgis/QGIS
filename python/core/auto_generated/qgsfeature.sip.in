@@ -12,10 +12,9 @@
 
 
 
-
 class QgsFeature
 {
-%Docstring
+%Docstring(signature="appended")
 The feature class encapsulates a single feature including its id,
 geometry and a list of field/values attributes.
 
@@ -376,6 +375,7 @@ Set the feature's ``geometry``. Ownership of the geometry is transferred to the 
 The feature will be made valid after calling this method.
 
 This method is a shortcut for calling:
+
 .. code-block:: python
 
        feature.setGeometry( QgsGeometry( geometry ) )
@@ -394,6 +394,8 @@ Example
        feature.setGeometry( QgsLineString( [ QgsPoint( 210, 41 ), QgsPoint( 301, 55 ) ] ) )
        print(feature.geometry())
        # output: <QgsGeometry: LineString (210 41, 301 55)>
+
+
 
 .. seealso:: :py:func:`geometry`
 
@@ -577,6 +579,22 @@ before this method can be used.
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
       }
     }
+%End
+
+    const QgsSymbol *embeddedSymbol() const;
+%Docstring
+Returns the feature's embedded symbology, or ``None`` if the feature has no embedded symbol.
+
+.. versionadded:: 3.20
+%End
+
+    void setEmbeddedSymbol( QgsSymbol *symbol /Transfer/ );
+%Docstring
+Sets the feature's embedded ``symbol``.
+
+Ownership of ``symbol`` is transferred to the feature.
+
+.. versionadded:: 3.20
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;

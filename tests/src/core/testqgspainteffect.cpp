@@ -43,6 +43,9 @@
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

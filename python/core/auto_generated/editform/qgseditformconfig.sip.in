@@ -13,7 +13,7 @@
 
 class QgsEditFormConfig
 {
-%Docstring
+%Docstring(signature="appended")
 Contains configuration settings for an editor form.
 %End
 
@@ -155,6 +155,7 @@ Example
 
 :return: ``False`` if a field exists with the provided widgetName. In this case
          :py:class:`QgsVectorLayer`.setEditorWidgetSetup should be used.
+
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End

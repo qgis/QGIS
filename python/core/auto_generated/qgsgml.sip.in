@@ -13,7 +13,7 @@
 
 class QgsGml : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class reads data from a WFS server or alternatively from a GML file.
 
 It

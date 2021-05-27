@@ -13,7 +13,7 @@
 
 class QgsFieldModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsFieldModel` class is a model to display the list of fields in widgets
 (optionally associated with a vector layer).
 If allowed, expressions might be added to the end of the model.

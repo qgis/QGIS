@@ -10,7 +10,7 @@
 
 class QgsLayoutAligner
 {
-%Docstring
+%Docstring(signature="appended")
 Handles aligning and distributing sets of layout items.
 
 :py:class:`QgsLayoutAligner` contains methods for automatically aligning and distributing

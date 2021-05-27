@@ -12,7 +12,7 @@
 
 class QgsPolygon: QgsCurvePolygon
 {
-%Docstring
+%Docstring(signature="appended")
 Polygon geometry type.
 
 .. versionadded:: 2.10

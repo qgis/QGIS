@@ -12,7 +12,7 @@
 
 class QgsBatchGeocodeAlgorithm : QgsProcessingFeatureBasedAlgorithm
 {
-%Docstring
+%Docstring(signature="appended")
 
 A base class for batch geocoder algorithms, which takes a :py:class:`QgsGeocoderInterface` object and exposes it as
 a Processing algorithm for batch geocoding operations.

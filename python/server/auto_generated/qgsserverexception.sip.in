@@ -15,7 +15,7 @@
 
 class QgsServerException
 {
-%Docstring
+%Docstring(signature="appended")
 Exception base class for server exceptions.
 
 .. versionadded:: 3.0
@@ -51,7 +51,7 @@ The default implementation returns text/xml format.
 
 class QgsOgcServiceException
 {
-%Docstring
+%Docstring(signature="appended")
 Exception base class for service exceptions.
 
 Note that this exception is associated with a default return code 200 which may be

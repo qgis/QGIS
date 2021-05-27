@@ -411,7 +411,7 @@ bool QgsProjectPropertyKey::writeXml( QString const &nodeName, QDomElement &elem
     auto keys = mProperties.keys();
     std::sort( keys.begin(), keys.end() );
 
-    for ( const auto &key : qgis::as_const( keys ) )
+    for ( const auto &key : std::as_const( keys ) )
     {
       if ( !mProperties.value( key )->writeXml( key, keyElement, document ) )
         QgsMessageLog::logMessage( tr( "Failed to save project property %1" ).arg( key ) );

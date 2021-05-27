@@ -74,7 +74,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
     % MethodCode
     if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
@@ -480,6 +480,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
+    void normalize() final SIP_HOLDGIL;
     bool isEmpty() const override SIP_HOLDGIL;
     QgsRectangle boundingBox() const override SIP_HOLDGIL;
     QString geometryType() const override SIP_HOLDGIL;
@@ -529,6 +530,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
     double segmentLength( QgsVertexId startVertex ) const override;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -571,6 +573,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 

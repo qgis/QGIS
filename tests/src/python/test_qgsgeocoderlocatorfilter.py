@@ -69,12 +69,13 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
     def test_geocode(self):
         geocoder = TestGeocoder()
         canvas = QgsMapCanvas()
-        filter = QgsGeocoderLocatorFilter('testgeocoder', 'my geocoder', 'pref', geocoder, canvas)
+        filter = QgsGeocoderLocatorFilter('testgeocoder', 'my geocoder', 'pref', geocoder, canvas, QgsRectangle(-1, -1, 1, 1))
 
         self.assertEqual(filter.name(), 'testgeocoder')
         self.assertEqual(filter.displayName(), 'my geocoder')
         self.assertEqual(filter.prefix(), 'pref')
         self.assertEqual(filter.geocoder(), geocoder)
+        self.assertEqual(filter.boundingBox(), QgsRectangle(-1, -1, 1, 1))
 
         spy = QSignalSpy(filter.resultFetched)
 

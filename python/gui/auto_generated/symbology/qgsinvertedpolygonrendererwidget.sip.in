@@ -10,7 +10,7 @@
 
 class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget used represent options of a :py:class:`QgsInvertedPolygonRenderer`
 
 .. versionadded:: 2.4
@@ -38,6 +38,7 @@ Constructor
 :param style:
 :param renderer: the mask renderer (will not take ownership)
 %End
+    ~QgsInvertedPolygonRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
 

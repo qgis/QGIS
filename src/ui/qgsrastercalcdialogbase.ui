@@ -520,9 +520,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -535,15 +541,9 @@
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mRasterBandsListWidget</tabstop>
-  <tabstop>mOutputLayer</tabstop>
   <tabstop>mOutputFormatComboBox</tabstop>
   <tabstop>mCurrentLayerExtentButton</tabstop>
   <tabstop>mXMinSpinBox</tabstop>
@@ -554,7 +554,6 @@
   <tabstop>mNRowsSpinBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddResultToProjectCheckBox</tabstop>
-  <tabstop>mOperatorsGroupBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
   <tabstop>mSqrtButton</tabstop>
@@ -579,6 +578,9 @@
   <tabstop>mGreaterEqualButton</tabstop>
   <tabstop>mAndButton</tabstop>
   <tabstop>mOrButton</tabstop>
+  <tabstop>mAbsButton</tabstop>
+  <tabstop>mMinButton</tabstop>
+  <tabstop>mMaxButton</tabstop>
   <tabstop>mExpressionTextEdit</tabstop>
  </tabstops>
  <resources/>

@@ -12,7 +12,7 @@
 
 class QgsTextFormat
 {
-%Docstring
+%Docstring(signature="appended")
 Container for all settings relating to text rendering.
 
 .. note::
@@ -216,6 +216,38 @@ Sets the named style for the font used for rendering text.
 .. seealso:: :py:func:`namedStyle`
 
 .. seealso:: :py:func:`setFont`
+%End
+
+    QStringList families() const;
+%Docstring
+Returns the list of font families to use when restoring the text format, in order of precedence.
+
+.. warning::
+
+   The list of families returned by this method is ONLY used when restoring the text format
+   from serialized versions, and will not affect the current :py:func:`~QgsTextFormat.font` familily used by the format.
+
+.. seealso:: :py:func:`setFamilies`
+
+.. versionadded:: 3.20
+%End
+
+    void setFamilies( const QStringList &families );
+%Docstring
+Sets a list of font ``families`` to use for the text format, in order of precedence.
+
+When restoring serialized versions of the text format then the first matching font family
+from this list will be used for the text format. This provides a way to specify a list of possible
+font families which are used as fallbacks if a family isn't available on a particular QGIS install (CSS style).
+
+.. warning::
+
+   The list of families set by calling this method is ONLY used when restoring the text format
+   from serialized versions, and will not affect the current :py:func:`~QgsTextFormat.font` familily used by the format.
+
+.. seealso:: :py:func:`families`
+
+.. versionadded:: 3.20
 %End
 
     double size() const;

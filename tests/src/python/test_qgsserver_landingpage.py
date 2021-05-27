@@ -67,13 +67,22 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         """Setup env"""
 
         super().setUp()
-        os.environ["QGIS_SERVER_DISABLED_APIS"] = ''
+        try:
+            del (os.environ["QGIS_SERVER_DISABLED_APIS"])
+        except:
+            pass
+
+        try:
+            del (os.environ['QGIS_SERVER_LANDING_PAGE_PREFIX'])
+        except:
+            pass
+
         os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES'] = '||'.join(self.directories)
 
         if not os.environ.get('TRAVIS', False):
             os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
 
-    def test_landing_page_redirects(self):
+    def ___test_landing_page_redirects(self):
         """Test landing page redirects"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/')
@@ -82,6 +91,14 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         self.server.handleRequest(request, response)
         self.assertEqual(response.headers()[
                          'Location'], 'http://server.qgis.org/index.json')
+
+        request = QgsBufferServerRequest('http://server.qgis.org')
+        request.setHeader('Accept', 'application/json')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        self.assertEqual(response.headers()[
+                         'Location'], 'http://server.qgis.org/index.json')
+
         response = QgsBufferServerResponse()
         request.setHeader('Accept', 'text/html')
         self.server.handleRequest(request, response)
@@ -123,6 +140,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         """Test landing page in JSON format"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        request.setBaseUrl(QtCore.QUrl('http://server.qgis.org/'))
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
         j_actual = 'Content-Type: application/json\n\n'
@@ -163,6 +181,38 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
         self.compareApi(
             request, None, 'test_landing_page_empty_index.json', subdir='landingpage')
+
+    def test_landing_page_prefix(self):
+
+        os.environ['QGIS_SERVER_LANDING_PAGE_PREFIX'] = '/mylanding'
+
+        def _test_error(uri):
+            request = QgsBufferServerRequest(uri)
+            request.setHeader('Accept', 'application/json')
+            response = QgsBufferServerResponse()
+            self.server.handleRequest(request, response)
+            self.assertEqual(bytes(response.body()), b'<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+
+        _test_error('http://server.qgis.org/index.json')
+        _test_error('http://server.qgis.org/index.html')
+        _test_error('http://server.qgis.org/')
+        _test_error('http://server.qgis.org')
+
+        def _test_valid(uri):
+            request = QgsBufferServerRequest(uri)
+            request.setHeader('Accept', 'application/json')
+            response = QgsBufferServerResponse()
+            self.server.handleRequest(request, response)
+            if 'index' not in uri:
+                self.assertEqual(response.headers()[
+                    'Location'], 'http://server.qgis.org/mylanding/index.json')
+            else:
+                # Just check that it's valid json
+                j = json.loads(bytes(response.body()))
+
+        _test_valid('http://server.qgis.org/mylanding')
+        _test_valid('http://server.qgis.org/mylanding/')
+        _test_valid('http://server.qgis.org/mylanding/index.json')
 
 
 if __name__ == '__main__':

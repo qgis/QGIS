@@ -59,22 +59,22 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
 
   connect( btnRemoveLight, &QToolButton::clicked, this, &QgsLightsWidget::onRemoveLight );
 
-  connect( spinPositionX, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinPositionY, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinPositionZ, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinPositionX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinPositionY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinPositionZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinIntensity, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
   connect( btnColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinA0, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinA1, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
-  connect( spinA2, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinA0, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinA1, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
+  connect( spinA2, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentLightParameters );
 
-  connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
+  connect( spinDirectionalIntensity, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
 
   connect( dialAzimuth, &QSlider::valueChanged, [this]( int value ) {spinBoxAzimuth->setValue( ( value + 180 ) % 360 );} );
   connect( sliderAltitude, &QSlider::valueChanged, spinBoxAltitude, &QgsDoubleSpinBox::setValue );
-  connect( spinBoxAzimuth, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
-  connect( spinBoxAltitude, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
+  connect( spinBoxAzimuth, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
+  connect( spinBoxAltitude, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
 
   mLightsListView->selectionModel()->select( mLightsModel->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   selectedLightChanged( mLightsListView->selectionModel()->selection(), QItemSelection() );

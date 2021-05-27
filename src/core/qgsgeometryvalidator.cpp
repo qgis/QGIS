@@ -429,7 +429,7 @@ bool QgsGeometryValidator::intersectLines( double px, double py, QgsVector v, do
 
 bool QgsGeometryValidator::pointInRing( const QgsLineString *ring, double pX, double pY )
 {
-  if ( !ring->boundingBox().contains( QgsPointXY( pX, pY ) ) )
+  if ( !ring->boundingBox().contains( pX, pY ) )
     return false;
 
   bool inside = false;

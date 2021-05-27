@@ -157,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>565</width>
-            <height>724</height>
+            <width>579</width>
+            <height>744</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -601,8 +601,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>354</width>
-            <height>1346</height>
+            <width>565</width>
+            <height>1126</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -1485,15 +1485,31 @@ gray = no data
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1502,35 +1518,19 @@ gray = no data
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBtnCloseFeature</tabstop>
   <tabstop>mBtnAddVertex</tabstop>
   <tabstop>mBtnResetFeature</tabstop>
   <tabstop>mBtnPosition</tabstop>
@@ -1538,6 +1538,7 @@ gray = no data
   <tabstop>mBtnSatellites</tabstop>
   <tabstop>mBtnOptions</tabstop>
   <tabstop>mBtnDebug</tabstop>
+  <tabstop>mRecenterButton</tabstop>
   <tabstop>mConnectButton</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRadAutodetect</tabstop>
@@ -1550,9 +1551,15 @@ gray = no data
   <tabstop>mGpsdPort</tabstop>
   <tabstop>mGpsdDevice</tabstop>
   <tabstop>mCbxAutoCommit</tabstop>
+  <tabstop>mCboTimestampField</tabstop>
+  <tabstop>mCboTimestampFormat</tabstop>
+  <tabstop>mCboTimeZones</tabstop>
+  <tabstop>mCbxLeapSeconds</tabstop>
+  <tabstop>mLeapSeconds</tabstop>
   <tabstop>mCbxAutoAddVertices</tabstop>
   <tabstop>mSpinTrackWidth</tabstop>
   <tabstop>mBtnTrackColor</tabstop>
+  <tabstop>mTravelBearingCheckBox</tabstop>
   <tabstop>mGroupShowMarker</tabstop>
   <tabstop>mSliderMarkerSize</tabstop>
   <tabstop>mCboAcquisitionInterval</tabstop>
@@ -1562,6 +1569,9 @@ gray = no data
   <tabstop>mSpinMapExtentMultiplier</tabstop>
   <tabstop>radNeverRecenter</tabstop>
   <tabstop>mRotateMapCheckBox</tabstop>
+  <tabstop>mSpinMapRotateInterval</tabstop>
+  <tabstop>mShowBearingLineCheck</tabstop>
+  <tabstop>mBearingLineStyleButton</tabstop>
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mTxtLogFile</tabstop>
   <tabstop>mBtnLogFile</tabstop>
@@ -1570,6 +1580,7 @@ gray = no data
   <tabstop>mTxtLatitude</tabstop>
   <tabstop>mTxtLongitude</tabstop>
   <tabstop>mTxtAltitude</tabstop>
+  <tabstop>mTxtAltitudeDiff</tabstop>
   <tabstop>mTxtDateTime</tabstop>
   <tabstop>mTxtSpeed</tabstop>
   <tabstop>mTxtDirection</tabstop>
@@ -1578,16 +1589,13 @@ gray = no data
   <tabstop>mTxtPdop</tabstop>
   <tabstop>mTxtHacc</tabstop>
   <tabstop>mTxtVacc</tabstop>
+  <tabstop>mTxt3Dacc</tabstop>
   <tabstop>mTxtFixMode</tabstop>
   <tabstop>mTxtFixType</tabstop>
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
-  <tabstop>mCboTimestampField</tabstop>
-  <tabstop>mCboTimestampFormat</tabstop>
-  <tabstop>mCboTimeZones</tabstop>
-  <tabstop>mLeapSeconds</tabstop>
-  <tabstop>mCbxLeapSeconds</tabstop>
+  <tabstop>mBtnCloseFeature</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

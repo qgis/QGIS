@@ -1,6 +1,7 @@
 {
   "name": ">=",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Compares two values and evaluates to 1 if the left value is greater or equal than the right value.",
   "arguments": [
         { "arg": "a", "description": "value" },

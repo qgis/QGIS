@@ -10,7 +10,7 @@
 
 class QgsAttributeEditorField : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 This element will load a field's widget onto the form.
 %End
 

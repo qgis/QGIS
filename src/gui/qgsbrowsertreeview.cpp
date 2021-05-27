@@ -18,6 +18,7 @@
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsguiutils.h"
+#include "qgsdataitem.h"
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -85,7 +86,7 @@ void QgsBrowserTreeView::restoreState()
         if ( modelIndex.isValid() )
         {
           QgsDataItem *ptr = browserModel()->dataItem( modelIndex );
-          if ( ptr && ( ptr->capabilities2() & QgsDataItem::Capability::Collapse ) )
+          if ( ptr && ( ptr->capabilities2() & Qgis::BrowserItemCapability::Collapse ) )
           {
             QgsDebugMsgLevel( "do not expand index for path " + path, 4 );
             QModelIndex parentIndex = model()->parent( expandIndex );
@@ -205,7 +206,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
       if ( modelIndex.isValid() )
       {
         QgsDataItem *ptr = browserModel()->dataItem( modelIndex );
-        if ( !ptr || !( ptr->capabilities2() & QgsDataItem::Capability::Collapse ) )
+        if ( !ptr || !( ptr->capabilities2() & Qgis::BrowserItemCapability::Collapse ) )
         {
           expand( childIndex );
         }

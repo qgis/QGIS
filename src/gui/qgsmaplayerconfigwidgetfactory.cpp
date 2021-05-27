@@ -31,3 +31,8 @@ bool QgsMapLayerConfigWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
   Q_UNUSED( layer )
   return true;
 }
+
+QgsMapLayerConfigWidgetFactory::ParentPage QgsMapLayerConfigWidgetFactory::parentPage() const
+{
+  return ParentPage::NoParent;
+}

@@ -486,7 +486,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
-  for ( const QgsLayoutTableColumn &column : qgis::as_const( mSortColumns ) )
+  for ( const QgsLayoutTableColumn &column : std::as_const( mSortColumns ) )
   {
     req.addOrderBy( column.attribute(), column.sortOrder() == Qt::AscendingOrder );
   }
@@ -558,7 +558,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     QgsLayoutTableRow rowContents;
     rowContents.reserve( mColumns.count() );
 
-    for ( const QgsLayoutTableColumn &column : qgis::as_const( mColumns ) )
+    for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
       int idx = layer->fields().lookupField( column.attribute() );
 
@@ -709,35 +709,38 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 {
+
   QgsLayoutTableColumns allowedColumns { mColumns };
 
-  QgsVectorLayer *source { sourceLayer() };
-
-  if ( ! source )
-  {
-    return allowedColumns;
-  }
-
-  QHash<const QString, QSet<QString>> columnAttributesMap;
-  QSet<QString> allowedAttributes;
-
-  for ( const auto &c : qgis::as_const( allowedColumns ) )
-  {
-    if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
-    {
-      columnAttributesMap[ c.attribute() ] = QSet<QString>();
-      const QgsExpression columnExp { c.attribute() };
-      const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
-      for ( const auto &cref : constRefs )
-      {
-        columnAttributesMap[ c.attribute() ].insert( cref->name() );
-        allowedAttributes.insert( cref->name() );
-      }
-    }
-  }
-
+  // Filter columns
   if ( mLayout->renderContext().featureFilterProvider() )
   {
+
+    QgsVectorLayer *source { sourceLayer() };
+
+    if ( ! source )
+    {
+      return allowedColumns;
+    }
+
+    QHash<const QString, QSet<QString>> columnAttributesMap;
+    QSet<QString> allowedAttributes;
+
+    for ( const auto &c : std::as_const( allowedColumns ) )
+    {
+      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      {
+        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        const QgsExpression columnExp { c.attribute() };
+        const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
+        for ( const auto &cref : constRefs )
+        {
+          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          allowedAttributes.insert( cref->name() );
+        }
+      }
+    }
+
     const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
@@ -749,7 +752,7 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
       allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
       {
-        for ( const auto &f : qgis::as_const( forbidden ) )
+        for ( const auto &f : std::as_const( forbidden ) )
         {
           if ( columnAttributesMap[ c.attribute() ].contains( f ) )
           {

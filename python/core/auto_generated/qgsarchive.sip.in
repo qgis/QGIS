@@ -12,7 +12,7 @@
 
 class QgsArchive
 {
-%Docstring
+%Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions
 
 .. versionadded:: 3.0
@@ -92,7 +92,7 @@ Returns the current temporary directory.
 
 class QgsProjectArchive : QgsArchive
 {
-%Docstring
+%Docstring(signature="appended")
 Class allowing to manage the zip/unzip actions on project file
 
 .. versionadded:: 3.0

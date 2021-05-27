@@ -14,7 +14,7 @@
 
 class QgsProjectStorageGuiRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 A registry / canonical manager of GUI parts of project storage backends.
 
 :py:class:`QgsProjectStorageGuiRegistry` is not usually directly created, but rather accessed through

@@ -10,7 +10,7 @@
 
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
 {
-%Docstring
+%Docstring(signature="appended")
 This element will load a relation editor onto the form.
 %End
 

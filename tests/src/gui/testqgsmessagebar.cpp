@@ -94,7 +94,7 @@ void TestQgsMessageBar::pushPop()
   QCOMPARE( bar.currentItem()->text(), QStringLiteral( "1" ) );
   QPointer< QgsMessageBarItem > item1 = bar.currentItem();
   // make sure correct item is the visible one
-  QCOMPARE( qobject_cast< QgsMessageBarItem * >( dynamic_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "1" ) );
+  QCOMPARE( qobject_cast< QgsMessageBarItem * >( qgis::down_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "1" ) );
 
   bar.pushMessage( QStringLiteral( "2" ) );
   QCOMPARE( bar.items().size(), 2 );
@@ -102,7 +102,7 @@ void TestQgsMessageBar::pushPop()
   QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "1" ) );
   QCOMPARE( bar.currentItem()->text(), QStringLiteral( "2" ) );
   QPointer< QgsMessageBarItem > item2 = bar.currentItem();
-  QCOMPARE( qobject_cast< QgsMessageBarItem * >( dynamic_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "2" ) );
+  QCOMPARE( qobject_cast< QgsMessageBarItem * >( qgis::down_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "2" ) );
 
   bar.pushMessage( QStringLiteral( "3" ) );
   QCOMPARE( bar.items().size(), 3 );
@@ -111,7 +111,7 @@ void TestQgsMessageBar::pushPop()
   QCOMPARE( bar.items().at( 2 )->text(), QStringLiteral( "1" ) );
   QCOMPARE( bar.currentItem()->text(), QStringLiteral( "3" ) );
   QPointer< QgsMessageBarItem > item3 = bar.currentItem();
-  QCOMPARE( qobject_cast< QgsMessageBarItem * >( dynamic_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "3" ) );
+  QCOMPARE( qobject_cast< QgsMessageBarItem * >( qgis::down_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "3" ) );
 
   const int childCount = bar.children().count();
   QVERIFY( bar.popWidget() );
@@ -119,7 +119,7 @@ void TestQgsMessageBar::pushPop()
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "2" ) );
   QCOMPARE( bar.items().at( 1 )->text(), QStringLiteral( "1" ) );
   QCOMPARE( bar.currentItem()->text(), QStringLiteral( "2" ) );
-  QCOMPARE( qobject_cast< QgsMessageBarItem * >( dynamic_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "2" ) );
+  QCOMPARE( qobject_cast< QgsMessageBarItem * >( qgis::down_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "2" ) );
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   QCOMPARE( bar.children().count(), childCount - 1 );
   QVERIFY( !item3 );
@@ -128,7 +128,7 @@ void TestQgsMessageBar::pushPop()
   QCOMPARE( bar.items().size(), 1 );
   QCOMPARE( bar.items().at( 0 )->text(), QStringLiteral( "1" ) );
   QCOMPARE( bar.currentItem()->text(), QStringLiteral( "1" ) );
-  QCOMPARE( qobject_cast< QgsMessageBarItem * >( dynamic_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "1" ) );
+  QCOMPARE( qobject_cast< QgsMessageBarItem * >( qgis::down_cast< QGridLayout * >( bar.layout() )->itemAt( 3 )->widget() )->text(), QStringLiteral( "1" ) );
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   QCOMPARE( bar.children().count(), childCount - 2 );
   QVERIFY( !item2 );

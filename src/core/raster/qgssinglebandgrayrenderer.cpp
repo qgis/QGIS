@@ -21,6 +21,9 @@
 #include "qgscolorramplegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgscolorramp.h"
+#include "qgssymbol.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -121,7 +124,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }

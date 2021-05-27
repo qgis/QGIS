@@ -14,7 +14,7 @@
 
 class QgsDiagramLayerSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Stores the settings for rendering of all diagrams for a layer.
 
 :py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
@@ -340,7 +340,7 @@ Sets the diagram's property collection, used for data defined overrides.
 
 class QgsDiagramSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Stores the settings for rendering a single diagram.
 
 :py:class:`QgsDiagramSettings` stores the settings related to rendering the individual diagrams themselves, while
@@ -610,7 +610,7 @@ Ownership of ``effect`` is transferred to the settings.
 
 class QgsDiagramInterpolationSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Additional diagram settings for interpolated size rendering.
 %End
 
@@ -633,7 +633,7 @@ Additional diagram settings for interpolated size rendering.
 
 class QgsDiagramRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Evaluates and returns the diagram settings relating to a diagram for a specific feature.
 %End
 
@@ -791,7 +791,7 @@ Writes internal QgsDiagramRenderer diagram state to a DOM element.
 
 class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Renders the diagrams for all features with the same settings
 %End
 

@@ -10,7 +10,7 @@
 
 class QgsTextRendererUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for text rendering.
 
 .. versionadded:: 3.10
@@ -61,6 +61,8 @@ Attempts to decode a string representation of a text orientation.
 
 .. seealso:: :py:func:`encodeTextOrientation`
 %End
+
+
 
 
 };

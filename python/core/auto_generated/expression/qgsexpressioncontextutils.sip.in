@@ -11,7 +11,7 @@
 
 class QgsExpressionContextUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utilities for working with :py:class:`QgsExpressionContext` objects, including methods
 for creating scopes for specific uses (e.g., project scopes, layer scopes).
 

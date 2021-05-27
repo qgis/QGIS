@@ -259,13 +259,13 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   histogram.maximum = maximum;
   histogram.includeOutOfRange = includeOutOfRange;
 
-  int mySrcDataType = sourceDataType( bandNo );
+  Qgis::DataType mySrcDataType = sourceDataType( bandNo );
 
   if ( std::isnan( histogram.minimum ) )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       histogram.minimum = 0; // see histogram() for shift for rounding
     }
@@ -280,7 +280,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   if ( std::isnan( histogram.maximum ) )
   {
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       histogram.maximum = 255;
     }
@@ -341,7 +341,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
-    if ( !mInput && mySrcDataType == Qgis::Byte )
+    if ( !mInput && mySrcDataType == Qgis::DataType::Byte )
     {
       myBinCount = 256; // Cannot store more values in byte
     }
@@ -356,8 +356,8 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       // for Int16/Int32 make sure bin count <= actual range, because there is no sense in having
       // bins at fractional values
       if ( !mInput && (
-             mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-             mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
+             mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+             mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 ) )
       {
         myBinCount = std::min( static_cast<qint64>( histogram.width ) * histogram.height, static_cast<qint64>( std::ceil( histogram.maximum - histogram.minimum + 1 ) ) );
       }
@@ -528,7 +528,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
 {
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 lowerCount = %2 upperCount = %3 sampleSize = %4" ).arg( bandNo ).arg( lowerCount ).arg( upperCount ).arg( sampleSize ), 4 );
 
-  int mySrcDataType = sourceDataType( bandNo );
+  Qgis::DataType mySrcDataType = sourceDataType( bandNo );
 
   // Init to NaN is better than histogram min/max to catch errors
   lowerValue = std::numeric_limits<double>::quiet_NaN();
@@ -540,7 +540,7 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
     return;
 
   // for byte bands make sure bin count == actual range
-  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
+  int myBinCount = ( mySrcDataType == Qgis::DataType::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
   QgsRasterHistogram myHistogram = histogram( bandNo, myBinCount, stats.minimumValue, stats.maximumValue, extent, sampleSize );
   //QgsRasterHistogram myHistogram = histogram( bandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), extent, sampleSize );
 
@@ -571,9 +571,9 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
   }
 
   // fix integer data - round down/up
-  if ( mySrcDataType == Qgis::Byte ||
-       mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
-       mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
+  if ( mySrcDataType == Qgis::DataType::Byte ||
+       mySrcDataType == Qgis::DataType::Int16 || mySrcDataType == Qgis::DataType::Int32 ||
+       mySrcDataType == Qgis::DataType::UInt16 || mySrcDataType == Qgis::DataType::UInt32 )
   {
     if ( !std::isnan( lowerValue ) )
       lowerValue = std::floor( lowerValue );

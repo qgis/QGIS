@@ -67,6 +67,20 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      */
     virtual void apply() = 0;
 
+  signals:
+
+#ifndef SIP_RUN
+
+    /**
+     * Emitted whenever the dynamic temporal control option is toggled in the associated layer
+     * properties dialog.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.20
+     */
+    void dynamicTemporalControlToggled( bool enabled );
+#endif
+
   protected:
     QgsMapLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;

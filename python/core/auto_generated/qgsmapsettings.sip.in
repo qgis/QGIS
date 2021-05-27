@@ -13,7 +13,7 @@
 
 class QgsLabelBlockingRegion
 {
-%Docstring
+%Docstring(signature="appended")
 
 Label blocking region (in map coordinates and CRS).
 
@@ -37,7 +37,7 @@ Constructor for a label blocking region
 
 class QgsMapSettings : QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapSettings` class contains configuration for rendering of the map.
 The rendering itself is done by :py:class:`QgsMapRendererJob` subclasses.
 
@@ -191,6 +191,26 @@ The default value is 96 dpi.
 Sets the ``dpi`` (dots per inch) used for conversion between real world units (e.g. mm) and pixels.
 
 .. seealso:: :py:func:`outputDpi`
+%End
+
+    double dpiTarget() const;
+%Docstring
+Returns the target DPI (dots per inch) to be taken into consideration when rendering.
+
+The default value is -1, which states no DPI target is provided.
+
+.. seealso:: :py:func:`setDpiTarget`
+
+.. versionadded:: 3.20
+%End
+
+    void setDpiTarget( double dpi );
+%Docstring
+Sets the target ``dpi`` (dots per inch) to be taken into consideration when rendering.
+
+.. seealso:: :py:func:`dpiTarget`
+
+.. versionadded:: 3.20
 %End
 
     void setMagnificationFactor( double factor, const QgsPointXY *center = 0 );

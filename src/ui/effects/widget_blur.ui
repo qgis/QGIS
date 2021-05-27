@@ -141,14 +141,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsEffectDrawModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -156,10 +157,16 @@
    <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mBlurTypeCombo</tabstop>
   <tabstop>mBlurStrengthSpnBx</tabstop>
+  <tabstop>mBlurUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>

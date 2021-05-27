@@ -107,7 +107,7 @@ void QgsRuleBased3DRenderer::Rule::initFilter()
 void QgsRuleBased3DRenderer::Rule::updateElseRules()
 {
   mElseRules.clear();
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     if ( rule->isElse() )
       mElseRules << rule;
@@ -143,7 +143,7 @@ const QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::findRuleByKey(
   if ( key == mRuleKey )
     return this;
 
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     const Rule *r = rule->findRuleByKey( key );
     if ( r )
@@ -157,7 +157,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::findRuleByKey( const
   if ( key == mRuleKey )
     return this;
 
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     Rule *r = rule->findRuleByKey( key );
     if ( r )
@@ -172,7 +172,7 @@ QgsRuleBased3DRenderer::Rule *QgsRuleBased3DRenderer::Rule::clone() const
   Rule *newrule = new Rule( symbol, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
     newrule->appendChild( rule->clone() );
   return newrule;
 }
@@ -258,7 +258,7 @@ void QgsRuleBased3DRenderer::Rule::createHandlers( QgsVectorLayer *layer, QgsRul
   }
 
   // call recursively
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     rule->createHandlers( layer, handlers );
   }
@@ -284,7 +284,7 @@ void QgsRuleBased3DRenderer::Rule::prepare( const Qgs3DRenderContext &context, Q
   }
 
   // call recursively
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     rule->prepare( context, attributeNames, handlers );
   }
@@ -307,7 +307,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
   bool willRegisterSomething = false;
 
   // call recursively
-  for ( Rule *rule : qgis::as_const( mChildren ) )
+  for ( Rule *rule : std::as_const( mChildren ) )
   {
     // Don't process else rules yet
     if ( !rule->isElse() )
@@ -322,7 +322,7 @@ QgsRuleBased3DRenderer::Rule::RegisterResult QgsRuleBased3DRenderer::Rule::regis
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willRegisterSomething )
   {
-    for ( Rule *rule : qgis::as_const( mElseRules ) )
+    for ( Rule *rule : std::as_const( mElseRules ) )
     {
       registered |= rule->registerFeature( feature, context, handlers ) != Filtered;
     }

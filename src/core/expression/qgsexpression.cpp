@@ -452,7 +452,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasParserError() )
     {
       QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
+#else
+      expr_action += QStringView {action}.mid( start, index - start );
+#endif
       continue;
     }
 
@@ -467,7 +471,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
+#else
+      expr_action += QStringView {action}.mid( start, index - start );
+#endif
       continue;
     }
 
@@ -475,7 +483,11 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     expr_action += action.mid( start, pos - start ) + result.toString();
   }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   expr_action += action.midRef( index );
+#else
+  expr_action += QStringView {action}.mid( index ).toString();
+#endif
 
   return expr_action;
 }
@@ -552,7 +564,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+  for ( const HelpVariant &v : std::as_const( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -586,7 +598,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+        for ( const HelpArg &a : std::as_const( v.mArguments ) )
         {
           if ( !a.mDescOnly )
           {
@@ -628,7 +640,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
+      for ( const HelpArg &a : std::as_const( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -643,7 +655,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      for ( const HelpExample &e : qgis::as_const( v.mExamples ) )
+      for ( const HelpExample &e : std::as_const( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
@@ -675,7 +687,7 @@ QStringList QgsExpression::tags( const QString &name )
   {
     const Help &f = ( *sFunctionHelpTexts() )[ name ];
 
-    for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
+    for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {
       tags << v.mTags;
     }
@@ -774,6 +786,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of the map (full definition)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_acronym" ), QCoreApplication::translate( "variable_help", "Acronym of the coordinate reference system of the map." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_crs_projection" ), QCoreApplication::translate( "variable_help", "Projection method used by the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_ellipsoid" ), QCoreApplication::translate( "variable_help", "Acronym of the ellipsoid of the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_proj4" ), QCoreApplication::translate( "variable_help", "Proj4 definition of the coordinate reference system of the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_crs_wkt" ), QCoreApplication::translate( "variable_help", "WKT definition of the coordinate reference system of the map." ) );
@@ -830,6 +843,7 @@ void QgsExpression::initVariableHelp()
   //symbol variables
   sVariableHelpTexts()->insert( QStringLiteral( "geometry_part_count" ), QCoreApplication::translate( "variable_help", "Number of parts in rendered feature's geometry." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "geometry_part_num" ), QCoreApplication::translate( "variable_help", "Current geometry part number for feature being rendered." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "geometry_ring_num" ), QCoreApplication::translate( "variable_help", "Current geometry ring number for feature being rendered (for polygon features only). The exterior ring has a value of 0." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "geometry_point_count" ), QCoreApplication::translate( "variable_help", "Number of points in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "geometry_point_num" ), QCoreApplication::translate( "variable_help", "Current point number in the rendered geometry's part. It is only meaningful for line geometries and for symbol layers that set this variable." ) );
 

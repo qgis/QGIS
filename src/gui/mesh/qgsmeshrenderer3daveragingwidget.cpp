@@ -57,11 +57,11 @@ QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *par
 
 {
   setupUi( this );
-  connect( mAveragingMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mAveragingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged );
 
   // Single Level Average Method (top)
-  connect( mSingleVerticalLayerIndexTopSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mSingleVerticalLayerIndexTopSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mSingleTopPngLabel,
            QStringLiteral( "SingleTop.svg" )
@@ -69,61 +69,61 @@ QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *par
   mSingleTopGroup->adjustSize();
 
   // Single Level Average Method (bottom)
-  connect( mSingleVerticalLayerIndexBottomSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mSingleVerticalLayerIndexBottomSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mSingleBottomPngLabel,
            QStringLiteral( "SingleBottom.svg" )
          );
 
   // Multi Levels Averaging Method (top)
-  connect( mMultiTopVerticalLayerStartIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mMultiTopVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mMultiTopVerticalLayerEndIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mMultiTopVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mMultiTopPngLabel,
            QStringLiteral( "MultiTop.svg" )
          );
 
   // MultiLevels Averaging Method (bottom)
-  connect( mMultiBottomVerticalLayerStartIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mMultiBottomVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mMultiBottomVerticalLayerEndIndexSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ),
+  connect( mMultiBottomVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mMultiBottomPngLabel,
            QStringLiteral( "MultiBottom.svg" )
          );
 
   // Sigma Averaging Method
-  connect( mSigmaStartFractionSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mSigmaStartFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mSigmaEndFractionSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mSigmaEndFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mSigmaPngLabel,
            QStringLiteral( "Sigma.svg" )
          );
 
   // Depth Averaging Method
-  connect( mDepthStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mDepthStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mDepthEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mDepthEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mDepthPngLabel,
            QStringLiteral( "Depth.svg" )
          );
 
   // Height Averaging Method
-  connect( mHeightStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mHeightStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mHeightEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mHeightEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mHeightPngLabel,
            QStringLiteral( "Height.svg" )
          );
 
   // Elevation Averaging Method
-  connect( mElevationStartSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mElevationStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  connect( mElevationEndSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mElevationEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   _setSvg( mElevationPngLabel,
            QStringLiteral( "Elevation.svg" )

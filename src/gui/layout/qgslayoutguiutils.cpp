@@ -61,7 +61,7 @@ QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem
   referenceItem->layout()->layoutItems( mapItems );
 
   QgsLayoutItemMap *targetMap = nullptr;
-  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  for ( QgsLayoutItemMap *map : std::as_const( mapItems ) )
   {
     if ( map->isSelected() )
     {
@@ -71,7 +71,7 @@ QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem
 
   // nope, no selection... hm, was the item drawn over a map? If so, use the topmost intersecting one
   double largestZValue = std::numeric_limits< double >::lowest();
-  for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+  for ( QgsLayoutItemMap *map : std::as_const( mapItems ) )
   {
     if ( map->collidesWithItem( referenceItem ) && map->zValue() > largestZValue )
     {
@@ -140,7 +140,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     while ( true )
     {
       existing = false;
-      for ( QgsLayoutItemMap *otherMap : qgis::as_const( mapsList ) )
+      for ( QgsLayoutItemMap *otherMap : std::as_const( mapsList ) )
       {
         if ( map == otherMap )
           continue;
@@ -280,7 +280,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     QgsSettings settings;
     const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
 
-    for ( QgsLayoutItemPicture *p : qgis::as_const( pictureItems ) )
+    for ( QgsLayoutItemPicture *p : std::as_const( pictureItems ) )
     {
       // look for pictures which use the default north arrow svg
       if ( p->picturePath() == defaultPath )

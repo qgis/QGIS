@@ -378,7 +378,7 @@ void TestQgsAttributeTable::testRegression15974()
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
   saveOptions.fileEncoding = QStringLiteral( "system" );
   saveOptions.driverName = QStringLiteral( "ESRI Shapefile" );
-  QgsVectorFileWriter::writeAsVectorFormatV2( tempLayer.get(), path, tempLayer->transformContext(), saveOptions );
+  QgsVectorFileWriter::writeAsVectorFormatV3( tempLayer.get(), path, tempLayer->transformContext(), saveOptions );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;

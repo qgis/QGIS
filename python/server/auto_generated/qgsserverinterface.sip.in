@@ -14,7 +14,7 @@
 
 class QgsServerInterface
 {
-%Docstring
+%Docstring(signature="appended")
 :py:class:`QgsServerInterface`
 Class defining interfaces exposed by QGIS Server and
 made available to plugins.

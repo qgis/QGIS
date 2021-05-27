@@ -19,7 +19,8 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitemnodeitem.h"
-#include "qgssymbol.h"
+
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -43,6 +44,8 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
      */
     QgsLayoutItemPolygon( const QPolygonF &polygon, QgsLayout *layout );
 
+    ~QgsLayoutItemPolygon() override;
+
     /**
      * Returns a new polygon item for the specified \a layout.
      *
@@ -61,7 +64,7 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
      * Returns the fill symbol used to draw the shape.
      * \see setSymbol()
      */
-    QgsFillSymbol *symbol() { return mPolygonStyleSymbol.get(); }
+    QgsFillSymbol *symbol();
 
     /**
      * Sets the \a symbol used to draw the shape.

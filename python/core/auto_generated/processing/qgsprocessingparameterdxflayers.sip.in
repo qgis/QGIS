@@ -10,7 +10,7 @@
 
 class QgsProcessingParameterDxfLayers : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A parameter for Processing algorithms that need a list of input vector
 layers to export as DXF file - this parameter provides Processing
 framework's adapter for QList<:py:class:`QgsDxfExport`.DxfLayer>.

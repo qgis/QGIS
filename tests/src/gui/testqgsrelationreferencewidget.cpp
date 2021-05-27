@@ -192,7 +192,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   // check default status for comboboxes
   QList<QComboBox *> cbs = w.mFilterComboBoxes;
   QCOMPARE( cbs.count(), 3 );
-  Q_FOREACH ( const QComboBox *cb, cbs )
+  for ( const QComboBox *cb : std::as_const( cbs ) )
   {
     if ( cb->currentText() == QLatin1String( "raccord" ) )
       QCOMPARE( cb->count(), 5 );
@@ -215,7 +215,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   loop.exec();
   QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
-  Q_FOREACH ( const QComboBox *cb, cbs )
+  for ( const QComboBox *cb : std::as_const( cbs ) )
   {
     if ( cb->itemText( 0 ) == QLatin1String( "material" ) )
       QCOMPARE( cb->count(), 4 );
@@ -365,7 +365,7 @@ void TestQgsRelationReferenceWidget::testChainFilterFirstInit()
   // check default status for comboboxes
   QList<QComboBox *> cbs = w.mFilterComboBoxes;
   QCOMPARE( cbs.count(), 3 );
-  Q_FOREACH ( const QComboBox *cb, cbs )
+  for ( const QComboBox *cb : std::as_const( cbs ) )
   {
     if ( cb->currentText() == QLatin1String( "raccord" ) )
       QCOMPARE( cb->count(), 5 );

@@ -10,7 +10,7 @@
 
 class QgsProcessingParameterFieldMapping : QgsProcessingParameterDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A parameter for "field mapping" configurations, which consist of a definition
 of desired output fields, types, and expressions used to populate then.
 

@@ -13,7 +13,7 @@
 
 class QgsCircularString: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Circular string geometry type
 
 .. versionadded:: 2.10
@@ -38,6 +38,28 @@ arc passing through ``p1``, ``p2`` and ``p3``.
 
 .. versionadded:: 3.2
 %End
+
+    QgsCircularString( const QVector<double> &x, const QVector<double> &y,
+                       const QVector<double> &z = QVector<double>(),
+                       const QVector<double> &m = QVector<double>() ) /HoldGIL/;
+%Docstring
+Construct a circular string from arrays of coordinates. If the z or m
+arrays are non-empty then the resultant circular string will have
+z and m types accordingly.
+
+This constructor is more efficient then calling :py:func:`~QgsCircularString.setPoints`.
+
+If the sizes of ``x`` and ``y`` are non-equal then the resultant circular string
+will be created using the minimum size of these arrays.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the supplied arrays
+   are of odd sizes.
+
+.. versionadded:: 3.20
+%End
+
 
     static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
         const QgsPoint &p2,
@@ -87,6 +109,7 @@ to ``p2`` will be used (i.e. winding the other way around the circle).
 
     virtual int numPoints() const /HoldGIL/;
 
+    int indexOf( const QgsPoint &point ) const final;
 
     QgsPoint pointN( int i ) const /HoldGIL/;
 %Docstring
@@ -99,6 +122,21 @@ Returns the point at index i within the circular string.
     void setPoints( const QgsPointSequence &points );
 %Docstring
 Sets the circular string's points
+%End
+
+    void append( const QgsCircularString *string );
+%Docstring
+Appends the contents of another circular ``string`` to the end of this circular string.
+
+:param string: circular string to append. Ownership is not transferred.
+
+.. warning::
+
+   It is the caller's responsibility to ensure that the first point in the appended
+   ``string`` matches the last point in the existing curve, or the result will be undefined.
+
+
+.. versionadded:: 3.20
 %End
 
     virtual double length() const;
@@ -165,6 +203,7 @@ Sets the circular string's points
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
+    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
@@ -181,6 +220,7 @@ Sets the circular string's points
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

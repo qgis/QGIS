@@ -12,7 +12,7 @@
 
 class QgsGeometryEngine
 {
-%Docstring
+%Docstring(signature="appended")
 Contains geometry relation and modification algorithms.
 
 .. versionadded:: 2.10

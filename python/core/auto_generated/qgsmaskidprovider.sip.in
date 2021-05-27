@@ -10,7 +10,7 @@
 
 class QgsMaskIdProvider
 {
-%Docstring
+%Docstring(signature="appended")
 
 This class allows the creation of mask ids based on the different label layers and to give a mask id from a label layer.
 

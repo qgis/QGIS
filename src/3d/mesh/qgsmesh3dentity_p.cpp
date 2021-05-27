@@ -92,7 +92,7 @@ QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity(
 void QgsMesh3dTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new QgsMeshTerrain3dGeometry( mTriangularMesh, mMapSettings.origin(), mSymbol.get(), mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3dGeometry( mTriangularMesh, mMapSettings.origin(), mSymbol.get()->verticalScale(), mesh ) );
   addComponent( mesh );
 }
 

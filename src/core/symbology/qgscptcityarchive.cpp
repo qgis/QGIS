@@ -19,10 +19,6 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
-#include <QMenu>
-#include <QMouseEvent>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
 #include <QDomDocument>
@@ -1338,12 +1334,6 @@ void QgsCptCityBrowserModel::addRootItems()
 
 void QgsCptCityBrowserModel::removeRootItems()
 {
-  // don't remove root items, they belong to the QgsCptCityArchive
-  // Q_FOREACH ( QgsCptCityDataItem* item, mRootItems )
-  // {
-  //   delete item;
-  // }
-
   mRootItems.clear();
 }
 

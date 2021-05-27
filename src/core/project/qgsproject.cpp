@@ -24,6 +24,7 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmaplayerfactory.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -88,46 +89,13 @@
 // canonical project instance
 QgsProject *QgsProject::sProject = nullptr;
 
-///@cond PRIVATE
-class ScopedIntIncrementor
-{
-  public:
-
-    ScopedIntIncrementor( int *variable )
-      : mVariable( variable )
-    {
-      ( *mVariable )++;
-    }
-
-    ScopedIntIncrementor( const ScopedIntIncrementor &other ) = delete;
-    ScopedIntIncrementor &operator=( const ScopedIntIncrementor &other ) = delete;
-
-    void release()
-    {
-      if ( mVariable )
-        ( *mVariable )--;
-
-      mVariable = nullptr;
-    }
-
-    ~ScopedIntIncrementor()
-    {
-      release();
-    }
-
-  private:
-    int *mVariable = nullptr;
-};
-///@endcond
-
-
 /**
-    Take the given scope and key and convert them to a string list of key
-    tokens that will be used to navigate through a Property hierarchy
-
-    E.g., scope "someplugin" and key "/foo/bar/baz" will become a string list
-    of { "properties", "someplugin", "foo", "bar", "baz" }.  "properties" is
-    always first because that's the permanent ``root'' Property node.
+ * Takes the given scope and key and convert them to a string list of key
+ * tokens that will be used to navigate through a Property hierarchy
+ *
+ * E.g., scope "someplugin" and key "/foo/bar/baz" will become a string list
+ * of { "properties", "someplugin", "foo", "bar", "baz" }.  "properties" is
+ * always first because that's the permanent ``root'' Property node.
  */
 QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
@@ -162,13 +130,13 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
 
 
 /**
-   return the property that matches the given key sequence, if any
-
-   \param scope scope of key
-   \param key keyname
-   \param rootProperty is likely to be the top level QgsProjectPropertyKey in QgsProject:e:Imp.
-
-   \return null if not found, otherwise located Property
+ * Returns the property that matches the given key sequence, if any
+ *
+ * \param scope scope of key
+ * \param key keyname
+ * \param rootProperty is likely to be the top level QgsProjectPropertyKey in QgsProject:e:Imp.
+ *
+ * \return null if not found, otherwise located Property
 */
 QgsProjectProperty *findKey_( const QString &scope,
                               const QString &key,
@@ -239,13 +207,13 @@ QgsProjectProperty *findKey_( const QString &scope,
 
 
 /**
- * Add the given key and value
-
-\param scope scope of key
-\param key key name
-\param rootProperty is the property from which to start adding
-\param value the value associated with the key
-\param propertiesModified the parameter will be set to true if the written entry modifies pre-existing properties
+ * Adds the given key and value.
+ *
+ * \param scope scope of key
+ * \param key key name
+ * \param rootProperty is the property from which to start adding
+ * \param value the value associated with the key
+ * \param propertiesModified the parameter will be set to true if the written entry modifies pre-existing properties
 */
 QgsProjectProperty *addKey_( const QString &scope,
                              const QString &key,
@@ -327,13 +295,12 @@ QgsProjectProperty *addKey_( const QString &scope,
 }
 
 /**
- * Remove a given key
-
-\param scope scope of key
-\param key key name
-\param rootProperty is the property from which to start adding
+ * Removes a given key.
+ *
+ * \param scope scope of key
+ * \param key key name
+ * \param rootProperty is the property from which to start adding
 */
-
 void removeKey_( const QString &scope,
                  const QString &key,
                  QgsProjectPropertyKey &rootProperty )
@@ -424,18 +391,18 @@ QgsProject::QgsProject( QObject *parent )
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
   connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
   connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
-  connect( this, qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
+  connect( this, qOverload< const QList<QgsMapLayer *> & >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
 
   // proxy map layer store signals to this
-  connect( mLayerStore.get(), qgis::overload<const QStringList &>::of( &QgsMapLayerStore::layersWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload<const QStringList &>( &QgsMapLayerStore::layersWillBeRemoved ),
   this, [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
-  connect( mLayerStore.get(), qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ),
   this, [ = ]( const QList<QgsMapLayer *> &layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
-  connect( mLayerStore.get(), qgis::overload< const QString & >::of( &QgsMapLayerStore::layerWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< const QString & >( &QgsMapLayerStore::layerWillBeRemoved ),
   this, [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
-  connect( mLayerStore.get(), qgis::overload< QgsMapLayer * >::of( &QgsMapLayerStore::layerWillBeRemoved ),
+  connect( mLayerStore.get(), qOverload< QgsMapLayer * >( &QgsMapLayerStore::layerWillBeRemoved ),
   this, [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
-  connect( mLayerStore.get(), qgis::overload<const QStringList & >::of( &QgsMapLayerStore::layersRemoved ), this,
+  connect( mLayerStore.get(), qOverload<const QStringList & >( &QgsMapLayerStore::layersRemoved ), this,
   [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersRemoved( layers ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this,
   [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerRemoved( layer ); } );
@@ -451,7 +418,7 @@ QgsProject::QgsProject( QObject *parent )
     connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
   }
 
-  connect( mLayerStore.get(), qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersWillBeRemoved ), this,
+  connect( mLayerStore.get(), qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersWillBeRemoved ), this,
            [ = ]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
@@ -460,7 +427,7 @@ QgsProject::QgsProject( QObject *parent )
     }
   }
          );
-  connect( mLayerStore.get(),  qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersAdded ), this,
+  connect( mLayerStore.get(),  qOverload< const QList<QgsMapLayer *> & >( &QgsMapLayerStore::layersAdded ), this,
            [ = ]( const QList<QgsMapLayer *> &layers )
   {
     for ( const auto &layer : layers )
@@ -915,34 +882,32 @@ void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
 }
 
 /**
-
-Restore any optional properties found in "doc" to "properties".
-
-properties tags for all optional properties.  Within that there will be scope
-tags.  In the following example there exist one property in the "fsplugin"
-scope.  "layers" is a list containing three string values.
-
-\code{.xml}
-<properties>
-  <fsplugin>
-    <foo type="int" >42</foo>
-    <baz type="int" >1</baz>
-    <layers type="QStringList" >
-      <value>railroad</value>
-      <value>airport</value>
-    </layers>
-    <xyqzzy type="int" >1</xyqzzy>
-    <bar type="double" >123.456</bar>
-    <feature_types type="QStringList" >
-       <value>type</value>
-    </feature_types>
-  </fsplugin>
-</properties>
-\endcode
-
-\param doc xml document
-\param project_properties should be the top QgsProjectPropertyKey node.
-
+ * Restores any optional properties found in "doc" to "properties".
+ *
+ * properties tags for all optional properties.  Within that there will be scope
+ * tags.  In the following example there exist one property in the "fsplugin"
+ * scope.  "layers" is a list containing three string values.
+ *
+ * \code{.xml}
+ * <properties>
+ *   <fsplugin>
+ *     <foo type="int" >42</foo>
+ *     <baz type="int" >1</baz>
+ *     <layers type="QStringList" >
+ *       <value>railroad</value>
+ *       <value>airport</value>
+ *     </layers>
+ *     <xyqzzy type="int" >1</xyqzzy>
+ *     <bar type="double" >123.456</bar>
+ *     <feature_types type="QStringList" >
+ *        <value>type</value>
+ *     </feature_types>
+ *   </fsplugin>
+ * </properties>
+ * \endcode
+ *
+ * \param doc xml document
+ * \param project_properties should be the top QgsProjectPropertyKey node.
 */
 void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_properties )
 {
@@ -972,7 +937,7 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
  * \param doc xml document
  * \param dataDefinedServerPropertyDefinitions property collection of the server overrides
  * \since QGIS 3.14
-**/
+*/
 QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, const QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions )
 {
   QgsPropertyCollection ddServerProperties;
@@ -989,8 +954,8 @@ QgsPropertyCollection getDataDefinedServerProperties( const QDomDocument &doc, c
 }
 
 /**
-   Get the project title
-   \todo XXX we should go with the attribute xor title, not both.
+* Get the project title
+* \todo XXX we should go with the attribute xor title, not both.
 */
 static void _getTitle( const QDomDocument &doc, QString &title )
 {
@@ -1174,41 +1139,59 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   std::unique_ptr<QgsMapLayer> mapLayer;
 
   QgsScopedRuntimeProfile profile( tr( "Create layer" ), QStringLiteral( "projectload" ) );
-  if ( type == QLatin1String( "vector" ) )
+
+  bool ok = false;
+  const QgsMapLayerType layerType( QgsMapLayerFactory::typeFromString( type, ok ) );
+  if ( !ok )
   {
-    mapLayer = std::make_unique<QgsVectorLayer>();
-    // apply specific settings to vector layer
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+    QgsDebugMsg( QStringLiteral( "Unknown layer type \"%1\"" ).arg( type ) );
+    return false;
+  }
+
+  switch ( layerType )
+  {
+    case QgsMapLayerType::VectorLayer:
     {
-      vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      mapLayer = std::make_unique<QgsVectorLayer>();
+      // apply specific settings to vector layer
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
+      {
+        vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+      }
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+      mapLayer = std::make_unique<QgsRasterLayer>();
+      break;
+
+    case QgsMapLayerType::MeshLayer:
+      mapLayer = std::make_unique<QgsMeshLayer>();
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mapLayer = std::make_unique<QgsVectorTileLayer>();
+      break;
+
+    case QgsMapLayerType::PointCloudLayer:
+      mapLayer = std::make_unique<QgsPointCloudLayer>();
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    {
+      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
+      mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
+      break;
+    }
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer::LayerOptions options( mTransformContext );
+      mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
+      break;
     }
   }
-  else if ( type == QLatin1String( "raster" ) )
-  {
-    mapLayer =  std::make_unique<QgsRasterLayer>();
-  }
-  else if ( type == QLatin1String( "mesh" ) )
-  {
-    mapLayer = std::make_unique<QgsMeshLayer>();
-  }
-  else if ( type == QLatin1String( "vector-tile" ) )
-  {
-    mapLayer = std::make_unique<QgsVectorTileLayer>();
-  }
-  else if ( type == QLatin1String( "point-cloud" ) )
-  {
-    mapLayer = std::make_unique<QgsPointCloudLayer>();
-  }
-  else if ( type == QLatin1String( "plugin" ) )
-  {
-    QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-    mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
-  }
-  else if ( type == QLatin1String( "annotation" ) )
-  {
-    QgsAnnotationLayer::LayerOptions options( mTransformContext );
-    mapLayer = std::make_unique<QgsAnnotationLayer>( QString(), options );
-  }
+
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
@@ -1337,7 +1320,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QgsApplication::profiler()->clear( QStringLiteral( "projectload" ) );
   QgsScopedRuntimeProfile profile( tr( "Setting up translations" ), QStringLiteral( "projectload" ) );
 
-  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), mSettings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), QgsApplication::settingsLocaleUserLocale.value() );
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
@@ -1363,12 +1346,6 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
   {
-    // want to make this class as GUI independent as possible; so commented out
-#if 0
-    QMessageBox::critical( 0, tr( "Read Project File" ),
-                           tr( "%1 at line %2 column %3" ).arg( errorMsg ).arg( line ).arg( column ) );
-#endif
-
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
                           .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 
@@ -3513,7 +3490,7 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
   // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
   if ( mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
-       || mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
+       || mSettings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == QLatin1String( "2" ) )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
     defaultCrs = crs();

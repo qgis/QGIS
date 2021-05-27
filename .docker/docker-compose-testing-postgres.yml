@@ -1,0 +1,22 @@
+version: '3'
+services:
+  postgres:
+    build:
+      dockerfile: Dockerfile-postgis
+      context: ../tests/testdata
+    environment:
+      - ALLOW_IP_RANGE="172.18.0.0/16"
+# The following files are added in Dockerfile-postgis
+      - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt
+      - SSL_KEY_FILE=/etc/ssl/private/postgres.key
+      - SSL_CA_FILE=/etc/ssl/certs/qgis_ca.crt
+
+  qgis-deps:
+    tty: true
+    image: qgis/qgis3-build-deps-bin-only:${DOCKER_TAG}
+    volumes:
+      - ${GH_WORKSPACE}:/root/QGIS
+    links:
+      - postgres
+    env_file:
+      - docker-variables.env

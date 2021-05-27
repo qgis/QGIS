@@ -12,7 +12,7 @@
 
 class QgsAnnotationMarkerItem : QgsAnnotationItem
 {
-%Docstring
+%Docstring(signature="appended")
 An annotation item which renders a marker symbol at a point location.
 
 .. versionadded:: 3.16

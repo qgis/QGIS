@@ -13,7 +13,7 @@
 
 class QgsContrastEnhancement
 {
-%Docstring
+%Docstring(signature="appended")
 Manipulates raster or point cloud pixel values so that they enhanceContrast or clip into a
 specified numerical range according to the specified
 ContrastEnhancementAlgorithm.
@@ -33,7 +33,10 @@ ContrastEnhancementAlgorithm.
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::DataType::Byte );
+%Docstring
+Constructor for QgsContrastEnhancement, for the specified data type.
+%End
     QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
 

@@ -19,8 +19,7 @@
 #include "qgsexpression.h"
 
 QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )
-  : mResult( None )
-  , mFields( fields )
+  : mFields( fields )
   , mFlags( flags )
   , mIgnoreStaticNodes( ignoreStaticNodes )
 {

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
+    <width>384</width>
     <height>331</height>
    </rect>
   </property>
@@ -317,7 +317,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QFontComboBox" name="mFontFamilyCmbBx" />
+         <widget class="QFontComboBox" name="mFontFamilyCmbBx"/>
         </item>
        </layout>
       </item>
@@ -437,19 +437,36 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mNameEdit</tabstop>
+  <tabstop>mRuleEdit</tabstop>
+  <tabstop>btnBuildExpression</tabstop>
+  <tabstop>mPresetsList</tabstop>
+  <tabstop>btnBackgroundColor</tabstop>
+  <tabstop>btnTextColor</tabstop>
+  <tabstop>checkIcon</tabstop>
+  <tabstop>btnChangeIcon</tabstop>
+  <tabstop>mFontBoldBtn</tabstop>
+  <tabstop>mFontItalicBtn</tabstop>
+  <tabstop>mFontUnderlineBtn</tabstop>
+  <tabstop>mFontStrikethroughBtn</tabstop>
+  <tabstop>mFontFamilyCmbBx</tabstop>
+  <tabstop>mSaveRule</tabstop>
+  <tabstop>mCancelButton</tabstop>
+  <tabstop>mDeleteButton</tabstop>
+ </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

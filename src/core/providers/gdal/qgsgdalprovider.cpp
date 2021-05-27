@@ -28,7 +28,6 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgdaldataitems.h"
@@ -44,11 +43,11 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsruntimeprofiler.h"
+#include "qgszipitem.h"
 
 #include <QImage>
 #include <QColor>
 #include <QProcess>
-#include <QMessageBox>
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
@@ -71,7 +70,11 @@
 #define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
+#else
+Q_GLOBAL_STATIC( QRecursiveMutex, sGdalProviderMutex )
+#endif
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -146,7 +149,11 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   , mpMutex( new QMutex( QMutex::Recursive ) )
+#else
+  , mpMutex( new QRecursiveMutex() )
+#endif
   , mpParent( new QgsGdalProvider * ( this ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
@@ -238,7 +245,12 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
 
     mpRefCounter = new QAtomicInt( 1 );
     mpLightRefCounter = other.mpLightRefCounter;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     mpMutex = new QMutex( QMutex::Recursive );
+#else
+    mpMutex = new QRecursiveMutex();
+#endif
+
     mpParent = other.mpParent;
 
     if ( getCachedGdalHandles( const_cast<QgsGdalProvider *>( &other ), mGdalBaseDataset, mGdalDataset ) )
@@ -1382,7 +1394,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
     }
     else
     {
-      if ( sourceDataType( i ) == Qgis::Float32 )
+      if ( sourceDataType( i ) == Qgis::DataType::Float32 )
       {
         // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
         // can print a string without an excessive precision
@@ -1498,25 +1510,25 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
     // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
-      case Qgis::UnknownDataType:
-      case Qgis::ARGB32:
-      case Qgis::ARGB32_Premultiplied:
+      case Qgis::DataType::UnknownDataType:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
         return myDataType;
-      case Qgis::Byte:
-      case Qgis::UInt16:
-      case Qgis::Int16:
-      case Qgis::UInt32:
-      case Qgis::Int32:
-      case Qgis::Float32:
-      case Qgis::CInt16:
-        myDataType = Qgis::Float32;
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CInt16:
+        myDataType = Qgis::DataType::Float32;
         break;
-      case Qgis::Float64:
-      case Qgis::CInt32:
-      case Qgis::CFloat32:
-        myDataType = Qgis::Float64;
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::CFloat32:
+        myDataType = Qgis::DataType::Float64;
         break;
-      case Qgis::CFloat64:
+      case Qgis::DataType::CFloat64:
         return myDataType;
     }
   }
@@ -1528,7 +1540,7 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == mBandCount )
     return dataTypeFromGdal( GDT_Byte );
 
-  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
+  if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::DataType::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo - 1] );
 }
@@ -2025,16 +2037,16 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
         ++myRasterPyramidIterator )
   {
 #ifdef QGISDEBUG
-    QgsDebugMsgLevel( QStringLiteral( "Build pyramids:: Level %1" ).arg( myRasterPyramidIterator->level ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "x:%1" ).arg( myRasterPyramidIterator->xDim ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "y:%1" ).arg( myRasterPyramidIterator->yDim ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "exists : %1" ).arg( myRasterPyramidIterator->exists ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Build pyramids:: Level %1" ).arg( myRasterPyramidIterator->getLevel() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "x:%1" ).arg( myRasterPyramidIterator->getXDim() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "y:%1" ).arg( myRasterPyramidIterator->getYDim() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "exists : %1" ).arg( myRasterPyramidIterator->getExists() ), 2 );
 #endif
-    if ( myRasterPyramidIterator->build )
+    if ( myRasterPyramidIterator->getBuild() )
     {
       QgsDebugMsgLevel( QStringLiteral( "adding overview at level %1 to list"
-                                      ).arg( myRasterPyramidIterator->level ), 2 );
-      myOverviewLevelsVector.append( myRasterPyramidIterator->level );
+                                      ).arg( myRasterPyramidIterator->getLevel() ), 2 );
+      myOverviewLevelsVector.append( myRasterPyramidIterator->getLevel() );
     }
   }
   /* From : http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
@@ -2213,8 +2225,9 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 }
 #endif
 
-QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewList )
+QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( const QList<int> &list )
 {
+  QList< int > overviewList = list;
   QMutexLocker locker( mpMutex );
 
   int myWidth = mWidth;
@@ -2247,12 +2260,12 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
     //
 
     QgsRasterPyramid myRasterPyramid;
-    myRasterPyramid.level = myDivisor;
-    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / static_cast<double>( myDivisor ) ) ); // NOLINT
-    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / static_cast<double>( myDivisor ) ) ); // NOLINT
-    myRasterPyramid.exists = false;
+    myRasterPyramid.setLevel( myDivisor );
+    myRasterPyramid.setXDim( ( int )( 0.5 + ( myWidth / static_cast<double>( myDivisor ) ) ) ); // NOLINT
+    myRasterPyramid.setYDim( ( int )( 0.5 + ( myHeight / static_cast<double>( myDivisor ) ) ) ); // NOLINT
+    myRasterPyramid.setExists( false );
 
-    QgsDebugMsgLevel( QStringLiteral( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.getLevel() ).arg( myRasterPyramid.getXDim() ).arg( myRasterPyramid.getYDim() ), 2 );
 
     //
     // Now we check if it actually exists in the raster layer
@@ -2275,20 +2288,20 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
         // here is where we check if its a near match:
         // we will see if its within 5 cells either side of
         //
-        QgsDebugMsgLevel( "Checking whether " + QString::number( myRasterPyramid.xDim ) + " x " +
-                          QString::number( myRasterPyramid.yDim ) + " matches " +
+        QgsDebugMsgLevel( "Checking whether " + QString::number( myRasterPyramid.getXDim() ) + " x " +
+                          QString::number( myRasterPyramid.getYDim() ) + " matches " +
                           QString::number( myOverviewXDim ) + " x " + QString::number( myOverviewYDim ), 2 );
 
 
-        if ( ( myOverviewXDim <= ( myRasterPyramid.xDim + myNearMatchLimit ) ) &&
-             ( myOverviewXDim >= ( myRasterPyramid.xDim - myNearMatchLimit ) ) &&
-             ( myOverviewYDim <= ( myRasterPyramid.yDim + myNearMatchLimit ) ) &&
-             ( myOverviewYDim >= ( myRasterPyramid.yDim - myNearMatchLimit ) ) )
+        if ( ( myOverviewXDim <= ( myRasterPyramid.getXDim() + myNearMatchLimit ) ) &&
+             ( myOverviewXDim >= ( myRasterPyramid.getXDim() - myNearMatchLimit ) ) &&
+             ( myOverviewYDim <= ( myRasterPyramid.getYDim() + myNearMatchLimit ) ) &&
+             ( myOverviewYDim >= ( myRasterPyramid.getYDim() - myNearMatchLimit ) ) )
         {
           //right we have a match so adjust the a / y before they get added to the list
-          myRasterPyramid.xDim = myOverviewXDim;
-          myRasterPyramid.yDim = myOverviewYDim;
-          myRasterPyramid.exists = true;
+          myRasterPyramid.setXDim( myOverviewXDim );
+          myRasterPyramid.setYDim( myOverviewYDim );
+          myRasterPyramid.setExists( true );
           QgsDebugMsgLevel( QStringLiteral( ".....YES!" ), 2 );
         }
         else
@@ -2345,21 +2358,16 @@ QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, co
 }
 
 /**
-
-  Convenience function for readily creating file filters.
-
-  Given a long name for a file filter and a regular expression, return
-  a file filter string suitable for use in a QFileDialog::OpenFiles()
-  call.  The regular express, glob, will have both all lower and upper
-  case versions added.
-
-  \note
-
-  Copied from qgisapp.cpp.
-
-  \todo XXX This should probably be generalized and moved to a standard
-            utility type thingy.
-
+ * Convenience function for readily creating file filters.
+ *
+ * Given a long name for a file filter and a regular expression, return
+ * a file filter string suitable for use in a QFileDialog::OpenFiles()
+ * call.  The regular express, glob, will have both all lower and upper
+ * case versions added.
+ *
+ * \note Copied from qgisapp.cpp.=
+ * \todo XXX This should probably be generalized and moved to a standard
+ * utility type thingy.
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
@@ -2533,7 +2541,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   // can't forget the all supported case
   QStringList exts;
-  for ( const QString &ext : qgis::as_const( extensions ) )
+  for ( const QString &ext : std::as_const( extensions ) )
     exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
   fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 
@@ -3111,23 +3119,23 @@ void QgsGdalProvider::initBaseDataset()
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
     {
-      case Qgis::Byte:
+      case Qgis::DataType::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case Qgis::Int16:
+      case Qgis::DataType::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::UInt16:
+      case Qgis::DataType::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case Qgis::Int32:
+      case Qgis::DataType::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case Qgis::UInt32:
+      case Qgis::DataType::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -3299,14 +3307,13 @@ bool QgsGdalProvider::remove()
 }
 
 /**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer()
-
-  We query GDAL for a list of supported raster formats; we then build
-  a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a
-  QFileDialog::getOpenFileNames() call.
-
+ * Builds the list of file filter strings to later be used by
+ * QgisApp::addRasterLayer()
+ *
+ * We query GDAL for a list of supported raster formats; we then build
+ * a list of file filter strings from that list.  We return a string
+ * that contains this list that is suitable for use in a
+ * QFileDialog::getOpenFileNames() call.
 */
 QString QgsGdalProviderMetadata::filters( FilterType type )
 {
@@ -3521,6 +3528,11 @@ QList<QPair<QString, QString> > QgsGdalProviderMetadata::pyramidResamplingMethod
   }
 
   return methods;
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsGdalProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
 }
 
 QList<QgsDataItemProvider *> QgsGdalProviderMetadata::dataItemProviders() const

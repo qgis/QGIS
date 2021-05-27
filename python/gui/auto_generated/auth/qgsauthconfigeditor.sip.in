@@ -12,7 +12,7 @@
 
 class QgsAuthConfigEditor : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for editing authentication configuration database
 %End
 
@@ -33,6 +33,13 @@ Widget for editing authentication configurations directly in database
     void toggleTitleVisibility( bool visible );
 %Docstring
 Hide the widget's title, e.g. when embedding
+%End
+
+    QStringList selectedAuthenticationConfigIds() const;
+%Docstring
+Returns the list of selected authentication configuration IDs
+
+.. versionadded:: 3.20
 %End
 
   public slots:

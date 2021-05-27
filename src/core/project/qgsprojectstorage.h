@@ -23,7 +23,6 @@
 #include <QString>
 
 class QIODevice;
-class QStringList;
 
 class QgsReadWriteContext;
 

@@ -543,7 +543,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
     {
       QgsFeatureList joinFeatures;
 
-      for ( const QgsFeature &feature : qgis::as_const( features ) )
+      for ( const QgsFeature &feature : std::as_const( features ) )
       {
         const QgsFeature joinFeature = info.extractJoinedFeature( feature );
 

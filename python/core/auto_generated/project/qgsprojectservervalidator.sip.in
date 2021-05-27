@@ -12,7 +12,7 @@
 
 class QgsProjectServerValidator
 {
-%Docstring
+%Docstring(signature="appended")
 Validates the server specific parts of the configuration of a QGIS project.
 
 .. versionadded:: 3.14

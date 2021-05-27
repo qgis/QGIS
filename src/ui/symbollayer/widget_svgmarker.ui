@@ -152,7 +152,7 @@
         <number>2</number>
        </property>
        <item>
-        <widget class="QgsRatioLockButton" name="mLockAspectRatio" native="true">
+        <widget class="QgsRatioLockButton" name="mLockAspectRatio">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -486,9 +486,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsRatioLockButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsratiolockbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -502,15 +502,16 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsRatioLockButton</class>
-   <extends>QWidget</extends>
-   <header>qgsratiolockbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSvgSelectorWidget</class>
@@ -522,9 +523,10 @@
  <tabstops>
   <tabstop>spinWidth</tabstop>
   <tabstop>spinHeight</tabstop>
-  <tabstop>mSizeUnitWidget</tabstop>
+  <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
+  <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mChangeColorButton</tabstop>
   <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>mChangeStrokeColorButton</tabstop>

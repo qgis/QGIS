@@ -45,7 +45,7 @@
             >
               <l-tile-layer
                 :visible="baseMap == 'openstreetmap'"
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                 v-if="
                   project &&
                   project.capabilities.wmsOutputCrsList.includes('EPSG:3857')
@@ -313,7 +313,7 @@ export default {
         this.map.fitBounds(jl.getBounds());
       }
       let that = this;
-      this.wms_source = WmsSource.source(`/project/` + project.id + `/?`, {
+      this.wms_source = WmsSource.source(`./project/` + project.id + `/?`, {
         tileSize: 512,
         transparent: true,
         format: "image/png",

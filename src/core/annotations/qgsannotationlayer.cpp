@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspainting.h"
+#include "qgsmaplayerfactory.h"
 #include <QUuid>
 
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
@@ -119,6 +120,7 @@ QgsRectangle QgsAnnotationLayer::extent() const
 void QgsAnnotationLayer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
   mTransformContext = context;
+  invalidateWgs84Extent();
 }
 
 bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
@@ -168,7 +170,7 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
     return false;
   }
 
-  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "annotation" ) );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( QgsMapLayerType::AnnotationLayer ) );
 
   QDomElement itemsElement = doc.createElement( "items" );
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )

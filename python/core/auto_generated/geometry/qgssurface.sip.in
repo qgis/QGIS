@@ -12,7 +12,7 @@
 
 class QgsSurface: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Surface geometry type.
 %End
 

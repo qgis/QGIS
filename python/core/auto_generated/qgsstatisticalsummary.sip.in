@@ -12,7 +12,7 @@
 
 class QgsStatisticalSummary
 {
-%Docstring
+%Docstring(signature="appended")
 Calculator for summary statistics for a list of doubles.
 
 Statistics are calculated by calling :py:func:`~calculate` and passing a list of doubles. The

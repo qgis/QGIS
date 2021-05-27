@@ -10,7 +10,7 @@
 
 class QgsBlockingNetworkRequest : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 A thread safe class for performing blocking (sync) network requests, with full support for QGIS proxy
 and authentication settings.
 

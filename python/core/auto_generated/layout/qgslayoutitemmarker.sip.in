@@ -11,7 +11,7 @@
 
 class QgsLayoutItemMarker : QgsLayoutItem
 {
-%Docstring
+%Docstring(signature="appended")
 A layout item for showing marker symbols.
 
 .. versionadded:: 3.14

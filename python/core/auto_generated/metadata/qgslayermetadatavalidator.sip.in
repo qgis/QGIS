@@ -13,7 +13,7 @@
 
 class QgsAbstractMetadataBaseValidator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for metadata validators.
 
 .. versionadded:: 3.0
@@ -26,7 +26,7 @@ Abstract base class for metadata validators.
 
     class ValidationResult
 {
-%Docstring
+%Docstring(signature="appended")
 Contains the parameters describing a metadata validation failure.
 
 .. versionadded:: 3.0
@@ -83,7 +83,7 @@ to fix the metadata.
 
 class QgsNativeMetadataBaseValidator : QgsAbstractMetadataBaseValidator
 {
-%Docstring
+%Docstring(signature="appended")
 A validator for the native base QGIS metadata schema definition.
 
 .. versionadded:: 3.2
@@ -108,7 +108,7 @@ Constructor for QgsNativeMetadataBaseValidator.
 
 class QgsNativeMetadataValidator : QgsNativeMetadataBaseValidator
 {
-%Docstring
+%Docstring(signature="appended")
 A validator for the native QGIS layer metadata schema definition.
 
 .. versionadded:: 3.0
@@ -132,7 +132,7 @@ Constructor for QgsNativeMetadataValidator.
 
 class QgsNativeProjectMetadataValidator : QgsNativeMetadataBaseValidator
 {
-%Docstring
+%Docstring(signature="appended")
 A validator for the native QGIS project metadata schema definition.
 
 .. versionadded:: 3.2

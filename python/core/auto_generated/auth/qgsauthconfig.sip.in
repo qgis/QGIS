@@ -11,9 +11,10 @@
 
 
 
+
 class QgsAuthMethodConfig
 {
-%Docstring
+%Docstring(signature="appended")
 Configuration storage class for authentication method configurations
 %End
 
@@ -186,6 +187,27 @@ against the config's :py:func:`~QgsAuthMethodConfig.uri` for auto-selecting auth
 :param withpath: Whether to include the URI's path in output
 %End
 
+    bool writeXml( QDomElement &parentElement, QDomDocument &document );
+%Docstring
+Stores the configuration in a DOM
+
+:param parentElement: parent DOM element
+:param document: DOM document
+
+.. seealso:: :py:func:`readXml`
+
+.. versionadded:: 3.20
+%End
+
+    bool readXml( const QDomElement &element );
+%Docstring
+from a DOM element.
+
+:param element: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+
+.. versionadded:: 3.20
+%End
+
 };
 
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
@@ -194,7 +216,7 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 class QgsPkiBundle
 {
-%Docstring
+%Docstring(signature="appended")
 Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
 
 .. note::
@@ -287,7 +309,7 @@ Sets chain of Certificate Authorities for client certificate
 
 class QgsPkiConfigBundle
 {
-%Docstring
+%Docstring(signature="appended")
 Storage set for constructed SSL certificate, key, associated with an authentication config
 %End
 
@@ -413,7 +435,7 @@ setCaChain set the CA chain
 
 class QgsAuthConfigSslServer
 {
-%Docstring
+%Docstring(signature="appended")
 Configuration container for SSL server connection exceptions or overrides
 %End
 

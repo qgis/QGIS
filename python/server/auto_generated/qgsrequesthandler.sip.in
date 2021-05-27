@@ -13,7 +13,7 @@
 
 class QgsRequestHandler
 {
-%Docstring
+%Docstring(signature="appended")
 This class is an interface hiding the details of reading input and writing
 output from/to a wms request mechanism.
 %End

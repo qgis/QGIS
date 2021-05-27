@@ -260,6 +260,18 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     QString evaluatedPath() const;
 
+    /**
+     * Returns the SVG dynamic parameters
+     * \since QGIS 3.20
+     */
+    QMap<QString, QgsProperty> svgDynamicParameters() const;
+
+    /**
+     * Sets the SVG dynamic parameters
+     * \since QGIS 3.20
+     */
+    void setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters );
+
   public slots:
 
     /**

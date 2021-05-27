@@ -31,8 +31,6 @@ QgsLabelFeature::~QgsLabelFeature()
     mPermissibleZoneGeosPrepared.reset();
     mPermissibleZoneGeos.reset();
   }
-
-  delete mInfo;
 }
 
 void QgsLabelFeature::setPermissibleZone( const QgsGeometry &geometry )

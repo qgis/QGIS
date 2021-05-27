@@ -515,11 +515,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     void showSvgExportWarning();
 
-    //! True if the layout contains advanced effects, such as blend modes
-    bool requiresRasterization() const;
-
-    bool containsAdvancedEffects() const;
-
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showRasterizationWarning();
     void showForceVectorWarning();
@@ -546,7 +541,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     //! Load predefined scales from the project's properties
     void loadPredefinedScalesFromProject();
-    QVector<double> predefinedScales() const;
 
     QgsLayoutAtlas *atlas();
 

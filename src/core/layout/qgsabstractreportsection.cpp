@@ -68,7 +68,7 @@ void QgsAbstractReportSection::setContext( const QgsReportSectionContext &contex
   if ( mFooter )
     setReportContext( mFooter.get() );
 
-  for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+  for ( QgsAbstractReportSection *section : std::as_const( mChildren ) )
   {
     section->setContext( mContext );
   }
@@ -237,7 +237,7 @@ bool QgsAbstractReportSection::beginRender()
 
   // and all children too
   bool result = true;
-  for ( QgsAbstractReportSection *child : qgis::as_const( mChildren ) )
+  for ( QgsAbstractReportSection *child : std::as_const( mChildren ) )
   {
     result = result && child->beginRender();
   }
@@ -310,7 +310,7 @@ bool QgsAbstractReportSection::next()
       {
         mNextChild = 0;
 
-        for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+        for ( QgsAbstractReportSection *section : std::as_const( mChildren ) )
         {
           section->reset();
         }
@@ -356,7 +356,7 @@ bool QgsAbstractReportSection::endRender()
 
   // and all children too
   bool result = true;
-  for ( QgsAbstractReportSection *child : qgis::as_const( mChildren ) )
+  for ( QgsAbstractReportSection *child : std::as_const( mChildren ) )
   {
     result = result && child->endRender();
   }
@@ -368,7 +368,7 @@ void QgsAbstractReportSection::reset()
   mCurrentLayout = nullptr;
   mNextChild = 0;
   mNextSection = Header;
-  for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+  for ( QgsAbstractReportSection *section : std::as_const( mChildren ) )
   {
     section->reset();
   }
@@ -417,7 +417,7 @@ void QgsAbstractReportSection::insertChild( int index, QgsAbstractReportSection 
 {
   section->setParentSection( this );
   index = std::max( 0, index );
-  index = std::min( index, mChildren.count() );
+  index = std::min( index, static_cast<int>( mChildren.count() ) );
   mChildren.insert( index, section );
 }
 
@@ -453,7 +453,7 @@ void QgsAbstractReportSection::copyCommonProperties( QgsAbstractReportSection *d
   qDeleteAll( destination->mChildren );
   destination->mChildren.clear();
 
-  for ( QgsAbstractReportSection *child : qgis::as_const( mChildren ) )
+  for ( QgsAbstractReportSection *child : std::as_const( mChildren ) )
   {
     destination->appendChild( child->clone() );
   }

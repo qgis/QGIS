@@ -28,7 +28,7 @@
 #include "qgspointlocator.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
@@ -423,11 +423,11 @@ void QgsVertexTool::clearDragBands()
   mDragPointMarkers.clear();
   mDragPointMarkersOffset.clear();
 
-  for ( const StraightBand &b : qgis::as_const( mDragStraightBands ) )
+  for ( const StraightBand &b : std::as_const( mDragStraightBands ) )
     delete b.band;
   mDragStraightBands.clear();
 
-  for ( const CircularBand &b : qgis::as_const( mDragCircularBands ) )
+  for ( const CircularBand &b : std::as_const( mDragCircularBands ) )
     delete b.band;
   mDragCircularBands.clear();
 }
@@ -447,7 +447,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     QgsPointLocator::Match m = snapToEditableLayer( e );
     if ( m.hasVertex() )
     {
-      for ( const Vertex &selectedVertex : qgis::as_const( mSelectedVertices ) )
+      for ( const Vertex &selectedVertex : std::as_const( mSelectedVertices ) )
       {
         if ( selectedVertex.layer == m.layer() && selectedVertex.fid == m.featureId() && selectedVertex.vertexId == m.vertexIndex() )
         {
@@ -526,7 +526,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mouseMoveNotDragging( e );
     }
   }
-  else if ( mSelectionRubberBand )
+  else if ( mSelectionRubberBand &&
+            ( mSelectionMethod == SelectionNormal  ||
+              ( mSelectionMethod == SelectionPolygon && e->button() == Qt::RightButton ) ) )
   {
     // only handling of selection rect being dragged
     QList<Vertex> vertices;
@@ -564,6 +566,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+      context.setExpressionContext( mCanvas->createExpressionContext() );
       context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
       std::unique_ptr< QgsFeatureRenderer > r;
       if ( vlayer->renderer() )
@@ -583,6 +586,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
       else
         request.setNoAttributes();
+      request.setExpressionContext( context.expressionContext() );
 
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( request );
@@ -601,9 +605,10 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
         QgsGeometry g = f.geometry();
-        for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
+        int i = 0;
+        for ( auto it = g.constGet()->vertices_begin(); it != g.constGet()->vertices_end(); ++it )
         {
-          QgsPoint pt = g.vertexAt( i );
+          QgsPoint pt = *it;
           if ( layerRubberBandEngine->contains( &pt ) )
           {
             // we don't want to select invisible features,
@@ -618,6 +623,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
             if ( isFeatureSelected )
               selectedVertices << Vertex( vlayer, f.id(), i );
           }
+          i++;
         }
       }
       if ( r )
@@ -646,6 +652,18 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     setHighlightedVertices( vertices, mode );
 
     stopSelectionRubberBand();
+  }
+  else if ( e->button() == Qt::LeftButton && e->modifiers() & Qt::AltModifier )
+  {
+    mSelectionMethod = SelectionPolygon;
+    initSelectionRubberBand();
+    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+    return;
+  }
+  else if ( mSelectionRubberBand && mSelectionMethod == SelectionPolygon )
+  {
+    mSelectionRubberBand->addPoint( toMapCoordinates( e->pos() ) );
+    return;
   }
   else  // selection rect is not being dragged
   {
@@ -714,6 +732,7 @@ void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     // the user may be dragging a rect to select vertices
     if ( !mSelectionRubberBand && ( e->pos() - *mSelectionRubberBandStartPos ).manhattanLength() >= 10 )
     {
+      mSelectionMethod = SelectionNormal;
       initSelectionRubberBand();
     }
     if ( mSelectionRubberBand )
@@ -1093,7 +1112,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
     // keep only corrsesponding vertices
     // todo: it might be nice to keep other vertices in memory, so we could select them when switching lokcked feature
     QList<Vertex> vertices;
-    for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &v : std::as_const( mSelectedVertices ) )
       if ( v.layer == alternative.first && v.fid == alternative.second )
         vertices << v;
     setHighlightedVertices( vertices, ModeReset );
@@ -1229,7 +1248,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( pX ), QgsPoint( p0 ), QgsPoint( p1 ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgis::as_const( points ) )
+      for ( const QgsPoint &pt : std::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
@@ -1240,7 +1259,7 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( p0 ), QgsPoint( p1 ), QgsPoint( pX ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgis::as_const( points ) )
+      for ( const QgsPoint &pt : std::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else
@@ -1332,6 +1351,8 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
     {
       if ( mSelectionMethod == SelectionRange )
         stopRangeVertexSelection();
+      if ( mSelectionMethod == SelectionPolygon )
+        stopSelectionRubberBand();
       if ( mDraggingVertex || mDraggingEdge )
         stopDragging();
       break;
@@ -1339,6 +1360,13 @@ void QgsVertexTool::keyPressEvent( QKeyEvent *e )
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
     {
+      if ( mSelectionMethod == SelectionPolygon )
+      {
+        e->ignore(); // Override default shortcut management
+        mSelectionRubberBand->removeLastPoint();
+        if ( mSelectionRubberBand->numberOfVertices() < 2 )
+          stopSelectionRubberBand();
+      }
       if ( mDraggingVertex || ( !mDraggingEdge && !mSelectedVertices.isEmpty() ) )
       {
         e->ignore();  // Override default shortcut management
@@ -1602,7 +1630,7 @@ void QgsVertexTool::deleteVertexEditorSelection()
   QgsVectorLayer *layer = mLockedFeature->layer();
   QgsFeatureId fid = mLockedFeature->featureId();
   QgsGeometry geometry = cachedGeometry( layer, fid );
-  for ( QgsVertexEntry *vertex : qgis::as_const( selFeatureVertices ) )
+  for ( QgsVertexEntry *vertex : std::as_const( selFeatureVertices ) )
   {
     if ( vertex->isSelected() )
     {
@@ -1684,7 +1712,7 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
   QSet<Vertex> topoVertices;
   const auto editableLayers = editableVectorLayers();
 
-  for ( const Vertex &v : qgis::as_const( vertices ) )
+  for ( const Vertex &v : std::as_const( vertices ) )
   {
     QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
     QgsPointXY mapPointV = toMapCoordinates( v.layer, origPointV );
@@ -1704,7 +1732,7 @@ QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices
 
 void QgsVertexTool::buildExtraVertices( const QSet<Vertex> &vertices, const QgsPointXY &anchorPoint, QgsVectorLayer *anchorLayer )
 {
-  for ( const Vertex &v : qgis::as_const( vertices ) )
+  for ( const Vertex &v : std::as_const( vertices ) )
   {
     if ( mDraggingVertex && v == *mDraggingVertex )
       continue;
@@ -1741,7 +1769,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   QSet<Vertex> movingVertices;
   movingVertices << *mDraggingVertex;
-  for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
+  for ( const Vertex &v : std::as_const( mSelectedVertices ) )
     movingVertices << v;
 
   if ( QgsProject::instance()->topologicalEditing() )
@@ -1768,7 +1796,7 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
   // i.e. every circular band is defined by its middle circular vertex
   QSet<Vertex> verticesInCircularBands;
 
-  for ( const Vertex &v : qgis::as_const( movingVertices ) )
+  for ( const Vertex &v : std::as_const( movingVertices ) )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
@@ -2148,7 +2176,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
@@ -2156,12 +2184,27 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     const auto editKeys = edits.keys();
     for ( QgsVectorLayer *layer : editKeys )
     {
-      if ( layer->crs() == mapPointMatch->layer()->crs() )
+      const auto editGeom = edits[layer].values();
+      for ( QgsGeometry g : editGeom )
       {
-        if ( !layerPoint.is3D() )
-          layerPoint.addZValue( defaultZValue() );
-        layer->addTopologicalPoints( layerPoint );
-        mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
+        if ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && ( layer->crs() == mapPointMatch->layer()->crs() ) )
+        {
+          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
+          {
+            if ( !layerPoint.is3D() )
+              layerPoint.addZValue( defaultZValue() );
+            layer->addTopologicalPoints( layerPoint );
+            mapPointMatch->layer()->addTopologicalPoints( layerPoint );
+          }
+        }
+        if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
+        {
+          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
+          {
+            layer->addTopologicalPoints( *it );
+          }
+        }
       }
     }
   }
@@ -2269,7 +2312,60 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
     {
-      layer->changeGeometry( it2.key(), it2.value() );
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
+    }
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( mLockedFeature.get() );
+  }
+
+
+
+  for ( it = edits.begin() ; it != edits.end(); ++it )
+  {
+    QgsVectorLayer *layer = it.key();
+    QHash<QgsFeatureId, QgsGeometry> &layerEdits = it.value();
+    QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
+    for ( ; it2 != layerEdits.end(); ++it2 )
+    {
+      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      switch ( QgsProject::instance()->avoidIntersectionsMode() )
+      {
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+          avoidIntersectionsLayers.append( layer );
+          break;
+        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+          avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+          break;
+        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+          break;
+      }
+      QgsGeometry featGeom = it2.value();
+      layer->changeGeometry( it2.key(), featGeom );
+      if ( avoidIntersectionsLayers.size() > 0 )
+      {
+        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+        QSet<QgsFeatureId> id;
+        id.insert( it2.key() );
+        ignoreFeatures.insert( layer, id );
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( avoidIntersectionsLayers, ignoreFeatures );
+        switch ( avoidIntersectionsReturn )
+        {
+          case 2:
+            emit messageEmitted( tr( "The operation would change the geometry type." ), Qgis::Warning );
+            break;
+
+          case 3:
+            emit messageEmitted( tr( "At least one geometry intersected is invalid. These geometries must be manually repaired." ), Qgis::Warning );
+            break;
+          default:
+            break;
+        }
+      }
+      layer->changeGeometry( it2.key(), featGeom );
+      edits[layer][it2.key()] = featGeom;
     }
     layer->endEditCommand();
     layer->triggerRepaint();
@@ -2277,6 +2373,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     if ( mVertexEditor )
       mVertexEditor->updateEditor( mLockedFeature.get() );
   }
+
 }
 
 
@@ -2307,7 +2404,7 @@ void QgsVertexTool::deleteVertex()
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;
-    for ( const Vertex &vertexToDelete : qgis::as_const( toDelete ) )
+    for ( const Vertex &vertexToDelete : std::as_const( toDelete ) )
     {
       QgsPointXY layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
       QgsPointXY mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
@@ -2327,7 +2424,7 @@ void QgsVertexTool::deleteVertex()
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
-  for ( const Vertex &vertex : qgis::as_const( toDelete ) )
+  for ( const Vertex &vertex : std::as_const( toDelete ) )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
   }
@@ -2511,7 +2608,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
   if ( mode == ModeSubtract )
   {
     // rebuild markers for remaining selection
-    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &vertex : std::as_const( mSelectedVertices ) )
     {
       createMarkerForVertex( vertex );
     }
@@ -2522,7 +2619,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     disconnect( mLockedFeature.get(), &QgsLockedFeature::selectionChanged, this, &QgsVertexTool::lockedFeatureSelectionChanged );
 
     mLockedFeature->deselectAllVertices();
-    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
+    for ( const Vertex &vertex : std::as_const( mSelectedVertices ) )
     {
       // we should never be able to select vertices that are not from the locked feature
       // cppcheck-suppress assertWithSideEffect
@@ -2536,7 +2633,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
 
 void QgsVertexTool::setHighlightedVerticesVisible( bool visible )
 {
-  for ( QgsVertexMarker *marker : qgis::as_const( mSelectedVerticesMarkers ) )
+  for ( QgsVertexMarker *marker : std::as_const( mSelectedVerticesMarkers ) )
     marker->setVisible( visible );
 }
 
@@ -2580,14 +2677,30 @@ void QgsVertexTool::initSelectionRubberBand()
 
 void QgsVertexTool::updateSelectionRubberBand( QgsMapMouseEvent *e )
 {
-  QRect rect = QRect( e->pos(), *mSelectionRubberBandStartPos );
-  if ( mSelectionRubberBand )
-    mSelectionRubberBand->setToCanvasRectangle( rect );
+  switch ( mSelectionMethod )
+  {
+    case SelectionNormal:
+    {
+      QRect rect = QRect( e->pos(), *mSelectionRubberBandStartPos );
+      if ( mSelectionRubberBand )
+        mSelectionRubberBand->setToCanvasRectangle( rect );
+      break;
+    }
+    case SelectionPolygon:
+    {
+      mSelectionRubberBand->movePoint( toMapCoordinates( e->pos() ) );
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 void QgsVertexTool::stopSelectionRubberBand()
 {
   mSelectionRubberBand.reset();
+  mSelectionRubberBandStartPos.reset();
+  mSelectionMethod = SelectionNormal;
 }
 
 bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr )
@@ -2600,7 +2713,9 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
     return false;  // currently not supported for circular edges
 
   QgsRectangle visible_extent = canvas()->mapSettings().visibleExtent();
-  if ( !visible_extent.contains( p0 ) || !visible_extent.contains( p1 ) )
+  // Check if one point is inside and the other outside the visible extent in order to transpose the mid marker
+  // If both are inside or outside there is no such need
+  if ( visible_extent.contains( p0 ) != visible_extent.contains( p1 ) )
   {
     // clip line segment to the extent so the mid-point marker is always visible
     QgsGeometry extentGeom = QgsGeometry::fromRect( visible_extent );
@@ -2631,7 +2746,7 @@ void QgsVertexTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   QgsGeometryUtils::segmentizeArc( QgsPoint( v0 ), QgsPoint( v1 ), QgsPoint( v2 ), points );
   // it would be useful to have QgsRubberBand::setPoints() call
   band->reset();
-  for ( const QgsPoint &p : qgis::as_const( points ) )
+  for ( const QgsPoint &p : std::as_const( points ) )
     band->addPoint( p );
 }
 
@@ -2684,8 +2799,7 @@ void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool 
   tool = t;
   layer = l;
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 2 )
     method = QgsGeometry::ValidatorGeos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
@@ -2734,8 +2848,7 @@ void QgsVertexTool::GeometryValidation::cleanup()
 
 void QgsVertexTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
 {
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+  if ( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() == 0 )
     return;
 
   QPair<QgsVectorLayer *, QgsFeatureId> id( layer, featureId );

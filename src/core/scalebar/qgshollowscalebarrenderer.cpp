@@ -20,6 +20,8 @@
 #include "qgssymbol.h"
 #include "qgsfillsymbollayer.h"
 #include "qgstextrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 #include <QList>
 #include <QPainter>
 

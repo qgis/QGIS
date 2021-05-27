@@ -321,6 +321,11 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Curved Geometries" );
   }
 
+  if ( abilities & QgsVectorDataProvider::FeatureSymbology )
+  {
+    abilitiesList += tr( "Feature Symbology" );
+  }
+
   return abilitiesList.join( QLatin1String( ", " ) );
 }
 
@@ -371,8 +376,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  const auto constMNativeTypes = mNativeTypes;
-  for ( const NativeType &nativeType : constMNativeTypes )
+  for ( const NativeType &nativeType : mNativeTypes )
   {
     QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
@@ -829,6 +833,23 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
       if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : geometry->clone() ) )
       {
         outputGeom.reset( collGeom.release() );
+      }
+    }
+  }
+
+  //convert to single type if there's a single part of compatible type
+  if ( !QgsWkbTypes::isMultiType( providerGeomType ) && QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  {
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry );
+    if ( collection )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        const QgsAbstractGeometry *firstGeom = collection->geometryN( 0 );
+        if ( firstGeom && firstGeom->wkbType() == providerGeomType )
+        {
+          outputGeom.reset( firstGeom->clone() );
+        }
       }
     }
   }

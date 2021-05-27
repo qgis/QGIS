@@ -41,13 +41,11 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     QgsFeatureRenderer *renderer() override;
 
     void setContext( const QgsSymbolWidgetContext &context ) override;
-
-    /**
-     * Set the widget in dock mode which tells the widget to emit panel
-     * widgets and not open dialogs
-     * \param dockMode TRUE to enable dock mode.
-     */
     void setDockMode( bool dockMode ) override;
+    void disableSymbolLevels() override SIP_SKIP;
+
+  protected:
+    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
 
   private slots:
     void changeSingleSymbol();
@@ -58,9 +56,10 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 
   private:
 
-    QgsSingleSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsSingleSymbolRenderer > mRenderer;
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    QgsSymbol *mSingleSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mSingleSymbol;
+    QAction *mActionLevels = nullptr;
 };
 
 

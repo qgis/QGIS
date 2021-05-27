@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1031</y>
-        <width>387</width>
-        <height>2728</height>
+        <y>0</y>
+        <width>367</width>
+        <height>2191</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -1315,10 +1315,14 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -1327,9 +1331,25 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAlignmentComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsalignmentcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -1338,9 +1358,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayoutItemComboBox</class>
@@ -1348,29 +1368,9 @@
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLegendFilterButton</class>
    <extends>QToolButton</extends>
    <header location="global">qgslegendfilterbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsAlignmentComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsalignmentcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1392,6 +1392,7 @@
   <tabstop>mAddToolButton</tabstop>
   <tabstop>mRemoveToolButton</tabstop>
   <tabstop>mEditPushButton</tabstop>
+  <tabstop>mLayerExpressionButton</tabstop>
   <tabstop>mCountToolButton</tabstop>
   <tabstop>mExpressionFilterButton</tabstop>
   <tabstop>mFilterByMapCheckBox</tabstop>
@@ -1414,6 +1415,8 @@
   <tabstop>mSymbolsColGroupBox</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
   <tabstop>mSymbolHeightSpinBox</tabstop>
+  <tabstop>mMinSymbolSizeSpinBox</tabstop>
+  <tabstop>mMaxSymbolSizeSpinBox</tabstop>
   <tabstop>mRasterStrokeGroupBox</tabstop>
   <tabstop>mRasterStrokeColorButton</tabstop>
   <tabstop>mRasterStrokeWidthSpinBox</tabstop>
@@ -1434,7 +1437,6 @@
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mColumnSpaceSpinBox</tabstop>
   <tabstop>mLineSpacingSpinBox</tabstop>
-  <tabstop>mLayerExpressionButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

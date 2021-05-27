@@ -91,6 +91,9 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      */
     QgsPanelWidget *currentPanel();
 
+    QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+
   public slots:
 
     /**

@@ -625,6 +625,25 @@ class CORE_EXPORT QgsLayoutExporter
      */
     void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
 
+    /**
+     * Returns TRUE if the specified \a layout contains visible items which have settings
+     * that require rasterization of the entire export layout in order to reproduce the desired
+     * appearance.
+     *
+     * \see containsAdvancedEffects()
+     * \since QGIS 3.20
+     */
+    static bool requiresRasterization( const QgsLayout *layout );
+
+    /**
+     * Returns TRUE if the specified \a layout contains visible items which have settings
+     * such as opacity which will prevent these individual items from being exported as vector artwork.
+     *
+     * \see requiresRasterization()
+     * \since QGIS 3.20
+     */
+    static bool containsAdvancedEffects( const QgsLayout *layout );
+
   protected:
 
     /**

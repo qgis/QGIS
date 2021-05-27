@@ -96,7 +96,7 @@ void QgsTinInterpolator::initialize()
   int nProcessedFeatures = 0;
   if ( mFeedback )
   {
-    for ( const LayerData &layer :  qgis::as_const( mLayerData ) )
+    for ( const LayerData &layer :  std::as_const( mLayerData ) )
     {
       if ( layer.source )
       {
@@ -108,7 +108,7 @@ void QgsTinInterpolator::initialize()
   const QgsCoordinateReferenceSystem crs = !mLayerData.empty() ? mLayerData.at( 0 ).source->sourceCrs() : QgsCoordinateReferenceSystem();
 
   QgsFeature f;
-  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
+  for ( const LayerData &layer : std::as_const( mLayerData ) )
   {
     if ( layer.source )
     {

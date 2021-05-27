@@ -137,7 +137,7 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
     // need to update all destination parameters to turn off non file based outputs
-    for ( const QgsProcessingParameterDefinition *definition : qgis::as_const( mParameters ) )
+    for ( const QgsProcessingParameterDefinition *definition : std::as_const( mParameters ) )
     {
       if ( definition->isDestination() )
       {

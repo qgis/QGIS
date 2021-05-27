@@ -570,6 +570,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         properties = rendererStyle.symbol().symbolLayers()[0].properties()
         expected_properties = {
             'angle': '0',
+            'cap_style': 'square',
             'color': '22,22,22,153',
             'horizontal_anchor_point': '1',
             'joinstyle': 'bevel',

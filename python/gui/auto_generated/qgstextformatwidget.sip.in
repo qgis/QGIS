@@ -14,7 +14,7 @@
 
 class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for customizing text formatting settings.
 
 :py:class:`QgsTextFormatWidget` provides a widget for controlling the appearance of text rendered
@@ -208,7 +208,7 @@ Updates the text preview.
 
 class QgsTextFormatDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A simple dialog for customizing text formatting settings.
 
 :py:class:`QgsTextFormatDialog` provides a dialog for controlling the appearance of text rendered
@@ -258,7 +258,7 @@ Returns a reference to the dialog's button box.
 
 class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
 {
-%Docstring
+%Docstring(signature="appended")
 A panel widget for customizing text formatting settings.
 
 :py:class:`QgsTextFormatPanelWidget` provides a panel widget for controlling the appearance of text rendered

@@ -42,8 +42,8 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setShowBoundingBoxes( bool showBoundingBoxes );
     double showBoundingBoxes() const;
 
-    void setPointBudget( int budget );
-    int pointBudget() const;
+    void setPointBudget( double budget );
+    double pointBudget() const;
 
     void setPointCloudSize( int size );
 
@@ -91,7 +91,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void minMaxModified();
     void setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit );
 
-    int mPointBudget = 1000000;
+    double mPointBudget = 1000000;
 };
 
 #endif // QGSPOINTCLOUD3DSYMBOLWIDGET_H

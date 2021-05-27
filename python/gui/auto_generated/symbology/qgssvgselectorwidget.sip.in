@@ -13,9 +13,35 @@
 
 
 
+class QgsSvgSelectorFilterModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+A model for displaying SVG files with a preview icon which can be filtered by file name.
+Population of the model is performed in a background thread to ensure that
+initial creation of the model is responsive and does not block the GUI.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgssvgselectorwidget.h"
+%End
+  public:
+
+    QgsSvgSelectorFilterModel( QObject *parent /TransferThis/, const QString &path = QString(), int iconSize = 30 );
+%Docstring
+Constructor for creating a model for SVG files in a specific path.
+
+:param parent: parent object
+:param path: initial path, which is recursively searched
+:param iconSize: desired size of SVG icons to create
+%End
+
+};
+
 class QgsSvgSelectorListModel : QAbstractListModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model for displaying SVG files with a preview icon. Population of the model is performed in
 a background thread to ensure that initial creation of the model is responsive and does
 not block the GUI.
@@ -56,7 +82,7 @@ Constructor for creating a model for SVG files in a specific path.
 
 class QgsSvgSelectorGroupsModel : QStandardItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model for displaying SVG search paths. Population of the model is performed in
 a background thread to ensure that initial creation of the model is responsive and does
 not block the GUI.
@@ -84,7 +110,7 @@ class QgsSvgSelectorWidget : QWidget
 Constructor for QgsSvgSelectorWidget
 %End
 
-    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer );
+    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer = 0 );
 %Docstring
 Initialize the parameters model so the context and the layer are referenced.
 
@@ -93,7 +119,7 @@ Initialize the parameters model so the context and the layer are referenced.
 
     QString currentSvgPath() const;
 
-    QgsSvgSourceLineEdit *sourceLineEdit() const;
+    QgsPictureSourceLineEditBase *sourceLineEdit() const;
 %Docstring
 Returns the source line edit
 
@@ -112,6 +138,27 @@ Defines if the group box to fill parameters is visible
 Returns if the group box to fill parameters is visible
 
 .. versionadded:: 3.18
+%End
+
+    void setBrowserVisible( bool visible );
+%Docstring
+Defines if the SVG browser should be visible
+
+.. versionadded:: 3.20
+%End
+
+    bool browserVisible() const;
+%Docstring
+Returns if the SVG browser should be visible
+
+.. versionadded:: 3.20
+%End
+
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const;
+%Docstring
+Returns the property override tool button of the file line edit
+
+.. versionadded:: 3.20
 %End
 
   public slots:

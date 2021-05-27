@@ -393,10 +393,13 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     {
       QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this );
       mCache.insert( feat.id(), cachedFeature );
+      if ( !mCacheOrderedKeys.contains( feat.id() ) )
+        mCacheOrderedKeys << feat.id();
     }
 
     QgsVectorLayer *mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
+    QList< QgsFeatureId > mCacheOrderedKeys;
 
     bool mCacheGeometry = true;
     bool mFullCache = false;

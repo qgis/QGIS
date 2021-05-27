@@ -69,7 +69,7 @@ namespace QgsRasterAnalysisUtils
    */
   std::unique_ptr< QgsProcessingParameterDefinition > createRasterTypeParameter( const QString &name,
       const QString &description,
-      Qgis::DataType defaultType = Qgis::Float32 );
+      Qgis::DataType defaultType = Qgis::DataType::Float32 );
 
   /**
    * Converts the value of a raster type parameter to the corresponding data type.

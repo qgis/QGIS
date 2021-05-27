@@ -47,7 +47,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatri
   QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
   QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
-  for ( QgsTileXYZ id : qgis::as_const( tiles ) )
+  for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
     loadFromNetworkAsync( id, tileMatrix, uri );
   }
@@ -173,7 +173,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
 
   QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, tileMatrix.zoomLevel() );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
-  for ( QgsTileXYZ id : qgis::as_const( tiles ) )
+  for ( QgsTileXYZ id : std::as_const( tiles ) )
   {
     QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, referer ) : loadFromMBTiles( id, mbReader );
     if ( !rawData.isEmpty() )

@@ -1,9 +1,8 @@
-name: Build Docker images for current branches
+name: 🐳 Build Docker images for current branches
 
 # on commits to this file, schedule and dispatch runs, the workflow will build the 3 different Docker images (master, PR, LTR)
 # on tags, it will build only the image of the given tag
 # this is made by using a matrix defined in a dedicated job
-
 on:
   push:
     tags:
@@ -20,6 +19,7 @@ on:
 
 jobs:
   define-strategy:
+    if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
@@ -33,6 +33,7 @@ jobs:
           fi
 
   build-docker:
+    if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     needs: define-strategy
 
@@ -48,12 +49,28 @@ jobs:
       matrix: ${{ fromJSON( needs.define-strategy.outputs.matrix ) }}
 
     steps:
+      - name: Free additional space
+        run: |
+          df -h
+          rm -rf /tmp/workspace
+          rm -rf /usr/share/dotnet/sdk
+          sudo apt remove llvm-* ghc-* google-chrome-* dotnet-sdk-*
+          dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+          du -a /usr/share | sort -n -r | head -n 10
+          du -a /usr/local/share | sort -n -r | head -n 10
+          df -h
+          sudo apt clean
+          df -h
+
       - name: Cache
         id: cache
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: ~/.ccache
-          key: docker-build-${{ matrix.branch }}
+          key: docker-build-${{ matrix.branch }}-${{ github.sha }}
+          restore-keys: |
+            docker-build-${{ matrix.branch }}-
+            docker-build-master-
 
       - name: checkout ${{ matrix.branch }}
         uses: actions/checkout@v2

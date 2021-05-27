@@ -14,7 +14,7 @@
 
 class QgsRasterLayerProperties : QgsOptionsDialogBase
 {
-%Docstring
+%Docstring(signature="appended")
 Property sheet for a raster map layer
 
 .. versionadded:: 3.12
@@ -36,7 +36,7 @@ Constructor
 :param fl: windows flag
 %End
 
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 %Docstring
 Adds a properties page factory to the raster layer properties dialog.
 

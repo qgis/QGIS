@@ -133,6 +133,12 @@ while ($LINE_IDX < $LINE_COUNT){
           print $out_handle $BUFFERED_LINE."\n";
           $BUFFERED_LINE = "";
         }
+
+        if ($new_line !~ m/^\s*\*/ && $new_line =~ m/^(\s*?)(\s?)(.+?)$/ )
+        {
+          $new_line = "$1* $3";
+        }
+
         print $out_handle $new_line."\n";
         # print $out_handle "normal dox\n";
         $PREVIOUS_WAS_DOX_BLANKLINE = 0;

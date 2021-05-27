@@ -32,7 +32,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsproperty.h"
-
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 

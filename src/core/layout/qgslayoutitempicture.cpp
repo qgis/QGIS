@@ -413,8 +413,10 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
+
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
-                                     1.0 );
+                                     1.0, 0, false, evaluatedParameters );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {
@@ -473,11 +475,12 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
-      // TODO parameters (handle this in the gui part)
-      QMap<QString, QString> parameters;
+
+      QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
+
       bool isMissingImage = false;
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
-                                     1.0, 0, false, parameters, &isMissingImage );
+                                     1.0, 0, false, evaluatedParameters, &isMissingImage );
       mSVG.load( svgContent );
       if ( mSVG.isValid() && !isMissingImage )
       {
@@ -618,6 +621,19 @@ bool QgsLayoutItemPicture::isMissingImage() const
 QString QgsLayoutItemPicture::evaluatedPath() const
 {
   return mEvaluatedPath;
+}
+
+QMap<QString, QgsProperty> QgsLayoutItemPicture::svgDynamicParameters() const
+{
+  const QVariantMap parameters = mCustomProperties.value( QStringLiteral( "svg-dynamic-parameters" ), QVariantMap() ).toMap();
+  return QgsProperty::variantMapToPropertyMap( parameters );
+}
+
+void QgsLayoutItemPicture::setSvgDynamicParameters( const QMap<QString, QgsProperty> &parameters )
+{
+  const QVariantMap variantMap = QgsProperty::propertyMapToVariantMap( parameters );
+  mCustomProperties.setValue( QStringLiteral( "svg-dynamic-parameters" ), variantMap );
+  refreshPicture();
 }
 
 void QgsLayoutItemPicture::shapeChanged()

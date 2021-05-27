@@ -12,7 +12,7 @@
 
 class QgsPhongTexturedMaterialSettings : QgsAbstractMaterialSettings
 {
-%Docstring
+%Docstring(signature="appended")
 A phong shading model with diffuse texture map.
 
 .. warning::

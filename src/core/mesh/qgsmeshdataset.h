@@ -26,6 +26,7 @@
 #include <limits>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgspoint.h"
 #include "qgsdataprovider.h"
 
@@ -828,8 +829,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
 
     /**
-     * Appends a item child
-     * \param item the item to append
+     * Appends a child \a item.
      *
      * \note takes ownership of item
      */

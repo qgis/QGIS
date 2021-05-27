@@ -1541,7 +1541,7 @@ QgsExpressionNode::NodeType QgsExpressionNodeCondition::nodeType() const
 
 QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  for ( WhenThen *cond : qgis::as_const( mConditions ) )
+  for ( WhenThen *cond : std::as_const( mConditions ) )
   {
     QVariant vWhen = cond->mWhenExp->eval( parent, context );
     QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( vWhen, parent );
@@ -1568,7 +1568,7 @@ QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsE
 bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res;
-  for ( WhenThen *cond : qgis::as_const( mConditions ) )
+  for ( WhenThen *cond : std::as_const( mConditions ) )
   {
     res = cond->mWhenExp->prepare( parent, context )
           & cond->mThenExp->prepare( parent, context );

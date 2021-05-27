@@ -11,7 +11,7 @@
 
 class QgsScaleBarSettings
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsScaleBarSettings` class stores the appearance and layout settings
 for scalebar drawing with :py:class:`QgsScaleBarRenderer`.
 

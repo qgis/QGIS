@@ -69,6 +69,7 @@
         <file>flags/ky.svg</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
+        <file>icons/qgis-full.png</file>
         <file>icons/qbrowser_icon.svg</file>
         <file>north_arrows/default.png</file>
         <file>north_arrows/default.svg</file>
@@ -309,6 +310,7 @@
         <file>themes/default/mActionFilter2.svg</file>
         <file>themes/default/mActionFolder.svg</file>
         <file>themes/default/mActionFormAnnotation.svg</file>
+        <file>themes/default/mActionFromLargestFeature.svg</file>
         <file>themes/default/mActionFromSelectedFeature.svg</file>
         <file>themes/default/mActionFormView.svg</file>
         <file>themes/default/mActionFullCumulativeCutStretch.svg</file>
@@ -363,6 +365,8 @@
         <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
+        <file>themes/default/mActionOpenTableSelected.svg</file>
+        <file>themes/default/mActionOpenTableVisible.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
         <file>themes/default/mActionOffsetPointSymbols.svg</file>
         <file>themes/default/mActionOptions.svg</file>
@@ -908,6 +912,14 @@
         <file>themes/default/mIconCodeEditor.svg</file>
         <file>themes/default/console/iconSyntaxErrorConsoleParams.svg</file>
         <file>themes/default/mIconSnappingEndpoint.svg</file>
+        <file>themes/default/mActionStreamingDigitize.svg</file>
+        <file>themes/default/mActionEditHtml.svg</file>
+        <file>themes/default/mIndicatorNotes.svg</file>
+        <file>themes/default/mIndicatorLowAccuracy.svg</file>
+        <file>themes/default/mIconFolderParams.svg</file>
+        <file>themes/default/mIconFolderOpenParams.svg</file>
+        <file>themes/default/mIconFolderLinkParams.svg</file>
+        <file>themes/default/mIconFolderHomeParams.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

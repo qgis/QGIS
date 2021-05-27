@@ -82,7 +82,7 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
   private:
 
-    bool readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const;
+    bool readFeature( const gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) const;
 
     //! Gets an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
@@ -108,6 +108,8 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     QString mAuthCfg;
 
     QgsFeedback *mInterruptionChecker = nullptr;
+
+    Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
 
     /* This flag tells the iterator when to skip all calls that might reset the reading (rewind),
      * to be used when the request is for a single fid or for a list of fids and we are inside

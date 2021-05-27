@@ -17,6 +17,7 @@
 
 #include "qgsobjectcustomproperties.h"
 #include "qgis.h"
+#include "qgsxmlutils.h"
 
 #include <QDomNode>
 #include <QStringList>
@@ -77,39 +78,53 @@ void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QStri
     mMap.clear();
   }
 
-  QDomNodeList nodes = propsNode.childNodes();
-
-  for ( int i = 0; i < nodes.size(); i++ )
+  const QVariant newProps = QgsXmlUtils::readVariant( propsNode.firstChildElement() );
+  if ( newProps.type() == QVariant::Map )
   {
-    QDomNode propNode = nodes.at( i );
-    if ( propNode.isNull() || propNode.nodeName() != QLatin1String( "property" ) )
-      continue;
-    QDomElement propElement = propNode.toElement();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    const QVariantMap propsMap = newProps.toMap();
+    for ( auto it = propsMap.constBegin(); it != propsMap.constEnd(); ++it )
+      mMap.insert( it.key(), it.value() );
+#else
+    mMap.insert( newProps.toMap() );
+#endif
+  }
+  else
+  {
+    // backward compatibility code for QGIS < 3.20
+    QDomNodeList nodes = propsNode.childNodes();
 
-    QString key = propElement.attribute( QStringLiteral( "key" ) );
-    if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
+    for ( int i = 0; i < nodes.size(); i++ )
     {
-      if ( propElement.hasAttribute( QStringLiteral( "value" ) ) )
-      {
-        QString value = propElement.attribute( QStringLiteral( "value" ) );
-        mMap[key] = QVariant( value );
-      }
-      else
-      {
-        QStringList list;
+      QDomNode propNode = nodes.at( i );
+      if ( propNode.isNull() || propNode.nodeName() != QLatin1String( "property" ) )
+        continue;
+      QDomElement propElement = propNode.toElement();
 
-        for ( QDomElement itemElement = propElement.firstChildElement( QStringLiteral( "value" ) );
-              !itemElement.isNull();
-              itemElement = itemElement.nextSiblingElement( QStringLiteral( "value" ) ) )
+      QString key = propElement.attribute( QStringLiteral( "key" ) );
+      if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
+      {
+        if ( propElement.hasAttribute( QStringLiteral( "value" ) ) )
         {
-          list << itemElement.text();
+          QString value = propElement.attribute( QStringLiteral( "value" ) );
+          mMap[key] = QVariant( value );
         }
+        else
+        {
+          QStringList list;
 
-        mMap[key] = QVariant( list );
+          for ( QDomElement itemElement = propElement.firstChildElement( QStringLiteral( "value" ) );
+                !itemElement.isNull();
+                itemElement = itemElement.nextSiblingElement( QStringLiteral( "value" ) ) )
+          {
+            list << itemElement.text();
+          }
+
+          mMap[key] = QVariant( list );
+        }
       }
     }
   }
-
 }
 
 void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &doc ) const
@@ -122,32 +137,6 @@ void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &do
   }
 
   QDomElement propsElement = doc.createElement( QStringLiteral( "customproperties" ) );
-
-  auto keys = mMap.keys();
-
-  std::sort( keys.begin(), keys.end() );
-
-  for ( const auto &key : qgis::as_const( keys ) )
-  {
-    QDomElement propElement = doc.createElement( QStringLiteral( "property" ) );
-    propElement.setAttribute( QStringLiteral( "key" ), key );
-    const QVariant value = mMap.value( key );
-    if ( value.canConvert<QString>() )
-    {
-      propElement.setAttribute( QStringLiteral( "value" ), value.toString() );
-    }
-    else if ( value.canConvert<QStringList>() )
-    {
-      const auto constToStringList = value.toStringList();
-      for ( const QString &valueStr : constToStringList )
-      {
-        QDomElement itemElement = doc.createElement( QStringLiteral( "value" ) );
-        itemElement.appendChild( doc.createTextNode( valueStr ) );
-        propElement.appendChild( itemElement );
-      }
-    }
-    propsElement.appendChild( propElement );
-  }
-
+  propsElement.appendChild( QgsXmlUtils::writeVariant( mMap, doc ) );
   parentNode.appendChild( propsElement );
 }

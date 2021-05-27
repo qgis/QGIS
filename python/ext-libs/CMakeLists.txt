@@ -1,7 +1,6 @@
 # See ../CMakeLists.txt for info on staged-plugins* and clean-staged-plugins targets
 
 set (QGIS_PYTHON_DIR ${QGIS_DATA_DIR}/python)
-set (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 macro(EXT_PYLIB lib enable_by_default)
   string(TOUPPER ${lib} ulib)

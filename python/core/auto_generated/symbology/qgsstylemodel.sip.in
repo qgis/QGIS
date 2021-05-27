@@ -12,7 +12,7 @@
 
 class QgsStyleModel: QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QAbstractItemModel subclass for showing symbol and color ramp entities contained
 within a :py:class:`QgsStyle` database.
@@ -91,7 +91,7 @@ corresponds exactly to the view's icon size in which this model is used.
 
 class QgsStyleProxyModel: QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a :py:class:`QgsStyle` database.
 
@@ -170,27 +170,27 @@ effect on the model filtering.
 .. seealso:: :py:func:`setEntityFilter`
 %End
 
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 %Docstring
 Returns the symbol type filter.
 
 .. note::
 
-   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``, and has
+   This filter is only active if Qgis.SymbolTypeFilterEnabled() is ``True``, and has
    no effect on non-symbol entities (i.e. color ramps).
 
 .. seealso:: :py:func:`setSymbolType`
 %End
 
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 %Docstring
 Sets the symbol ``type`` filter.
 
 .. note::
 
-   This filter is only active if :py:func:`~QgsStyleProxyModel.symbolTypeFilterEnabled` is ``True``.
+   This filter is only active if Qgis.SymbolTypeFilterEnabled() is ``True``.
 
-.. seealso:: :py:func:`symbolType`
+.. seealso:: Qgis.SymbolType
 %End
 
     bool symbolTypeFilterEnabled() const;
@@ -199,18 +199,18 @@ Returns ``True`` if filtering by symbol type is enabled.
 
 .. seealso:: :py:func:`setSymbolTypeFilterEnabled`
 
-.. seealso:: :py:func:`symbolType`
+.. seealso:: Qgis.SymbolType
 %End
 
     void setSymbolTypeFilterEnabled( bool enabled );
 %Docstring
 Sets whether filtering by symbol type is ``enabled``.
 
-If ``enabled`` is ``False``, then the value of :py:func:`~QgsStyleProxyModel.symbolType` will have no
+If ``enabled`` is ``False``, then the value of Qgis.SymbolType() will have no
 effect on the model filtering. This has
 no effect on non-symbol entities (i.e. color ramps).
 
-.. seealso:: :py:func:`symbolTypeFilterEnabled`
+.. seealso:: Qgis.SymbolTypeFilterEnabled
 
 .. seealso:: :py:func:`setSymbolType`
 %End

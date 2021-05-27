@@ -93,8 +93,20 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 
   const long long nextFrame = frame + 1;
 
-  const QDateTime begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
-  const QDateTime end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
+  QDateTime begin;
+  QDateTime end;
+  if ( mFrameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+  {
+    if ( mAllRanges.empty() )
+      return QgsDateTimeRange();
+
+    return frame < mAllRanges.size() ? mAllRanges.at( frame ) : mAllRanges.constLast();
+  }
+  else
+  {
+    begin = QgsTemporalUtils::calculateFrameTime( start, frame, mFrameDuration );
+    end = QgsTemporalUtils::calculateFrameTime( start, nextFrame, mFrameDuration );
+  }
 
   QDateTime frameStart = begin;
 
@@ -169,6 +181,16 @@ QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
   return mTemporalExtents;
 }
 
+void QgsTemporalNavigationObject::setAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges )
+{
+  mAllRanges = ranges;
+}
+
+QList<QgsDateTimeRange> QgsTemporalNavigationObject::availableTemporalRanges() const
+{
+  return mAllRanges;
+}
+
 void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
   if ( mCurrentFrameNumber != frameNumber )
@@ -186,12 +208,13 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
   return mCurrentFrameNumber;
 }
 
-void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
+void QgsTemporalNavigationObject::setFrameDuration( const QgsInterval &frameDuration )
 {
   if ( mFrameDuration == frameDuration )
   {
     return;
   }
+
   QgsDateTimeRange oldFrame = dateTimeRangeForFrameNumber( currentFrameNumber() );
   mFrameDuration = frameDuration;
 
@@ -292,8 +315,15 @@ void QgsTemporalNavigationObject::skipToEnd()
 
 long long QgsTemporalNavigationObject::totalFrameCount() const
 {
-  QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+  if ( mFrameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
+  {
+    return mAllRanges.count();
+  }
+  else
+  {
+    QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
+    return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+  }
 }
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
@@ -313,30 +343,46 @@ QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animati
 long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const
 {
   long long bestFrame = 0;
-  QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range
-  // Earlier we looped from frame 0 till totalFrameCount() here, but this loop grew potentially gigantic
-  long long roughFrameStart = 0;
-  long long roughFrameEnd = totalFrameCount();
-  // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
-  // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
-  if ( mFrameDuration.originalUnit() != QgsUnitTypes::TemporalMonths && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalYears && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalDecades && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalCenturies )
+  if ( mFrameDuration.originalUnit() == QgsUnitTypes::TemporalIrregularStep )
   {
-    // Only if we receive a valid frameStart, that is within current mTemporalExtents
-    // We tend to receive a framestart of 'now()' upon startup for example
-    if ( mTemporalExtents.contains( frameStart ) )
+    for ( const QgsDateTimeRange &range : mAllRanges )
     {
-      roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
+      if ( range.contains( frameStart ) )
+        return bestFrame;
+      else if ( range.begin() > frameStart )
+        // if we've gone past the target date, go back one frame if possible
+        return std::max( 0LL, bestFrame - 1 );
+      bestFrame++;
     }
-    roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
+    return mAllRanges.count() - 1;
   }
-  for ( long long i = roughFrameStart; i < roughFrameEnd; ++i )
+  else
   {
-    QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
-    if ( range.overlaps( testFrame ) )
+    QgsDateTimeRange testFrame = QgsDateTimeRange( frameStart, frameStart ); // creating an 'instant' Range
+    // Earlier we looped from frame 0 till totalFrameCount() here, but this loop grew potentially gigantic
+    long long roughFrameStart = 0;
+    long long roughFrameEnd = totalFrameCount();
+    // For the smaller step frames we calculate an educated guess, to prevent the loop becoming too
+    // large, freezing the ui (eg having a mTemporalExtents of several months and the user selects milliseconds)
+    if ( mFrameDuration.originalUnit() != QgsUnitTypes::TemporalMonths && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalYears && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalDecades && mFrameDuration.originalUnit() != QgsUnitTypes::TemporalCenturies )
     {
-      bestFrame = i;
-      break;
+      // Only if we receive a valid frameStart, that is within current mTemporalExtents
+      // We tend to receive a framestart of 'now()' upon startup for example
+      if ( mTemporalExtents.contains( frameStart ) )
+      {
+        roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
+      }
+      roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
     }
+    for ( long long i = roughFrameStart; i < roughFrameEnd; ++i )
+    {
+      QgsDateTimeRange range = dateTimeRangeForFrameNumber( i );
+      if ( range.overlaps( testFrame ) )
+      {
+        bestFrame = i;
+        break;
+      }
+    }
+    return bestFrame;
   }
-  return bestFrame;
 }

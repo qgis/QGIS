@@ -373,8 +373,10 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the wrapper when required.
+     *
+     * Care must be taken to call the base class implementation if overwrite this method.
      */
-    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+    virtual void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
     /**
      * Registers a Processing parameters \a generator class that will be used to retrieve

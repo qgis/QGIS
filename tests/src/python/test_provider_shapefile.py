@@ -30,6 +30,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsProviderRegistry,
+    QgsRectangle,
     QgsVectorDataProvider,
     QgsWkbTypes,
     QgsVectorLayerExporter,
@@ -618,6 +619,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     def testOpenWithFilter(self):
         file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
         uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        options = QgsDataProvider.ProviderOptions()
         # ensure that no longer required ogr SQL layers are correctly cleaned up
         # we need to run this twice for the incorrect cleanup asserts to trip,
         # since they are triggered only when fetching an existing layer from the ogr
@@ -629,7 +631,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             f = next(vl.getFeatures())
             self.assertEqual(f['name'], 'Apple')
             # force close of data provider
-            vl.setDataSource('', 'test', 'ogr')
+            vl.setDataSource('', 'test', 'ogr', options)
 
     def testEncoding(self):
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
@@ -1084,6 +1086,30 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         sublayers = provider.subLayers()
         self.assertTrue(len(sublayers) > 1)
         self.assertEqual(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2], '-1')
+
+    def testLayersOnSameOGRLayerWithAndWithoutFilter(self):
+        """Test fix for https://github.com/qgis/QGIS/issues/43361"""
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = '{}|layerId=0|subset="name" = \'Apple\''.format(file_path)
+        options = QgsDataProvider.ProviderOptions()
+        vl1 = QgsVectorLayer(uri, 'vl1', 'ogr')
+        vl2 = QgsVectorLayer(uri, 'vl2', 'ogr')
+        vl3 = QgsVectorLayer('{}|layerId=0'.format(file_path), 'vl3', 'ogr')
+        self.assertEqual(vl1.featureCount(), 1)
+        vl1_extent = QgsGeometry.fromRect(vl1.extent())
+        self.assertEqual(vl2.featureCount(), 1)
+        vl2_extent = QgsGeometry.fromRect(vl2.extent())
+        self.assertEqual(vl3.featureCount(), 5)
+        vl3_extent = QgsGeometry.fromRect(vl3.extent())
+
+        reference = QgsGeometry.fromRect(QgsRectangle(-68.2, 70.8, -68.2, 70.8))
+        assert QgsGeometry.compare(vl1_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl1_extent.asWkt())
+        assert QgsGeometry.compare(vl2_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl2_extent.asWkt())
+        reference = QgsGeometry.fromRect(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        assert QgsGeometry.compare(vl3_extent.asPolygon()[0], reference.asPolygon()[0],
+                                   0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl3_extent.asWkt())
 
 
 if __name__ == '__main__':

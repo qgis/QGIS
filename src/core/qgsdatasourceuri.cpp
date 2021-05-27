@@ -565,7 +565,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += QLatin1String( " selectatid=false" );
   }
 
-  for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
     if ( it.key().contains( '=' ) || it.key().contains( ' ' ) )
     {

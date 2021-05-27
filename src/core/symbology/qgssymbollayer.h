@@ -16,10 +16,10 @@
 #define QGSSYMBOLLAYER_H
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
-#define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
+#define DEFAULT_SCALE_METHOD              Qgis::ScaleMethod::ScaleDiameter
 
 #include "qgis_core.h"
-// #include "qgis.h"
+#include "qgis.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -28,10 +28,9 @@
 #include <QDomElement>
 #include <QPainterPath>
 
-#include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
-#include "qgspainteffect.h"
+#include "qgssymbolrendercontext.h"
 
 class QPainter;
 class QSize;
@@ -40,6 +39,8 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
+class QgsPaintEffect;
+class QgsSymbolLayerReference;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsSymbolLayer
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->type() )
     {
-      case QgsSymbol::Marker:
+      case Qgis::SymbolType::Marker:
         if ( sipCpp->layerType() == "EllipseMarker" )
           sipType = sipType_QgsEllipseSymbolLayer;
         else if ( sipCpp->layerType() == "FontMarker" )
@@ -81,18 +82,20 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
 
-      case QgsSymbol::Line:
+      case Qgis::SymbolType::Line:
         if ( sipCpp->layerType() == "MarkerLine" )
           sipType = sipType_QgsMarkerLineSymbolLayer;
         else if ( sipCpp->layerType() == "SimpleLine" )
           sipType = sipType_QgsSimpleLineSymbolLayer;
         else if ( sipCpp->layerType() == "ArrowLine" )
           sipType = sipType_QgsArrowSymbolLayer;
+        else if ( sipCpp->layerType() == "InterpolatedLine" )
+          sipType = sipType_QgsInterpolatedLineSymbolLayer;
         else
           sipType = sipType_QgsLineSymbolLayer;
         break;
 
-      case QgsSymbol::Fill:
+      case Qgis::SymbolType::Fill:
         if ( sipCpp->layerType() == "SimpleFill" )
           sipType = sipType_QgsSimpleFillSymbolLayer;
         else if ( sipCpp->layerType() == "LinePatternFill" )
@@ -115,7 +118,7 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsFillSymbolLayer;
         break;
 
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         sipType = sipType_QgsGeometryGeneratorSymbolLayer;
         break;
     }
@@ -188,7 +191,9 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
-      PropertyDashPatternOffset, //!< Dash pattern offset
+      PropertyDashPatternOffset, //!< Dash pattern offset,
+      PropertyTrimStart, //!< Trim distance from start of line (since QGIS 3.20)
+      PropertyTrimEnd, //!< Trim distance from end of line (since QGIS 3.20)
     };
 
     /**
@@ -351,12 +356,12 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Returns the symbol's sub symbol, if present.
      */
-    virtual QgsSymbol *subSymbol() { return nullptr; }
+    virtual QgsSymbol *subSymbol();
 
     //! Sets layer's subsymbol. takes ownership of the passed symbol
-    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) { delete symbol; return false; }
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
-    QgsSymbol::SymbolType type() const { return mType; }
+    Qgis::SymbolType type() const { return mType; }
 
     //! Returns if the layer can be used below the specified symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
@@ -371,7 +376,20 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
+    /**
+     * Sets whether the layer's colors are locked.
+     *
+     * If \a locked is TRUE then the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+     *
+     * \see isLocked()
+     */
     void setLocked( bool locked ) { mLocked = locked; }
+
+    /**
+     * Returns TRUE if the symbol layer colors are locked and the layer will ignore any symbol-level color changes.
+     *
+     * \see setLocked()
+     */
     bool isLocked() const { return mLocked; }
 
     /**
@@ -530,13 +548,18 @@ class CORE_EXPORT QgsSymbolLayer
      * This is a list of symbol layers of other layers that should be occluded.
      * \since QGIS 3.12
      */
-    virtual QgsSymbolLayerReferenceList masks() const;
+    virtual QList<QgsSymbolLayerReference> masks() const;
 
   protected:
 
-    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
+    /**
+     * Constructor for QgsSymbolLayer.
+     * \param type specifies the associated symbol type
+     * \param locked if TRUE, then symbol layer colors will be locked and will ignore any symbol-level color changes.
+     */
+    QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
 
-    QgsSymbol::SymbolType mType;
+    Qgis::SymbolType mType;
 
     //! True if layer is enabled and should be drawn
     bool mEnabled = true;
@@ -717,13 +740,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param scaleMethod scale method
      * \see scaleMethod()
      */
-    void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
+    void setScaleMethod( Qgis::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
 
     /**
      * Returns the method to use for scaling the marker's size.
      * \see setScaleMethod()
      */
-    QgsSymbol::ScaleMethod scaleMethod() const { return mScaleMethod; }
+    Qgis::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     /**
      * Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
@@ -896,7 +919,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Offset map unit scale
     QgsMapUnitScale mOffsetMapUnitScale;
     //! Marker size scaling method
-    QgsSymbol::ScaleMethod mScaleMethod = QgsSymbol::ScaleDiameter;
+    Qgis::ScaleMethod mScaleMethod = Qgis::ScaleMethod::ScaleDiameter;
     //! Horizontal anchor point
     HorizontalAnchorPoint mHorizontalAnchorPoint = HCenter;
     //! Vertical anchor point

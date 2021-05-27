@@ -10,7 +10,7 @@
 
 class QgsNetworkSpeedStrategy : QgsNetworkStrategy
 {
-%Docstring
+%Docstring(signature="appended")
 Strategy for calculating edge cost based on travel time. Should be
 used for finding fastest path between two points.
 

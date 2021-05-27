@@ -22,7 +22,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgis.h"
 #include "qgsstyleentityvisitor.h"
-
+#include "qgsmarkersymbol.h"
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
@@ -44,6 +44,31 @@ QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QD
 bool QgsAbstractVectorLayerLabeling::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
+}
+
+QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( const QgsVectorLayer *layer )
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = layer->displayField();
+
+  switch ( layer->geometryType() )
+  {
+    case QgsWkbTypes::PointGeometry:
+      settings.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
+      settings.offsetType = QgsPalLayerSettings::FromSymbolBounds;
+      break;
+    case QgsWkbTypes::LineGeometry:
+      settings.placement = QgsPalLayerSettings::Line;
+      break;
+    case QgsWkbTypes::PolygonGeometry:
+      settings.placement = QgsPalLayerSettings::AroundPoint;
+      break;
+
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+  return settings;
 }
 
 QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer *layer ) const
@@ -94,7 +119,7 @@ bool QgsVectorLayerSimpleLabeling::accept( QgsStyleEntityVisitorInterface *visit
 
 bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 {
-  return mSettings->format().containsAdvancedEffects();
+  return mSettings->containsAdvancedEffects();
 }
 
 QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )

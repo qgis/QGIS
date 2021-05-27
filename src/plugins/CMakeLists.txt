@@ -8,8 +8,11 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 
 add_subdirectory(gps_importer)
 add_subdirectory(topology)
-add_subdirectory(offline_editing)
 add_subdirectory(geometry_checker)
+
+if (WITH_SPATIALITE)
+  add_subdirectory(offline_editing)
+endif()
 
 if (GRASS_FOUND)
   add_subdirectory(grass)

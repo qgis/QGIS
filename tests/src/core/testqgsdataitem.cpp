@@ -28,6 +28,8 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
 
 /**
  * \ingroup UnitTests
@@ -129,7 +131,7 @@ void TestQgsDataItem::testDirItemChildren()
   QgsSettings settings;
   QStringList tmpSettings;
   tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
+  for ( const QString &tmpSetting : tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
     QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
@@ -205,36 +207,36 @@ void TestQgsDataItem::testLayerItemType()
   std::unique_ptr< QgsMapLayer > layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "polys.shp",
                                          QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Polygon );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Polygon );
 
   layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "points.shp",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Point );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Point );
 
   layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "lines.shp",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Line );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Line );
 
   layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "nonspatial.dbf",
           QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::TableLayer );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::TableLayer );
 
   layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "invalid.dbf",
           QString(), QStringLiteral( "ogr" ) );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Vector );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Vector );
 
   layer = std::make_unique< QgsRasterLayer >( mTestDataDir + "rgb256x256.png",
           QString(), QStringLiteral( "gdal" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Raster );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Raster );
 
   layer = std::make_unique< QgsMeshLayer >( mTestDataDir + "mesh/quad_and_triangle.2dm",
           QString(), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
-  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Mesh );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Mesh );
 }
 
 
@@ -248,7 +250,7 @@ class TestProjectDataItemProvider : public QgsDataItemProvider
       QFileInfo fileInfo( path );
       if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
       {
-        return new QgsDataItem( QgsDataItem::Custom, parentItem, path, path );
+        return new QgsDataItem( Qgis::BrowserItemType::Custom, parentItem, path, path );
       }
       return nullptr;
     }
@@ -264,12 +266,12 @@ void TestQgsDataItem::testProjectItemCreation()
   bool foundQgzProject = false;
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {
       foundQgsProject = true;
       continue;
     }
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
     {
       foundQgzProject = true;
       continue;
@@ -292,22 +294,22 @@ void TestQgsDataItem::testProjectItemCreation()
   bool foundCustomQgzProject = false;
   for ( QgsDataItem *child : children )
   {
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {
       foundQgsProject = true;
       continue;
     }
-    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
     {
       foundQgzProject = true;
       continue;
     }
-    if ( child->type() == QgsDataItem::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {
       foundCustomQgsProject = true;
       continue;
     }
-    if ( child->type() == QgsDataItem::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    if ( child->type() == Qgis::BrowserItemType::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
     {
       foundCustomQgzProject = true;
       continue;

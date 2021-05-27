@@ -26,6 +26,7 @@
 #include "qgslayertreemodel.h"
 #include "qgsmapsettings.h"
 #include "qgssnappingutils.h"
+#include "qgssymbol.h"
 
 class TestQgsTracer : public QObject
 {
@@ -73,7 +74,7 @@ static QgsVectorLayer *make_layer( const QStringList &wkts )
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
-  Q_FOREACH ( const QString &wkt, wkts )
+  for ( const QString &wkt : wkts )
   {
     QgsFeature f( make_feature( wkt ) );
     vl->addFeature( f );
@@ -91,7 +92,7 @@ void print_shortest_path( QgsTracer &tracer, const QgsPointXY &p1, const QgsPoin
   if ( points.isEmpty() )
     qDebug( "no path!" );
 
-  Q_FOREACH ( const QgsPointXY &p, points )
+  for ( const QgsPointXY &p : points )
     qDebug( "p: %f %f", p.x(), p.y() );
 }
 
@@ -216,7 +217,7 @@ void TestQgsTracer::testInvisible()
   QCOMPARE( nodes.length(), 1 );
   //uncheck all and test that all nodes are unchecked
   static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
-  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  for ( QgsLayerTreeModelLegendNode *ln :  nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }

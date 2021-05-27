@@ -10,9 +10,10 @@
 
 
 
+
 class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
-%Docstring
+%Docstring(signature="appended")
 Line symbol layer used for representing lines as arrows.
 
 .. versionadded:: 2.16
@@ -26,6 +27,7 @@ Line symbol layer used for representing lines as arrows.
 %Docstring
 Simple constructor
 %End
+    ~QgsArrowSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -39,6 +41,7 @@ Create a new QgsArrowSymbolLayer
     virtual QgsArrowSymbolLayer *clone() const /Factory/;
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;

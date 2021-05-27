@@ -12,7 +12,7 @@
 
 class QgsTessellator
 {
-%Docstring
+%Docstring(signature="appended")
 Class that takes care of tessellation of polygons into triangles.
 
 It is expected that client code will create the tessellator object, then repeatedly call

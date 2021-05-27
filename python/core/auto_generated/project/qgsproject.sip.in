@@ -17,7 +17,7 @@
 
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates a QGIS project, including sets of map layers and their styles,
 layouts, annotations, canvases, etc.
 
@@ -1891,7 +1891,7 @@ QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProjec
 
 class QgsProjectDirtyBlocker
 {
-%Docstring
+%Docstring(signature="appended")
 Temporarily blocks QgsProject "dirtying" for the lifetime of the object.
 
 :py:class:`QgsProjectDirtyBlocker` supports "stacked" blocking, so two :py:class:`QgsProjectDirtyBlockers` created
@@ -1901,6 +1901,7 @@ Note that :py:class:`QgsProjectDirtyBlocker` only blocks calls which set the pro
 which set the project as clean are not blocked.
 
 Python scripts should not use :py:class:`QgsProjectDirtyBlocker` directly. Instead, use :py:func:`QgsProject.blockDirtying()`
+
 .. code-block:: python
 
        project = QgsProject.instance()

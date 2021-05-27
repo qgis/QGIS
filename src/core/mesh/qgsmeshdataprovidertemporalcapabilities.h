@@ -36,8 +36,8 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
   public:
 
     /**
-     * Method for selection of temporal mesh dataset from a range time
-     **/
+     * Method for selection of temporal mesh dataset from a range time.
+     */
     enum MatchingTemporalDatasetMethod
     {
       FindClosestDatasetBeforeStartRangeTime, //! Finds the closest dataset which have its time before the requested start range time

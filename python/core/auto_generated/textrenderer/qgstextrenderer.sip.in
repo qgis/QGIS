@@ -12,7 +12,7 @@
 
 class QgsTextRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Handles rendering text using rich formatting options, including drop shadows, buffers
 and background shapes.
 
@@ -260,7 +260,6 @@ Justifies the text to fully occupy the given space, used in wrapText
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

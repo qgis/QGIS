@@ -173,7 +173,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     }
   }
 
-  for ( int i : qgis::as_const( attrs ) )
+  for ( int i : std::as_const( attrs ) )
   {
     if ( mSource->mPrimaryKeyAttrs.contains( i ) )
       continue;
@@ -498,7 +498,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        foreach ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : mSource->mPrimaryKeyAttrs )
         {
           QgsField fld = mSource->mFields.at( idx );
 

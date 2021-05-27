@@ -1564,12 +1564,12 @@ void TestQgsTaskManager::cancelBeforeStart()
     manager.addTask( task );
   }
 
-  for ( QgsTask *t : qgis::as_const( tasks ) )
+  for ( QgsTask *t : std::as_const( tasks ) )
   {
     t->cancel();
   }
 
-  for ( QgsTask *t : qgis::as_const( tasks ) )
+  for ( QgsTask *t : std::as_const( tasks ) )
   {
     t->waitForFinished();
   }

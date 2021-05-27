@@ -103,6 +103,12 @@
       </item>
       <item row="2" column="1" colspan="2">
        <widget class="QSlider" name="mLodSlider">
+        <property name="toolTip">
+         <string>Level of detail can only be set when mesh simplification is enabled (see Rendering tab in the Mesh Layer Properties)</string>
+        </property>
+        <property name="value">
+         <number>99</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -407,6 +413,18 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorRampShaderWidget</class>
+   <extends>QWidget</extends>
+   <header>raster/qgscolorrampshaderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -417,24 +435,13 @@
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampShaderWidget</class>
-   <extends>QWidget</extends>
-   <header>raster/qgscolorrampshaderwidget.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mChkSmoothTriangles</tabstop>
   <tabstop>mGroupBoxWireframe</tabstop>
   <tabstop>mSpinBoxWireframeLineWidth</tabstop>
   <tabstop>mColorButtonWireframe</tabstop>
+  <tabstop>mLodSlider</tabstop>
   <tabstop>mSpinBoxVerticaleScale</tabstop>
   <tabstop>mComboBoxDatasetVertical</tabstop>
   <tabstop>mCheckBoxVerticalMagnitudeRelative</tabstop>

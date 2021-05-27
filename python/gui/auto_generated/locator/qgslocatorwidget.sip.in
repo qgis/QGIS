@@ -13,7 +13,7 @@
 
 class QgsLocatorWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A special locator widget which allows searching for matching results from a :py:class:`QgsLocator`
 and presenting them to users for selection.
 

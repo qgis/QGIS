@@ -82,7 +82,7 @@ class TestGdalAlgorithms(unittest.TestCase):
             self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
 
     def testNoParameters(self):
-        # Test that algorithms throw QgsProcessingExceptions and not base Python
+        # Test that algorithms throw QgsProcessingException and not base Python
         # exceptions when no parameters specified
         p = QgsApplication.processingRegistry().providerById('gdal')
         context = QgsProcessingContext()

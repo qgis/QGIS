@@ -12,7 +12,7 @@
 
 class QgsRasterContourRenderer : QgsRasterRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer that generates contours on the fly for a source raster band.
 
 .. versionadded:: 3.14

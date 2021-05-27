@@ -88,25 +88,25 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->setCurrentIndex( 0 );
   mStackedWidget->setCurrentIndex( 0 );
 
-  whileBlocking( mPointBudgetSpinBox )->setMinimum( std::min( mLayer->pointCount() / 2, 100000 ) );
+  whileBlocking( mPointBudgetSpinBox )->setMinimum( std::min( mLayer->pointCount() / 2, ( qint64 )100000 ) );
   whileBlocking( mPointBudgetSpinBox )->setMaximum( mLayer->pointCount() + 1 );
   whileBlocking( mPointBudgetSpinBox )->setValue( 1000000 );
 
   if ( symbol )
     setSymbol( symbol );
 
-  connect( mPointSizeSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
-  connect( mRenderingStyleComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
+  connect( mPointSizeSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+  connect( mRenderingStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::setMinMaxFromLayer );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mSingleColorBtn, &QgsColorButton::colorChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mRenderingParameterComboBox, &QgsPointCloudAttributeComboBox::attributeChanged, this, &QgsPointCloud3DSymbolWidget::rampAttributeChanged );
-  connect( mColorRampShaderMinEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
-  connect( mColorRampShaderMaxEdit, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
+  connect( mColorRampShaderMinEdit, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
+  connect( mColorRampShaderMaxEdit, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::minMaxChanged );
 
-  connect( mMaxScreenErrorSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mMaxScreenErrorSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
   connect( mShowBoundingBoxesCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
-  connect( mPointBudgetSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
+  connect( mPointBudgetSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   if ( !symbol ) // if we have a symbol, this was already handled in setSymbol above
     rampAttributeChanged();
@@ -276,7 +276,7 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
   double redMax = QgsDoubleValidator::toDouble( mRedMaxLineEdit->text(), &redMaxOk );
   if ( redMinOk && redMaxOk && !mRedAttributeComboBox->currentAttribute().isEmpty() )
   {
-    redEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    redEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     redEnhancement->setMinimumValue( redMin );
     redEnhancement->setMaximumValue( redMax );
   }
@@ -286,7 +286,7 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
   double greenMax = QgsDoubleValidator::toDouble( mGreenMaxLineEdit->text(), &greenMaxOk );
   if ( greenMinOk && greenMaxOk && !mGreenAttributeComboBox->currentAttribute().isEmpty() )
   {
-    greenEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    greenEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     greenEnhancement->setMinimumValue( greenMin );
     greenEnhancement->setMaximumValue( greenMax );
   }
@@ -296,7 +296,7 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
   double blueMax = QgsDoubleValidator::toDouble( mBlueMaxLineEdit->text(), &blueMaxOk );
   if ( blueMinOk && blueMaxOk && !mBlueAttributeComboBox->currentAttribute().isEmpty() )
   {
-    blueEnhancement = new QgsContrastEnhancement( Qgis::UnknownDataType );
+    blueEnhancement = new QgsContrastEnhancement( Qgis::DataType::UnknownDataType );
     blueEnhancement->setMinimumValue( blueMin );
     blueEnhancement->setMaximumValue( blueMax );
   }
@@ -612,12 +612,12 @@ void QgsPointCloud3DSymbolWidget::setShowBoundingBoxes( bool showBoundingBoxes )
   whileBlocking( mShowBoundingBoxesCheckBox )->setChecked( showBoundingBoxes );
 }
 
-void QgsPointCloud3DSymbolWidget::setPointBudget( int budget )
+void QgsPointCloud3DSymbolWidget::setPointBudget( double budget )
 {
   whileBlocking( mPointBudgetSpinBox )->setValue( budget );
 }
 
-int QgsPointCloud3DSymbolWidget::pointBudget() const
+double QgsPointCloud3DSymbolWidget::pointBudget() const
 {
   return mPointBudgetSpinBox->value();
 }

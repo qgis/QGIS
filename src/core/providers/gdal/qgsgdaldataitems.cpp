@@ -23,14 +23,13 @@
 #include "qgsogrutils.h"
 #include "qgsproject.h"
 #include "qgsgdalutils.h"
+#include "qgszipitem.h"
 #include "qgsvectortiledataitems.h"
 #include "qgsproviderregistry.h"
 #include "symbology/qgsstyle.h"
 
 #include <QFileInfo>
-#include <QAction>
 #include <mutex>
-#include <QMessageBox>
 #include <QUrlQuery>
 #include <QUrl>
 
@@ -41,7 +40,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri,
                                     QStringList *sublayers )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
+  : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -50,11 +49,11 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   {
     mSublayers = *sublayers;
     // We have sublayers: we are able to create children!
-    mCapabilities |= Fertile;
-    setState( NotPopulated );
+    mCapabilities |= Qgis::BrowserItemCapability::Fertile;
+    setState( Qgis::BrowserItemState::NotPopulated );
   }
   else
-    setState( Populated );
+    setState( Qgis::BrowserItemState::Populated );
 }
 
 
@@ -183,6 +182,14 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
+
+  if ( suffix == QLatin1String( "txt" ) )
+  {
+    // never ever show .txt files as datasets in browser -- they are only used for geospatial data in extremely rare cases
+    // and are predominantly just noise in the browser
+    return nullptr;
+  }
+
   // extract basename with extension
   info.setFile( path );
   QString name = info.fileName();
@@ -272,8 +279,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( path ).toString() );
         QString encodedUri = uq.toString();
-        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
-        item->setState( QgsDataItem::Populated );
+        QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, Qgis::BrowserLayerType::Raster, QStringLiteral( "wms" ) );
+        item->setState( Qgis::BrowserItemState::Populated );
         return item;
       }
     }

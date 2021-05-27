@@ -42,7 +42,7 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
         while ( i < string.length() && string.at( i ).isSpace() )
           ++i;
 
-        if ( string.midRef( i ).startsWith( sep ) )
+        if ( QStringView{string}.mid( i ).startsWith( sep ) )
         {
           i += sep.length();
         }

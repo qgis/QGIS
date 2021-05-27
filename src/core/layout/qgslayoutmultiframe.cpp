@@ -444,7 +444,7 @@ void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
 
 void QgsLayoutMultiFrame::update()
 {
-  for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
   {
     frame->update();
   }
@@ -456,7 +456,7 @@ void QgsLayoutMultiFrame::deleteFrames()
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
   mLayout->undoStack()->blockCommands( true );
-  for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
+  for ( QgsLayoutFrame *frame : std::as_const( mFrameItems ) )
   {
     mLayout->removeLayoutItem( frame );
   }

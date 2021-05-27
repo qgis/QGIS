@@ -10,7 +10,7 @@
 
 class QgsPaintEngineHack : QPaintEngine
 {
-%Docstring
+%Docstring(signature="appended")
 Hack to workaround Qt #5114 by disabling PatternTransform
 %End
 

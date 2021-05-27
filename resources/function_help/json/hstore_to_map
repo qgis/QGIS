@@ -5,6 +5,6 @@
   "description": "Creates a map from a hstore-formatted string.",
   "arguments": [
     {"arg":"string", "description":"the input string"}],
-  "examples": [ { "expression":"hstore_to_map('qgis=>rocks')", "returns":"{ \"qgis\" : \"rocks\" }"}
+  "examples": [ { "expression":"hstore_to_map('qgis=>rocks')", "returns":"{ 'qgis': 'rocks' }"}
   ]
 }

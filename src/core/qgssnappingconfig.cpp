@@ -19,7 +19,7 @@
 #include <QHeaderView>
 #include <QRegularExpression>
 
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -189,7 +189,7 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
 void QgsSnappingConfig::reset()
 {
   // get defaults values. They are both used for standard and advanced configuration (per layer)
-  bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
+  bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value();
   SnappingMode mode = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_mode" ),  AllLayers );
   if ( mode == 0 )
   {
@@ -197,9 +197,9 @@ void QgsSnappingConfig::reset()
     // could be removed in 3.4+
     mode = AllLayers;
   }
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  VertexFlag );
-  double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
-  QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),  Qgis::DEFAULT_SNAP_UNITS );
+  QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
+  QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
 
   // assign main (standard) config
   mEnabled = enabled;
@@ -597,10 +597,10 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
 bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
-  bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), true ).toBool();
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), VertexFlag );
-  double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
-  QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
+  bool enabled = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapEnabled.value( QString(), true, true );
+  QgsSnappingConfig::SnappingTypeFlag type = QgsSettingsRegistryCore::settingsDigitizingDefaultSnapType.value();
+  double tolerance = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingTolerance.value();
+  QgsTolerance::UnitType units = QgsSettingsRegistryCore::settingsDigitizingDefaultSnappingToleranceUnit.value();
 
   const auto constLayers = layers;
   for ( QgsMapLayer *ml : constLayers )

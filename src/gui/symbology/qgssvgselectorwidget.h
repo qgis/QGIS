@@ -23,6 +23,7 @@
 #include "qgsguiutils.h"
 #include "qgsproperty.h"
 
+#include <QSortFilterProxyModel>
 #include <QAbstractListModel>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -42,6 +43,8 @@ class QPushButton;
 class QTreeView;
 
 class QgsExpressionContextGenerator;
+class QgsSvgSelectorListModel;
+class QgsPropertyOverrideButton;
 
 
 #ifndef SIP_RUN
@@ -269,6 +272,32 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 
 /**
  * \ingroup gui
+ * \class QgsSvgSelectorFilterModel
+ * \brief A model for displaying SVG files with a preview icon which can be filtered by file name.
+ * Population of the model is performed in a background thread to ensure that
+ * initial creation of the model is responsive and does not block the GUI.
+ * \since QGIS 3.20
+ */
+class GUI_EXPORT QgsSvgSelectorFilterModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for creating a model for SVG files in a specific path.
+     * \param parent parent object
+     * \param path initial path, which is recursively searched
+     * \param iconSize desired size of SVG icons to create
+     */
+    QgsSvgSelectorFilterModel( QObject *parent SIP_TRANSFERTHIS, const QString &path = QString(), int iconSize = 30 );
+
+  private:
+    QgsSvgSelectorListModel *mModel = nullptr;
+};
+
+/**
+ * \ingroup gui
  * \class QgsSvgSelectorListModel
  * \brief A model for displaying SVG files with a preview icon. Population of the model is performed in
  * a background thread to ensure that initial creation of the model is responsive and does
@@ -360,7 +389,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Initialize the parameters model so the context and the layer are referenced.
      * \since QGIS 3.18
      */
-    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer );
+    void initParametersModel( const QgsExpressionContextGenerator *generator, QgsVectorLayer *layer = nullptr );
 
     QString currentSvgPath() const;
 
@@ -368,7 +397,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns the source line edit
      * \since QGIS 3.16
      */
-    QgsSvgSourceLineEdit *sourceLineEdit() const {return mSvgSourceLineEdit;}
+    QgsPictureSourceLineEditBase *sourceLineEdit() const {return mSourceLineEdit;}
 
     /**
      * Defines if the group box to fill parameters is visible
@@ -381,6 +410,24 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * \since QGIS 3.18
      */
     bool allowParamerters() const {return mAllowParameters;}
+
+    /**
+     * Defines if the SVG browser should be visible
+     * \since QGIS 3.20
+     */
+    void setBrowserVisible( bool visible );
+
+    /**
+     * Returns if the SVG browser should be visible
+     * \since QGIS 3.20
+     */
+    bool browserVisible() const {return mBrowserVisible;}
+
+    /**
+     * Returns the property override tool button of the file line edit
+     * \since QGIS 3.20
+     */
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const;
 
   public slots:
     //! Accepts absolute paths
@@ -414,6 +461,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     int mIconSize = 30;
     QString mCurrentSvgPath; //!< Always stored as absolute path
     bool mAllowParameters = false;
+    bool mBrowserVisible = true;
     QgsSvgParametersModel *mParametersModel = nullptr;
 };
 

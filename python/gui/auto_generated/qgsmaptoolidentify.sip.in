@@ -12,7 +12,7 @@
 
 class QgsMapToolIdentify : QgsMapTool
 {
-%Docstring
+%Docstring(signature="appended")
 Map tool for identifying features in layers
 
 after selecting a point, performs the identification:

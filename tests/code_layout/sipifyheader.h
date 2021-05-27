@@ -115,10 +115,13 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       RecursiveSuccess = 1 << 4, //!< Edit operation resulted in an n-dimensional wormhole
       SuccessCombination = Success | ImaginarySuccess, //!< Holy Graal
       PythonName SIP_PYNAME( DifferentName ), //!< Different python name
+      MonkeyName SIP_MONKEYPATCH_COMPAT_NAME( MonkeyPatchName ), //!< Monkey patched compatibility name
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 
     enum OneLiner { Success, NoSuccess };
+
+    static const inline QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes> settingsDigitizingDefaultSnapType = QgsSettingsEntryEnumFlag<QgsSnappingConfig::SnappingTypes>( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSettings::NoSection, QgsSnappingConfig::VertexFlag );
 
     /**
      * Docstring headers for structs are not supported by sip (as of 4.18) and

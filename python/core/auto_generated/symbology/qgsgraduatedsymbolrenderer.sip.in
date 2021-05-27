@@ -305,7 +305,7 @@ Reset the label decimal places to a numberbased on the minimum class interval
 %End
 
 
-    static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+ static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
         Mode mode,

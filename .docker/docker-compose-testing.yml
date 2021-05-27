@@ -1,26 +1,5 @@
 version: '3'
 services:
-  postgres:
-    build:
-      dockerfile: Dockerfile-postgis
-      context: ../tests/testdata
-    environment:
-      - ALLOW_IP_RANGE="172.18.0.0/16"
-# The following files are added in Dockerfile-postgis
-      - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt
-      - SSL_KEY_FILE=/etc/ssl/private/postgres.key
-      - SSL_CA_FILE=/etc/ssl/certs/qgis_ca.crt
-
-#  oracle:
-#    image: oslandia/oracle-for-qgis-tests-configured:18.4.0-xe
-#    environment:
-#      - ORACLE_SID=XE
-#      - ORACLE_PWD=adminpass
-#      - ORACLE_PDB=ORCLPDBTEST
-#      - ORACLE_CHARACTERSET=AL32UTF8
-#    ports:
-#      - 1521:1521
-
 
 # Proving very fragile!
 #  mssql:
@@ -31,12 +10,10 @@ services:
 
   qgis-deps:
     tty: true
-    image: qgis_image
+    image: qgis/qgis3-build-deps-bin-only:${DOCKER_TAG}
     volumes:
       - ${GH_WORKSPACE}:/root/QGIS
-    links:
-      - postgres
-    #  - oracle
+    # links:
     #  - mssql
     env_file:
       - docker-variables.env

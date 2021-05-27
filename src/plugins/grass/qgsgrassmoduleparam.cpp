@@ -334,7 +334,11 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       }
 
       // List of values to be excluded
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       QStringList exclude = qdesc.attribute( QStringLiteral( "exclude" ) ).split( ',', QString::SkipEmptyParts );
+#else
+      QStringList exclude = qdesc.attribute( QStringLiteral( "exclude" ) ).split( ',', Qt::SkipEmptyParts );
+#endif
 
       QDomNode valueNode = valuesElem.firstChild();
 
@@ -790,9 +794,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
   adjustTitle();
 
-  // Check if this parameter is required
-  mRequired = gnode.toElement().attribute( QStringLiteral( "required" ) ) == QLatin1String( "yes" );
-
   // Read "layeroption" is defined
   QString opt = qdesc.attribute( QStringLiteral( "layeroption" ) );
   if ( ! opt.isNull() )
@@ -867,7 +868,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     if ( !layer ) continue;
 
@@ -1030,7 +1031,7 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
   // Validator is disabled to also allow entering of expressions
 #if 0
   QRegExp rx( "^[a-zA-Z_][a-zA-Z0-9_]*$" );
-  Q_FOREACH ( QLineEdit *lineEdit, mLineEdits )
+  for ( QLineEdit *lineEdit : mLineEdits )
   {
     lineEdit->setValidator( new QRegExpValidator( rx, this ) );
   }
@@ -1106,7 +1107,7 @@ void QgsGrassModuleVectorField::removeRow()
 void QgsGrassModuleVectorField::updateFields()
 {
 
-  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
+  for ( QComboBox *comboBox : mComboBoxList )
   {
     QString current = comboBox->currentText();
     comboBox->clear();
@@ -1117,7 +1118,7 @@ void QgsGrassModuleVectorField::updateFields()
     }
 
     int index = 0;
-    Q_FOREACH ( const QgsField &field, mLayerInput->currentFields() )
+    for ( const QgsField &field : mLayerInput->currentFields() )
     {
       if ( mType.contains( field.typeName() ) )
       {
@@ -1138,7 +1139,7 @@ QStringList QgsGrassModuleVectorField::options()
   QStringList list;
 
   QStringList valueList;
-  Q_FOREACH ( QComboBox *comboBox, mComboBoxList )
+  for ( QComboBox *comboBox : mComboBoxList )
   {
     if ( !comboBox->currentText().isEmpty() )
     {
@@ -1212,7 +1213,7 @@ void QgsGrassModuleSelection::onLayerChanged()
 
   QStringList layerIds;
   // add new layers matching selected input layer if not yet present
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
@@ -1257,7 +1258,7 @@ void QgsGrassModuleSelection::onLayerChanged()
 
   if ( layerIds.size() == 0 ) // non of selected layer is in canvas
   {
-    Q_FOREACH ( QString layerCode, mLayerInput->currentLayerCodes() )
+    for ( QString layerCode : mLayerInput->currentLayerCodes() )
     {
       if ( mLayerInput->currentLayer() )
       {
@@ -1336,7 +1337,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
   }
 
   QList<int> cats;
-  Q_FOREACH ( QgsFeatureId fid, vectorLayer->selectedFeatureIds() )
+  for ( QgsFeatureId fid : vectorLayer->selectedFeatureIds() )
   {
     cats << QgsGrassFeatureIterator::catFromFid( fid );
   }
@@ -1345,7 +1346,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
   // make ranges of cats
   int last = -1;
   int range = false;
-  Q_FOREACH ( int cat, cats )
+  for ( int cat : cats )
   {
     if ( cat == 0 )
     {

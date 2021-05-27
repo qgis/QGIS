@@ -138,17 +138,12 @@ void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEd
 
 bool QgsRelationWidgetWrapper::showLabel() const
 {
-  if ( mWidget )
-  {
-    return mWidget->showLabel();
-  }
   return false;
 }
 
 void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
 {
-  if ( mWidget )
-    mWidget->setShowLabel( showLabel );
+  Q_UNUSED( showLabel )
 }
 
 void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
@@ -186,8 +181,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+    if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+         || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
     {
       w->setVisible( false );
       break;
@@ -268,23 +263,20 @@ void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
 {
   if ( mWidget )
   {
-    mWidget->setNmRelationId( nmRelationId );
-
     mNmRelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
 
     // If this widget is already embedded by the same relation, reduce functionality
     const QgsAttributeEditorContext *ctx = &context();
-    do
+    while ( ctx && ctx->relation().isValid() )
     {
-      if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-           || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+      if ( ( ctx->relation().id() == mRelation.id() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+           || ( mNmRelation.isValid() && ctx->relation().id() == mNmRelation.id() ) )
       {
         mWidget->setVisible( false );
         break;
       }
       ctx = ctx->parentContext();
     }
-    while ( ctx );
 
     mWidget->setRelations( mRelation, mNmRelation );
   }
@@ -300,14 +292,11 @@ QVariant QgsRelationWidgetWrapper::nmRelationId() const
 
 void QgsRelationWidgetWrapper::setLabel( const QString &label )
 {
-  if ( mWidget )
-    mWidget->setLabel( label );
+  Q_UNUSED( label )
 }
 
 QString QgsRelationWidgetWrapper::label() const
 {
-  if ( mWidget )
-    return mWidget->label();
   return QString();
 }
 

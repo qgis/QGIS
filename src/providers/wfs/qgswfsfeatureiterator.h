@@ -58,11 +58,11 @@ class QgsWFSFeatureHitsAsyncRequest final: public QgsWfsRequest
 
 /**
  * This class runs one (or several if paging is needed) GetFeature request,
-    process the results as soon as they arrived and notify them to the
-    serializer to fill the case, and to the iterator that subscribed
-    Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
-    A progress dialog may pop-up in GUI mode (if the download takes a certain time)
-    to allow canceling the download.
+ * process the results as soon as they arrived and notify them to the
+ * serializer to fill the case, and to the iterator that subscribed
+ * Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
+ * A progress dialog may pop-up in GUI mode (if the download takes a certain time)
+ * to allow canceling the download.
 */
 class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {

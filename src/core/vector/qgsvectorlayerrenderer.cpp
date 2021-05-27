@@ -35,7 +35,7 @@
 #include "qgsfeaturefilterprovider.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsvectorlayertemporalproperties.h"
@@ -68,7 +68,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   bool insertedMainRenderer = false;
   double prevLevel = std::numeric_limits< double >::lowest();
   mRenderer = mainRenderer.get();
-  for ( const QgsFeatureRendererGenerator *generator : qgis::as_const( generators ) )
+  for ( const QgsFeatureRendererGenerator *generator : std::as_const( generators ) )
   {
     if ( generator->level() >= 0 && prevLevel < 0 && !insertedMainRenderer )
     {
@@ -115,10 +115,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( *renderContext(), QgsVectorSimplifyMethod::GeometrySimplification );
   }
 
-  QgsSettings settings;
-  mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "qgis/digitizing/marker_only_for_selected" ), true ).toBool();
+  mVertexMarkerOnlyForSelection = QgsSettingsRegistryCore::settingsDigitizingMarkerOnlyForSelected.value();
 
-  QString markerTypeString = settings.value( QStringLiteral( "qgis/digitizing/marker_style" ), "Cross" ).toString();
+  QString markerTypeString = QgsSettingsRegistryCore::settingsDigitizingMarkerStyle.value();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
     mVertexMarkerStyle = QgsSymbolLayerUtils::Cross;
@@ -132,7 +131,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mVertexMarkerStyle = QgsSymbolLayerUtils::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size_mm" ), 2.0 ).toDouble();
+  mVertexMarkerSize = QgsSettingsRegistryCore::settingsDigitizingMarkerSizeMm.value();
 
   QgsDebugMsgLevel( "rendering v2:\n  " + mRenderer->dump(), 2 );
 
@@ -311,6 +310,11 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   if ( !mTemporalFilter.isEmpty() )
   {
     featureRequest.combineFilterExpression( mTemporalFilter );
+  }
+
+  if ( renderer->usesEmbeddedSymbols() )
+  {
+    featureRequest.setFlags( featureRequest.flags() | QgsFeatureRequest::EmbeddedSymbols );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

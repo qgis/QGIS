@@ -18,8 +18,10 @@
 #include "qgsdb2provider.h"
 #include "qgsdb2tablemodel.h"
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;
@@ -123,7 +125,7 @@ class QgsDb2LayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
+    QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, Qgis::BrowserLayerType layerType, QgsDb2LayerProperty layerProperties );
 
     QString createUri();
 

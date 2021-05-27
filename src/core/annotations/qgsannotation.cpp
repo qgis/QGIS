@@ -21,6 +21,10 @@
 #include "qgsproject.h"
 #include "qgsgeometryutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsshapegenerator.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 #include <QPen>
 #include <QPainter>
@@ -41,6 +45,8 @@ QgsAnnotation::QgsAnnotation( QObject *parent )
   mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
 }
 
+QgsAnnotation::~QgsAnnotation() = default;
+
 void QgsAnnotation::setVisible( bool visible )
 {
   if ( mVisible == visible )
@@ -56,7 +62,6 @@ void QgsAnnotation::setHasFixedMapPosition( bool fixed )
     return;
 
   mHasFixedMapPosition = fixed;
-  updateBalloon();
   emit moved();
 }
 
@@ -93,7 +98,6 @@ void QgsAnnotation::setFrameOffsetFromReferencePointMm( QPointF offset )
 {
   mOffsetFromReferencePoint = offset;
 
-  updateBalloon();
   emit moved();
   emit appearanceChanged();
 }
@@ -113,7 +117,6 @@ void QgsAnnotation::setFrameSizeMm( QSizeF size )
 {
   QSizeF frameSize = minimumFrameSize().expandedTo( size ); //don't allow frame sizes below minimum
   mFrameSize = frameSize;
-  updateBalloon();
   emit moved();
   emit appearanceChanged();
 }
@@ -128,6 +131,11 @@ void QgsAnnotation::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
   emit appearanceChanged();
+}
+
+QgsFillSymbol *QgsAnnotation::fillSymbol() const
+{
+  return mFillSymbol.get();
 }
 
 void QgsAnnotation::render( QgsRenderContext &context ) const
@@ -214,169 +222,26 @@ QSizeF QgsAnnotation::minimumFrameSize() const
   return QSizeF( 0, 0 );
 }
 
-void QgsAnnotation::updateBalloon()
-{
-  //first test if the point is in the frame. In that case we don't need a balloon.
-  if ( !mHasFixedMapPosition ||
-       ( mOffsetFromReferencePoint.x() < 0 && ( mOffsetFromReferencePoint.x() + mFrameSize.width() ) > 0
-         && mOffsetFromReferencePoint.y() < 0 && ( mOffsetFromReferencePoint.y() + mFrameSize.height() ) > 0 ) )
-  {
-    mBalloonSegment = -1;
-    return;
-  }
-
-  //edge list
-  QList<QLineF> segmentList;
-  segmentList << segment( 0, nullptr );
-  segmentList << segment( 1, nullptr );
-  segmentList << segment( 2, nullptr );
-  segmentList << segment( 3, nullptr );
-
-  //find  closest edge / closest edge point
-  double minEdgeDist = std::numeric_limits<double>::max();
-  int minEdgeIndex = -1;
-  QLineF minEdge;
-  QgsPointXY minEdgePoint;
-  QgsPointXY origin( 0, 0 );
-
-  for ( int i = 0; i < 4; ++i )
-  {
-    QLineF currentSegment = segmentList.at( i );
-    QgsPointXY currentMinDistPoint;
-    double currentMinDist = origin.sqrDistToSegment( currentSegment.x1(), currentSegment.y1(), currentSegment.x2(), currentSegment.y2(), currentMinDistPoint );
-    bool isPreferredSegment = false;
-    if ( qgsDoubleNear( currentMinDist, minEdgeDist ) )
-    {
-      // two segments are close - work out which looks nicer
-      const double angle = fmod( origin.azimuth( currentMinDistPoint ) + 360.0, 360.0 );
-      if ( angle < 45 || angle > 315 )
-        isPreferredSegment = i == 0;
-      else if ( angle < 135 )
-        isPreferredSegment = i == 3;
-      else if ( angle < 225 )
-        isPreferredSegment = i == 2;
-      else
-        isPreferredSegment = i == 1;
-    }
-    else if ( currentMinDist < minEdgeDist )
-      isPreferredSegment = true;
-
-    if ( isPreferredSegment )
-    {
-      minEdgeIndex = i;
-      minEdgePoint = currentMinDistPoint;
-      minEdgeDist = currentMinDist;
-      minEdge = currentSegment;
-    }
-  }
-
-  if ( minEdgeIndex < 0 )
-  {
-    return;
-  }
-
-  mBalloonSegment = minEdgeIndex;
-  QPointF minEdgeEnd = minEdge.p2();
-  mBalloonSegmentPoint1 = QPointF( minEdgePoint.x(), minEdgePoint.y() );
-  if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < mSegmentPointWidthMm )
-  {
-    double x = 0;
-    double y = 0;
-    QgsGeometryUtils::pointOnLineWithDistance( minEdge.p2().x(), minEdge.p2().y(), minEdge.p1().x(), minEdge.p1().y(), mSegmentPointWidthMm, x, y );
-    mBalloonSegmentPoint1 = QPointF( x, y );
-  }
-
-  {
-    double x = 0;
-    double y = 0;
-    QgsGeometryUtils::pointOnLineWithDistance( mBalloonSegmentPoint1.x(), mBalloonSegmentPoint1.y(), minEdge.p2().x(), minEdge.p2().y(), mSegmentPointWidthMm, x, y );
-    mBalloonSegmentPoint2 = QPointF( x, y );
-  }
-
-}
-
-QLineF QgsAnnotation::segment( int index, QgsRenderContext *context ) const
-{
-  auto scaleSize = [context]( double size )->double
-  {
-    return context ? context->convertToPainterUnits( size, QgsUnitTypes::RenderMillimeters ) : size;
-  };
-  if ( mHasFixedMapPosition )
-  {
-    switch ( index )
-    {
-      case 0:
-        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ),
-                       scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) );
-      case 1:
-        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ),
-                       scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ) );
-      case 2:
-        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ) + scaleSize( mFrameSize.width() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ),
-                       scaleSize( mOffsetFromReferencePoint.x() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ) );
-      case 3:
-        return QLineF( scaleSize( mOffsetFromReferencePoint.x() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) + scaleSize( mFrameSize.height() ),
-                       scaleSize( mOffsetFromReferencePoint.x() ),
-                       scaleSize( mOffsetFromReferencePoint.y() ) );
-      default:
-        return QLineF();
-    }
-  }
-  else
-  {
-    switch ( index )
-    {
-      case 0:
-        return QLineF( 0, 0, scaleSize( mFrameSize.width() ), 0 );
-      case 1:
-        return QLineF( scaleSize( mFrameSize.width() ), 0,
-                       scaleSize( mFrameSize.width() ), scaleSize( mFrameSize.height() ) );
-      case 2:
-        return QLineF( scaleSize( mFrameSize.width() ), scaleSize( mFrameSize.height() ),
-                       0, scaleSize( mFrameSize.height() ) );
-      case 3:
-        return QLineF( 0, scaleSize( mFrameSize.height() ),
-                       0, 0 );
-      default:
-        return QLineF();
-    }
-  }
-}
-
 void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
 {
   if ( !mFillSymbol )
     return;
 
-  QPolygonF poly;
-  poly.reserve( 9 + ( mHasFixedMapPosition ? 3 : 0 ) );
-  QVector<QPolygonF> rings; //empty list
-  for ( int i = 0; i < 4; ++i )
+  auto scaleSize = [&context]( double size )->double
   {
-    QLineF currentSegment = segment( i, &context );
-    poly << QPointF( currentSegment.p1().x(),
-                     currentSegment.p1().y() );
-    if ( i == mBalloonSegment && mHasFixedMapPosition )
-    {
-      poly << QPointF( context.convertToPainterUnits( mBalloonSegmentPoint1.x(), QgsUnitTypes::RenderMillimeters ),
-                       context.convertToPainterUnits( mBalloonSegmentPoint1.y(), QgsUnitTypes::RenderMillimeters ) );
-      poly << QPointF( 0, 0 );
-      poly << QPointF( context.convertToPainterUnits( mBalloonSegmentPoint2.x(), QgsUnitTypes::RenderMillimeters ),
-                       context.convertToPainterUnits( mBalloonSegmentPoint2.y(), QgsUnitTypes::RenderMillimeters ) );
-    }
-    poly << QPointF( currentSegment.p2().x(), currentSegment.p2().y() );
-  }
-  if ( poly.at( 0 ) != poly.at( poly.count() - 1 ) )
-    poly << poly.at( 0 );
+    return context.convertToPainterUnits( size, QgsUnitTypes::RenderMillimeters );
+  };
+
+  const QRectF frameRect( mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.x() ) : 0,
+                          mHasFixedMapPosition ? scaleSize( mOffsetFromReferencePoint.y() ) : 0,
+                          scaleSize( mFrameSize.width() ),
+                          scaleSize( mFrameSize.height() ) );
+  const QgsPointXY origin = mHasFixedMapPosition ? QgsPointXY( 0, 0 ) : QgsPointXY( frameRect.center().x(), frameRect.center().y() );
+
+  const QPolygonF poly = QgsShapeGenerator::createBalloon( origin, frameRect, context.convertToPainterUnits( mSegmentPointWidthMm, QgsUnitTypes::RenderMillimeters ) );
 
   mFillSymbol->startRender( context );
+  QVector<QPolygonF> rings; //empty list
   mFillSymbol->renderPolygon( poly, &rings, nullptr, context );
   mFillSymbol->stopRender( context );
 }
@@ -539,7 +404,6 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     mFillSymbol.reset( QgsFillSymbol::createSimple( props ) );
   }
 
-  updateBalloon();
   emit mapLayerChanged();
 }
 
@@ -555,9 +419,6 @@ void QgsAnnotation::copyCommonProperties( QgsAnnotation *target ) const
   target->mMarkerSymbol.reset( mMarkerSymbol ? mMarkerSymbol->clone() : nullptr );
   target->mContentsMargins = mContentsMargins;
   target->mFillSymbol.reset( mFillSymbol ? mFillSymbol->clone() : nullptr );
-  target->mBalloonSegment = mBalloonSegment;
-  target->mBalloonSegmentPoint1 = mBalloonSegmentPoint1;
-  target->mBalloonSegmentPoint2 = mBalloonSegmentPoint2;
   target->mSegmentPointWidthMm = mSegmentPointWidthMm;
   target->mMapLayer = mMapLayer;
   target->mFeature = mFeature;

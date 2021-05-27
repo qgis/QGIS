@@ -11,7 +11,7 @@
 
 class QgsProviderSourceWidgetProvider
 {
-%Docstring
+%Docstring(signature="appended")
 
 An interface for providers of widgets designed to configure a data provider's source.
 

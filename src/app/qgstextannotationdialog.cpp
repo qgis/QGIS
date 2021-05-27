@@ -23,6 +23,8 @@
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsfillsymbol.h"
+
 #include <QColorDialog>
 #include <QGraphicsScene>
 

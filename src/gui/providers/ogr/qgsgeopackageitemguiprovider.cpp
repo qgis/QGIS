@@ -47,7 +47,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
   if ( QgsGeoPackageVectorLayerItem *layerItem = qobject_cast< QgsGeoPackageVectorLayerItem * >( item ) )
   {
     // Check capabilities
-    if ( layerItem->capabilities2() & QgsDataItem::Capability::Rename )
+    if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
       QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), this );
       QVariantMap data;
@@ -506,9 +506,9 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             } );
 
             // when an error occurs:
-            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, [ = ]( int error, const QString & errorMessage )
+            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
             {
-              if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+              if ( error != Qgis::VectorExportResult::UserCanceled )
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
                 output->setTitle( tr( "Import to GeoPackage database" ) );

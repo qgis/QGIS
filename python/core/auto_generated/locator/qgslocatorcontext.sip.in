@@ -11,7 +11,7 @@
 
 class QgsLocatorContext
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates the properties relating to the context of a locator search.
 
 .. versionadded:: 3.0

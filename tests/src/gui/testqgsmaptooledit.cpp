@@ -20,7 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 class TestQgsMapToolEdit : public QObject
 {
@@ -35,6 +35,7 @@ class TestQgsMapToolEdit : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void checkDefaultZValue();
+    void checkDefaultMValue();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -65,16 +66,29 @@ void TestQgsMapToolEdit::cleanup()
 
 void TestQgsMapToolEdit::checkDefaultZValue()
 {
-  QgsSettings settings;
-  settings.remove( QStringLiteral( "/qgis/digitizing/default_z_value" ) );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.remove();
 
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
   double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
-  settings.setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), z_value_for_test );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( z_value_for_test );
 
   QCOMPARE( tool->defaultZValue(), z_value_for_test );
+}
+
+void TestQgsMapToolEdit::checkDefaultMValue()
+{
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "/qgis/digitizing/default_m_value" ) );
+
+  QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
+  QCOMPARE( tool->defaultMValue(), Qgis::DEFAULT_M_COORDINATE );
+
+  double m_value_for_test = Qgis::DEFAULT_M_COORDINATE + 1;
+  settings.setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), m_value_for_test );
+
+  QCOMPARE( tool->defaultMValue(), m_value_for_test );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEdit )

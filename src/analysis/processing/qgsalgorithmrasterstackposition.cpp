@@ -114,7 +114,7 @@ QVariantMap QgsRasterStackPositionAlgorithmBase::processAlgorithm( const QVarian
   std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::DataType::Int32, mLayerWidth, mLayerHeight, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )

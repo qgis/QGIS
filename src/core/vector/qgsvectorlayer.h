@@ -1131,32 +1131,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     FeatureAvailability hasFeatures() const FINAL;
 
-    /**
-     * Update the data source of the layer. The layer's renderer and legend will be preserved only
-     * if the geometry type of the new data source matches the current geometry type of the layer.
-     * \param dataSource new layer data source
-     * \param baseName base name of the layer
-     * \param provider provider string
-     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
-     * data source
-     * \since QGIS 2.10
-     * \deprecated Use version with ProviderOptions argument instead
-     */
-    Q_DECL_DEPRECATED void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false ) SIP_DEPRECATED;
-
-    /**
-     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
-     * if the geometry type of the new data source matches the current geometry type of the layer.
-     * \param dataSource new layer data source
-     * \param baseName base name of the layer
-     * \param provider provider string
-     * \param options provider options
-     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
-     * data source
-     * \see dataSourceChanged()
-     * \since QGIS 3.2
-     */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
 
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
@@ -1425,6 +1399,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring ) SIP_DEPRECATED;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
     /**
      * Adds a new part polygon to a multipart feature
      * \returns QgsGeometry::OperationResult
@@ -1446,6 +1422,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) SIP_PYNAME( addPartV2 ) SIP_DEPRECATED;
+#endif
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -2234,23 +2211,57 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the minimum value for an attribute column or an invalid variant in case of error.
-     * Note that in some circumstances when unsaved changes are present for the layer then the
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
      * returned value may be outdated (for instance when the attribute value in a saved feature has
      * been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+     *
+     * \note If both the minimum and maximum value are required it is more efficient to call minimumAndMaximumValue()
+     * instead of separate calls to minimumValue() and maximumValue().
+     *
      * \see maximumValue()
+     * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
     QVariant minimumValue( int index ) const FINAL;
 
     /**
      * Returns the maximum value for an attribute column or an invalid variant in case of error.
-     * Note that in some circumstances when unsaved changes are present for the layer then the
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
      * returned value may be outdated (for instance when the attribute value in a saved feature has
      * been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+     *
+     * \note If both the minimum and maximum value are required it is more efficient to call minimumAndMaximumValue()
+     * instead of separate calls to minimumValue() and maximumValue().
+     *
      * \see minimumValue()
+     * \see minimumAndMaximumValue()
      * \see uniqueValues()
      */
     QVariant maximumValue( int index ) const FINAL;
+
+
+    /**
+     * Calculates both the minimum and maximum value for an attribute column.
+     *
+     * This is more efficient then calling both minimumValue() and maximumValue() when both the minimum
+     * and maximum values are required.
+     *
+     * \param index index of field to calculate minimum and maximum value for.
+     * \param minimum will be set to minimum attribute value or an invalid variant in case of error.
+     * \param maximum will be set to maximum attribute value or an invalid variant in case of error.
+     *
+     * \note In some circumstances when unsaved changes are present for the layer then the
+     * calculated values may be outdated (for instance when the attribute value in a saved feature has
+     * been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+     *
+     * \see minimumValue()
+     * \see maximumValue()
+     *
+     * \since QGIS 3.20
+     */
+    void minimumAndMaximumValue( int index, QVariant &minimum SIP_OUT, QVariant &maximum SIP_OUT ) const;
 
     /**
      * Calculates an aggregated value from the layer's features.
@@ -2819,6 +2830,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param flags provider read flags
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
 
@@ -2834,9 +2858,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayer( const QgsVectorLayer &rhs );
 #endif
     //! Returns the minimum or maximum value
-    QVariant minimumOrMaximumValue( int index, bool minimum ) const;
+    void minimumOrMaximumValue( int index, QVariant *minimum, QVariant *maximum ) const;
 
-  private:                       // Private attributes
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
@@ -2858,8 +2881,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Set holding the feature IDs that are activated.  Note that if a feature
-        subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
-        it always needs to be removed from mSelectedFeatureIds as well.
+     * subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
+     * it always needs to be removed from mSelectedFeatureIds as well.
      */
     QgsFeatureIds mSelectedFeatureIds;
 

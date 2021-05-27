@@ -13,7 +13,7 @@
 
 class QgsColorRampShader : QgsRasterShaderFunction
 {
-%Docstring
+%Docstring(signature="appended")
 A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
 %End
 

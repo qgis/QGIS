@@ -19,7 +19,6 @@
 #define QGSDB2PROVIDER_H
 
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
@@ -101,7 +100,7 @@ class QgsDb2Provider final: public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -132,7 +131,11 @@ class QgsDb2Provider final: public QgsVectorDataProvider
        */
     static QString dbConnectionName( const QString &name );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMutex;
+#else
+    static QRecursiveMutex sMutex;
+#endif
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;
@@ -172,7 +175,7 @@ class QgsDb2ProviderMetadata final: public QgsProviderMetadata
   public:
     QgsDb2ProviderMetadata();
     QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QgsVectorLayerExporter::ExportError createEmptyLayer(
+    Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

@@ -369,7 +369,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets = capabilities.supportedTileMatrixSets();
 
     int rows = 0;
-    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
+    for ( const QgsWmtsTileLayer &l : std::as_const( mTileLayers ) )
     {
       rows += l.styles.size() * l.setLinks.size() * l.formats.size();
     }
@@ -379,7 +379,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     lstTilesets->setSortingEnabled( false );
 
     int row = 0;
-    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
+    for ( const QgsWmtsTileLayer &l : std::as_const( mTileLayers ) )
     {
       for ( const QgsWmtsStyle &style : l.styles )
       {
@@ -545,7 +545,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     const QgsWmtsTileLayer *layer = nullptr;
 
-    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
+    for ( const QgsWmtsTileLayer &l : std::as_const( mTileLayers ) )
     {
       if ( l.identifier == layers.join( QLatin1Char( ',' ) ) )
       {
@@ -1023,12 +1023,12 @@ void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList
 
 void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUri &uri )
 {
-  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperties ) )
+  for ( const QgsWmsLayerProperty &layerProperty : std::as_const( mLayerProperties ) )
   {
     if ( layerProperty.name == layers.join( ',' ) )
     {
       // Check for layer dimensions
-      for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( layerProperty.dimensions ) )
+      for ( const QgsWmsDimensionProperty &dimension : std::as_const( layerProperty.dimensions ) )
       {
         // add temporal dimensions only
         if ( dimension.name == QLatin1String( "time" ) ||
@@ -1150,7 +1150,7 @@ void QgsWMSSourceSelect::filterLayers( const QString &searchText )
     }
 
     mTreeInitialExpand.clear();
-    for ( QTreeWidgetItem *item : qgis::as_const( items ) )
+    for ( QTreeWidgetItem *item : std::as_const( items ) )
     {
       setChildrenVisible( item, true );
 

@@ -19,6 +19,9 @@
 #include "qgsdataitem.h"
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
+#include "qgsdirectoryitem.h"
+#include "qgslayeritem.h"
+#include "qgsdatacollectionitem.h"
 
 class QTextEdit;
 class QProgressBar;
@@ -103,7 +106,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
   public:
     QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QString path );
 
-    void setState( State state ) override;
+    void setState( Qgis::BrowserItemState state ) override;
 
     QIcon icon() override;
 
@@ -138,7 +141,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
   public:
     QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
                         QString name, QString path, QString uri,
-                        LayerType layerType, QString providerKey );
+                        Qgis::BrowserLayerType layerType, QString providerKey );
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
@@ -183,7 +186,7 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
     Q_OBJECT
   public:
     QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject vector, QString layerName,
-                             QString path, QString uri, LayerType layerType, bool singleLayer );
+                             QString path, QString uri, Qgis::BrowserLayerType layerType, bool singleLayer );
 
     QString layerName() const override;
     bool equal( const QgsDataItem *other ) override;

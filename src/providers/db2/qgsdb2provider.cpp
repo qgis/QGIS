@@ -21,7 +21,6 @@
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2geometrycolumns.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgscredentials.h"
 #include "qgsapplication.h"
@@ -34,7 +33,11 @@ const QString QgsDb2Provider::DB2_PROVIDER_KEY = QStringLiteral( "DB2" );
 const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
 int QgsDb2Provider::sConnectionId = 0;
-QMutex QgsDb2Provider::sMutex{ QMutex::Recursive };
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+QMutex QgsDb2Provider::sMutex { QMutex::Recursive };
+#else
+QRecursiveMutex QgsDb2Provider::sMutex;
+#endif
 
 QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &options,
                                 QgsDataProvider::ReadFlags flags )
@@ -1281,7 +1284,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsDb2Provider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -1304,7 +1307,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   {
     if ( errorMessage )
       *errorMessage = errMsg;
-    return QgsVectorLayerExporter::ErrConnectionFailed;
+    return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
 
   // Get the SRS name using srid, needed to register the spatial column
@@ -1429,7 +1432,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
         {
           *errorMessage = lastError;
         }
-        return QgsVectorLayerExporter::ErrCreateLayer;
+        return Qgis::VectorExportResult::ErrorCreatingLayer;
       }
     }
   }
@@ -1469,7 +1472,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
         {
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
         }
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       if ( oldToNewAttrIdxMap )
@@ -1509,7 +1512,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
       {
         *errorMessage = lastError;
       }
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
 
 
@@ -1587,7 +1590,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
   }
   QgsDebugMsg( QStringLiteral( "successfully created empty layer" ) );
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
@@ -1742,7 +1745,7 @@ QList< QgsDataItemProvider * > QgsDb2ProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QgsVectorLayerExporter::ExportError QgsDb2ProviderMetadata::createEmptyLayer(
+Qgis::VectorExportResult QgsDb2ProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

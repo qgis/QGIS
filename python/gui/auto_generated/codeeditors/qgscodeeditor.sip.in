@@ -15,7 +15,7 @@
 
 class QgsCodeEditor : QsciScintilla
 {
-%Docstring
+%Docstring(signature="appended")
 A text editor based on QScintilla2.
 
 .. note::

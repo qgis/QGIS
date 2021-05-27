@@ -16,7 +16,6 @@
 
 #include "qgssymbollayerwidget.h"
 
-#include "qgsdataitem.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
@@ -45,6 +44,9 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsiconutils.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -79,6 +81,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext << symbolScope;
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
@@ -99,6 +102,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   QStringList highlights;
   highlights << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
              << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+             << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
              << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
              << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
              << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" );
@@ -232,6 +236,10 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mPatternOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mTrimDistanceStartUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                          << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
+  mTrimDistanceEndUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
@@ -242,7 +250,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mRingFilterComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( mLayer )
     {
@@ -253,6 +261,9 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
 
   spinOffset->setClearValue( 0.0 );
   spinPatternOffset->setClearValue( 0.0 );
+
+  mTrimStartDistanceSpin->setClearValue( 0.0 );
+  mTrimDistanceEndSpin->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol.reset( new QgsLineSymbol() );
@@ -268,10 +279,48 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
   connect( spinPatternOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::patternOffsetChanged );
 
+  connect( mTrimStartDistanceSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mLayer )
+      return;
+
+    mLayer->setTrimDistanceStart( value );
+    emit changed();
+  } );
+  connect( mTrimDistanceStartUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mLayer )
+      return;
+
+    mLayer->setTrimDistanceStartUnit( mTrimDistanceStartUnitWidget->unit() );
+    mLayer->setTrimDistanceStartMapUnitScale( mTrimDistanceStartUnitWidget->getMapUnitScale() );
+    emit changed();
+  } );
+  connect( mTrimDistanceEndSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    if ( !mLayer )
+      return;
+
+    mLayer->setTrimDistanceEnd( value );
+    emit changed();
+  } );
+  connect( mTrimDistanceEndUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( !mLayer )
+      return;
+
+    mLayer->setTrimDistanceEndUnit( mTrimDistanceEndUnitWidget->unit() );
+    mLayer->setTrimDistanceEndMapUnitScale( mTrimDistanceEndUnitWidget->getMapUnitScale() );
+    emit changed();
+  } );
+
+
   updatePatternIcon();
 
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol );
 }
+
+QgsSimpleLineSymbolLayerWidget::~QgsSimpleLineSymbolLayerWidget() = default;
 
 void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
 {
@@ -310,6 +359,10 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   whileBlocking( mPatternOffsetUnitWidget )->setUnit( mLayer->dashPatternOffsetUnit() );
   whileBlocking( mPatternOffsetUnitWidget )->setMapUnitScale( mLayer->dashPatternOffsetMapUnitScale() );
+  whileBlocking( mTrimDistanceStartUnitWidget )->setUnit( mLayer->trimDistanceStartUnit() );
+  whileBlocking( mTrimDistanceStartUnitWidget )->setMapUnitScale( mLayer->trimDistanceStartMapUnitScale() );
+  whileBlocking( mTrimDistanceEndUnitWidget )->setUnit( mLayer->trimDistanceEndUnit() );
+  whileBlocking( mTrimDistanceEndUnitWidget )->setMapUnitScale( mLayer->trimDistanceEndMapUnitScale() );
 
   // set values
   spinWidth->blockSignals( true );
@@ -331,6 +384,8 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboJoinStyle->blockSignals( false );
   cboCapStyle->blockSignals( false );
   whileBlocking( spinPatternOffset )->setValue( mLayer->dashPatternOffset() );
+  whileBlocking( mTrimStartDistanceSpin )->setValue( mLayer->trimDistanceStart() );
+  whileBlocking( mTrimDistanceEndSpin )->setValue( mLayer->trimDistanceEnd() );
 
   //use a custom dash pattern?
   bool useCustomDashPattern = mLayer->useCustomDashPattern();
@@ -366,6 +421,8 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
   registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
   registerDataDefinedButton( mPatternOffsetDDBtn, QgsSymbolLayer::PropertyDashPatternOffset );
+  registerDataDefinedButton( mTrimDistanceStartDDBtn, QgsSymbolLayer::PropertyTrimStart );
+  registerDataDefinedButton( mTrimDistanceEndDDBtn, QgsSymbolLayer::PropertyTrimEnd );
 
   updateAssistantSymbol();
 }
@@ -381,16 +438,16 @@ void QgsSimpleLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mDrawInsideCheckBox->hide();
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -651,12 +708,15 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   connect( btnChangeColorStroke, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorStroke );
   connect( btnChangeColorFill, &QgsColorButton::colorChanged, this, &QgsSimpleMarkerSymbolLayerWidget::setColorFill );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::penJoinStyleChanged );
+  connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::penCapStyleChanged );
   connect( spinSize, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setSize );
   connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setAngle );
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
+
+QgsSimpleMarkerSymbolLayerWidget::~QgsSimpleMarkerSymbolLayerWidget() = default;
 
 void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -698,6 +758,9 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboJoinStyle->blockSignals( true );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboJoinStyle->blockSignals( false );
+  cboCapStyle->blockSignals( true );
+  cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
+  cboCapStyle->blockSignals( false );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -734,6 +797,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
@@ -770,6 +834,12 @@ void QgsSimpleMarkerSymbolLayerWidget::setColorFill( const QColor &color )
 void QgsSimpleMarkerSymbolLayerWidget::penJoinStyleChanged()
 {
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+  emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerWidget::penCapStyleChanged()
+{
+  mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
   emit changed();
 }
 
@@ -1084,6 +1154,8 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setOffset );
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
+
+QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget() = default;
 
 void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -1554,8 +1626,8 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
   mLayer = nullptr;
 
   setupUi( this );
-  connect( mSpinBlurRadius, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::mSpinBlurRadius_valueChanged );
-  connect( mSpinMaxDistance, qgis::overload< double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::mSpinMaxDistance_valueChanged );
+  connect( mSpinBlurRadius, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::mSpinBlurRadius_valueChanged );
+  connect( mSpinMaxDistance, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsShapeburstFillSymbolLayerWidget::mSpinMaxDistance_valueChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsShapeburstFillSymbolLayerWidget::mDistanceUnitWidget_changed );
   connect( mRadioUseWholeShape, &QRadioButton::toggled, this, &QgsShapeburstFillSymbolLayerWidget::mRadioUseWholeShape_toggled );
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsShapeburstFillSymbolLayerWidget::mOffsetUnitWidget_changed );
@@ -1836,7 +1908,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mRingFilterComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( mLayer )
     {
@@ -1939,15 +2011,15 @@ void QgsMarkerLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -2083,7 +2155,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
   mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
-  connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mRingFilterComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( mLayer )
     {
@@ -2194,15 +2266,15 @@ void QgsHashedLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -2396,6 +2468,8 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
     mHeightDDBtn->setSymbol( mAssistantPreviewSymbol );
   }
 }
+
+QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget() = default;
 
 #include <QTime>
 #include <QAbstractListModel>
@@ -3361,6 +3435,8 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
+QgsFontMarkerSymbolLayerWidget::~QgsFontMarkerSymbolLayerWidget() = default;
+
 void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "FontMarker" ) )
@@ -4209,9 +4285,9 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( Qg
   modificationExpressionSelector->setMultiLine( true );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer *>( vl ) );
   modificationExpressionSelector->registerExpressionContextGenerator( this );
-  cbxGeometryType->addItem( QgsLayerItem::iconPolygon(), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
-  cbxGeometryType->addItem( QgsLayerItem::iconLine(), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
-  cbxGeometryType->addItem( QgsLayerItem::iconPoint(), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
+  cbxGeometryType->addItem( QgsIconUtils::iconPolygon(), tr( "Polygon / MultiPolygon" ), static_cast< int >( Qgis::SymbolType::Fill ) );
+  cbxGeometryType->addItem( QgsIconUtils::iconLine(), tr( "LineString / MultiLineString" ), static_cast< int >( Qgis::SymbolType::Line ) );
+  cbxGeometryType->addItem( QgsIconUtils::iconPoint(), tr( "Point / MultiPoint" ), static_cast< int >( Qgis::SymbolType::Marker ) );
   connect( modificationExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, &QgsGeometryGeneratorSymbolLayerWidget::updateExpression );
   connect( cbxGeometryType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType );
 }
@@ -4220,7 +4296,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *l )
 {
   mLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( l );
   modificationExpressionSelector->setExpression( mLayer->geometryExpression() );
-  cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
+  cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( static_cast< int >( mLayer->symbolType() ) ) );
 }
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
@@ -4237,7 +4313,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString &str
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
-  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->currentData().toInt() ) );
+  mLayer->setSymbolType( static_cast<Qgis::SymbolType>( cbxGeometryType->currentData().toInt() ) );
 
   emit symbolChanged();
 }

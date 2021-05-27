@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsgetcontext.h"
 #include "qgsserverprojectutils.h"
 
@@ -40,18 +41,18 @@ namespace QgsWms
                                        QDomElement &parentLayer,
                                        QgsServerInterface *serverIface,
                                        const QgsProject *project,
-                                       const QgsServerRequest &request,
+                                       const QgsWmsRequest &request,
                                        const QgsLayerTreeGroup *layerTreeGroup,
                                        QgsRectangle &combinedBBox,
                                        const QString &strGroup );
 
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
                                           QgsServerInterface *serverIface, const QgsProject *project,
-                                          const QgsServerRequest &request );
+                                          const QgsWmsRequest &request );
   }
 
   void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
-                        const QString &version, const QgsServerRequest &request,
+                        const QgsWmsRequest &request,
                         QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -69,7 +70,7 @@ namespace QgsWms
     }
     else //context xml not in cache. Create a new one
     {
-      doc = getContext( serverIface, project, version, request );
+      doc = getContext( serverIface, project, request );
 
       if ( cacheManager )
       {
@@ -78,7 +79,7 @@ namespace QgsWms
       contextDocument = &doc;
     }
 #else
-    doc = getContext( serverIface, project, version, request );
+    doc = getContext( serverIface, project, request );
     contextDocument = &doc;
 #endif
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -86,11 +87,10 @@ namespace QgsWms
   }
 
 
-  QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
-                           const QString &version, const QgsServerRequest &request )
+  QDomDocument getContext( QgsServerInterface *serverIface,
+                           const QgsProject *project,
+                           const QgsWmsRequest &request )
   {
-    Q_UNUSED( version )
-
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
@@ -121,7 +121,7 @@ namespace QgsWms
   {
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
                                           QgsServerInterface *serverIface, const QgsProject *project,
-                                          const QgsServerRequest &request )
+                                          const QgsWmsRequest &request )
     {
       parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
@@ -219,7 +219,7 @@ namespace QgsWms
                                        QDomElement &parentLayer,
                                        QgsServerInterface *serverIface,
                                        const QgsProject *project,
-                                       const QgsServerRequest &request,
+                                       const QgsWmsRequest &request,
                                        const QgsLayerTreeGroup *layerTreeGroup,
                                        QgsRectangle &combinedBBox,
                                        const QString &strGroup )
@@ -332,7 +332,7 @@ namespace QgsWms
           layerElem.appendChild( formatElem );
 
           // Get WMS service URL for Server Element
-          QUrl href = serviceUrl( request, project );
+          QUrl href = serviceUrl( request, project, *serverIface->serverSettings() );
 
           //href needs to be a prefix
           QString hrefString = href.toString();

@@ -522,7 +522,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * \brief Handles the ``array_foreach(array, expression)`` expression function.
+ * \brief Handles the array looping``array_Foreach(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core

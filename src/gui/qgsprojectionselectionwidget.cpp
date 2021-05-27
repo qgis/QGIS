@@ -22,18 +22,20 @@
 #include "qgssettings.h"
 #include "qgshighlightablecombobox.h"
 #include "qgscoordinatereferencesystemregistry.h"
+#include "qgsdatums.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 6 );
-  setLayout( layout );
-
   mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
+
+  const int labelMargin = static_cast< int >( std::round( mCrsComboBox->fontMetrics().horizontalAdvance( 'X' ) ) );
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 0 );
+  setLayout( layout );
 
   mProjectCrs = QgsProject::instance()->crs();
   addProjectCrsOption();
@@ -49,7 +51,25 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   addRecentCrs();
 
-  layout->addWidget( mCrsComboBox );
+  layout->addWidget( mCrsComboBox, 1 );
+
+  // bit of fiddlyness here -- we want the initial spacing to only be visible
+  // when the warning label is shown, so it's embedded inside mWarningLabel
+  // instead of outside it
+  mWarningLabelContainer = new QWidget();
+  QHBoxLayout *warningLayout = new QHBoxLayout();
+  warningLayout->setContentsMargins( 0, 0, 0, 0 );
+  mWarningLabel = new QLabel();
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+  const int size = static_cast< int >( std::max( 24.0, mCrsComboBox->minimumSize().height() * 0.5 ) );
+  mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
+  warningLayout->insertSpacing( 0, labelMargin / 2 );
+  warningLayout->insertWidget( 1, mWarningLabel );
+  mWarningLabelContainer->setLayout( warningLayout );
+  layout->addWidget( mWarningLabelContainer );
+  mWarningLabelContainer->hide();
+
+  layout->addSpacing( labelMargin / 2 );
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSetProjection.svg" ) ) );
@@ -269,6 +289,34 @@ void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
   update();
 }
 
+QString QgsProjectionSelectionWidget::sourceEnsemble() const
+{
+  return mSourceEnsemble;
+}
+
+void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
+{
+  if ( mSourceEnsemble == ensemble )
+    return;
+
+  mSourceEnsemble = ensemble;
+  updateWarning();
+}
+
+bool QgsProjectionSelectionWidget::showAccuracyWarnings() const
+{
+  return mShowAccuracyWarnings;
+}
+
+void QgsProjectionSelectionWidget::setShowAccuracyWarnings( bool show )
+{
+  mShowAccuracyWarnings = show;
+  if ( !mShowAccuracyWarnings )
+    mWarningLabelContainer->hide();
+  else
+    updateWarning();
+}
+
 void QgsProjectionSelectionWidget::addNotSetOption()
 {
   mCrsComboBox->insertItem( 0, mNotSetText, QgsProjectionSelectionWidget::CrsNotSet );
@@ -305,6 +353,72 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
       break;
   }
   updateTooltip();
+}
+
+void QgsProjectionSelectionWidget::updateWarning()
+{
+  if ( !mShowAccuracyWarnings )
+  {
+    if ( mWarningLabelContainer->isVisible() )
+      mWarningLabelContainer->hide();
+    return;
+  }
+
+  try
+  {
+    const double crsAccuracyWarningThreshold = QgsSettings().value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble();
+
+    const QgsDatumEnsemble ensemble = crs().datumEnsemble();
+    if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble || ( ensemble.accuracy() > 0 && ensemble.accuracy() < crsAccuracyWarningThreshold ) )
+    {
+      mWarningLabelContainer->hide();
+    }
+    else
+    {
+      mWarningLabelContainer->show();
+
+      QString warning = QStringLiteral( "<p>" );
+
+      QString id;
+      if ( !ensemble.code().isEmpty() )
+        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+      else
+        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+
+      if ( ensemble.accuracy() > 0 )
+      {
+        warning = tr( "The selected CRS is based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
+      }
+      else
+      {
+        warning = tr( "The selected CRS is based on %1, which has a limited accuracy." ).arg( id );
+      }
+      warning += QStringLiteral( "</p><p>" ) + tr( "Use an alternative CRS if accurate positioning is required." ) + QStringLiteral( "</p>" );
+
+      const QList< QgsDatumEnsembleMember > members = ensemble.members();
+      if ( !members.isEmpty() )
+      {
+        warning += QStringLiteral( "<p>" ) + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + QStringLiteral( "</p><ul>" );
+
+        for ( const QgsDatumEnsembleMember &member : members )
+        {
+          if ( !member.code().isEmpty() )
+            id = QStringLiteral( "%1 (%2:%3)" ).arg( member.name(), member.authority(), member.code() );
+          else
+            id = member.name();
+          warning += QStringLiteral( "<li>%1</li>" ).arg( id );
+        }
+
+        warning += QLatin1String( "</ul>" );
+      }
+
+      mWarningLabel->setToolTip( warning );
+    }
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    mWarningLabelContainer->hide();
+  }
 }
 
 void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -439,6 +553,7 @@ void QgsProjectionSelectionWidget::updateTooltip()
     setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ) );
   else
     setToolTip( QString() );
+  updateWarning();
 }
 
 QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData *data ) const

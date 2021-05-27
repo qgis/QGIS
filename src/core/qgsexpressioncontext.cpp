@@ -24,6 +24,7 @@ const QString QgsExpressionContext::EXPR_SYMBOL_COLOR( QStringLiteral( "symbol_c
 const QString QgsExpressionContext::EXPR_SYMBOL_ANGLE( QStringLiteral( "symbol_angle" ) );
 const QString QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT( QStringLiteral( "geometry_part_count" ) );
 const QString QgsExpressionContext::EXPR_GEOMETRY_PART_NUM( QStringLiteral( "geometry_part_num" ) );
+const QString QgsExpressionContext::EXPR_GEOMETRY_RING_NUM( QStringLiteral( "geometry_ring_num" ) );
 const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT( QStringLiteral( "geometry_point_count" ) );
 const QString QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM( QStringLiteral( "geometry_point_num" ) );
 const QString QgsExpressionContext::EXPR_CLUSTER_SIZE( QStringLiteral( "cluster_size" ) );
@@ -234,7 +235,7 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
 
 QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) : mStack{}
 {
-  for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
+  for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
@@ -266,7 +267,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
 
   qDeleteAll( mStack );
   mStack.clear();
-  for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
+  for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }

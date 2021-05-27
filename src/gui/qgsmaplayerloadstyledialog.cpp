@@ -55,7 +55,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   // load style type combobox
-  connect( mStyleTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     QgsVectorLayerProperties::StyleType type = currentStyleType();
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );

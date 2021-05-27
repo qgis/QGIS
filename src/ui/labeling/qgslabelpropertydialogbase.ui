@@ -40,7 +40,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-108</y>
+        <y>0</y>
         <width>419</width>
         <height>731</height>
        </rect>
@@ -679,26 +679,26 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -722,14 +722,18 @@
   <tabstop>mFontItalicBtn</tabstop>
   <tabstop>mFontSizeSpinBox</tabstop>
   <tabstop>mFontColorButton</tabstop>
+  <tabstop>mMultiLineAlignComboBox</tabstop>
+  <tabstop>mBufferDrawChkbx</tabstop>
   <tabstop>mBufferSizeSpinBox</tabstop>
   <tabstop>mBufferColorButton</tabstop>
+  <tabstop>mShowCalloutChkbx</tabstop>
   <tabstop>mLabelDistanceSpinBox</tabstop>
   <tabstop>mXCoordSpinBox</tabstop>
   <tabstop>mYCoordSpinBox</tabstop>
   <tabstop>mHaliComboBox</tabstop>
   <tabstop>mValiComboBox</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mLabelAllPartsCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

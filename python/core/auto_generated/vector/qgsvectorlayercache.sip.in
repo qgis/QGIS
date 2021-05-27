@@ -14,7 +14,7 @@
 
 class QgsVectorLayerCache : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class caches features of a given :py:class:`QgsVectorLayer`.
 
 The cached features can be indexed by :py:class:`QgsAbstractCacheIndex`.

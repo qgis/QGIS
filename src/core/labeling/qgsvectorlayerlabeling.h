@@ -126,6 +126,13 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the default layer settings to use for the specified vector \a layer.
+     *
+     * \since QGIS 3.20
+     */
+    static QgsPalLayerSettings defaultSettingsForLayer( const QgsVectorLayer *layer );
+
   protected:
 
     /**

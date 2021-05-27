@@ -16,7 +16,7 @@
 
 class QgsCircle : QgsEllipse
 {
-%Docstring
+%Docstring(signature="appended")
 Circle geometry type.
 
 A circle is defined by a center point with a radius and an azimuth.
@@ -161,6 +161,7 @@ Example
 -------
 
 .. code-block:: python
+
 
       # [(0 0), (5 0)] and [(5 5), (10 5)] are parallels
       QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5))

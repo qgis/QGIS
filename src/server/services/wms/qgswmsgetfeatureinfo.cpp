@@ -24,12 +24,12 @@
 
 namespace QgsWms
 {
-  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
-                            const QString &version, const QgsServerRequest &request,
+  void writeGetFeatureInfo( QgsServerInterface *serverIface,
+                            const QgsProject *project,
+                            const QgsWmsRequest &request,
                             QgsServerResponse &response )
   {
-    // get wms parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    QgsWmsParameters parameters = request.wmsParameters();
 
     // WIDTH and HEIGHT are not mandatory, but we need to set a default size
     if ( ( parameters.widthAsInt() <= 0
@@ -62,6 +62,6 @@ namespace QgsWms
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
 
     QgsRenderer renderer( context );
-    response.write( renderer.getFeatureInfo( version ) );
+    response.write( renderer.getFeatureInfo( parameters.version() ) );
   }
 } // namespace QgsWms

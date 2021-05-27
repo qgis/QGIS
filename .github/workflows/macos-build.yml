@@ -1,9 +1,10 @@
-name: Mac OS build
+name: 🍏 Mac OS build
 on:
   push:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     paths:
     - 'src/**'
     - 'external/**'

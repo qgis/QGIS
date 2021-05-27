@@ -25,8 +25,8 @@
                 <h2><a href="{{ path_append( feature.id ) }}">{{ metadata.layerTitle }} {{ feature.id }}</a></h2>
                 <dl class="row">
                 {% for name, value in feature.properties %}
-                    <dt class="col-sm-3">{{ name }}</dt>
-                    <dd class="col-sm-9">{{ value }}</dd>
+                    <dt class="col-sm-12">{{ name }}</dt>
+                    <dd class="col-sm-12">{{ value }}</dd>
                 {% endfor %}
                 </dl>
             {% endfor %}

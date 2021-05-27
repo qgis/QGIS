@@ -13,7 +13,7 @@
 
 class QgsLayerTreeNode : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 This class is a base class for nodes in a layer tree.
 
 Layer tree is a hierarchical structure consisting of group and layer nodes:

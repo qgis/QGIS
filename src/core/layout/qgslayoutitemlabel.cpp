@@ -516,6 +516,15 @@ void QgsLayoutItemLabel::refresh()
   refreshExpressionContext();
 }
 
+void QgsLayoutItemLabel::convertToStaticText()
+{
+  const QString evaluated = currentText();
+  if ( evaluated == mText )
+    return; // no changes
+
+  setText( evaluated );
+}
+
 void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const
 {
   //keep alignment point constant

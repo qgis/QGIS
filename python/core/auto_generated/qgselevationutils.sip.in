@@ -11,7 +11,7 @@
 
 class QgsElevationUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains utility methods for working with elevation from layers and projects.
 
 .. versionadded:: 3.18

@@ -31,7 +31,9 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmarkersymbollayer.h"
-
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsstyle.h"
 
 /**

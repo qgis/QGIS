@@ -34,6 +34,9 @@
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QPainter>
 #include <QFile>
@@ -56,6 +59,8 @@ QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::Bru
 {
   mColor = color;
 }
+
+QgsSimpleFillSymbolLayer::~QgsSimpleFillSymbolLayer() = default;
 
 void QgsSimpleFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -1672,6 +1677,8 @@ QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
   setSubSymbol( new QgsLineSymbol() );
 }
 
+QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer() = default;
+
 void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
@@ -1724,6 +1731,11 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVec
   mBrush.setTransform( bkTransform );
 }
 
+QgsSymbol *QgsImageFillSymbolLayer::subSymbol()
+{
+  return mStroke.get();
+}
+
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( !symbol ) //unset current stroke
@@ -1732,7 +1744,7 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return true;
   }
 
-  if ( symbol->type() != QgsSymbol::Line )
+  if ( symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;
@@ -1862,6 +1874,8 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
 }
+
+QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer() = default;
 
 void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -2010,16 +2024,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QVariantMap &properties )
   if ( properties.contains( QStringLiteral( "parameters" ) ) )
   {
     const QVariantMap parameters = properties[QStringLiteral( "parameters" )].toMap();
-    QMap<QString, QgsProperty> parametersProperties;
-    QVariantMap::const_iterator it = parameters.constBegin();
-    for ( ; it != parameters.constEnd(); ++it )
-    {
-      QgsProperty property;
-      if ( property.loadVariant( it.value() ) )
-        parametersProperties.insert( it.key(), property );
-    }
-
-    symbolLayer->setParameters( parametersProperties );
+    symbolLayer->setParameters( QgsProperty::variantMapToPropertyMap( parameters ) );
   }
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
@@ -2145,11 +2150,7 @@ QVariantMap QgsSVGFillSymbolLayer::properties() const
   map.insert( QStringLiteral( "outline_width_unit" ), QgsUnitTypes::encodeUnit( mStrokeWidthUnit ) );
   map.insert( QStringLiteral( "outline_width_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mStrokeWidthMapUnitScale ) );
 
-  QVariantMap parameters;
-  QMap<QString, QgsProperty>::const_iterator it = mParameters.constBegin();
-  for ( ; it != mParameters.constEnd(); ++it )
-    parameters.insert( it.key(), it.value().toVariant() );
-  map[QStringLiteral( "parameters" )] = parameters;
+  map[QStringLiteral( "parameters" )] = QgsProperty::propertyMapToVariantMap( mParameters );
 
   return map;
 }
@@ -2436,6 +2437,11 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
 }
 
+QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
+{
+  delete mFillLineSymbol;
+}
+
 void QgsLinePatternFillSymbolLayer::setLineWidth( double w )
 {
   mFillLineSymbol->setWidth( w );
@@ -2453,11 +2459,6 @@ QColor QgsLinePatternFillSymbolLayer::color() const
   return mFillLineSymbol ? mFillLineSymbol->color() : mColor;
 }
 
-QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
-{
-  delete mFillLineSymbol;
-}
-
 bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( !symbol )
@@ -2465,7 +2466,7 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return false;
   }
 
-  if ( symbol->type() == QgsSymbol::Line )
+  if ( symbol->type() == Qgis::SymbolType::Line )
   {
     QgsLineSymbol *lineSymbol = dynamic_cast<QgsLineSymbol *>( symbol );
     if ( lineSymbol )
@@ -2922,7 +2923,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     polygons.append( QPolygonF() << p5 << p6 );
   }
 
-  for ( const QPolygonF &polygon : qgis::as_const( polygons ) )
+  for ( const QPolygonF &polygon : std::as_const( polygons ) )
   {
     fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
   }
@@ -3662,15 +3663,19 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
     symbolizerElem.appendChild( distanceElem );
 
     QgsSymbolLayer *layer = mMarkerSymbol->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
-    if ( !markerLayer )
+    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      QString errorMsg = QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() );
+      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+    }
+    else if ( layer )
+    {
+      QString errorMsg = QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() );
       graphicFillElem.appendChild( doc.createComment( errorMsg ) );
     }
     else
     {
-      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+      QString errorMsg = QStringLiteral( "Missing point pattern symbol layer. Skip it." );
+      graphicFillElem.appendChild( doc.createComment( errorMsg ) );
     }
   }
 }
@@ -3688,13 +3693,18 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
     return false;
   }
 
-  if ( symbol->type() == QgsSymbol::Marker )
+  if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
     delete mMarkerSymbol;
     mMarkerSymbol = markerSymbol;
   }
   return true;
+}
+
+QgsSymbol *QgsPointPatternFillSymbolLayer::subSymbol()
+{
+  return mMarkerSymbol;
 }
 
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &context )
@@ -3789,6 +3799,8 @@ QgsCentroidFillSymbolLayer::QgsCentroidFillSymbolLayer()
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
+
+QgsCentroidFillSymbolLayer::~QgsCentroidFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsCentroidFillSymbolLayer::create( const QVariantMap &properties )
 {
@@ -4021,7 +4033,7 @@ QgsSymbol *QgsCentroidFillSymbolLayer::subSymbol()
 
 bool QgsCentroidFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -4108,6 +4120,8 @@ QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }
+
+QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QVariantMap &properties )
 {
@@ -4403,6 +4417,8 @@ QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, 
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
+QgsRandomMarkerFillSymbolLayer::~QgsRandomMarkerFillSymbolLayer() = default;
+
 QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QVariantMap &properties )
 {
   const CountMethod countMethod  = static_cast< CountMethod >( properties.value( QStringLiteral( "count_method" ), QStringLiteral( "0" ) ).toInt() );
@@ -4583,7 +4599,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   int pointNum = 0;
   const bool needsExpressionContext = hasDataDefinedProperties();
 
-  for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
+  for ( const QgsPointXY &p : std::as_const( randomPoints ) )
   {
     if ( needsExpressionContext )
       scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
@@ -4635,7 +4651,7 @@ QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
 
 bool QgsRandomMarkerFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;

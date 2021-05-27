@@ -136,7 +136,7 @@ void TestQgsRasterSubLayer::subLayersList()
     expected << QStringLiteral( ":Band2!!::!![200x200] Band2 (8-bit integer)" );
 
     QStringList sublayers;
-    Q_FOREACH ( const QString &s, mpRasterLayer->subLayers() )
+    for ( const QString &s : mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
       int pos = s.indexOf( QLatin1String( ":Band" ) );

@@ -18,13 +18,14 @@
 #include <QSqlDatabase>
 #include <QMainWindow>
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 
 #include "qgsoracletablemodel.h"
 #include "qgsoraclesourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 class QSqlDatabase;
 
@@ -113,7 +114,7 @@ class QgsOracleLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsOracleLayerProperty &layerProperties );
+    QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsOracleLayerProperty &layerProperties );
 
     QString createUri();
 

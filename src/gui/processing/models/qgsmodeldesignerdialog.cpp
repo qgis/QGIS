@@ -951,7 +951,7 @@ void QgsModelDesignerDialog::fillInputsTree()
     return QString::localeAwareCompare( a->name(), b->name() ) < 0;
   } );
 
-  for ( QgsProcessingParameterType *param : qgis::as_const( available ) )
+  for ( QgsProcessingParameterType *param : std::as_const( available ) )
   {
     if ( param->flags() & QgsProcessingParameterType::ExposeToModeler )
     {

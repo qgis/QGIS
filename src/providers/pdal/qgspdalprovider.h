@@ -38,7 +38,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;
     QgsPointCloudAttributeCollection attributes() const override;
-    int pointCount() const override;
+    qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     bool isValid() const override;
     QString name() const override;
@@ -61,7 +61,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     bool mIsValid = false;
-    int mPointCount = 0;
+    qint64 mPointCount = 0;
 
     QVariantMap mOriginalMetadata;
     std::unique_ptr<QgsEptPointCloudIndex> mIndex;
@@ -81,6 +81,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     int priorityForUri( const QString &uri ) const override;
     QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 #endif // QGSPDALPROVIDER_H

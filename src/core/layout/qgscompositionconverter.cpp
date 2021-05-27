@@ -32,6 +32,9 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"

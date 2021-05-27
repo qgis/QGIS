@@ -11,7 +11,7 @@
 
 class QgsFieldMappingModel: QAbstractTableModel
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsFieldMappingModel` holds mapping information for mapping from one set of :py:class:`QgsFields` to another,
 for each set of "destination" fields an expression defines how to obtain the values of the
 "destination" fields.

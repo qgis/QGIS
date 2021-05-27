@@ -253,7 +253,6 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
   QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
-  editor->setAllowEmptyFieldName( true );
   if ( const QgsFieldMappingModel *model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
   {
     editor->registerExpressionContextGenerator( model->contextGenerator() );
@@ -282,7 +281,7 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
-           qgis::overload<const  QString &, bool >::of( &QgsFieldExpressionWidget::fieldChanged ),
+           qOverload<const  QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ),
            this,
            [ = ]( const QString & fieldName, bool isValid )
   {
@@ -326,7 +325,7 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
   else
   {
     connect( editor,
-             qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+             qOverload<int >( &QComboBox::currentIndexChanged ),
              this,
              [ = ]( int currentIndex )
     {

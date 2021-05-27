@@ -248,6 +248,18 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Interpolate values on vertices from values on faces
+    *
+    * \since QGIS 3.20
+    */
+    static QVector<double> interpolateFromFacesData(
+      const QVector<double> &valuesOnFaces,
+      const QgsMesh &nativeMesh,
+      const QgsMeshDataBlock &active,
+      QgsMeshRendererScalarSettings::DataResamplingMethod method
+    );
+
+    /**
     * Resamples values on vertices to values on faces
     *
     * \since QGIS 3.14
@@ -292,8 +304,10 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMesh &nativeMesh,
       const QgsMeshDatasetGroupMetadata &groupMetadata,
       const QgsMeshDataBlock &datasetValues,
-      QgsMeshDataBlock &activeFaceFlagValues,
+      const QgsMeshDataBlock &activeFaceFlagValues,
       const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+
+
 
     /**
      * Calculates the bounding box of the triangle

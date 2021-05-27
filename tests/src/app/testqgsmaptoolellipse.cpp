@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsgeometryutils.h"
@@ -90,7 +90,7 @@ void TestQgsMapToolEllipse::cleanupTestCase()
 
 void TestQgsMapToolEllipse::testEllipseFromCenterAndPoint()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolEllipseCenterPoint mapTool( mParentTool, mCanvas );
@@ -114,11 +114,11 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPoint()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 void TestQgsMapToolEllipse::testEllipseFromCenterAndPointWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolEllipseCenterPoint mapTool( mParentTool, mCanvas );
@@ -144,13 +144,13 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPointWithDeletedVertex()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 
 void TestQgsMapToolEllipse::testEllipseFromCenterAnd2Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolEllipseCenter2Points mapTool( mParentTool, mCanvas );
@@ -175,12 +175,12 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2Points()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolEllipseCenter2Points mapTool( mParentTool, mCanvas );
@@ -207,12 +207,12 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsWithDeletedVertex()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipseFromExtent()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolEllipseExtent mapTool( mParentTool, mCanvas );
@@ -236,12 +236,12 @@ void TestQgsMapToolEllipse::testEllipseFromExtent()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipseFromExtentWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolEllipseExtent mapTool( mParentTool, mCanvas );
@@ -267,12 +267,12 @@ void TestQgsMapToolEllipse::testEllipseFromExtentWithDeletedVertex()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipseFromFoci()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
   mLayer->startEditing();
 
   QgsMapToolEllipseFoci mapTool( mParentTool, mCanvas );
@@ -297,12 +297,12 @@ void TestQgsMapToolEllipse::testEllipseFromFoci()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 void TestQgsMapToolEllipse::testEllipseFromFociWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
   mLayer->startEditing();
 
   QgsMapToolEllipseFoci mapTool( mParentTool, mCanvas );
@@ -329,7 +329,7 @@ void TestQgsMapToolEllipse::testEllipseFromFociWithDeletedVertex()
   }
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEllipse )

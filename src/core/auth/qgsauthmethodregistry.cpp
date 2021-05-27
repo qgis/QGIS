@@ -60,7 +60,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*authmethod.dll" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
+  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod*.so" ) ) );
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ), 2 );
@@ -169,11 +169,11 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
 
 /**
  * Convenience function for finding any existing auth methods that match "authMethodKey"
-
-  Necessary because [] map operator will create a QgsProviderMetadata
-  instance.  Also you cannot use the map [] operator in const members for that
-  very reason.  So there needs to be a convenient way to find an auth method
-  without accidentally adding a null meta data item to the metadata map.
+ *
+ * Necessary because [] map operator will create a QgsProviderMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find an auth method
+ * without accidentally adding a null meta data item to the metadata map.
 */
 static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData,
     QString const &authMethodKey )

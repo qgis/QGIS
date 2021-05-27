@@ -136,6 +136,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mAttributeComboBox</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>

@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgspgtablemodel.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
-
+#include "qgsiconutils.h"
+#include <QRegularExpression>
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
@@ -87,7 +87,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
     else
     {
-      typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+      typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     }
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );

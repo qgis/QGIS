@@ -48,13 +48,9 @@ namespace QgsWmts
   }
 
 
-  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
-    QString href;
-    if ( project )
-    {
-      href = QgsServerProjectUtils::wmtsServiceUrl( *project );
-    }
+    QString href = QgsServerProjectUtils::wmtsServiceUrl( project ? *project : *QgsProject::instance(), request, settings );
 
     // Build default url
     if ( href.isEmpty() )

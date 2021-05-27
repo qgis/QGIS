@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
+#include "qgscallout.h"
 #include "qgsfontutils.h"
 #include "qgslogger.h"
 #include "qgsfeatureiterator.h"
@@ -186,6 +187,8 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mYCoordSpinBox->clear();
 
   mShowLabelChkbx->setChecked( true );
+  mBufferDrawChkbx->setChecked( buffer.enabled() );
+  mShowCalloutChkbx->setChecked( layerSettings.callout() ? layerSettings.callout()->enabled() : false );
   mFontColorButton->setColor( format.color() );
   mBufferColorButton->setColor( buffer.color() );
   mMinScaleWidget->setScale( layerSettings.minimumScale );

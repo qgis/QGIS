@@ -29,7 +29,6 @@
 
 #include "odbc/Types.h"
 
-
 class QgsHanaUtils
 {
   public:

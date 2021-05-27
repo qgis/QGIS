@@ -43,7 +43,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 
   double layerStep = !mLayerData.empty() ? 100.0 / mLayerData.count() : 1;
   int layerCount = 0;
-  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
+  for ( const LayerData &layer : std::as_const( mLayerData ) )
   {
     if ( feedback && feedback->isCanceled() )
       return Canceled;

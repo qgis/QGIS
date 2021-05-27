@@ -20,6 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 
+#include <QPointer>
+
 /**
  * \class QgsMapClippingRegion
  * \ingroup core

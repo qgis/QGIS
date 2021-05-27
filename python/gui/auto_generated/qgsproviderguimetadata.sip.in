@@ -13,7 +13,7 @@
 
 class QgsProviderGuiMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Holds data for GUI part of the data providers
 
 .. versionadded:: 3.10
@@ -84,6 +84,17 @@ Returns source widget providers
    Ownership of created providers is passed to the caller.
 
 .. versionadded:: 3.18
+%End
+
+    virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories();
+%Docstring
+Returns map layer config widget factories associated with the provider.
+
+.. note::
+
+   Ownership of factories remains with the provider.
+
+.. versionadded:: 3.20
 %End
 
     QString key() const;

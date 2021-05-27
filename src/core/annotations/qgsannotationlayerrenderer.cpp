@@ -50,7 +50,7 @@ bool QgsAnnotationLayerRenderer::render()
   QgsRenderContext &context = *renderContext();
 
   bool canceled = false;
-  for ( QgsAnnotationItem *item : qgis::as_const( mItems ) )
+  for ( QgsAnnotationItem *item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {

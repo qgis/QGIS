@@ -11,7 +11,7 @@
 
 class QgsMessageLog : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for logging messages from QGIS in GUI independent way.
 
 This class provides abstraction of a tabbed window for showing messages to the user.
@@ -70,7 +70,7 @@ temporarily suppressed.
 
 class QgsMessageLogNotifyBlocker
 {
-%Docstring
+%Docstring(signature="appended")
 Temporarily blocks the application QgsMessageLog (see :py:func:`QgsApplication.messageLog()`) from emitting the messageReceived( bool )
 signal for the lifetime of the object.
 
@@ -105,7 +105,7 @@ This will block the log from emitting the messageReceived( bool ) signal for the
 
 class QgsMessageLogConsole : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Default implementation of message logging interface
 
 This class outputs log messages to the standard error. Therefore it might

@@ -216,7 +216,9 @@ void QgsLabelingWidget::labelModeChanged( int index )
       }
 
       if ( !mSimpleSettings )
-        mSimpleSettings.reset( new QgsPalLayerSettings() );
+      {
+        mSimpleSettings = std::make_unique< QgsPalLayerSettings >( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) );
+      }
 
       if ( mSimpleSettings->fieldName.isEmpty() )
         mSimpleSettings->fieldName = mLayer->displayField();

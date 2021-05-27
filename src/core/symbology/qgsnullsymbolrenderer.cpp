@@ -25,6 +25,8 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
+QgsNullSymbolRenderer::~QgsNullSymbolRenderer() = default;
+
 QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;

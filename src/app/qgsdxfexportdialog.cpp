@@ -281,7 +281,7 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
   QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
-  for ( const QModelIndex &idx : qgis::as_const( mCheckedLeafs ) )
+  for ( const QModelIndex &idx : std::as_const( mCheckedLeafs ) )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
@@ -491,6 +491,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
   mCrsSelector->setLayerCrs( mCRS );
+  mCrsSelector->setShowAccuracyWarnings( true );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 

@@ -91,11 +91,11 @@ void TestQgsPdalProvider::filters()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
   QVERIFY( metadata );
 
-  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "PDAL Point Clouds (*.laz *.las)" ) );
+  QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "PDAL Point Clouds (*.laz *.las *.LAZ *.LAS)" ) );
   QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterVector ), QString() );
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
-  QVERIFY( registryPointCloudFilters.contains( "(*.laz *.las)" ) );
+  QVERIFY( registryPointCloudFilters.contains( "(*.laz *.las *.LAZ *.LAS)" ) );
 }
 
 void TestQgsPdalProvider::encodeUri()

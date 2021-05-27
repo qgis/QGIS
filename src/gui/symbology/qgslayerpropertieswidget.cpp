@@ -31,6 +31,7 @@
 #include "qgssymbollayerwidget.h"
 #include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerwidget.h"
+#include "qgsinterpolatedlinesymbollayerwidget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbol.h" //for the unit
 #include "qgspanelwidget.h"
@@ -73,6 +74,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
@@ -178,14 +180,14 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
   for ( const QString &symbolLayerId : constSymbolLayerIds )
     cboLayerType->addItem( QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( symbolLayerId )->visibleName(), symbolLayerId );
 
-  if ( mSymbol->type() == QgsSymbol::Fill )
+  if ( mSymbol->type() == Qgis::SymbolType::Fill )
   {
-    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( QgsSymbol::Line );
+    QStringList lineLayerIds = QgsApplication::symbolLayerRegistry()->symbolLayersForType( Qgis::SymbolType::Line );
     const auto constLineLayerIds = lineLayerIds;
     for ( const QString &lineLayerId : constLineLayerIds )
     {
       QgsSymbolLayerAbstractMetadata *layerInfo = QgsApplication::symbolLayerRegistry()->symbolLayerMetadata( lineLayerId );
-      if ( layerInfo->type() != QgsSymbol::Hybrid )
+      if ( layerInfo->type() != Qgis::SymbolType::Hybrid )
       {
         QString visibleName = layerInfo->visibleName();
         QString name = tr( "Outline: %1" ).arg( visibleName );
@@ -264,6 +266,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext << symbolScope;
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
@@ -283,6 +286,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
                                       << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
                                       << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );

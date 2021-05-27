@@ -9,7 +9,7 @@
 
 class QgsNewsFeedModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model for published QGIS news feeds.
 
 This class is designed to work with :py:class:`QgsNewsFeedParser`, for displaying
@@ -59,7 +59,7 @@ must exist for the lifetime of this model.
 
 class QgsNewsFeedProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 A proxy model for use with QgsNewsFeedModel.
 
 :py:class:`QgsNewsFeedProxyModel` applies custom sorting to the entries in a :py:class:`QgsNewsFeedModel`.

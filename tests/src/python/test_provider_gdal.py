@@ -111,6 +111,15 @@ class PyQgsGdalProvider(unittest.TestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
         self.assertEqual(encodedUri, uri)
 
+    def testDecodeEncodeUriVsizip(self):
+        """Test decodeUri/encodeUri for /vsizip/ prefixed URIs"""
+
+        uri = '/vsizip//my/file.zip/image.tif'
+        parts = QgsProviderRegistry.instance().decodeUri('gdal', uri)
+        self.assertEqual(parts, {'path': '/my/file.zip', 'layerName': None, 'vsiPrefix': '/vsizip/', 'vsiSuffix': '/image.tif'})
+        encodedUri = QgsProviderRegistry.instance().encodeUri('gdal', parts)
+        self.assertEqual(encodedUri, uri)
+
 
 if __name__ == '__main__':
     unittest.main()

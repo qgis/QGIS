@@ -11,7 +11,7 @@
 
 class QgsDistanceArea
 {
-%Docstring
+%Docstring(signature="appended")
 A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
 
 Measurements can either be performed on existing :py:class:`QgsGeometry` objects, or using

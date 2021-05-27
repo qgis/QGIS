@@ -214,6 +214,8 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
+    <addaction name="mActionOpenTableSelected"/>
+    <addaction name="mActionOpenTableVisible"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -519,7 +521,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionDigitizeWithCurve"/>
    <addaction name="mActionRotateFeature"/>
    <addaction name="mActionScaleFeature"/>
    <addaction name="mActionSimplifyFeature"/>
@@ -581,7 +582,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
@@ -1098,7 +1098,14 @@
     <string>&amp;Vertex Tool (All Layers)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (All Layers)</string>
+    <string>Vertex Tool — All Layers
+Manipulate vertices on any editable layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
@@ -1651,9 +1658,6 @@
    <property name="text">
     <string>Add SAP HANA Spatial Layer…</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+G</string>
-   </property>
   </action>
   <action name="mActionAddWmsLayer">
    <property name="icon">
@@ -1677,6 +1681,30 @@
    </property>
    <property name="shortcut">
     <string>F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Selected items)</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableVisible">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Visible items)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F6</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
@@ -2293,11 +2321,11 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Highlight Pinned Labels and Diagrams</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts</string>
    </property>
    <property name="toolTip">
-    <string>Highlight Pinned Labels and Diagrams
-Shows highlight rectangles around labels and diagrams which are fixed in place, e.g. due to manual placement.</string>
+    <string>Highlight Pinned Labels, Diagrams and Callouts
+Shows highlight rectangles around labels, diagrams and callout points which are fixed in place, e.g. due to manual placement.</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">
@@ -2507,7 +2535,8 @@ Acts on the currently active layer only.</string>
     <string>Scale Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Scale Feature(s)</string>
+    <string>Scale Feature(s)
+Ctrl+click to set the base point.</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
@@ -2522,7 +2551,9 @@ Acts on the currently active layer only.</string>
     <string>Rotate Feature(s)</string>
    </property>
    <property name="toolTip">
-    <string>Rotate Feature(s)</string>
+    <string>Rotate Feature(s)
+Ctrl+click to set the center of rotation.
+Shift+click to snap rotation to 45 degree steps.</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
@@ -3289,7 +3320,14 @@ Acts on the currently active layer only.</string>
     <string>&amp;Vertex Tool (Current Layer)</string>
    </property>
    <property name="toolTip">
-    <string>Vertex Tool (Current Layer)</string>
+    <string>Vertex Tool — Current Layer
+Manipulate vertices on the active layer:
+Right click to lock on a feature.
+Click and drag to select vertices by rectangle.
+Alt+click to select vertices by polygon.
+Shift+click/drag to add vertices to selection.
+Ctrl+click/drag to remove vertices from selection.
+Shift+R to enable range selection.</string>
    </property>
   </action>
   <action name="mActionRectangle3PointsProjected">
@@ -3443,7 +3481,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</normaloff>:/images/themes/default/mActionDigitizeWithCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Digitize with curve</string>
+    <string>Digitize with Curve</string>
    </property>
    <property name="toolTip">
     <string>Digitize with curve</string>
@@ -3459,6 +3497,24 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="text">
     <string>Add Point Cloud Layer...</string>
+   </property>
+  </action>
+  <action name="mActionStreamDigitize">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionStreamingDigitize.svg</normaloff>:/images/themes/default/mActionStreamingDigitize.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Stream Digitizing</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles stream digitizing mode</string>
    </property>
   </action>
  </widget>

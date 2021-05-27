@@ -393,7 +393,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
     /**
-     * Returns the list of visible columns filtered by the access control filter rules.
+     * Returns the list of visible columns filtered by feature filter provider.
      */
     QgsLayoutTableColumns filteredColumns( );
 #endif

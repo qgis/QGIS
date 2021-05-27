@@ -11,7 +11,7 @@
 
 class QgsLayoutItemMapAtlasClippingSettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings relating to clipping a layout map by the current atlas feature.
 
 .. versionadded:: 3.16
@@ -141,7 +141,7 @@ Emitted when the atlas clipping settings are changed.
 
 class QgsLayoutItemMapItemClipPathSettings : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Contains settings relating to clipping a layout map by another layout item.
 
 .. versionadded:: 3.16
@@ -287,7 +287,7 @@ Emitted when the item clipping settings are changed.
 
 class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
-%Docstring
+%Docstring(signature="appended")
 Layout graphical items for displaying a map.
 
 .. versionadded:: 3.0

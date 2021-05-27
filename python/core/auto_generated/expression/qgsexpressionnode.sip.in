@@ -13,7 +13,7 @@
 
 class QgsExpressionNode /Abstract/
 {
-%Docstring
+%Docstring(signature="appended")
 
 Abstract base class for all nodes that can appear in an expression.
 %End
@@ -84,7 +84,7 @@ Constructor for NamedNode
 
     class NodeList
 {
-%Docstring
+%Docstring(signature="appended")
 A list of expression nodes.
 %End
 

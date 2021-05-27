@@ -55,7 +55,21 @@ void QgsEptPointCloudIndex::load( const QString &fileName )
 
   const QDir directory = QFileInfo( fileName ).absoluteDir();
   mDirectory = directory.absolutePath();
-  bool success = loadSchema( f );
+
+  const QByteArray dataJson = f.readAll();
+  bool success = loadSchema( dataJson );
+
+  if ( success )
+  {
+    // try to import the metadata too!
+    QFile manifestFile( mDirectory + QStringLiteral( "/ept-sources/manifest.json" ) );
+    if ( manifestFile.open( QIODevice::ReadOnly ) )
+    {
+      const QByteArray manifestJson = manifestFile.readAll();
+      loadManifest( manifestJson );
+    }
+  }
+
   if ( success )
   {
     success = loadHierarchy();
@@ -64,9 +78,40 @@ void QgsEptPointCloudIndex::load( const QString &fileName )
   mIsValid = success;
 }
 
-bool QgsEptPointCloudIndex::loadSchema( QFile &f )
+void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
 {
-  const QByteArray dataJson = f.readAll();
+  QJsonParseError err;
+  // try to import the metadata too!
+  const QJsonDocument manifestDoc = QJsonDocument::fromJson( manifestJson, &err );
+  if ( err.error == QJsonParseError::NoError )
+  {
+    const QJsonArray manifestArray = manifestDoc.array();
+    // TODO how to handle multiple?
+    if ( ! manifestArray.empty() )
+    {
+      const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
+      const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
+      QFile metadataFile( mDirectory + QStringLiteral( "/ept-sources/" ) + metadataPath );
+      if ( metadataFile.open( QIODevice::ReadOnly ) )
+      {
+        const QByteArray metadataJson = metadataFile.readAll();
+        const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
+        if ( err.error == QJsonParseError::NoError )
+        {
+          const QJsonObject metadataObject = metadataDoc.object().value( QStringLiteral( "metadata" ) ).toObject();
+          if ( !metadataObject.empty() )
+          {
+            const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
+            mOriginalMetadata = sourceMetadata.toVariantMap();
+          }
+        }
+      }
+    }
+  }
+}
+
+bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
+{
   QJsonParseError err;
   const QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
   if ( err.error != QJsonParseError::NoError )
@@ -81,7 +126,7 @@ bool QgsEptPointCloudIndex::loadSchema( QFile &f )
     return false;
 
   mSpan = result.value( QLatin1String( "span" ) ).toInt();
-  mPointCount = result.value( QLatin1String( "points" ) ).toInt();
+  mPointCount = result.value( QLatin1String( "points" ) ).toDouble();
 
   // WKT
   const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
@@ -195,40 +240,6 @@ bool QgsEptPointCloudIndex::loadSchema( QFile &f )
   }
   setAttributes( attributes );
 
-  // try to import the metadata too!
-
-  QFile manifestFile( mDirectory + QStringLiteral( "/ept-sources/manifest.json" ) );
-  if ( manifestFile.open( QIODevice::ReadOnly ) )
-  {
-    const QByteArray manifestJson = manifestFile.readAll();
-    const QJsonDocument manifestDoc = QJsonDocument::fromJson( manifestJson, &err );
-    if ( err.error == QJsonParseError::NoError )
-    {
-      const QJsonArray manifestArray = manifestDoc.array();
-      // TODO how to handle multiple?
-      if ( ! manifestArray.empty() )
-      {
-        const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
-        const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
-        QFile metadataFile( mDirectory + QStringLiteral( "/ept-sources/" ) + metadataPath );
-        if ( metadataFile.open( QIODevice::ReadOnly ) )
-        {
-          const QByteArray metadataJson = metadataFile.readAll();
-          const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
-          if ( err.error == QJsonParseError::NoError )
-          {
-            const QJsonObject metadataObject = metadataDoc.object().value( QStringLiteral( "metadata" ) ).toObject();
-            if ( !metadataObject.empty() )
-            {
-              const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
-              mOriginalMetadata = sourceMetadata.toVariantMap();
-            }
-          }
-        }
-      }
-    }
-  }
-
   // save mRootBounds
 
   // bounds (cube - octree volume)
@@ -262,23 +273,26 @@ bool QgsEptPointCloudIndex::loadSchema( QFile &f )
 
 QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  if ( !mHierarchy.contains( n ) )
+  mHierarchyMutex.lock();
+  bool found = mHierarchy.contains( n );
+  mHierarchyMutex.unlock();
+  if ( !found )
     return nullptr;
 
   if ( mDataType == QLatin1String( "binary" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else if ( mDataType == QLatin1String( "zstandard" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else if ( mDataType == QLatin1String( "laszip" ) )
   {
     QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes() );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes(), scale(), offset() );
   }
   else
   {
@@ -286,12 +300,20 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   }
 }
 
+QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+{
+  Q_UNUSED( n );
+  Q_UNUSED( request );
+  Q_ASSERT( false );
+  return nullptr; // unsupported
+}
+
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
 }
 
-int QgsEptPointCloudIndex::pointCount() const
+qint64 QgsEptPointCloudIndex::pointCount() const
 {
   return mPointCount;
 }
@@ -397,7 +419,9 @@ bool QgsEptPointCloudIndex::loadHierarchy()
       else
       {
         IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
+        mHierarchyMutex.lock();
         mHierarchy[nodeId] = nodePointCount;
+        mHierarchyMutex.unlock();
       }
     }
   }

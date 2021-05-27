@@ -12,7 +12,7 @@
 
 class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
 {
-%Docstring
+%Docstring(signature="appended")
 A filter filter provider grouping several filter providers.
 
 .. versionadded:: 3.0

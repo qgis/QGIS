@@ -12,7 +12,7 @@
 
 class QgsLayoutMeasurementConverter
 {
-%Docstring
+%Docstring(signature="appended")
 This class provides a method of converting :py:class:`QgsLayoutMeasurements` from
 one unit to another. Conversion to or from pixel units utilizes a specified
 dots per inch (DPI) property for the converter. Converters default to using

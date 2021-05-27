@@ -574,7 +574,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
     def test_018_regular_expression_2(self):
         # Parsing regular expression delimiter with capture groups
         filename = 'testre.txt'
-        params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '(RE)(GEXP)?', 'type': 'regexp'}
+        params = {'geomType': 'none', 'trimFields': 'Y', 'delimiter': '(RE)((?:GEXP)?)', 'type': 'regexp'}
         requests = None
         self.runTest(filename, requests, **params)
 

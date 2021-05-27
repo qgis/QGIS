@@ -10,7 +10,7 @@
 
 class QgsLayoutItemShape : QgsLayoutItem
 {
-%Docstring
+%Docstring(signature="appended")
 Layout item for basic filled shapes (e.g. rectangles, ellipses).
 
 .. versionadded:: 3.0
@@ -33,6 +33,8 @@ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 %Docstring
 Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 %End
+
+    ~QgsLayoutItemShape();
 
     static QgsLayoutItemShape *create( QgsLayout *layout ) /Factory/;
 %Docstring

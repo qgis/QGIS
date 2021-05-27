@@ -10,7 +10,7 @@
 
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
-%Docstring
+%Docstring(signature="appended")
 Expression function for use within a :py:class:`QgsExpressionContextScope`. This differs from a
 standard :py:class:`QgsExpression`.Function in that it requires an implemented
 :py:func:`~clone` method.
@@ -76,7 +76,7 @@ Returns a clone of the function.
 
 class QgsExpressionContextScope
 {
-%Docstring
+%Docstring(signature="appended")
 Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. :py:class:`QgsExpressionContextScope` can encapsulate both variables (static values)
@@ -364,7 +364,7 @@ Writes scope variables to an XML ``element``.
 
 class QgsExpressionContext
 {
-%Docstring
+%Docstring(signature="appended")
 Expression contexts are used to encapsulate the parameters around which a :py:class:`QgsExpression` should
 be evaluated. :py:class:`QgsExpressions` can then utilize the information stored within a context to contextualise
 their evaluated result. A :py:class:`QgsExpressionContext` consists of a stack of :py:class:`QgsExpressionContextScope` objects,
@@ -791,6 +791,8 @@ Clears all cached values from the context.
     static const QString EXPR_SYMBOL_ANGLE;
     static const QString EXPR_GEOMETRY_PART_COUNT;
     static const QString EXPR_GEOMETRY_PART_NUM;
+
+    static const QString EXPR_GEOMETRY_RING_NUM;
     static const QString EXPR_GEOMETRY_POINT_COUNT;
     static const QString EXPR_GEOMETRY_POINT_NUM;
     static const QString EXPR_CLUSTER_SIZE;

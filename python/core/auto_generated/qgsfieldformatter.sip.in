@@ -11,7 +11,7 @@
 
 class QgsFieldFormatterContext
 {
-%Docstring
+%Docstring(signature="appended")
 A context for field formatter containing information like the project
 
 .. versionadded:: 3.12
@@ -45,7 +45,7 @@ Sets the ``project`` used in field formatter
 
 class QgsFieldFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 A field formatter helps to handle and display values for a field.
 
 It allows for using a shared configuration with the editor widgets

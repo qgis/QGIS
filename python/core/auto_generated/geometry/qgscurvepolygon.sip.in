@@ -12,7 +12,7 @@
 
 class QgsCurvePolygon: QgsSurface
 {
-%Docstring
+%Docstring(signature="appended")
 Curve polygon geometry type
 
 .. versionadded:: 2.10
@@ -58,6 +58,7 @@ Curve polygon geometry type
 
     virtual QString asKml( int precision = 17 ) const;
 
+    void normalize() final /HoldGIL/;
 
     virtual double area() const /HoldGIL/;
 
@@ -70,6 +71,8 @@ Curve polygon geometry type
     virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
 
 
@@ -294,6 +297,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

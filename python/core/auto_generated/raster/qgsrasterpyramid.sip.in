@@ -10,7 +10,7 @@
 
 class QgsRasterPyramid
 {
-%Docstring
+%Docstring(signature="appended")
 This struct is used to store pyramid info for the raster layer.
 %End
 
@@ -18,13 +18,100 @@ This struct is used to store pyramid info for the raster layer.
 #include "qgsrasterpyramid.h"
 %End
   public:
-    int level;
-    int xDim;
-    int yDim;
-    bool exists;
-    bool build;
 
-    QgsRasterPyramid();
+
+    int getLevel() const;
+%Docstring
+Returns the pyramid level.
+
+Pyramid levels are as defined by GDAL, eg
+level 2 is half the original raster size.
+
+.. versionadded:: 3.20
+%End
+
+    void setLevel( int level );
+%Docstring
+Sets the pyramid ``level``.
+
+Pyramid levels are as defined by GDAL, eg
+level 2 is half the original raster size.
+
+.. versionadded:: 3.20
+%End
+
+%Property( name = level, get = getLevel, set = setLevel )
+
+    void setXDim( int dimension );
+%Docstring
+Sets the x ``dimension`` for this pyramid layer.
+
+.. versionadded:: 3.20
+%End
+
+    int getXDim() const;
+%Docstring
+Returns the x dimension for this pyramid layer.
+
+.. versionadded:: 3.20
+%End
+
+%Property( name = xDim, get = getXDim, set = setXDim )
+
+    void setYDim( int dimension );
+%Docstring
+Sets the y ``dimension`` for this pyramid layer.
+
+.. versionadded:: 3.20
+%End
+
+    int getYDim() const;
+%Docstring
+Returns the y dimension for this pyramid layer.
+
+.. versionadded:: 3.20
+%End
+
+%Property( name = yDim, get = getYDim, set = setYDim )
+
+    bool getExists() const;
+%Docstring
+Returns ``True`` if the pyramid layer currently exists.
+
+.. versionadded:: 3.20
+%End
+
+    void setExists( bool exists );
+%Docstring
+Sets whether the pyramid layer currently exists.
+
+.. versionadded:: 3.20
+%End
+
+%Property( name = exists, get = getExists, set = setExists )
+
+    bool getBuild() const;
+%Docstring
+Returns ``True`` if the pyramid layer will be built.
+
+When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this flag controls
+whether pyramids will be built for the layer.
+
+.. versionadded:: 3.20
+%End
+
+    void setBuild( bool build );
+%Docstring
+Sets whether the pyramid layer will be built.
+
+When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this flag controls
+whether pyramids will be built for the layer. Set to ``True`` to build
+the pyramids.
+
+.. versionadded:: 3.20
+%End
+
+%Property( name = build, get = getBuild, set = setBuild )
 
 };
 /************************************************************************

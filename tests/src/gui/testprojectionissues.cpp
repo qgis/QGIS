@@ -64,7 +64,7 @@ void TestProjectionIssues::initTestCase()
 
   // Add all layers in registry to the canvas
   QList<QgsMapLayer *> canvasLayers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers() )
   {
     canvasLayers.append( layer );
   }

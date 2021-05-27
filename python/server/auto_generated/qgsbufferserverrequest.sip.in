@@ -10,7 +10,7 @@
 
 class QgsBufferServerRequest : QgsServerRequest
 {
-%Docstring
+%Docstring(signature="appended")
 Class defining request with data
 
 .. versionadded:: 3.0

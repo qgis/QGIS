@@ -179,7 +179,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   QString shortName = fieldName.mid( 0, 10 );
 
   bool found = false;
-  for ( const QgsField &field : qgis::as_const( allFields ) )
+  for ( const QgsField &field : std::as_const( allFields ) )
   {
     if ( shortName == field.name() )
     {
@@ -199,7 +199,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   while ( found )
   {
     found = false;
-    for ( const QgsField &field : qgis::as_const( allFields ) )
+    for ( const QgsField &field : std::as_const( allFields ) )
     {
       if ( shortName == field.name() )
       {
@@ -287,6 +287,19 @@ QString QgsZonalStatistics::shortName( QgsZonalStatistics::Statistic statistic )
   return QString();
 }
 
+///@cond PRIVATE
+QMap<int, QVariant> QgsZonalStatistics::calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics )
+{
+  const auto result { QgsZonalStatistics::calculateStatistics( rasterInterface, geometry, cellSizeX, cellSizeY, rasterBand, statistics ) };
+  QMap<int, QVariant> pyResult;
+  for ( auto it = result.constBegin(); it != result.constEnd(); ++it )
+  {
+    pyResult.insert( it.key(), it.value() );
+  }
+  return pyResult;
+}
+/// @endcond
+
 QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics )
 {
   QMap<QgsZonalStatistics::Statistic, QVariant> results;
@@ -327,7 +340,7 @@ QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStati
   }
 
   // calculate the statistics
-  QgsAttributeMap changeAttributeMap;
+
   if ( statistics & QgsZonalStatistics::Count )
     results.insert( QgsZonalStatistics::Count, QVariant( featureStats.count ) );
   if ( statistics & QgsZonalStatistics::Sum )

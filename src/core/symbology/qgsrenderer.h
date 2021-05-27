@@ -21,10 +21,8 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgsfeaturerequest.h"
-#include "qgssymbollayerreference.h"
 
 #include <QList>
 #include <QString>
@@ -127,6 +125,8 @@ class CORE_EXPORT QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
     SIP_END
@@ -213,6 +213,14 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 
     /**
+     * Returns TRUE if the renderer uses embedded symbols for features.
+     * The default implementation returns FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool usesEmbeddedSymbols() const;
+
+    /**
      * Returns TRUE if this renderer requires the geometry to apply the filter.
      */
     virtual bool filterNeedsGeometry() const;
@@ -234,7 +242,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * Returns TRUE if the feature has been returned (this is used for example
      * to determine whether the feature may be labelled).
      *
-     * If layer is not -1, the renderer should draw only a particula layer from symbols
+     * If layer is not -1, the renderer should draw only a particular layer from symbols
      * (in order to support symbol level rendering).
      *
      * \see startRender()
@@ -534,7 +542,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 
     /**
      * \note this function is used to convert old rotations expressions to symbol

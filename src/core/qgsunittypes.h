@@ -158,6 +158,7 @@ class CORE_EXPORT QgsUnitTypes
       TemporalYears, //!< Years
       TemporalDecades, //!< Decades
       TemporalCenturies, //!< Centuries
+      TemporalIrregularStep, //!< Special "irregular step" time unit, used for temporal data which uses irregular, non-real-world unit steps (since QGIS 3.20)
       TemporalUnknownUnit //!< Unknown time unit
     };
     Q_ENUM( TemporalUnit )

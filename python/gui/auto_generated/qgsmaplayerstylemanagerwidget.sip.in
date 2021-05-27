@@ -12,7 +12,7 @@
 
 class QgsMapLayerStyleManagerWidget : QgsMapLayerConfigWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapLayerStyleManagerWidget` class which is used to visually manage
 the layer styles.
 %End

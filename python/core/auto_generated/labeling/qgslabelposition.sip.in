@@ -12,7 +12,7 @@
 
 class QgsLabelPosition
 {
-%Docstring
+%Docstring(signature="appended")
 Represents the calculated placement of a map label.
 %End
 

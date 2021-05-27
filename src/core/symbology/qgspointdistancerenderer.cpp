@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -504,3 +505,12 @@ QgsMarkerSymbol *QgsPointDistanceRenderer::firstSymbolForFeature( const QgsFeatu
 
   return dynamic_cast< QgsMarkerSymbol * >( symbolList.at( 0 ) );
 }
+
+QgsPointDistanceRenderer::GroupedFeature::GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label )
+  : feature( feature )
+  , isSelected( isSelected )
+  , label( label )
+  , mSymbol( symbol )
+{}
+
+QgsPointDistanceRenderer::GroupedFeature::~GroupedFeature() = default;

@@ -59,7 +59,7 @@ Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 {
   if ( mOn )
   {
-    return Qgis::ARGB32_Premultiplied;
+    return Qgis::DataType::ARGB32_Premultiplied;
   }
 
   if ( mInput )
@@ -67,7 +67,7 @@ Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
     return mInput->dataType( bandNo );
   }
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
@@ -95,8 +95,8 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
+       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
     return false;
@@ -133,7 +133,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
     return inputBlock.release();
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -171,7 +171,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
     myColor.getRgb( &r, &g, &b );
     if ( alpha != 255 )
     {
-      // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::ARGB32_Premultiplied
+      // Semi-transparent pixel. We need to adjust the colors since we are using Qgis::DataType::ARGB32_Premultiplied
       // and color values have been premultiplied by alpha
       alphaFactor = alpha / 255.;
       r /= alphaFactor;
@@ -313,7 +313,7 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
 
 void QgsHueSaturationFilter::setSaturation( int saturation )
 {
-  mSaturation = qBound( -100, saturation, 100 );
+  mSaturation = std::clamp( saturation, -100, 100 );
 
   // Scale saturation value to [0-2], where 0 = desaturated
   mSaturationScale = ( ( double ) mSaturation / 100 ) + 1;

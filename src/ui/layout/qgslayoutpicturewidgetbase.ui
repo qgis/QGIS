@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>500</height>
+    <width>542</width>
+    <height>889</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,236 +60,48 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-4</y>
-        <width>520</width>
-        <height>881</height>
+        <y>0</y>
+        <width>540</width>
+        <height>867</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QRadioButton" name="mRadioSVG">
-         <property name="text">
-          <string>SVG image</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QRadioButton" name="mRadioRaster">
+           <property name="text">
+            <string>Raster image</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="mRadioSVG">
+           <property name="text">
+            <string>SVG image</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QRadioButton" name="mRadioRaster">
-         <property name="text">
-          <string>Raster image</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="mRasterFrame">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QgsImageSourceLineEdit" name="mImageSourceLineEdit" native="true">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="mRasterDDBtnFrame">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
-               <property name="text">
-                <string>…</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="mSVGFrame">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,0">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QFrame" name="mSvgDDBtnFrame">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-            </layout>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QSplitter" name="splitter">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <widget class="QWidget" name="layoutWidget">
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>SVG Groups</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTreeView" name="viewGroups">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>3</horstretch>
-                  <verstretch>1</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="layoutWidget1">
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>SVG Image</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QListView" name="viewImages">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                  <horstretch>5</horstretch>
-                  <verstretch>1</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>250</height>
-                 </size>
-                </property>
-                <property name="editTriggers">
-                 <set>QAbstractItemView::NoEditTriggers</set>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>32</width>
-                  <height>32</height>
-                 </size>
-                </property>
-                <property name="movement">
-                 <enum>QListView::Static</enum>
-                </property>
-                <property name="resizeMode">
-                 <enum>QListView::Adjust</enum>
-                </property>
-                <property name="layoutMode">
-                 <enum>QListView::Batched</enum>
-                </property>
-                <property name="spacing">
-                 <number>2</number>
-                </property>
-                <property name="gridSize">
-                 <size>
-                  <width>36</width>
-                  <height>36</height>
-                 </size>
-                </property>
-                <property name="viewMode">
-                 <enum>QListView::IconMode</enum>
-                </property>
-                <property name="uniformItemSizes">
-                 <bool>true</bool>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <widget class="QgsSvgSelectorWidget" name="mSvgSelectorWidget" native="true"/>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSVGParamsGroupBox">
@@ -557,10 +369,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -571,18 +393,8 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayoutItemComboBox</class>
@@ -590,26 +402,14 @@
    <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsImageSourceLineEdit</class>
+   <class>QgsSvgSelectorWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSvgSourceLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
+   <header>qgssvgselectorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mRadioSVG</tabstop>
-  <tabstop>mRadioRaster</tabstop>
-  <tabstop>mImageSourceLineEdit</tabstop>
-  <tabstop>viewGroups</tabstop>
-  <tabstop>viewImages</tabstop>
-  <tabstop>mSvgSourceLineEdit</tabstop>
   <tabstop>mFillColorButton</tabstop>
   <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>mStrokeColorButton</tabstop>

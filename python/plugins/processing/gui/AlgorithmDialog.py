@@ -83,8 +83,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().button(QDialogButtonBox.Ok).setText(
                 QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
                 if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
-            self.buttonBox().button(QDialogButtonBox.Close).setText(
-                QCoreApplication.translate("AlgorithmDialog", "Cancel"))
             self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
         self.updateRunButtonVisibility()

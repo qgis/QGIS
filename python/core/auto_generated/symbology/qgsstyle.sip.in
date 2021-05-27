@@ -320,7 +320,7 @@ Returns count of legend patch shapes in the style.
 .. versionadded:: 3.14
 %End
 
-    QgsSymbol::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
+    Qgis::SymbolType legendPatchShapeSymbolType( const QString &name ) const;
 %Docstring
 Returns the symbol type corresponding to the legend patch shape
 with the specified ``name``, or :py:class:`QgsSymbol`.Hybrid
@@ -685,7 +685,7 @@ Ownership of the symbol is not transferred.
 .. versionadded:: 3.14
 %End
 
-    QgsLegendPatchShape defaultPatch( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QgsLegendPatchShape defaultPatch( Qgis::SymbolType type, QSizeF size ) const;
 %Docstring
 Returns the default legend patch shape for the given symbol ``type``.
 
@@ -694,13 +694,25 @@ Returns the default legend patch shape for the given symbol ``type``.
 .. versionadded:: 3.14
 %End
 
-    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QList< QList< QPolygonF > > defaultPatchAsQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 %Docstring
 Returns the default patch geometry for the given symbol ``type`` and ``size`` as a set of QPolygonF objects (parts and rings).
 
 .. seealso:: :py:func:`defaultPatch`
 
 .. versionadded:: 3.14
+%End
+
+    enum class TextFormatContext
+    {
+      Labeling,
+    };
+
+    QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
+%Docstring
+Returns the default text format to use for new text based objects in the specified ``context``.
+
+.. versionadded:: 3.20
 %End
 
     bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
@@ -1116,7 +1128,7 @@ name or tag changes.
 
 class QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 An interface for entities which can be placed in a QgsStyle database.
 
 .. versionadded:: 3.10
@@ -1163,7 +1175,7 @@ Returns the type of style entity.
 
 class QgsStyleSymbolEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1193,7 +1205,7 @@ Returns the entity's symbol.
 
 class QgsStyleColorRampEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A color ramp entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1223,7 +1235,7 @@ Returns the entity's color ramp.
 
 class QgsStyleTextFormatEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A text format entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1251,7 +1263,7 @@ Returns the entity's text format.
 
 class QgsStyleLabelSettingsEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A label settings entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.10
@@ -1280,7 +1292,7 @@ Returns the entity's label settings.
 
 class QgsStyleLegendPatchShapeEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A legend patch shape entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.14
@@ -1309,7 +1321,7 @@ Returns the entity's legend patch shape.
 
 class QgsStyleSymbol3DEntity : QgsStyleEntityInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A 3d symbol entity for :py:class:`QgsStyle` databases.
 
 .. versionadded:: 3.16

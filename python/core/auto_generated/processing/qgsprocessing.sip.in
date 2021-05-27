@@ -13,7 +13,7 @@
 
 class QgsProcessing
 {
-%Docstring
+%Docstring(signature="appended")
 
 Contains enumerations and other constants for use in processing algorithms
 and parameters.
@@ -52,6 +52,7 @@ Converts a source ``type`` to a string representation.
 %End
 
     static const QString TEMPORARY_OUTPUT;
+
 };
 
 /************************************************************************

@@ -11,7 +11,7 @@
 
 class QgsTriangle : QgsPolygon
 {
-%Docstring
+%Docstring(signature="appended")
 Triangle geometry type.
 
 .. versionadded:: 3.0

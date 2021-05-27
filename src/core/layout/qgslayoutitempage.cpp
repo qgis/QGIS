@@ -24,6 +24,8 @@
 #include "qgslayoutundostack.h"
 #include "qgsstyle.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsfillsymbol.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -394,7 +396,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel
-        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
       }
       else
       {

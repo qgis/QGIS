@@ -314,7 +314,7 @@
              <item>
               <widget class="QCheckBox" name="checkBoxMultipart">
                <property name="text">
-                <string>Multipart objects must consist of more that one part</string>
+                <string>Multipart objects must consist of more than one part</string>
                </property>
               </widget>
              </item>

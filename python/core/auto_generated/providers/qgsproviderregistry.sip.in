@@ -1,0 +1,638 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsproviderregistry.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsProviderRegistry
+{
+%Docstring(signature="appended")
+A registry / canonical manager of data providers.
+
+This is a Singleton class that manages data provider access.
+
+Providers can be either loaded via libraries or native providers that
+are included in the core QGIS installation and accessed through function pointers.
+
+Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+ogr and postgres.
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+  public:
+
+
+    enum WidgetMode
+    {
+
+      None,
+
+      Embedded,
+
+      Manager,
+    };
+
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
+%Docstring
+Means of accessing canonical single instance
+%End
+
+    ~QgsProviderRegistry();
+
+ QString library( const QString &providerKey ) const /Deprecated/;
+%Docstring
+Returns path for the library of the provider.
+
+If the provider uses direct provider function pointers instead of a library an empty string will
+be returned.
+
+.. deprecated::
+   QGIS 3.10 - providers may not need to be loaded from a library (empty string returned)
+%End
+
+    QString pluginList( bool asHtml = false ) const;
+%Docstring
+Returns list of provider plugins found
+%End
+
+    QDir libraryDirectory() const;
+%Docstring
+Returns the library directory where plugins are found.
+%End
+
+    void setLibraryDirectory( const QDir &path );
+%Docstring
+Sets library directory where to search for plugins
+%End
+
+
+    QgsDataProvider *createProvider( const QString &providerKey,
+                                     const QString &dataSource,
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /TransferBack/;
+%Docstring
+Creates a new instance of a provider.
+
+:param providerKey: identifier of the provider
+:param dataSource: string containing data source for the provider
+:param options: provider options
+:param flags: provider flags since QGIS 3.16
+
+:return: new instance of provider or ``None`` on error
+
+.. seealso:: :py:func:`createRasterDataProvider`
+%End
+
+ int providerCapabilities( const QString &providerKey ) const /Deprecated/;
+%Docstring
+Returns the provider capabilities
+
+:param providerKey: identifier of the provider
+
+.. versionadded:: 2.6
+
+.. deprecated::
+   QGIS 3.10 (use instead :py:func:`~QgsProviderRegistry.capabilities` method of individual data item provider)
+%End
+
+
+    QgsRasterDataProvider *createRasterDataProvider(
+      const QString &providerKey,
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width, int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions = QStringList() ) /Factory/;
+%Docstring
+Creates new instance of raster data provider
+
+.. seealso:: :py:func:`createProvider`
+
+.. versionadded:: 3.10
+%End
+
+    QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
+%Docstring
+Returns list of raster pyramid resampling methods
+
+.. versionadded:: 3.10
+%End
+
+    QVariantMap decodeUri( const QString &providerKey, const QString &uri );
+%Docstring
+Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+
+:param providerKey: identifier of the provider
+:param uri: uri string
+
+:return: map containing components. Standard components include "path", "layerName", "url".
+
+.. note::
+
+   this function may not be supported by all providers, an empty map will be returned in such case
+
+.. versionadded:: 3.4
+%End
+
+    QString encodeUri( const QString &providerKey, const QVariantMap &parts );
+%Docstring
+Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+
+:param providerKey: identifier of the provider
+:param parts: parts as returned by decodeUri
+
+:return: datasource uri string
+
+.. note::
+
+   this function may not be supported by all providers, an empty string will be returned in such case
+
+.. seealso:: :py:func:`decodeUri`
+
+.. versionadded:: 3.12
+%End
+
+ QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None ) /Deprecated/;
+%Docstring
+Returns a new widget for selecting layers from a provider.
+Either the ``parent`` widget must be set or the caller becomes
+responsible for deleting the returned widget.
+
+.. deprecated::
+   QGIS 3.10 - use :py:func:`QgsGui.sourceSelectProviderRegistry()`->:py:func:`~QgsProviderRegistry.createDataSourceWidget` instead
+%End
+
+    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;
+%Docstring
+Returns list of data item providers of the provider
+
+.. note::
+
+   Ownership of created data item providers is passed to the caller.
+
+.. versionadded:: 3.10
+%End
+
+    int listStyles( const QString &providerKey,
+                    const QString &uri,
+                    QStringList &ids,
+                    QStringList &names,
+                    QStringList &descriptions,
+                    QString &errCause );
+%Docstring
+Lists stored layer styles in the provider defined by ``providerKey`` and ``uri``
+
+:return: -1 if not implemented by provider, otherwise number of styles stored
+
+.. versionadded:: 3.10
+%End
+
+    QString getStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Gets a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    bool deleteStyleById( const QString &providerKey,  const QString &uri, QString styleId, QString &errCause );
+%Docstring
+Deletes a layer style defined by ``styleId``
+
+.. versionadded:: 3.10
+%End
+
+    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                    const QString &styleName, const QString &styleDescription,
+                    const QString &uiFileContent, bool useAsDefault, QString &errCause );
+%Docstring
+Saves a layer style to provider
+
+.. versionadded:: 3.10
+%End
+
+    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``
+
+.. versionadded:: 3.10
+%End
+
+    bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
+%Docstring
+Saves ``metadata`` to the layer corresponding to the specified ``uri``.
+
+:param providerKey: identifier of the provider
+:param uri: uri of layer to store metadata for
+:param metadata: layer metadata
+
+:return: - ``True`` if the metadata was successfully saved.
+         - errorMessage: descriptive string of error if encountered
+
+
+:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+   specified ``uri``.
+
+
+.. versionadded:: 3.20
+%End
+
+    bool createDb( const QString &providerKey, const QString &dbPath, QString &errCause );
+%Docstring
+Creates database by the provider on the path
+
+.. versionadded:: 3.10
+%End
+
+    QgsTransaction *createTransaction( const QString &providerKey, const QString &connString ) /Factory/;
+%Docstring
+Returns new instance of transaction. Ownership is transferred to the caller
+
+.. versionadded:: 3.10
+%End
+
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) /Deprecated/;
+%Docstring
+Gets pointer to provider function
+
+:param providerKey: identifier of the provider
+:param functionName: name of function
+
+:return: pointer to function or ``None`` on error. If the provider uses direct provider
+         function pointers instead of a library ``None`` will be returned.
+
+.. deprecated::
+   QGIS 3.10 - any provider functionality should be accessed through :py:class:`QgsProviderMetadata`
+%End
+
+ QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated/;
+%Docstring
+Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
+object is transferred to the caller and the caller is responsible for deleting it.
+
+If the provider uses direct provider function pointers instead of a library ``None`` will
+be returned.
+
+.. deprecated::
+   QGIS 3.10 - providers may not need to be loaded from a library
+%End
+
+    QStringList providerList() const;
+%Docstring
+Returns list of available providers by their keys
+%End
+
+    QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+%Docstring
+Returns metadata of the provider or ``None`` if not found
+%End
+
+    class ProviderCandidateDetails
+{
+%Docstring(signature="appended")
+
+Contains information pertaining to a candidate provider.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes );
+%Docstring
+Constructor for ProviderCandidateDetails, with the specified provider ``metadata`` and valid candidate ``layerTypes``.
+%End
+
+        QgsProviderMetadata *metadata() const;
+%Docstring
+Returns the candidate provider metadata.
+%End
+
+        QList<QgsMapLayerType> layerTypes() const;
+%Docstring
+Returns a list of map layer types which are valid options for opening the
+target using this candidate provider.
+%End
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    };
+
+    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
+%Docstring
+Returns the details for the preferred provider(s) for opening the specified ``uri``.
+
+The preferred provider is determined by comparing the priority returned by
+:py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
+the provider with the largest non-zero priority.
+
+An empty list may be returned, which indicates that no providers are available which
+returned a non-zero priority for the specified URI.
+
+In the case that multiple providers returned the same priority for the URI then
+all of these providers will be returned.
+
+.. seealso:: :py:func:`shouldDeferUriForOtherProviders`
+
+.. versionadded:: 3.18
+%End
+
+    class UnusableUriDetails
+{
+%Docstring(signature="appended")
+
+Contains information about unusable URIs which aren't handled by any registered providers.
+
+For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+This class can then be used to construct friendly warnings to users advising them why the las/laz
+files cannot be used on their QGIS build.
+
+.. versionadded:: 3.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< QgsMapLayerType > &layerTypes = QList< QgsMapLayerType >() );
+%Docstring
+Constructor for UnusableUriDetails for the given ``uri``, with the specified user-friendly, translated ``warning``.
+
+The optional ``layerTypes`` argument can be used to specify layer types which are usually valid
+options for opening the URI.
+%End
+
+        QString uri;
+
+        QString warning;
+
+        QString detailedWarning;
+
+        QList<QgsMapLayerType> layerTypes;
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    };
+
+    class UnusableUriHandlerInterface
+{
+%Docstring(signature="appended")
+
+An interface used to handle unusable URIs which aren't handled by any registered providers, and construct
+user-friendly warnings as to why the URI is unusable.
+
+For example, if a QGIS install is built without the PDAL library then las/laz files are unusable.
+This class can then be used to construct friendly warnings to users advising them why the las/laz
+files cannot be used on their QGIS build.
+
+.. versionadded:: 3.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        virtual ~UnusableUriHandlerInterface();
+
+        virtual bool matchesUri( const QString &uri ) const = 0;
+%Docstring
+Returns ``True`` if the handle is an unusable URI handler for the specified ``uri``.
+%End
+
+        virtual UnusableUriDetails details( const QString &uri ) const = 0;
+%Docstring
+Returns the details for advising the user why the ``uri`` is not usable.
+%End
+
+    };
+
+    bool registerUnusableUriHandler( UnusableUriHandlerInterface *handler /Transfer/ );
+%Docstring
+Registers an unusable URI ``handler``, used to handle unusable URIs which aren't
+handled by any registered providers, and construct user-friendly warnings as to why the URI is unusable.
+
+:return: ``True`` on success
+
+.. note::
+
+   ownership of the UnusableUriHandlerInterface instance is transferred to the registry
+
+
+.. versionadded:: 3.18.1
+%End
+
+    bool handleUnusableUri( const QString &uri, UnusableUriDetails &details /Out/ ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` can potentially be handled by QGIS, if additional
+dependencies or build-time requirements are present.
+
+This can be used to show user-friendly warning messages advising them why a particular
+``uri`` cannot be opened on their QGIS install. For example, if a QGIS install is built
+without the PDAL library then las/laz files are unusable, and this method can be used
+to retrieve a user-friendly warning as to why the las/laz files cannot be used on their
+QGIS build.
+
+.. warning::
+
+   This method does not perform the test to actually determine if the given ``uri``
+   can be handled by any registered provider. It is assumed that prior to calling this method
+   the caller has already determined in advance that the ``uri`` could not be handled.
+
+:param uri: URI to test
+
+
+:return: - ``True`` if the ``uri`` was matched to a registered QgsProviderRegistry.UnusableUriHandlerInterface.
+         - details: will be populated with details allowing construction of a user-friendly warning message
+
+
+.. seealso:: :py:func:`registerUnusableUriHandler`
+
+.. versionadded:: 3.18.1
+%End
+
+    bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
+%Docstring
+Returns ``True`` if the provider with matching ``providerKey`` should defer handling of
+the specified ``uri`` to another provider.
+
+This method tests whether any providers are listed as the preferred provider for ``uri``
+(see :py:func:`~QgsProviderRegistry.preferredProvidersForUri`), and if so tests whether the specified provider is
+included in that preferred providers list. Returns ``True`` only if the specified provider
+is calculated as one of the preferred providers for the URI.
+
+In the case that there is no registered preferred provider for the URI then ``False`` will be
+returned, and the provider must use another metric to determine whether it should
+handle the URI.
+
+.. seealso:: :py:func:`preferredProvidersForUri`
+
+.. versionadded:: 3.18
+%End
+
+    bool uriIsBlocklisted( const QString &uri ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` is known by any registered provider to be something which should
+be blocklisted from the QGIS interface, e.g. an internal detail only.
+
+Specifically, this method can be utilized by the browser panel to hide noisy internal details
+for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
+or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
+
+This method tests whether any of the registered providers return ``True`` for the their
+:py:func:`QgsProviderMetadata.uriIsBlocklisted()` implementation for the specified URI.
+
+.. versionadded:: 3.18
+%End
+
+    QString fileVectorFilters() const;
+%Docstring
+Returns a file filter string for supported vector files.
+
+Returns a string suitable for a QFileDialog of vector file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
+%End
+
+    QString fileRasterFilters() const;
+%Docstring
+Returns a file filter string for supported raster files.
+
+Returns a string suitable for a QFileDialog of raster file formats
+supported by all data providers.
+
+.. note::
+
+   This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
+%End
+
+    QString fileMeshFilters() const;
+%Docstring
+Returns a file filter string for supported mesh files.
+
+Returns a string suitable for a QFileDialog of mesh file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshDatasetFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
+
+.. versionadded:: 3.6
+%End
+
+    QString fileMeshDatasetFilters() const;
+%Docstring
+Returns a file filter string for supported mesh dataset files.
+
+Returns a string suitable for a QFileDialog of mesh datasets file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. versionadded:: 3.6
+%End
+
+    QString filePointCloudFilters() const;
+%Docstring
+Returns a file filter string for supported point clouds.
+
+Returns a string suitable for a QFileDialog of point cloud file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. versionadded:: 3.18
+%End
+
+    QString databaseDrivers() const;
+%Docstring
+Returns a string containing the available database drivers
+%End
+    QString directoryDrivers() const;
+%Docstring
+Returns a string containing the available directory drivers
+%End
+    QString protocolDrivers() const;
+%Docstring
+Returns a string containing the available protocol drivers
+%End
+
+ void registerGuis( QWidget *widget ) /Deprecated/;
+%Docstring
+
+.. deprecated:: QGIS 3.10
+   - does nothing - use :py:func:`QgsGui.providerGuiRegistry()`
+%End
+
+    bool registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );
+%Docstring
+register a new vector data provider from its ``providerMetadata``
+
+:return: ``True`` on success, ``False`` if a provider with the same key was already registered
+
+.. note::
+
+   ownership of the :py:class:`QgsProviderMetadata` instance is transferred to the registry
+
+.. versionadded:: 3.2
+%End
+
+
+  private:
+    QgsProviderRegistry( const QString &pluginPath );
+}; // class QgsProviderRegistry
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsproviderregistry.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

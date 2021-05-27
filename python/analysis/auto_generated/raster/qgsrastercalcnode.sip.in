@@ -12,7 +12,7 @@
 
 class QgsRasterCalcNode
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a node in a raster calculator.
 %End
 

@@ -12,7 +12,7 @@
 
 class QgsRelief
 {
-%Docstring
+%Docstring(signature="appended")
 Produces colored relief rasters from DEM.
 %End
 

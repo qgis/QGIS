@@ -100,6 +100,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
 }
 
+QgsInvertedPolygonRendererWidget::~QgsInvertedPolygonRendererWidget() = default;
+
 QgsFeatureRenderer *QgsInvertedPolygonRendererWidget::renderer()
 {
   if ( mRenderer && mEmbeddedRendererWidget )
@@ -137,6 +139,7 @@ void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( in
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsInvertedPolygonRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
+    mEmbeddedRendererWidget->disableSymbolLevels();
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );
     connect( mEmbeddedRendererWidget.get(), &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 

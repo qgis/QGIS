@@ -73,7 +73,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );

@@ -194,15 +194,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLegendPatchShapeButton</class>
@@ -222,6 +222,10 @@
   <tabstop>mPatchShapeButton</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mCustomSymbolCheckBox</tabstop>
+  <tabstop>mCustomSymbolButton</tabstop>
+  <tabstop>mColumnBreakBeforeCheckBox</tabstop>
+  <tabstop>mColumnSplitBehaviorComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

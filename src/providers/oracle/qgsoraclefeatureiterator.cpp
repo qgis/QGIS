@@ -356,7 +356,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         QVariantList primaryKeyVals;
         if ( mSource->mPrimaryKeyType == PktFidMap )
         {
-          Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
+          for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
           {
             QgsField fld = mSource->mFields.at( idx );
 
@@ -478,7 +478,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
         break;
 
       case PktFidMap:
-        Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
+        for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
           delim = ',';

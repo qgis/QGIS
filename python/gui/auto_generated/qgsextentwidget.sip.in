@@ -14,7 +14,7 @@
 
 class QgsExtentWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget for configuration of a map extent.
 
 Besides allowing the user to enter the extent manually, it comes with options to use

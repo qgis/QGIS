@@ -14,7 +14,7 @@
 
 class QgsTemporalNavigationObject : QgsTemporalController, QgsExpressionContextScopeGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Implements a temporal controller based on a frame by frame navigation and animation.
 
 .. versionadded:: 3.14
@@ -67,7 +67,7 @@ Sets the temporal navigation ``mode``.
 
     NavigationMode navigationMode() const;
 %Docstring
-Returns the currenttemporal navigation mode.
+Returns the current temporal navigation mode.
 
 .. seealso:: :py:func:`setNavigationMode`
 %End
@@ -92,12 +92,36 @@ and latest date time possible in the animation.
 .. seealso:: :py:func:`setTemporalExtents`
 %End
 
+    void setAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
+%Docstring
+Sets the list of all available temporal ``ranges`` which have data available.
+
+The ``ranges`` list can be a list of non-contiguous ranges (i.e. containing gaps)
+which together describe the complete range of times which contain data.
+
+.. seealso:: :py:func:`availableTemporalRanges`
+
+.. versionadded:: 3.20
+%End
+
+    QList< QgsDateTimeRange > availableTemporalRanges() const;
+%Docstring
+Returns the list of all available temporal ranges which have data available.
+
+The ranges list can be a list of non-contiguous ranges (i.e. containing gaps)
+which together describe the complete range of times which contain data.
+
+.. seealso:: :py:func:`setAvailableTemporalRanges`
+
+.. versionadded:: 3.20
+%End
+
     void setCurrentFrameNumber( long long frame );
 %Docstring
 Sets the current animation ``frame`` number.
 
-Caling this method will change the controllers current datetime range to match, based on the
-:py:func:`~QgsTemporalNavigationObject.temporalExtents` and :py:func:`~QgsTemporalNavigationObject.frameDuration` values.
+Calling this method will change the controllers current datetime range to match,
+based on the :py:func:`~QgsTemporalNavigationObject.temporalExtents` and :py:func:`~QgsTemporalNavigationObject.frameDuration` values.
 
 .. seealso:: :py:func:`currentFrameNumber`
 %End
@@ -109,7 +133,7 @@ Returns the current frame number.
 .. seealso:: :py:func:`setCurrentFrameNumber`
 %End
 
-    void setFrameDuration( QgsInterval duration );
+    void setFrameDuration( const QgsInterval &duration );
 %Docstring
 Sets the frame ``duration``, which dictates the temporal length of each frame in the animation.
 

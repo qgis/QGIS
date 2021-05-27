@@ -29,12 +29,9 @@ namespace QgsWms
 {
 
   void writeGetMap( QgsServerInterface *serverIface, const QgsProject *project,
-                    const QString &, const QgsServerRequest &request,
+                    const QgsWmsRequest &request,
                     QgsServerResponse &response )
   {
-    // get wms parameters from query
-    const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
-
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UpdateExtent );
@@ -45,7 +42,7 @@ namespace QgsWms
     context.setFlag( QgsWmsRenderContext::AddExternalLayers );
     context.setFlag( QgsWmsRenderContext::SetAccessControl );
     context.setFlag( QgsWmsRenderContext::UseTileBuffer );
-    context.setParameters( parameters );
+    context.setParameters( request.wmsParameters() );
 
     // rendering
     QgsRenderer renderer( context );

@@ -23,8 +23,10 @@
 
 #include "qgis_sip.h"
 #include "qgsconfig.h"
+#include "qgssettingsentry.h"
 #include "qgstranslationcontext.h"
 
+class QgsSettingsRegistryCore;
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsAnnotationItemRegistry;
@@ -73,15 +75,14 @@ class QgsCoordinateReferenceSystemRegistry;
  * as theme paths, database paths etc.
  *
  * This is a subclass of QApplication and should be instantiated in place of
-  QApplication. Most methods are static in keeping with the design of QApplication.
-
-  This class hides platform-specific path information and provides
-  a portable way of referencing specific files and directories.
-  Ideally, hard-coded paths should appear only here and not in other modules
-  so that platform-conditional code is minimized and paths are easier
-  to change due to centralization.
+ * QApplication. Most methods are static in keeping with the design of QApplication.
+ *
+ * This class hides platform-specific path information and provides
+ * a portable way of referencing specific files and directories.
+ * Ideally, hard-coded paths should appear only here and not in other modules
+ * so that platform-conditional code is minimized and paths are easier
+ * to change due to centralization.
  */
-
 class CORE_EXPORT QgsApplication : public QApplication
 {
 
@@ -284,7 +285,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString translatorsFilePath();
 
     /**
-      Returns the path to the licence file.
+     * Returns the path to the licence file.
      */
     static QString licenceFilePath();
 
@@ -361,8 +362,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Helper to get a theme icon. It will fall back to the
      * default theme if the active theme does not have the required icon.
+     *
+     * Since QGIS 3.20, the optional \a fillColor and \a strokeColor arguments can be used to
+     * control the color of parameter based SVG icons.
      */
-    static QIcon getThemeIcon( const QString &name );
+    static QIcon getThemeIcon( const QString &name, const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
 
     /**
      * \brief The Cursor enum defines constants for QGIS custom
@@ -616,6 +620,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QgsTaskManager *taskManager();
+
+    /**
+     * Returns the application's settings registry, used for managing application settings.
+     * \since QGIS 3.20
+     */
+    static QgsSettingsRegistryCore *settingsRegistryCore() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
@@ -937,6 +947,19 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
+#ifndef SIP_RUN
+    //! Settings entry locale user locale
+    static const inline QgsSettingsEntryString settingsLocaleUserLocale = QgsSettingsEntryString( QStringLiteral( "locale/userLocale" ), QgsSettings::NoSection, QString() );
+    //! Settings entry locale override flag
+    static const inline QgsSettingsEntryBool settingsLocaleOverrideFlag = QgsSettingsEntryBool( QStringLiteral( "locale/overrideFlag" ), QgsSettings::NoSection, false );
+    //! Settings entry locale global locale
+    static const inline QgsSettingsEntryString settingsLocaleGlobalLocale = QgsSettingsEntryString( QStringLiteral( "locale/globalLocale" ), QgsSettings::NoSection, QString() );
+    //! Settings entry locale show group separator
+    static const inline QgsSettingsEntryBool settingsLocaleShowGroupSeparator = QgsSettingsEntryBool( QStringLiteral( "locale/showGroupSeparator" ), QgsSettings::NoSection, false );
+    //! Settings entry search path for SVG
+    static const inline QgsSettingsEntryStringList settingsSearchPathsForSVG = QgsSettingsEntryStringList( QStringLiteral( "svg/searchPathsForSVG" ), QgsSettings::NoSection, QStringList() );
+#endif
+
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
     //dummy method to workaround sip generation issue
@@ -994,6 +1017,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     struct ApplicationMembers
     {
+      QgsSettingsRegistryCore *mSettingsRegistryCore = nullptr;
       QgsCoordinateReferenceSystemRegistry *mCrsRegistry = nullptr;
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
@@ -1048,6 +1072,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static ApplicationMembers *members();
 
     static void invalidateCaches();
+
+    friend class TestQgsApplication;
 };
 
 // clazy:excludeall=qstring-allocations

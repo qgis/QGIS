@@ -1,0 +1,54 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerfactory.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapLayerFactory
+{
+%Docstring(signature="appended")
+Contains utility functions for creating map layers.
+
+.. versionadded:: 3.18.1
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerfactory.h"
+%End
+  public:
+
+    static QgsMapLayerType typeFromString( const QString &string, bool &ok /Out/ );
+%Docstring
+Returns the map layer type corresponding a ``string`` value.
+
+:param string: string to convert to map layer type
+
+:return: - converted map layer type
+         - ok: will be set to ``True`` if ``string`` was successfully converted to a map layer type
+
+
+.. seealso:: :py:func:`typeToString`
+%End
+
+    static QString typeToString( QgsMapLayerType type );
+%Docstring
+Converts a map layer ``type`` to a string value.
+
+.. seealso:: :py:func:`typeFromString`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerfactory.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

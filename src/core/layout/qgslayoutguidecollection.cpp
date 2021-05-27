@@ -443,7 +443,7 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
   }
 
   // remaining guides belong to source page - clone them to other pages
-  for ( QgsLayoutGuide *guide : qgis::as_const( mGuides ) )
+  for ( QgsLayoutGuide *guide : std::as_const( mGuides ) )
   {
     for ( int p = 0; p < mPageCollection->pageCount(); ++p )
     {

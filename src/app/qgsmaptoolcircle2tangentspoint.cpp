@@ -209,7 +209,7 @@ void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
-  QObject::connect( mRadiusSpinBox, qgis::overload< double >::of( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
+  QObject::connect( mRadiusSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
 }
 
 void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()

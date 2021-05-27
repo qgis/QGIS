@@ -12,7 +12,7 @@
 
 class Qgs3DSymbolAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one 3D symbol class.
 
 .. note::
@@ -62,7 +62,7 @@ Caller takes ownership of the returned symbol.
 
 class Qgs3DSymbolRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of available 3D symbol classes.
 
 Qgs3DSymbolRegistry is not usually directly created, but rather accessed through

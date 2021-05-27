@@ -28,6 +28,7 @@
 
 class QgsProjectionSelectionDialog;
 class QgsHighlightableComboBox;
+class QLabel;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -100,6 +101,46 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     static QString crsOptionText( const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
 
+    /**
+     * Returns TRUE if the widget will show a warning to users when they select a CRS which has
+     * low accuracy.
+     *
+     * \see setShowAccuracyWarnings()
+     * \since QGIS 3.20
+     */
+    bool showAccuracyWarnings() const;
+
+    /**
+     * Sets whether the widget will \a show warnings to users when they select a CRS which has
+     * low accuracy.
+     *
+     * \see showAccuracyWarnings()
+     * \since QGIS 3.20
+     */
+    void setShowAccuracyWarnings( bool show );
+
+    /**
+     * Sets the original source \a ensemble datum name.
+     *
+     * If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+     * ensemble datum, regardless of the ensemble's accuracy.
+     *
+     * \see sourceEnsemble()
+     * \since QGIS 3.20
+     */
+    void setSourceEnsemble( const QString &ensemble );
+
+    /**
+     * Returns the original source ensemble datum name.
+     *
+     * If set, CRS accuracy warnings will not be shown when the selected CRS in the widget has a matching
+     * ensemble datum, regardless of the ensemble's accuracy.
+     *
+     * \see setSourceEnsemble()
+     * \since QGIS 3.20
+     */
+    QString sourceEnsemble() const;
+
   signals:
 
     /**
@@ -151,6 +192,12 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QString mNotSetText;
     QString mMessage;
 
+    bool mShowAccuracyWarnings = false;
+    QString mSourceEnsemble;
+
+    QWidget *mWarningLabelContainer = nullptr;
+    QLabel *mWarningLabel = nullptr;
+
     void addNotSetOption();
     void addProjectCrsOption();
     void addDefaultCrsOption();
@@ -167,6 +214,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
   private slots:
 
     void comboIndexChanged( int idx );
+    void updateWarning();
 
 };
 

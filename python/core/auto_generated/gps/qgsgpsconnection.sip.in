@@ -17,7 +17,7 @@
 
 class QgsSatelliteInfo
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates information relating to a GPS satellite.
 %End
 
@@ -41,7 +41,7 @@ Encapsulates information relating to a GPS satellite.
 
 class QgsGpsInformation
 {
-%Docstring
+%Docstring(signature="appended")
 Encapsulates information relating to a GPS position fix.
 %End
 
@@ -126,7 +126,7 @@ Returns a descriptive string for the signal quality.
 
 class QgsGpsConnection : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for connection to a GPS device
 %End
 

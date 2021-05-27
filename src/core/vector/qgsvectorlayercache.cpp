@@ -175,7 +175,10 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
 
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
-  return mCache.remove( fid );
+  bool removed = mCache.remove( fid );
+  if ( removed )
+    mCacheOrderedKeys.removeOne( fid );
+  return removed;
 }
 
 QgsVectorLayer *QgsVectorLayerCache::layer()
@@ -208,7 +211,7 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() <= mCache.size() )
   {
-    for ( const auto &idx : qgis::as_const( mCacheIndices ) )
+    for ( const auto &idx : std::as_const( mCacheIndices ) )
     {
       idx->requestCompleted( featureRequest, fids );
     }
@@ -267,6 +270,7 @@ void QgsVectorLayerCache::onJoinAttributeValueChanged( QgsFeatureId fid, int fie
 void QgsVectorLayerCache::featureDeleted( QgsFeatureId fid )
 {
   mCache.remove( fid );
+  mCacheOrderedKeys.removeOne( fid );
 }
 
 void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
@@ -325,6 +329,7 @@ void QgsVectorLayerCache::layerDeleted()
 void QgsVectorLayerCache::invalidate()
 {
   mCache.clear();
+  mCacheOrderedKeys.clear();
   mFullCache = false;
   emit invalidated();
 }

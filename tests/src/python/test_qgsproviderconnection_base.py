@@ -72,6 +72,11 @@ class TestPyQgsProviderConnectionBase():
     def setUp(self):
         QgsSettings().clear()
 
+    def getUniqueSchemaName(self, name):
+        """This function must return a schema name with unique prefix/postfix,
+        if the tests are run simultaneously on the same machine by different CI instances"""
+        return name
+
     def _test_save_load(self, md, uri, configuration):
         """Common tests on connection save and load"""
 
@@ -105,42 +110,45 @@ class TestPyQgsProviderConnectionBase():
             and capabilities & QgsAbstractDatabaseProviderConnection.Schemas
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropSchema):
 
+            myNewSchema = self.getUniqueSchemaName('myNewSchema')
             # Start clean
-            if 'myNewSchema' in conn.schemas():
-                conn.dropSchema('myNewSchema', True)
+            if myNewSchema in conn.schemas():
+                conn.dropSchema(myNewSchema, True)
 
             # Create
-            conn.createSchema('myNewSchema')
+            conn.createSchema(myNewSchema)
             schemas = conn.schemas()
-            self.assertTrue('myNewSchema' in schemas)
+            self.assertTrue(myNewSchema in schemas)
 
             # Create again
             with self.assertRaises(QgsProviderConnectionException) as ex:
-                conn.createSchema('myNewSchema')
+                conn.createSchema(myNewSchema)
 
             # Test rename
             if capabilities & QgsAbstractDatabaseProviderConnection.RenameSchema:
                 # Rename
-                conn.renameSchema('myNewSchema', 'myVeryNewSchema')
+                myVeryNewSchema = self.getUniqueSchemaName('myVeryNewSchema')
+                conn.renameSchema(myNewSchema, myVeryNewSchema)
                 schemas = conn.schemas()
-                self.assertTrue('myVeryNewSchema' in schemas)
-                self.assertFalse('myNewSchema' in schemas)
-                conn.renameSchema('myVeryNewSchema', 'myNewSchema')
+                self.assertTrue(myVeryNewSchema in schemas)
+                self.assertFalse(myNewSchema in schemas)
+                conn.renameSchema(myVeryNewSchema, myNewSchema)
                 schemas = conn.schemas()
-                self.assertFalse('myVeryNewSchema' in schemas)
-                self.assertTrue('myNewSchema' in schemas)
+                self.assertFalse(myVeryNewSchema in schemas)
+                self.assertTrue(myNewSchema in schemas)
 
             # Drop
-            conn.dropSchema('myNewSchema')
+            conn.dropSchema(myNewSchema)
             schemas = conn.schemas()
-            self.assertFalse('myNewSchema' in schemas)
+            self.assertFalse(myNewSchema in schemas)
 
             # UTF8 schema
-            conn.createSchema('myUtf8\U0001f604NewSchema')
+            myUtf8NewSchema = self.getUniqueSchemaName('myUtf8\U0001f604NewSchema')
+            conn.createSchema(myUtf8NewSchema)
             schemas = conn.schemas()
-            conn.dropSchema('myUtf8\U0001f604NewSchema')
+            conn.dropSchema(myUtf8NewSchema)
             schemas = conn.schemas()
-            self.assertFalse('myUtf8\U0001f604NewSchema' in schemas)
+            self.assertFalse(myUtf8NewSchema in schemas)
 
         # Table operations
         schema = None
@@ -149,11 +157,11 @@ class TestPyQgsProviderConnectionBase():
                 and capabilities & QgsAbstractDatabaseProviderConnection.DropVectorTable):
 
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSchema:
-                schema = 'myNewSchema'
+                schema = self.getUniqueSchemaName('myNewSchema')
                 conn.createSchema(schema)
 
             elif capabilities & QgsAbstractDatabaseProviderConnection.Schemas:
-                schema = self.defaultSchema
+                schema = self.getUniqueSchemaName(self.defaultSchema)
 
             # Start clean
             if self.myNewTable in self._table_names(conn.tables(schema)):

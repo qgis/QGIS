@@ -497,11 +497,11 @@ QgsAdvancedDigitizingDockWidget *QgisAppInterface::cadDockWidget()
   return qgis->cadDockWidget();
 }
 
-void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
+void QgisAppInterface::showLayerProperties( QgsMapLayer *l, const QString &page )
 {
   if ( l && qgis )
   {
-    qgis->showLayerProperties( l );
+    qgis->showLayerProperties( l, page );
   }
 }
 

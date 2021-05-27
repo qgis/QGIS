@@ -145,9 +145,9 @@ ENDFUNCTION() # SETUP_TARGET_FOR_COVERAGE
 #   Pass them in list form, e.g.: "-j;2" for -j 2
 FUNCTION(SETUP_TARGET_FOR_COVERAGE_COBERTURA _targetname _testrunner _outputname)
 
-	IF(NOT PYTHON_EXECUTABLE)
+	IF(NOT Python_EXECUTABLE)
 		MESSAGE(FATAL_ERROR "Python not found! Aborting...")
-	ENDIF() # NOT PYTHON_EXECUTABLE
+	ENDIF() # NOT Python_EXECUTABLE
 
 	IF(NOT GCOVR_PATH)
 		MESSAGE(FATAL_ERROR "gcovr not found! Aborting...")

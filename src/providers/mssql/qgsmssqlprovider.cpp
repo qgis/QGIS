@@ -18,6 +18,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqlproviderconnection.h"
+#include "qgsfeedback.h"
 
 #include <QtGlobal>
 #include <QFileInfo>
@@ -25,7 +26,7 @@
 #include <QStringList>
 #include <QMessageBox>
 #include <QSettings>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -1301,11 +1302,11 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
           wkt = geom.asWkt();
-          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
+          wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
           // if we have M value only, we need to insert null-s for the Z value
           if ( QgsWkbTypes::hasM( geom.wkbType() ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
           {
-            wkt.replace( QRegExp( "(?=\\s[0-9+-.]+[,)])" ), QStringLiteral( " NULL" ) );
+            wkt.replace( QRegularExpression( QStringLiteral( "(?=\\s[0-9+-.]+[,)])" ) ), QStringLiteral( " NULL" ) );
           }
         }
         query.addBindValue( wkt );
@@ -1641,7 +1642,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QString wkt = it->asWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
-      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
+      wkt.replace( QRegularExpression( QStringLiteral( "[mzMZ]+\\s*\\(" ) ), QStringLiteral( "(" ) );
       query.addBindValue( wkt );
     }
 
@@ -2018,7 +2019,7 @@ QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )
 }
 
 
-QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -2039,7 +2040,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   {
     if ( errorMessage )
       *errorMessage = db.lastError().text();
-    return QgsVectorLayerExporter::ErrConnectionFailed;
+    return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
 
   QString dbName = dsUri.database();
@@ -2119,7 +2120,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   // set up spatial reference id
@@ -2145,7 +2146,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
     {
       if ( errorMessage )
         *errorMessage = q.lastError().text();
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
   }
 
@@ -2163,7 +2164,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
     {
       if ( errorMessage )
         *errorMessage = q.lastError().text();
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
   }
   else
@@ -2175,7 +2176,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
     {
       if ( errorMessage )
         *errorMessage = q.lastError().text();
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
 
     // if we got a hit, abort!!
@@ -2183,7 +2184,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
     {
       if ( errorMessage )
         *errorMessage = tr( "Table [%1].[%2] already exists" ).arg( schemaName, tableName );
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
   }
 
@@ -2219,7 +2220,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   {
     if ( errorMessage )
       *errorMessage = q.lastError().text();
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   // clear any resources hold by the query
@@ -2238,7 +2239,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
       *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
     delete provider;
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   // add fields to the layer
@@ -2273,7 +2274,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       flist.append( fld );
@@ -2287,10 +2288,10 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
   }
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 
@@ -2339,7 +2340,7 @@ void QgsMssqlProviderMetadata::saveConnection( const QgsAbstractProviderConnecti
   saveConnectionProtected( conn, name );
 }
 
-QgsVectorLayerExporter::ExportError QgsMssqlProviderMetadata::createEmptyLayer(
+Qgis::VectorExportResult QgsMssqlProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -2973,8 +2974,11 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
 
-  QString sql = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax FROM geometry_columns WHERE f_table_name = '%1' AND NOT (qgis_xmin IS NULL OR qgis_xmax IS NULL OR qgis_ymin IS NULL OR qgis_ymax IS NULL)" );
-  QString statement = sql.arg( mTableName );
+  QString sql = QStringLiteral( "SELECT qgis_xmin,qgis_xmax,qgis_ymin,qgis_ymax "
+                                "FROM geometry_columns WHERE f_table_name = %1 AND f_table_schema = %2 "
+                                "AND NOT (qgis_xmin IS NULL OR qgis_xmax IS NULL OR qgis_ymin IS NULL OR qgis_ymax IS NULL)" );
+
+  QString statement = sql.arg( quotedValue( mTableName ), quotedValue( mSchemaName ) );
   if ( query.exec( statement ) && query.isActive() )
   {
     query.next();

@@ -18,6 +18,7 @@
 #include <QSGSimpleTextureNode>
 #include <QtConcurrent>
 
+#include "qgslabelingresults.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
@@ -335,7 +336,7 @@ void QgsQuickMapCanvasMap::onLayersChanged()
   if ( mMapSettings->extent().isEmpty() )
     zoomToFullExtent();
 
-  for ( const QMetaObject::Connection &conn : qgis::as_const( mLayerConnections ) )
+  for ( const QMetaObject::Connection &conn : std::as_const( mLayerConnections ) )
   {
     disconnect( conn );
   }

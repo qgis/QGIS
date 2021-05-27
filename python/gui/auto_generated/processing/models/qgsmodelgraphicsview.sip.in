@@ -12,7 +12,7 @@
 
 class QgsModelGraphicsView : QGraphicsView
 {
-%Docstring
+%Docstring(signature="appended")
 QGraphicsView subclass representing the model designer.
 
 .. warning::
@@ -183,7 +183,7 @@ Emitted when the selected items should be deleted;
 
 class QgsModelViewSnapMarker : QGraphicsRectItem
 {
-%Docstring
+%Docstring(signature="appended")
 A simple graphics item rendered as an 'x'.
 %End
 

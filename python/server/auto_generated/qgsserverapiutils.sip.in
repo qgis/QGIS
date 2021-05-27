@@ -15,7 +15,7 @@
 
 class QgsServerApiUtils
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsServerApiUtils` class contains helper functions to handle common API operations.
 
 .. versionadded:: 3.10

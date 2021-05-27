@@ -27,6 +27,13 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   setupUi( this );
   setupButtons( buttonBox );
 
+  connect( mRadioSrcFile, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcFile_toggled );
+  connect( mRadioSrcProtocol, &QRadioButton::toggled, this, &QgsPointCloudSourceSelect::radioSrcProtocol_toggled );
+  connect( cmbProtocolTypes, &QComboBox::currentTextChanged, this, &QgsPointCloudSourceSelect::cmbProtocolTypes_currentIndexChanged );
+
+  radioSrcFile_toggled( true );
+  setProtocolWidgetsVisibility();
+
   mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
@@ -35,27 +42,125 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
     mPath = path;
     emit enableButtons( ! mPath.isEmpty() );
   } );
+
+  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & path )
+  {
+    mPath = path;
+    emit enableButtons( ! mPath.isEmpty() );
+  } );
+
+
+  QStringList protocolTypes = QStringLiteral( "HTTP/HTTPS/FTP,vsicurl" ).split( ';' );
+  for ( int i = 0; i < protocolTypes.count(); i++ )
+  {
+    QString protocolType = protocolTypes.at( i );
+    if ( ( !protocolType.isEmpty() ) && ( !protocolType.isNull() ) )
+      cmbProtocolTypes->addItem( protocolType.split( ',' ).at( 0 ) );
+  }
 }
 
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
-  if ( mPath.isEmpty() )
+  if ( mDataSourceType == QLatin1String( "file" ) )
   {
-    QMessageBox::information( this,
-                              tr( "Add Point Cloud Layers" ),
-                              tr( "No layers selected." ) );
-    return;
+    if ( mPath.isEmpty() )
+    {
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "No layers selected." ) );
+      return;
+    }
+
+    for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
+    {
+      // auto determine preferred provider for each path
+
+      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+      // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
+      if ( preferredProviders.empty() )
+        continue;
+      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
+    }
   }
-
-  for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
+  else if ( mDataSourceType == QLatin1String( "remote" ) )
   {
-    // auto determine preferred provider for each path
+    if ( mPath.isEmpty() )
+    {
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "No layers selected." ) );
+      return;
+    }
 
+    if ( !mPath.endsWith( QLatin1String( "/ept.json" ) ) )
+    {
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "Unvalid point cloud URL \"%1\", please make sure your URL ends with /ept.json" ).arg( mPath ) );
+      return;
+    }
+
+    // auto determine preferred provider for each path
     const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
-    if ( preferredProviders.empty() )
-      continue;
-
-    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
+    if ( !preferredProviders.empty() )
+    {
+      QString baseName = QStringLiteral( "remote ept layer" );
+      QStringList separatedPath = mPath.split( '/' );
+      if ( separatedPath.size() >= 2 )
+        baseName = separatedPath[ separatedPath.size() - 2 ];
+      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
+    }
   }
 }
+
+void QgsPointCloudSourceSelect::radioSrcFile_toggled( bool checked )
+{
+  if ( checked )
+  {
+    fileGroupBox->show();
+    protocolGroupBox->hide();
+
+    mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
+    mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
+    mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+
+    mDataSourceType = QStringLiteral( "file" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
+  }
+}
+
+void QgsPointCloudSourceSelect::radioSrcProtocol_toggled( bool checked )
+{
+  if ( checked )
+  {
+    fileGroupBox->hide();
+    protocolGroupBox->show();
+
+    mDataSourceType = QStringLiteral( "remote" );
+
+    setProtocolWidgetsVisibility();
+
+    emit enableButtons( ! protocolURI->text().isEmpty() );
+  }
+}
+
+void QgsPointCloudSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &text )
+{
+  Q_UNUSED( text )
+  setProtocolWidgetsVisibility();
+}
+
+void QgsPointCloudSourceSelect::setProtocolWidgetsVisibility()
+{
+  labelProtocolURI->show();
+  protocolURI->show();
+  mAuthGroupBox->show();
+  labelBucket->hide();
+  mBucket->hide();
+  labelKey->hide();
+  mKey->hide();
+  mAuthWarning->hide();
+}
+

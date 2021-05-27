@@ -84,6 +84,7 @@ dnf install -y --nogpgcheck \
   git \
   make \
   proj-devel \
+  python-devel \
   python-qt5 \
   qt5-linguist \
   qt5-qtbase-devel \

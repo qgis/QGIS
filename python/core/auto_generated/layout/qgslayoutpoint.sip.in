@@ -11,7 +11,7 @@
 
 class QgsLayoutPoint
 {
-%Docstring
+%Docstring(signature="appended")
 This class provides a method of storing points, consisting of an x and y coordinate,
 for use in QGIS layouts. Measurement units are stored alongside the position.
 

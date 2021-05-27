@@ -181,7 +181,7 @@ export default {
           filter = `&${this.filterField.value}=${this.filterText}`;
         }
         fetch(
-          `/project/${this.project.id}/wfs3/collections/${this.typename}/items.json?limit=5&offset=${offset}${sorting}${filter}`
+          `./project/${this.project.id}/wfs3/collections/${this.typename}/items.json?limit=5&offset=${offset}${sorting}${filter}`
         )
           .then(response => {
             if (!response) {

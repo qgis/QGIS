@@ -294,7 +294,7 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
   c.fieldFilters = currentFilter;
 
   const QList< QgsAbstractReportSection * > sections = childSections();
-  for ( QgsAbstractReportSection *section : qgis::as_const( sections ) )
+  for ( QgsAbstractReportSection *section : std::as_const( sections ) )
   {
     section->setContext( c );
   }

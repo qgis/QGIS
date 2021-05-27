@@ -49,6 +49,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Constructor for an empty linestring geometry.
      */
     QgsLineString() SIP_HOLDGIL;
+#ifndef SIP_RUN
 
     /**
      * Construct a linestring from a vector of points.
@@ -56,7 +57,205 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * in the vector.
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPoint> &points ) SIP_HOLDGIL;
+    QgsLineString( const QVector<QgsPoint> &points );
+
+    /**
+     * Construct a linestring from list of points.
+     * This constructor is more efficient then calling setPoints()
+     * or repeatedly calling addVertex()
+     * \since QGIS 3.0
+     */
+    QgsLineString( const QVector<QgsPointXY> &points );
+#else
+
+    /**
+     * Construct a linestring from a sequence of points (QgsPoint objects, QgsPointXY objects, or sequences of float values).
+     *
+     * The linestring Z and M type will be set based on the type of the first point in the sequence.
+     *
+     * \since QGIS 3.20
+     */
+    QgsLineString( SIP_PYOBJECT points SIP_TYPEHINT( Sequence[Union[QgsPoint, QgsPointXY, Sequence[float]]] ) ) SIP_HOLDGIL [( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z = QVector<double>(), const QVector<double> &m = QVector<double>(), bool is25DType = false )];
+    % MethodCode
+    if ( !PySequence_Check( a0 ) )
+    {
+      PyErr_SetString( PyExc_TypeError, QStringLiteral( "A sequence of QgsPoint, QgsPointXY or array of floats is expected" ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      int state;
+      const int size = PySequence_Size( a0 );
+      QVector< double > xl;
+      QVector< double > yl;
+      bool hasZ = false;
+      QVector< double > zl;
+      bool hasM = false;
+      QVector< double > ml;
+      xl.reserve( size );
+      yl.reserve( size );
+
+      bool is25D = false;
+
+      sipIsErr = 0;
+      for ( int i = 0; i < size; ++i )
+      {
+        PyObject *value = PySequence_GetItem( a0, i );
+        if ( !value )
+        {
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+          sipIsErr = 1;
+          break;
+        }
+
+        if ( PySequence_Check( value ) )
+        {
+          const int elementSize = PySequence_Size( value );
+          if ( elementSize < 2 || elementSize > 4 )
+          {
+            sipIsErr = 1;
+            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2." ).arg( i ).arg( elementSize ).toUtf8().constData() );
+            Py_DECREF( value );
+            break;
+          }
+          else
+          {
+            sipIsErr = 0;
+            for ( int j = 0; j < elementSize; ++j )
+            {
+              PyObject *element = PySequence_GetItem( value, j );
+              if ( !element )
+              {
+                PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+                sipIsErr = 1;
+                break;
+              }
+
+              PyErr_Clear();
+              double d = PyFloat_AsDouble( element );
+              if ( PyErr_Occurred() )
+              {
+                Py_DECREF( value );
+                sipIsErr = 1;
+                break;
+              }
+              if ( j == 0 )
+                xl.append( d );
+              else if ( j == 1 )
+                yl.append( d );
+
+              if ( i == 0 && j == 2 )
+              {
+                hasZ = true;
+                zl.reserve( size );
+                zl.append( d );
+              }
+              else if ( i > 0 && j == 2 && hasZ )
+              {
+                zl.append( d );
+              }
+
+              if ( i == 0 && j == 3 )
+              {
+                hasM = true;
+                ml.reserve( size );
+                ml.append( d );
+              }
+              else if ( i > 0 && j == 3 && hasM )
+              {
+                ml.append( d );
+              }
+
+              Py_DECREF( element );
+            }
+
+            if ( hasZ && elementSize < 3 )
+              zl.append( std::numeric_limits< double >::quiet_NaN() );
+            if ( hasM && elementSize < 4 )
+              ml.append( std::numeric_limits< double >::quiet_NaN() );
+
+            Py_DECREF( value );
+            if ( sipIsErr )
+            {
+              break;
+            }
+          }
+        }
+        else
+        {
+          if ( sipCanConvertToType( value, sipType_QgsPointXY, SIP_NOT_NONE ) )
+          {
+            sipIsErr = 0;
+            QgsPointXY *p = reinterpret_cast<QgsPointXY *>( sipConvertToType( value, sipType_QgsPointXY, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              xl.append( p->x() );
+              yl.append( p->y() );
+            }
+            sipReleaseType( p, sipType_QgsPointXY, state );
+          }
+          else if ( sipCanConvertToType( value, sipType_QgsPoint, SIP_NOT_NONE ) )
+          {
+            sipIsErr = 0;
+            QgsPoint *p = reinterpret_cast<QgsPoint *>( sipConvertToType( value, sipType_QgsPoint, 0, SIP_NOT_NONE, &state, &sipIsErr ) );
+            if ( !sipIsErr )
+            {
+              xl.append( p->x() );
+              yl.append( p->y() );
+
+              if ( i == 0 && p->is3D() )
+              {
+                hasZ = true;
+                zl.reserve( size );
+                zl.append( p->z() );
+              }
+              else if ( i > 0 && hasZ )
+              {
+                zl.append( p->z() );
+              }
+
+              if ( i == 0 && p->isMeasure() )
+              {
+                hasM = true;
+                ml.reserve( size );
+                ml.append( p->m() );
+              }
+              else if ( i > 0 && hasM )
+              {
+                ml.append( p->m() );
+              }
+
+              if ( i == 0 && p->wkbType() == QgsWkbTypes::Point25D )
+                is25D = true;
+            }
+            sipReleaseType( p, sipType_QgsPoint, state );
+          }
+          else
+          {
+            sipIsErr = 1;
+          }
+
+          Py_DECREF( value );
+
+          if ( sipIsErr )
+          {
+            // couldn't convert the sequence value to a QgsPoint or QgsPointXY
+            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats." ).arg( i ) .toUtf8().constData() );
+            break;
+          }
+        }
+      }
+      if ( sipIsErr == 0 )
+        sipCpp = new sipQgsLineString( QgsLineString( xl, yl, zl, ml, is25D ) );
+    }
+    % End
+#endif
+
+    /**
+     * Construct a linestring from a single 2d line segment.
+     * \since QGIS 3.2
+     */
+    explicit QgsLineString( const QgsLineSegment2D &segment ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from arrays of coordinates. If the z or m
@@ -71,6 +270,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * the created Linestring will be a LineString25D type. Otherwise, the
      * LineString will be LineStringZ (or LineStringZM) type.
      *
+     * If the sizes of \a x and \a y are non-equal then the resultant linestring
+     * will be created using the minimum size of these arrays.
+     *
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
@@ -82,20 +284,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \since QGIS 3.2
      */
     QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
-
-    /**
-     * Construct a linestring from list of points.
-     * This constructor is more efficient then calling setPoints()
-     * or repeatedly calling addVertex()
-     * \since QGIS 3.0
-     */
-    QgsLineString( const QVector<QgsPointXY> &points ) SIP_HOLDGIL;
-
-    /**
-     * Construct a linestring from a single 2d line segment.
-     * \since QGIS 3.2
-     */
-    explicit QgsLineString( const QgsLineSegment2D &segment ) SIP_HOLDGIL;
 
     /**
      * Returns a new linestring created by segmentizing the bezier curve between \a start and \a end, with
@@ -581,15 +769,17 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     //reimplemented methods
-
     QString geometryType() const override SIP_HOLDGIL;
     int dimension() const override SIP_HOLDGIL;
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override SIP_HOLDGIL;
+    int indexOf( const QgsPoint &point ) const final;
     bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool isClosed() const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
@@ -615,6 +805,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //curve interface
     double length() const override SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
+#endif
 
     /**
      * Returns the length in 3D world of the line string.
@@ -672,6 +866,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool convertTo( QgsWkbTypes::Type type ) override;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
+    void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
@@ -787,6 +982,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsRectangle calculateBoundingBox() const override;
 
   private:
@@ -810,6 +1006,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     friend class QgsPolygon;
     friend class QgsTriangle;
+    friend class TestQgsGeometry;
 
 };
 

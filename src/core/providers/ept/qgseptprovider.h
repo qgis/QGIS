@@ -30,6 +30,7 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
+class QgsRemoteEptPointCloudIndex;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -40,6 +41,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsEptProvider();
+
     QgsCoordinateReferenceSystem crs() const override;
 
     QgsRectangle extent() const override;
@@ -48,7 +50,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     QString name() const override;
     QString description() const override;
     QgsPointCloudIndex *index() const override;
-    int pointCount() const override;
+    qint64 pointCount() const override;
     QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantList metadataClasses( const QString &attribute ) const override;
     QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
@@ -58,7 +60,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
-    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
+    std::unique_ptr<QgsPointCloudIndex> mIndex;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata
@@ -74,6 +76,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond

@@ -18,6 +18,8 @@
 //
 // Ideally one day the implementation will go to GEOS library...
 
+#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<8 )
+
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
@@ -968,3 +970,5 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
 
   return lwgeom_out;
 }
+
+#endif

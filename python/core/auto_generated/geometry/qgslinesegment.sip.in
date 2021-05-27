@@ -12,7 +12,7 @@
 
 class QgsLineSegment2D
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a single 2D line segment, consisting of a 2D start and end vertex only.
 
 .. versionadded:: 3.2

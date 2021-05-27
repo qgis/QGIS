@@ -58,6 +58,27 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
   return QgsDateTimeRange();
 }
 
+QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
+{
+  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  if ( !rasterLayer )
+    return {};
+
+  switch ( mMode )
+  {
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      return { mFixedRange };
+
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+    {
+      QList< QgsDateTimeRange > ranges = rasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+      return ranges.empty() ? QList< QgsDateTimeRange > { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
+    }
+  }
+
+  return {};
+}
+
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
 {
   return mMode;

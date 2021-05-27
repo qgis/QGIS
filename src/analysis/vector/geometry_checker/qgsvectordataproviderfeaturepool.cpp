@@ -114,14 +114,14 @@ bool QgsVectorDataProviderFeaturePool::addFeatures( QgsFeatureList &features, Qg
       if ( lyr )
       {
         QgsFeatureIds selectedFeatureIds = lyr->selectedFeatureIds();
-        for ( const QgsFeature &feature : qgis::as_const( features ) )
+        for ( const QgsFeature &feature : std::as_const( features ) )
           selectedFeatureIds.insert( feature.id() );
         lyr->selectByIds( selectedFeatureIds );
       }
     } );
   }
 
-  for ( const QgsFeature &feature : qgis::as_const( features ) )
+  for ( const QgsFeature &feature : std::as_const( features ) )
     insertFeature( feature );
 
   return res;

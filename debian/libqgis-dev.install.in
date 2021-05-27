@@ -9,5 +9,6 @@ usr/lib/libqgis_server.so
 usr/lib/libqgisgrass?.so
 usr/lib/libqgispython.so
 usr/share/qgis/FindQGIS.cmake
+usr/lib/*/liboauth2authmethod_static.a
 #!sid#usr/share/sip/qgis
 #sid#usr/lib/python?/*-packages/qgis

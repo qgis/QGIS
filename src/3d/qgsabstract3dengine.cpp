@@ -18,6 +18,7 @@
 #include "qgsshadowrenderingframegraph.h"
 
 #include <Qt3DRender/QRenderCapture>
+#include <Qt3DRender/QRenderSettings>
 
 QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
   : QObject( parent )
@@ -29,9 +30,12 @@ void QgsAbstract3DEngine::requestCaptureImage()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->renderCapture()->requestCapture();
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
   connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
   {
     emit imageCaptured( captureReply->image() );
+    this->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
     captureReply->deleteLater();
   } );
 }

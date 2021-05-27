@@ -77,6 +77,7 @@ void TestQgsOfflineEditing::initTestCase()
 
 void TestQgsOfflineEditing::cleanupTestCase()
 {
+  delete mOfflineEditing;
   QgsApplication::exitQgis();
 }
 
@@ -84,10 +85,8 @@ void TestQgsOfflineEditing::init()
 {
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTempDirName = tempDir.path();
-  QFile::copy( myFileName + "/points.shp", myTempDirName + "/points.shp" );
-  QFile::copy( myFileName + "/points.shx", myTempDirName + "/points.shx" );
-  QFile::copy( myFileName + "/points.dbf", myTempDirName + "/points.dbf" );
-  QString myTempFileName = myTempDirName + "/points.shp";
+  QFile::copy( myFileName + "/points.geojson", myTempDirName + "/points.geojson" );
+  QString myTempFileName = myTempDirName + "/points.geojson";
   QFileInfo myMapFileInfo( myTempFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
@@ -236,8 +235,14 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Heading" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Heading" ) ).toString() );
   QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString() );
 
+  //check converted lists values
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffNames" ) ), QStringLiteral( "Bob,Alice" ) );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffAges" ) ), QStringLiteral( "22,33" ) );
+
   QgsFeature newFeature( mpLayer->dataProvider()->fields() );
   newFeature.setAttribute( QStringLiteral( "Class" ), QStringLiteral( "Superjet" ) );
+  newFeature.setAttribute( QStringLiteral( "StaffNames" ), QStringLiteral( "Sebastien, Naomi, And\\, many\\, more" ) );
+  newFeature.setAttribute( QStringLiteral( "StaffAges" ), QStringLiteral( "0,2" ) );
   mpLayer->startEditing();
   mpLayer->addFeature( newFeature );
   mpLayer->commitChanges();
@@ -261,6 +266,8 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QgsFeature f = mpLayer->getFeature( mpLayer->dataProvider()->featureCount() - 1 );
   qDebug() << "FID:" << f.id() << "Class:" << f.attribute( "Class" ).toString();
   QCOMPARE( f.attribute( QStringLiteral( "Class" ) ).toString(), QStringLiteral( "Superjet" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "StaffNames" ) ).toStringList(), QStringList() << QStringLiteral( "Sebastien" ) << QStringLiteral( "Naomi" ) << QStringLiteral( "And, many, more" ) );
+  QCOMPARE( f.attribute( QStringLiteral( "StaffAges" ) ).toList(), QList<QVariant>() << 0 << 2 );
 
   QgsFeature firstFeatureAfterAction;
   it = mpLayer->getFeatures();

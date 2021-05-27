@@ -38,7 +38,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
 {
   QList<QgsLayerTreeNode *> clonedChildren;
 
-  for ( QgsLayerTreeNode *child : qgis::as_const( other.mChildren ) )
+  for ( QgsLayerTreeNode *child : std::as_const( other.mChildren ) )
     clonedChildren << child->clone();
   insertChildrenPrivate( -1, clonedChildren );
 }
@@ -52,7 +52,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
 {
   const QList<QgsLayerTreeNode *> orphans { mChildren };
   mChildren.clear();
-  for ( auto orphan : qgis::as_const( orphans ) )
+  for ( auto orphan : std::as_const( orphans ) )
   {
     orphan->makeOrphan( );
   }

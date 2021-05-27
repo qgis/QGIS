@@ -21,6 +21,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgssymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
 QgsScaleBarSettings::QgsScaleBarSettings()
 {

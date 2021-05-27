@@ -54,11 +54,11 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
-  if ( mOn ) return Qgis::ARGB32_Premultiplied;
+  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
 
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
@@ -78,7 +78,7 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
     const Qgis::DataType bandType = input->dataType( i );
     // we always allow unknown data types to connect - otherwise invalid layers cannot setup
     // their original rendering pipe and this information is lost
-    if ( bandType != Qgis::UnknownDataType && !QgsRasterBlock::typeIsNumeric( bandType ) )
+    if ( bandType != Qgis::DataType::UnknownDataType && !QgsRasterBlock::typeIsNumeric( bandType ) )
     {
       return false;
     }

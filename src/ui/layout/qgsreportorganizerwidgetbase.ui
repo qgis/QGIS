@@ -109,8 +109,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>687</width>
-        <height>207</height>
+        <width>302</width>
+        <height>232</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -130,33 +130,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mViewSections</tabstop>
+  <tabstop>mButtonAddSection</tabstop>
+  <tabstop>mButtonRemoveSection</tabstop>
+  <tabstop>scrollArea</tabstop>
+ </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

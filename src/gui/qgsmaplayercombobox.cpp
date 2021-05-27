@@ -44,9 +44,9 @@ QStringList QgsMapLayerComboBox::excludedProviders() const
   return mProxyModel->excludedProviders();
 }
 
-void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty )
+void QgsMapLayerComboBox::setAllowEmptyLayer( bool allowEmpty, const QString &text, const QIcon &icon )
 {
-  mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty );
+  mProxyModel->sourceLayerModel()->setAllowEmptyLayer( allowEmpty, text, icon );
 }
 
 bool QgsMapLayerComboBox::allowEmptyLayer() const

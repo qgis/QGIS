@@ -151,11 +151,11 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           QgsMultiPointXY points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );
           QgsAttributes outAttributes;
-          for ( int a : qgis::as_const( fieldIndicesA ) )
+          for ( int a : std::as_const( fieldIndicesA ) )
           {
             outAttributes.append( inFeatureA.attribute( a ) );
           }
-          for ( int b : qgis::as_const( fieldIndicesB ) )
+          for ( int b : std::as_const( fieldIndicesB ) )
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
@@ -188,7 +188,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
               points.append( intersectGeom.asPoint() );
             }
           }
-          for ( const QgsPointXY &j : qgis::as_const( points ) )
+          for ( const QgsPointXY &j : std::as_const( points ) )
           {
             outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
             outFeature.setAttributes( outAttributes );

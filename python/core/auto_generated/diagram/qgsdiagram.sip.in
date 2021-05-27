@@ -11,7 +11,7 @@
 
 class QgsDiagram /NoDefaultCtors/
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for all diagram types.
 %End
 

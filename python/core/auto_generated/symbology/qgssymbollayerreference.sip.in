@@ -11,7 +11,7 @@
 
 class QgsSymbolLayerId
 {
-%Docstring
+%Docstring(signature="appended")
 We may need stable references to symbol layers, when pointers to symbol layers is not usable
 (when a symbol or a feature renderer is cloned for example).
 
@@ -43,12 +43,12 @@ path to symbol layers of the sub symbol are given by a list of indexes:
   public:
     QgsSymbolLayerId();
 
-    QgsSymbolLayerId( QString key, int index );
+    QgsSymbolLayerId( const QString &key, int index );
 %Docstring
 QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
 %End
 
-    QgsSymbolLayerId( QString key, const QVector<int> &indexPath );
+    QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath );
 %Docstring
 QgsSymbolLayerId constructor with a symbol key and an index path
 %End
@@ -73,11 +73,23 @@ Returns the symbol layer index path inside the symbol
 
     bool operator<( const QgsSymbolLayerId &other ) const;
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 };
 
 class QgsSymbolLayerReference
 {
-%Docstring
+%Docstring(signature="appended")
 
 Type used to refer to a specific symbol layer in a symbol of a layer.
 
@@ -109,6 +121,18 @@ The symbol layer's id
 %End
 
     bool operator==( const QgsSymbolLayerReference &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

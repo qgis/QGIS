@@ -442,7 +442,7 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
   connect( radioButtonDefinedDateTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
   connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
   connect( dateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
-  connect( comboBoxDatasetTimeStep, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( comboBoxDatasetTimeStep, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
 
   updateWidget();

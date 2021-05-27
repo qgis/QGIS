@@ -10,7 +10,7 @@
 
 class QgsLegendPatchShape
 {
-%Docstring
+%Docstring(signature="appended")
 Represents a patch shape for use in map legends.
 
 .. versionadded:: 3.14
@@ -29,7 +29,7 @@ A null QgsLegendPatchShape indicates that the default legend patch shape
 should be used instead.
 %End
 
-    QgsLegendPatchShape( QgsSymbol::SymbolType type,
+    QgsLegendPatchShape( Qgis::SymbolType type,
                          const QgsGeometry &geometry,
                          bool preserveAspectRatio = true );
 %Docstring
@@ -50,14 +50,14 @@ Returns ``True`` if the patch shape is a null QgsLegendPatchShape,
 which indicates that the default legend patch shape should be used instead.
 %End
 
-    QgsSymbol::SymbolType symbolType() const;
+    Qgis::SymbolType symbolType() const;
 %Docstring
 Returns the symbol type associated with this patch.
 
 .. seealso:: :py:func:`setSymbolType`
 %End
 
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 %Docstring
 Sets the symbol ``type`` associated with this patch.
 
@@ -111,7 +111,7 @@ The default behavior is to respect the :py:func:`~QgsLegendPatchShape.geometry`'
 .. seealso:: :py:func:`setPreserveAspectRatio`
 %End
 
-    QList< QList< QPolygonF > > toQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
+    QList< QList< QPolygonF > > toQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 %Docstring
 Converts the patch shape to a set of QPolygonF objects representing
 how the patch should be drawn for a symbol of the given ``type`` at the specified ``size`` (as

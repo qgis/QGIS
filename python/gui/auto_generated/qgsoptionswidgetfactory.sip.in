@@ -10,7 +10,7 @@
 
 class QgsOptionsPageWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets for pages included in the options dialog.
 
 .. versionadded:: 3.0

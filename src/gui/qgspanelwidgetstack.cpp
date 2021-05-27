@@ -90,6 +90,20 @@ QgsPanelWidget *QgsPanelWidgetStack::currentPanel()
   return qobject_cast<QgsPanelWidget *>( mStackedWidget->currentWidget() );
 }
 
+QSize QgsPanelWidgetStack::sizeHint() const
+{
+  if ( QWidget *widget = mStackedWidget->currentWidget() )
+    return widget->sizeHint();
+  return QWidget::sizeHint();
+}
+
+QSize QgsPanelWidgetStack::minimumSizeHint() const
+{
+  if ( QWidget *widget = mStackedWidget->currentWidget() )
+    return widget->minimumSizeHint();
+  return QWidget::minimumSizeHint();
+}
+
 void QgsPanelWidgetStack::acceptCurrentPanel()
 {
   // You can't accept the main panel.

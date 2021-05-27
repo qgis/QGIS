@@ -16,7 +16,7 @@
 
 class QgsSpatialIndex : QgsFeatureSink
 {
-%Docstring
+%Docstring(signature="appended")
 
 A spatial index for :py:class:`QgsFeature` objects.
 

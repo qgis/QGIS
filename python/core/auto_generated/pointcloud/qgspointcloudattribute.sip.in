@@ -13,7 +13,7 @@
 
 class QgsPointCloudAttribute
 {
-%Docstring
+%Docstring(signature="appended")
 
 Attribute for point cloud data
 pair of name and size in bytes
@@ -94,7 +94,7 @@ Returns ``True`` if the specified data ``type`` is numeric.
 
 class QgsPointCloudAttributeCollection
 {
-%Docstring
+%Docstring(signature="appended")
 
 Collection of point cloud attributes
 

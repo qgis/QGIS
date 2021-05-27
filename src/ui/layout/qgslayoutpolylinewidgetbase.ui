@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-83</y>
+        <y>0</y>
         <width>318</width>
-        <height>459</height>
+        <height>426</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -330,21 +330,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -353,15 +347,36 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
   <tabstop>mLineStyleButton</tabstop>
+  <tabstop>mArrowMarkersGroupBox</tabstop>
+  <tabstop>mRadioStartNoMarker</tabstop>
+  <tabstop>mRadioStartArrow</tabstop>
+  <tabstop>mRadioStartSVG</tabstop>
+  <tabstop>mStartMarkerLineEdit</tabstop>
+  <tabstop>mStartMarkerToolButton</tabstop>
+  <tabstop>mRadioEndNoMarker</tabstop>
+  <tabstop>mRadioEndArrow</tabstop>
+  <tabstop>mRadioEndSvg</tabstop>
+  <tabstop>mEndMarkerLineEdit</tabstop>
+  <tabstop>mEndMarkerToolButton</tabstop>
+  <tabstop>mArrowHeadStrokeColorButton</tabstop>
+  <tabstop>mArrowHeadFillColorButton</tabstop>
+  <tabstop>mStrokeWidthSpinBox</tabstop>
+  <tabstop>mArrowHeadWidthSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

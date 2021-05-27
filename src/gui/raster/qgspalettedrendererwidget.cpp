@@ -851,7 +851,7 @@ void QgsPalettedRendererClassGatherer::run()
   for ( ; classIt != newClasses.end(); ++classIt )
   {
     // check if existing classes contains this same class
-    for ( const QgsPalettedRasterRenderer::Class &existingClass : qgis::as_const( mClasses ) )
+    for ( const QgsPalettedRasterRenderer::Class &existingClass : std::as_const( mClasses ) )
     {
       if ( existingClass.value == classIt->value )
       {

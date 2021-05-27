@@ -11,7 +11,7 @@
 
 class QgsNominatimGeocoder : QgsGeocoderInterface
 {
-%Docstring
+%Docstring(signature="appended")
 A geocoder which uses the Nominatim geocoding API to retrieve results.
 
 This geocoder utilizes the Nominatim geocoding API in order to geocode

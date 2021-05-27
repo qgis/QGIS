@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgssymbol.h"
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
@@ -158,7 +159,7 @@ class TestQgsSnappingUtils : public QObject
       //test that all nodes are initially checked
       QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
       QCOMPARE( nodes.length(), 1 );
-      Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+      for ( QgsLayerTreeModelLegendNode *ln : nodes )
       {
         QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
       }
@@ -198,7 +199,7 @@ class TestQgsSnappingUtils : public QObject
 
       //uncheck all and test that all nodes are unchecked
       static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
-      Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+      for ( QgsLayerTreeModelLegendNode *ln : nodes )
       {
         QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
       }

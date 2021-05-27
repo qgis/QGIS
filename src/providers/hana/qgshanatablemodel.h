@@ -41,6 +41,8 @@ struct QgsHanaLayerProperty
   QString     sql;
   bool        isView = false;
   bool        isUnique = false;
+  bool        isValid = false;
+  QString     errorMessage;
 
   QString defaultName() const
   {
@@ -50,15 +52,17 @@ struct QgsHanaLayerProperty
     return ret;
   }
 
-  bool isValid() const { return type != QgsWkbTypes::Unknown && srid >= 0; }
+  bool isGeometryValid() const { return type != QgsWkbTypes::Unknown && srid >= 0; }
 };
 
 class QIcon;
 
 /**
  * A model that holds the tables of a database in a hierarchy where the
-schemas are the root elements that contain the individual tables as children.
-The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
+ * schemas are the root elements that contain the individual tables as children.
+ *
+ * The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql
+*/
 class QgsHanaTableModel : public QStandardItemModel
 {
     Q_OBJECT

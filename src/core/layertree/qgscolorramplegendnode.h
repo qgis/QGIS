@@ -23,6 +23,8 @@
 #include "qgstextformat.h"
 #include "qgscolorramplegendnodesettings.h"
 
+class QgsColorRamp;
+
 /**
  * \ingroup core
  * \brief A legend node which renders a color ramp.

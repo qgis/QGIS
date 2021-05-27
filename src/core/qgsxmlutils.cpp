@@ -78,7 +78,7 @@ QDomElement QgsXmlUtils::writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDo
   return unitsNode;
 }
 
-QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle &rect, QDomDocument &doc )
+QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName )
 {
   QDomElement xMin = doc.createElement( QStringLiteral( "xmin" ) );
   QDomElement yMin = doc.createElement( QStringLiteral( "ymin" ) );
@@ -95,7 +95,7 @@ QDomElement QgsXmlUtils::writeRectangle( const QgsRectangle &rect, QDomDocument 
   xMax.appendChild( xMaxText );
   yMax.appendChild( yMaxText );
 
-  QDomElement extentNode = doc.createElement( QStringLiteral( "extent" ) );
+  QDomElement extentNode = doc.createElement( elementName );
   extentNode.appendChild( xMin );
   extentNode.appendChild( yMin );
   extentNode.appendChild( xMax );

@@ -42,7 +42,7 @@ class CORE_EXPORT QgsReadWriteContext
     struct ReadWriteMessage
     {
         //! Construct a container for QgsReadWriteContext error or warning messages
-        ReadWriteMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() )
+        ReadWriteMessage( const QString &message = QString(), Qgis::MessageLevel level = Qgis::Warning, const QStringList &categories = QStringList() )
           : mMessage( message )
           , mLevel( level )
           , mCategories( categories )
@@ -56,6 +56,24 @@ class CORE_EXPORT QgsReadWriteContext
 
         //! Returns the stack of categories of the message
         QStringList categories() const {return mCategories;}
+
+        bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const
+        {
+          return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories;
+        }
+
+        bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const
+        {
+          return !( *this == other );
+        }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsReadWriteContext.ReadWriteMessage: %1>" ).arg( sipCpp->message() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
 
       private:
         QString mMessage;
@@ -80,7 +98,7 @@ class CORE_EXPORT QgsReadWriteContext
      * Append a message to the context
      * \since QGIS 3.2
      */
-    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning );
+    void pushMessage( const QString &message, Qgis::MessageLevel level = Qgis::Warning ) const;
 
     /**
      * Push a category to the stack
@@ -93,7 +111,7 @@ class CORE_EXPORT QgsReadWriteContext
      * \endcode
      * \since QGIS 3.2
      */
-    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) SIP_PYNAME( _enterCategory );
+    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const SIP_PYNAME( _enterCategory );
 
     /**
      * Returns the stored messages and remove them
@@ -136,11 +154,11 @@ class CORE_EXPORT QgsReadWriteContext
   private:
 
     //! Pop the last category
-    void leaveCategory();
+    void leaveCategory() const;
 
     QgsPathResolver mPathResolver;
-    QList<ReadWriteMessage> mMessages;
-    QStringList mCategories = QStringList();
+    mutable QList<ReadWriteMessage> mMessages;
+    mutable QStringList mCategories = QStringList();
     QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
     QgsCoordinateTransformContext mCoordinateTransformContext = QgsCoordinateTransformContext();
@@ -159,14 +177,14 @@ class CORE_EXPORT QgsReadWriteContextCategoryPopper
 {
   public:
     //! Creates a popper
-    QgsReadWriteContextCategoryPopper( QgsReadWriteContext &context ) : mContext( context ) {}
+    QgsReadWriteContextCategoryPopper( const QgsReadWriteContext &context ) : mContext( context ) {}
     ~QgsReadWriteContextCategoryPopper() {mContext.leaveCategory();}
   private:
 #ifdef SIP_RUN
     QgsReadWriteContextCategoryPopper &operator=( const QgsReadWriteContextCategoryPopper & );
 #endif
 
-    QgsReadWriteContext &mContext;
+    const QgsReadWriteContext &mContext;
 };
 
 #endif // QGSREADWRITECONTEXT_H

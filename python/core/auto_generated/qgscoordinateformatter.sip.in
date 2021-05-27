@@ -12,7 +12,7 @@
 
 class QgsCoordinateFormatter
 {
-%Docstring
+%Docstring(signature="appended")
 Contains methods for converting coordinates for display in various formats.
 
 :py:class:`QgsCoordinateFormatter` contains static methods for converting numeric coordinates into different

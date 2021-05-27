@@ -219,6 +219,26 @@
      </item>
     </widget>
    </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Cap style</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QgsPenCapStyleComboBox" name="cboCapStyle"/>
+   </item>
+   <item row="9" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mCapStyleDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
    <item row="11" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
@@ -592,6 +612,11 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPenCapStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPenStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
@@ -614,6 +639,8 @@
   <tabstop>mStrokeWidthDDBtn</tabstop>
   <tabstop>cboJoinStyle</tabstop>
   <tabstop>mJoinStyleDDBtn</tabstop>
+  <tabstop>cboCapStyle</tabstop>
+  <tabstop>mCapStyleDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
   <tabstop>mRotationDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>

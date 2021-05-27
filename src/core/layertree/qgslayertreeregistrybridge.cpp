@@ -30,7 +30,7 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mInsertionPoint( root, 0 )
 {
   connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
-  connect( mProject, qgis::overload<const QStringList &>::of<QgsProject>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
+  connect( mProject, qOverload<const QStringList &>( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
   connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
   connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );

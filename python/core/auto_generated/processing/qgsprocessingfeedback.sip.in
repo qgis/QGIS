@@ -12,7 +12,7 @@
 
 class QgsProcessingFeedback : QgsFeedback
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for providing feedback from a processing algorithm.
 
 This base class implementation silently ignores all feedback reported by algorithms.
@@ -156,7 +156,7 @@ Returns the plain text contents of the log, which contains all messages pushed t
 
 class QgsProcessingMultiStepFeedback : QgsProcessingFeedback
 {
-%Docstring
+%Docstring(signature="appended")
 
 Processing feedback object for multi-step operations.
 

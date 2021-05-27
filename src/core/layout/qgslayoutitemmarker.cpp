@@ -21,6 +21,7 @@
 #include "qgslayoutmodel.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgslayoutitemmap.h"
+#include "qgsmarkersymbol.h"
 
 #include <QPainter>
 

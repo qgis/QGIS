@@ -131,8 +131,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 }
 
 
-QgsVectorLayerExporter::ExportError
-QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -171,7 +170,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       QgsDebugMsg( QStringLiteral( "Connection to database failed. Import of layer aborted." ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "Connection to database failed" );
-      return QgsVectorLayerExporter::ErrConnectionFailed;
+      return Qgis::VectorExportResult::ErrorConnectionFailed;
     }
 
     sqlite3 *sqliteHandle = handle->handle();
@@ -369,7 +368,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       }
 
       QgsSqliteHandle::closeDb( handle );
-      return QgsVectorLayerExporter::ErrCreateLayer;
+      return Qgis::VectorExportResult::ErrorCreatingLayer;
     }
 
     QgsSqliteHandle::closeDb( handle );
@@ -389,7 +388,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                       .arg( tableName );
 
     delete provider;
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QgsDebugMsg( QStringLiteral( "layer loaded" ) );
@@ -424,7 +423,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
                           .arg( fld.name() );
 
         delete provider;
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       QgsDebugMsg( "creating field #" + QString::number( fldIdx ) +
@@ -449,12 +448,12 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
         *errorMessage = QObject::tr( "creation of fields failed" );
 
       delete provider;
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
     QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 
@@ -988,7 +987,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
   }
   sqlite3_free_table( results );
 
-  for ( const auto fieldIdx : qgis::as_const( mPrimaryKeyAttrs ) )
+  for ( const auto fieldIdx : std::as_const( mPrimaryKeyAttrs ) )
   {
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
@@ -4990,13 +4989,13 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     // get a new alias for the subquery
     int index = 0;
     QString alias;
-    QRegExp regex;
+    QRegularExpression regex;
     do
     {
       alias = QStringLiteral( "subQuery_%1" ).arg( QString::number( index++ ) );
-      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      QString pattern = QStringLiteral( "(\\\"?)%1\\1" ).arg( QRegularExpression::escape( alias ) );
       regex.setPattern( pattern );
-      regex.setCaseSensitivity( Qt::CaseInsensitive );
+      regex.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
     }
     while ( mQuery.contains( regex ) );
 
@@ -5045,7 +5044,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
         // Check if the whole sql is aliased i.e. '(SELECT * FROM \\"somedata\\" as my_alias\n)'
         if ( tableAlias.isEmpty() )
         {
-          regex.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
+          re.setPattern( QStringLiteral( R"re(\s+AS\s+(\w+)\n?\)?$)re" ) );
           match = re.match( mTableName );
           if ( match.hasMatch() )
           {
@@ -5904,8 +5903,13 @@ QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) con
   return dsUri.uri();
 }
 
+QgsProviderMetadata::ProviderCapabilities QgsSpatiaLiteProviderMetadata::providerCapabilities() const
+{
+  return FileBasedUris;
+}
 
-QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
+
+Qgis::VectorExportResult QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

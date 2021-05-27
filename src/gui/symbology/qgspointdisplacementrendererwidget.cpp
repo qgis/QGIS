@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -66,15 +67,15 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mLabelFontButton->setMode( QgsFontButton::ModeQFont );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
+  mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
   {
-    mRenderer = QgsPointDisplacementRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsPointDisplacementRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsPointDisplacementRenderer();
+    mRenderer = std::make_unique< QgsPointDisplacementRenderer >();
   }
 
   blockAllSignals( true );
@@ -175,14 +176,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
-QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget()
-{
-  delete mRenderer;
-}
+QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget() = default;
 
 QgsFeatureRenderer *QgsPointDisplacementRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -281,6 +279,7 @@ void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
     QList< QgsExpressionContextScope > scopes = context.additionalExpressionContextScopes();
     scopes << scope;
     context.setAdditionalExpressionContextScopes( scopes );
+    w->disableSymbolLevels();
     w->setContext( context );
 
     connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointDisplacementRendererWidget::updateRendererFromWidget );

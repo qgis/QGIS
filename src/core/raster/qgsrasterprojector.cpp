@@ -59,7 +59,7 @@ Qgis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 
@@ -498,7 +498,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   QgsDebugMsgLevel( QStringLiteral( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
-  if ( !mExtent.contains( QgsPointXY( x, y ) ) )
+  if ( !mExtent.contains( x, y ) )
   {
     return false;
   }
@@ -558,7 +558,7 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
   double mySrcX = bx + ( tx - bx ) * yfrac;
   double mySrcY = by + ( ty - by ) * yfrac;
 
-  if ( !mExtent.contains( QgsPointXY( mySrcX, mySrcY ) ) )
+  if ( !mExtent.contains( mySrcX, mySrcY ) )
   {
     return false;
   }

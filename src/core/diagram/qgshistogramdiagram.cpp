@@ -17,6 +17,7 @@
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 #include "qgssymbollayerutils.h"
+#include "qgslinesymbol.h"
 
 #include <QPainter>
 
@@ -50,7 +51,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
   if ( !feature.fields().isEmpty() )
     expressionContext.setFields( feature.fields() );
 
-  for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
+  for ( const QString &cat : std::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
     maxValue = std::max( expression->evaluate( &expressionContext ).toDouble(), maxValue );
@@ -74,13 +75,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
-      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
+      size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -143,13 +144,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = maxValue / s.size.height();
-      size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), s.size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = maxValue / s.size.width();
-      size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, s.categoryAttributes.size() - 1 ), Qt::IgnoreAspectRatio );
+      size.scale( s.size.width(), s.barWidth * s.categoryColors.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), Qt::IgnoreAspectRatio );
       break;
   }
 
@@ -180,7 +181,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     expressionContext.setFields( feature.fields() );
 
   values.reserve( s.categoryAttributes.size() );
-  for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
+  for ( const QString &cat : std::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();
@@ -232,11 +233,11 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) + currentOffset, length, scaledWidth ) );
+        p->drawRect( QRectF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, length, scaledWidth ) );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) + currentOffset, 0 - length, scaledWidth ) );
+        p->drawRect( QRectF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) + currentOffset, 0 - length, scaledWidth ) );
         break;
     }
 
@@ -250,22 +251,22 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     switch ( s.diagramOrientation )
     {
       case QgsDiagramSettings::Up:
-        axisPoints << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY );
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX, baseY ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseY );
         break;
 
       case QgsDiagramSettings::Down:
-        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, values.size() - 1 ), baseY - scaledMaxVal );
+        axisPoints << QPointF( baseX, baseY ) << QPointF( baseX, baseY - scaledMaxVal ) << QPointF( baseX + scaledWidth * values.size() + spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ), baseY - scaledMaxVal );
         break;
 
       case QgsDiagramSettings::Right:
-        axisPoints << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
-                   << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+        axisPoints << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+                   << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
                    << QPointF( baseX, baseY );
         break;
 
       case QgsDiagramSettings::Left:
-        axisPoints << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
-                   << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, values.size() - 1 ) )
+        axisPoints << QPointF( baseX, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
+                   << QPointF( baseX + scaledMaxVal, baseY - scaledWidth * values.size() - spacing * std::max( 0, static_cast<int>( values.size() ) - 1 ) )
                    << QPointF( baseX + scaledMaxVal, baseY );
         break;
     }

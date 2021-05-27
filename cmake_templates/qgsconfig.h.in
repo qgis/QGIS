@@ -46,11 +46,18 @@
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
 
+#define PYTHON_VERSION "${Python_VERSION}"
+#define PYTHON_VERSION_MAJOR "${Python_VERSION_MAJOR}"
+#define PYTHON_VERSION_MINOR "${Python_VERSION_MINOR}"
+#define PYTHON_VERSION_PATCH "${Python_VERSION_PATCH}"
+
 #cmakedefine USING_NMAKE
 
 #cmakedefine USING_NINJA
 
 #cmakedefine HAVE_GUI
+
+#cmakedefine HAVE_SPATIALITE
 
 #cmakedefine HAVE_POSTGRESQL
 

@@ -797,7 +797,7 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
           << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
           << mExpressionFilterButton;
-  for ( QWidget *w : qgis::as_const( widgets ) )
+  for ( QWidget *w : std::as_const( widgets ) )
     w->setEnabled( state != Qt::Checked );
 
   if ( state == Qt::Unchecked )
@@ -947,7 +947,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
 
   // first try to remove legend nodes
   QHash<QgsLayerTreeLayer *, QList<int> > nodesWithRemoval;
-  for ( const QPersistentModelIndex &proxyIndex : qgis::as_const( proxyIndexes ) )
+  for ( const QPersistentModelIndex &proxyIndex : std::as_const( proxyIndexes ) )
   {
     if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( proxyIndex ) )
     {
@@ -961,7 +961,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     std::sort( toDelete.begin(), toDelete.end(), std::greater<int>() );
     QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( it.key() );
 
-    for ( int i : qgis::as_const( toDelete ) )
+    for ( int i : std::as_const( toDelete ) )
     {
       if ( i >= 0 && i < order.count() )
         order.removeAt( i );
@@ -972,7 +972,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   }
 
   // then remove layer tree nodes
-  for ( const QPersistentModelIndex &proxyIndex : qgis::as_const( proxyIndexes ) )
+  for ( const QPersistentModelIndex &proxyIndex : std::as_const( proxyIndexes ) )
   {
     if ( proxyIndex.isValid() && mItemTreeView->index2node( proxyIndex ) )
     {
@@ -1426,7 +1426,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   QList<QgsLegendStyle::Style> lst;
   lst << QgsLegendStyle::Hidden << QgsLegendStyle::Group << QgsLegendStyle::Subgroup;
-  for ( QgsLegendStyle::Style style : qgis::as_const( lst ) )
+  for ( QgsLegendStyle::Style style : std::as_const( lst ) )
   {
     QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
     action->setCheckable( true );
@@ -1549,15 +1549,15 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
     {
       case QgsWkbTypes::PolygonGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Fill );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Fill );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Line );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Line );
         break;
 
       case QgsWkbTypes::PointGeometry:
-        mPatchShapeButton->setSymbolType( QgsSymbol::Marker );
+        mPatchShapeButton->setSymbolType( Qgis::SymbolType::Marker );
         break;
 
       default:
@@ -1621,15 +1621,15 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   connect( mPatchShapeButton, &QgsLegendPatchShapeButton::changed, this, &QgsLayoutLegendNodeWidget::patchChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLegendNodeWidget::insertExpression );
 
-  connect( mWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
-  connect( mHeightSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
+  connect( mWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
+  connect( mHeightSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendNodeWidget::sizeChanged );
 
   connect( mCustomSymbolCheckBox, &QGroupBox::toggled, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
   connect( mCustomSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutLegendNodeWidget::customSymbolChanged );
 
   connect( mColumnBreakBeforeCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendNodeWidget::columnBreakToggled );
 
-  connect( mColumnSplitBehaviorComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
+  connect( mColumnSplitBehaviorComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayoutLegendNodeWidget::columnSplitChanged );
 
   connect( mColorRampLegendWidget, &QgsColorRampLegendNodeWidget::widgetChanged, this, &QgsLayoutLegendNodeWidget::colorRampLegendChanged );
 

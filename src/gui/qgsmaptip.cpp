@@ -239,6 +239,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   QgsRenderContext renderCtx = QgsRenderContext::fromMapSettings( mapCanvas->mapSettings() );
+  renderCtx.setExpressionContext( mapCanvas->createExpressionContext() );
   renderCtx.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
 
   bool filter = false;
@@ -255,6 +256,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
       request.combineFilterExpression( filterExpression );
     }
   }
+  request.setExpressionContext( renderCtx.expressionContext() );
 
   QgsFeatureIterator it = vlayer->getFeatures( request );
   QElapsedTimer timer;

@@ -190,12 +190,11 @@ bool QgsAccessControl::fillCacheKey( QStringList &cacheKey ) const
   for ( acIterator = mPluginsAccessControls->constBegin(); acIterator != mPluginsAccessControls->constEnd(); ++acIterator )
   {
     QString newKey = acIterator.value()->cacheKey();
-    if ( newKey.length() == 0 )
+    if ( ! newKey.isEmpty() )
     {
       cacheKey.clear();
       return false;
     }
-    cacheKey << newKey;
   }
   return true;
 }

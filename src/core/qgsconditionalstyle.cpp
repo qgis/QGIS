@@ -19,6 +19,7 @@
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgsmarkersymbol.h"
 
 QgsConditionalLayerStyles::QgsConditionalLayerStyles( QObject *parent )
   : QObject( parent )
@@ -130,6 +131,8 @@ QgsConditionalStyle::QgsConditionalStyle( const QString &rule )
 {
   setRule( rule );
 }
+
+QgsConditionalStyle::~QgsConditionalStyle() = default;
 
 QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
   : mValid( other.mValid )

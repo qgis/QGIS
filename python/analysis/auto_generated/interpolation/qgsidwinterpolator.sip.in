@@ -11,7 +11,7 @@
 
 class QgsIDWInterpolator: QgsInterpolator
 {
-%Docstring
+%Docstring(signature="appended")
 Inverse distance weight interpolator.
 %End
 

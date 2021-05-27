@@ -35,8 +35,11 @@
 #include "qgsgeometryengine.h"
 #include "qgsmultisurface.h"
 #include "qgsmultipoint.h"
-#include <QRegularExpression>
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsfillsymbol.h"
 
+#include <QRegularExpression>
 
 QVariant::Type QgsArcGisRestUtils::convertFieldType( const QString &esriFieldType )
 {
@@ -237,7 +240,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiCurve >();
   multiCurve->reserve( pathsList.size() );
-  for ( const QVariant &pathData : qgis::as_const( pathsList ) )
+  for ( const QVariant &pathData : std::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = convertCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
@@ -550,7 +553,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, QgsSymbol::ScaleArea, fillColor, lineColor );
+  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
   markerLayer->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
   markerLayer->setStrokeStyle( penStyle );
@@ -587,7 +590,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   symbolPath.prepend( QLatin1String( "base64:" ) );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = std::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, QgsSymbol::ScaleArea );
+  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = std::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, Qgis::ScaleMethod::ScaleArea );
   markerLayer->setSizeUnit( QgsUnitTypes::RenderPoints );
 
   // only change the default aspect ratio if the server height setting requires this

@@ -10,7 +10,7 @@
 
 class QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract interface for generating an expression context.
 
 You need to implement this interface in a class and register this class with

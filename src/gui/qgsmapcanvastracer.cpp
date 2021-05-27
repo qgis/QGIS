@@ -22,7 +22,7 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgssnappingconfig.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QAction>
 
@@ -49,7 +49,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( QgsSettings().value( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), 10000 ).toInt() );
+  setMaxFeatureCount( QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount.value() );
 }
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()

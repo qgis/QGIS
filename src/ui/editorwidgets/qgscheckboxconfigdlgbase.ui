@@ -102,6 +102,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leCheckedState</tabstop>
+  <tabstop>leUncheckedState</tabstop>
+  <tabstop>mDisplayAsTextComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

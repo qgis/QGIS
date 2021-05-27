@@ -28,7 +28,7 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
   // To future maintainers: make sure the order of added items is the same as the order at QgsSkyboxEntity::SkyboxType
   skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ) );
   skyboxTypeComboBox->addItem( tr( "Distinct Faces" ) );
-  connect( skyboxTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
+  connect( skyboxTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
 
   showSkyboxSettings( 0 );
 }

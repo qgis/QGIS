@@ -33,6 +33,9 @@
 #include "qgsblureffect.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgstextbackgroundsettings.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
@@ -904,7 +907,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QgsPropertyCollection ddLabelProperties;
 
   double textSize = 16.0 * context.pixelSizeConversionFactor();
-  QString textSizeProperty;
+  QgsProperty textSizeProperty;
   if ( jsonLayout.contains( QStringLiteral( "text-size" ) ) )
   {
     const QVariant jsonTextSize = jsonLayout.value( QStringLiteral( "text-size" ) );
@@ -932,7 +935,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         break;
     }
 
-    if ( !textSizeProperty.isEmpty() )
+    if ( textSizeProperty )
     {
       ddLabelProperties.setProperty( QgsPalLayerSettings::Size, textSizeProperty );
     }
@@ -1444,7 +1447,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       if ( labelSettings.placement == QgsPalLayerSettings::Curved )
       {
         QPointF textOffset;
-        QString textOffsetProperty;
+        QgsProperty textOffsetProperty;
         if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
         {
           const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
@@ -1453,14 +1456,14 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           switch ( jsonTextOffset.type() )
           {
             case QVariant::Map:
-              textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSizeProperty.isEmpty() ? textSize : 1.0, &textOffset );
-              if ( textSizeProperty.isEmpty() )
+              textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, !textSizeProperty ? textSize : 1.0, &textOffset );
+              if ( !textSizeProperty )
               {
                 ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
               }
               else
               {
-                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty ).arg( textSizeProperty ) );
+                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty.asExpression(), textSizeProperty.asExpression() ) );
               }
               ddLabelProperties.setProperty( QgsPalLayerSettings::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
               break;
@@ -1481,9 +1484,9 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
             labelSettings.distUnits = context.targetUnit();
             labelSettings.dist = std::abs( textOffset.y() ) - textSize;
             labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
-            if ( !textSizeProperty.isEmpty() && textOffsetProperty.isEmpty() )
+            if ( textSizeProperty && !textOffsetProperty )
             {
-              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( ( textSizeProperty ) ) );
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( textSizeProperty.asExpression() ) );
             }
           }
         }

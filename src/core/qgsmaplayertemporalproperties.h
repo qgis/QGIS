@@ -117,6 +117,17 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     virtual QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const;
 #endif
+
+    /**
+     * Attempts to calculate the overall list of all temporal extents which are contained in the specified \a layer, using
+     * the settings defined by the temporal properties object.
+     *
+     * May return an empty list if the ranges could not be calculated.
+     *
+     * \since QGIS 3.20
+     */
+    virtual QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const;
+
 };
 
 #endif // QGSMAPLAYERTEMPORALPROPERTIES_H

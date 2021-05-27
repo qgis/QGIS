@@ -134,6 +134,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mIdLineEdit</tabstop>
+  <tabstop>mNameLineEdit</tabstop>
+  <tabstop>mRelationStrengthComboBox</tabstop>
+  <tabstop>mFieldsMappingTable</tabstop>
+  <tabstop>mFieldsMappingAddButton</tabstop>
+  <tabstop>mFieldsMappingRemoveButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

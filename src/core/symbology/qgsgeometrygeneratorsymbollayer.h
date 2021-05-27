@@ -17,7 +17,12 @@
 #define QGSGEOMETRYGENERATORSYMBOLLAYER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
+
+class QgsFillSymbol;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 
 /**
  * \ingroup core
@@ -39,7 +44,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      *
      * \param symbolType The symbol type which shall be used below this symbol.
      */
-    void setSymbolType( QgsSymbol::SymbolType symbolType );
+    void setSymbolType( Qgis::SymbolType symbolType );
 
     /**
      * Access the symbol type. This defines the type of geometry
@@ -47,7 +52,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      *
      * \returns Symbol type
      */
-    QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
+    Qgis::SymbolType symbolType() const { return mSymbolType; }
 
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
@@ -115,7 +120,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     /**
      * The type of the sub symbol.
      */
-    QgsSymbol::SymbolType mSymbolType;
+    Qgis::SymbolType mSymbolType;
 
     bool mRenderingFeature = false;
     bool mHasRenderedFeature = false;

@@ -18,11 +18,13 @@
 #include <QBoxLayout>
 #include <QStandardItemModel>
 #include <QTreeView>
+#include <QTreeWidget>
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsrenderer.h"
+#include "qgsrulebasedlabeling.h"
 #include "qgssymbollayerutils.h"
 #include "qgstextformatwidget.h"
 #include "qgsvectorlayer.h"
@@ -57,10 +59,49 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   mTextOnSymbolGroupBox->setLayout( groupLayout );
   mTextOnSymbolGroupBox->setCollapsed( false );
 
+  mShowLabelLegendCheckBox = new QCheckBox( tr( "Show label legend" ) );
+  connect( mShowLabelLegendCheckBox, &QCheckBox::toggled, this, &QgsVectorLayerLegendWidget::enableLabelLegendGroupBox );
+  mLabelLegendGroupBox = new QgsCollapsibleGroupBox;
+  mLabelLegendGroupBox->setVisible( false );
+  mLabelLegendGroupBox->setTitle( tr( "Label legend" ) );
+
+  mLabelLegendTreeWidget = new QTreeWidget;
+  connect( mLabelLegendTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerLegendWidget::labelLegendTreeWidgetItemDoubleClicked );
+  QVBoxLayout *labelLegendLayout = new QVBoxLayout;
+  labelLegendLayout->addWidget( mLabelLegendTreeWidget );
+  mLabelLegendGroupBox->setLayout( labelLegendLayout );
+
+
+
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->addWidget( mShowLabelLegendCheckBox );
+  layout->addWidget( mLabelLegendGroupBox );
   layout->addWidget( mTextOnSymbolGroupBox );
+
   setLayout( layout );
+}
+
+void QgsVectorLayerLegendWidget::enableLabelLegendGroupBox( bool enable )
+{
+  mLabelLegendGroupBox->setVisible( enable );
+  if ( enable )
+  {
+    populateLabelLegendTreeWidget();
+  }
+}
+
+void QgsVectorLayerLegendWidget::labelLegendTreeWidgetItemDoubleClicked( QTreeWidgetItem *item, int column )
+{
+  Qt::ItemFlags flags = item->flags();
+  if ( column == 1 )
+  {
+    item->setFlags( flags | Qt::ItemIsEditable );
+  }
+  else
+  {
+    item->setFlags( flags & ( ~Qt::ItemIsEditable ) );
+  }
 }
 
 void QgsVectorLayerLegendWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -77,9 +118,43 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
   if ( !legend )
     return;
 
+  mShowLabelLegendCheckBox->setChecked( legend->showLabelLegend() );
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
+
+}
+
+void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()
+{
+  mLabelLegendTreeWidget->clear();
+  mLabelLegendTreeWidget->setColumnCount( 2 );
+  QTreeWidgetItem *headerItem = new QTreeWidgetItem( QStringList() << tr( "Description" ) << tr( "LegendText" ) );
+  mLabelLegendTreeWidget->setHeaderItem( headerItem );
+
+  const QgsAbstractVectorLayerLabeling *labeling = mLayer->labeling();
+  if ( labeling )
+  {
+    QStringList pList = labeling->subProviders();
+    for ( int i = 0; i < pList.size(); ++i )
+    {
+      const QgsPalLayerSettings s = labeling->settings( pList.at( i ) );
+      QString description;
+      const QgsRuleBasedLabeling *ruleBasedLabeling = dynamic_cast<const QgsRuleBasedLabeling *>( labeling );
+      if ( ruleBasedLabeling && ruleBasedLabeling->rootRule() )
+      {
+        const QgsRuleBasedLabeling::Rule *rule = ruleBasedLabeling->rootRule()->findRuleByKey( pList.at( i ) );
+        if ( rule )
+        {
+          description = rule->description();
+        }
+      }
+
+      QTreeWidgetItem *labelItem = new QTreeWidgetItem( QStringList() << description << s.legendString() );
+      labelItem->setData( 0, Qt::UserRole, pList.at( i ) );
+      mLabelLegendTreeWidget->addTopLevelItem( labelItem );
+    }
+  }
 }
 
 
@@ -139,6 +214,13 @@ void QgsVectorLayerLegendWidget::applyToLayer()
   }
   legend->setTextOnSymbolContent( content );
 
+  bool showLabelLegend = mShowLabelLegendCheckBox->isChecked();
+  legend->setShowLabelLegend( showLabelLegend );
+  if ( showLabelLegend )
+  {
+    applyLabelLegend();
+  }
+
   mLayer->setLegend( legend );
 }
 
@@ -180,4 +262,33 @@ void QgsVectorLayerLegendWidget::labelsFromExpression()
   r->stopRender( context );
 
   populateLegendTreeView( content );
+}
+
+void QgsVectorLayerLegendWidget::applyLabelLegend()
+{
+  const QgsAbstractVectorLayerLabeling *layerLabeling = mLayer->labeling();
+  if ( !layerLabeling )
+  {
+    return;
+  }
+
+  QgsAbstractVectorLayerLabeling *labeling = layerLabeling->clone();
+  QStringList ids = labeling->subProviders();
+  int nIterations = std::min( ids.size(), mLabelLegendTreeWidget->topLevelItemCount() );
+
+  for ( int i = 0; i < nIterations; ++i )
+  {
+    QTreeWidgetItem *item = mLabelLegendTreeWidget->topLevelItem( i );
+    if ( item )
+    {
+      QString id = item->data( 0, Qt::UserRole ).toString();
+      QString legendText = item->text( 1 );
+
+      QgsPalLayerSettings *s = new QgsPalLayerSettings( labeling->settings( ids.at( i ) ) );
+      s->setLegendString( legendText );
+      labeling->setSettings( s, ids.at( i ) );
+    }
+  }
+
+  mLayer->setLabeling( labeling );
 }

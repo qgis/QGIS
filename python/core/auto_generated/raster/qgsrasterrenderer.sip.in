@@ -14,7 +14,7 @@
 
 class QgsRasterRenderer : QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Raster renderer pipe that applies colors to a raster.
 %End
 

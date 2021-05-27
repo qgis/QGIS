@@ -193,7 +193,7 @@ void tst_ModelTest::testInsertThroughProxy()
 }
 
 /**
-  Makes the persistent index list publicly accessible
+*  Makes the persistent index list publicly accessible
 */
 class AccessibleProxyModel : public QSortFilterProxyModel
 {

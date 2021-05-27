@@ -108,7 +108,6 @@ class roughness(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

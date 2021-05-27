@@ -11,7 +11,7 @@
 
 class QgsMapCanvasUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utility functions for working with :py:class:`QgsMapCanvas` widgets.
 
 .. versionadded:: 3.14

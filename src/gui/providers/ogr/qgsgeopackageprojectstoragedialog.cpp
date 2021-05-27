@@ -78,12 +78,12 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
     mCboConnection->setItemData( mCboConnection->findText( connName ), conn.path(), Qt::ItemDataRole::ToolTipRole );
   }
 
-  connect( mCboProject, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-  connect( mCboProject, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ), this, [ = ]( const QString & )
+  connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
+  connect( mCboProject, qOverload< const QString & >( &QComboBox::currentTextChanged ), this, [ = ]( const QString & )
   {
     mCboProject->setItemData( mCboProject->currentIndex(), false );
   } );
-  connect( mCboConnection, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
+  connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
 
   // If possible, set the item currently displayed database
   QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );

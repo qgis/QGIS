@@ -12,7 +12,7 @@
 
 class QgsMultiSurface: QgsGeometryCollection
 {
-%Docstring
+%Docstring(signature="appended")
 Multi surface geometry collection.
 
 .. versionadded:: 2.10

@@ -29,6 +29,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
+#include "qgspoint.h"
 
 /**
  * \ingroup UnitTests
@@ -105,8 +106,9 @@ void TestQgsGdalProvider::decodeUri()
 
   uri = QStringLiteral( "/vsizip//home/to/path/file.zip/my.tif" );
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
-  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/file.zip/my.tif" ) );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/file.zip" ) );
   QCOMPARE( components[QStringLiteral( "vsiPrefix" )].toString(), QStringLiteral( "/vsizip/" ) );
+  QCOMPARE( components[QStringLiteral( "vsiSuffix" )].toString(), QStringLiteral( "/my.tif" ) );
 
   //test windows path
   uri = QStringLiteral( "gpkg:c:/home/to/path/my_file.gpkg:layer_name" );
@@ -125,8 +127,9 @@ void TestQgsGdalProvider::encodeUri()
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "GPKG:/home/user/test.gpkg:layername" ) );
 
   parts.clear();
-  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.zip/my.tif" ) );
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.zip" ) );
   parts.insert( QStringLiteral( "vsiPrefix" ), QStringLiteral( "/vsizip/" ) );
+  parts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/my.tif" ) );
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/vsizip//home/user/test.zip/my.tif" ) );
 }
 
@@ -137,8 +140,8 @@ void TestQgsGdalProvider::scaleDataType()
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
-  QCOMPARE( rp->dataType( 1 ), Qgis::Float32 );
-  QCOMPARE( rp->sourceDataType( 1 ), Qgis::Float32 );
+  QCOMPARE( rp->dataType( 1 ), Qgis::DataType::Float32 );
+  QCOMPARE( rp->sourceDataType( 1 ), Qgis::DataType::Float32 );
   delete provider;
 }
 
@@ -215,60 +218,60 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
 
 void TestQgsGdalProvider::isRepresentableValue()
 {
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::Byte ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::Byte ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 255., Qgis::Byte ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 256., Qgis::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::Byte ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::Byte ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 255., Qgis::DataType::Byte ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 256., Qgis::DataType::Byte ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::UInt16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::UInt16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 65535., Qgis::UInt16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 65536., Qgis::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::UInt16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::UInt16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 65535., Qgis::DataType::UInt16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 65536., Qgis::DataType::UInt16 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -32769., Qgis::Int16 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -32768., Qgis::Int16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 32767., Qgis::Int16 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 32768., Qgis::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -32769., Qgis::DataType::Int16 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -32768., Qgis::DataType::Int16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 32767., Qgis::DataType::Int16 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 32768., Qgis::DataType::Int16 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::UInt32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::UInt32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967295., Qgis::UInt32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -1., Qgis::DataType::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 0., Qgis::DataType::UInt32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967295., Qgis::DataType::UInt32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::DataType::UInt32 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -2147483649., Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -2147483648., Qgis::Int32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 2147483647., Qgis::Int32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( 2147483648., Qgis::Int32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::UInt32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -2147483649., Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -2147483648., Qgis::DataType::Int32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 2147483647., Qgis::DataType::Int32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( 2147483648., Qgis::DataType::Int32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( 4294967296., Qgis::DataType::UInt32 ), false );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::Float32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float32 ), false );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<float>::max(), Qgis::Float32 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<float>::max(), Qgis::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::DataType::Float32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::DataType::Float32 ), false );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<float>::max(), Qgis::DataType::Float32 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<float>::max(), Qgis::DataType::Float32 ), true );
 
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::Float64 ), true );
-  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::infinity(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::infinity(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::quiet_NaN(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( -std::numeric_limits<double>::max(), Qgis::DataType::Float64 ), true );
+  QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::DataType::Float64 ), true );
 }
 
 void TestQgsGdalProvider::mask()
@@ -281,8 +284,8 @@ void TestQgsGdalProvider::mask()
   if ( rp )
   {
     QCOMPARE( rp->bandCount(), 4 );
-    QCOMPARE( rp->dataType( 4 ), Qgis::Byte );
-    QCOMPARE( rp->sourceDataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->dataType( 4 ), Qgis::DataType::Byte );
+    QCOMPARE( rp->sourceDataType( 4 ), Qgis::DataType::Byte );
     QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
     QCOMPARE( rp->bandScale( 4 ), 1.0 );
     QCOMPARE( rp->bandOffset( 4 ), 0.0 );
@@ -332,7 +335,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 
   // Create a all-0 dataset
   auto provider = QgsRasterDataProvider::create(
-                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::Byte, 1, 1, geoTransform, crs );
+                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs );
   delete provider;
 
   // Open it
@@ -353,7 +356,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 
   // Modify the raster
   rp->setEditable( true );
-  auto rblock = new QgsRasterBlock( Qgis::Byte, 1, 1 );
+  auto rblock = new QgsRasterBlock( Qgis::DataType::Byte, 1, 1 );
   rblock->setValue( 0, 0, 255 );
   rp->writeBlock( rblock, 1, 0, 0 );
   delete rblock;

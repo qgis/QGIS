@@ -97,11 +97,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       Symbology3D,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
     ~QgsLayerStylingWidget() override;
     QgsMapLayer *layer() { return mCurrentLayer; }
 
-    void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
+    void setPageFactories( const QList<const QgsMapLayerConfigWidgetFactory *> &factories );
 
     /**
      * Sets whether updates of the styling widget are blocked. This can be called to prevent
@@ -154,8 +154,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsRendererMeshPropertiesWidget *mMeshStyleWidget = nullptr;
     QgsVectorTileBasicRendererWidget *mVectorTileStyleWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mVectorTileLabelingWidget = nullptr;
-    QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
-    QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
+    QList<const QgsMapLayerConfigWidgetFactory *> mPageFactories;
+    QMap<int, const QgsMapLayerConfigWidgetFactory *> mUserPages;
     QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
 };
 

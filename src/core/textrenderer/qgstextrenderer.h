@@ -423,5 +423,4 @@ class CORE_EXPORT QgsTextRenderer
 
 };
 
-
 #endif // QGSTEXTRENDERER_H

@@ -44,7 +44,7 @@ bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
     return false;
 
   // check for duplicate name
-  for ( QgsMasterLayoutInterface *l : qgis::as_const( mLayouts ) )
+  for ( QgsMasterLayoutInterface *l : std::as_const( mLayouts ) )
   {
     if ( l->name() == layout->name() )
     {
@@ -172,7 +172,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
         do
         {
           isDuplicateName = false;
-          for ( QgsMasterLayoutInterface *layout : qgis::as_const( mLayouts ) )
+          for ( QgsMasterLayoutInterface *layout : std::as_const( mLayouts ) )
           {
             if ( l->name() == layout->name() )
             {

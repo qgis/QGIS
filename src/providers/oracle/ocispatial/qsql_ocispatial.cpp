@@ -657,14 +657,14 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
               geometryInd->elem_info = g.eleminfo.size() == 0  ? OCI_IND_NULL : OCI_IND_NOTNULL;
               geometryInd->ordinates = g.ordinates.size() == 0 ? OCI_IND_NULL : OCI_IND_NOTNULL;
 
-              foreach ( int e, g.eleminfo )
+              for ( int e : g.eleminfo )
               {
                 OCINumber n;
                 OCI_VERIFY_E( err, OCINumberFromInt( err, &e, sizeof( int ), OCI_NUMBER_SIGNED, &n ) );
                 OCI_VERIFY_E( err, OCICollAppend( env, err, &n, nullptr, geometryObj->elem_info ) );
               }
 
-              foreach ( double o, g.ordinates )
+              for ( double o : g.ordinates )
               {
                 OCINumber n;
                 OCI_VERIFY_E( err, OCINumberFromReal( err, &o, sizeof( double ), &n ) );
@@ -1549,6 +1549,7 @@ int QOCISpatialCols::readPiecewise( QVector<QVariant> &values, int index )
   int            r = 0;
   bool           nullField;
 
+  bool firstPiece = true;
   do
   {
     r = OCIStmtGetPieceInfo( d->sql, d->err, reinterpret_cast<void **>( &dfn ), &typep,
@@ -1589,20 +1590,21 @@ int QOCISpatialCols::readPiecewise( QVector<QVariant> &values, int index )
     {
       if ( isStringField )
       {
-        QString str = values.at( fieldNum + index ).toString();
+        QString str = firstPiece ? QString() : values.at( fieldNum + index ).toString();
         str += QString( reinterpret_cast<const QChar *>( col ), chunkSize / 2 );
         values[fieldNum + index] = str;
         fieldInf[fieldNum].ind = 0;
       }
       else
       {
-        QByteArray ba = values.at( fieldNum + index ).toByteArray();
+        QByteArray ba = firstPiece ? QByteArray() : values.at( fieldNum + index ).toByteArray();
         int sz = ba.size();
         ba.resize( sz + chunkSize );
         memcpy( ba.data() + sz, reinterpret_cast<char *>( col ), chunkSize );
         values[fieldNum + index] = ba;
         fieldInf[fieldNum].ind = 0;
       }
+      firstPiece = false;
     }
   }
   while ( status == OCI_SUCCESS_WITH_INFO || status == OCI_NEED_DATA );
@@ -2478,14 +2480,14 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
   QByteArray ba;
   union wkbPtr ptr;
 
-  int nElems;
+  int nElems = 0;
   if ( !getArraySize( sdoobj->elem_info, nElems ) )
   {
     qWarning() << "could not determine element info array size";
     return false;
   }
 
-  int nOrds;
+  int nOrds = 0;
   if ( !getArraySize( sdoobj->ordinates, nOrds ) )
   {
     qWarning() << "could not determine ordinate array size";
@@ -2506,7 +2508,6 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
        sdoind->point.x == OCI_IND_NOTNULL &&
        sdoind->point.y == OCI_IND_NOTNULL )
   {
-    Q_ASSERT( nOrds == 0 );
 
     double x, y, z = 0.0;
     if ( !getValue( &sdoobj->point.x, x ) )
@@ -3413,7 +3414,6 @@ bool QOCISpatialResult::gotoNext( QSqlCachedResult::ValueCache &values, int inde
   // need to read piecewise before assigning values
   if ( r == OCI_SUCCESS && piecewise )
   {
-    values.clear();
     r = d->cols->readPiecewise( values, index );
   }
 
@@ -3757,7 +3757,11 @@ bool QOCISpatialDriver::hasFeature( DriverFeature f ) const
 static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
 {
   ENTER
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   const QStringList opts( options.split( QLatin1Char( ';' ), QString::SkipEmptyParts ) );
+#else
+  const QStringList opts( options.split( QLatin1Char( ';' ), Qt::SkipEmptyParts ) );
+#endif
   for ( int i = 0; i < opts.count(); ++i )
   {
     const QString tmp( opts.at( i ) );

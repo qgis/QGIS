@@ -1,10 +1,11 @@
-name: MingW64 Windows 64bit Build
+name: 🪟 MingW64 Windows 64bit Build
 
 on:
   push:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
     paths:
     - 'src/**'
     - 'external/**'
@@ -22,6 +23,7 @@ on:
     - 'ms-windows/**'
     - 'CMakeLists.txt'
     - '.github/workflows/mingw64.yml'
+  workflow_dispatch:
 
 jobs:
   mingw64-build:
@@ -44,6 +46,7 @@ jobs:
           dockerfile: ms-windows/mingw/qgis3-build-deps-mingw.dockerfile
           push_git_tag: true
           push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
 
       - name: Prepare build cache for pull request
         uses: pat-s/always-upload-cache@v2.1.3
@@ -96,13 +99,13 @@ jobs:
           (cd $DEBUGROOT && zip -r - *) > qgis-portable-win64-debugsym.zip
 
       - name: Upload QGIS for Windows 64bit
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: QGIS for Windows 64bit
           path: qgis-portable-win64.zip
 
       - name: Upload QGIS for Windows 64bit Debug Symbols
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: QGIS for Windows 64bit Debug Symbols
           path: qgis-portable-win64-debugsym.zip

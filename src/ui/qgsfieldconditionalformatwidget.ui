@@ -108,15 +108,15 @@
    <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>fieldRadio</tabstop>
+  <tabstop>mFieldCombo</tabstop>
+  <tabstop>rowRadio</tabstop>
+  <tabstop>mNewButton</tabstop>
+  <tabstop>listView</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
- <buttongroups>
-  <buttongroup name="mFontButtons">
-   <property name="exclusive">
-    <bool>false</bool>
-   </property>
-  </buttongroup>
- </buttongroups>
 </ui>

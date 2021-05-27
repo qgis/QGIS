@@ -10,7 +10,7 @@
 
 class QgsPanelWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for any widget that can be shown as a inline panel
 %End
 
@@ -199,7 +199,7 @@ Overridden key press event to handle the esc event on the widget.
 
 class QgsPanelWidgetWrapper: QgsPanelWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Wrapper widget for existing widgets which can't have
 the inheritance tree changed, e.g dialogs.
 

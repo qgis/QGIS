@@ -57,7 +57,7 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      *
      * \since QGIS 3.16
      */
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;

@@ -125,6 +125,8 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void circularString();
+    void circularStringFromArray();
+    void circularStringAppend();
     void polygon(); //test QgsPolygon
     void curvePolygon();
     void triangle();
@@ -132,13 +134,22 @@ class TestQgsGeometry : public QObject
     void ellipse();
     void quadrilateral();
     void regularPolygon();
-    void compoundCurve(); //test QgsCompoundCurve
+
+    void compoundCurve();
+    void compoundCurveCondense_data();
+    void compoundCurveCondense();
+
     void multiPoint();
     void multiLineString();
     void multiCurve();
     void multiSurface();
     void multiPolygon();
     void geometryCollection();
+
+    void curveIndexOf_data();
+    void curveIndexOf();
+    void splitCurve_data();
+    void splitCurve();
 
     void fromQgsPointXY();
     void fromQPoint();
@@ -151,6 +162,18 @@ class TestQgsGeometry : public QObject
     void comparePolygons();
 
     void createEmptyWithSameType();
+
+    void compareTo_data();
+    void compareTo();
+
+    void scroll_data();
+    void scroll();
+
+    void normalize_data();
+    void normalize();
+
+    void simplifiedTypeRef_data();
+    void simplifiedTypeRef();
 
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
@@ -181,6 +204,7 @@ class TestQgsGeometry : public QObject
     void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
+    void makeValid_data();
     void makeValid();
 
     void isSimple_data();
@@ -1388,6 +1412,11 @@ void TestQgsGeometry::point()
 
   TestFailTransformer failTransformer;
   QVERIFY( !p.transform( &failTransformer ) );
+
+  // test bounding box intersects
+  QVERIFY( QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 0, 0.5, 1.5, 3 ) ) );
+  QVERIFY( !QgsPoint( 1, 2 ).boundingBoxIntersects( QgsRectangle( 3, 0.5, 3.5, 3 ) ) );
+  QVERIFY( !QgsPoint().boundingBoxIntersects( QgsRectangle( 0, 0.5, 3.5, 3 ) ) );
 }
 
 void TestQgsGeometry::circularString()
@@ -3009,6 +3038,275 @@ void TestQgsGeometry::circularString()
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
+void TestQgsGeometry::circularStringFromArray()
+{
+  // test creating circular strings from arrays
+  QVector< double > xx;
+  xx << 1 << 2 << 3;
+  QVector< double > yy;
+  yy << 11 << 12 << 13;
+  QgsCircularString fromArray( xx, yy );
+  QCOMPARE( fromArray.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray.numPoints(), 3 );
+  QCOMPARE( fromArray.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray.yAt( 2 ), 13.0 );
+
+  // unbalanced
+  xx = QVector< double >() << 1 << 2;
+  yy = QVector< double >() << 11 << 12 << 13;
+  QgsCircularString fromArray2( xx, yy );
+  QCOMPARE( fromArray2.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray2.numPoints(), 2 );
+  QCOMPARE( fromArray2.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray2.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray2.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray2.yAt( 1 ), 12.0 );
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12;
+  QgsCircularString fromArray3( xx, yy );
+  QCOMPARE( fromArray3.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray3.numPoints(), 2 );
+  QCOMPARE( fromArray3.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray3.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray3.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray3.yAt( 1 ), 12.0 );
+  // with z
+  QVector< double > zz;
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  zz = QVector< double >() << 21 << 22 << 23;
+  QgsCircularString fromArray4( xx, yy, zz );
+  QCOMPARE( fromArray4.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( fromArray4.numPoints(), 3 );
+  QCOMPARE( fromArray4.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray4.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray4.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray4.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray4.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray4.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray4.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray4.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray4.pointN( 2 ).z(), 23.0 );
+
+  // unbalanced -> z ignored
+  zz = QVector< double >() << 21 << 22;
+  QgsCircularString fromArray5( xx, yy, zz );
+  QCOMPARE( fromArray5.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray5.numPoints(), 3 );
+  QCOMPARE( fromArray5.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray5.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray5.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  // unbalanced -> z truncated
+  zz = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray5 = QgsCircularString( xx, yy, zz );
+  QCOMPARE( fromArray5.wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( fromArray5.numPoints(), 3 );
+  QCOMPARE( fromArray5.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray5.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray5.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray5.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray5.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray5.pointN( 2 ).z(), 23.0 );
+
+  // with m
+  QVector< double > mm;
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  mm = QVector< double >() << 21 << 22 << 23;
+  QgsCircularString fromArray6( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray6.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( fromArray6.numPoints(), 3 );
+  QCOMPARE( fromArray6.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray6.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray6.pointN( 0 ).m(), 21.0 );
+  QCOMPARE( fromArray6.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray6.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray6.pointN( 1 ).m(), 22.0 );
+  QCOMPARE( fromArray6.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray6.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray6.pointN( 2 ).m(), 23.0 );
+  // unbalanced -> m ignored
+  mm = QVector< double >() << 21 << 22;
+  QgsCircularString fromArray7( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray7.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( fromArray7.numPoints(), 3 );
+  QCOMPARE( fromArray7.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray7.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray7.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  // unbalanced -> m truncated
+  mm = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray7 = QgsCircularString( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray7.wkbType(), QgsWkbTypes::CircularStringM );
+  QCOMPARE( fromArray7.numPoints(), 3 );
+  QCOMPARE( fromArray7.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray7.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray7.pointN( 0 ).m(), 21.0 );
+  QCOMPARE( fromArray7.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray7.pointN( 1 ).m(), 22.0 );
+  QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray7.pointN( 2 ).m(), 23.0 );
+
+  // zm
+  xx = QVector< double >() << 1 << 2 << 3;
+  yy = QVector< double >() << 11 << 12 << 13;
+  zz = QVector< double >() << 21 << 22 << 23;
+  mm = QVector< double >() << 31 << 32 << 33;
+  QgsCircularString fromArray8( xx, yy, zz, mm );
+  QCOMPARE( fromArray8.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( fromArray8.numPoints(), 3 );
+  QCOMPARE( fromArray8.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray8.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray8.pointN( 0 ).z(), 21.0 );
+  QCOMPARE( fromArray8.pointN( 0 ).m(), 31.0 );
+  QCOMPARE( fromArray8.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray8.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray8.pointN( 1 ).z(), 22.0 );
+  QCOMPARE( fromArray8.pointN( 1 ).m(), 32.0 );
+  QCOMPARE( fromArray8.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray8.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray8.pointN( 2 ).z(), 23.0 );
+  QCOMPARE( fromArray8.pointN( 2 ).m(), 33.0 );
+}
+
+void TestQgsGeometry::circularStringAppend()
+{
+  //append circularstring
+
+  //append to empty
+  QgsCircularString l10;
+  l10.append( nullptr );
+  QVERIFY( l10.isEmpty() );
+  QCOMPARE( l10.numPoints(), 0 );
+
+  std::unique_ptr<QgsCircularString> toAppend( new QgsCircularString() );
+  l10.append( toAppend.get() );
+  QVERIFY( l10.isEmpty() );
+  QCOMPARE( l10.numPoints(), 0 );
+
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                       << QgsPoint( 11, 12 )
+                       << QgsPoint( 21, 22 ) );
+  l10.append( toAppend.get() );
+  QVERIFY( !l10.is3D() );
+  QVERIFY( !l10.isMeasure() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.vertexCount(), 3 );
+  QCOMPARE( l10.nCoordinates(), 3 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( l10.pointN( 0 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 1 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 2 ) );
+
+  //add more points
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 21, 22 )
+                       << QgsPoint( 41, 42 )
+                       << QgsPoint( 51, 52 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.numPoints(), 5 );
+  QCOMPARE( l10.vertexCount(), 5 );
+  QCOMPARE( l10.nCoordinates(), 5 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 3 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 4 ), toAppend->pointN( 2 ) );
+
+  //check dimensionality is inherited from append line if initially empty
+  l10.clear();
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 31, 32, 33, 34 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 41, 42, 43, 44 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 53, 54 ) );
+  l10.append( toAppend.get() );
+  QVERIFY( l10.is3D() );
+  QVERIFY( l10.isMeasure() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.ringCount(), 1 );
+  QCOMPARE( l10.partCount(), 1 );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( l10.pointN( 0 ), toAppend->pointN( 0 ) );
+  QCOMPARE( l10.pointN( 1 ), toAppend->pointN( 1 ) );
+  QCOMPARE( l10.pointN( 2 ), toAppend->pointN( 2 ) );
+
+  //append points with z to non z circular string
+  l10.clear();
+  l10.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 31, 32 )
+                 << QgsPoint( QgsWkbTypes::Point, 41, 42 )
+                 << QgsPoint( QgsWkbTypes::Point, 51, 52 ) );
+  QVERIFY( !l10.is3D() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 33, 34 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 141, 142, 43, 44 )
+                       << QgsPoint( QgsWkbTypes::PointZM, 151, 152, 53, 54 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularString );
+  QCOMPARE( l10.pointN( 0 ), QgsPoint( 31, 32 ) );
+  QCOMPARE( l10.pointN( 1 ), QgsPoint( 41, 42 ) );
+  QCOMPARE( l10.pointN( 2 ), QgsPoint( 51, 52 ) );
+  QCOMPARE( l10.pointN( 3 ), QgsPoint( 141, 142 ) );
+  QCOMPARE( l10.pointN( 4 ), QgsPoint( 151, 152 ) );
+
+  //append points without z/m to circularstring with z & m
+  l10.clear();
+  l10.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 31, 32, 11, 21 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 41, 42, 12, 22 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 51, 52, 13, 23 ) );
+  QVERIFY( l10.is3D() );
+  QVERIFY( l10.isMeasure() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence() << QgsPoint( 51, 52 )
+                       << QgsPoint( 141, 142 )
+                       << QgsPoint( 151, 152 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.wkbType(), QgsWkbTypes::CircularStringZM );
+  QCOMPARE( l10.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 11, 21 ) );
+  QCOMPARE( l10.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 41, 42, 12, 22 ) );
+  QCOMPARE( l10.pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 51, 52, 13, 23 ) );
+  QCOMPARE( l10.pointN( 3 ), QgsPoint( QgsWkbTypes::PointZM, 141, 142 ) );
+  QCOMPARE( l10.pointN( 4 ), QgsPoint( QgsWkbTypes::PointZM, 151, 152 ) );
+
+  //append another line the closes the original geometry.
+  //Make sure there are not duplicate points except start and end point
+  l10.clear();
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence()
+                       << QgsPoint( 1, 1 )
+                       << QgsPoint( 5, 5 )
+                       << QgsPoint( 10, 1 ) );
+  l10.append( toAppend.get() );
+  QCOMPARE( l10.numPoints(), 3 );
+  QCOMPARE( l10.vertexCount(), 3 );
+  toAppend.reset( new QgsCircularString() );
+  toAppend->setPoints( QgsPointSequence()
+                       << QgsPoint( 10, 1 )
+                       << QgsPoint( 5, 2 )
+                       << QgsPoint( 1, 1 ) );
+  l10.append( toAppend.get() );
+
+  QVERIFY( l10.isClosed() );
+  QCOMPARE( l10.numPoints(), 5 );
+  QCOMPARE( l10.vertexCount(), 5 );
+}
 
 void TestQgsGeometry::lineString()
 {
@@ -5175,6 +5473,23 @@ void TestQgsGeometry::lineString()
   QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
   orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
+
+  // test bounding box intersects
+  QgsLineString bb;
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  bb.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+  // double test because of cache
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+  // clear cache
+  bb.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 13, -10 ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 11, -10, 13, 12 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 12, 3, 16, 9 ) ) );
 }
 
 void TestQgsGeometry::polygon()
@@ -5994,33 +6309,33 @@ void TestQgsGeometry::polygon()
   QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 0.8 );
   boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() );
   delete boundary;
 
@@ -6029,7 +6344,7 @@ void TestQgsGeometry::polygon()
                        << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 )  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
   boundaryPolygon.setExteriorRing( boundary1.clone() );
   boundary = boundaryPolygon.boundary();
-  lineBoundary = dynamic_cast< QgsLineString * >( boundary );
+  lineBoundary = qgis::down_cast< QgsLineString * >( boundary );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numPoints(), 4 );
   QCOMPARE( lineBoundary->wkbType(), QgsWkbTypes::LineStringZ );
@@ -7041,6 +7356,35 @@ void TestQgsGeometry::polygon()
   rhr.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   rhr.forceRHR();
   QCOMPARE( rhr.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+
+  // test bounding box intersects
+  QgsPolygon bb;
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QgsLineString bbR;
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 4, 2 ) << QgsPoint( 4, 4 ) << QgsPoint( 0, 2 ) );
+  bb.setExteriorRing( bbR.clone() );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  // double test because of cache
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 11, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 11, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 0, 2, 4, 4 ) );
+  // clear cache
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 10, 2 ) << QgsPoint( 14, 2 ) << QgsPoint( 15, 4 ) << QgsPoint( 10, 2 ) );
+  bb.setExteriorRing( bbR.clone() );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 10, 2, 15, 4 ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 11, 3, 16, 9 ) ) );
+  // technically invalid -- the interior ring is outside the exterior, but we want boundingBoxIntersects to be tolerant to
+  // cases like this!
+  bbR.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 4, 2 ) << QgsPoint( 5, 4 ) << QgsPoint( 1, 2 ) );
+  bb.addInteriorRing( bbR.clone() );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
+  QVERIFY( bb.boundingBoxIntersects( QgsRectangle( 11, 3, 16, 9 ) ) );
+  QVERIFY( !bb.boundingBoxIntersects( QgsRectangle( 21, 3, 26, 9 ) ) );
+  QCOMPARE( bb.boundingBox(), QgsRectangle( 10, 2, 15, 4 ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -7367,13 +7711,52 @@ void TestQgsGeometry::triangle()
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
 
   // WKB
-  QByteArray wkb = t5.asWkb();
-  QCOMPARE( wkb.size(), t5.wkbSize() );
-  t6.clear();
-  QgsConstWkbPtr wkb16ptr5( wkb );
-  t6.fromWkb( wkb16ptr5 );
-  QCOMPARE( t5.wkbType(), QgsWkbTypes::TriangleZM );
-  QCOMPARE( t5, t6 );
+  QgsTriangle tResult, tWKB;
+  QByteArray wkb;
+// WKB noZM
+  tWKB = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtr( wkb );
+  tResult.fromWkb( wkbPtr );
+  QCOMPARE( tWKB.asWkt(), "Triangle ((0 0, 0 10, 10 10, 0 0))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( tWKB, tResult );
+// WKB Z
+  tWKB = QgsTriangle( QgsPoint( 0, 0, 1 ), QgsPoint( 0, 10, 2 ), QgsPoint( 10, 10, 3 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtrZ( wkb );
+  tResult.fromWkb( wkbPtrZ );
+  QCOMPARE( tWKB.asWkt(), "TriangleZ ((0 0 1, 0 10 2, 10 10 3, 0 0 1))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZ );
+  QCOMPARE( tWKB, tResult );
+// WKB M
+// tWKB=QgsTriangle (QgsPoint(0,0, 5), QgsPoint(0, 10, 6), QgsPoint(10, 10, 7)); will produce a TriangleZ
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 5 )
+                  << QgsPoint( QgsWkbTypes::PointM, 0, 10, 0, 6 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 7 ) );
+  tWKB.setExteriorRing( ext.release() );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr  wkbPtrM( wkb );
+  tResult.fromWkb( wkbPtrM );
+  QCOMPARE( tWKB.asWkt(), "TriangleM ((0 0 5, 0 10 6, 10 10 7, 0 0 5))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleM );
+  QCOMPARE( tWKB, tResult );
+// WKB ZM
+  tWKB = QgsTriangle( QgsPoint( 0, 0, 1, 5 ), QgsPoint( 0, 10, 2, 6 ), QgsPoint( 10, 10, 3, 7 ) );
+  wkb = tWKB.asWkb();
+  QCOMPARE( wkb.size(), tWKB.wkbSize() );
+  tResult.clear();
+  QgsConstWkbPtr wkbPtrZM( wkb );
+  tResult.fromWkb( wkbPtrZM );
+  QCOMPARE( tWKB.asWkt(), "TriangleZM ((0 0 1 5, 0 10 2 6, 10 10 3 7, 0 0 1 5))" );
+  QCOMPARE( tWKB.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( tWKB, tResult );
 
   //bad WKB - check for no crash
   t6.clear();
@@ -7385,6 +7768,13 @@ void TestQgsGeometry::triangle()
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
   QVERIFY( !t6.fromWkb( wkbPointPtr ) );
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+  // invalid multi ring
+  // ba is equivalent to "Triangle((0 0, 0 5, 5 5, 0 0), (2 2, 2 4, 3 3, 2 2))"
+  QByteArray ba = QByteArray::fromHex( "01110000000200000004000000000000000000000000000000000000000000000000000000000000000000144000000000000014400000000000001440000000000000000000000000000000000400000000000000000000400000000000000040000000000000004000000000000010400000000000000840000000000000084000000000000000400000000000000040" );
+  QgsTriangle tInvalidWkb;
+  QgsConstWkbPtr wkbMultiRing( ba );
+  QVERIFY( !tInvalidWkb.fromWkb( wkbMultiRing ) );
+  QCOMPARE( tInvalidWkb, QgsTriangle() );
 
   //asGML2
   QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
@@ -7470,6 +7860,8 @@ void TestQgsGeometry::triangle()
   QVERIFY( t9.isEquilateral() );
 
   // vertex
+  QCOMPARE( QgsTriangle().vertexAt( 0 ), QgsPoint() );
+  QCOMPARE( QgsTriangle().vertexAt( -1 ), QgsPoint() );
   QVERIFY( t9.vertexAt( -1 ).isEmpty() );
   QCOMPARE( t9.vertexAt( 0 ), QgsPoint( 10, 10 ) );
   QCOMPARE( t9.vertexAt( 1 ), QgsPoint( 16, 10 ) );
@@ -7494,6 +7886,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
 
   // circumscribed circle
+  QCOMPARE( QgsTriangle().circumscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().circumscribedCenter().isEmpty() );
   QCOMPARE( 0.0, QgsTriangle().circumscribedRadius() );
   QCOMPARE( QgsPoint( 2.5, 2.5 ), t7.circumscribedCenter() );
@@ -7506,6 +7899,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 3.4641, t9.circumscribedCircle().radius(), 0.0001 );
 
   // inscribed circle
+  QCOMPARE( QgsTriangle().inscribedCircle(), QgsCircle() );
   QVERIFY( QgsTriangle().inscribedCenter().isEmpty() );
   QCOMPARE( 0.0, QgsTriangle().inscribedRadius() );
   QGSCOMPARENEARPOINT( QgsPoint( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
@@ -7588,6 +7982,8 @@ void TestQgsGeometry::triangle()
 
   //move vertex
   QgsPoint pt1( 5, 5 );
+  // empty triangle
+  QVERIFY( !QgsTriangle().moveVertex( id, pt1 ) );
   // invalid part
   id.part = -1;
   QVERIFY( !t11.moveVertex( id, pt1 ) );
@@ -8173,7 +8569,7 @@ void TestQgsGeometry::circle()
   std::unique_ptr< QgsCircularString > cs( QgsCircle( QgsPoint( 0, 0 ), 5 ).toCircularString() );
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
   cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5 ).toCircularString( true ) );
-  QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 -0, 0 5)" ) );
+  QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
   cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString() );
   QCOMPARE( cs->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
   cs.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 315 ).toCircularString( true ) );
@@ -9445,31 +9841,31 @@ void TestQgsGeometry::curvePolygon()
   QgsMultiCurve *multiLineBoundary = dynamic_cast< QgsMultiCurve * >( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 5 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 2.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 4 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.5 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 4 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 3 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 3 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 5 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 2.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 4 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.5 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 4 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 3 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 3 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
+  QCOMPARE( qgis::down_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
   boundaryPolygon.setInteriorRings( QVector< QgsCurve * >() );
   delete boundary;
 
@@ -10640,10 +11036,10 @@ void TestQgsGeometry::compoundCurve()
   QVERIFY( c16.is3D() );
   QVERIFY( c16.isMeasure() );
   QCOMPARE( c16.nCurves(), 1 );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 0 ), l15.pointN( 0 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 1 ), l15.pointN( 1 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 2 ), l15.pointN( 2 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 3 ), l15.pointN( 3 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 0 ), l15.pointN( 0 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 1 ), l15.pointN( 1 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 2 ), l15.pointN( 2 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c16.curveAt( 0 ) )->pointN( 3 ), l15.pointN( 3 ) );
 
   //bad WKB - check for no crash
   c16.clear();
@@ -10673,10 +11069,10 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( c18.wkbType(), QgsWkbTypes::CompoundCurveZM );
   QVERIFY( c18.is3D() );
   QVERIFY( c18.isMeasure() );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 0 ), l17.pointN( 0 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 1 ), l17.pointN( 1 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 2 ), l17.pointN( 2 ) );
-  QCOMPARE( dynamic_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 3 ), l17.pointN( 3 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 0 ), l17.pointN( 0 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 1 ), l17.pointN( 1 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 2 ), l17.pointN( 2 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( c18.curveAt( 0 ) )->pointN( 3 ), l17.pointN( 3 ) );
 
   //bad WKT
   QVERIFY( !c18.fromWkt( "Polygon()" ) );
@@ -12245,6 +12641,33 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
   orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
   QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
+}
+
+void TestQgsGeometry::compoundCurveCondense_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compound curve one line" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 1 2))" ) << QStringLiteral( "CompoundCurve ((1 1, 1 2))" );
+  QTest::newRow( "compound curve one circular string" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 1, 1 2, 2 2))" ) << QStringLiteral( "CompoundCurve (CircularString (1 1, 1 2, 2 2))" );
+  QTest::newRow( "compound curve can't condense" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 2, 2 2),(2 2, 2 3),CIRCULARSTRING(2 3, 2 0, 2 1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1),CircularString (1 1, 1 2, 2 2),(2 2, 2 3),CircularString (2 3, 2 0, 2 1))" );
+  QTest::newRow( "compound curve two lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0))" );
+  QTest::newRow( "compound curve three lines" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0, 4 0, 5 0))" );
+  QTest::newRow( "compound curve two lines and cs" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0))" );
+  QTest::newRow( "compound curve two cs" ) << QStringLiteral( "COMPOUNDCURVE(CIRCULARSTRING(1 5, 1 4, 1 1),CIRCULARSTRING(1 1, 1 0, 3 0))" ) << QStringLiteral( "CompoundCurve (CircularString (1 5, 1 4, 1 1, 1 0, 3 0))" );
+  QTest::newRow( "compound curve complex" ) << QStringLiteral( "COMPOUNDCURVE((1 5, 1 4, 1 1),(1 1, 1 0, 3 0),CIRCULARSTRING(3 0, 4 0, 5 0),(5 0, 6 0),(6 0, 7 0),CIRCULARSTRING(7 0, 8 0, 9 0),CIRCULARSTRING(9 0, 10 1, 10 0),(10 0, 10 -1))" ) << QStringLiteral( "CompoundCurve ((1 5, 1 4, 1 1, 1 0, 3 0),CircularString (3 0, 4 0, 5 0),(5 0, 6 0, 7 0),CircularString (7 0, 8 0, 9 0, 10 1, 10 0),(10 0, 10 -1))" );
+}
+
+void TestQgsGeometry::compoundCurveCondense()
+{
+  QFETCH( QString, curve );
+  QFETCH( QString, expected );
+
+  QgsGeometry g = QgsGeometry::fromWkt( curve );
+  qgsgeometry_cast< QgsCompoundCurve * >( g.get() )->condenseCurves();
+
+  QCOMPARE( g.asWkt(), expected );
 }
 
 void TestQgsGeometry::multiPoint()
@@ -15226,15 +15649,15 @@ void TestQgsGeometry::multiPolygon()
   QgsMultiLineString *lineBoundary = dynamic_cast< QgsMultiLineString * >( boundary.get() );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numGeometries(), 1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
 
   // add polygon with interior rings
   QgsLineString ring2;
@@ -15252,42 +15675,42 @@ void TestQgsGeometry::multiPolygon()
   QgsMultiLineString *multiLineBoundary( static_cast< QgsMultiLineString * >( boundary.get() ) );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 10.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 11.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 11.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 10.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 10.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 10.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 11.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 10.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 10.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 10.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 10.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 10.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 10.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 10.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 10.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 10.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 0 ), 10.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 1 ), 10.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 2 ), 10.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 3 ), 10.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 0 ), 10.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 1 ), 10.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 2 ), 10.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 3 ), 10.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 10.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 11.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 11.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 10.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 10.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 10.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 11.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 10.0 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 10.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 10.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 10.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 10.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 10.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 10.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 10.2 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 10.1 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->numPoints(), 4 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 0 ), 10.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 1 ), 10.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 2 ), 10.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->xAt( 3 ), 10.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 0 ), 10.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 1 ), 10.8 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 2 ), 10.9 );
+  QCOMPARE( qgis::down_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 3 ), 10.8 );
 
   // vertex iterator: 2 polygons (one with just exterior ring, other with two interior rings)
   QgsAbstractGeometry::vertex_iterator it = multiPolygon1.vertices_begin();
@@ -16779,6 +17202,153 @@ void TestQgsGeometry::geometryCollection()
   QVERIFY( !transformCollect2.transform( &failTransformer ) );
 }
 
+void TestQgsGeometry::curveIndexOf_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<QString>( "point" );
+  QTest::addColumn<int>( "expected" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "linestring one point no match" ) << QStringLiteral( "LINESTRING( 1 3 )" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "linestring one point match" ) << QStringLiteral( "LINESTRING( 1 2 )" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  QTest::newRow( "linestring match 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  QTest::newRow( "linestring match 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 2 3 )" ) << 1;
+  QTest::newRow( "linestring match 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "linestring no match" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 3 )" ) << -1;
+  QTest::newRow( "linestringz no match" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 2 3 11)" ) << -1;
+  QTest::newRow( "linestringz match" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 2 3 12)" ) << 1;
+  QTest::newRow( "linestringm no match" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 2 3 11)" ) << -1;
+  QTest::newRow( "linestringm match" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 2 3 12)" ) << 1;
+  QTest::newRow( "linestringzm no match z" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 2 3 11 22)" ) << -1;
+  QTest::newRow( "linestringzm no match m" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 2 3 12 23)" ) << -1;
+  QTest::newRow( "linestringzm match" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointZM( 2 3 12 22)" ) << 1;
+
+  QTest::newRow( "circularstring empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "circularstring match 0" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 1 2 )" ) << 0;
+  // should not match -- we only consider segment points, not curve points
+  QTest::newRow( "circularstring match 1" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 2 3 )" ) << -1;
+  QTest::newRow( "circularstring match 2" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "circularstring no match" ) << QStringLiteral( "CIRCULARSTRING( 1 2, 2 3, 3 4)" ) << QStringLiteral( "Point( 3 3 )" ) << -1;
+  QTest::newRow( "circularstringz no match" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 3 4 12)" ) << -1;
+  QTest::newRow( "circularstringz match" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointZ( 3 4 13)" ) << 2;
+  QTest::newRow( "circularstringm no match" ) << QStringLiteral( "CIRCULARSTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 3 4 12)" ) << -1;
+  QTest::newRow( "circularstringm match" ) << QStringLiteral( "CIRCULARSTRINGM( 1 2 11, 2 3 12, 3 4 13)" ) << QStringLiteral( "PointM( 3 4 13)" ) << 2;
+  QTest::newRow( "circularstringzm no match z" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 3 4 14 23)" ) << -1;
+  QTest::newRow( "circularstringzm no match m" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointM( 3 4 13 24)" ) << -1;
+  QTest::newRow( "circularstringzm match" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23)" ) << QStringLiteral( "PointZM( 3 4 13 23)" ) << 2;
+
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "Point( 1 2 )" ) << -1;
+  QTest::newRow( "compound curve no match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 1 21 )" ) << -1;
+  QTest::newRow( "compound curve match 0" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 1 1 )" ) << 0;
+  QTest::newRow( "compound curve match 1" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 2 3 )" ) << 1;
+  QTest::newRow( "compound curve match 2" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 3 4 )" ) << 2;
+  QTest::newRow( "compound curve match 3" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 5 6 )" ) << 3;
+  QTest::newRow( "compound curve match 4" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 7 8 )" ) << 4;
+  QTest::newRow( "compound curve match 5" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),(3 4, 5 6, 7 8),(7 8, 9 10))" ) << QStringLiteral( "Point( 9 10 )" ) << 5;
+  QTest::newRow( "compound curve circular string match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),CIRCULARSTRING(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 7 8 )" ) << 4;
+  QTest::newRow( "compound curve circular string no match" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 3, 3 4),CIRCULARSTRING(3 4, 5 6, 7 8))" ) << QStringLiteral( "Point( 5 6 )" ) << -1;
+  QTest::newRow( "compound curve z match" ) << QStringLiteral( "COMPOUNDCURVEZ((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointZ( 7 8 15)" ) << 4;
+  QTest::newRow( "compound curve z nomatch" ) << QStringLiteral( "COMPOUNDCURVEZ((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointZ( 7 8 16)" ) << -1;
+  QTest::newRow( "compound curve m match" ) << QStringLiteral( "COMPOUNDCURVEM((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointM( 7 8 15)" ) << 4;
+  QTest::newRow( "compound curve m nomatch" ) << QStringLiteral( "COMPOUNDCURVEM((1 1 11, 2 3 12, 3 4 13),(3 4 13, 5 6 14, 7 8 15))" ) << QStringLiteral( "PointM( 7 8 16)" ) << -1;
+  QTest::newRow( "compound curve zm match" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 15 26)" ) << 4;
+  QTest::newRow( "compound curve zm nomatch z" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 16 26)" ) << -1;
+  QTest::newRow( "compound curve zm nomatch m" ) << QStringLiteral( "COMPOUNDCURVEZM((1 1 11 22, 2 3 12 23, 3 4 13 24),(3 4 13 24, 5 6 14 25, 7 8 15 26))" ) << QStringLiteral( "PointZM( 7 8 15 27)" ) << -1;
+}
+
+void TestQgsGeometry::curveIndexOf()
+{
+  QFETCH( QString, curve );
+  QFETCH( QString, point );
+  QFETCH( int, expected );
+
+  QgsGeometry g = QgsGeometry::fromWkt( curve );
+  QgsPoint p;
+  p.fromWkt( point );
+  QCOMPARE( qgsgeometry_cast< const QgsCurve * >( g.constGet() )->indexOf( p ), expected );
+}
+
+void TestQgsGeometry::splitCurve_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<int>( "vertex" );
+  QTest::addColumn<QString>( "curve1" );
+  QTest::addColumn<QString>( "curve2" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring empty 1" ) << QStringLiteral( "LINESTRING()" ) << 1 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 0" ) << QStringLiteral( "LINESTRING( 1 2)" ) << 0 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 1 " ) << QStringLiteral( "LINESTRING( 1 2)" ) << 1 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring one vertex 2" ) << QStringLiteral( "LINESTRING( 1 2)" ) << 2 << QStringLiteral( "LineString (1 2)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring two 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3)" );
+  QTest::newRow( "linestring two 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring two 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring three 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3, 3 4)" );
+  QTest::newRow( "linestring three 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString (2 3, 3 4)" );
+  QTest::newRow( "linestring three 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring three 3" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4)" ) << 3 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring four 0" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 0 << QStringLiteral( "LineString EMPTY" ) << QStringLiteral( "LineString (1 2, 2 3, 3 4, 5 6)" );
+  QTest::newRow( "linestring four 1" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 1 << QStringLiteral( "LineString (1 2, 2 3)" ) << QStringLiteral( "LineString (2 3, 3 4, 5 6)" );
+  QTest::newRow( "linestring four 2" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 2 << QStringLiteral( "LineString (1 2, 2 3, 3 4)" ) << QStringLiteral( "LineString (3 4, 5 6)" );
+  QTest::newRow( "linestring four 3" ) << QStringLiteral( "LINESTRING( 1 2, 2 3, 3 4, 5 6)" ) << 3 << QStringLiteral( "LineString (1 2, 2 3, 3 4, 5 6)" ) << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LINESTRINGZ( 1 2 11, 2 3 12, 3 4 13, 5 6 14)" ) << 1 << QStringLiteral( "LineStringZ (1 2 11, 2 3 12)" ) << QStringLiteral( "LineStringZ (2 3 12, 3 4 13, 5 6 14)" );
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LINESTRINGM( 1 2 11, 2 3 12, 3 4 13, 5 6 14)" ) << 1 << QStringLiteral( "LineStringM (1 2 11, 2 3 12)" ) << QStringLiteral( "LineStringM (2 3 12, 3 4 13, 5 6 14)" );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LINESTRINGZM( 1 2 11 21, 2 3 12 22, 3 4 13 23, 5 6 14 24)" ) << 1 << QStringLiteral( "LineStringZM (1 2 11 21, 2 3 12 22)" ) << QStringLiteral( "LineStringZM (2 3 12 22, 3 4 13 23, 5 6 14 24)" );
+
+  QTest::newRow( "CircularString empty" ) << QStringLiteral( "CircularString()" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString empty 1" ) << QStringLiteral( "CircularString()" ) << 1 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 0" ) << QStringLiteral( "CircularString( 1 2)" ) << 0 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 1 " ) << QStringLiteral( "CircularString( 1 2)" ) << 1 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString one vertex 2" ) << QStringLiteral( "CircularString( 1 2)" ) << 2 << QStringLiteral( "CircularString (1 2)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString three 0" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" );
+  QTest::newRow( "CircularString three 1" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 1 << QStringLiteral( "CircularString (1 2, 2 3)" ) << QStringLiteral( "CircularString (2 3, 3 4)" );
+  QTest::newRow( "CircularString three 2" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 2 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString three 3" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4)" ) << 3 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularString five 0" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 0 << QStringLiteral( "CircularString EMPTY" ) << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 1" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 1 << QStringLiteral( "CircularString (1 2, 2 3)" ) << QStringLiteral( "CircularString (2 3, 3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 2" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 2 << QStringLiteral( "CircularString (1 2, 2 3, 3 4)" ) << QStringLiteral( "CircularString (3 4, 5 6, 7 8)" );
+  QTest::newRow( "CircularString five 3" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 3 << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6)" ) << QStringLiteral( "CircularString (5 6, 7 8)" );
+  QTest::newRow( "CircularString five 4" ) << QStringLiteral( "CircularString( 1 2, 2 3, 3 4, 5 6, 7 8)" ) << 4 << QStringLiteral( "CircularString (1 2, 2 3, 3 4, 5 6, 7 8)" ) << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "CircularStringz" ) << QStringLiteral( "CircularStringZ( 1 2 11, 2 3 12, 3 4 13, 5 6 14, 7 8 15)" ) << 1 << QStringLiteral( "CircularStringZ (1 2 11, 2 3 12)" ) << QStringLiteral( "CircularStringZ (2 3 12, 3 4 13, 5 6 14, 7 8 15)" );
+  QTest::newRow( "CircularStringm" ) << QStringLiteral( "CircularStringM( 1 2 11, 2 3 12, 3 4 13, 5 6 14, 7 8 15)" ) << 1 << QStringLiteral( "CircularStringM (1 2 11, 2 3 12)" ) << QStringLiteral( "CircularStringM (2 3 12, 3 4 13, 5 6 14, 7 8 15)" );
+  QTest::newRow( "CircularStringzm" ) << QStringLiteral( "CircularStringZM( 1 2 11 21, 2 3 12 22, 3 4 13 23, 5 6 14 24, 7 8 15 25)" ) << 1 << QStringLiteral( "CircularStringZM (1 2 11 21, 2 3 12 22)" ) << QStringLiteral( "CircularStringZM (2 3 12 22, 3 4 13 23, 5 6 14 24, 7 8 15 25)" );
+
+  QTest::newRow( "CompoundCurve empty" ) << QStringLiteral( "CompoundCurve()" ) << 0 << QStringLiteral( "CompoundCurve EMPTY" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve 0" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 0
+                                     << QStringLiteral( "CompoundCurve EMPTY" ) << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 1" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 1
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4))" ) << QStringLiteral( "CompoundCurve ((3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 2" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 2
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6))" ) << QStringLiteral( "CompoundCurve (CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 4" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6),CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 4
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10))" ) << QStringLiteral( "CompoundCurve (CircularString (9 10, 11 12, 13 14))" );
+  QTest::newRow( "CompoundCurve 6" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 6
+                                     << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve 10" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14))" ) << 10
+                                      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve three parts 6" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 6
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14))" ) << QStringLiteral( "CompoundCurve ((13 14, 15 16, 17 18))" );
+  QTest::newRow( "CompoundCurve three parts 7" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 7
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16))" ) << QStringLiteral( "CompoundCurve ((15 16, 17 18))" );
+  QTest::newRow( "CompoundCurve three parts 7" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 8
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16, 17 18))" ) << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "CompoundCurve three parts 1" ) << QStringLiteral( "CompoundCurve((1 2, 3 4, 5 6), CircularString(5 6, 7 8, 9 10, 11 12, 13 14), (13 14, 15 16, 17 18))" ) << 1
+      << QStringLiteral( "CompoundCurve ((1 2, 3 4))" ) << QStringLiteral( "CompoundCurve ((3 4, 5 6),CircularString (5 6, 7 8, 9 10, 11 12, 13 14),(13 14, 15 16, 17 18))" );
+}
+
+void TestQgsGeometry::splitCurve()
+{
+  QFETCH( QString, wkt );
+  QFETCH( int, vertex );
+  QFETCH( QString, curve1 );
+  QFETCH( QString, curve2 );
+
+  QgsGeometry curve( QgsGeometry::fromWkt( wkt ) );
+  auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
+  QCOMPARE( p1->asWkt(), curve1 );
+  QCOMPARE( p2->asWkt(), curve2 );
+}
+
 void TestQgsGeometry::fromQgsPointXY()
 {
   QgsPointXY point( 1.0, 2.0 );
@@ -17077,6 +17647,269 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsTriangle>();
 }
 
+void TestQgsGeometry::compareTo_data()
+{
+  QTest::addColumn<QString>( "geom1" );
+  QTest::addColumn<QString>( "geom2" );
+  QTest::addColumn<int>( "expected" );
+
+  QTest::newRow( "point vs multipoint" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << -1;
+  QTest::newRow( "multipoint vs point" ) << QStringLiteral( "MULTIPOINT((1 2))" ) << QStringLiteral( "POINT( 1 2 )" ) << 1;
+  QTest::newRow( "empty point vs empty point" ) << QStringLiteral( "POINT EMPTY" ) << QStringLiteral( "POINT EMPTY" ) << 0;
+  QTest::newRow( "empty point vs non-empty point" ) << QStringLiteral( "POINT EMPTY" ) << QStringLiteral( "POINT (1 2)" ) << -1;
+  QTest::newRow( "non-empty point vs empty point" ) << QStringLiteral( "POINT (1 2)" ) << QStringLiteral( "POINT EMPTY" ) << 1;
+  QTest::newRow( "point vs point" ) << QStringLiteral( "POINT( 1 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 0;
+  QTest::newRow( "point vs point greater x" ) << QStringLiteral( "POINT( 2 2 )" ) << QStringLiteral( "POINT(1 2)" ) << 1;
+  QTest::newRow( "point vs point lesser x" ) << QStringLiteral( "POINT( 0 2 )" ) << QStringLiteral( "POINT(1 2)" ) << -1;
+  QTest::newRow( "point vs point greater y" ) << QStringLiteral( "POINT( 1 3 )" ) << QStringLiteral( "POINT(1 2)" ) << 1;
+  QTest::newRow( "point vs point lesser y" ) << QStringLiteral( "POINT( 1 1 )" ) << QStringLiteral( "POINT(1 2)" ) << -1;
+  QTest::newRow( "point vs point first with z" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINT(2 1)" ) << 1;
+  QTest::newRow( "point vs point second with z" ) << QStringLiteral( "POINT( 2 1 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point equal z" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << 0;
+  QTest::newRow( "point vs point greater z" ) << QStringLiteral( "POINTZ( 2 1 4 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point lower z" ) << QStringLiteral( "POINTZ(2 1 2)" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point first with m" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINT(2 1)" ) << 1;
+  QTest::newRow( "point vs point second with m" ) << QStringLiteral( "POINT( 2 1 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point equal m" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 0;
+  QTest::newRow( "point vs point greater m" ) << QStringLiteral( "POINTM( 2 1 4 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point lower m" ) << QStringLiteral( "POINTM(2 1 2)" ) << QStringLiteral( "POINTM(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point first with z second with m" ) << QStringLiteral( "POINTZ( 2 1 3 )" ) << QStringLiteral( "POINTM(2 1 3)" ) << 1;
+  QTest::newRow( "point vs point first with m second with z" ) << QStringLiteral( "POINTM( 2 1 3 )" ) << QStringLiteral( "POINTZ(2 1 3)" ) << -1;
+  QTest::newRow( "point vs point zm" ) << QStringLiteral( "POINTZM( 2 1 3 4 )" ) << QStringLiteral( "POINTZM(2 1 4 4)" ) << -1;
+  QTest::newRow( "point vs point zm second" ) << QStringLiteral( "POINTZM( 2 1 3 4 )" ) << QStringLiteral( "POINTM(2 1 3 5)" ) << -1;
+  QTest::newRow( "linestring empty vs polygon empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "POLYGON(())" ) << -1;
+  QTest::newRow( "polygon empty vs linesting empty" ) << QStringLiteral( "POLYGON(())" ) << QStringLiteral( "LINESTRING(())" ) << 1;
+  QTest::newRow( "linestring empty vs non empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "LINESTRING(1 1, 2 2)" ) << -1;
+  QTest::newRow( "linestring non empty vs empty" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING()" ) << 1;
+  QTest::newRow( "linestring empty vs empty" ) << QStringLiteral( "LINESTRING()" ) << QStringLiteral( "LINESTRING()" ) << 0;
+  QTest::newRow( "linestring equal" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 0;
+  QTest::newRow( "linestring longer vs shorter" ) << QStringLiteral( "LINESTRING( 1 1, 2 2, 3 3)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring shorter vs longer" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2, 3 3)" ) << -1;
+  QTest::newRow( "linestring x less" ) << QStringLiteral( "LINESTRING( 1 1, 1 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << -1;
+  QTest::newRow( "linestring x greater" ) << QStringLiteral( "LINESTRING( 1 1, 3 2)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring y less" ) << QStringLiteral( "LINESTRING( 1 1, 1 0)" ) << QStringLiteral( "LINESTRING( 1 1, 1 2)" ) << -1;
+  QTest::newRow( "linestring y greater" ) << QStringLiteral( "LINESTRING( 1 1, 3 2)" ) << QStringLiteral( "LINESTRING( 1 1, 3 1)" ) << 1;
+  QTest::newRow( "linestring z vs no z" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring no z vs z" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring z vs z" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << 0;
+  QTest::newRow( "linestring z less" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 0)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring z greater" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 6)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring m vs no m" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << 1;
+  QTest::newRow( "linestring no m vs m" ) << QStringLiteral( "LINESTRING( 1 1, 2 2)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring m vs m" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 0;
+  QTest::newRow( "linestring m less" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 0)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring m greater" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 6)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring first with z vs second with m" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << 1;
+  QTest::newRow( "linestring first with m vs second with z" ) << QStringLiteral( "LINESTRINGM( 1 1 3, 2 2 4)" ) << QStringLiteral( "LINESTRINGZ( 1 1 3, 2 2 4)" ) << -1;
+  QTest::newRow( "linestring zm" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << 0;
+  QTest::newRow( "linestring zm second" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 5)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 6)" ) << -1;
+  QTest::newRow( "linestring zm third" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 7)" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 2 2 4 3)" ) << 1;
+  QTest::newRow( "linestring vs circular string" ) << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 3)" ) << -1;
+  QTest::newRow( "circular string vs linestring" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 3)" )  << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << 1;
+  QTest::newRow( "circular string empty vs non empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "CIRCULARSTRING(1 1, 2 2, 2 3)" ) << -1;
+  QTest::newRow( "circular string non empty vs empty" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING()" ) << 1;
+  QTest::newRow( "circular string empty vs empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << QStringLiteral( "CIRCULARSTRING()" ) << 0;
+  QTest::newRow( "circular string equal" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 0;
+  QTest::newRow( "circular string longer vs shorter" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3, 4 3, 4 4)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string shorter vs longer" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3, 4 3, 4 4)" ) << -1;
+  QTest::newRow( "circular string x less" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 2)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 4 2)" ) << -1;
+  QTest::newRow( "circular string x greater" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 4 2)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 2)" ) << 1;
+  QTest::newRow( "circular string y less" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 0, 2 1)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 2 1)" ) << -1;
+  QTest::newRow( "circular string y greater" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 3 2, 2 1)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 3 1, 2 1)" ) << 1;
+  QTest::newRow( "circular string z vs no z" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 4)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string no z vs z" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 4)" ) << -1;
+  QTest::newRow( "circular string z vs z" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << 0;
+  QTest::newRow( "circular string z less" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 0, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string z greater" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 6, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string m vs no m" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << 1;
+  QTest::newRow( "circular string no m vs m" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 2, 2 3)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string m vs m" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 0;
+  QTest::newRow( "circular string m less" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 0, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string m greater" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 6, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string first with z vs second with m" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << 1;
+  QTest::newRow( "circular string first with m vs second with z" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3, 2 2 4, 2 3 5)" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3, 2 2 4, 2 3 5)" ) << -1;
+  QTest::newRow( "circular string zm" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << 0;
+  QTest::newRow( "circular string zm second" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 5, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 6, 2 3 5 6)" ) << -1;
+  QTest::newRow( "circular string zm third" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 7, 2 3 5 6)" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 2 4 3, 2 3 5 6)" ) << 1;
+
+  QTest::newRow( "linestring vs compound curve" ) << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 1, 2 3))" ) << -1;
+  QTest::newRow( "compound curve vs linestring" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 1, 2 3 ))" )  << QStringLiteral( "LINESTRING( 1 1, 2 1, 2 3)" ) << 1;
+  QTest::newRow( "compound curve empty vs non empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << -1;
+  QTest::newRow( "compound curve non empty vs empty" ) << QStringLiteral( "COMPOUNDCURVE( (1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 1;
+  QTest::newRow( "compound curve empty vs empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 0;
+  QTest::newRow( "compound curve equal" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << 0;
+  QTest::newRow( "compound curve longer vs shorter" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3, 4 3, 4 4))" ) << QStringLiteral( "COMPOUNDCURVE((1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve shorter vs longer" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3, 4 3, 4 4))" ) << -1;
+  QTest::newRow( "compound curve x less" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 2))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 4 2))" ) << -1;
+  QTest::newRow( "compound curve x greater" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 4 2))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 2))" ) << 1;
+  QTest::newRow( "compound curve y less" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 0, 2 1))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 2 1))" ) << -1;
+  QTest::newRow( "compound curve y greater" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 3 2, 2 1))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 3 1, 2 1))" ) << 1;
+  QTest::newRow( "compound curve z vs no z" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 4))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve no z vs z" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 4))" ) << -1;
+  QTest::newRow( "compound curve z vs z" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << 0;
+  QTest::newRow( "compound curve z less" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 0, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve z greater" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 6, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve m vs no m" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << 1;
+  QTest::newRow( "compound curve no m vs m" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 2 2, 2 3))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve m vs m" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 0;
+  QTest::newRow( "compound curve m less" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 0, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve m greater" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 6, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve first with z vs second with m" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << 1;
+  QTest::newRow( "compound curve first with m vs second with z" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3, 2 2 4, 2 3 5))" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3, 2 2 4, 2 3 5))" ) << -1;
+  QTest::newRow( "compound curve zm" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << 0;
+  QTest::newRow( "compound curve zm second" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 5, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 6, 2 3 5 6))" ) << -1;
+  QTest::newRow( "compound curve zm third" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 7, 2 3 5 6))" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 2 2 4 3, 2 3 5 6))" ) << 1;
+
+  // same code is used for all CurvePolygon derivates!
+  QTest::newRow( "polygon empty vs non empty" ) << QStringLiteral( "POLYGON()" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << -1;
+  QTest::newRow( "polygon non empty vs empty" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON()" ) << 1;
+  QTest::newRow( "polygon equal" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << 0;
+  QTest::newRow( "polygon exterior less" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 10, 2 12, 2 13, 1 10))" ) << -1;
+  QTest::newRow( "polygon exterior greater" ) << QStringLiteral( "POLYGON( (1 11, 2 12, 2 13, 1 11))" ) << QStringLiteral( "POLYGON((1 1, 2 1, 2 1, 1 1))" ) << 1;
+  QTest::newRow( "polygon less rings" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << -1;
+  QTest::newRow( "polygon less equal" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << 0;
+  QTest::newRow( "polygon less more" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1))" ) << 1;
+  QTest::newRow( "polygon ring lesser" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.3, 1.1 1.1))" ) << -1;
+  QTest::newRow( "polygon ring greater" ) << QStringLiteral( "POLYGON( (1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.3, 1.1 1.1))" ) << QStringLiteral( "POLYGON((1 1, 2 2, 2 3, 1 1),(1.1 1.1, 1.2 1.1, 1.1 1.2, 1.1 1.1))" ) << 1;
+
+  // same code is used for all geometry collection derivates!
+  QTest::newRow( "collection empty vs non empty" ) << QStringLiteral( "GEOMETRYCOLLECTION()" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << -1;
+  QTest::newRow( "collection non empty vs empty" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "GEOMETRYCOLLECTION()" ) << 1;
+  QTest::newRow( "collection equal" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3, 1 1))" ) << 0;
+  QTest::newRow( "collection different types" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(CIRCULARSTRING(1 1, 2 2, 2 3))" ) << -1;
+  QTest::newRow( "collection same" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 3)" ) << 0;
+  QTest::newRow( "collection less members" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 3)" ) << -1;
+  QTest::newRow( "collection more members" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(POINT( 1 3)" ) << 1;
+  QTest::newRow( "collection member less" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 4)" ) << -1;
+  QTest::newRow( "collection member greater" ) << QStringLiteral( "GEOMETRYCOLLECTION( LINESTRING(1 1, 2 2, 2 3), POINT( 1 3))" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(1 1, 2 2, 2 3), POINT( 1 1)" ) << 1;
+}
+
+void TestQgsGeometry::compareTo()
+{
+  QFETCH( QString, geom1 );
+  QFETCH( QString, geom2 );
+  QFETCH( int, expected );
+
+  QCOMPARE( QgsGeometry::fromWkt( geom1 ).get()->compareTo( QgsGeometry::fromWkt( geom2 ).get() ), expected );
+}
+
+void TestQgsGeometry::scroll_data()
+{
+  QTest::addColumn<QString>( "curve" );
+  QTest::addColumn<int>( "vertex" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "linestring empty" ) << QStringLiteral( "LINESTRING()" ) << 2 << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "linestring no matching point" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3)" ) << 4 << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "linestring one vertex" ) << QStringLiteral( "LINESTRING( 1 1)" ) << 0 << QStringLiteral( "LineString (1 1)" );
+  QTest::newRow( "linestring match first" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 0 << QStringLiteral( "LineString (1 1, 1 2, 1 3, 1 4, 1 1)" );
+  QTest::newRow( "linestring match second" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 1 << QStringLiteral( "LineString (1 2, 1 3, 1 4, 1 1, 1 2)" );
+  QTest::newRow( "linestring match third" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 2 << QStringLiteral( "LineString (1 3, 1 4, 1 1, 1 2, 1 3)" );
+  QTest::newRow( "linestring match forth" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 3 << QStringLiteral( "LineString (1 4, 1 1, 1 2, 1 3, 1 4)" );
+  QTest::newRow( "linestring match last" ) << QStringLiteral( "LINESTRING( 1 1, 1 2, 1 3, 1 4, 1 1)" ) << 4 << QStringLiteral( "LineString (1 1, 1 2, 1 3, 1 4, 1 1)" );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LINESTRINGZ( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "LineStringZ (1 3 5, 1 4 6, 1 1 3, 1 2 4, 1 3 5)" );
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LINESTRINGM( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "LineStringM (1 3 5, 1 4 6, 1 1 3, 1 2 4, 1 3 5)" );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LINESTRINGZM( 1 1 3 5, 1 2 4 6, 1 3 5 7, 1 4 6 8, 1 1 3 5)" ) << 2 << QStringLiteral( "LineStringZM (1 3 5 7, 1 4 6 8, 1 1 3 5, 1 2 4 6, 1 3 5 7)" );
+
+  QTest::newRow( "circularstring empty" ) << QStringLiteral( "CIRCULARSTRING()" ) << 2 << QStringLiteral( "CircularString EMPTY" );
+  QTest::newRow( "circularstring no matching point" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 1 2, 1 3)" ) << 4 << QStringLiteral( "CircularString (1 1, 1 2, 1 3)" );
+  // technically not valid, but we don't want a crash
+  QTest::newRow( "circularstring one vertex" ) << QStringLiteral( "CIRCULARSTRING( 1 1)" ) << 0 << QStringLiteral( "CircularString (1 1)" );
+  QTest::newRow( "circularstring match first" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 1 4, 1 1)" ) << 0 << QStringLiteral( "CircularString (1 1, 2 1, 2 2, 1 4, 1 1)" );
+  QTest::newRow( "circularstring match third" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 1 4, 1 1)" ) << 2 << QStringLiteral( "CircularString (2 2, 1 4, 1 1, 2 1, 2 2)" );
+  QTest::newRow( "circularstring match 5th" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" ) << 4 << QStringLiteral( "CircularString (2 4, 1 4, 1 1, 2 1, 2 2, 3 4, 2 4)" );
+  QTest::newRow( "circularstring match last" ) << QStringLiteral( "CIRCULARSTRING( 1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" ) << 6 << QStringLiteral( "CircularString (1 1, 2 1, 2 2, 3 4, 2 4, 1 4, 1 1)" );
+  QTest::newRow( "circularstringz" ) << QStringLiteral( "CIRCULARSTRINGZ( 1 1 3 , 2 1 4, 2 2 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "CircularStringZ (2 2 5, 1 4 6, 1 1 3, 2 1 4, 2 2 5)" );
+  QTest::newRow( "circularstringm" ) << QStringLiteral( "CIRCULARSTRINGM( 1 1 3 , 2 1 4, 2 2 5 , 1 4 6, 1 1 3)" ) << 2 << QStringLiteral( "CircularStringM (2 2 5, 1 4 6, 1 1 3, 2 1 4, 2 2 5)" );
+  QTest::newRow( "circularstringzm" ) << QStringLiteral( "CIRCULARSTRINGZM( 1 1 3 5, 2 1 4 6, 2 2 5 7, 1 4 6 8, 1 1 3 5)" ) << 2 << QStringLiteral( "CircularStringZM (2 2 5 7, 1 4 6 8, 1 1 3 5, 2 1 4 6, 2 2 5 7)" );
+
+  QTest::newRow( "compoundcurve empty" ) << QStringLiteral( "COMPOUNDCURVE()" ) << 2 << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compoundcurve no matching point" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2, 1 3))" ) << 4 << QStringLiteral( "CompoundCurve ((1 1, 1 2, 1 3))" );
+  QTest::newRow( "compoundcurve one vertex" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1))" ) << 0 << QStringLiteral( "CompoundCurve ((1 1))" );
+  QTest::newRow( "compoundcurve match first" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 0 << QStringLiteral( "CompoundCurve ((1 1, 1 2),(1 2, 1 3, 1 4, 1 1))" );
+  QTest::newRow( "compoundcurve match second" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 1 << QStringLiteral( "CompoundCurve ((1 2, 1 3, 1 4, 1 1),(1 1, 1 2))" );
+  QTest::newRow( "compoundcurve match third" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 2 << QStringLiteral( "CompoundCurve ((1 3, 1 4, 1 1),(1 1, 1 2),(1 2, 1 3))" );
+  QTest::newRow( "compoundcurve match forth" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 3 << QStringLiteral( "CompoundCurve ((1 4, 1 1),(1 1, 1 2),(1 2, 1 3, 1 4))" );
+  QTest::newRow( "compoundcurve match last" ) << QStringLiteral( "COMPOUNDCURVE(( 1 1, 1 2),( 1 2, 1 3, 1 4, 1 1))" ) << 4 << QStringLiteral( "CompoundCurve ((1 1, 1 2),(1 2, 1 3, 1 4, 1 1))" );
+  QTest::newRow( "compoundcurvez" ) << QStringLiteral( "COMPOUNDCURVEZ(( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3))" ) << 2 << QStringLiteral( "CompoundCurveZ ((1 3 5, 1 4 6, 1 1 3),(1 1 3, 1 2 4, 1 3 5))" );
+  QTest::newRow( "compoundcurvem" ) << QStringLiteral( "COMPOUNDCURVEM(( 1 1 3 , 1 2 4, 1 3 5 , 1 4 6, 1 1 3))" ) << 2 << QStringLiteral( "CompoundCurveM ((1 3 5, 1 4 6, 1 1 3),(1 1 3, 1 2 4, 1 3 5))" );
+  QTest::newRow( "compoundcurvezm" ) << QStringLiteral( "COMPOUNDCURVEZM(( 1 1 3 5, 1 2 4 6, 1 3 5 7, 1 4 6 8, 1 1 3 5))" ) << 2 << QStringLiteral( "CompoundCurveZM ((1 3 5 7, 1 4 6 8, 1 1 3 5),(1 1 3 5, 1 2 4 6, 1 3 5 7))" );
+}
+
+void TestQgsGeometry::scroll()
+{
+  QFETCH( QString, curve );
+  QFETCH( int, vertex );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( curve );
+  qgsgeometry_cast< QgsCurve * >( geom.get() )->scroll( vertex );
+
+  QCOMPARE( geom.get()->asWkt(), expected );
+}
+
+void TestQgsGeometry::normalize_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "empty" ) << QString() << QString();
+  QTest::newRow( "point empty" ) << QStringLiteral( "POINT EMPTY" )  << QStringLiteral( "Point EMPTY" );
+  QTest::newRow( "point" ) << QStringLiteral( "POINT (1 2)" )  << QStringLiteral( "Point (1 2)" );
+  // same code paths are used for all curve derivatives
+  QTest::newRow( "line empty" ) << QStringLiteral( "LINESTRING EMPTY" )  << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "line open" ) << QStringLiteral( "LINESTRING (1 1, 1 2, 1 3)" )  << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "line closed" ) << QStringLiteral( "LINESTRING (1 1, 1 0, 0 0, 0 1, 1 1)" )  << QStringLiteral( "LineString (0 0, 0 1, 1 1, 1 0, 0 0)" );
+  QTest::newRow( "circular string closed" ) << QStringLiteral( "CIRCULARSTRINGZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" )  << QStringLiteral( "CircularStringZM (0 0 13 23, 0 1 14 24, 1 1 11 21, 1 0 12 22, 0 0 13 23)" );
+  // same code paths are used for all curve polygon derivatives
+  QTest::newRow( "polygon empty" ) << QStringLiteral( "POLYGON EMPTY" )  << QStringLiteral( "Polygon EMPTY" );
+  QTest::newRow( "polygon exterior" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1))" )  << QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  QTest::newRow( "polygon rings" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1),(0.1 0.2,  0.2 0.2, 0.2 0.1, 0.1 0.1, 0.1 0.2),(0.8 0.8, 0.8 0.7, 0.7 0.7, 0.7 0.8, 0.8 0.8))" )  << QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0),(0.7 0.7, 0.8 0.7, 0.8 0.8, 0.7 0.8, 0.7 0.7),(0.1 0.1, 0.2 0.1, 0.2 0.2, 0.1 0.2, 0.1 0.1))" );
+  // same code paths are used for all collection derivatives
+  QTest::newRow( "collection empty" ) << QStringLiteral( "GEOMETRYCOLLECTION EMPTY" )  << QStringLiteral( "GeometryCollection EMPTY" );
+  QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT(1 1, 3 4, 1 3, 2 2)" )  << QStringLiteral( "MultiPoint ((3 4),(2 2),(1 3),(1 1))" );
+}
+
+void TestQgsGeometry::normalize()
+{
+  QFETCH( QString, wkt );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  geom.normalize();
+
+  QCOMPARE( geom.asWkt( 1 ), expected );
+}
+
+
+void TestQgsGeometry::simplifiedTypeRef_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "point empty" ) << QStringLiteral( "POINT EMPTY" )  << QStringLiteral( "Point EMPTY" );
+  QTest::newRow( "point" ) << QStringLiteral( "POINT (1 2)" )  << QStringLiteral( "Point (1 2)" );
+  QTest::newRow( "line empty" ) << QStringLiteral( "LINESTRING EMPTY" )  << QStringLiteral( "LineString EMPTY" );
+  QTest::newRow( "line" ) << QStringLiteral( "LINESTRING (1 1, 1 2, 1 3)" )  << QStringLiteral( "LineString (1 1, 1 2, 1 3)" );
+  QTest::newRow( "circular string" ) << QStringLiteral( "CIRCULARSTRINGZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" )  << QStringLiteral( "CircularStringZM (1 1 11 21, 1 0 12 22, 0 0 13 23, 0 1 14 24, 1 1 11 21)" );
+  QTest::newRow( "compound curve empty" ) << QStringLiteral( "COMPOUNDCURVE EMPTY" )  << QStringLiteral( "CompoundCurve EMPTY" );
+  QTest::newRow( "compound curve one curve" ) << QStringLiteral( "COMPOUNDCURVE ((1 1, 1 2, 2 3))" )  << QStringLiteral( "LineString (1 1, 1 2, 2 3)" );
+  QTest::newRow( "compound curve two curves" ) << QStringLiteral( "COMPOUNDCURVE ((1 1, 1 2, 2 3),(2 3, 4 4))" )  << QStringLiteral( "CompoundCurve ((1 1, 1 2, 2 3),(2 3, 4 4))" );
+  QTest::newRow( "polygon empty" ) << QStringLiteral( "POLYGON EMPTY" )  << QStringLiteral( "Polygon EMPTY" );
+  QTest::newRow( "polygon exterior" ) << QStringLiteral( "POLYGON ((1 1, 0 1, 0 0, 1 0, 1 1))" )  << QStringLiteral( "Polygon ((1 1, 0 1, 0 0, 1 0, 1 1))" );
+  QTest::newRow( "collection empty" ) << QStringLiteral( "GEOMETRYCOLLECTION EMPTY" )  << QStringLiteral( "GeometryCollection EMPTY" );
+  QTest::newRow( "multipoint one point" ) << QStringLiteral( "MULTIPOINT(1 1)" )  << QStringLiteral( "Point (1 1)" );
+  QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT(1 1, 3 4, 1 3, 2 2)" )  << QStringLiteral( "MultiPoint ((1 1),(3 4),(1 3),(2 2))" );
+}
+
+void TestQgsGeometry::simplifiedTypeRef()
+{
+  QFETCH( QString, wkt );
+  QFETCH( QString, expected );
+
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  QCOMPARE( geom.constGet()->simplifiedTypeRef()->asWkt( 1 ), expected );
+}
 
 // MK, Disabled 14.11.2014
 // Too unclear what exactly should be tested and which variations are allowed for the line
@@ -17784,40 +18617,30 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( distance, 10.0, 0.00001 );
 }
 
+void TestQgsGeometry::makeValid_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "dimension collapse" ) << QStringLiteral( "LINESTRING(0 0)" ) << QStringLiteral( "" );
+  QTest::newRow( "unclosed ring" ) << QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ) << QStringLiteral( "Polygon ((10 22, 10 32, 20 32, 20 22, 10 22))" );
+  QTest::newRow( "butterfly polygon (self-intersecting ring)" ) << QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ) << QStringLiteral( "MultiPolygon (((5 5, 10 10, 10 0, 5 5)),((0 0, 0 10, 5 5, 0 0)))" );
+  QTest::newRow( "polygon with extra tail (a part of the ring does not form any area)" ) << QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ) << QStringLiteral( "GeometryCollection (Polygon ((0 0, 0 1, 1 1, 1 0, 0 0)),LineString (0 0, -1 0))" );
+  QTest::newRow( "collection with invalid geometries" ) << QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ) << QStringLiteral( "GeometryCollection (MultiPolygon (((5 5, 10 10, 10 0, 5 5)),((0 0, 0 10, 5 5, 0 0))),LineString (10 0, 10 10),Point (0 0))" );
+  QTest::newRow( "null line (#18077)" ) << QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ) << QStringLiteral( "Point (356984.0625 6300089)" );
+}
+
 void TestQgsGeometry::makeValid()
 {
-  typedef QPair<QString, QString> InputAndExpectedWktPair;
-  QList<InputAndExpectedWktPair> geoms;
-  // dimension collapse
-  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0)" ),
-                      QStringLiteral( "POINT(0 0)" ) );
-  // unclosed ring
-  geoms << qMakePair( QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ),
-                      QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
-  // butterfly polygon (self-intersecting ring)
-  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
-                      QStringLiteral( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
-  // polygon with extra tail (a part of the ring does not form any area)
-  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
-                      QStringLiteral( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
-  // collection with invalid geometries
-  geoms << qMakePair( QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
-                      QStringLiteral( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10))" ) );
-  // null line (#18077)
-  geoms << qMakePair( QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ),
-                      QStringLiteral( "MultiPoint ((356984.0625 6300089))" ) );
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
 
-  Q_FOREACH ( const InputAndExpectedWktPair &pair, geoms )
-  {
-    QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
-    QgsGeometry gExp = QgsGeometry::fromWkt( pair.second );
-    QVERIFY( !gInput.isNull() );
-    QVERIFY( !gExp.isNull() );
+  QgsGeometry gInput = QgsGeometry::fromWkt( input );
+  QVERIFY( !gInput.isNull() );
 
-    QgsGeometry gValid = gInput.makeValid();
-    QVERIFY( gValid.isGeosValid() );
-    QVERIFY( gValid.isGeosEqual( gExp ) );
-  }
+  QgsGeometry gValid = gInput.makeValid();
+  gValid.normalize();
+  QCOMPARE( gValid.asWkt(), expected );
 }
 
 void TestQgsGeometry::isSimple_data()
@@ -17986,27 +18809,27 @@ void TestQgsGeometry::minimalEnclosingCircle()
   result = geomTest.minimalEnclosingCircle( center, radius, 6 );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, -0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, 0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius, 6 );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, -0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, 0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
   result = geomTest.minimalEnclosingCircle( center, radius, 6 );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, -0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, 0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius, 6 );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, -0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "Polygon ((0 5, 4.3 2.5, 4.3 -2.5, 0 -5, -4.3 -2.5, -4.3 2.5, 0 5))" ) );
 
   // case 3
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
@@ -18020,11 +18843,20 @@ void TestQgsGeometry::minimalEnclosingCircle()
 
 void TestQgsGeometry::splitGeometry()
 {
-  QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
   QVector<QgsGeometry> newGeoms;
   QgsPointSequence testPoints;
-  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                              newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
+  qDebug() << GEOSversion() << "\n";
+  QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
+  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
+  {
+    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
+                                newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
+  }
+  else
+  {
+    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
+                                newGeoms, false, testPoints ), QgsGeometry::InvalidBaseGeometry );
+  }
   QVERIFY( newGeoms.isEmpty() );
 
   // Bug https://github.com/qgis/QGIS/issues/33489
@@ -18346,7 +19178,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ), (6 16, 8 16, 8 18, 6 16 ))" ) );
   points = g.randomPointsInPolygon( 10000 );
   QCOMPARE( points.count(), 10000 );
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
 
   // valid multipolygon
@@ -18355,7 +19187,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QCOMPARE( points.count(), 10000 );
   bool foundp1Point = false;
   bool foundp2Point = false;
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
   {
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
     foundp1Point |= p.x() < 100;
@@ -18387,7 +19219,7 @@ void TestQgsGeometry::testRandomPointsInPolygon()
   QCOMPARE( points.count(), 10000 );
   foundp1Point = false;
   foundp2Point = false;
-  for ( const QgsPointXY &p : qgis::as_const( points ) )
+  for ( const QgsPointXY &p : std::as_const( points ) )
   {
     QVERIFY( g.intersects( QgsGeometry::fromPointXY( p ) ) );
     foundp1Point |= p.x() < 100;

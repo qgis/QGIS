@@ -12,7 +12,7 @@ class QgsRendererWidget /External/;
 
 class QgsRendererAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Stores metadata about one renderer class.
 
 .. note::
@@ -109,7 +109,7 @@ QFlags<QgsRendererAbstractMetadata::LayerType> operator|(QgsRendererAbstractMeta
 
 class QgsRendererMetadata : QgsRendererAbstractMetadata
 {
-%Docstring
+%Docstring(signature="appended")
 Convenience metadata class that uses static functions to create renderer and its widget.
 %End
 
@@ -138,7 +138,7 @@ Convenience metadata class that uses static functions to create renderer and its
 
 class QgsRendererRegistry
 {
-%Docstring
+%Docstring(signature="appended")
 Registry of renderers.
 
 :py:class:`QgsRendererRegistry` is not usually directly created, but rather accessed through

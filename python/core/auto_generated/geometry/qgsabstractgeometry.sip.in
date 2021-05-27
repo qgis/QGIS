@@ -19,7 +19,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 
 class QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for all geometries
 
 .. note::
@@ -104,6 +104,13 @@ Constructor for QgsAbstractGeometry.
 Clones the geometry by performing a deep copy
 %End
 
+    virtual int compareTo( const QgsAbstractGeometry *other ) const;
+%Docstring
+Comparator for sorting of geometry.
+
+.. versionadded:: 3.20
+%End
+
     virtual void clear() = 0;
 %Docstring
 Clears the geometry, ie reset it to a null geometry
@@ -170,6 +177,17 @@ For instance, a polygon geometry will have a boundary consisting of the linestri
 :return: boundary for geometry. May be ``None`` for some geometry types.
 
 .. versionadded:: 3.0
+%End
+
+    virtual void normalize() = 0;
+%Docstring
+Reorganizes the geometry into a normalized form (or "canonical" form).
+
+Polygon rings will be rearranged so that their starting vertex is the lower left and ring orientation follows the
+right hand rule, collections are ordered by geometry type, and other normalization techniques are applied. The
+resultant geometry will be geometrically equivalent to the original geometry.
+
+.. versionadded:: 3.20
 %End
 
 
@@ -523,6 +541,16 @@ Returns ``True`` if the geometry is empty
 Returns ``True`` if the geometry contains curved segments
 %End
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if the bounding box of this geometry intersects with a ``rectangle``.
+
+Since this test only considers the bounding box of the geometry, is is very fast to
+calculate and handles invalid geometries.
+
+.. versionadded:: 3.20
+%End
+
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
 Returns a version of the geometry without curves. Caller takes ownership of
@@ -693,6 +721,28 @@ Converts the geometry to a specified type.
 .. versionadded:: 2.14
 %End
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+%Docstring
+Returns a reference to the simplest lossless representation of this geometry,
+e.g. if the geometry is a multipart geometry type with a single member geometry,
+a reference to that part will be returned.
+
+This method employs the following logic:
+
+- For multipart geometries containing a single part only a direct reference to that part will be returned.
+- For compound curve geometries containing a single curve only a direct reference to that curve will be returned.
+
+This method returns a reference only, and does not involve any geometry cloning.
+
+.. note::
+
+   Ownership of the returned geometry is NOT transferred, and remains with the original
+   geometry object. Callers must take care to ensure that the original geometry object
+   exists for the lifespan of the returned object.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool isValid( QString &error /Out/, int flags = 0 ) const = 0;
 %Docstring
 Checks validity of the geometry, and returns ``True`` if the geometry is valid.
@@ -782,6 +832,8 @@ Example
        for v in geometry.vertices():
            print(v.x(), v.y())
 
+
+
 .. seealso:: :py:func:`parts`
 
 .. versionadded:: 3.0
@@ -798,6 +850,28 @@ To create it, the geometry is default constructed and then the WKB is changed.
 %End
 
   protected:
+
+    int sortIndex() const;
+%Docstring
+Returns the sort index for the geometry, used in the :py:func:`~QgsAbstractGeometry.compareTo` method to compare
+geometries of different types.
+
+.. versionadded:: 3.20
+%End
+
+    virtual int compareToSameClass( const QgsAbstractGeometry *other ) const = 0;
+%Docstring
+Compares to an ``other`` geometry of the same class, and returns a integer
+for sorting of the two geometries.
+
+.. note::
+
+   The actual logic for the sorting is an internal detail only and is subject to change
+   between QGIS versions. The result should only be used for direct comparison of geometries
+   and not stored for later use.
+
+.. versionadded:: 3.20
+%End
 
     virtual bool hasChildGeometries() const;
 %Docstring
@@ -928,7 +1002,7 @@ Returns ``True`` if this vertex ID is valid for the specified ``geom``.
 
 class QgsVertexIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Java-style iterator for traversal of vertices of a geometry
 
 .. versionadded:: 3.0
@@ -975,7 +1049,7 @@ Returns next vertex of the geometry (undefined behavior if :py:func:`~QgsVertexI
 
 class QgsGeometryPartIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Java-style iterator for traversal of parts of a geometry
 
 .. versionadded:: 3.6
@@ -1023,7 +1097,7 @@ Returns next part of the geometry (undefined behavior if :py:func:`~QgsGeometryP
 
 class QgsGeometryConstPartIterator
 {
-%Docstring
+%Docstring(signature="appended")
 Java-style iterator for const traversal of parts of a geometry
 
 .. versionadded:: 3.6

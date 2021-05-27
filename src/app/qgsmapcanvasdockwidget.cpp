@@ -94,7 +94,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
-  connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToFullExtent );
+  connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToProjectExtent );
   connect( mActionZoomToLayers, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayers( mMapCanvas ); } );
   connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [ = ] { mMapCanvas->zoomToSelected(); } );
   mapCrsChanged();
@@ -525,9 +525,9 @@ void QgsMapCanvasDockWidget::showLabels( bool show )
 void QgsMapCanvasDockWidget::autoZoomToSelection( bool autoZoom )
 {
   if ( autoZoom )
-    connect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qgis::overload<QgsVectorLayer *>::of( &QgsMapCanvas::zoomToSelected ) );
+    connect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qOverload<QgsVectorLayer *>( &QgsMapCanvas::zoomToSelected ) );
   else
-    disconnect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qgis::overload<QgsVectorLayer *>::of( &QgsMapCanvas::zoomToSelected ) );
+    disconnect( mMapCanvas, &QgsMapCanvas::selectionChanged, mMapCanvas, qOverload<QgsVectorLayer *>( &QgsMapCanvas::zoomToSelected ) );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

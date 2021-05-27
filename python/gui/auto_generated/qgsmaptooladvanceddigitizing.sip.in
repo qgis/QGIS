@@ -12,7 +12,7 @@
 
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsMapToolAdvancedDigitizing` class is a :py:class:`QgsMapTool` which gives event directly in map coordinates and allows filtering its events.
 Events from :py:class:`QgsMapTool` are caught and their QMouseEvent are transformed into :py:class:`QgsMapMouseEvent` (with map coordinates).
 Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.

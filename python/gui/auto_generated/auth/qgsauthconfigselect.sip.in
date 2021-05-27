@@ -12,7 +12,7 @@
 
 class QgsAuthConfigSelect : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Selector widget for authentication configs
 %End
 
@@ -75,7 +75,7 @@ Clear and hide small message bar
 
 class QgsAuthConfigUriEdit : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Dialog wrapper of select widget to edit an authcfg in a data source URI
 %End
 

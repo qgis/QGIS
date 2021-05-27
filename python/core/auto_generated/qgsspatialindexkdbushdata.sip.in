@@ -11,7 +11,7 @@
 
 class QgsSpatialIndexKDBushData
 {
-%Docstring
+%Docstring(signature="appended")
 
 A container for data stored inside a :py:class:`QgsSpatialIndexKDBush` index.
 

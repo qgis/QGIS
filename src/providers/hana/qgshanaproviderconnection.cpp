@@ -21,10 +21,10 @@
 #include "qgshanaresultset.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
-#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsfeedback.h"
 
 #include "odbc/PreparedStatement.h"
 
@@ -62,7 +62,7 @@ QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QgsHanaUtils::connectionInfo( QgsDataSourceUri( uri ) ), configuration )
+  QgsAbstractDatabaseProviderConnection( uri, configuration )
 {
   mProviderKey = QStringLiteral( "hana" );
   setCapabilities();
@@ -150,13 +150,6 @@ void QgsHanaProviderConnection::setCapabilities()
                    Capability::Schemas | Capability::Tables | Capability::TableExists;
 }
 
-void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
-{
-  executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
-                             QgsHanaUtils::quotedIdentifier( name ) ) );
-}
-
 void QgsHanaProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
@@ -178,17 +171,17 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema,
   }
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsHanaProvider::createEmptyLayer(
-        newUri.uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        options
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult res = QgsHanaProvider::createEmptyLayer(
+                                   newUri.uri(),
+                                   fields,
+                                   wkbType,
+                                   srs,
+                                   overwrite,
+                                   &map,
+                                   &errCause,
+                                   options
+                                 );
+  if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
@@ -196,7 +189,7 @@ void QgsHanaProviderConnection::createVectorTable( const QString &schema,
 
 QString QgsHanaProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
-  const auto tableInfo { table( schema, name ) };
+  const TableProperty tableInfo { table( schema, name ) };
 
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
@@ -208,21 +201,24 @@ QString QgsHanaProviderConnection::tableUri( const QString &schema, const QStrin
 void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::DropVectorTable );
-  dropTable( schema, name );
-}
-
-void QgsHanaProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
-{
-  executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
-                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
-                             QgsHanaUtils::quotedIdentifier( name ),
-                             QgsHanaUtils::quotedIdentifier( newName ) ) );
+  const TableProperty tableInfo = table( schema, name );
+  if ( tableInfo.flags().testFlag( TableFlag::View ) )
+    executeSqlStatement( QStringLiteral( "DROP VIEW %1.%2" )
+                         .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                               QgsHanaUtils::quotedIdentifier( name ) ) );
+  else
+    executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
+                         .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                               QgsHanaUtils::quotedIdentifier( name ) ) );
 }
 
 void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameVectorTable );
-  renameTable( schema, name, newName );
+  executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
+                       .arg( QgsHanaUtils::quotedIdentifier( schema ),
+                             QgsHanaUtils::quotedIdentifier( name ),
+                             QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
 void QgsHanaProviderConnection::createSchema( const QString &name ) const
@@ -255,20 +251,15 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   if ( feedback && feedback->isCanceled() )
     return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
 
-  const QgsDataSourceUri dsUri { uri() };
-  QgsHanaConnectionRef conn( dsUri );
-  if ( conn.isNull() )
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  QgsHanaConnectionRef conn = createConnection();
 
   if ( feedback && feedback->isCanceled() )
     return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
 
-  bool isQuery = false;
-
   try
   {
     odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
-    isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
+    bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
     {
       QgsHanaResultSetRef rs = conn->executeQuery( sql );
@@ -292,12 +283,19 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
   }
 }
 
-void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
+QgsHanaConnectionRef QgsHanaProviderConnection::createConnection() const
 {
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  return conn;
+}
+
+void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
+{
+  QgsHanaConnectionRef conn = createConnection();
+
   try
   {
     conn->execute( sql );
@@ -309,21 +307,19 @@ void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
   }
 }
 
-QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsHanaProviderConnection::tablesWithFilter(
+  const QString &schema,
+  const TableFlags &flags, const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter ) const
 {
   checkCapability( Capability::Tables );
 
-  const QgsDataSourceUri dsUri { uri() };
-  QgsHanaConnectionRef conn( dsUri );
-  if ( conn.isNull() )
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
-
+  QgsHanaConnectionRef conn = createConnection();
   QList<QgsHanaProviderConnection::TableProperty> tables;
 
   try
   {
     const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false );
+    const QVector<QgsHanaLayerProperty> layers = conn->getLayersFull( schema, aspatial, false, layerFilter );
     tables.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo :  layers )
     {
@@ -373,14 +369,30 @@ QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::table
   return tables;
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty QgsHanaProviderConnection::table( const QString &schema, const QString &table ) const
+{
+  const QString geometryColumn = QgsDataSourceUri( uri() ).geometryColumn();
+  auto layerFilter = [&table, &geometryColumn]( const QgsHanaLayerProperty & layer )
+  {
+    return layer.tableName == table && ( geometryColumn.isEmpty() || layer.geometryColName == geometryColumn );
+  };
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tablesWithFilter( schema, TableFlags(), layerFilter ) };
+  if ( constTables.empty() )
+    throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                          .arg( table, schema ) );
+  return constTables[0];
+}
+
+QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+{
+  return tablesWithFilter( schema, flags );
+}
+
 QStringList QgsHanaProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
 
-  const QgsDataSourceUri dsUri { uri() };
-  QgsHanaConnectionRef conn( dsUri );
-  if ( conn.isNull() )
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  QgsHanaConnectionRef conn = createConnection();
 
   try
   {
@@ -394,6 +406,27 @@ QStringList QgsHanaProviderConnection::schemas( ) const
   catch ( const QgsHanaException &ex )
   {
     throw QgsProviderConnectionException( QObject::tr( "Could not retrieve schemas: %1, %2" ).arg( uri(), ex.what() ) );
+  }
+}
+
+QgsFields QgsHanaProviderConnection::fields( const QString &schema, const QString &table ) const
+{
+  QgsHanaConnectionRef conn = createConnection();
+  const QString geometryColumn = QgsDataSourceUri( uri() ).geometryColumn();
+  try
+  {
+    QgsFields fields;
+    auto processField = [&geometryColumn, &fields]( const AttributeField & field )
+    {
+      if ( field.name != geometryColumn )
+        fields.append( field.toQgsField() );
+    };
+    conn->readTableFields( schema, table, processField );
+    return fields;
+  }
+  catch ( const QgsHanaException &ex )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve fields: %1, %2" ).arg( uri(), ex.what() ) );
   }
 }
 
@@ -421,10 +454,7 @@ QIcon QgsHanaProviderConnection::icon() const
 
 QList<QgsVectorDataProvider::NativeType> QgsHanaProviderConnection::nativeTypes() const
 {
-  const QgsDataSourceUri dsUri { uri() };
-  QgsHanaConnectionRef conn( dsUri );
-  if ( conn.isNull() )
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+  QgsHanaConnectionRef conn = createConnection();
 
   QList<QgsVectorDataProvider::NativeType> types = conn->getNativeTypes();
   if ( types.isEmpty() )

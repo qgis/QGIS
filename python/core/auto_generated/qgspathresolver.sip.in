@@ -11,7 +11,7 @@
 
 class QgsPathResolver
 {
-%Docstring
+%Docstring(signature="appended")
 Resolves relative paths into absolute paths and vice versa. Used for writing
 
 .. versionadded:: 3.0
@@ -62,7 +62,9 @@ Example - replace an outdated folder path with a new one:
 
        QgsPathResolver.setPathPreprocessor(my_processor)
 
+
 Example - replace a stored database host with a new one:
+
 
 .. code-block:: python
 
@@ -73,6 +75,7 @@ Example - replace a stored database host with a new one:
 
 
 Example - replace stored database credentials with new ones:
+
 
 .. code-block:: python
 

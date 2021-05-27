@@ -25,6 +25,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsreadwritecontext.h"
+#include "qgsfillsymbol.h"
+
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>

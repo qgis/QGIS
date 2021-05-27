@@ -12,7 +12,7 @@
 
 class QgsMapLayerRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for utility classes that encapsulate information necessary
 for rendering of map layers.
 

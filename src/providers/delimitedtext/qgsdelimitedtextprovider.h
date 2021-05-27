@@ -19,6 +19,7 @@
 #define QGSDELIMITEDTEXTPROVIDER_H
 
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
@@ -70,8 +71,8 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
      * Regular expression defining possible prefixes to WKT string,
      * (EWKT srid, Informix SRID)
      */
-    static QRegExp sWktPrefixRegexp;
-    static QRegExp sCrdDmsRegexp;
+    static QRegularExpression sWktPrefixRegexp;
+    static QRegularExpression sCrdDmsRegexp;
 
     enum GeomRepresentationType
     {
@@ -240,6 +241,7 @@ class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    ProviderCapabilities providerCapabilities() const override;
 };
 
 #endif

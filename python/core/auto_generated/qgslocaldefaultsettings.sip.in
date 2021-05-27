@@ -10,7 +10,7 @@
 
 class QgsLocalDefaultSettings
 {
-%Docstring
+%Docstring(signature="appended")
 Contains local default settings which should be respected when creating new objects
 such as :py:class:`QgsProjects`.
 

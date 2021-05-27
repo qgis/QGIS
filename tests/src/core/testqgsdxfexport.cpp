@@ -29,6 +29,9 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgslinesymbollayer.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 #include <QTemporaryFile>
 #include <QRegularExpression>
 

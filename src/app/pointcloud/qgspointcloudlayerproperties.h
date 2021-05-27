@@ -95,7 +95,7 @@ class QgsPointCloudLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
 
-    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+    void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
     void apply();

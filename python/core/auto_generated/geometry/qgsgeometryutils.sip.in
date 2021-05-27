@@ -13,7 +13,7 @@
 
 class QgsGeometryUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Contains various geometry utility functions.
 
 .. versionadded:: 2.10
@@ -269,6 +269,39 @@ Returns a point a specified ``distance`` toward a second point.
 %End
 
 
+    static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y  /Out/ );
+%Docstring
+Calculates a point a certain ``proportion`` of the way along the segment from (``x1``, ``y1``) to (``x2``, ``y2``),
+offset from the segment by the specified ``offset`` amount.
+
+:param x1: x-coordinate of start of segment
+:param y1: y-coordinate of start of segment
+:param x2: x-coordinate of end of segment
+:param y2: y-coordinate of end of segment
+:param proportion: proportion of the segment's length at which to place the point (between 0.0 and 1.0)
+:param offset: perpendicular offset from segment to apply to point. A negative ``offset`` shifts the point to the left of the segment, while a positive ``offset`` will shift it to the right of the segment.
+
+Example
+-------
+
+.. code-block:: python
+
+       # Offset point at center of segment by 2 units to the right
+       x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, 2 )
+       # (6.0, 3.0)
+
+       # Offset point at center of segment by 2 units to the left
+       x, y = QgsGeometryUtils.perpendicularOffsetPointAlongSegment( 1, 5, 11, 5, 0.5, -2 )
+       # (6.0, 7.0)
+
+
+
+:return: - x: calculated point x-coordinate
+         - y: calculated point y-coordinate
+
+.. versionadded:: 3.20
+%End
+
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) /HoldGIL/;
 %Docstring
 Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
@@ -466,6 +499,32 @@ Averages two angles, correctly handling negative angles and ensuring the result 
 %End
 
 
+
+    static int closestSideOfRectangle( double right, double bottom, double left, double top, double x, double y );
+%Docstring
+Returns a number representing the closest side of a rectangle defined by /a right,
+``bottom``, ``left``, ``top`` to the point at (``x``, ``y``), where
+the point may be in the interior of the rectangle or outside it.
+
+The returned value may be:
+
+1. Point is closest to top side of rectangle
+2. Point is located on the top-right diagonal of rectangle, equally close to the top and right sides
+3. Point is closest to right side of rectangle
+4. Point is located on the bottom-right diagonal of rectangle, equally close to the bottom and right sides
+5. Point is closest to bottom side of rectangle
+6. Point is located on the bottom-left diagonal of rectangle, equally close to the bottom and left sides
+7. Point is closest to left side of rectangle
+8. Point is located on the top-left diagonal of rectangle, equally close to the top and left sides
+
+.. note::
+
+   This method effectively partitions the space outside of the rectangle into Voronoi cells, so a point
+   to the top left of the rectangle may be assigned to the left or top sides based on its position relative
+   to the diagonal line extended from the rectangle's top-left corner.
+
+.. versionadded:: 3.20
+%End
 
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 ) /HoldGIL/;
 %Docstring
@@ -687,17 +746,70 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 .. versionadded:: 3.10
 %End
 
-    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+ static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point ) /Deprecated/;
 %Docstring
 A Z dimension is added to ``point`` if one of the point in the list
-``points`` is in 3D. Moreover, the Z value of ``point`` is updated with.
+``points`` is in 3D. Moreover, the Z value of ``point`` is updated
+with the first Z value found in list ``points`` even if ``point``
+already contains a Z value.
 
 :param points: List of points in which a 3D point is searched.
 :param point: The point to update with Z dimension and value.
 
 :return: ``True`` if the point is updated, ``False`` otherwise
 
+.. warning::
+
+   This method does not copy the z value of the coordinate from the
+   points whose z value is closest to the original x/y point, but only the first one found.
+
+
 .. versionadded:: 3.0
+
+.. deprecated:: QGIS 3.20
+   use transferFirstZValueToPoint( const :py:class:`QgsPointSequence` &points, :py:class:`QgsPoint` &point ) instead
+%End
+
+    static bool transferFirstZValueToPoint( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A Z dimension is added to ``point`` if one of the point in the list
+``points`` is in 3D. Moreover, the Z value of ``point`` is updated
+with the first Z value found in list ``points`` even if ``point``
+already contains a Z value.
+
+:param points: List of points in which a 3D point is searched.
+:param point: The point to update with Z dimension and value.
+
+:return: ``True`` if the point is updated, ``False`` otherwise
+
+.. warning::
+
+   This method does not copy the z value of the coordinate from the
+   points whose z value is closest to the original x/y point, but only the first one found.
+
+
+.. versionadded:: 3.20
+%End
+
+    static bool transferFirstMValueToPoint( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A M dimension is added to ``point`` if one of the points in the list
+``points`` contains an M value. Moreover, the M value of ``point`` is
+updated with the first M value found in list ``points`` even if ``point``
+already contains a M value.
+
+:param points: List of points in which a M point is searched.
+:param point: The point to update with M dimension and value.
+
+:return: ``True`` if the point is updated, ``False`` otherwise
+
+.. warning::
+
+   This method does not copy the m value of the coordinate from the
+   points whose m value is closest to the original x/y point, but only the first one found.
+
+
+.. versionadded:: 3.20
 %End
 
 

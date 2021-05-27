@@ -200,7 +200,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   {
     if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
-      templateMap.insert( info.baseName(), info.absoluteFilePath() );
+      templateMap.insert( info.completeBaseName(), info.absoluteFilePath() );
     }
   }
   return templateMap;
@@ -417,7 +417,7 @@ void QgsLayoutManagerDialog::removeClicked()
   }
 
   // Once we have the layout list, we can delete all of them !
-  for ( QgsMasterLayoutInterface *l : qgis::as_const( layoutList ) )
+  for ( QgsMasterLayoutInterface *l : std::as_const( layoutList ) )
   {
     QgsProject::instance()->layoutManager()->removeLayout( l );
   }

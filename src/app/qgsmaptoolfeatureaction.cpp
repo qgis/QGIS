@@ -143,7 +143,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       exp.prepare( &context );
 
       QMenu *featureMenu = new QMenu();
-      for ( const QgsFeature &feature : qgis::as_const( features ) )
+      for ( const QgsFeature &feature : std::as_const( features ) )
       {
         context.setFeature( feature );
         QString featureTitle = exp.evaluate( &context ).toString();
@@ -156,7 +156,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
       connect( allFeatureAction, &QAction::triggered, this, [ = ]
       {
-        for ( const QgsFeature &feature : qgis::as_const( features ) )
+        for ( const QgsFeature &feature : std::as_const( features ) )
         {
           doActionForFeature( layer, feature, point );
         }

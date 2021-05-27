@@ -54,6 +54,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgssymbol.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -556,6 +557,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, identifyContext.temporalRange() );
   }
 
+  const bool fetchFeatureSymbols = layer->dataProvider()->capabilities() & QgsVectorDataProvider::FeatureSymbology;
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QMap< QString, QString > commonDerivedAttributes;
@@ -610,7 +613,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
     QgsFeatureRequest featureRequest;
     featureRequest.setFilterRect( r );
-    featureRequest.setFlags( QgsFeatureRequest::ExactIntersect );
+    featureRequest.setFlags( QgsFeatureRequest::ExactIntersect | ( fetchFeatureSymbols ? QgsFeatureRequest::EmbeddedSymbols : QgsFeatureRequest::Flags() ) );
     if ( !temporalFilter.isEmpty() )
       featureRequest.setFilterExpression( temporalFilter );
 
@@ -632,6 +635,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.setExpressionContext( mCanvas->createExpressionContext() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
   if ( renderer )
@@ -641,7 +645,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
-  for ( const QgsFeature &feature : qgis::as_const( featureList ) )
+  for ( const QgsFeature &feature : std::as_const( featureList ) )
   {
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
@@ -918,6 +922,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
         closestVertexAttributes( *geom, vId, layer, derivedAttributes );
       }
     }
+  }
+
+  if ( feature.embeddedSymbol() )
+  {
+    derivedAttributes.insert( tr( "Embedded Symbol" ), tr( "%1 (%2)" ).arg( QgsSymbol::symbolTypeToString( feature.embeddedSymbol()->type() ), feature.embeddedSymbol()->color().name() ) );
   }
 
   return derivedAttributes;

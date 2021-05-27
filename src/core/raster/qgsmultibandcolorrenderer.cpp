@@ -20,6 +20,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgssymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -146,7 +147,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
                     && mAlphaBand < 1 );
 
-  QSet<int> bands;
+  QList<int> bands;
   if ( mRedBand > 0 )
   {
     bands << mRedBand;
@@ -173,7 +174,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
 
   QMap<int, QgsRasterBlock *> bandBlocks;
   QgsRasterBlock *defaultPointer = nullptr;
-  QSet<int>::const_iterator bandIt = bands.constBegin();
+  QList<int>::const_iterator bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandBlocks.insert( *bandIt, defaultPointer );
@@ -218,7 +219,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     alphaBlock = bandBlocks[mAlphaBand];
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     for ( int i = 0; i < bandBlocks.size(); i++ )
     {
@@ -230,7 +231,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   QRgb *outputBlockColorData = outputBlock->colorData();
 
   // faster data access to data for the common case that input data are coming from RGB image with 8-bit bands
-  bool hasByteRgb = ( redBlock && greenBlock && blueBlock && redBlock->dataType() == Qgis::Byte && greenBlock->dataType() == Qgis::Byte && blueBlock->dataType() == Qgis::Byte );
+  bool hasByteRgb = ( redBlock && greenBlock && blueBlock && redBlock->dataType() == Qgis::DataType::Byte && greenBlock->dataType() == Qgis::DataType::Byte && blueBlock->dataType() == Qgis::DataType::Byte );
   const quint8 *redData = nullptr, *greenData = nullptr, *blueData = nullptr;
   if ( hasByteRgb )
   {

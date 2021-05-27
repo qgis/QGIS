@@ -54,8 +54,8 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
 
   getMeshDrivers();
   populateDriversComboBox( );
-  connect( mOutputFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::updateInfoMessage );
-  connect( mOutputFormatComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::onOutputFormatChange );
+  connect( mOutputFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::updateInfoMessage );
+  connect( mOutputFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::onOutputFormatChange );
   connect( mOutputGroupNameLineEdit, &QLineEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
 
   connect( mDatasetsListWidget, &QListView::doubleClicked, this, &QgsMeshCalculatorDialog::datasetGroupEntry );

@@ -13,7 +13,7 @@
 
 class QgsMeshLayer : QgsMapLayer
 {
-%Docstring
+%Docstring(signature="appended")
 
 Represents a mesh layer supporting display of data on structured or unstructured meshes
 
@@ -40,7 +40,7 @@ Data can be populated by setMesh(const QString &vertices, const QString &faces),
 vertices and faces is comma separated coordinates and connections for mesh.
 E.g. to create mesh with one quad and one triangle
 
-.. code-block::
+.. code-block:: python
 
       uri = "1.0, 2.0 \n" \
           "2.0, 2.0 \n" \
@@ -59,10 +59,13 @@ MDAL data provider (mdal)
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
 is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
 
-.. code-block::
+
+.. code-block:: python
 
          uri = "test/land.2dm"
          scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
+
+
 
 .. note::
 

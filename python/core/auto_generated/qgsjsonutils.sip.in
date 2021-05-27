@@ -14,7 +14,7 @@
 
 class QgsJsonExporter
 {
-%Docstring
+%Docstring(signature="appended")
 Handles exporting :py:class:`QgsFeature` features to GeoJSON features.
 
 Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
@@ -264,7 +264,7 @@ Returns a GeoJSON string representation of a list of features (feature collectio
 
 class QgsJsonUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Helper utilities for working with JSON and GeoJSON conversions.
 
 .. versionadded:: 2.16

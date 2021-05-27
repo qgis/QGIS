@@ -15,7 +15,7 @@
 
 class QgsProjectProperty
 {
-%Docstring
+%Docstring(signature="appended")
 An Abstract Base Class for QGIS project property hierarchys.
 
 Each sub-class is either a :py:class:`QgsProjectPropertyKey` or :py:class:`QgsProjectPropertyValue`.  :py:class:`QgsProjectPropertyKey` can
@@ -108,7 +108,7 @@ name, "foo", in its QHash of QProperties.
 
 class QgsProjectPropertyValue : QgsProjectProperty
 {
-%Docstring
+%Docstring(signature="appended")
 Project property value node, contains a :py:class:`QgsProjectPropertyKey`'s value.
 
 .. versionadded:: 3.0
@@ -148,7 +148,7 @@ Constructor for QgsProjectPropertyValue, initialized to a specified value.
 
 class QgsProjectPropertyKey : QgsProjectProperty
 {
-%Docstring
+%Docstring(signature="appended")
 
 Project property key node.
 

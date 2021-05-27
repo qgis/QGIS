@@ -10,7 +10,7 @@
 
 class QgsSteppedLineScaleBarRenderer: QgsScaleBarRenderer
 {
-%Docstring
+%Docstring(signature="appended")
 Scalebar style that draws a stepped line representation of a scalebar.
 
 .. versionadded:: 3.14

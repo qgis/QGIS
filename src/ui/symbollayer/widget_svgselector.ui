@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>331</width>
-    <height>490</height>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item row="1" column="0">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mSvgBrowserGroupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -38,13 +38,19 @@
       <string>SVG browser</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
+      <item row="1" column="0">
        <widget class="QSplitter" name="splitter">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
         <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
            <widget class="QLabel" name="mGroupsLabel">
             <property name="text">
@@ -72,6 +78,9 @@
         </widget>
         <widget class="QWidget" name="layoutWidget_1">
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="spacing">
+           <number>2</number>
+          </property>
           <item>
            <widget class="QLabel" name="mImagesLabel">
             <property name="text">
@@ -125,6 +134,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QgsFilterLineEdit" name="mSvgFilterLineEdit">
+            <property name="showSearchIcon" stdset="0">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </widget>
@@ -174,7 +190,14 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="5">
-       <widget class="QTreeView" name="mParametersTreeView"/>
+       <widget class="QTreeView" name="mParametersTreeView">
+        <property name="rootIsDecorated">
+         <bool>false</bool>
+        </property>
+        <property name="itemsExpandable">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -193,7 +216,7 @@
     </spacer>
    </item>
    <item row="3" column="0">
-    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+    <widget class="QgsPictureSourceLineEditBase" name="mSourceLineEdit" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -209,18 +232,31 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSvgSourceLineEdit</class>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPictureSourceLineEditBase</class>
    <extends>QWidget</extends>
    <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSourceLineEdit</tabstop>
+  <tabstop>mGroupsTreeView</tabstop>
+  <tabstop>mImagesListView</tabstop>
+  <tabstop>mParametersTreeView</tabstop>
+  <tabstop>mAddParameterButton</tabstop>
+  <tabstop>mRemoveParameterButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

@@ -14,7 +14,7 @@
 
 class QgsAuthSslImportDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 Widget for importing an SSL server certificate exception into the authentication database
 %End
 

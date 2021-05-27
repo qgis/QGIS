@@ -63,6 +63,15 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget: public QgsPanelWidget, private Ui
      */
     void setSettings( const QgsColorRampLegendNodeSettings &settings );
 
+    /**
+     * Sets visibility for the "Use Continuous Legend" checkbox to \a visible.
+     *
+     * This widget is visible and checked by default but in a few cases it does not
+     * need to be visible because disabling it would not make sense (for instance
+     * when using single band gray renderer).
+     */
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
+
   private slots:
 
     void onChanged();
@@ -101,6 +110,15 @@ class GUI_EXPORT QgsColorRampLegendNodeDialog : public QDialog
      * Returns a reference to the dialog's button box.
      */
     QDialogButtonBox *buttonBox() const;
+
+    /**
+     * Sets visibility for the "Use Continuous Legend" checkbox in the legend settings dialog to \a visible.
+     *
+     * This widget is visible and checked by default but in a few cases it does not
+     * need to be visible because disabling it would not make sense (for instance
+     * when using single band gray renderer).
+     */
+    void setUseContinuousRampCheckBoxVisibility( bool visible );
 
   private:
 

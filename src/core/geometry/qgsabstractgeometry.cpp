@@ -40,6 +40,39 @@ QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &
   return *this;
 }
 
+int QgsAbstractGeometry::compareTo( const QgsAbstractGeometry *other ) const
+{
+  // compare to self
+  if ( this == other )
+  {
+    return 0;
+  }
+
+  if ( sortIndex() != other->sortIndex() )
+  {
+    //different geometry types
+    const int diff = sortIndex() - other->sortIndex();
+    return ( diff > 0 ) - ( diff < 0 );
+  }
+
+  // same types
+  if ( isEmpty() && other->isEmpty() )
+  {
+    return 0;
+  }
+
+  if ( isEmpty() )
+  {
+    return -1;
+  }
+  if ( other->isEmpty() )
+  {
+    return 1;
+  }
+
+  return compareToSameClass( other );
+}
+
 void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )
@@ -247,6 +280,11 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   return true;
 }
 
+const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
+{
+  return this;
+}
+
 void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
 {
   // Ideally this would be pure virtual, but SIP has issues with that
@@ -284,6 +322,44 @@ QgsVertexIterator QgsAbstractGeometry::vertices() const
   return QgsVertexIterator( this );
 }
 
+int QgsAbstractGeometry::sortIndex() const
+{
+  switch ( QgsWkbTypes::flatType( mWkbType ) )
+  {
+    case QgsWkbTypes::Point:
+      return 0;
+    case QgsWkbTypes::MultiPoint:
+      return 1;
+    case QgsWkbTypes::LineString:
+      return 2;
+    case QgsWkbTypes::CircularString:
+      return 3;
+    case QgsWkbTypes::CompoundCurve:
+      return 4;
+    case QgsWkbTypes::MultiLineString:
+      return 5;
+    case QgsWkbTypes::MultiCurve:
+      return 6;
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Triangle:
+      return 7;
+    case QgsWkbTypes::CurvePolygon:
+      return 8;
+    case QgsWkbTypes::MultiPolygon:
+      return 9;
+    case QgsWkbTypes::MultiSurface:
+      return 10;
+    case QgsWkbTypes::GeometryCollection:
+      return 11;
+    case QgsWkbTypes::Unknown:
+      return 12;
+    case QgsWkbTypes::NoGeometry:
+    default:
+      break;
+  }
+  return 13;
+}
+
 bool QgsAbstractGeometry::hasChildGeometries() const
 {
   return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2;
@@ -305,6 +381,11 @@ bool QgsAbstractGeometry::isEmpty() const
 bool QgsAbstractGeometry::hasCurvedSegments() const
 {
   return false;
+}
+
+bool QgsAbstractGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  return boundingBox().intersects( rectangle );
 }
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const

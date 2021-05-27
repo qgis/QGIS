@@ -10,7 +10,7 @@
 
 class QgsValidityCheckContext
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for validity check contexts.
 
 :py:class:`QgsAbstractValidityCheck` subclasses are passed a :py:class:`QgsValidityCheckContext` subclass which
@@ -49,7 +49,7 @@ Returns the context type.
 
 class QgsLayoutValidityCheckContext : QgsValidityCheckContext
 {
-%Docstring
+%Docstring(signature="appended")
 Validity check context for print layout validation.
 
 :py:class:`QgsLayoutValidityCheckContext` are passed to :py:class:`QgsAbstractValidityCheck` subclasses which

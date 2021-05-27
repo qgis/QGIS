@@ -217,16 +217,16 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   QgsCategoryList cats;
   cats.reserve( uniqueVals.count() );
   std::unique_ptr< QgsSymbol > defaultSymbol( QgsSymbol::defaultSymbol( mLayerGeometryType ) );
-  for ( const QVariant &val : qgis::as_const( sortedUniqueVals ) )
+  for ( const QVariant &val : std::as_const( sortedUniqueVals ) )
   {
     cats.append( QgsRendererCategory( val, defaultSymbol->clone(), val.toString() ) );
   }
 
   mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
 
-  const QgsSymbol::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
-                                     : mLayerGeometryType == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
-                                     : QgsSymbol::Fill;
+  const Qgis::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? Qgis::SymbolType::Marker
+                                : mLayerGeometryType == QgsWkbTypes::LineGeometry ? Qgis::SymbolType::Line
+                                : Qgis::SymbolType::Fill;
 
   QVariantList unmatchedCategories;
   QStringList unmatchedSymbols;
@@ -245,7 +245,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   {
     feedback->pushInfo( QObject::tr( "\n%1 categories could not be matched:" ).arg( unmatchedCategories.count() ) );
     std::sort( unmatchedCategories.begin(), unmatchedCategories.end() );
-    for ( const QVariant &cat : qgis::as_const( unmatchedCategories ) )
+    for ( const QVariant &cat : std::as_const( unmatchedCategories ) )
     {
       feedback->pushInfo( QStringLiteral( "∙ “%1”" ).arg( cat.toString() ) );
       if ( nonMatchingCategoriesSink )
@@ -261,7 +261,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   {
     feedback->pushInfo( QObject::tr( "\n%1 symbols in style were not matched:" ).arg( unmatchedSymbols.count() ) );
     std::sort( unmatchedSymbols.begin(), unmatchedSymbols.end() );
-    for ( const QString &name : qgis::as_const( unmatchedSymbols ) )
+    for ( const QString &name : std::as_const( unmatchedSymbols ) )
     {
       feedback->pushInfo( QStringLiteral( "∙ “%1”" ).arg( name ) );
       if ( nonMatchingSymbolsSink )

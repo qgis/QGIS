@@ -45,6 +45,10 @@
 #include "qgspalettedrasterrenderer.h"
 #include "diagram/qgspiediagram.h"
 #include "qgspropertytransformer.h"
+#include "qgsrulebasedlabeling.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
 static QString _fileNameForTest( const QString &testName )
 {
@@ -58,7 +62,7 @@ static void _setStandardTestFont( QgsLegendSettings &settings, const QString &st
          << QgsLegendStyle::Group
          << QgsLegendStyle::Subgroup
          << QgsLegendStyle::SymbolLabel;
-  Q_FOREACH ( QgsLegendStyle::Style st, styles )
+  for ( QgsLegendStyle::Style st : styles )
   {
     QFont font( QgsFontUtils::getStandardTestFont( style ) );
     font.setPointSizeF( settings.style( st ).font().pointSizeF() );
@@ -204,6 +208,8 @@ class TestQgsLegendRenderer : public QObject
     void testBasicJson();
     void testOpacityJson();
     void testBigMarkerJson();
+
+    void testLabelLegend();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -560,7 +566,7 @@ void TestQgsLegendRenderer::testOverrideSymbol()
   sym2->setColor( Qt::red );
 
   QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
-  dynamic_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
+  qgis::down_cast< QgsSymbolLegendNode * >( embeddedNode )->setCustomSymbol( sym2.release() );
 
   std::unique_ptr< QgsMarkerSymbol > sym3 = std::make_unique< QgsMarkerSymbol >();
   sym3->setColor( QColor( 0, 150, 0 ) );
@@ -945,7 +951,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   _renderLegend( testName, &legendModel, settings );
   bool result = _verifyImage( testName, mReport );
 
-  Q_FOREACH ( QgsVectorLayer *l, layers )
+  for ( QgsVectorLayer *l : layers )
   {
     QgsProject::instance()->removeMapLayer( l );
   }
@@ -1542,6 +1548,49 @@ void TestQgsLegendRenderer::testBigMarkerJson()
   QString test_name = "point_layer_icon_red_big";
   point_layer_icon_red.save( _fileNameForTest( test_name ) );
   QVERIFY( _verifyImage( test_name, mReport, 50 ) );
+}
+
+void TestQgsLegendRenderer::testLabelLegend()
+{
+  const QString testName( "test_label_legend" );
+  QgsPalLayerSettings *labelSettings = new QgsPalLayerSettings();
+  labelSettings->fieldName = QStringLiteral( "test_attr" );
+  QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr ); //root rule
+  QgsRuleBasedLabeling::Rule *labelingRule = new QgsRuleBasedLabeling::Rule( labelSettings, 0, 0, QString(), QStringLiteral( "labelingRule" ) );
+  rootRule->appendChild( labelingRule );
+  QgsRuleBasedLabeling *labeling = new QgsRuleBasedLabeling( rootRule );
+  mVL3->setLabeling( labeling );
+  bool bkLabelsEnabled = mVL3->labelsEnabled();
+  mVL3->setLabelsEnabled( true );
+
+  QgsDefaultVectorLayerLegend *vLayerLegend = dynamic_cast<QgsDefaultVectorLayerLegend *>( mVL3->legend() );
+  if ( !vLayerLegend )
+  {
+    QFAIL( "No vector layer legend" );
+  }
+  bool bkLabelLegendEnabled = vLayerLegend->showLabelLegend();
+  vLayerLegend->setShowLabelLegend( true );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  //first test if label legend nodes are present in json
+  const QJsonObject json = _renderJsonLegend( &legendModel, settings );
+  const QJsonArray nodes = json["nodes"].toArray();
+  const QJsonObject point_layer = nodes[1].toObject();
+  const QJsonArray point_layer_symbols = point_layer["symbols"].toArray();
+  const QJsonObject point_layer_labeling_symbol = point_layer_symbols[3].toObject();
+  QString labelTitle = point_layer_labeling_symbol["title"].toString();
+
+  QVERIFY( labelTitle == "labelingRule" );
+
+  //test rendered legend against reference image
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  vLayerLegend->setShowLabelLegend( bkLabelLegendEnabled );
+  mVL3->setLabelsEnabled( bkLabelsEnabled );
 }
 
 

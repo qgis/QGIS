@@ -26,6 +26,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
+                       QgsMapLayer,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -58,6 +59,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        QgsExpression,
+                       QgsLayerMetadata,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -488,6 +490,79 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
         self.assertFalse(vl.isSpatial())
         self.assertFalse(vl.crs().isValid())
+
+    def test_wgs84Extent(self):
+
+        # We use this particular shapefile because we need a layer with an
+        # epsg != 4326
+        p = os.path.join(unitTestDataPath(), 'bug5598.shp')
+        vl0 = QgsVectorLayer(p, 'test', 'ogr')
+
+        extent = vl0.extent()
+        wgs84_extent = vl0.wgs84Extent()
+
+        # write xml document where the wgs84 extent will be stored
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # create a 2nd layer and read the xml document WITHOUT trust
+        vl1 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        vl1.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl1.extent())
+        self.assertTrue(wgs84_extent == vl1.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl1.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl1.addFeature(f)
+        vl1.updateExtents()
+
+        self.assertTrue(extent != vl1.extent())
+
+        # trust is not activated so the wgs84 extent is updated
+        # accordingly
+        self.assertTrue(wgs84_extent != vl1.wgs84Extent())
+        vl1.rollBack()
+
+        # create a 3rd layer and read the xml document WITH trust
+        vl2 = QgsVectorLayer()
+        flags = QgsMapLayer.ReadFlags()
+        flags |= QgsMapLayer.FlagTrustLayerMetadata
+        vl2.readLayerXml(elem, QgsReadWriteContext(), flags)
+
+        self.assertTrue(extent == vl2.extent())
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # we add a feature and check that the original extent has been
+        # updated (the extent is bigger with the new feature)
+        vl2.startEditing()
+
+        f = QgsFeature()
+        f.setAttributes([0, "", "", 0.0, 0.0, 0.0, 0.0])
+        f.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425732), QgsPointXY(2482767, 2398853),
+                                                  QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                                  QgsPointXY(2484588, 2425732)]]))
+        vl2.addFeature(f)
+        vl2.updateExtents()
+
+        self.assertTrue(extent != vl2.extent())
+
+        # trust is activated so the wgs84 extent is not updated
+        self.assertTrue(wgs84_extent == vl2.wgs84Extent())
+
+        # but we can still retrieve the current wgs84 xtent with the force
+        # parameter
+        self.assertTrue(wgs84_extent != vl2.wgs84Extent(True))
+        vl2.rollBack()
 
     # ADD FEATURE
 
@@ -1677,14 +1752,17 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # strings
         self.assertEqual(layer.minimumValue(2), "foo")
         self.assertEqual(layer.maximumValue(2), "qar")
+        self.assertEqual(layer.minimumAndMaximumValue(2), ("foo", "qar"))
 
         # numbers
         self.assertEqual(layer.minimumValue(3), 111)
         self.assertEqual(layer.maximumValue(3), 321)
+        self.assertEqual(layer.minimumAndMaximumValue(3), (111, 321))
 
         # dates (maximumValue also tests we properly handle null values by skipping those)
         self.assertEqual(layer.minimumValue(4), QDateTime(QDate(2010, 1, 1)))
         self.assertEqual(layer.maximumValue(4), QDateTime(QDate(2010, 1, 1)))
+        self.assertEqual(layer.minimumAndMaximumValue(4), (QDateTime(QDate(2010, 1, 1)), QDateTime(QDate(2010, 1, 1))))
 
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
 
@@ -1903,6 +1981,63 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
         self.assertEqual(layer.maximumValue(1), 1001)
 
+    def testMinAndMaxValue(self):
+        """ test retrieving minimum and maximum values at once"""
+        layer = createLayerWithFivePoints()
+
+        # test layer with just provider features
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 888))
+
+        # add feature with new value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new maximum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 999))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", 1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1, 1000))
+
+        # add feature with new minimum value
+        layer.startEditing()
+        f1 = QgsFeature()
+        f1.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+
+        # should be new minimum value
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+        # add it again, should be no change
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", -999])
+        self.assertTrue(layer.addFeature(f1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-999, 1000))
+
+        # add another feature
+        f3 = QgsFeature()
+        f3.setAttributes(["test2", -1000])
+        self.assertTrue(layer.addFeature(f3))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1000))
+
+        # change an attribute value to a new maximum value
+        it = layer.getFeatures()
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, 1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1000, 1001))
+
+        f1_id = next(it).id()
+        self.assertTrue(layer.changeAttributeValue(f1_id, 1, -1001))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (-1001, 1001))
+
     def testMinMaxInVirtualField(self):
         """
         Test minimum and maximum values in a virtual field
@@ -1924,6 +2059,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(len(layer.getFeature(1).attributes()), 2)
         self.assertEqual(layer.minimumValue(1), QDate(2010, 1, 1))
         self.assertEqual(layer.maximumValue(1), QDate(2020, 1, 1))
+        self.assertEqual(layer.minimumAndMaximumValue(1), (QDate(2010, 1, 1), QDate(2020, 1, 1)))
 
     def test_InvalidOperations(self):
         layer = createLayerWithOnePoint()
@@ -2894,8 +3030,14 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
         layer.actions().addAction(action)
 
+        metadata = QgsLayerMetadata()
+        metadata.setFees('a handful of roos')
+        layer.setMetadata(metadata)
+
         # clone layer
         clone = layer.clone()
+
+        self.assertEqual(layer.metadata().fees(), 'a handful of roos')
 
         # generate xml from layer
         layer_doc = QDomDocument("doc")

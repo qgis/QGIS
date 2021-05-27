@@ -13,7 +13,7 @@
 
 class QgsUnitTypes
 {
-%Docstring
+%Docstring(signature="appended")
 Helper functions for various unit types.
 
 .. versionadded:: 2.14
@@ -120,6 +120,7 @@ Helper functions for various unit types.
       TemporalYears,
       TemporalDecades,
       TemporalCenturies,
+      TemporalIrregularStep,
       TemporalUnknownUnit
     };
 

@@ -26,6 +26,8 @@
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -41,6 +43,8 @@ QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double 
   mWidth = width;
   mCustomDashVector << 5 << 2;
 }
+
+QgsSimpleLineSymbolLayer::~QgsSimpleLineSymbolLayer() = default;
 
 void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
@@ -191,6 +195,19 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
   if ( props.contains( QStringLiteral( "dash_pattern_offset_map_unit_scale" ) ) )
     l->setDashPatternOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "dash_pattern_offset_map_unit_scale" )].toString() ) );
 
+  if ( props.contains( QStringLiteral( "trim_distance_start" ) ) )
+    l->setTrimDistanceStart( props[QStringLiteral( "trim_distance_start" )].toDouble() );
+  if ( props.contains( QStringLiteral( "trim_distance_start_unit" ) ) )
+    l->setTrimDistanceStartUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "trim_distance_start_unit" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_start_map_unit_scale" ) ) )
+    l->setTrimDistanceStartMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "trim_distance_start_map_unit_scale" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_end" ) ) )
+    l->setTrimDistanceEnd( props[QStringLiteral( "trim_distance_end" )].toDouble() );
+  if ( props.contains( QStringLiteral( "trim_distance_end_unit" ) ) )
+    l->setTrimDistanceEndUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "trim_distance_end_unit" )].toString() ) );
+  if ( props.contains( QStringLiteral( "trim_distance_end_map_unit_scale" ) ) )
+    l->setTrimDistanceEndMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "trim_distance_end_map_unit_scale" )].toString() ) );
+
   if ( props.contains( QStringLiteral( "align_dash_pattern" ) ) )
     l->setAlignDashPattern( props[ QStringLiteral( "align_dash_pattern" )].toInt() );
 
@@ -201,7 +218,6 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QVariantMap &props )
 
   return l;
 }
-
 
 QString QgsSimpleLineSymbolLayer::layerType() const
 {
@@ -267,6 +283,14 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
     return;
   }
 
+  QgsExpressionContextScope *scope = nullptr;
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper;
+  if ( hasDataDefinedProperties() )
+  {
+    scope = new QgsExpressionContextScope();
+    scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
+  }
+
   if ( mDrawInsidePolygon )
     p->save();
 
@@ -295,6 +319,9 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
         p->setClipPath( clipPath, Qt::IntersectClip );
       }
 
+      if ( scope )
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
+
       renderPolyline( points, context );
     }
     break;
@@ -311,8 +338,15 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
       case InteriorRingsOnly:
       {
         mOffset = -mOffset; // invert the offset for rings!
-        for ( const QPolygonF &ring : qgis::as_const( *rings ) )
+        int ringIndex = 1;
+        for ( const QPolygonF &ring : std::as_const( *rings ) )
+        {
+          if ( scope )
+            scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, ringIndex, true ) );
+
           renderPolyline( ring, context );
+          ringIndex++;
+        }
         mOffset = -mOffset;
       }
       break;
@@ -329,12 +363,52 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, con
 
 }
 
-void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
+void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
   {
     return;
+  }
+
+  QPolygonF points = pts;
+
+  double startTrim = mTrimDistanceStart;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyTrimStart ) )
+  {
+    context.setOriginalValueVariable( startTrim );
+    startTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyTrimStart, context.renderContext().expressionContext(), mTrimDistanceStart );
+  }
+  double endTrim = mTrimDistanceEnd;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyTrimEnd ) )
+  {
+    context.setOriginalValueVariable( endTrim );
+    endTrim = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyTrimEnd, context.renderContext().expressionContext(), mTrimDistanceEnd );
+  }
+
+  double totalLength = -1;
+  if ( mTrimDistanceStartUnit == QgsUnitTypes::RenderPercentage )
+  {
+    totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    startTrim = startTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    startTrim = context.renderContext().convertToPainterUnits( startTrim, mTrimDistanceStartUnit, mTrimDistanceStartMapUnitScale );
+  }
+  if ( mTrimDistanceEndUnit == QgsUnitTypes::RenderPercentage )
+  {
+    if ( totalLength < 0 ) // only recalculate if we didn't already work this out for the start distance!
+      totalLength = QgsSymbolLayerUtils::polylineLength( points );
+    endTrim = endTrim * 0.01 * totalLength;
+  }
+  else
+  {
+    endTrim = context.renderContext().convertToPainterUnits( endTrim, mTrimDistanceEndUnit, mTrimDistanceEndMapUnitScale );
+  }
+  if ( !qgsDoubleNear( startTrim, 0 ) || !qgsDoubleNear( endTrim, 0 ) )
+  {
+    points = QgsSymbolLayerUtils::polylineSubstring( points, startTrim, -endTrim );
   }
 
   QColor penColor = mColor;
@@ -424,6 +498,12 @@ QVariantMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "dash_pattern_offset" )] = QString::number( mDashPatternOffset );
   map[QStringLiteral( "dash_pattern_offset_unit" )] = QgsUnitTypes::encodeUnit( mDashPatternOffsetUnit );
   map[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mDashPatternOffsetMapUnitScale );
+  map[QStringLiteral( "trim_distance_start" )] = QString::number( mTrimDistanceStart );
+  map[QStringLiteral( "trim_distance_start_unit" )] = QgsUnitTypes::encodeUnit( mTrimDistanceStartUnit );
+  map[QStringLiteral( "trim_distance_start_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceStartMapUnitScale );
+  map[QStringLiteral( "trim_distance_end" )] = QString::number( mTrimDistanceEnd );
+  map[QStringLiteral( "trim_distance_end_unit" )] = QgsUnitTypes::encodeUnit( mTrimDistanceEndUnit );
+  map[QStringLiteral( "trim_distance_end_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mTrimDistanceEndMapUnitScale );
   map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
   map[QStringLiteral( "align_dash_pattern" )] = mAlignDashPattern ? QStringLiteral( "1" ) : QStringLiteral( "0" );
@@ -450,6 +530,12 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setDashPatternOffset( mDashPatternOffset );
   l->setDashPatternOffsetUnit( mDashPatternOffsetUnit );
   l->setDashPatternOffsetMapUnitScale( mDashPatternOffsetMapUnitScale );
+  l->setTrimDistanceStart( mTrimDistanceStart );
+  l->setTrimDistanceStartUnit( mTrimDistanceStartUnit );
+  l->setTrimDistanceStartMapUnitScale( mTrimDistanceStartMapUnitScale );
+  l->setTrimDistanceEnd( mTrimDistanceEnd );
+  l->setTrimDistanceEndUnit( mTrimDistanceEndUnit );
+  l->setTrimDistanceEndMapUnitScale( mTrimDistanceEndMapUnitScale );
   l->setAlignDashPattern( mAlignDashPattern );
   l->setTweakDashPatternOnCorners( mPatternCartographicTweakOnSharpCorners );
 
@@ -612,7 +698,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     //re-scale pattern vector after data defined pen width was applied
 
     QVector<qreal> scaledVector;
-    for ( double v : mCustomDashVector )
+    for ( double v : std::as_const( mCustomDashVector ) )
     {
       //the dash is specified in terms of pen widths, therefore the division
       scaledVector << context.renderContext().convertToPainterUnits( v, mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
@@ -624,7 +710,7 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   double patternOffset = mDashPatternOffset;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDashPatternOffset ) && pen.style() != Qt::SolidLine )
   {
-    context.setOriginalValueVariable( mDashPatternOffset );
+    context.setOriginalValueVariable( patternOffset );
     patternOffset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDashPatternOffset, context.renderContext().expressionContext(), mDashPatternOffset );
     pen.setDashOffset( context.renderContext().convertToPainterUnits( patternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv );
   }
@@ -1122,6 +1208,8 @@ QgsTemplatedLineSymbolLayerBase::QgsTemplatedLineSymbolLayerBase( bool rotateSym
 
 }
 
+QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
+
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   double offset = mOffset;
@@ -1246,12 +1334,25 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
     context.renderContext().setGeometry( curvePolygon->exteriorRing() );
   }
 
+  QgsExpressionContextScope *scope = nullptr;
+  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper;
+  if ( hasDataDefinedProperties() )
+  {
+    scope = new QgsExpressionContextScope();
+    scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.renderContext().expressionContext(), scope );
+  }
+
   switch ( mRingFilter )
   {
     case AllRings:
     case ExteriorRingOnly:
+    {
+      if ( scope )
+        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
+
       renderPolyline( points, context );
       break;
+    }
     case InteriorRingsOnly:
       break;
   }
@@ -1270,6 +1371,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
           {
             context.renderContext().setGeometry( curvePolygon->interiorRing( i ) );
           }
+          if ( scope )
+            scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, i + 1, true ) );
+
           renderPolyline( rings->at( i ), context );
         }
         mOffset = -mOffset;
@@ -1643,7 +1747,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
   QgsRenderContext &rc = context.renderContext();
 
-  double origAngle = symbolAngle();
   int i = -1, maxCount = 0;
   bool isRing = false;
 
@@ -1698,7 +1801,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
         if ( rotateSymbols() )
         {
           double angle = context.renderContext().geometry()->vertexAngle( vId );
-          setSymbolAngle( angle * 180 / M_PI );
+          setSymbolLineAngle( angle * 180 / M_PI );
         }
         renderSymbol( mapPoint, context.feature(), rc, -1, context.selected() );
       }
@@ -1746,8 +1849,6 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     double distance;
     distance = placement == QgsTemplatedLineSymbolLayerBase::FirstVertex ? offsetAlongLine : -offsetAlongLine;
     renderOffsetVertexAlongLine( points, i, distance, context );
-    // restore original rotation
-    setSymbolAngle( origAngle );
 
     return;
   }
@@ -1776,7 +1877,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       {
         double angle = std::atan2( currentPoint.y() - prevPoint.y(),
                                    currentPoint.x() - prevPoint.x() );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
       prevPoint = currentPoint;
     }
@@ -1787,15 +1888,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
       if ( rotateSymbols() )
       {
         double angle = markerAngle( points, isRing, i );
-        setSymbolAngle( origAngle + angle * 180 / M_PI );
+        setSymbolLineAngle( angle * 180 / M_PI );
       }
     }
 
     renderSymbol( symbolPoint, context.feature(), rc, -1, context.selected() );
   }
-
-  // restore original rotation
-  setSymbolAngle( origAngle );
 }
 
 double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bool isRing, int vertex )
@@ -1879,7 +1977,6 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
     return;
 
   QgsRenderContext &rc = context.renderContext();
-  double origAngle = symbolAngle();
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
     // rotate marker (if desired)
@@ -1889,7 +1986,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       if ( points.first() == points.last() )
         isRing = true;
       double angle = markerAngle( points, isRing, vertex );
-      setSymbolAngle( origAngle + angle * 180 / M_PI );
+      setSymbolLineAngle( angle * 180 / M_PI );
     }
     renderSymbol( points[vertex], context.feature(), rc, -1, context.selected() );
     return;
@@ -1897,7 +1994,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
 
   int pointIncrement = distance > 0 ? 1 : -1;
   QPointF previousPoint = points[vertex];
-  int startPoint = distance > 0 ? std::min( vertex + 1, points.count() - 1 ) : std::max( vertex - 1, 0 );
+  int startPoint = distance > 0 ? std::min( vertex + 1, static_cast<int>( points.count() ) - 1 ) : std::max( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
   double distanceLeft = std::fabs( distance );
 
@@ -1918,7 +2015,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       // rotate marker (if desired)
       if ( rotateSymbols() )
       {
-        setSymbolAngle( origAngle + ( l.angle() * 180 / M_PI ) );
+        setSymbolLineAngle( l.angle() * 180 / M_PI );
       }
       renderSymbol( markerPoint, context.feature(), rc, -1, context.selected() );
       return;
@@ -2122,7 +2219,7 @@ QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
 
 bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Marker )
   {
     delete symbol;
     return false;
@@ -2144,6 +2241,8 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
+
+QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer() = default;
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QVariantMap &props )
 {
@@ -2179,9 +2278,9 @@ QColor QgsMarkerLineSymbolLayer::color() const
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
@@ -2250,14 +2349,17 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     strokeElem.appendChild( graphicStrokeElem );
 
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
-    QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
-    if ( !markerLayer )
+    if ( QgsMarkerSymbolLayer *markerLayer = dynamic_cast<QgsMarkerSymbolLayer *>( layer ) )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+    }
+    else if ( layer )
+    {
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
     }
     else
     {
-      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "Missing marker line symbol layer. Skip it." ) ) );
     }
 
     if ( !gap.isEmpty() )
@@ -2464,6 +2566,8 @@ QgsHashedLineSymbolLayer::QgsHashedLineSymbolLayer( bool rotateSymbol, double in
   setSubSymbol( new QgsLineSymbol() );
 }
 
+QgsHashedLineSymbolLayer::~QgsHashedLineSymbolLayer() = default;
+
 QgsSymbolLayer *QgsHashedLineSymbolLayer::create( const QVariantMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
@@ -2501,9 +2605,9 @@ QString QgsHashedLineSymbolLayer::layerType() const
 void QgsHashedLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = QgsSymbol::RenderHints();
+  Qgis::SymbolRenderHints hints = Qgis::SymbolRenderHints();
   if ( rotateSymbols() )
-    hints |= QgsSymbol::DynamicRotation;
+    hints |= Qgis::SymbolRenderHint::DynamicRotation;
   mHashSymbol->setRenderHints( hints );
 
   mHashSymbol->startRender( context.renderContext(), context.fields() );
@@ -2555,7 +2659,7 @@ QgsSymbol *QgsHashedLineSymbolLayer::subSymbol()
 
 bool QgsHashedLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbol::Line )
+  if ( !symbol || symbol->type() != Qgis::SymbolType::Line )
   {
     delete symbol;
     return false;

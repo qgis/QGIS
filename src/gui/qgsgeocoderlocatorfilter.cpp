@@ -18,8 +18,8 @@
 #include "qgsmessagelog.h"
 #include "qgsgeocoderresult.h"
 
-QgsGeocoderLocatorFilter::QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas )
-  : QgsAbstractGeocoderLocatorFilter( name, displayName, prefix, geocoder )
+QgsGeocoderLocatorFilter::QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox )
+  : QgsAbstractGeocoderLocatorFilter( name, displayName, prefix, geocoder, boundingBox )
   , mCanvas( canvas )
 {
 

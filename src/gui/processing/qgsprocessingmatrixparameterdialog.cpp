@@ -105,7 +105,7 @@ void QgsProcessingMatrixParameterPanelWidget::deleteRow()
   QList< int > rowsToDelete = qgis::setToList( rows );
   std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
   mTblView->setUpdatesEnabled( false );
-  for ( int i : qgis::as_const( rowsToDelete ) )
+  for ( int i : std::as_const( rowsToDelete ) )
     mModel->removeRows( i, 1 );
 
   mTblView->setUpdatesEnabled( true );

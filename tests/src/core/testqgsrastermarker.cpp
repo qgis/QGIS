@@ -31,7 +31,7 @@
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsmarkersymbollayer.h>
-
+#include "qgsmarkersymbol.h"
 #include "qgsmultirenderchecker.h"
 
 /**

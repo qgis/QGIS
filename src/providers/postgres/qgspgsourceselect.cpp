@@ -18,7 +18,6 @@ email                : sherman at mrcc.com
 
 #include "qgspgsourceselect.h"
 
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgspostgresprovider.h"
@@ -32,6 +31,7 @@ email                : sherman at mrcc.com
 #include "qgsproxyprogresstask.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -59,16 +59,31 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point
-        , QgsWkbTypes::LineString
-        , QgsWkbTypes::Polygon
-        , QgsWkbTypes::MultiPoint
-        , QgsWkbTypes::MultiLineString
-        , QgsWkbTypes::MultiPolygon
-        , QgsWkbTypes::NoGeometry };
+    static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point,
+        QgsWkbTypes::LineString,
+        QgsWkbTypes::LineStringZ,
+        QgsWkbTypes::LineStringM,
+        QgsWkbTypes::LineStringZM,
+        QgsWkbTypes::Polygon,
+        QgsWkbTypes::PolygonZ,
+        QgsWkbTypes::PolygonM,
+        QgsWkbTypes::PolygonZM,
+        QgsWkbTypes::MultiPoint,
+        QgsWkbTypes::MultiPointZ,
+        QgsWkbTypes::MultiPointM,
+        QgsWkbTypes::MultiPointZM,
+        QgsWkbTypes::MultiLineString,
+        QgsWkbTypes::MultiLineStringZ,
+        QgsWkbTypes::MultiLineStringM,
+        QgsWkbTypes::MultiLineStringZM,
+        QgsWkbTypes::MultiPolygon,
+        QgsWkbTypes::MultiPolygonZ,
+        QgsWkbTypes::MultiPolygonM,
+        QgsWkbTypes::MultiPolygonZM,
+        QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
-      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
     return cb;
   }
@@ -163,7 +178,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     {
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
@@ -534,7 +549,7 @@ void QgsPgSourceSelect::addButtonClicked()
     }
     if ( ! rasterTables.isEmpty() )
     {
-      for ( const auto &u : qgis::as_const( rasterTables ) )
+      for ( const auto &u : std::as_const( rasterTables ) )
       {
         // Use "gdal" to proxy rasters to GDAL provider, or "postgresraster" for native PostGIS raster provider
         emit addRasterLayer( u.second, u.first, QLatin1String( "postgresraster" ) );

@@ -53,10 +53,10 @@ QgsPointXY QgsTileMatrix::tileCenter( QgsTileXYZ id ) const
 
 QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r )
 {
-  double x0 = qBound( mExtent.xMinimum(), r.xMinimum(), mExtent.xMaximum() );
-  double y0 = qBound( mExtent.yMinimum(), r.yMinimum(), mExtent.yMaximum() );
-  double x1 = qBound( mExtent.xMinimum(), r.xMaximum(), mExtent.xMaximum() );
-  double y1 = qBound( mExtent.yMinimum(), r.yMaximum(), mExtent.yMaximum() );
+  double x0 = std::clamp( r.xMinimum(), mExtent.xMinimum(), mExtent.xMaximum() );
+  double y0 = std::clamp( r.yMinimum(), mExtent.yMinimum(), mExtent.yMaximum() );
+  double x1 = std::clamp( r.xMaximum(), mExtent.xMinimum(), mExtent.xMaximum() );
+  double y1 = std::clamp( r.yMaximum(), mExtent.yMinimum(), mExtent.yMaximum() );
   if ( x0 >= x1 || y0 >= y1 )
     return QgsTileRange();   // nothing to display
 
@@ -68,10 +68,10 @@ QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r )
   QgsDebugMsgLevel( QStringLiteral( "Tile range of edges [%1,%2] - [%3,%4]" ).arg( tileX1 ).arg( tileY1 ).arg( tileX2 ).arg( tileY2 ), 2 );
 
   // figure out tile range from zoom
-  int startColumn = qBound( 0, static_cast<int>( floor( tileX1 ) ), mMatrixWidth - 1 );
-  int endColumn = qBound( 0, static_cast<int>( floor( tileX2 ) ), mMatrixWidth - 1 );
-  int startRow = qBound( 0, static_cast<int>( floor( tileY1 ) ), mMatrixHeight - 1 );
-  int endRow = qBound( 0, static_cast<int>( floor( tileY2 ) ), mMatrixHeight - 1 );
+  int startColumn = std::clamp( static_cast<int>( floor( tileX1 ) ), 0, mMatrixWidth - 1 );
+  int endColumn = std::clamp( static_cast<int>( floor( tileX2 ) ), 0, mMatrixWidth - 1 );
+  int startRow = std::clamp( static_cast<int>( floor( tileY1 ) ), 0, mMatrixHeight - 1 );
+  int endRow = std::clamp( static_cast<int>( floor( tileY2 ) ), 0, mMatrixHeight - 1 );
   return QgsTileRange( startColumn, endColumn, startRow, endRow );
 }
 

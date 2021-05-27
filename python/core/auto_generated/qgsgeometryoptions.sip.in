@@ -12,7 +12,7 @@
 
 class QgsGeometryOptions : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 
 The :py:class:`QgsGeometryOptions` class contains options to automatically adjust geometries to
 constraints on a layer.
@@ -117,6 +117,7 @@ Read the geometry options from ``node``.
 
 .. versionadded:: 3.4
 %End
+
 
   signals:
 

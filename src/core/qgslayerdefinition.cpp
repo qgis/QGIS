@@ -30,6 +30,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsannotationlayer.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -60,7 +64,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
 
 bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context )
 {
-  Q_UNUSED( errorMessage )
+  errorMessage.clear();
 
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
 
@@ -172,7 +176,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     loadInLegend = false;
   }
 
-  QList<QgsMapLayer *> layers = QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
+  QList<QgsMapLayer *> layers = QgsLayerDefinition::loadLayerDefinitionLayersInternal( doc, context, errorMessage );
 
   project->addMapLayers( layers, loadInLegend );
 
@@ -195,7 +199,6 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   rootGroup->insertChildNodes( -1, nodes );
 
   return true;
-
 }
 
 bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage )
@@ -276,6 +279,12 @@ QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMap
 
 QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context )
 {
+  QString errorMessage;
+  return loadLayerDefinitionLayersInternal( document, context, errorMessage );
+}
+
+QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDomDocument &document, QgsReadWriteContext &context, QString &errorMessage )
+{
   QList<QgsMapLayer *> layers;
   QDomElement layerElem = document.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
   // For QLR:
@@ -287,34 +296,57 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
   while ( ! layerElem.isNull() )
   {
     const QString type = layerElem.attribute( QStringLiteral( "type" ) );
-    QgsDebugMsg( type );
     QgsMapLayer *layer = nullptr;
 
-    if ( type == QLatin1String( "vector" ) )
+    bool ok = false;
+    const QgsMapLayerType layerType = QgsMapLayerFactory::typeFromString( type, ok );
+    if ( ok )
     {
-      layer = new QgsVectorLayer( );
-    }
-    else if ( type == QLatin1String( "raster" ) )
-    {
-      layer = new QgsRasterLayer;
-    }
-    else if ( type == QLatin1String( "vector-tile" ) )
-    {
-      layer = new QgsVectorTileLayer;
-    }
-    else if ( type == QLatin1String( "plugin" ) )
-    {
-      QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
-      layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
+      switch ( layerType )
+      {
+        case QgsMapLayerType::VectorLayer:
+          layer = new QgsVectorLayer();
+          break;
+
+        case QgsMapLayerType::RasterLayer:
+          layer = new QgsRasterLayer();
+          break;
+
+        case QgsMapLayerType::PluginLayer:
+        {
+          QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
+          layer = QgsApplication::pluginLayerRegistry()->createLayer( typeName );
+          break;
+        }
+
+        case QgsMapLayerType::MeshLayer:
+          layer = new QgsMeshLayer();
+          break;
+
+        case QgsMapLayerType::VectorTileLayer:
+          layer = new QgsVectorTileLayer;
+          break;
+
+        case QgsMapLayerType::PointCloudLayer:
+          layer = new QgsPointCloudLayer();
+          break;
+
+        case QgsMapLayerType::AnnotationLayer:
+          break;
+      }
     }
 
-    if ( !layer )
-      continue;
-
-    // always add the layer, even if the source is invalid -- this allows users to fix the source
-    // at a later stage and still retain all the layer properties intact
-    layer->readLayerXml( layerElem, context );
-    layers << layer;
+    if ( layer )
+    {
+      // always add the layer, even if the source is invalid -- this allows users to fix the source
+      // at a later stage and still retain all the layer properties intact
+      layer->readLayerXml( layerElem, context );
+      layers << layer;
+    }
+    else
+    {
+      errorMessage = QObject::tr( "Unsupported layer type: %1" ).arg( type );
+    }
     layerElem = layerElem.nextSiblingElement( QStringLiteral( "maplayer" ) );
   }
   return layers;
@@ -341,7 +373,6 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
   //no project translator defined here
   return QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
 }
-
 
 void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
 {

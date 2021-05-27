@@ -95,7 +95,7 @@ void TestQgsMapCanvas::testPanByKeyboard()
 
   QgsRectangle initialExtent( 100, 100, 110, 110 );
 
-  Q_FOREACH ( double rotation, rotations )
+  for ( double rotation : rotations )
   {
     // Set rotation and initial extent
     mCanvas->setRotation( rotation );
@@ -103,7 +103,7 @@ void TestQgsMapCanvas::testPanByKeyboard()
 
     // Save actual extent, simulate panning by keyboard and verify the extent is unchanged
     QgsRectangle originalExtent = mCanvas->extent();
-    Q_FOREACH ( Qt::Key key, keys )
+    for ( Qt::Key key : keys )
     {
       QgsRectangle tempExtent = mCanvas->extent();
       QKeyEvent keyEvent( QEvent::KeyPress, key, Qt::NoModifier );

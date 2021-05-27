@@ -60,3 +60,15 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
   }
   return success;
 }
+
+int QgsTileCache::totalCost()
+{
+  QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.totalCost();
+}
+
+int QgsTileCache::maxCost()
+{
+  QMutexLocker locker( &sTileCacheMutex );
+  return sTileCache.maxCost();
+}

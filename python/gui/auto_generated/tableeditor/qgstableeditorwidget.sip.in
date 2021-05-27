@@ -12,7 +12,7 @@
 
 class QgsTableEditorWidget : QTableWidget
 {
-%Docstring
+%Docstring(signature="appended")
 
 A reusable widget for editing simple spreadsheet-style tables.
 

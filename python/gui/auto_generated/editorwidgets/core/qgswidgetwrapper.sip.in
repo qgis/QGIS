@@ -20,7 +20,7 @@
 
 class QgsWidgetWrapper : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Manages an editor widget
 Widget and wrapper share the same parent
 

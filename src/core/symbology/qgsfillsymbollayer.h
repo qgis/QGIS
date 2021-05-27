@@ -32,6 +32,10 @@
 #include <QPen>
 #include <QBrush>
 
+class QgsMarkerSymbol;
+class QgsLineSymbol;
+class QgsPathResolver;
+
 /**
  * \ingroup core
  * \class QgsSimpleFillSymbolLayer
@@ -46,6 +50,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
                               double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                               Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                             );
+
+    ~QgsSimpleFillSymbolLayer() override;
 
     // static stuff
 
@@ -708,9 +714,11 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
   public:
 
     QgsImageFillSymbolLayer();
+    ~QgsImageFillSymbolLayer() override;
+
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
-    QgsSymbol *subSymbol() override { return mStroke.get(); }
+    QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
@@ -805,6 +813,8 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * specified \a imageFilePath.
      */
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
+
+    ~QgsRasterFillSymbolLayer() override;
 
     /**
      * Creates a new QgsRasterFillSymbolLayer from a \a properties map. The caller takes
@@ -1028,6 +1038,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
      */
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
+
+    ~QgsSVGFillSymbolLayer() override;
 
     /**
      * Creates a new QgsSVGFillSymbolLayer from a \a properties map. The caller takes
@@ -1622,7 +1634,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double offsetY() const { return mOffsetY; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    QgsSymbol *subSymbol() override { return mMarkerSymbol; }
+    QgsSymbol *subSymbol() override;
 
     /**
      * Sets the units for the horizontal distance between points in the pattern.
@@ -1837,6 +1849,8 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
      */
     QgsRandomMarkerFillSymbolLayer( int pointCount = 10, CountMethod method = AbsoluteCount, double densityArea = 250.0, unsigned long seed = 0 );
 
+    ~QgsRandomMarkerFillSymbolLayer() override;
+
     /**
      * Creates a new QgsRandomMarkerFillSymbolLayer using the specified \a properties map containing symbol properties (see properties()).
      *
@@ -2014,6 +2028,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
     QgsCentroidFillSymbolLayer();
+    ~QgsCentroidFillSymbolLayer() override;
 
     // static stuff
 

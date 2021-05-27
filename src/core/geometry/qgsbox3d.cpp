@@ -109,7 +109,7 @@ bool QgsBox3d::contains( const QgsBox3d &other ) const
 
 bool QgsBox3d::contains( const QgsPoint &p ) const
 {
-  if ( !mBounds2d.contains( QgsPointXY( p.x(), p.y() ) ) )
+  if ( !mBounds2d.contains( p.x(), p.y() ) )
     return false;
 
   if ( p.is3D() )

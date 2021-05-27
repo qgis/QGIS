@@ -14,7 +14,7 @@
 
 class QgsPointXY
 {
-%Docstring
+%Docstring(signature="appended")
 A class to represent a 2D point.
 
 A :py:class:`QgsPointXY` represents a position with X and Y coordinates.

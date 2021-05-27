@@ -12,7 +12,7 @@
 
 class QgsQuadrilateral
 {
-%Docstring
+%Docstring(signature="appended")
 Quadrilateral geometry type.
 
 A quadrilateral is a polygon with four edges (or sides) and four vertices or corners.

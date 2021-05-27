@@ -12,7 +12,7 @@
 
 class QgsProcessingMapLayerComboBox : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 Processing map layer combo box.
 
 .. warning::

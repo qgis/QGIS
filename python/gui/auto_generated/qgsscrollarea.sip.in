@@ -10,7 +10,7 @@
 
 class QgsScrollArea : QScrollArea
 {
-%Docstring
+%Docstring(signature="appended")
 A QScrollArea subclass with improved scrolling behavior.
 
 :py:class:`QgsScrollArea` should be used instead of QScrollArea widgets.

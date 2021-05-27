@@ -26,6 +26,7 @@
 #include "qgsmaplayerlegend.h"
 
 #include "qgswmsutils.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
@@ -37,11 +38,11 @@
 namespace QgsWms
 {
   void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
-                               const QString &, const QgsServerRequest &request,
+                               const QgsWmsRequest &request,
                                QgsServerResponse &response )
   {
     // get parameters from query
-    QgsWmsParameters parameters( QUrlQuery( request.url() ) );
+    QgsWmsParameters parameters = request.wmsParameters();
 
     // check parameters validity
     // FIXME fail with png + mode

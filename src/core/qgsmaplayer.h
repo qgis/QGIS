@@ -39,6 +39,7 @@
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
+#include "qgis.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -62,22 +63,6 @@ class QPainter;
 
 /**
  * \ingroup core
- * \brief Types of layers that can be added to a map
- * \since QGIS 3.8
- */
-enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerType ) : int
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,      //!< Added in 3.2
-  VectorTileLayer, //!< Added in 3.14
-  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
-  PointCloudLayer, //!< Added in 3.18
-};
-
-/**
- * \ingroup core
  * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
@@ -95,7 +80,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
@@ -183,8 +168,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Temporal           = 1 << 14, //!< Temporal properties (since QGIS 3.14)
       Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
       Elevation          = 1 << 16, //!< Elevation settings (since QGIS 3.18)
+      Notes              = 1 << 17, //!< Layer user notes (since QGIS 3.20)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -515,6 +501,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
+     * Returns the WGS84 extent (EPSG:4326) of the layer according to
+     * ReadFlag::FlagTrustLayerMetadata. If that flag is activated, then the
+     * WGS84 extent read in the qgs project is returned. Otherwise, the actual
+     * WGS84 extent is returned.
+     * \param forceRecalculate True to return the current WGS84 extent whatever the read flags
+     * \since QGIS 3.20
+     */
+    QgsRectangle wgs84Extent( bool forceRecalculate = false ) const;
+
+    /**
      * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
      * \returns TRUE if the layer is valid and can be accessed
@@ -583,6 +579,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
       FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
+      FlagReadExtentFromXml = 1 << 2, //!< Read extent from xml and skip get extent from provider.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -978,7 +975,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      *
-     * Subclasses should override this method: default implementation does nothing.
+     * This method was defined in QgsVectorLayer since 2.10 and was marked as deprecated since 3.2
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param loadDefaultStyleFlag set to TRUE to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
      *
      * \param dataSource new layer data source
      * \param baseName base name of the layer
@@ -989,7 +1000,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see dataSourceChanged()
      * \since QGIS 3.6
      */
-    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Subclasses should override setDataSourcePrivate: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param flags provider read flags which control dataprovider construction like FlagTrustDataSource, FlagLoadDefaultStyle, etc
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 
     /**
      * Returns the provider type (provider key) for this layer
@@ -1403,6 +1430,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Signal emitted whenever a change affects the layer's style. Ie this may be triggered
      * by renderer changes, label style changes, or other style changes such as blend
      * mode or layer opacity changes.
+     *
+     * \warning This signal should never be manually emitted. Instead call the emitStyleChanged() method
+     * to ensure that the signal is only emitted when appropriate.
+     *
      * \see rendererChanged()
      * \since QGIS 2.16
     */
@@ -1503,6 +1534,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     void onNotified( const QString &message );
 
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Called by setDataSource()
+     * Subclasses should override this method: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param flags provider read flags
+     * \see dataSourceChanged()
+     * \since QGIS 3.20
+     */
+    virtual void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
+
   protected:
 
     /**
@@ -1602,8 +1650,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
-    //! Extent of the layer
-    mutable QgsRectangle mExtent;
+    /**
+     * Invalidates the WGS84 extent. If FlagTrustLayerMetadata is enabled,
+     * the extent is not invalidated because we want to trust metadata whatever
+     * happens.
+     * \since QGIS 3.20
+     */
+    void invalidateWgs84Extent();
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;
@@ -1676,6 +1729,26 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     double mLayerOpacity = 1.0;
 
+    /**
+     * If non-zero, the styleChanged signal should not be emitted.
+     *
+     * \since QGIS 3.20
+     */
+    int mBlockStyleChangedSignal = 0;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a HTML fragment containing the layer's CRS metadata, for use
+     * in the htmlMetadata() method.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.20
+     */
+    QString crsHtmlMetadata() const;
+#endif
+
   private:
 
     virtual QString baseURI( PropertyType type ) const;
@@ -1684,6 +1757,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type,
                                bool &resultFlag, StyleCategories categories = AllStyleCategories );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
+
+    // const method because extents are mutable
+    void updateExtent( const QgsRectangle &extent ) const;
 
     /**
      * This method returns TRUE by default but can be overwritten to specify
@@ -1742,6 +1818,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
+    //! Extent of the layer
+    mutable QgsRectangle mExtent;
+
+    //! Extent of the layer in EPSG:4326
+    mutable QgsRectangle mWgs84Extent;
+
     /**
      * Stores the original XML properties of the layer when loaded from the project
      *
@@ -1751,6 +1833,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    friend class QgsVectorLayer;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

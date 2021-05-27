@@ -25,6 +25,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
 #include "qgsproxyprogresstask.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -124,7 +125,7 @@ QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QSt
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 QgsOracleConnectionItem::~QgsOracleConnectionItem()
@@ -165,14 +166,14 @@ void QgsOracleConnectionItem::setAllAsPopulated()
   const auto constMChildren = mChildren;
   for ( QgsDataItem *child : constMChildren )
   {
-    child->setState( Populated );
+    child->setState( Qgis::BrowserItemState::Populated );
   }
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 {
-  setState( Populating );
+  setState( Qgis::BrowserItemState::Populating );
 
   mOwnerMap.clear();
 
@@ -250,7 +251,7 @@ void QgsOracleConnectionItem::setLayerType( const QgsOracleLayerProperty &layerP
     if ( !ownerItem )
     {
       ownerItem = new QgsOracleOwnerItem( this, layerProperty.ownerName, mPath + "/" + layerProperty.ownerName );
-      ownerItem->setState( Populating );
+      ownerItem->setState( Qgis::BrowserItemState::Populating );
       QgsDebugMsgLevel( "add owner item: " + layerProperty.ownerName, 3 );
       addChildItem( ownerItem, true );
       mOwnerMap[ layerProperty.ownerName ] = ownerItem;
@@ -368,23 +369,23 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to Oracle database" ), tr( "Import was successful." ) );
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
       {
-        if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+        if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
           output->setTitle( tr( "Import to Oracle database" ) );
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        if ( state() == Populated )
+        if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
           populate();
@@ -411,12 +412,12 @@ bool QgsOracleConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction 
 }
 
 // ---------------------------------------------------------------------------
-QgsOracleLayerItem::QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsOracleLayerProperty &layerProperty )
+QgsOracleLayerItem::QgsOracleLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsOracleLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "oracle" ) )
   , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QList<QAction *> QgsOracleLayerItem::actions( QWidget *parent )
@@ -479,7 +480,7 @@ QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem *parent, const QString &name
 {
   mIconName = QStringLiteral( "mIconDbOwner.png" );
   //not fertile, since children are created by QgsOracleConnectionItem
-  mCapabilities &= ~( Fertile );
+  mCapabilities &= ~Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile );
 }
 
 QVector<QgsDataItem *> QgsOracleOwnerItem::createChildren()
@@ -496,31 +497,31 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
   QgsWkbTypes::Type wkbType = layerProperty.types.at( 0 );
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::translatedDisplayString( wkbType ) ).arg( layerProperty.srids.at( 0 ) );
 
-  QgsLayerItem::LayerType layerType;
+  Qgis::BrowserLayerType layerType;
   switch ( wkbType )
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
-      layerType = QgsLayerItem::Point;
+      layerType = Qgis::BrowserLayerType::Point;
       break;
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
-      layerType = QgsLayerItem::Line;
+      layerType = Qgis::BrowserLayerType::Line;
       break;
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygon25D:
-      layerType = QgsLayerItem::Polygon;
+      layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:
       if ( wkbType == QgsWkbTypes::NoGeometry && layerProperty.geometryColName.isEmpty() )
       {
-        layerType = QgsLayerItem::TableLayer;
+        layerType = Qgis::BrowserLayerType::TableLayer;
         tip = tr( "as geometryless table" );
       }
       else
@@ -545,7 +546,8 @@ QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, 
 QVector<QgsDataItem *> QgsOracleRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  Q_FOREACH ( QString connName, QgsOracleConn::connectionList() )
+  const QStringList list = QgsOracleConn::connectionList();
+  for ( QString connName : list )
   {
     connections << new QgsOracleConnectionItem( this, connName, mPath + '/' + connName );
   }

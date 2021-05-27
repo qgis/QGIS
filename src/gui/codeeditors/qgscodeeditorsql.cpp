@@ -85,7 +85,7 @@ void QgsCodeEditorSQL::updateApis()
 {
   mApis = new QsciAPIs( mSqlLexer );
 
-  for ( const QString &fieldName : qgis::as_const( mFieldNames ) )
+  for ( const QString &fieldName : std::as_const( mFieldNames ) )
   {
     mApis->add( fieldName );
   }

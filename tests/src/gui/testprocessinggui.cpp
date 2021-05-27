@@ -1281,7 +1281,7 @@ void TestProcessingGui::testAuthCfgWrapper()
 
   QgsAuthManager *authm = QgsApplication::authManager();
   QStringList authIds;
-  for ( QgsAuthMethodConfig config : qgis::as_const( configs ) )
+  for ( QgsAuthMethodConfig config : std::as_const( configs ) )
   {
     QVERIFY( config.isValid() );
 
@@ -9796,7 +9796,7 @@ void TestProcessingGui::cleanupTempDir()
   QDir tmpDir = QDir( mTempDir );
   if ( tmpDir.exists() )
   {
-    Q_FOREACH ( const QString &tf, tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
+    for ( const QString &tf : tmpDir.entryList( QDir::NoDotAndDotDot | QDir::Files ) )
     {
       QVERIFY2( tmpDir.remove( mTempDir + '/' + tf ), qPrintable( "Could not remove " + mTempDir + '/' + tf ) );
     }

@@ -81,6 +81,7 @@
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

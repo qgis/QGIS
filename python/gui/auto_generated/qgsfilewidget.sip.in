@@ -11,7 +11,7 @@
 
 class QgsFileWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a folder.
 %End
 

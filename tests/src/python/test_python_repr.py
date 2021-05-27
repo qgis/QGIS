@@ -188,6 +188,8 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: invalid>')
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
+        crs.setCoordinateEpoch(2021.3)
+        self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326 @ 2021.3>')
         crs = QgsCoordinateReferenceSystem('EPSG:3111')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:3111>')
 

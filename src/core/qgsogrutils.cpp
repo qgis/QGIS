@@ -22,6 +22,20 @@
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsogrprovider.h"
+#include "qgslinesymbollayer.h"
+#include "qgspolygon.h"
+#include "qgsmultipolygon.h"
+#include "qgsmapinfosymbolconverter.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsfontutils.h"
+#include "qgsmessagelog.h"
+#include "qgssymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -30,16 +44,9 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDataStream>
+#include <QRegularExpression>
 
 #include "ogr_srs_api.h"
-
-// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
-// whereas previously there was only unset fields. For QGIS purposes, both
-// states (unset/null) are equivalent.
-#ifndef OGRNullMarker
-#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
-#endif
-
 
 
 void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
@@ -91,6 +98,89 @@ void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH
 void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
 {
   GDALDestroyWarpOptions( options );
+}
+
+QVariant QgsOgrUtils::OGRFieldtoVariant( const OGRField *value, OGRFieldType type )
+{
+  if ( !value || OGR_RawField_IsUnset( value ) || OGR_RawField_IsNull( value ) )
+    return QVariant();
+
+  switch ( type )
+  {
+    case OFTInteger:
+      return value->Integer;
+
+    case OFTInteger64:
+      return value->Integer64;
+
+    case OFTReal:
+      return value->Real;
+
+    case OFTString:
+    case OFTWideString:
+      return QString::fromUtf8( value->String );
+
+    case OFTDate:
+      return QDate( value->Date.Year, value->Date.Month, value->Date.Day );
+
+    case OFTTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) );
+    }
+
+    case OFTDateTime:
+    {
+      float secondsPart = 0;
+      float millisecondPart = std::modf( value->Date.Second, &secondsPart );
+      return QDateTime( QDate( value->Date.Year, value->Date.Month, value->Date.Day ),
+                        QTime( value->Date.Hour, value->Date.Minute, static_cast< int >( secondsPart ), static_cast< int >( 1000 * millisecondPart ) ) );
+    }
+
+    case OFTBinary:
+      // not supported!
+      Q_ASSERT_X( false, "QgsOgrUtils::OGRFieldtoVariant", "OFTBinary type not supported" );
+      return QVariant();
+
+    case OFTIntegerList:
+    {
+      QVariantList res;
+      res.reserve( value->IntegerList.nCount );
+      for ( int i = 0; i < value->IntegerList.nCount; ++i )
+        res << value->IntegerList.paList[ i ];
+      return res;
+    }
+
+    case OFTInteger64List:
+    {
+      QVariantList res;
+      res.reserve( value->Integer64List.nCount );
+      for ( int i = 0; i < value->Integer64List.nCount; ++i )
+        res << value->Integer64List.paList[ i ];
+      return res;
+    }
+
+    case OFTRealList:
+    {
+      QVariantList res;
+      res.reserve( value->RealList.nCount );
+      for ( int i = 0; i < value->RealList.nCount; ++i )
+        res << value->RealList.paList[ i ];
+      return res;
+    }
+
+    case OFTStringList:
+    case OFTWideStringList:
+    {
+      QVariantList res;
+      res.reserve( value->StringList.nCount );
+      for ( int i = 0; i < value->StringList.nCount; ++i )
+        res << QString::fromUtf8( value->StringList.paList[ i ] );
+      return res;
+    }
+  }
+  return QVariant();
 }
 
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
@@ -275,30 +365,108 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         break;
       }
 
+      case QVariant::StringList:
+      {
+        QStringList list;
+        char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+        const int count = CSLCount( lst );
+        if ( count > 0 )
+        {
+          list.reserve( count );
+          for ( int i = 0; i < count; i++ )
+          {
+            if ( encoding )
+              list << encoding->toUnicode( lst[i] );
+            else
+              list << QString::fromUtf8( lst[i] );
+          }
+        }
+        value = list;
+        break;
+      }
+
       case QVariant::List:
       {
-        if ( field.subType() == QVariant::String )
+        switch ( field.subType() )
         {
-          QStringList list;
-          char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
-          const int count = CSLCount( lst );
-          if ( count > 0 )
+          case QVariant::String:
           {
-            for ( int i = 0; i < count; i++ )
+            QStringList list;
+            char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
+            const int count = CSLCount( lst );
+            if ( count > 0 )
             {
-              if ( encoding )
-                list << encoding->toUnicode( lst[i] );
-              else
-                list << QString::fromUtf8( lst[i] );
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                if ( encoding )
+                  list << encoding->toUnicode( lst[i] );
+                else
+                  list << QString::fromUtf8( lst[i] );
+              }
             }
+            value = list;
+            break;
           }
-          value = list;
-        }
-        else
-        {
-          Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
-          if ( ok )
-            *ok = false;
+
+          case QVariant::Int:
+          {
+            QVariantList list;
+            int count = 0;
+            const int *lst = OGR_F_GetFieldAsIntegerList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::Double:
+          {
+            QVariantList list;
+            int count = 0;
+            const double *lst = OGR_F_GetFieldAsDoubleList( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          case QVariant::LongLong:
+          {
+            QVariantList list;
+            int count = 0;
+            const long long *lst = OGR_F_GetFieldAsInteger64List( ogrFet, attIndex, &count );
+            if ( count > 0 )
+            {
+              list.reserve( count );
+              for ( int i = 0; i < count; i++ )
+              {
+                list << lst[i];
+              }
+            }
+            value = list;
+            break;
+          }
+
+          default:
+          {
+            Q_ASSERT_X( false, "QgsOgrUtils::getOgrFeatureAttribute", "unsupported field type" );
+            if ( ok )
+              *ok = false;
+            break;
+          }
         }
         break;
       }
@@ -425,6 +593,38 @@ std::unique_ptr< QgsMultiLineString > ogrGeometryToQgsMultiLineString( OGRGeomet
   return mp;
 }
 
+std::unique_ptr< QgsPolygon > ogrGeometryToQgsPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  if ( count >= 1 )
+  {
+    polygon->setExteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, 0 ) ).release() );
+  }
+
+  for ( int i = 1; i < count; ++i )
+  {
+    polygon->addInteriorRing( ogrGeometryToQgsLineString( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
+std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH geom )
+{
+  std::unique_ptr< QgsMultiPolygon > polygon = std::make_unique< QgsMultiPolygon >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  polygon->reserve( count );
+  for ( int i = 0; i < count; ++i )
+  {
+    polygon->addGeometry( ogrGeometryToQgsPolygon( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polygon;
+}
+
 QgsWkbTypes::Type QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -535,19 +735,27 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
     case QgsWkbTypes::LineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
     }
 
     case QgsWkbTypes::MultiLineString:
     {
-      // optimised case for line -- avoid wkb conversion
       return QgsGeometry( ogrGeometryToQgsMultiLineString( geom ) );
+    }
+
+    case QgsWkbTypes::Polygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsPolygon( geom ) );
+    }
+
+    case QgsWkbTypes::MultiPolygon:
+    {
+      return QgsGeometry( ogrGeometryToQgsMultiPolygon( geom ) );
     }
 
     default:
       break;
-  };
+  }
 
   // Fallback to inefficient WKB conversions
 
@@ -927,4 +1135,564 @@ QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
   }
   return QString();
 #endif
+}
+
+QVariantMap QgsOgrUtils::parseStyleString( const QString &string )
+{
+  QVariantMap styles;
+
+  char **papszStyleString = CSLTokenizeString2( string.toUtf8().constData(), ";",
+                            CSLT_HONOURSTRINGS
+                            | CSLT_PRESERVEQUOTES
+                            | CSLT_PRESERVEESCAPES );
+  for ( int i = 0; papszStyleString[i] != nullptr; ++i )
+  {
+    // style string format is:
+    // <tool_name>([<tool_param>[,<tool_param>[,...]]])
+
+    // first extract tool name
+    const thread_local QRegularExpression sToolPartRx( QStringLiteral( "^(.*?)\\((.*)\\)$" ) );
+    const QString stylePart( papszStyleString[i] );
+    const QRegularExpressionMatch match = sToolPartRx.match( stylePart );
+    if ( !match.hasMatch() )
+      continue;
+
+    const QString tool = match.captured( 1 );
+    const QString params = match.captured( 2 );
+
+    char **papszTokens = CSLTokenizeString2( params.toUtf8().constData(), ",", CSLT_HONOURSTRINGS
+                         | CSLT_PRESERVEESCAPES );
+
+    QVariantMap toolParts;
+    const thread_local QRegularExpression sToolParamRx( QStringLiteral( "^(.*?):(.*)$" ) );
+    for ( int j = 0; papszTokens[j] != nullptr; ++j )
+    {
+      const QString toolPart( papszTokens[j] );
+      const QRegularExpressionMatch toolMatch = sToolParamRx.match( toolPart );
+      if ( !match.hasMatch() )
+        continue;
+
+      // note we always convert the keys to lowercase, just to be safe...
+      toolParts.insert( toolMatch.captured( 1 ).toLower(), toolMatch.captured( 2 ) );
+    }
+    CSLDestroy( papszTokens );
+
+    // note we always convert the keys to lowercase, just to be safe...
+    styles.insert( tool.toLower(), toolParts );
+  }
+  CSLDestroy( papszStyleString );
+  return styles;
+}
+
+std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &string, Qgis::SymbolType type )
+{
+  const QVariantMap styles = parseStyleString( string );
+
+  auto convertSize = []( const QString & size, double & value, QgsUnitTypes::RenderUnit & unit )->bool
+  {
+    const thread_local QRegularExpression sUnitRx = QRegularExpression( QStringLiteral( "^([\\d\\.]+)(g|px|pt|mm|cm|in)$" ) );
+    const QRegularExpressionMatch match = sUnitRx.match( size );
+    if ( match.hasMatch() )
+    {
+      value = match.captured( 1 ).toDouble();
+      const QString unitString = match.captured( 2 );
+      if ( unitString.compare( QLatin1String( "px" ), Qt::CaseInsensitive ) == 0 )
+      {
+        // pixels are a poor unit choice for QGIS -- they render badly in hidpi layouts. Convert to points instead, using
+        // a 96 dpi conversion
+        static constexpr double PT_TO_INCHES_FACTOR = 1 / 72.0;
+        static constexpr double PX_TO_PT_FACTOR = 1 / ( 96.0 * PT_TO_INCHES_FACTOR );
+        unit = QgsUnitTypes::RenderPoints;
+        value *= PX_TO_PT_FACTOR;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "pt" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderPoints;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "mm" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderMillimeters;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "cm" ), Qt::CaseInsensitive ) == 0 )
+      {
+        value *= 10;
+        unit = QgsUnitTypes::RenderMillimeters;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "in" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderInches;
+        return true;
+      }
+      else if ( unitString.compare( QLatin1String( "g" ), Qt::CaseInsensitive ) == 0 )
+      {
+        unit = QgsUnitTypes::RenderMapUnits;
+        return true;
+      }
+      QgsDebugMsg( QStringLiteral( "Unknown unit %1" ).arg( unitString ) );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Could not parse style size %1" ).arg( size ) );
+    }
+    return false;
+  };
+
+  auto convertColor = []( const QString & string ) -> QColor
+  {
+    if ( string.isEmpty() )
+      return QColor();
+
+    const thread_local QRegularExpression sColorWithAlphaRx = QRegularExpression( QStringLiteral( "^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})$" ) );
+    const QRegularExpressionMatch match = sColorWithAlphaRx.match( string );
+    if ( match.hasMatch() )
+    {
+      // need to convert #RRGGBBAA to #AARRGGBB for QColor
+      return QColor( QStringLiteral( "#%1%2" ).arg( match.captured( 2 ), match.captured( 1 ) ) );
+    }
+    else
+    {
+      return QColor( string );
+    }
+  };
+
+  auto convertPen = [&convertColor, &convertSize, string]( const QVariantMap & lineStyle ) -> std::unique_ptr< QgsSymbol >
+  {
+    QColor color = convertColor( lineStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
+
+    double lineWidth = DEFAULT_SIMPLELINE_WIDTH;
+    QgsUnitTypes::RenderUnit lineWidthUnit = QgsUnitTypes::RenderMillimeters;
+    convertSize( lineStyle.value( QStringLiteral( "w" ) ).toString(), lineWidth, lineWidthUnit );
+
+    // if the pen is a mapinfo pen, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-pen-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( string );
+    if ( match.hasMatch() )
+    {
+      const int penId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertLineSymbol( penId, context, color, lineWidth, lineWidthUnit ) );
+      if ( res )
+        return res;
+    }
+
+    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( color, lineWidth );
+    simpleLine->setWidthUnit( lineWidthUnit );
+
+    // pattern
+    const QString pattern = lineStyle.value( QStringLiteral( "p" ) ).toString();
+    if ( !pattern.isEmpty() )
+    {
+      const thread_local QRegularExpression sPatternUnitRx = QRegularExpression( QStringLiteral( "^([\\d\\.\\s]+)(g|px|pt|mm|cm|in)$" ) );
+      const QRegularExpressionMatch match = sPatternUnitRx.match( pattern );
+      if ( match.hasMatch() )
+      {
+        const QStringList patternValues = match.captured( 1 ).split( ' ' );
+        QVector< qreal > dashPattern;
+        QgsUnitTypes::RenderUnit patternUnits = QgsUnitTypes::RenderMillimeters;
+        for ( const QString &val : patternValues )
+        {
+          double length;
+          convertSize( val + match.captured( 2 ), length, patternUnits );
+          dashPattern.push_back( length * lineWidth * 2 );
+        }
+
+        simpleLine->setCustomDashVector( dashPattern );
+        simpleLine->setCustomDashPatternUnit( patternUnits );
+        simpleLine->setUseCustomDashPattern( true );
+      }
+    }
+
+    Qt::PenCapStyle capStyle = Qt::FlatCap;
+    Qt::PenJoinStyle joinStyle = Qt::MiterJoin;
+    // workaround https://github.com/OSGeo/gdal/pull/3509 in older GDAL versions
+    const QString id = lineStyle.value( QStringLiteral( "id" ) ).toString();
+    if ( id.contains( QLatin1String( "mapinfo-pen" ), Qt::CaseInsensitive ) )
+    {
+      // MapInfo renders all lines using a round pen cap and round pen join
+      // which are not the default values for OGR pen cap/join styles. So we need to explicitly
+      // override the OGR default values here on older GDAL versions
+      capStyle = Qt::RoundCap;
+      joinStyle = Qt::RoundJoin;
+    }
+
+    // pen cap
+    const QString penCap = lineStyle.value( QStringLiteral( "cap" ) ).toString();
+    if ( penCap.compare( QLatin1String( "b" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::FlatCap;
+    }
+    else if ( penCap.compare( QLatin1String( "r" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::RoundCap;
+    }
+    else if ( penCap.compare( QLatin1String( "p" ), Qt::CaseInsensitive ) == 0 )
+    {
+      capStyle = Qt::SquareCap;
+    }
+    simpleLine->setPenCapStyle( capStyle );
+
+    // pen join
+    const QString penJoin = lineStyle.value( QStringLiteral( "j" ) ).toString();
+    if ( penJoin.compare( QLatin1String( "m" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::MiterJoin;
+    }
+    else if ( penJoin.compare( QLatin1String( "r" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::RoundJoin;
+    }
+    else if ( penJoin.compare( QLatin1String( "b" ), Qt::CaseInsensitive ) == 0 )
+    {
+      joinStyle = Qt::BevelJoin;
+    }
+    simpleLine->setPenJoinStyle( joinStyle );
+
+    const QString priority = lineStyle.value( QStringLiteral( "l" ) ).toString();
+    if ( !priority.isEmpty() )
+    {
+      simpleLine->setRenderingPass( priority.toInt() );
+    }
+    return std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  };
+
+  auto convertBrush = [&convertColor]( const QVariantMap & brushStyle ) -> std::unique_ptr< QgsSymbol >
+  {
+    const QColor foreColor = convertColor( brushStyle.value( QStringLiteral( "fc" ), QStringLiteral( "#000000" ) ).toString() );
+    const QColor backColor = convertColor( brushStyle.value( QStringLiteral( "bc" ), QString() ).toString() );
+
+    const QString id = brushStyle.value( QStringLiteral( "id" ) ).toString();
+
+    // if the pen is a mapinfo brush, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-brush-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( id );
+    if ( match.hasMatch() )
+    {
+      const int brushId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertFillSymbol( brushId, context, foreColor, backColor ) );
+      if ( res )
+        return res;
+    }
+
+    const thread_local QRegularExpression sOgrId = QRegularExpression( QStringLiteral( "ogr-brush-(\\d+)" ) );
+    const QRegularExpressionMatch ogrMatch = sOgrId.match( id );
+
+    Qt::BrushStyle style = Qt::SolidPattern;
+    if ( ogrMatch.hasMatch() )
+    {
+      const int brushId = ogrMatch.captured( 1 ).toInt();
+      switch ( brushId )
+      {
+        case 0:
+          style = Qt::SolidPattern;
+          break;
+
+        case 1:
+          style = Qt::NoBrush;
+          break;
+
+        case 2:
+          style = Qt::HorPattern;
+          break;
+
+        case 3:
+          style = Qt::VerPattern;
+          break;
+
+        case 4:
+          style = Qt::FDiagPattern;
+          break;
+
+        case 5:
+          style = Qt::BDiagPattern;
+          break;
+
+        case 6:
+          style = Qt::CrossPattern;
+          break;
+
+        case 7:
+          style = Qt::DiagCrossPattern;
+          break;
+      }
+    }
+
+    QgsSymbolLayerList layers;
+    if ( backColor.isValid() && style != Qt::SolidPattern && style != Qt::NoBrush )
+    {
+      std::unique_ptr< QgsSimpleFillSymbolLayer > backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
+      backgroundFill->setLocked( true );
+      backgroundFill->setStrokeStyle( Qt::NoPen );
+      layers << backgroundFill.release();
+    }
+
+    std::unique_ptr< QgsSimpleFillSymbolLayer > foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
+    foregroundFill->setBrushStyle( style );
+    foregroundFill->setStrokeStyle( Qt::NoPen );
+
+    const QString priority = brushStyle.value( QStringLiteral( "l" ) ).toString();
+    if ( !priority.isEmpty() )
+    {
+      foregroundFill->setRenderingPass( priority.toInt() );
+    }
+    layers << foregroundFill.release();
+    return std::make_unique< QgsFillSymbol >( layers );
+  };
+
+  auto convertSymbol = [&convertColor, &convertSize, string]( const QVariantMap & symbolStyle ) -> std::unique_ptr< QgsSymbol >
+  {
+    const QColor color = convertColor( symbolStyle.value( QStringLiteral( "c" ), QStringLiteral( "#000000" ) ).toString() );
+
+    double symbolSize = DEFAULT_SIMPLEMARKER_SIZE;
+    QgsUnitTypes::RenderUnit symbolSizeUnit = QgsUnitTypes::RenderMillimeters;
+    convertSize( symbolStyle.value( QStringLiteral( "s" ) ).toString(), symbolSize, symbolSizeUnit );
+
+    const double angle = symbolStyle.value( QStringLiteral( "a" ), QStringLiteral( "0" ) ).toDouble();
+
+    const QString id = symbolStyle.value( QStringLiteral( "id" ) ).toString();
+
+    // if the symbol is a mapinfo symbol, use dedicated converter for more accurate results
+    const thread_local QRegularExpression sMapInfoId = QRegularExpression( QStringLiteral( "mapinfo-sym-(\\d+)" ) );
+    const QRegularExpressionMatch match = sMapInfoId.match( id );
+    if ( match.hasMatch() )
+    {
+      const int symbolId = match.captured( 1 ).toInt();
+      QgsMapInfoSymbolConversionContext context;
+
+      // ogr interpretations of mapinfo symbol sizes are too large -- scale these down
+      symbolSize *= 0.61;
+
+      std::unique_ptr<QgsSymbol> res( QgsMapInfoSymbolConverter::convertMarkerSymbol( symbolId, context, color, symbolSize, symbolSizeUnit ) );
+      if ( res )
+        return res;
+    }
+
+    std::unique_ptr< QgsMarkerSymbolLayer > markerLayer;
+
+    const thread_local QRegularExpression sFontId = QRegularExpression( QStringLiteral( "font-sym-(\\d+)" ) );
+    const QRegularExpressionMatch fontMatch = sFontId.match( id );
+    if ( fontMatch.hasMatch() )
+    {
+      const int symId = fontMatch.captured( 1 ).toInt();
+      const QStringList families = symbolStyle.value( QStringLiteral( "f" ), QString() ).toString().split( ',' );
+
+      bool familyFound = false;
+      QString fontFamily;
+      for ( const QString &family : std::as_const( families ) )
+      {
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+        {
+          familyFound = true;
+          fontFamily = family;
+          break;
+        }
+      }
+
+      if ( familyFound )
+      {
+        std::unique_ptr< QgsFontMarkerSymbolLayer > fontMarker = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, QChar( symId ), symbolSize );
+        fontMarker->setSizeUnit( symbolSizeUnit );
+        fontMarker->setAngle( -angle );
+
+        fontMarker->setColor( color );
+
+        const QColor strokeColor = convertColor( symbolStyle.value( QStringLiteral( "o" ), QString() ).toString() );
+        if ( strokeColor.isValid() )
+        {
+          fontMarker->setStrokeColor( strokeColor );
+          fontMarker->setStrokeWidth( 1 );
+          fontMarker->setStrokeWidthUnit( QgsUnitTypes::RenderPoints );
+        }
+        else
+        {
+          fontMarker->setStrokeWidth( 0 );
+        }
+
+        markerLayer = std::move( fontMarker );
+      }
+      else if ( !families.empty() )
+      {
+        // couldn't even find a matching font in the backup list
+        QgsMessageLog::logMessage( QObject::tr( "Font %1 not found on system" ).arg( families.at( 0 ) ) );
+      }
+    }
+
+    if ( !markerLayer )
+    {
+      const thread_local QRegularExpression sOgrId = QRegularExpression( QStringLiteral( "ogr-sym-(\\d+)" ) );
+      const QRegularExpressionMatch ogrMatch = sOgrId.match( id );
+
+      QgsSimpleMarkerSymbolLayerBase::Shape shape;
+      bool isFilled = true;
+      if ( ogrMatch.hasMatch() )
+      {
+        const int symId = ogrMatch.captured( 1 ).toInt();
+        switch ( symId )
+        {
+          case 0:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross;
+            break;
+
+          case 1:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Cross2;
+            break;
+
+          case 2:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            break;
+
+          case 3:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Circle;
+            break;
+
+          case 4:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            break;
+
+          case 5:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square;
+            break;
+
+          case 6:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            break;
+
+          case 7:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Triangle;
+            break;
+
+          case 8:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            break;
+
+          case 9:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Star;
+            break;
+
+          case 10:
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Line;
+            break;
+
+          default:
+            isFilled = false;
+            shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
+            break;
+        }
+      }
+      else
+      {
+        isFilled = false;
+        shape = QgsSimpleMarkerSymbolLayer::Shape::Square; // to initialize the variable
+      }
+
+      std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, symbolSize, -angle );
+      simpleMarker->setSizeUnit( symbolSizeUnit );
+
+      if ( isFilled && QgsSimpleMarkerSymbolLayer::shapeIsFilled( shape ) )
+      {
+        simpleMarker->setColor( color );
+        simpleMarker->setStrokeStyle( Qt::NoPen );
+      }
+      else
+      {
+        simpleMarker->setFillColor( QColor( 0, 0, 0, 0 ) );
+        simpleMarker->setStrokeColor( color );
+      }
+
+      const QColor strokeColor = convertColor( symbolStyle.value( QStringLiteral( "o" ), QString() ).toString() );
+      if ( strokeColor.isValid() )
+      {
+        simpleMarker->setStrokeColor( strokeColor );
+        simpleMarker->setStrokeStyle( Qt::SolidLine );
+      }
+
+      markerLayer = std::move( simpleMarker );
+    }
+
+    return std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << markerLayer.release() );
+  };
+
+  switch ( type )
+  {
+    case Qgis::SymbolType::Marker:
+      if ( styles.contains( QStringLiteral( "symbol" ) ) )
+      {
+        const QVariantMap symbolStyle = styles.value( QStringLiteral( "symbol" ) ).toMap();
+        return convertSymbol( symbolStyle );
+      }
+      else
+      {
+        return nullptr;
+      }
+
+    case Qgis::SymbolType::Line:
+      if ( styles.contains( QStringLiteral( "pen" ) ) )
+      {
+        // line symbol type
+        const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
+        return convertPen( lineStyle );
+      }
+      else
+      {
+        return nullptr;
+      }
+
+    case Qgis::SymbolType::Fill:
+    {
+      std::unique_ptr< QgsSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+      if ( styles.contains( QStringLiteral( "brush" ) ) )
+      {
+        const QVariantMap brushStyle = styles.value( QStringLiteral( "brush" ) ).toMap();
+        fillSymbol = convertBrush( brushStyle );
+      }
+      else
+      {
+        std::unique_ptr< QgsSimpleFillSymbolLayer > emptyFill = std::make_unique< QgsSimpleFillSymbolLayer >();
+        emptyFill->setBrushStyle( Qt::NoBrush );
+        fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList() << emptyFill.release() );
+      }
+
+      std::unique_ptr< QgsSymbol > penSymbol;
+      if ( styles.contains( QStringLiteral( "pen" ) ) )
+      {
+        const QVariantMap lineStyle = styles.value( QStringLiteral( "pen" ) ).toMap();
+        penSymbol = convertPen( lineStyle );
+      }
+
+      if ( penSymbol )
+      {
+        const int count = penSymbol->symbolLayerCount();
+
+        if ( count == 1 )
+        {
+          // if only one pen symbol layer, let's try and combine it with the topmost brush layer, so that the resultant QGIS symbol is simpler
+          if ( QgsSymbolLayerUtils::condenseFillAndOutline( dynamic_cast< QgsFillSymbolLayer * >( fillSymbol->symbolLayer( fillSymbol->symbolLayerCount() - 1 ) ),
+               dynamic_cast< QgsLineSymbolLayer * >( penSymbol->symbolLayer( 0 ) ) ) )
+            return fillSymbol;
+        }
+
+        for ( int i = 0; i < count; ++i )
+        {
+          std::unique_ptr< QgsSymbolLayer > layer( penSymbol->takeSymbolLayer( 0 ) );
+          layer->setLocked( true );
+          fillSymbol->appendSymbolLayer( layer.release() );
+        }
+      }
+
+      return fillSymbol;
+    }
+
+    case Qgis::SymbolType::Hybrid:
+      break;
+  }
+
+  return nullptr;
 }

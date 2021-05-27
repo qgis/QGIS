@@ -11,7 +11,7 @@
 
 class QgsScaleRangeWidget : QWidget
 {
-%Docstring
+%Docstring(signature="appended")
 A widget allowing entry of a range of map scales, e.g. minimum scale and maximum scale.
 %End
 

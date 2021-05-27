@@ -16,7 +16,7 @@
 
 class QgsImageFetcher : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Handles asynchronous download of images
 
 .. versionadded:: 2.8
@@ -61,7 +61,7 @@ Emitted when an error occurs
 
 class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for raster data providers.
 %End
 
@@ -77,7 +77,8 @@ Base class for raster data providers.
       WriteLayerMetadata,
       ProviderHintBenefitsFromResampling,
       ProviderHintCanPerformProviderResampling,
-      ReloadData
+      ReloadData,
+      DpiDependentData,
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -236,23 +237,55 @@ Returns a new image downloader for the raster legend.
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
-Create pyramid overviews
+Creates pyramid overviews.
+
+:param pyramidList: a list of :py:class:`QgsRasterPyramids` to create overviews for. The :py:func:`QgsRasterPyramid.setBuild()` flag
+                    should be set to ``True`` for every layer where pyramids are desired.
+:param resamplingMethod: resampling method to use when creating the pyramids. The :py:func:`~QgsRasterDataProvider.pyramidResamplingMethods` method
+                         can be used to retrieve a list of valid resampling methods available for specific raster data providers.
+:param format: raster pyramid format.
+:param configOptions: optional configuration options which are passed to the specific data provider
+                      for use during pyramid creation.
+:param feedback: optional feedback argument for progress reports and cancellation support.
+
+.. seealso:: :py:func:`buildPyramidList`
+
+.. seealso:: :py:func:`hasPyramids`
+
+.. seealso:: :py:func:`pyramidResamplingMethods`
 %End
 
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() );
 %Docstring
 Returns the raster layers pyramid list.
 
+This method returns a list of pyramid layers which are valid for the data provider. The returned list
+is a complete list of all possible layers, and includes both pyramids layers which currently exist and
+layers which have not yet been constructed. To know which of the pyramid layers
+ACTUALLY exists you need to look at the :py:func:`QgsRasterPyramid.getExists()` member for each value in the
+list.
+
+The returned list is suitable for passing to the :py:func:`~QgsRasterDataProvider.buildPyramids` method. First, modify the returned list
+by calling `QgsRasterPyramid.setBuild( ``True`` )` for every layer you want to create pyramids for, and then
+pass the modified list to :py:func:`~QgsRasterDataProvider.buildPyramids`.
+
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
-                     A pyramid list defines the
-                     POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-                     ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
-                     list.
+
+.. seealso:: :py:func:`buildPyramids`
+
+.. seealso:: :py:func:`hasPyramids`
 %End
 
     bool hasPyramids();
 %Docstring
-Returns ``True`` if raster has at least one populated histogram.
+Returns ``True`` if raster has at least one existing pyramid.
+
+The :py:func:`~QgsRasterDataProvider.buildPyramidList` method can be used to retrieve additional details about potential and existing
+pyramid layers.
+
+.. seealso:: :py:func:`buildPyramidList`
+
+.. seealso:: :py:func:`buildPyramids`
 %End
 
     virtual QString htmlMetadata() = 0;

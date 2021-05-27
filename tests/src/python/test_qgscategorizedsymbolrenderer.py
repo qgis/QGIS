@@ -37,7 +37,9 @@ from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsProperty,
                        QgsMapSettings,
                        QgsRectangle,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsEmbeddedSymbolRenderer,
+                       QgsGeometry
                        )
 from qgis.PyQt.QtCore import Qt, QVariant, QSize
 from qgis.PyQt.QtGui import QColor
@@ -691,6 +693,43 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual([l.value() for l in renderer2.categories()], ['a', 'b', 'c', ['d', 'e'], ''])
         self.assertEqual([l.symbol().color().name() for l in renderer2.categories()],
                          ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffffff'])
+
+    def testConvertFromEmbedded(self):
+        """
+        Test converting an embedded symbol renderer to a categorized renderer
+        """
+        points_layer = QgsVectorLayer('Point', 'Polys', 'memory')
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromWkt('Point(-100 30)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'triangle', 'size': 10, 'color': '#ff0000', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-110 40)'))
+        f.setEmbeddedSymbol(
+            QgsMarkerSymbol.createSimple({'name': 'square', 'size': 7, 'color': '#00ff00', 'outline_style': 'no'}))
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+        f.setGeometry(QgsGeometry.fromWkt('Point(-90 50)'))
+        f.setEmbeddedSymbol(None)
+        self.assertTrue(points_layer.dataProvider().addFeature(f))
+
+        renderer = QgsEmbeddedSymbolRenderer(defaultSymbol=QgsMarkerSymbol.createSimple({'name': 'star', 'size': 10, 'color': '#ff00ff', 'outline_style': 'no'}))
+        points_layer.setRenderer(renderer)
+
+        categorized = QgsCategorizedSymbolRenderer.convertFromRenderer(renderer, points_layer)
+        self.assertEqual(categorized.classAttribute(), '$id')
+        self.assertEqual(len(categorized.categories()), 3)
+        cc = categorized.categories()[0]
+        self.assertEqual(cc.value(), 1)
+        self.assertEqual(cc.label(), '1')
+        self.assertEqual(cc.symbol().color().name(), '#ff0000')
+        cc = categorized.categories()[1]
+        self.assertEqual(cc.value(), 2)
+        self.assertEqual(cc.label(), '2')
+        self.assertEqual(cc.symbol().color().name(), '#00ff00')
+        cc = categorized.categories()[2]
+        self.assertEqual(cc.value(), None)
+        self.assertEqual(cc.label(), '')
+        self.assertEqual(cc.symbol().color().name(), '#ff00ff')
 
 
 if __name__ == "__main__":

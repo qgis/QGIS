@@ -39,7 +39,6 @@
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
-#include "qgssymbol.h"
 #include "qgstextformat.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
@@ -336,6 +335,7 @@ class CORE_EXPORT QgsPalLayerSettings
       LabelAllParts = 103, //!< Whether all parts of multi-part features should be labeled
       PolygonLabelOutside = 109, //!< Whether labels outside a polygon feature are permitted, or should be forced (since QGIS 3.14)
       LineAnchorPercent = 111, //!< Portion along line at which labels should be anchored (since QGIS 3.16)
+      LineAnchorClipping = 112, //!< Clipping mode for line anchor calculation (since QGIS 3.20)
 
       // rendering
       ScaleVisibility = 23,
@@ -394,6 +394,13 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.10
      */
     void stopRender( QgsRenderContext &context );
+
+    /**
+     * Returns TRUE if any component of the label settings requires advanced effects
+     * such as blend modes, which require output in raster formats to be fully respected.
+     * \since QGIS 3.20
+     */
+    bool containsAdvancedEffects() const;
 
     /**
      * Returns the labeling property definitions.
@@ -791,6 +798,18 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
 
     /**
+     * \brief setLegendString
+     * \param legendString the string to show in the legend and preview
+     */
+    void setLegendString( const QString &legendString ) { mLegendString = legendString; }
+
+    /**
+     * \brief legendString
+     * \return the string to show in the legend and in the preview icon
+     */
+    QString legendString() const { return mLegendString; }
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      * If the text orientation is set to rotation-based, the spaced taken to render
@@ -975,6 +994,22 @@ class CORE_EXPORT QgsPalLayerSettings
     */
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
+    /**
+     * Returns the layer's unplaced label visibility.
+     *
+     * \see setUnplacedVisibility()
+     * \since QGIS 3.20
+     */
+    Qgis::UnplacedLabelVisibility unplacedVisibility() const;
+
+    /**
+     * Sets the layer's unplaced label \a visibility.
+     *
+     * \see unplacedVisibility()
+     * \since QGIS 3.20
+     */
+    void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;
     QgsFields mCurFields;
@@ -988,6 +1023,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+
   private:
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
@@ -1063,7 +1099,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     QgsExpression *expression = nullptr;
 
-    QFontDatabase mFontDB;
+    std::unique_ptr< QFontDatabase > mFontDB;
 
     QgsTextFormat mFormat;
 
@@ -1078,6 +1114,10 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsExpression mGeometryGeneratorExpression;
 
     bool mRenderStarted = false;
+
+    QString mLegendString = QObject::tr( "Aa" );
+
+    Qgis::UnplacedLabelVisibility mUnplacedVisibility = Qgis::UnplacedLabelVisibility::FollowEngineSetting;
 
     static void initPropertyDefinitions();
 };

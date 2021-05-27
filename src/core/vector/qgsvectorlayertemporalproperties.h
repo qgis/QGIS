@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
 
     /**
      * Mode of the vector temporal properties
-     **/
+     */
     enum TemporalMode
     {
       ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
@@ -100,14 +100,14 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * Returns the temporal properties mode.
      *
      *\see setMode()
-    **/
+    */
     TemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
-    **/
+    */
     void setMode( TemporalMode mode );
 
     /**
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * QgsVectorLayerTemporalProperties::ModeFixedTemporalRange
      *
      * \see setFixedTemporalRange()
-    **/
+    */
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**

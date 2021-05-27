@@ -17,6 +17,7 @@
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsmaplayerutils.h"
 #include <QDomElement>
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
@@ -80,66 +81,8 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   }
   else
   {
-    // reset the map canvas extent since the extent may now be smaller
-    // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
-    QgsRectangle fullExtent;
-    fullExtent.setMinimal();
-
-    // iterate through the map layers and test each layers extent
-    // against the current min and max values
-    const QMap<QString, QgsMapLayer *> layers = mProject->mapLayers( true );
-    QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( layers.count() ), 5 );
-    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
-    {
-      QgsDebugMsgLevel( "Updating extent using " + it.value()->name(), 5 );
-      QgsDebugMsgLevel( "Input extent: " + it.value()->extent().toString(), 5 );
-
-      if ( it.value()->extent().isNull() )
-        continue;
-
-      // Layer extents are stored in the coordinate system (CS) of the
-      // layer. The extent must be projected to the canvas CS
-      QgsCoordinateTransform ct( it.value()->crs(), mProject->crs(), mProject->transformContext() );
-      ct.setBallparkTransformsAreAppropriate( true );
-      try
-      {
-        const QgsRectangle extent = ct.transformBoundingBox( it.value()->extent() );
-
-        QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
-        fullExtent.combineExtentWith( extent );
-      }
-      catch ( QgsCsException & )
-      {
-        QgsDebugMsg( QStringLiteral( "Could not reproject layer extent" ) );
-      }
-    }
-
-    if ( fullExtent.width() == 0.0 || fullExtent.height() == 0.0 )
-    {
-      // If all of the features are at the one point, buffer the
-      // rectangle a bit. If they are all at zero, do something a bit
-      // more crude.
-
-      if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
-           fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
-      {
-        fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
-      }
-      else
-      {
-        const double padFactor = 1e-8;
-        double widthPad = fullExtent.xMinimum() * padFactor;
-        double heightPad = fullExtent.yMinimum() * padFactor;
-        double xmin = fullExtent.xMinimum() - widthPad;
-        double xmax = fullExtent.xMaximum() + widthPad;
-        double ymin = fullExtent.yMinimum() - heightPad;
-        double ymax = fullExtent.yMaximum() + heightPad;
-        fullExtent.set( xmin, ymin, xmax, ymax );
-      }
-    }
-
-    QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
-    return QgsReferencedRectangle( fullExtent, mProject->crs() );
+    const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
+    return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
   }
 }
 

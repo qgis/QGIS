@@ -20,9 +20,13 @@
 #ifndef QGSMSSQLDATAITEMS_H
 #define QGSMSSQLDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsmssqltablemodel.h"
+#include "qgsdatabaseschemaitem.h"
+#include "qgslayeritem.h"
+#include "qgsconfig.h"
 
 class QgsMssqlGeomColumnTypeThread;
 
@@ -119,7 +123,7 @@ class QgsMssqlLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperties );
+    QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsMssqlLayerProperty &layerProperties );
 
     QString createUri();
 

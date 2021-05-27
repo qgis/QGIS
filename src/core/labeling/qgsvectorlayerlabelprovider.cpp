@@ -35,6 +35,8 @@
 #include "feature.h"
 #include "labelposition.h"
 #include "callouts/qgscallout.h"
+#include "qgssymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include "pal/layer.h"
 
@@ -234,7 +236,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     const auto constSymbols = symbols;
     for ( QgsSymbol *symbol : constSymbols )
     {
-      if ( symbol->type() == QgsSymbol::Marker )
+      if ( symbol->type() == Qgis::SymbolType::Marker )
       {
         if ( bounds.isValid() )
           bounds = bounds.united( static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet ) );
@@ -464,7 +466,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
-  if ( !mSettings.drawLabels )
+  if ( !mSettings.drawLabels || mSettings.unplacedVisibility() == Qgis::UnplacedLabelVisibility::NeverShow )
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
@@ -628,7 +630,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
         txt.append( symb );
       }
     }
-
 
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )

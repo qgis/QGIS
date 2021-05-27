@@ -30,6 +30,7 @@
 #include "qgsnewnamedialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsfieldsitem.h"
 
 #include <QMessageBox>
 #include <climits>
@@ -41,7 +42,7 @@ QgsHanaConnectionItem::QgsHanaConnectionItem(
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 
   updateToolTip( QString( ), QString( ) );
 }
@@ -100,7 +101,7 @@ bool QgsHanaConnectionItem::equal( const QgsDataItem *other )
 
 void QgsHanaConnectionItem::refreshSchema( const QString &schema )
 {
-  for ( QgsDataItem *child : qgis::as_const( mChildren ) )
+  for ( QgsDataItem *child : std::as_const( mChildren ) )
   {
     if ( child->name() == schema || schema.isEmpty() )
       child->refresh();
@@ -152,7 +153,15 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
       }
 
       // open the source layer
-      QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+      bool owner;
+      QString error;
+      QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
+      if ( !srcLayer )
+      {
+        importResults.append( QStringLiteral( "%1: %2" ).arg( u.name, error ) );
+        hasError = true;
+        continue;
+      }
 
       if ( srcLayer->isValid() )
       {
@@ -168,8 +177,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
         uri.setWkbType( srcLayer->wkbType() );
 
         std::unique_ptr< QgsVectorLayerExporterTask > exportTask(
-          QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri.uri( false ),
-              QStringLiteral( "hana" ), srcLayer->crs() ) );
+          new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ),
+                                          QStringLiteral( "hana" ), srcLayer->crs(), QVariantMap(), owner ) );
+
         // when export is successful:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this,
                  [ = ]()
@@ -180,9 +190,9 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
         // when an error occurs:
         connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this,
-                 [ = ]( int error, const QString & errorMessage )
+                 [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
         {
-          if ( error != QgsVectorLayerExporter::ErrUserCanceled )
+          if ( error != Qgis::VectorExportResult::UserCanceled )
           {
             QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
             output->setTitle( tr( "Import to SAP HANA database" ) );
@@ -225,14 +235,14 @@ QgsHanaLayerItem::QgsHanaLayerItem(
   QgsDataItem *parent,
   const QString &name,
   const QString &path,
-  QgsLayerItem::LayerType layerType,
+  Qgis::BrowserLayerType layerType,
   const QgsHanaLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "hana" ) )
   , mLayerProperty( layerProperty )
 {
-  mCapabilities |= Delete | Fertile;
+  mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
   mUri = createUri();
-  setState( NotPopulated );
+  setState( Qgis::BrowserItemState::NotPopulated );
 }
 
 QVector<QgsDataItem *> QgsHanaLayerItem::createChildren()
@@ -318,7 +328,16 @@ QVector<QgsDataItem *> QgsHanaSchemaItem::createChildren()
 
     items.reserve( layers.size() );
     for ( const QgsHanaLayerProperty &layerInfo : layers )
-      items.append( createLayer( layerInfo ) );
+    {
+      if ( layerInfo.isValid )
+        items.append( createLayer( layerInfo ) );
+      else
+      {
+        QgsErrorItem *itemInvalidLayer = new QgsErrorItem( this, layerInfo.defaultName(), mPath + "/error" );
+        itemInvalidLayer->setToolTip( layerInfo.errorMessage );
+        items.append( itemInvalidLayer );
+      }
+    }
   }
   catch ( const QgsHanaException &ex )
   {
@@ -336,8 +355,8 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 {
   QString tip = layerProperty.isView ? QStringLiteral( "View" ) : QStringLiteral( "Table" );
 
-  QgsLayerItem::LayerType layerType = QgsLayerItem::TableLayer;
-  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isValid() )
+  Qgis::BrowserLayerType layerType = Qgis::BrowserLayerType::TableLayer;
+  if ( !layerProperty.geometryColName.isEmpty() && layerProperty.isGeometryValid() )
   {
     tip += tr( "\n%1 as %2" ).arg( layerProperty.geometryColName,
                                    QgsWkbTypes::displayString( layerProperty.type ) );
@@ -354,13 +373,13 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        layerType = QgsLayerItem::Point;
+        layerType = Qgis::BrowserLayerType::Point;
         break;
       case QgsWkbTypes::LineGeometry:
-        layerType = QgsLayerItem::Line;
+        layerType = Qgis::BrowserLayerType::Line;
         break;
       case QgsWkbTypes::PolygonGeometry:
-        layerType = QgsLayerItem::Polygon;
+        layerType = Qgis::BrowserLayerType::Polygon;
         break;
       default:
         break;
@@ -380,7 +399,7 @@ QgsHanaLayerItem *QgsHanaSchemaItem::createLayer( const QgsHanaLayerProperty &la
 QgsHanaRootItem::QgsHanaRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "SAP HANA" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconHana.svg" );
   populate();
 }

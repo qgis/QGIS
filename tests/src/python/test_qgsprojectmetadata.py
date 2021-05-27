@@ -347,6 +347,137 @@ class TestQgsProjectMetadata(unittest.TestCase):
         p.setMetadata(m)
         self.assertEqual(p.title(), 'my title 2')
 
+    def testCombine(self):
+        m1 = QgsProjectMetadata()
+        m2 = QgsProjectMetadata()
+
+        # should be retained
+        m1.setIdentifier('i1')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i1')
+
+        # should be overwritten
+        m1.setIdentifier(None)
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        # should be overwritten
+        m1.setIdentifier('i1')
+        m2.setIdentifier('i2')
+        m1.combine(m2)
+        self.assertEqual(m1.identifier(), 'i2')
+
+        m1.setParentIdentifier('pi1')
+        m2.setParentIdentifier(None)
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi1')
+
+        m1.setParentIdentifier(None)
+        m2.setParentIdentifier('pi2')
+        m1.combine(m2)
+        self.assertEqual(m1.parentIdentifier(), 'pi2')
+
+        m1.setLanguage('l1')
+        m2.setLanguage(None)
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l1')
+
+        m1.setLanguage(None)
+        m2.setLanguage('l2')
+        m1.combine(m2)
+        self.assertEqual(m1.language(), 'l2')
+
+        m1.setType('ty1')
+        m2.setType(None)
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty1')
+
+        m1.setType(None)
+        m2.setType('ty2')
+        m1.combine(m2)
+        self.assertEqual(m1.type(), 'ty2')
+
+        m1.setTitle('t1')
+        m2.setTitle(None)
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't1')
+
+        m1.setTitle(None)
+        m2.setTitle('t2')
+        m1.combine(m2)
+        self.assertEqual(m1.title(), 't2')
+
+        m1.setAbstract('a1')
+        m2.setAbstract(None)
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a1')
+
+        m1.setAbstract(None)
+        m2.setAbstract('a2')
+        m1.combine(m2)
+        self.assertEqual(m1.abstract(), 'a2')
+
+        m1.setHistory(['h1', 'hh1'])
+        m2.setHistory([])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h1', 'hh1'])
+
+        m1.setHistory([])
+        m2.setHistory(['h2', 'hh2'])
+        m1.combine(m2)
+        self.assertEqual(m1.history(), ['h2', 'hh2'])
+
+        m1.setKeywords({'words': ['k1', 'kk1']})
+        m2.setKeywords({})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k1', 'kk1']})
+
+        m1.setKeywords({})
+        m2.setKeywords({'words': ['k2', 'kk2']})
+        m1.combine(m2)
+        self.assertEqual(m1.keywords(), {'words': ['k2', 'kk2']})
+
+        m1.setContacts([QgsProjectMetadata.Contact('c1'), QgsProjectMetadata.Contact('cc1')])
+        m2.setContacts([])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsProjectMetadata.Contact('c1'), QgsProjectMetadata.Contact('cc1')])
+
+        m1.setContacts([])
+        m2.setContacts([QgsProjectMetadata.Contact('c2'), QgsProjectMetadata.Contact('cc2')])
+        m1.combine(m2)
+        self.assertEqual(m1.contacts(), [QgsProjectMetadata.Contact('c2'), QgsProjectMetadata.Contact('cc2')])
+
+        m1.setLinks([QgsProjectMetadata.Link('l1'), QgsProjectMetadata.Link('ll1')])
+        m2.setLinks([])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsProjectMetadata.Link('l1'), QgsProjectMetadata.Link('ll1')])
+
+        m1.setLinks([])
+        m2.setLinks([QgsProjectMetadata.Link('l2'), QgsProjectMetadata.Link('ll2')])
+        m1.combine(m2)
+        self.assertEqual(m1.links(), [QgsProjectMetadata.Link('l2'), QgsProjectMetadata.Link('ll2')])
+
+        m1.setAuthor('au1')
+        m2.setAuthor(None)
+        m1.combine(m2)
+        self.assertEqual(m1.author(), 'au1')
+
+        m1.setAuthor(None)
+        m2.setAuthor('au2')
+        m1.combine(m2)
+        self.assertEqual(m1.author(), 'au2')
+
+        m1.setCreationDateTime(QDateTime(2020, 1, 1, 0, 0, 0))
+        m2.setCreationDateTime(QDateTime())
+        m1.combine(m2)
+        self.assertEqual(m1.creationDateTime(), QDateTime(2020, 1, 1, 0, 0, 0))
+
+        m1.setCreationDateTime(QDateTime())
+        m2.setCreationDateTime(QDateTime(2021, 1, 1, 0, 0, 0))
+        m1.combine(m2)
+        self.assertEqual(m1.creationDateTime(), QDateTime(2021, 1, 1, 0, 0, 0))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -11,7 +11,7 @@
 
 class QgsServerOgcApiHandler
 {
-%Docstring
+%Docstring(signature="appended")
 The :py:class:`QgsServerOgcApiHandler` abstract class represents a OGC API handler to be registered
 in :py:class:`QgsServerOgcApi` class.
 
@@ -66,6 +66,10 @@ Optionally, override:
 
        def parameters(self, context):
            return [QgsServerQueryStringParameter("value1", True, QgsServerQueryStringParameter.Type.Double, "a double value")]
+
+
+
+
 
 .. versionadded:: 3.10
 %End

@@ -600,6 +600,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
     mProperty.setStaticValue( QVariant() );
     mProperty.setTransformer( nullptr );
     mExpressionString.clear();
+    mFieldName.clear();
     updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();
@@ -958,7 +959,7 @@ void QgsPropertyOverrideButton::registerExpressionContextGenerator( QgsExpressio
 
 void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
 {
-  for ( const SiblingWidget &sw : qgis::as_const( mSiblingWidgets ) )
+  for ( const SiblingWidget &sw : std::as_const( mSiblingWidgets ) )
   {
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingLinkedWidget )
       return;

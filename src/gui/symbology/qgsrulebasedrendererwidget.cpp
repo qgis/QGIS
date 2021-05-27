@@ -61,20 +61,20 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   if ( renderer )
   {
-    mRenderer = QgsRuleBasedRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsRuleBasedRenderer::convertFromRenderer( renderer, layer ) );
   }
   if ( !mRenderer )
   {
     // some default options
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = new QgsRuleBasedRenderer( symbol );
+    mRenderer = std::make_unique< QgsRuleBasedRenderer >( symbol );
   }
 
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsRuleBasedRendererModel( mRenderer, viewRules );
+  mModel = new QgsRuleBasedRendererModel( mRenderer.get(), viewRules );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this ); // for model validity checking
 #endif
@@ -135,12 +135,11 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
 {
   qDeleteAll( mCopyBuffer );
-  delete mRenderer;
 }
 
 QgsFeatureRenderer *QgsRuleBasedRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
@@ -349,6 +348,23 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
   mModel->finishedAddingRules();
 }
 
+void QgsRuleBasedRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool )
+{
+  if ( !mRenderer )
+    return;
+
+  for ( const QgsLegendSymbolItem &legendSymbol : std::as_const( levels ) )
+  {
+    QgsSymbol *sym = legendSymbol.symbol();
+    for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
+    {
+      mRenderer->setLegendSymbolItem( legendSymbol.ruleKey(), sym->clone() );
+    }
+  }
+
+  emit widgetChanged();
+}
+
 QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
 {
   QList<QgsSymbol *> symbolList;
@@ -435,20 +451,23 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
+    {
+      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
+    } );
     panel->openPanel( widget );
-    return;
   }
-
-  QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
-  dlg.setForceOrderingEnabled( true );
-  if ( dlg.exec() )
+  else
   {
-    emit widgetChanged();
+    QgsSymbolLevelsDialog dlg( mRenderer.get(), true, panel );
+    dlg.setForceOrderingEnabled( true );
+    if ( dlg.exec() )
+    {
+      setSymbolLevels( dlg.symbolLevels(), dlg.usingLevels() );
+    }
   }
 }
 

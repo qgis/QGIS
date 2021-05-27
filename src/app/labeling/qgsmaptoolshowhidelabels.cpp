@@ -180,7 +180,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      for ( const QgsLabelPosition &pos : qgis::as_const( positions ) )
+      for ( const QgsLabelPosition &pos : std::as_const( positions ) )
       {
         if ( showHide( pos, false ) )
           labelChanged = true;
@@ -192,7 +192,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QgsFeatureIds fids;
     if ( selectedFeatures( vlayer, fids ) )
     {
-      for ( const QgsFeatureId &fid : qgis::as_const( fids ) )
+      for ( const QgsFeatureId &fid : std::as_const( fids ) )
       {
         QgsLabelPosition pos;
         pos.featureId = fid;
@@ -284,10 +284,9 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
   listPos.clear();
 
   // get list of all drawn labels from current layer that intersect rubberband
-  const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
+  const QgsLabelingResults *labelingResults = mCanvas->labelingResults( false );
   if ( !labelingResults )
   {
-    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return false;
   }
 

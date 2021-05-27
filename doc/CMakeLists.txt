@@ -53,6 +53,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
+      ${CMAKE_SOURCE_DIR}/src/core/browser
       ${CMAKE_SOURCE_DIR}/src/core/callouts
       ${CMAKE_SOURCE_DIR}/src/core/classification
       ${CMAKE_SOURCE_DIR}/src/core/diagram
@@ -69,12 +70,14 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
+      ${CMAKE_SOURCE_DIR}/src/core/maprenderer
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/mesh
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
+      ${CMAKE_SOURCE_DIR}/src/core/proj
       ${CMAKE_SOURCE_DIR}/src/core/pointcloud
       ${CMAKE_SOURCE_DIR}/src/core/project
       ${CMAKE_SOURCE_DIR}/src/core/providers

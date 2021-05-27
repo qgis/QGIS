@@ -143,6 +143,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     {
       StraightSegments, //!< Default capture mode - capture occurs with straight line segments
       CircularString, //!< Capture in circular strings
+      Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves). Since QGIS 3.20.
     };
 
     //! Specific capabilities of the tool
@@ -233,6 +234,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Enable the digitizing with curve
     void setCircularDigitizingEnabled( bool enable );
 
+    /**
+     * Toggles the stream digitizing mode.
+     * \since QGIS 3.20
+     */
+    void setStreamDigitizingEnabled( bool enable );
+
   private slots:
     void addError( const QgsGeometry::Error &error );
     void currentLayerChanged( QgsMapLayer *layer );
@@ -319,8 +326,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 
-    //! Removes the last vertex from mRubberBand and mCaptureList
-    void undo();
+    /**
+     * Removes the last vertex from mRubberBand and mCaptureList.
+     *
+     * Since QGIS 3.20, if \a isAutoRepeat is set to TRUE then the undo operation will be treated
+     * as a auto repeated undo as if the user has held down the undo key for an extended period of time.
+     */
+    void undo( bool isAutoRepeat = false );
 
     /**
      * Start capturing
@@ -454,6 +466,15 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Used to store the state of digitizing type (linear or circular)
     QgsWkbTypes::Type mDigitizingType = QgsWkbTypes::LineString;
+
+    bool mStreamingEnabled = false;
+    bool mAllowAddingStreamingPoints = false;
+    int mStreamingToleranceInPixels = 1;
+
+    bool mStartNewCurve = false;
+
+    bool mIgnoreSubsequentAutoRepeatUndo = false;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

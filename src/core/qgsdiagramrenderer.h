@@ -27,12 +27,12 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfields.h"
 #include "qgscoordinatetransform.h"
-#include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 
 #include "diagram/qgsdiagram.h"
 #include "qgsreadwritecontext.h"
+#include "qgsmapunitscale.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -45,6 +45,7 @@ class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 class QgsPaintEffect;
 class QgsDataDefinedSizeLegend;
+class QgsLineSymbol;
 
 namespace pal { class Layer; } SIP_SKIP
 

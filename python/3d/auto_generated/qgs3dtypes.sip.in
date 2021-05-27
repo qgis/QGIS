@@ -10,7 +10,7 @@
 
 class Qgs3DTypes
 {
-%Docstring
+%Docstring(signature="appended")
 Defines enumerations and other auxiliary types for QGIS 3D
 
 .. warning::

@@ -12,7 +12,7 @@
 
 class QgsMapLayerDependency
 {
-%Docstring
+%Docstring(signature="appended")
 This class models dependencies with or between map layers.
 
 A dependency is defined by a layer ID, a type and an origin.

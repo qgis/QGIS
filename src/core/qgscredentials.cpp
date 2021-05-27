@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 
 #include <QTextStream>
+#include <QIODevice>
 
 QgsCredentials *QgsCredentials::sInstance = nullptr;
 

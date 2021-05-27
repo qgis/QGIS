@@ -39,7 +39,7 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), QgsVectorLayerTemporalProperties::ModeFeatureDateTimeStartAndEndFromExpressions );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QgsVectorLayerTemporalProperties::ModeRedrawLayerOnly );
 
-  connect( mModeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
+  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
 
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );

@@ -11,7 +11,7 @@
 
 class QgsHillshadeFilter: QgsDerivativeFilter
 {
-%Docstring
+%Docstring(signature="appended")
 A hillshade filter.
 %End
 

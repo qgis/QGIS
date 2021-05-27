@@ -58,7 +58,7 @@ Build-Depends:
  python3-pyqt5.qtsvg,
  python3-sip-dev,
 #sid# sip5-tools,
-#buster bullseye bionic focal groovy# python3-sip,
+#buster bullseye bionic focal groovy hirsute# python3-sip,
  python3-termcolor,
  python3-yaml,
  qt3d5-dev,
@@ -423,7 +423,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#focal groovy buster sid# otb-qgis,
+#focal groovy hirsute buster sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and

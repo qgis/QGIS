@@ -25,6 +25,8 @@
 
 #include "qgis_core.h"
 
+class QTextCodec;
+
 /**
  * \class QgsNetworkContentFetcher
  * \ingroup core

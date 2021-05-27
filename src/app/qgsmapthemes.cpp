@@ -148,7 +148,7 @@ void QgsMapThemes::renameCurrentPreset()
   QgsMapThemeCollection::MapThemeRecord mapTheme = currentState();
   QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
 
-  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
+  for ( QAction *actionPreset : std::as_const( mMenuPresetActions ) )
   {
     if ( actionPreset->isChecked() )
     {
@@ -173,7 +173,7 @@ void QgsMapThemes::renameCurrentPreset()
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
+  for ( QAction *actionPreset : std::as_const( mMenuPresetActions ) )
   {
     if ( actionPreset->isChecked() )
     {

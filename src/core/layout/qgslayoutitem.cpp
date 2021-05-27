@@ -298,7 +298,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   bool previewRender = !mLayout || mLayout->renderContext().isPreviewRender();
-  double destinationDpi = previewRender ? QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ) * 25.4 : mLayout->renderContext().dpi();
+  double destinationDpi = previewRender ? QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4 : mLayout->renderContext().dpi();
   bool useImageCache = false;
   bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
 
@@ -309,8 +309,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     if ( previewRender )
     {
-      widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
-      heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+      widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
+      heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
     }
     else
     {
@@ -368,7 +368,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       p.scale( context.scaleFactor(), context.scaleFactor() );
       drawBackground( context );
       p.scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
-      double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+      double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
       QgsLayoutItemRenderContext itemRenderContext( context, viewScale );
       draw( itemRenderContext );
       p.scale( context.scaleFactor(), context.scaleFactor() );
@@ -402,7 +402,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
-    double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+    double viewScale = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter );
     QgsLayoutItemRenderContext itemRenderContext( context, viewScale );
     draw( itemRenderContext );
 

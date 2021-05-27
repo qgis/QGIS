@@ -20,7 +20,6 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerexporter.h"
 #include "qgspostgresconn.h"
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
@@ -77,7 +76,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      * field names to lowercase), dropStringConstraints (set to true to remove
      * length constraints on character fields).
      */
-    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+    static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -591,7 +590,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     QgsPostgresProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
-    QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs,
         bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,

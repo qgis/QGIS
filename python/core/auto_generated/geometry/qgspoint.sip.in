@@ -12,7 +12,7 @@
 
 class QgsPoint: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 3.0
@@ -26,7 +26,7 @@ Point geometry type, with support for z-dimension and m-values.
 
   public:
 
-    QgsPoint( SIP_PYOBJECT x = Py_None, SIP_PYOBJECT y = Py_None, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, SIP_PYOBJECT wkbType = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    QgsPoint( SIP_PYOBJECT x /TypeHint="Optional[Union[QgsPoint, QPointF, float]]"/ = Py_None, SIP_PYOBJECT y /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT z /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT m /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT wkbType /TypeHint="Optional[int]"/ = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
 %Docstring
 Construct a point with the provided initial coordinate values.
 
@@ -349,6 +349,7 @@ Example
 
     QgsPoint operator-( QgsVector v ) const /HoldGIL/;
 
+    void normalize() final /HoldGIL/;
     virtual bool isEmpty() const /HoldGIL/;
 
     virtual QgsRectangle boundingBox() const /HoldGIL/;
@@ -436,6 +437,8 @@ Angle undefined. Always returns 0.0
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     virtual bool addZValue( double zValue = 0 );
 
@@ -465,6 +468,7 @@ Angle undefined. Always returns 0.0
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual int childCount() const;
 
     virtual QgsPoint childPoint( int index ) const;

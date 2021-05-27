@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmanager.h"
+#include "qgsmarkersymbol.h"
 
 class TestQgsProject : public QObject
 {

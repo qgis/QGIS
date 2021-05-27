@@ -12,7 +12,7 @@
 
 class QgsProcessingToolboxModelNode : QObject
 {
-%Docstring
+%Docstring(signature="appended")
 Abstract base class for nodes contained within a :py:class:`QgsProcessingToolboxModel`.
 
 .. warning::
@@ -98,7 +98,7 @@ Deletes all child nodes from this node.
 
 class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
 {
-%Docstring
+%Docstring(signature="appended")
 Processing toolbox model node corresponding to the recent algorithms group
 
 .. warning::
@@ -124,7 +124,7 @@ Constructor for QgsProcessingToolboxModelRecentNode.
 
 class QgsProcessingToolboxModelProviderNode : QgsProcessingToolboxModelNode
 {
-%Docstring
+%Docstring(signature="appended")
 Processing toolbox model node corresponding to a Processing provider.
 
 .. warning::
@@ -161,7 +161,7 @@ Returns the provider ID.
 
 class QgsProcessingToolboxModelGroupNode : QgsProcessingToolboxModelNode
 {
-%Docstring
+%Docstring(signature="appended")
 Processing toolbox model node corresponding to a group of algorithms.
 
 .. warning::
@@ -201,7 +201,7 @@ Returns the group's name, which is translated and user-visible.
 
 class QgsProcessingToolboxModelAlgorithmNode : QgsProcessingToolboxModelNode
 {
-%Docstring
+%Docstring(signature="appended")
 Processing toolbox model node corresponding to an algorithm.
 
 .. warning::
@@ -234,7 +234,7 @@ Returns the algorithm associated with this node.
 
 class QgsProcessingToolboxModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 A model for providers and algorithms shown within the Processing toolbox.
 
 See :py:class:`QgsProcessingToolboxProxyModel` for a sorted, filterable version
@@ -363,7 +363,7 @@ Emitted whenever recent algorithms are added to the model.
 
 class QgsProcessingToolboxProxyModel: QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
 which automatically sorts the toolbox in a logical fashion and supports filtering
 the results.

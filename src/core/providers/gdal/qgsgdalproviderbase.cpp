@@ -152,32 +152,32 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   switch ( gdalDataType )
   {
     case GDT_Byte:
-      return Qgis::Byte;
+      return Qgis::DataType::Byte;
     case GDT_UInt16:
-      return Qgis::UInt16;
+      return Qgis::DataType::UInt16;
     case GDT_Int16:
-      return Qgis::Int16;
+      return Qgis::DataType::Int16;
     case GDT_UInt32:
-      return Qgis::UInt32;
+      return Qgis::DataType::UInt32;
     case GDT_Int32:
-      return Qgis::Int32;
+      return Qgis::DataType::Int32;
     case GDT_Float32:
-      return Qgis::Float32;
+      return Qgis::DataType::Float32;
     case GDT_Float64:
-      return Qgis::Float64;
+      return Qgis::DataType::Float64;
     case GDT_CInt16:
-      return Qgis::CInt16;
+      return Qgis::DataType::CInt16;
     case GDT_CInt32:
-      return Qgis::CInt32;
+      return Qgis::DataType::CInt32;
     case GDT_CFloat32:
-      return Qgis::CFloat32;
+      return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
-      return Qgis::CFloat64;
+      return Qgis::DataType::CFloat64;
     case GDT_Unknown:
     case GDT_TypeCount:
-      return Qgis::UnknownDataType;
+      return Qgis::DataType::UnknownDataType;
   }
-  return Qgis::UnknownDataType;
+  return Qgis::DataType::UnknownDataType;
 }
 
 int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
@@ -260,7 +260,6 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOpenFlags )
 {
   QVariantMap parts = decodeGdalUri( uri );
-  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
   parts.remove( QStringLiteral( "openOptions" ) );
 
@@ -329,8 +328,25 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   QStringList openOptions;
 
   QString vsiPrefix = qgsVsiPrefix( path );
-  if ( !path.isEmpty() )
+  QString vsiSuffix;
+  if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
+  {
     path = path.mid( vsiPrefix.count() );
+    if ( vsiPrefix == QLatin1String( "/vsizip/" ) )
+    {
+      const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]*)" ) );
+      QRegularExpressionMatch match = vsiRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        vsiSuffix = match.captured( 1 );
+        path = path.remove( match.capturedStart( 1 ), match.capturedLength( 1 ) );
+      }
+    }
+  }
+  else
+  {
+    vsiPrefix.clear();
+  }
 
   if ( path.indexOf( ':' ) != -1 )
   {
@@ -373,22 +389,23 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
     uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
   if ( !vsiPrefix.isEmpty() )
     uriComponents.insert( QStringLiteral( "vsiPrefix" ), vsiPrefix );
+  if ( !vsiSuffix.isEmpty() )
+    uriComponents.insert( QStringLiteral( "vsiSuffix" ), vsiSuffix );
   return uriComponents;
 }
 
 QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
 {
   const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+  const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
 
-  QString uri;
-  if ( !layerName.isEmpty() && path.endsWith( QLatin1String( "gpkg" ) ) )
-    uri = QStringLiteral( "GPKG:%1:%2" ).arg( path, layerName );
+  QString uri = vsiPrefix + path + vsiSuffix;
+  if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
+    uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
   else if ( !layerName.isEmpty() )
-    uri = path + QStringLiteral( "|%1" ).arg( layerName );
-  else
-    uri = path;
+    uri = uri + QStringLiteral( "|%1" ).arg( layerName );
 
   const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
 
@@ -398,7 +415,7 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
     uri += openOption;
   }
 
-  return !vsiPrefix.isEmpty() ? vsiPrefix + uri : uri;
+  return uri;
 }
 
 ///@endcond

@@ -327,11 +327,11 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else
-        for out in self.destinationParameterDefinitions():
-            if isinstance(out, QgsProcessingParameterRasterDestination):
-                filename = self.parameterAsOutputLayer(parameters, out.name(), context)
-                filename2 = os.path.splitext(filename)[0] + '.sgrd'
-                if self.cmdname == 'RGB Composite':
+        if self.cmdname == 'RGB Composite':
+            for out in self.destinationParameterDefinitions():
+                if isinstance(out, QgsProcessingParameterRasterDestination):
+                    filename = self.parameterAsOutputLayer(parameters, out.name(), context)
+                    filename2 = os.path.splitext(filename)[0] + '.sgrd'
                     commands.append('io_grid_image 0 -COLOURING 4 -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA

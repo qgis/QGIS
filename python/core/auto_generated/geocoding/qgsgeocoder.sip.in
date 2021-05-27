@@ -11,7 +11,7 @@
 
 class QgsGeocoderInterface
 {
-%Docstring
+%Docstring(signature="appended")
 Interface for geocoders.
 
 :py:class:`QgsGeocoderInterface` implementations are able to take either a :py:class:`QgsFeature` or a free-form string

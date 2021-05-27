@@ -134,7 +134,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
   int row = 0;
   int preferredInitialRow = -1;
 
-  for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
+  for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
     std::unique_ptr< QTableWidgetItem > item = std::make_unique< QTableWidgetItem >();
     item->setData( ProjRole, transform.proj );
@@ -347,7 +347,7 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::def
   OperationDetails preferred;
 
   // for proj 6, return the first available transform -- they are sorted by preference by proj already
-  for ( const QgsDatumTransform::TransformDetails &transform : qgis::as_const( mDatumTransforms ) )
+  for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
     if ( transform.isAvailable )
     {

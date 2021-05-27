@@ -11,7 +11,7 @@
 
 class QgsFileUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Class for file utilities.
 
 .. versionadded:: 3.0
@@ -116,6 +116,23 @@ Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check
 :return: List of strings of the first matching path in unix format.
 
 .. versionadded:: 3.12
+%End
+
+    static Qgis::DriveType driveType( const QString &path ) throw( QgsNotSupportedException );
+%Docstring
+Returns the drive type for the given ``path``.
+
+:raises :: py:class:`QgsNotSupportedException` if determining the drive type is not supported on the current platform.
+
+.. versionadded:: 3.20
+%End
+
+    static bool pathIsSlowDevice( const QString &path );
+%Docstring
+Returns ``True`` if the specified ``path`` is assumed to reside on a slow device, e.g. a remote
+network drive or other non-fixed device.
+
+.. versionadded:: 3.20
 %End
 
 };

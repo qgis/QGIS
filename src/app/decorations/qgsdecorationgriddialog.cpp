@@ -27,6 +27,8 @@
 #include "qgisapp.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -43,8 +45,8 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   connect( mPbtnUpdateFromLayer, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
 
-  mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
-  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+  mMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
+  mLineSymbolButton->setSymbolType( Qgis::SymbolType::Line );
 
   grpEnable->setChecked( mDeco.enabled() );
   connect( grpEnable, &QGroupBox::toggled, this, [ = ] { updateSymbolButtons(); } );

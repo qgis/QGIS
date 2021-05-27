@@ -152,7 +152,8 @@ void QgsTerrainEntity::invalidateMapImages()
   // handle inactive nodes afterwards
 
   QList<QgsChunkNode *> inactiveNodes;
-  Q_FOREACH ( QgsChunkNode *node, mRootNode->descendants() )
+  const QList<QgsChunkNode *> descendants = mRootNode->descendants();
+  for ( QgsChunkNode *node : descendants )
   {
     if ( !node->entity() )
       continue;
@@ -174,14 +175,14 @@ void QgsTerrainEntity::onLayersChanged()
 
 void QgsTerrainEntity::connectToLayersRepaintRequest()
 {
-  Q_FOREACH ( QgsMapLayer *layer, mLayers )
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
   mLayers = mMap.terrainLayers();
 
-  Q_FOREACH ( QgsMapLayer *layer, mLayers )
+  for ( QgsMapLayer *layer : std::as_const( mLayers ) )
   {
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }

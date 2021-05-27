@@ -14,7 +14,7 @@
 
 class QgsGeometryCollection: QgsAbstractGeometry
 {
-%Docstring
+%Docstring(signature="appended")
 Geometry collection
 
 .. versionadded:: 2.10
@@ -102,6 +102,8 @@ Returns a geometry from within the collection.
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     void reserve( int size ) /HoldGIL/;
 %Docstring
@@ -148,6 +150,7 @@ An IndexError will be raised if no geometry with the specified index exists.
     }
 %End
 
+    void normalize() final /HoldGIL/;
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
@@ -242,6 +245,8 @@ Returns a geometry without curves. Caller takes ownership
 
     virtual QgsGeometryCollection *toCurveType() const /Factory/;
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
@@ -315,6 +320,7 @@ Iterates through all geometries in the collection.
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
 

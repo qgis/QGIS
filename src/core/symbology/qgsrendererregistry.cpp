@@ -25,8 +25,10 @@
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsheatmaprenderer.h"
 #include "qgs25drenderer.h"
+#include "qgsembeddedsymbolrenderer.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererRegistry::QgsRendererRegistry()
 {
@@ -95,6 +97,10 @@ QgsRendererRegistry::QgsRendererRegistry()
                                         QIcon(),
                                         nullptr,
                                         QgsRendererAbstractMetadata::PolygonLayer ) );
+
+  addRenderer( new QgsRendererMetadata( QStringLiteral( "embeddedSymbol" ),
+                                        QObject::tr( "Embedded Symbols" ),
+                                        QgsEmbeddedSymbolRenderer::create ) );
 }
 
 QgsRendererRegistry::~QgsRendererRegistry()

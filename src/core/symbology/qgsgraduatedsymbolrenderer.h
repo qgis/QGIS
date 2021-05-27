@@ -271,7 +271,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \returns new QgsGraduatedSymbolRenderer object
      * \deprecated since QGIS 3.10
      */
-    static Q_DECL_DEPRECATED QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+    Q_DECL_DEPRECATED static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
         Mode mode,

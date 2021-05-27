@@ -9,7 +9,7 @@
 
 class QgsTableWidgetItem : QTableWidgetItem
 {
-%Docstring
+%Docstring(signature="appended")
 This can be used like a regular QTableWidgetItem with the difference that a
 specific role can be set to sort.
 %End

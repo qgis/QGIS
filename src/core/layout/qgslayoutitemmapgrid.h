@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitemmapitem.h"
-#include "qgssymbol.h"
 #include "qgstextformat.h"
 #include <QPainter>
 #include <QVector2D>
@@ -33,6 +32,7 @@ class QDomDocument;
 class QDomElement;
 class QPainter;
 class QgsRenderContext;
+class QgsLineSymbol;
 
 /**
  * \ingroup core
@@ -278,6 +278,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \param map QgsLayoutItemMap the grid is attached to
      */
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
+    ~QgsLayoutItemMapGrid() override;
 
     void draw( QPainter *painter ) override;
     bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;

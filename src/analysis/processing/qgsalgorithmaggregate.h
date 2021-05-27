@@ -62,13 +62,15 @@ class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
 
     QgsFields mFields;
     QList< QgsExpression > mExpressions;
+    QList< int > mAttributesRequireLastFeature;
     QgsDistanceArea mDa;
 
     struct Group
     {
       QgsFeatureSink *sink = nullptr;
       QgsMapLayer *layer = nullptr;
-      QgsFeature feature;
+      QgsFeature firstFeature;
+      QgsFeature lastFeature;
     };
 
 };

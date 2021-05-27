@@ -54,7 +54,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Constructor
     QgsGrassNewMapset( QgisInterface *iface,
                        QgsGrassPlugin *plugin,
-                       QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+                       QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     ~QgsGrassNewMapset();

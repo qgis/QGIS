@@ -145,17 +145,23 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mCrsGroupBox_2</tabstop>
+  <tabstop>mScaleZSpinBox</tabstop>
+  <tabstop>mOffsetZSpinBox</tabstop>
+  <tabstop>mShifPointCloudZAxisButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

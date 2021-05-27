@@ -75,6 +75,8 @@ class QgsFeatureRenderer
       sipType = sipType_Qgs25DRenderer;
     else if ( type == QLatin1String( "nullSymbol" ) )
       sipType = sipType_QgsNullSymbolRenderer;
+    else if ( type == QLatin1String( "embeddedSymbol" ) )
+      sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
 %End
@@ -169,6 +171,14 @@ not have been requested from the provider at rendering time.
 :return: A set of attributes
 %End
 
+    virtual bool usesEmbeddedSymbols() const;
+%Docstring
+Returns ``True`` if the renderer uses embedded symbols for features.
+The default implementation returns ``False``.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool filterNeedsGeometry() const;
 %Docstring
 Returns ``True`` if this renderer requires the geometry to apply the filter.
@@ -192,7 +202,7 @@ Default implementation renders a symbol as determined by :py:func:`~QgsFeatureRe
 Returns ``True`` if the feature has been returned (this is used for example
 to determine whether the feature may be labelled).
 
-If layer is not -1, the renderer should draw only a particula layer from symbols
+If layer is not -1, the renderer should draw only a particular layer from symbols
 (in order to support symbol level rendering).
 
 .. seealso:: :py:func:`startRender`
@@ -539,7 +549,7 @@ Currently clones
 
 
 
-    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 %Docstring
 
 .. note::

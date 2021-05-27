@@ -102,7 +102,7 @@ namespace QgsWcs
     dcpTypeElement.appendChild( httpElement );
 
     //Prepare url
-    QString hrefString = serviceUrl( request, project );
+    QString hrefString = serviceUrl( request, project, *serverIface->serverSettings() );
 
     QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wcs:Get*/ );
     httpElement.appendChild( getElement );

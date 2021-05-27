@@ -1,12 +1,13 @@
-name: Code Layout
+name: 🧹 Code Layout
 
 on:
   push:
     branches:
       - master
       - release-**
+      - queued_ltr_backports
   pull_request:
-  
+
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
@@ -14,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -159,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.7
       - name: Install Requirements
@@ -190,19 +191,6 @@ jobs:
         run: ./tests/code_layout/test_sip_include.sh
       - name: Sip Files Up To Date
         run: ./tests/code_layout/test_sipfiles.sh
-
-  cppcheck_16_04:
-    runs-on: ubuntu-16.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Requirements
-        run: |
-          sudo apt install -y cppcheck
-
-      - name: Run cppcheck test
-        run: ./scripts/cppcheck.sh
 
   cppcheck_18_04:
     runs-on: ubuntu-18.04

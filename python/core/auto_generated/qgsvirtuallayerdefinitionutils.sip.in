@@ -12,7 +12,7 @@
 
 class QgsVirtualLayerDefinitionUtils
 {
-%Docstring
+%Docstring(signature="appended")
 Utils class for :py:class:`QgsVirtualLayerDefinition`
 %End
 

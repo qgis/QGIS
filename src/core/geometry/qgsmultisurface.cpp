@@ -123,7 +123,7 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 json QgsMultiSurface::asJsonObject( int precision ) const
 {
   json polygons( json::array( ) );
-  for ( const QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {

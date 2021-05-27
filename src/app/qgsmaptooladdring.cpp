@@ -33,6 +33,20 @@ QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas *canvas )
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRing::stopCapturing );
 }
 
+bool QgsMapToolAddRing::supportsTechnique( QgsMapToolCapture::CaptureTechnique technique ) const
+{
+  switch ( technique )
+  {
+    case QgsMapToolCapture::StraightSegments:
+    case QgsMapToolCapture::Streaming:
+      return true;
+
+    case QgsMapToolCapture::CircularString:
+      return false;
+  }
+  return false;
+}
+
 void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 

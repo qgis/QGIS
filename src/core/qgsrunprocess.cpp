@@ -302,7 +302,7 @@ int QgsBlockingProcess::run( QgsFeedback *feedback )
       p.terminate();
 #endif
     } );
-    connect( &p, qgis::overload< int, QProcess::ExitStatus >::of( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
+    connect( &p, qOverload< int, QProcess::ExitStatus >( &QProcess::finished ), this, [&loop, &result, &exitStatus]( int res, QProcess::ExitStatus st )
     {
       result = res;
       exitStatus = st;

@@ -13,7 +13,7 @@
 
 class QgsPointCloudAttributeModel : QAbstractItemModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A model for display of available attributes from a point cloud.
 
@@ -116,7 +116,7 @@ Returns an icon corresponding to an attribute ``type``
 
 class QgsPointCloudAttributeProxyModel : QSortFilterProxyModel
 {
-%Docstring
+%Docstring(signature="appended")
 
 A proxy model for filtering available attributes from a point cloud attribute model.
 

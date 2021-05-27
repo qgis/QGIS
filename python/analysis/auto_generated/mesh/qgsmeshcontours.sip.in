@@ -13,7 +13,7 @@
 
 class QgsMeshContours
 {
-%Docstring
+%Docstring(signature="appended")
 
 Exporter of contours lines or polygons from a mesh layer.
 

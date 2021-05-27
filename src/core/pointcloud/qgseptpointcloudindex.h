@@ -47,17 +47,21 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     void load( const QString &fileName ) override;
 
     QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
-    QgsCoordinateReferenceSystem crs() const;
-    int pointCount() const;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const;
-    QVariantList metadataClasses( const QString &attribute ) const;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const;
+    QgsCoordinateReferenceSystem crs() const override;
+    qint64 pointCount() const override;
+    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
+    QVariantList metadataClasses( const QString &attribute ) const override;
+    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
+    QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
-    QVariantMap originalMetadata() const { return mOriginalMetadata; }
     bool isValid() const override;
+    QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
-  private:
+  protected:
+    bool loadSchema( const QByteArray &dataJson );
+    void loadManifest( const QByteArray &manifestJson );
     bool loadSchema( QFile &f );
     bool loadHierarchy();
 
@@ -66,7 +70,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QString mDirectory;
     QString mWkt;
 
-    int mPointCount = 0;
+    qint64 mPointCount = 0;
 
     struct AttributeStatistics
     {

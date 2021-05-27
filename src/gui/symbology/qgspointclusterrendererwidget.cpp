@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -58,15 +59,15 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  mCenterSymbolToolButton->setSymbolType( QgsSymbol::Marker );
+  mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
   {
-    mRenderer = QgsPointClusterRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsPointClusterRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
-    mRenderer = new QgsPointClusterRenderer();
+    mRenderer = std::make_unique< QgsPointClusterRenderer >();
   }
 
   blockAllSignals( true );
@@ -108,14 +109,11 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   mCenterSymbolToolButton->registerExpressionContextGenerator( this );
 }
 
-QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget()
-{
-  delete mRenderer;
-}
+QgsPointClusterRendererWidget::~QgsPointClusterRendererWidget() = default;
 
 QgsFeatureRenderer *QgsPointClusterRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -164,6 +162,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
     QgsSymbolWidgetContext context = mContext;
     context.setAdditionalExpressionContextScopes( scopes );
     w->setContext( context );
+    w->disableSymbolLevels();
     connect( w, &QgsPanelWidget::widgetChanged, this, &QgsPointClusterRendererWidget::updateRendererFromWidget );
     w->setDockMode( this->dockMode() );
     openPanel( w );

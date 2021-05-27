@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QgsFileWidget" name="mFilename">
+       <widget class="QgsFileWidget" name="mFilename" native="true">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -96,9 +96,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-303</y>
+        <y>0</y>
         <width>557</width>
-        <height>1004</height>
+        <height>987</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -189,6 +189,19 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mCheckPersistMetadata">
+         <property name="toolTip">
+          <string>If checked, any metadata present in the source layer will be copied to the output layer.</string>
+         </property>
+         <property name="text">
+          <string>Persist layer metadata</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -503,6 +516,7 @@
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
   <tabstop>mReplaceRawFieldValues</tabstop>
+  <tabstop>mCheckPersistMetadata</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleWidget</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>

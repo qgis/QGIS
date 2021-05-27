@@ -109,7 +109,7 @@
              <number>3</number>
             </property>
             <item row="0" column="3">
-             <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget">
+             <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget" native="true">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -207,7 +207,7 @@
              </widget>
             </item>
             <item row="0" column="3">
-             <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget">
+             <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget" native="true">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -251,15 +251,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QComboBox</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -276,7 +276,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
+  <tabstop>mPointSizeSpinBox</tabstop>
+  <tabstop>mPointSizeUnitWidget</tabstop>
+  <tabstop>mPointStyleComboBox</tabstop>
+  <tabstop>mMaxErrorSpinBox</tabstop>
+  <tabstop>mMaxErrorUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

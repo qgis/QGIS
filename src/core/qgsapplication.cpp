@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsannotationitemregistry.h"
+#include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -52,6 +53,7 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgstiledownloadmanager.h"
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
@@ -81,7 +83,9 @@
 
 #include "layout/qgspagesizeregistry.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
+#endif
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -99,6 +103,10 @@
 #include <QStandardPaths>
 #include <QRegularExpression>
 #include <QTextStream>
+#include <QScreen>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+#include <QRecursiveMutex>
+#endif
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -164,6 +172,8 @@ Q_GLOBAL_STATIC( QString, sUserName )
 Q_GLOBAL_STATIC( QString, sUserFullName )
 Q_GLOBAL_STATIC_WITH_ARGS( QString, sPlatformName, ( "desktop" ) )
 Q_GLOBAL_STATIC( QString, sTranslation )
+
+Q_GLOBAL_STATIC( QTemporaryDir, sIconCacheDir )
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -238,6 +248,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsProperty>( "QgsProperty" );
     qRegisterMetaType<QgsFeatureStoreList>( "QgsFeatureStoreList" );
     qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
+    qRegisterMetaType<Qgis::BrowserItemState>( "Qgis::BrowserItemState" );
     qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
     qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
     qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
@@ -261,6 +272,8 @@ void QgsApplication::init( QString profileFolder )
     QMetaType::registerComparators<QgsProcessingModelChildDependency>();
     QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
     QMetaType::registerEqualsComparator<QgsProperty>();
+    QMetaType::registerEqualsComparator<QgsDateTimeRange>();
+    QMetaType::registerEqualsComparator<QgsDateRange>();
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
   } );
@@ -636,25 +649,64 @@ QString QgsApplication::iconPath( const QString &iconFile )
   return defaultThemePath() + iconFile;
 }
 
-QIcon QgsApplication::getThemeIcon( const QString &name )
+QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor, const QColor &strokeColor )
 {
+  const QString cacheKey = ( name.startsWith( '/' ) ? name.mid( 1 ) : name )
+                           + ( fillColor.isValid() ? QStringLiteral( "_%1" ).arg( fillColor.name( QColor::HexArgb ).mid( 1 ) ) :  QString() )
+                           + ( strokeColor.isValid() ? QStringLiteral( "_%1" ).arg( strokeColor.name( QColor::HexArgb ).mid( 1 ) ) : QString() );
   QgsApplication *app = instance();
-  if ( app && app->mIconCache.contains( name ) )
-    return app->mIconCache.value( name );
+  if ( app && app->mIconCache.contains( cacheKey ) )
+    return app->mIconCache.value( cacheKey );
 
   QIcon icon;
+  const bool colorBased = fillColor.isValid() || strokeColor.isValid();
 
-  QString myPreferredPath = activeThemePath() + QDir::separator() + name;
-  QString myDefaultPath = defaultThemePath() + QDir::separator() + name;
-  if ( QFile::exists( myPreferredPath ) )
+  auto iconFromColoredSvg = [ = ]( const QString & path ) -> QIcon
   {
-    icon = QIcon( myPreferredPath );
+    // sizes are unused here!
+    const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
+
+    const QString iconPath = sIconCacheDir()->filePath( cacheKey + QStringLiteral( ".svg" ) );
+    QFile f( iconPath );
+    if ( f.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      f.write( svgContent );
+      f.close();
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Could not create colorized icon svg at %1" ).arg( iconPath ) );
+      return QIcon();
+    }
+
+    return QIcon( f.fileName() );
+  };
+
+  QString preferredPath = activeThemePath() + QDir::separator() + name;
+  QString defaultPath = defaultThemePath() + QDir::separator() + name;
+  if ( QFile::exists( preferredPath ) )
+  {
+    if ( colorBased )
+    {
+      icon = iconFromColoredSvg( preferredPath );
+    }
+    else
+    {
+      icon = QIcon( preferredPath );
+    }
   }
-  else if ( QFile::exists( myDefaultPath ) )
+  else if ( QFile::exists( defaultPath ) )
   {
     //could still return an empty icon if it
     //doesn't exist in the default theme either!
-    icon = QIcon( myDefaultPath );
+    if ( colorBased )
+    {
+      icon = iconFromColoredSvg( defaultPath );
+    }
+    else
+    {
+      icon = QIcon( defaultPath );
+    }
   }
   else
   {
@@ -662,7 +714,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   }
 
   if ( app )
-    app->mIconCache.insert( name, icon );
+    app->mIconCache.insert( cacheKey, icon );
   return icon;
 }
 
@@ -1053,7 +1105,7 @@ QString QgsApplication::srsDatabaseFilePath()
 
 void QgsApplication::setSvgPaths( const QStringList &svgPaths )
 {
-  QgsSettings().setValue( QStringLiteral( "svg/searchPathsForSVG" ), svgPaths );
+  settingsSearchPathsForSVG.setValue( svgPaths );
   members()->mSvgPathCacheValid = false;
 }
 
@@ -1072,8 +1124,7 @@ QStringList QgsApplication::svgPaths()
     locker.changeMode( QgsReadWriteLocker::Write );
     //local directories to search when looking for an SVG with a given basename
     //defined by user in options dialog
-    QgsSettings settings;
-    const QStringList pathList = settings.value( QStringLiteral( "svg/searchPathsForSVG" ) ).toStringList();
+    const QStringList pathList = settingsSearchPathsForSVG.value();
 
     // maintain user set order while stripping duplicates
     QStringList paths;
@@ -1082,7 +1133,7 @@ QStringList QgsApplication::svgPaths()
       if ( !paths.contains( path ) )
         paths.append( path );
     }
-    for ( const QString &path : qgis::as_const( *sDefaultSvgPaths() ) )
+    for ( const QString &path : std::as_const( *sDefaultSvgPaths() ) )
     {
       if ( !paths.contains( path ) )
         paths.append( path );
@@ -1097,10 +1148,7 @@ QStringList QgsApplication::layoutTemplatePaths()
 {
   //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
-  QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "Layout/searchPathsForTemplates" ), QVariant(), QgsSettings::Core ).toStringList();
-
-  return pathList;
+  return QgsLayout::settingsSearchPathForTemplates.value();
 }
 
 QMap<QString, QString> QgsApplication::systemEnvVars()
@@ -1218,11 +1266,9 @@ QString QgsApplication::platform()
 
 QString QgsApplication::locale()
 {
-  QgsSettings settings;
-  bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
-  if ( overrideLocale )
+  if ( settingsLocaleOverrideFlag.value() )
   {
-    QString locale = settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+    QString locale = settingsLocaleUserLocale.value();
     // don't differentiate en_US and en_GB
     if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
     {
@@ -1853,8 +1899,16 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
   int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   if ( applyDevicePixelRatio && QApplication::desktop() )
     scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+#else
+  if ( applyDevicePixelRatio )
+  {
+    if ( QWidget *activeWindow = QApplication::activeWindow() )
+      scaledIconSize *= ( activeWindow->screen() ? QApplication::activeWindow()->screen()->devicePixelRatio() : 1 );
+  }
+#endif
   return scaledIconSize;
 }
 
@@ -2160,6 +2214,11 @@ QgsTaskManager *QgsApplication::taskManager()
   return members()->mTaskManager;
 }
 
+QgsSettingsRegistryCore *QgsApplication::settingsRegistryCore()
+{
+  return members()->mSettingsRegistryCore;
+}
+
 QgsColorSchemeRegistry *QgsApplication::colorSchemeRegistry()
 {
   return members()->mColorSchemeRegistry;
@@ -2349,6 +2408,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mSettingsRegistryCore = new QgsSettingsRegistryCore();
   mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
@@ -2550,6 +2610,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
+  delete mSettingsRegistryCore;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
@@ -2560,7 +2621,11 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     static QMutex sMemberMutex( QMutex::Recursive );
+#else
+    static QRecursiveMutex sMemberMutex;
+#endif
     QMutexLocker lock( &sMemberMutex );
     if ( !sApplicationMembers )
       sApplicationMembers = new ApplicationMembers();

@@ -177,6 +177,7 @@ class buildvrt(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = [
+            '-overwrite',
             '-resolution',
             self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)][1]
         ]

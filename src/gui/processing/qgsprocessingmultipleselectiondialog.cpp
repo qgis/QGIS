@@ -175,7 +175,7 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
     remainingOptions.removeAll( option );
   }
 
-  for ( const QVariant &option : qgis::as_const( remainingOptions ) )
+  for ( const QVariant &option : std::as_const( remainingOptions ) )
   {
     addOption( option, mValueFormatter( option ), false );
   }

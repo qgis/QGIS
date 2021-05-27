@@ -26,7 +26,7 @@
 #include <QFileSystemWatcher>
 #include <QTextCodec>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
 
@@ -34,15 +34,16 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
-  , mDefaultFieldRegexp( "^(?:field_)(\\d+)$", Qt::CaseInsensitive )
+  , mDefaultFieldRegexp( QStringLiteral( "^(?:field_)(\\d+)$" ) )
 {
+  mDefaultFieldRegexp.setPatternOptions( QRegularExpression::CaseInsensitiveOption );
   // The default type is CSV
   setTypeCSV();
   if ( ! url.isNull() ) setFromUrl( url );
 
   // For tests
   QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
-  mMaxBufferSize = bufferSizeStr.isEmpty() ? 1024 * 1024 : bufferSizeStr.toInt();
+  mMaxBufferSize = bufferSizeStr.isEmpty() ? 10 * 1024 * 1024 : bufferSizeStr.toInt();
 }
 
 
@@ -424,9 +425,9 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     }
     // If the name looks like a default field name (field_##), then it is
     // valid if the number matches its column number..
-    else if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
+    else if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
     {
-      int col = mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt();
+      int col = match.captured( 1 ).toInt();
       nameOk = col == fieldNo;
     }
     // Otherwise it is valid if isn't the name of an existing field...
@@ -480,9 +481,9 @@ int QgsDelimitedTextFile::fieldIndex( const QString &name )
   if ( mUseHeader && ! mFile ) reset();
   // Try to determine the field based on a default field name, includes
   // Field_### and simple integer fields.
-  if ( mDefaultFieldRegexp.indexIn( name ) == 0 )
+  if ( const QRegularExpressionMatch match = mDefaultFieldRegexp.match( name ); match.capturedStart() == 0 )
   {
-    return mDefaultFieldRegexp.capturedTexts().at( 1 ).toInt() - 1;
+    return match.captured( 1 ).toInt() - 1;
   }
   for ( int i = 0; i < mFieldNames.size(); i++ )
   {
@@ -716,8 +717,10 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   // and extract capture groups
   if ( mAnchoredRegexp )
   {
-    if ( mDelimRegexp.indexIn( buffer ) < 0 ) return RecordInvalid;
-    QStringList groups = mDelimRegexp.capturedTexts();
+    const QRegularExpressionMatch match = mDelimRegexp.match( buffer );
+    if ( !match.hasMatch() )
+      return RecordInvalid;
+    const QStringList groups = match.capturedTexts();
     for ( int i = 1; i < groups.size(); i++ )
     {
       appendField( fields, groups[i] );
@@ -729,15 +732,19 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
   int size = buffer.size();
   while ( true )
   {
-    if ( pos >= size ) break;
-    int matchPos = mDelimRegexp.indexIn( buffer, pos );
+    if ( pos >= size )
+      break;
+    QRegularExpressionMatch match = mDelimRegexp.match( buffer, pos );
+
+    int matchPos = match.capturedStart();
     // If match won't advance cursor, then need to force it along one place
     // to avoid infinite loop.
-    int matchLen = mDelimRegexp.matchedLength();
+    int matchLen = match.capturedLength();
     if ( matchPos == pos && matchLen == 0 )
     {
-      matchPos = mDelimRegexp.indexIn( buffer, pos + 1 );
-      matchLen = mDelimRegexp.matchedLength();
+      match = mDelimRegexp.match( buffer, pos + 1 );
+      matchPos = match.capturedStart();
+      matchLen = match.capturedLength();
     }
     // If no match, then field is to end of record
     if ( matchPos < 0 )
@@ -750,7 +757,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer,
     appendField( fields, buffer.mid( pos, matchPos - pos ) );
     if ( mDelimRegexp.captureCount() > 0 )
     {
-      QStringList groups = mDelimRegexp.capturedTexts();
+      QStringList groups = match.capturedTexts();
       for ( int i = 1; i < groups.size(); i++ )
       {
         appendField( fields, groups[i] );

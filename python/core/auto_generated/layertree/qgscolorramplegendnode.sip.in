@@ -8,9 +8,10 @@
 
 
 
+
 class QgsColorRampLegendNode : QgsLayerTreeModelLegendNode
 {
-%Docstring
+%Docstring(signature="appended")
 A legend node which renders a color ramp.
 
 .. versionadded:: 3.18

@@ -44,9 +44,16 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
     //! Determines the tables the user selected and closes the dialog
     void addButtonClicked() override;
 
+  private slots:
+    void radioSrcProtocol_toggled( bool checked );
+    void radioSrcFile_toggled( bool checked );
+    void cmbProtocolTypes_currentIndexChanged( const QString &text );
+
+    //! Sets protocol-related widget visibility
+    void setProtocolWidgetsVisibility();
   private:
     QString mPath;
-
+    QString mDataSourceType;
 };
 
 ///@endcond

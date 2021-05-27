@@ -52,14 +52,14 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( btnEditKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onEditKeyframe );
   connect( btnDuplicateKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onDuplicateKeyframe );
   connect( btnExportAnimation, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onExportAnimation );
-  connect( cboInterpolation, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onInterpolationChanged );
+  connect( cboInterpolation, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onInterpolationChanged );
 
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
 
   connect( sliderTime, &QSlider::valueChanged, this, &Qgs3DAnimationWidget::onSliderValueChanged );
 
-  connect( cboKeyframe, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onKeyframeChanged );
+  connect( cboKeyframe, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onKeyframeChanged );
 }
 
 Qgs3DAnimationWidget::~Qgs3DAnimationWidget() = default;

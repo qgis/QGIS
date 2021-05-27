@@ -93,7 +93,7 @@ void TestQgsWcsPublicServers::init()
 
   QStringList providers;
   providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
-  Q_FOREACH ( const QString &provider, providers )
+  for ( const QString &provider : providers )
   {
     QString prefix = provider == QLatin1String( "gdal" ) ? "GDAL " : "";
     mHead << prefix + "CRS";
@@ -181,7 +181,7 @@ void TestQgsWcsPublicServers::init()
 
 TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString &url )
 {
-  Q_FOREACH ( const Server &server, mServers )
+  for ( const Server &server : std::as_const( mServers ) )
   {
     if ( server.url == url ) return server;
   }
@@ -191,11 +191,11 @@ TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QStrin
 QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString &url, const QString &coverage, const QString &version )
 {
   QList<Issue> issues;
-  Q_FOREACH ( const Server &server, mServers )
+  for ( const Server &server : std::as_const( mServers ) )
   {
     if ( server.url == url )
     {
-      Q_FOREACH ( const Issue &issue, server.issues )
+      for ( const Issue &issue : server.issues )
       {
         if ( ( issue.coverages.isEmpty() || issue.coverages.contains( coverage ) ) &&
              ( issue.versions.isEmpty() || issue.versions.contains( version ) ) )
@@ -211,7 +211,7 @@ QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QSt
 QStringList TestQgsWcsPublicServers::issueDescriptions( const QString &url, const QString &coverage, const QString &version )
 {
   QStringList descriptions;
-  Q_FOREACH ( const Issue &myIssue, issues( url, coverage, version ) )
+  for ( const Issue &myIssue : issues( url, coverage, version ) )
   {
     descriptions << myIssue.description;
   }
@@ -221,7 +221,7 @@ QStringList TestQgsWcsPublicServers::issueDescriptions( const QString &url, cons
 int TestQgsWcsPublicServers::issueOffender( const QString &url, const QString &coverage, const QString &version )
 {
   int offender = NoOffender;
-  Q_FOREACH ( const Issue &myIssue, issues( url, coverage, version ) )
+  for ( const Issue &myIssue : issues( url, coverage, version ) )
   {
     if ( myIssue.offender == QLatin1String( "server" ) )
     {
@@ -260,13 +260,13 @@ void TestQgsWcsPublicServers::test()
   }
   else
   {
-    Q_FOREACH ( const Server &server, mServers )
+    for ( const Server &server : std::as_const( mServers ) )
     {
       serverUrls << server.url;
     }
   }
 
-  Q_FOREACH ( const QString &serverUrl, serverUrls )
+  for ( const QString &serverUrl : serverUrls )
   {
     Server myServer = getServer( serverUrl );
     QStringList myServerLog;
@@ -285,7 +285,7 @@ void TestQgsWcsPublicServers::test()
 
     QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
 
-    Q_FOREACH ( const QString &version, versions )
+    for ( const QString &version : versions )
     {
       QgsDebugMsg( "server: " + serverUrl + " version: " + version );
       QStringList myVersionLog;
@@ -311,7 +311,7 @@ void TestQgsWcsPublicServers::test()
       }
       myServerUri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
 
-      Q_FOREACH ( const QString &key, myServer.params.keys() )
+      for ( const QString &key : myServer.params.keys() )
       {
         myServerUri.setParam( key, myServer.params.value( key ) );
       }
@@ -343,7 +343,7 @@ void TestQgsWcsPublicServers::test()
       int myStep = myCoverages.size() / std::min( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
-      Q_FOREACH ( QgsWcsCoverageSummary myCoverage, myCoverages )
+      for ( QgsWcsCoverageSummary myCoverage : myCoverages )
       {
         QgsDebugMsg( "coverage: " + myCoverage.identifier );
         if ( !mCoverage.isEmpty() && myCoverage.identifier != mCoverage ) continue;
@@ -402,7 +402,7 @@ void TestQgsWcsPublicServers::test()
         QStringList providers;
         providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
 
-        Q_FOREACH ( const QString &provider, providers )
+        for ( const QString &provider : providers )
         {
           QElapsedTimer time;
           time.start();
@@ -443,7 +443,7 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
             {
-              myLog << provider + "_srcType:" + QString::number( myLayer->dataProvider()->sourceDataType( 1 ) );
+              myLog << provider + "_srcType:" + qgsEnumValueToKey< Qgis::DataType >( myLayer->dataProvider()->sourceDataType( 1 ) );
 
               QgsRasterBandStats myStats = myLayer->dataProvider()->bandStatistics( 1, QgsRasterBandStats::All, QgsRectangle(), myWidth * myHeight );
               myLog << provider + "_min:" + QString::number( myStats.minimumValue );
@@ -561,7 +561,7 @@ void TestQgsWcsPublicServers::report()
   int myCoverageErrCount = 0;
   int myCoverageWarnCount = 0;
 
-  Q_FOREACH ( const QString &myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  for ( const QString &myServerDirName : mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     myServerCount++;
     QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
@@ -578,7 +578,7 @@ void TestQgsWcsPublicServers::report()
     if ( !myServer.params.isEmpty() )
     {
       myReport += QLatin1String( "<br>Additional params: " );
-      Q_FOREACH ( const QString &key, myServer.params.keys() )
+      for ( const QString &key : myServer.params.keys() )
       {
         myReport += key + '=' + myServer.params.value( key ) + " ";
       }
@@ -589,7 +589,7 @@ void TestQgsWcsPublicServers::report()
 
     bool myServerErr = false;
     bool myServerWarn = false;
-    Q_FOREACH ( const QString &myVersionDirName, myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    for ( const QString &myVersionDirName : myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       QString myVersionReport;
       int myVersionCoverageCount = 0;
@@ -607,7 +607,7 @@ void TestQgsWcsPublicServers::report()
       if ( !myVersionLog.value( QStringLiteral( "error" ) ).isEmpty() )
       {
         // Server may have more errors, for each version
-        //Q_FOREACH ( QString err, myServerLog.values( "error" ) )
+        //for ( QString err : myServerLog.values( "error" ) )
         //{
         //myVersionReport += error( err );
         //}
@@ -621,7 +621,7 @@ void TestQgsWcsPublicServers::report()
         QStringList filters;
         filters << QStringLiteral( "*.log" );
         myVersionDir.setNameFilters( filters );
-        Q_FOREACH ( const QString &myLogFileName, myVersionDir.entryList( QDir::Files ) )
+        for ( const QString &myLogFileName : myVersionDir.entryList( QDir::Files ) )
         {
           if ( myLogFileName == QLatin1String( "version.log" ) ) continue;
           myVersionCoverageCount++;
@@ -644,7 +644,7 @@ void TestQgsWcsPublicServers::report()
           providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
 
           bool hasErr = false;
-          Q_FOREACH ( const QString &provider, providers )
+          for ( const QString &provider : providers )
           {
             QString imgPath = myVersionDir.absolutePath() + '/' + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
 
@@ -785,7 +785,7 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString &fileName
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
-    Q_FOREACH ( const QString &row, myStream.readAll().split( '\n' ) )
+    for ( const QString &row : myStream.readAll().split( '\n' ) )
     {
       int sepIdx = row.indexOf( ':' );
       myMap.insert( row.left( sepIdx ), row.mid( sepIdx + 1 ) );

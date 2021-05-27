@@ -34,6 +34,7 @@
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbol.h"
 
 #include <QPainter>
 

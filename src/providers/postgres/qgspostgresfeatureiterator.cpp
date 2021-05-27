@@ -685,7 +685,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       break;
 
     case PktFidMap:
-      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
+      for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
       {
         query += delim + mConn->fieldExpression( mSource->mFields.at( idx ) );
         delim = ',';
@@ -847,7 +847,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
     {
       QVariantList primaryKeyVals;
 
-      Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
+      for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
       {
         QgsField fld = mSource->mFields.at( idx );
         QVariant v;

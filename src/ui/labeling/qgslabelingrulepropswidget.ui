@@ -119,7 +119,7 @@
                </sizepolicy>
               </property>
               <property name="icon">
-               <iconset resource="../../images/images.qrc">
+               <iconset resource="../../../images/images.qrc">
                 <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
               </property>
              </widget>
@@ -185,23 +185,25 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleRangeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>editDescription</tabstop>
+  <tabstop>mFilterRadio</tabstop>
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
+  <tabstop>mElseRadio</tabstop>
   <tabstop>groupScale</tabstop>
   <tabstop>groupSettings</tabstop>
  </tabstops>

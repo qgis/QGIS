@@ -28,7 +28,7 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   connect( leCheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
   connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
-  connect( mDisplayAsTextComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mDisplayAsTextComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
 
   if ( vl->fields().at( fieldIdx ).type() == QVariant::Bool )
   {

@@ -11,7 +11,7 @@
 
 class QgsCompoundCurve: QgsCurve
 {
-%Docstring
+%Docstring(signature="appended")
 Compound curve geometry type
 
 .. versionadded:: 2.10
@@ -67,6 +67,7 @@ Compound curve geometry type
 
     virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
 
+    int indexOf( const QgsPoint &point ) const final;
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
@@ -81,6 +82,10 @@ of the curve.
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 
 
     int nCurves() const /HoldGIL/;
@@ -114,6 +119,14 @@ Removes a curve from the geometry.
     void addVertex( const QgsPoint &pt );
 %Docstring
 Adds a vertex to the end of the geometry.
+%End
+
+    void condenseCurves();
+%Docstring
+Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
+and combining adjacent circularstrings to a single continuous circularstring.
+
+.. versionadded:: 3.20
 %End
 
     virtual void draw( QPainter &p ) const;
@@ -176,6 +189,7 @@ Appends first point if not already closed.
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 
+    void scroll( int firstVertexIndex ) final;
 
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
@@ -192,6 +206,7 @@ Appends first point if not already closed.
 
   protected:
 
+    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
     virtual QgsRectangle calculateBoundingBox() const;
 
 

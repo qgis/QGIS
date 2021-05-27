@@ -83,6 +83,7 @@ class CORE_EXPORT QgsFeatureRequest
       SubsetOfAttributes = 2,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
       ExactIntersect     = 4,   //!< Use exact geometry intersection (slower) instead of bounding boxes
       IgnoreStaticNodesDuringExpressionCompilation = 8, //!< If a feature request uses a filter expression which can be partially precalculated due to static nodes in the expression, setting this flag will prevent these precalculated values from being utilized during compilation of the filter for the backend provider. This flag significantly slows down feature requests and should be used for debugging purposes only. (Since QGIS 3.18)
+      EmbeddedSymbols    = 16,  //!< Retrieve any embedded feature symbology (since QGIS 3.20)
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

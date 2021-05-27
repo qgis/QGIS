@@ -235,7 +235,7 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
           }
         } // costs
 
-        for ( int n : qgis::as_const( nodes ) )
+        for ( int n : std::as_const( nodes ) )
         {
           upperBoundary.push_back( graph->vertex( graph->edge( tree.at( n ) ).toVertex() ).point() );
           lowerBoundary.push_back( graph->vertex( graph->edge( tree.at( n ) ).fromVertex() ).point() );

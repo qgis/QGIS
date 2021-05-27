@@ -12,7 +12,7 @@
 
 class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
 {
-%Docstring
+%Docstring(signature="appended")
 Base class for widgets which allow customization of label engine properties, such as label placement settings.
 
 .. versionadded:: 3.12
@@ -105,7 +105,7 @@ and help text for the associated property.
 
 class QgsLabelSettingsWidgetDialog : QDialog
 {
-%Docstring
+%Docstring(signature="appended")
 A blocking dialog containing a QgsLabelSettingsWidgetBase.
 
 .. versionadded:: 3.12

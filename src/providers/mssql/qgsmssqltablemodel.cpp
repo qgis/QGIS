@@ -18,9 +18,9 @@
 #include "qgsmssqltablemodel.h"
 #include "qgsmssqlconnection.h"
 #include "qgsapplication.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsiconutils.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel()
 {
@@ -79,7 +79,7 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ),
+  QStandardItem *typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting…" )
       : QgsWkbTypes::displayString( wkbType ) );
@@ -278,7 +278,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         // update existing row
         QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList.at( 0 ) );
 
-        row[ DbtmType ]->setIcon( QgsLayerItem::iconForWkbType( wkbType ) );
+        row[ DbtmType ]->setIcon( QgsIconUtils::iconForWkbType( wkbType ) );
         row[ DbtmType ]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );
@@ -289,7 +289,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        for ( QStandardItem *item : qgis::as_const( row ) )
+        for ( QStandardItem *item : std::as_const( row ) )
         {
           item->setFlags( item->flags() | flags );
         }

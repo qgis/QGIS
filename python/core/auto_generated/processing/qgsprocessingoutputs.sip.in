@@ -13,7 +13,7 @@
 
 class QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 
 Base class for the definition of processing outputs.
 
@@ -129,7 +129,7 @@ typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefini
 
 class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A map layer output for processing algorithms, where layers may be either vector or raster.
 
 If the actual layer output type is known (e.g. always vector or always raster), use
@@ -160,7 +160,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A vector layer output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -200,7 +200,7 @@ Sets the layer ``type`` for the output layer.
 
 class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A raster layer output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -227,7 +227,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputMultipleLayers : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A multi-layer output for processing algorithms which create map layers, when
 the number and nature of the output layers is not predefined.
 
@@ -263,7 +263,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A HTML file output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -289,7 +289,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A numeric output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -314,7 +314,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputString : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A string output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -340,7 +340,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputBoolean : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A boolean output for processing algorithms.
 
 .. versionadded:: 3.8
@@ -365,7 +365,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A folder output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -392,7 +392,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputFile : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A file output for processing algorithms.
 
 .. versionadded:: 3.0
@@ -418,7 +418,7 @@ Returns the type name for the output class.
 
 class QgsProcessingOutputConditionalBranch : QgsProcessingOutputDefinition
 {
-%Docstring
+%Docstring(signature="appended")
 A conditional branch output for processing algorithms, which represents a possible model logic
 flow which branches out from this algorithm.
 

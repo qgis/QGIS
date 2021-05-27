@@ -15,6 +15,8 @@ email                : david dot marteau at 3liz dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsrequest.h"
+
 namespace QgsWms
 {
 
@@ -22,7 +24,7 @@ namespace QgsWms
    * Output GetMap response in DXF format
    */
   void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
-                   const QString &version,  const QgsServerRequest &request,
+                   const QgsWmsRequest &request,
                    QgsServerResponse &response );
 
 } // namespace QgsWms

@@ -38,9 +38,11 @@ set(QGIS_GUI_SRCS
   symbology/qgsdashspacedialog.cpp
   symbology/qgsdatadefinedsizelegendwidget.cpp
   symbology/qgsellipsesymbollayerwidget.cpp
+  symbology/qgsembeddedsymbolrendererwidget.cpp
   symbology/qgsgraduatedhistogramwidget.cpp
   symbology/qgsgraduatedsymbolrendererwidget.cpp
   symbology/qgsheatmaprendererwidget.cpp
+  symbology/qgsinterpolatedlinesymbollayerwidget.cpp
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
   symbology/qgsmasksymbollayerwidget.cpp
@@ -119,6 +121,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcss.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
+  codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
@@ -162,6 +165,10 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgshtmlwidgetwrapper.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
+  editorwidgets/qgsjsoneditconfigdlg.cpp
+  editorwidgets/qgsjsoneditwidgetfactory.cpp
+  editorwidgets/qgsjsoneditwrapper.cpp
+  editorwidgets/qgsjsoneditwidget.cpp
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
@@ -476,6 +483,7 @@ set(QGIS_GUI_SRCS
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
+  qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
@@ -569,6 +577,7 @@ set(QGIS_GUI_SRCS
   qgsrelationeditorwidget.cpp
   qgsabstractrelationeditorwidget.cpp
   qgsrelationwidgetregistry.cpp
+  qgsrichtexteditor.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
   qgsscalerangewidget.cpp
@@ -721,6 +730,7 @@ set(QGIS_GUI_HDRS
   qgshighlightablelineedit.h
   qgshistogramwidget.h
   qgsidentifymenu.h
+  qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
@@ -817,6 +827,7 @@ set(QGIS_GUI_HDRS
   qgsrelationeditorwidget.h
   qgsabstractrelationeditorwidget.h
   qgsrelationwidgetregistry.h
+  qgsrichtexteditor.h
   qgsrubberband.h
   qgsscalecombobox.h
   qgsscalerangewidget.h
@@ -909,6 +920,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhtml.h
   codeeditors/qgscodeeditorjs.h
+  codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
   codeeditors/qgscodeeditorsql.h
 
@@ -950,6 +962,10 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgshtmlwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetfactory.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
+  editorwidgets/qgsjsoneditconfigdlg.h
+  editorwidgets/qgsjsoneditwidgetfactory.h
+  editorwidgets/qgsjsoneditwrapper.h
+  editorwidgets/qgsjsoneditwidget.h
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
@@ -1193,9 +1209,11 @@ set(QGIS_GUI_HDRS
   symbology/qgsdashspacedialog.h
   symbology/qgsdatadefinedsizelegendwidget.h
   symbology/qgsellipsesymbollayerwidget.h
+  symbology/qgsembeddedsymbolrendererwidget.h
   symbology/qgsgraduatedhistogramwidget.h
   symbology/qgsgraduatedsymbolrendererwidget.h
   symbology/qgsheatmaprendererwidget.h
+  symbology/qgsinterpolatedlinesymbollayerwidget.h
   symbology/qgsinvertedpolygonrendererwidget.h
   symbology/qgslayerpropertieswidget.h
   symbology/qgsmergedfeaturerendererwidget.h
@@ -1322,7 +1340,8 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
-
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstemporalcontrollerwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprocessingtinmeshdatawidgetbase.h
 )
 
 if(ENABLE_MODELTEST)

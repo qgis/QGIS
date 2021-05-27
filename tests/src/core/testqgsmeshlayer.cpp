@@ -90,6 +90,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_memory_dataset_group();
     void test_memory_dataset_group_1d();
+
+    void test_setDataSource();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1480,6 +1482,104 @@ void TestQgsMeshLayer::test_memory_dataset_group_1d()
 
   QCOMPARE( mMdal1DLayer->datasetGroupCount(), 7 );
   QCOMPARE( mMdal1DLayer->extraDatasetGroupCount(), 2 );
+}
+
+void TestQgsMeshLayer::test_setDataSource()
+{
+  // MDAL Layer
+  QString uri( mDataDir + "/quad_and_triangle.2dm" );
+  QgsMeshLayer *firstLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
+  QCOMPARE( firstLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 1 );
+
+  //! Add extra dataset from file
+  firstLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  firstLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QCOMPARE( firstLayer->dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 3 );
+  QVERIFY( firstLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+
+  //! Add memory dataset
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> memoryDataset( new QgsMeshMemoryDatasetGroup );
+  memoryDataset->setName( QStringLiteral( "memory dataset" ) );
+  memoryDataset->setDataType( QgsMeshDatasetGroupMetadata::DataOnVertices );
+  int vertexCount = firstLayer->dataProvider()->vertexCount();
+  for ( int i = 1; i < 10; i++ )
+  {
+    std::shared_ptr<QgsMeshMemoryDataset> ds = std::make_shared<QgsMeshMemoryDataset>();
+    for ( int v = 0; v < vertexCount; ++v )
+      ds->values.append( QgsMeshDatasetValue( v / 2.0 ) );
+    ds->valid = true;
+    memoryDataset->addDataset( ds );
+  }
+  firstLayer->addDatasets( memoryDataset.release() );
+
+  QCOMPARE( firstLayer->dataProvider()->extraDatasets().count(), 2 );
+  QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 4 );
+
+  //! add another dataset from file
+  firstLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+
+  QCOMPARE( firstLayer->dataProvider()->extraDatasets().count(), 3 );
+  QCOMPARE( firstLayer->datasetGroupTreeRootItem()->childCount(), 5 );
+
+  firstLayer->dataProvider()->temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalMinutes );
+
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( "savedLayer" );
+  QDomElement layerElement = doc.createElement( "maplayer" );
+  firstLayer->writeLayerXml( layerElement, doc, readWriteContext );
+
+  QgsMeshLayer layerWithGoodDataSource;
+  layerWithGoodDataSource.readLayerXml( layerElement, readWriteContext );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->extraDatasets().count(), 3 );
+  QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->childCount(), 4 );
+  QVERIFY( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 0 )->description(), uri );
+  QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QCOMPARE( layerWithGoodDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
+
+  QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0, 1.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 2, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithGoodDataSource.datasetValue( QgsMeshDatasetIndex( 4, 0 ), 1 ) );
+
+  layerElement.removeChild( layerElement.firstChildElement( QStringLiteral( "datasource" ) ) );
+  QDomElement dataSourceElement = doc.createElement( QStringLiteral( "datasource" ) );
+  QString src = firstLayer->encodedSource( "bad", readWriteContext );
+  QDomText dataSourceText = doc.createTextNode( src );
+  dataSourceElement.appendChild( dataSourceText );
+  layerElement.appendChild( dataSourceElement );
+
+  QgsMeshLayer layerWithBadDataSource;
+  QVERIFY( !layerWithBadDataSource.readLayerXml( layerElement, readWriteContext ) );
+  QVERIFY( !layerWithBadDataSource.isValid() );
+
+  QCOMPARE( layerWithBadDataSource.dataProvider()->extraDatasets().count(), 0 );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->childCount(), 5 ); //keep trace of all invalid dataset group, even the memory one that do no exist anymore
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 0 )->description(), uri );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 3 )->name(),  QStringLiteral( "memory dataset" ) );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 4 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+
+  layerWithBadDataSource.setDataSource( uri, "Triangle and Quad MDAL", "mdal" );
+
+  QVERIFY( layerWithBadDataSource.dataProvider()->isValid() );
+  QCOMPARE( layerWithBadDataSource.dataProvider()->extraDatasets().count(), 3 );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->childCount(), 4 ); // memory dataset group is not here anymore
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 0 )->description(), uri );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 1 )->description(), mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 2 )->description(), mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QCOMPARE( layerWithBadDataSource.datasetGroupTreeRootItem()->child( 3 )->description(), mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  QCOMPARE( layerWithGoodDataSource.dataProvider()->temporalCapabilities()->temporalUnit(), QgsUnitTypes::TemporalMinutes );
+
+  QCOMPARE( QgsMeshDatasetValue( 30.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 0, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0, 1.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 2, 0 ), 1 ) );
+  QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 4, 0 ), 1 ) );
 }
 
 void TestQgsMeshLayer::test_temporal()

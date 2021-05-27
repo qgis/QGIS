@@ -37,9 +37,12 @@
 
 using namespace pal;
 
-void heapsort( int *sid, int *id, const std::vector< double > &x, int N )
+void heapsort( std::vector< int > &sid, int *id, const std::vector< double > &x, std::size_t N )
 {
-  unsigned int n = N, i = n / 2, parent, child;
+  std::size_t n = N;
+  std::size_t i = n / 2;
+  std::size_t parent;
+  std::size_t child;
   int tx;
   for ( ;; )
   {
@@ -79,9 +82,12 @@ void heapsort( int *sid, int *id, const std::vector< double > &x, int N )
 }
 
 
-void heapsort2( int *x, double *heap, int N )
+void heapsort2( int *x, double *heap, std::size_t N )
 {
-  unsigned int n = N, i = n / 2, parent, child;
+  std::size_t n = N;
+  std::size_t i = n / 2;
+  std::size_t parent;
+  std::size_t child;
   double t;
   int tx;
   for ( ;; )
@@ -163,79 +169,73 @@ bool GeomFunction::computeLineIntersection( double x1, double y1, double x2, dou
   return true;
 }
 
-int GeomFunction::convexHullId( int *id, const std::vector< double > &x, const std::vector< double > &y, int n, int *&cHull )
+std::vector< int > GeomFunction::convexHullId( std::vector< int > &id, const std::vector< double > &x, const std::vector< double > &y )
 {
-  int i;
-
-  cHull = new int[n];
-  for ( i = 0; i < n; i++ )
+  std::vector< int > convexHull( x.size() );
+  for ( std::size_t i = 0; i < x.size(); i++ )
   {
-    cHull[i] = i;
+    convexHull[i] = static_cast< int >( i );
   }
 
+  if ( x.size() <= 3 )
+    return convexHull;
 
-  if ( n <= 3 ) return n;
-
-  int *stack = new int[n];
-  double *tan = new double [n];
-  int ref;
-
-  int second, top;
-  double result;
+  std::vector< int > stack( x.size() );
+  std::vector< double > tan( x.size() );
 
   // find the lowest y value
-  heapsort( cHull, id, y, n );
+  heapsort( convexHull, id.data(), y, y.size() );
 
   // find the lowest x value from the lowest y
-  ref = 1;
-  while ( ref < n && qgsDoubleNear( y[id[cHull[ref]]], y[id[cHull[0]]] ) ) ref++;
+  std::size_t ref = 1;
+  while ( ref < x.size() && qgsDoubleNear( y[id[convexHull[ref]]], y[id[convexHull[0]]] ) )
+    ref++;
 
-  heapsort( cHull, id, x, ref );
+  heapsort( convexHull, id.data(), x, ref );
 
   // the first point is now for sure in the hull as well as the ref one
-  for ( i = ref; i < n; i++ )
+  for ( std::size_t i = ref; i < x.size(); i++ )
   {
-    if ( qgsDoubleNear( y[id[cHull[i]]], y[id[cHull[0]]] ) )
+    if ( qgsDoubleNear( y[id[convexHull[i]]], y[id[convexHull[0]]] ) )
       tan[i] = FLT_MAX;
     else
-      tan[i] = ( x[id[cHull[0]]] - x[id[cHull[i]]] ) / ( y[id[cHull[i]]] - y[id[cHull[0]]] );
+      tan[i] = ( x[id[convexHull[0]]] - x[id[convexHull[i]]] ) / ( y[id[convexHull[i]]] - y[id[convexHull[0]]] );
   }
 
-  if ( ref < n )
-    heapsort2( cHull + ref, tan + ref, n - ref );
+  if ( ref < x.size() )
+    heapsort2( convexHull.data() + ref, tan.data() + ref, x.size() - ref );
 
   // the second point is in too
-  stack[0] = cHull[0];
+  stack[0] = convexHull[0];
   if ( ref == 1 )
   {
-    stack[1] = cHull[1];
+    stack[1] = convexHull[1];
     ref++;
   }
   else
-    stack[1] = cHull[ref - 1];
+    stack[1] = convexHull[ref - 1];
 
+  std::size_t top = 1;
+  std::size_t second = 0;
 
-  top = 1;
-  second = 0;
-
-  for ( i = ref; i < n; i++ )
+  for ( std::size_t i = ref; i < x.size(); i++ )
   {
-    result = cross_product( x[id[stack[second]]], y[id[stack[second]]],
-                            x[id[stack[top]]], y[id[stack[top]]], x[id[cHull[i]]], y[id[cHull[i]]] );
+    double result = cross_product( x[id[stack[second]]], y[id[stack[second]]],
+                                   x[id[stack[top]]], y[id[stack[top]]], x[id[convexHull[i]]], y[id[convexHull[i]]] );
     // Coolineaire !! garder le plus éloigné
     if ( qgsDoubleNear( result, 0.0 ) )
     {
-      if ( dist_euc2d_sq( x[id[stack[second]]], y[id[stack[second]]], x[id[cHull[i]]], y[id[cHull[i]]] )
+      if ( dist_euc2d_sq( x[id[stack[second]]], y[id[stack[second]]], x[id[convexHull[i]]], y[id[convexHull[i]]] )
            >  dist_euc2d_sq( x[id[stack[second]]], y[id[stack[second]]], x[id[stack[top]]], y[id[stack[top]]] ) )
       {
-        stack[top] = cHull[i];
+        stack[top] = convexHull[i];
       }
     }
     else if ( result > 0 ) //convexe
     {
       second++;
       top++;
-      stack[top] = cHull[i];
+      stack[top] = convexHull[i];
     }
     else
     {
@@ -245,77 +245,59 @@ int GeomFunction::convexHullId( int *id, const std::vector< double > &x, const s
         top--;
         result = cross_product( x[id[stack[second]]],
                                 y[id[stack[second]]], x[id[stack[top]]],
-                                y[id[stack[top]]], x[id[cHull[i]]], y[id[cHull[i]]] );
+                                y[id[stack[top]]], x[id[convexHull[i]]], y[id[convexHull[i]]] );
       }
       second++;
       top++;
-      stack[top] = cHull[i];
+      stack[top] = convexHull[i];
     }
   }
 
-  for ( i = 0; i <= top; i++ )
+  for ( std::size_t i = 0; i <= top; i++ )
   {
-    cHull[i] = stack[i];
+    convexHull[i] = stack[i];
   }
 
-  delete[] stack;
-  delete[] tan;
-
-  return top + 1;
+  convexHull.resize( top + 1 );
+  return convexHull;
 }
 
-int GeomFunction::reorderPolygon( int nbPoints, std::vector<double> &x, std::vector<double> &y )
+bool GeomFunction::reorderPolygon( std::vector<double> &x, std::vector<double> &y )
 {
+  std::vector< int > pts( x.size() );
+  for ( std::size_t i = 0; i < x.size(); i++ )
+    pts[i] = static_cast< int >( i );
+
+  std::vector< int > convexHull = convexHullId( pts, x, y );
+
   int inc = 0;
-  int *cHull = nullptr;
-  int i;
-
-  int *pts = new int[nbPoints];
-  for ( i = 0; i < nbPoints; i++ )
-    pts[i] = i;
-
-  ( void )convexHullId( pts, x, y, nbPoints, cHull );
-
-  if ( pts[cHull[0]] < pts[cHull[1]] && pts[cHull[1]] < pts[cHull[2]] )
+  if ( pts[convexHull[0]] < pts[convexHull[1]] && pts[convexHull[1]] < pts[convexHull[2]] )
     inc = 1;
-  else if ( pts[cHull[0]] > pts[cHull[1]] && pts[cHull[1]] > pts[cHull[2]] )
+  else if ( pts[convexHull[0]] > pts[convexHull[1]] && pts[convexHull[1]] > pts[convexHull[2]] )
     inc = -1;
-  else if ( pts[cHull[0]] > pts[cHull[1]] && pts[cHull[1]] < pts[cHull[2]] && pts[cHull[2]] < pts[cHull[0]] )
+  else if ( pts[convexHull[0]] > pts[convexHull[1]] && pts[convexHull[1]] < pts[convexHull[2]] && pts[convexHull[2]] < pts[convexHull[0]] )
     inc = 1;
-  else if ( pts[cHull[0]] > pts[cHull[1]] && pts[cHull[1]] < pts[cHull[2]] && pts[cHull[2]] > pts[cHull[0]] )
+  else if ( pts[convexHull[0]] > pts[convexHull[1]] && pts[convexHull[1]] < pts[convexHull[2]] && pts[convexHull[2]] > pts[convexHull[0]] )
     inc = -1;
-  else if ( pts[cHull[0]] < pts[cHull[1]] && pts[cHull[1]] > pts[cHull[2]] && pts[cHull[2]] > pts[cHull[0]] )
+  else if ( pts[convexHull[0]] < pts[convexHull[1]] && pts[convexHull[1]] > pts[convexHull[2]] && pts[convexHull[2]] > pts[convexHull[0]] )
     inc = -1;
-  else if ( pts[cHull[0]] < pts[cHull[1]] && pts[cHull[1]] > pts[cHull[2]] && pts[cHull[2]] < pts[cHull[0]] )
+  else if ( pts[convexHull[0]] < pts[convexHull[1]] && pts[convexHull[1]] > pts[convexHull[2]] && pts[convexHull[2]] < pts[convexHull[0]] )
     inc = 1;
   else
   {
     // wrong cHull
-    delete[] cHull;
-    delete[] pts;
-    return -1;
+    return false;
   }
 
   if ( inc == -1 ) // re-order points
   {
-    double tmp;
-    int j;
-    for ( i = 0, j = nbPoints - 1; i <= j; i++, j-- )
+    for ( std::size_t i = 0, j = x.size() - 1; i <= j; i++, j-- )
     {
-      tmp = x[i];
-      x[i] = x[j];
-      x[j] = tmp;
-
-      tmp = y[i];
-      y[i] = y[j];
-      y[j] = tmp;
+      std::swap( x[i], x[j] );
+      std::swap( y[i], y[j] );
     }
   }
-
-  delete[] cHull;
-  delete[] pts;
-
-  return 0;
+  return true;
 }
 
 bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha )
@@ -396,6 +378,21 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     double x1, double y1, double x2, double y2,
     double &xRes, double &yRes )
 {
+  double multiplier = 1;
+  if ( radius < 10 )
+  {
+    // these calculations get unstable for small coordinates differences, e.g. as a result of map labeling in a geographic
+    // CRS
+    multiplier = 10000;
+    x1 *= multiplier;
+    y1 *= multiplier;
+    x2 *= multiplier;
+    y2 *= multiplier;
+    cx *= multiplier;
+    cy *= multiplier;
+    radius *= multiplier;
+  }
+
   double dx = x2 - x1;
   double dy = y2 - y1;
 
@@ -423,5 +420,11 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
+  }
+
+  if ( multiplier != 1 )
+  {
+    xRes /= multiplier;
+    yRes /= multiplier;
   }
 }

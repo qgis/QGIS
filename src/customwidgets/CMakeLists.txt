@@ -1,5 +1,4 @@
 add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 
 find_package(Qt5UiPlugin REQUIRED)

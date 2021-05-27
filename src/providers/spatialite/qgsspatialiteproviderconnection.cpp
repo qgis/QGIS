@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 #include <QRegularExpression>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
@@ -91,17 +92,17 @@ void QgsSpatiaLiteProviderConnection::createVectorTable( const QString &schema,
   opts[ QStringLiteral( "update" ) ] = true;
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsSpatiaLiteProvider::createEmptyLayer(
-        uri() + QStringLiteral( " table=%1 (geom)" ).arg( QgsSqliteUtils::quotedIdentifier( name ) ),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        &opts
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult res = QgsSpatiaLiteProvider::createEmptyLayer(
+                                   uri() + QStringLiteral( " table=%1 (geom)" ).arg( QgsSqliteUtils::quotedIdentifier( name ) ),
+                                   fields,
+                                   wkbType,
+                                   srs,
+                                   overwrite,
+                                   &map,
+                                   &errCause,
+                                   &opts
+                                 );
+  if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
@@ -430,7 +431,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }

@@ -186,7 +186,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   QByteArray data;
   if ( block )
   {
-    block->convert( Qgis::Float32 ); // currently we expect just floats
+    block->convert( Qgis::DataType::Float32 ); // currently we expect just floats
     data = block->data();
     data.detach();  // this should make a deep copy
 
@@ -275,7 +275,7 @@ void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangl
   if ( mDtmCoarseData.isEmpty() )
   {
     std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, rect, res, res ) );
-    block->convert( Qgis::Float32 );
+    block->convert( Qgis::DataType::Float32 );
     mDtmCoarseData = block->data();
     mDtmCoarseData.detach();  // make a deep copy
   }
@@ -293,8 +293,8 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
 
   int cellX = ( int )( ( x - rect.xMinimum() ) / rect.width() * res + .5f );
   int cellY = ( int )( ( rect.yMaximum() - y ) / rect.height() * res + .5f );
-  cellX = qBound( 0, cellX, res - 1 );
-  cellY = qBound( 0, cellY, res - 1 );
+  cellX = std::clamp( cellX, 0, res - 1 );
+  cellY = std::clamp( cellY, 0, res - 1 );
 
   const float *data = ( const float * ) mDtmCoarseData.constData();
   return data[cellX + cellY * res];

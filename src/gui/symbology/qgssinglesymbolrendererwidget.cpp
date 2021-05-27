@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgssymbolselectordialog.h"
+#include "qgsmarkersymbol.h"
 
 #include <QMenu>
 
@@ -34,37 +35,30 @@ QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer,
 
 QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
 
   if ( renderer )
   {
-    mRenderer = QgsSingleSymbolRenderer::convertFromRenderer( renderer );
+    mRenderer.reset( QgsSingleSymbolRenderer::convertFromRenderer( renderer ) );
   }
   if ( !mRenderer )
   {
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     if ( symbol )
-      mRenderer = new QgsSingleSymbolRenderer( symbol );
+      mRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol );
   }
 
   // load symbol from it
   if ( mRenderer )
-    mSingleSymbol = mRenderer->symbol()->clone();
+    mSingleSymbol.reset( mRenderer->symbol()->clone() );
 
   // setup ui
-  mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
+  mSelector = new QgsSymbolSelectorWidget( mSingleSymbol.get(), mStyle, mLayer, nullptr );
   connect( mSelector, &QgsSymbolSelectorWidget::symbolModified, this, &QgsSingleSymbolRendererWidget::changeSingleSymbol );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
-  connect( this, &QgsRendererWidget::symbolLevelsChanged, [ = ]()
-  {
-    delete mSingleSymbol;
-    mSingleSymbol = mRenderer->symbol()->clone();
-    mSelector->loadSymbol( mSingleSymbol );
-  } );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -73,29 +67,26 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  QAction *actionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
-  connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
-  if ( mSingleSymbol && mSingleSymbol->type() == QgsSymbol::Marker )
+  mActionLevels = advMenu->addAction( tr( "Symbol Levels…" ) );
+  connect( mActionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  if ( mSingleSymbol && mSingleSymbol->type() == Qgis::SymbolType::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
-    // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
   }
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
 {
-  delete mSingleSymbol;
-
-  delete mRenderer;
+  mSingleSymbol.reset();
+  mRenderer.reset();
 
   delete mSelector;
 }
 
-
 QgsFeatureRenderer *QgsSingleSymbolRendererWidget::renderer()
 {
-  return mRenderer;
+  return mRenderer.get();
 }
 
 void QgsSingleSymbolRendererWidget::setContext( const QgsSymbolWidgetContext &context )
@@ -112,21 +103,46 @@ void QgsSingleSymbolRendererWidget::setDockMode( bool dockMode )
     mSelector->setDockMode( dockMode );
 }
 
+void QgsSingleSymbolRendererWidget::disableSymbolLevels()
+{
+  delete mActionLevels;
+  mActionLevels = nullptr;
+}
+
+void QgsSingleSymbolRendererWidget::setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled )
+{
+  mSingleSymbol.reset( levels.at( 0 ).symbol()->clone() );
+  if ( !enabled )
+  {
+    // remove the renderer symbol levels flag (if present), as we don't symbol levels automatically re-enabling when other changes
+    // are made to the symbol
+    mSingleSymbol->setFlags( mSingleSymbol->flags() & ~Qgis::SymbolFlags( Qgis::SymbolFlag::RendererShouldUseSymbolLevels ) );
+  }
+  mRenderer->setSymbol( mSingleSymbol->clone() );
+  mRenderer->setUsingSymbolLevels( enabled );
+  mSelector->loadSymbol( mSingleSymbol.get() );
+  emit widgetChanged();
+}
+
 void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 {
   // update symbol from the GUI
   mRenderer->setSymbol( mSingleSymbol->clone() );
+
+  if ( mSingleSymbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
+    mRenderer->setUsingSymbolLevels( true );
+
   emit widgetChanged();
 }
 
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
-  showSymbolLevelsDialog( mRenderer );
+  showSymbolLevelsDialog( mRenderer.get() );
 }
 
 void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol.get() ); // this should be only enabled for marker symbols
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {

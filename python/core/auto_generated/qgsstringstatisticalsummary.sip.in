@@ -13,7 +13,7 @@
 
 class QgsStringStatisticalSummary
 {
-%Docstring
+%Docstring(signature="appended")
 Calculator for summary statistics and aggregates for a list of strings.
 
 Statistics are calculated by calling :py:func:`~calculate` and passing a list of strings. The

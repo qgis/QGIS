@@ -55,7 +55,7 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
   private:
 
     bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-                             bool saveStyles, bool selectedFeaturesOnly );
+                             bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly );
 
     std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
 

@@ -92,7 +92,7 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
       if ( lyr )
       {
         QgsFeatureIds selectedFeatureIds = lyr->selectedFeatureIds();
-        for ( const QgsFeature &feature : qgis::as_const( features ) )
+        for ( const QgsFeature &feature : std::as_const( features ) )
           selectedFeatureIds.insert( feature.id() );
         lyr->selectByIds( selectedFeatureIds );
       }
@@ -100,7 +100,7 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
   }
 #endif
 
-  for ( const QgsFeature &feature : qgis::as_const( features ) )
+  for ( const QgsFeature &feature : std::as_const( features ) )
     insertFeature( feature );
 
   return res;

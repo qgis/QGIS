@@ -15,10 +15,12 @@
 #ifndef QGSWCSDATAITEMS_H
 #define QGSWCSDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswcscapabilities.h"
 #include "qgsdataitemprovider.h"
+#include "qgsconnectionsitem.h"
 
 class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
@@ -82,6 +84,7 @@ class QgsWcsDataItemProvider : public QgsDataItemProvider
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSWCSDATAITEMS_H

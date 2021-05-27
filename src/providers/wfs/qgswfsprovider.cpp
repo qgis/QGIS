@@ -47,6 +47,7 @@
 #include <QPair>
 #include <QTimer>
 #include <QUrlQuery>
+#include <QRegularExpression>
 
 #include <cfloat>
 
@@ -126,7 +127,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     auto downloader = std::make_unique<QgsFeatureDownloader>();
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
-             qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
+             qOverload < QVector<QgsFeatureUniqueIdPair> >( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
     if ( requestMadeFromMainThread )
     {
@@ -427,7 +428,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   }
 
   QString concatenatedTypenames;
-  for ( const QString &typeName : qgis::as_const( typenameList ) )
+  for ( const QString &typeName : std::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
       concatenatedTypenames += QLatin1Char( ',' );
@@ -459,7 +460,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
-  for ( const QString &typeName : qgis::as_const( typenameList ) )
+  for ( const QString &typeName : std::as_const( typenameList ) )
   {
     QString geometryAttribute;
     QgsFields fields;
@@ -1527,8 +1528,8 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     // attribute ref
     QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
 
-    QRegExp gmlPT( "gml:(.*)PropertyType" );
-    QRegExp gmlRefProperty( "gml:(.*)Property" );
+    const QRegularExpression gmlPT( QStringLiteral( "gml:(.*)PropertyType" ) );
+    const QRegularExpression gmlRefProperty( QStringLiteral( "gml:(.*)Property" ) );
 
     // gmgml: is Geomedia Web Server
     if ( ! foundGeometryAttribute && type == QLatin1String( "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" ) )
@@ -1560,7 +1561,10 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
-        geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
+      {
+        const QRegularExpressionMatch match = gmlPT.match( type );
+        geomType = geomTypeFromPropertyType( geometryAttribute, match.captured( 1 ) );
+      }
     }
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
     //Note: this was deprecated with GML3.
@@ -1568,7 +1572,9 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       foundGeometryAttribute = true;
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
-      QString propertyType( gmlRefProperty.cap( 1 ) );
+
+      const QRegularExpressionMatch match = gmlRefProperty.match( ref );
+      QString propertyType( match.captured( 1 ) );
       // Set the first character in upper case
       propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
@@ -1976,8 +1982,12 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   if ( exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
   {
     QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+    // The XML schema at http://schemas.opengis.net/ows/1.1.0/owsExceptionReport.xsd uses
+    // the "exceptionCode" attribute, but http://docs.opengeospatial.org/is/04-094r1/04-094r1.html#36
+    // mentions "code". Accept both...
     pushError( tr( "WFS exception report (code=%1 text=%2)" )
-               .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ),
+               .arg( exception.attribute( QStringLiteral( "exceptionCode" ),
+                                          exception.attribute( QStringLiteral( "code" ), tr( "missing" ) ) ),
                      exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() )
              );
     return;

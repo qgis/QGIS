@@ -90,16 +90,7 @@ QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() cons
 
     if ( origColorRampShader )
     {
-      QgsColorRampShader *colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
-
-      if ( origColorRampShader->sourceColorRamp() )
-      {
-        colorRampShader->setSourceColorRamp( origColorRampShader->sourceColorRamp()->clone() );
-      }
-      colorRampShader->setColorRampType( origColorRampShader->colorRampType() );
-      colorRampShader->setClassificationMode( origColorRampShader->classificationMode() );
-      colorRampShader->setClip( origColorRampShader->clip() );
-      colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
+      QgsColorRampShader *colorRampShader = new QgsColorRampShader( *origColorRampShader );
       shader->setRasterShaderFunction( colorRampShader );
     }
   }
@@ -235,7 +226,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( Qgis::DataType::ARGB32_Premultiplied, width, height ) )
   {
     return outputBlock.release();
   }
@@ -444,15 +435,19 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
   switch ( rampShader->colorRampType() )
   {
     case QgsColorRampShader::Interpolated:
-      // for interpolated shaders we use a ramp legend node
-      if ( !rampShader->colorRampItemList().isEmpty() )
+      // for interpolated shaders we use a ramp legend node unless the settings flag
+      // to use the continuous legend is not set, in that case we fall through
+      if ( ! rampShader->legendSettings() || rampShader->legendSettings()->useContinuousLegend() )
       {
-        res << new QgsColorRampLegendNode( nodeLayer, rampShader->createColorRamp(),
-                                           rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
-                                           rampShader->minimumValue(), rampShader->maximumValue() );
+        if ( !rampShader->colorRampItemList().isEmpty() )
+        {
+          res << new QgsColorRampLegendNode( nodeLayer, rampShader->createColorRamp(),
+                                             rampShader->legendSettings() ? *rampShader->legendSettings() : QgsColorRampLegendNodeSettings(),
+                                             rampShader->minimumValue(), rampShader->maximumValue() );
+        }
+        break;
       }
-      break;
-
+      Q_FALLTHROUGH();
     case QgsColorRampShader::Discrete:
     case QgsColorRampShader::Exact:
     {

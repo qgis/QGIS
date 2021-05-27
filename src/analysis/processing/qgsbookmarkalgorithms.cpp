@@ -119,7 +119,7 @@ QVariantMap QgsBookmarksToLayerAlgorithm::processAlgorithm( const QVariantMap &p
   int current = 0;
   double step = count > 0 ? 100.0 / count : 1;
 
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
   {
     if ( feedback->isCanceled() )
     {
@@ -322,7 +322,7 @@ QVariantMap QgsLayerToBookmarksAlgorithm::postProcessAlgorithm( QgsProcessingCon
       break;
   }
 
-  for ( const QgsBookmark &b : qgis::as_const( mBookmarks ) )
+  for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
     dest->addBookmark( b );
 
   QVariantMap res;

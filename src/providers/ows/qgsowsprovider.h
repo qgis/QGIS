@@ -20,7 +20,6 @@
 
 #include "qgsdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 
 #include <QString>

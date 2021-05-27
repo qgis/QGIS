@@ -157,6 +157,8 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refineRuleRangesGui();
     void refineRuleScalesGui( const QModelIndexList &index );
 
+    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
+
     QgsRuleBasedRenderer::Rule *currentRule();
 
     QList<QgsSymbol *> selectedSymbols() override;
@@ -164,7 +166,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsRuleBasedRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsRuleBasedRenderer > mRenderer;
     QgsRuleBasedRendererModel *mModel = nullptr;
 
     QMenu *mRefineMenu = nullptr;

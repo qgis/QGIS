@@ -64,6 +64,13 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
      */
     QgsRectangle extent() const;
 
+    /**
+     * Removes the tool's rubber band from the canvas.
+     *
+     * \since QGIS 3.20
+     */
+    void clearRubberBand();
+
   signals:
 
     //! signal emitted on extent change

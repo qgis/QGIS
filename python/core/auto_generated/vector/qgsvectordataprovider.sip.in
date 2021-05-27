@@ -15,7 +15,7 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink, QgsFeatureSource
 {
-%Docstring
+%Docstring(signature="appended")
 This is the base class for vector data providers.
 
 Data providers abstract the retrieval and writing (where supported)
@@ -54,20 +54,13 @@ of feature and attribute information from a spatial datasource.
       CreateRenderer,
       CreateLabeling,
       ReloadData,
+      FeatureSymbology,
     };
 
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
 
 
     static const int EditingCapabilities;
-
-    enum FeatureCountState
-    {
-      //! Feature count not yet computed
-      Uncounted,
-      //! Provider returned an unknown feature count
-      UnknownCount,
-    };
 
     QgsVectorDataProvider( const QString &uri = QString(),
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),

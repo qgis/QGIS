@@ -32,6 +32,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
 
 #include <QObject>
 #include <QPainter>

@@ -10,7 +10,7 @@
 
 class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 {
-%Docstring
+%Docstring(signature="appended")
 Layout view tool for temporarily zooming a layout while a key is depressed.
 
 .. versionadded:: 3.0

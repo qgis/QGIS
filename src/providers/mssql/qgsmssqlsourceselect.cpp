@@ -25,13 +25,13 @@
 #include "qgsmssqlnewconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
-#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsiconutils.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -56,17 +56,18 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   if ( index.column() == QgsMssqlTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QgsWkbTypes::Type type,
-                QList<QgsWkbTypes::Type>()
-                << QgsWkbTypes::Point
-                << QgsWkbTypes::LineString
-                << QgsWkbTypes::Polygon
-                << QgsWkbTypes::MultiPoint
-                << QgsWkbTypes::MultiLineString
-                << QgsWkbTypes::MultiPolygon
-                << QgsWkbTypes::NoGeometry )
+    for ( QgsWkbTypes::Type type :
+          {
+            QgsWkbTypes::Point,
+            QgsWkbTypes::LineString,
+            QgsWkbTypes::Polygon,
+            QgsWkbTypes::MultiPoint,
+            QgsWkbTypes::MultiLineString,
+            QgsWkbTypes::MultiPolygon,
+            QgsWkbTypes::NoGeometry
+          } )
     {
-      cb->addItem( QgsLayerItem::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -105,7 +106,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     {
       QgsWkbTypes::Type type = static_cast< QgsWkbTypes::Type >( cb->currentData().toInt() );
 
-      model->setData( index, QgsLayerItem::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }

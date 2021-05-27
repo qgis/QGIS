@@ -440,7 +440,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>653</width>
-                <height>679</height>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -756,8 +756,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -973,8 +973,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>104</width>
-                <height>102</height>
+                <width>653</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1368,8 +1368,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1570,8 +1570,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>689</width>
-                <height>356</height>
+                <width>695</width>
+                <height>667</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -2062,8 +2062,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>797</height>
+                <width>639</width>
+                <height>769</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2567,14 +2567,26 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -2583,21 +2595,15 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2623,12 +2629,6 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
@@ -2648,10 +2648,11 @@ border-radius: 2px;</string>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
   <tabstop>txtDisplayName</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mGeomGroupBox</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
-  <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mJoinTreeWidget</tabstop>
@@ -2699,6 +2700,10 @@ border-radius: 2px;</string>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mWmsDimensionsTreeWidget</tabstop>
+  <tabstop>mButtonAddWmsDimension</tabstop>
+  <tabstop>mButtonEditWmsDimension</tabstop>
+  <tabstop>mButtonRemoveWmsDimension</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

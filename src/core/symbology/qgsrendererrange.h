@@ -41,6 +41,7 @@ class CORE_EXPORT QgsRendererRange
      * Constructor for QgsRendererRange.
      */
     QgsRendererRange() = default;
+    ~QgsRendererRange();
 
     /**
      * Creates a renderer symbol range
@@ -104,7 +105,7 @@ typedef QList<QgsRendererRange> QgsRangeList;
  * \since QGIS 2.6
  * \deprecated since QGIS 3.10, use QgsClassificationMethod instead
  */
-class Q_DECL_DEPRECATED CORE_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
+class CORE_EXPORT Q_DECL_DEPRECATED QgsRendererRangeLabelFormat SIP_DEPRECATED
 {
   public:
     QgsRendererRangeLabelFormat();

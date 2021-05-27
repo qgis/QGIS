@@ -30,7 +30,7 @@
 #include "qgsactionmanager.h"
 #include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QPushButton>
 
@@ -173,8 +173,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   if ( !mLayer || !mLayer->isEditable() )
     return false;
 
-  QgsSettings settings;
-  const bool reuseAllLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues.value();
   QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
 
   QgsFields fields = mLayer->fields();
@@ -204,7 +203,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   //show the dialog to enter attribute values
   //only show if enabled in settings
-  bool isDisabledAttributeValuesDlg = settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+  bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value();
 
   // override application-wide setting if layer is non-spatial -- BECAUSE it's bad UX if
   // it appears that nothing happens when you click the add row button for a non-spatial layer. Unlike

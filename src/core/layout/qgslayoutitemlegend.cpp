@@ -181,6 +181,8 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   QgsRenderContext rc = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter, context.renderContext().scaleFactor() * 25.4 )
                         : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
+  rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
+
   QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units

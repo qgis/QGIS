@@ -138,7 +138,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
       mComboBox->addItem( tr( "No" ), false );
       mComboBox->setToolTip( parameterDefinition()->toolTip() );
 
-      connect( mComboBox, qgis::overload< int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+      connect( mComboBox, qOverload< int>( &QComboBox::currentIndexChanged ), this, [ = ]
       {
         emit widgetValueHasChanged( this );
       } );
@@ -252,6 +252,10 @@ QgsProcessingCrsParameterDefinitionWidget::QgsProcessingCrsParameterDefinitionWi
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mCrsSelector = new QgsProjectionSelectionWidget();
+
+  // possibly we should expose this for parameter by parameter control
+  mCrsSelector->setShowAccuracyWarnings( true );
+
   if ( const QgsProcessingParameterCrs *crsParam = dynamic_cast<const QgsProcessingParameterCrs *>( definition ) )
     mCrsSelector->setCrs( QgsProcessingParameters::parameterAsCrs( crsParam, crsParam->defaultValueForGui(), context ) );
   else
@@ -805,9 +809,9 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
       }
 
       if ( mDoubleSpinBox )
-        connect( mDoubleSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
+        connect( mDoubleSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
       else if ( mSpinBox )
-        connect( mSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
+        connect( mSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
 
       return spinBox;
     }
@@ -1426,7 +1430,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
 
       w->setToolTip( parameterDefinition()->toolTip() );
 
-      connect( mMinSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
+      connect( mMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
         if ( !mAllowingNull && v > mMaxSpinBox->value() )
@@ -1436,7 +1440,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
         if ( !mBlockChangedSignal )
           emit widgetValueHasChanged( this );
       } );
-      connect( mMaxSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
+      connect( mMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
         if ( !mAllowingNull && v < mMinSpinBox->value() )
@@ -1704,7 +1708,7 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
     mDefaultFileWidget->setStorageMode( QgsFileWidget::GetFile );
   vlayout->addWidget( mDefaultFileWidget );
 
-  connect( mTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     QgsProcessingParameterFile::Behavior behavior = static_cast< QgsProcessingParameterFile::Behavior >( mTypeComboBox->currentData().toInt() );
     mFilterComboBox->setEnabled( behavior == QgsProcessingParameterFile::File );
@@ -1987,6 +1991,16 @@ void QgsProcessingExpressionWidgetWrapper::postInitialize( const QList<QgsAbstra
 
     case QgsProcessingGui::Modeler:
       break;
+  }
+}
+
+void QgsProcessingExpressionWidgetWrapper::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::registerProcessingContextGenerator( generator );
+  if ( mExpBuilderWidget )
+  {
+    // we need to regenerate the expression context for use by this widget -- it doesn't fetch automatically on demand
+    mExpBuilderWidget->setExpressionContext( createExpressionContext() );
   }
 }
 
@@ -2437,7 +2451,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         }
 
         mComboBox->setToolTip( parameterDefinition()->toolTip() );
-        connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+        connect( mComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
         {
           emit widgetValueHasChanged( this );
         } );
@@ -3833,7 +3847,7 @@ void QgsProcessingFieldPanelWidget::showDialog()
   QVariantList availableOptions;
   QStringList fieldNames;
   availableOptions.reserve( mFields.size() );
-  for ( const QgsField &field : qgis::as_const( mFields ) )
+  for ( const QgsField &field : std::as_const( mFields ) )
   {
     availableOptions << field.name();
   }
@@ -4428,7 +4442,7 @@ QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
   }
 
   mComboBox->setToolTip( parameterDefinition()->toolTip() );
-  connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  connect( mComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     emit widgetValueHasChanged( this );
   } );
@@ -4966,9 +4980,9 @@ void QgsProcessingDatabaseSchemaWidgetWrapper::setParentConnectionWrapperValue( 
   const QString connection = value.isValid() ? QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context ) : QString();
 
   if ( mSchemaComboBox )
-    mSchemaComboBox->setConnectionName( connection, dynamic_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId() );
+    mSchemaComboBox->setConnectionName( connection, qgis::down_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId() );
 
-  const QgsProcessingParameterDatabaseSchema *schemaParam = static_cast< const QgsProcessingParameterDatabaseSchema * >( parameterDefinition() );
+  const QgsProcessingParameterDatabaseSchema *schemaParam = qgis::down_cast< const QgsProcessingParameterDatabaseSchema * >( parameterDefinition() );
   if ( schemaParam->defaultValueForGui().isValid() )
     setWidgetValue( parameterDefinition()->defaultValueForGui(), *context );
 }
@@ -5215,13 +5229,13 @@ void QgsProcessingDatabaseTableWidgetWrapper::setParentConnectionWrapperValue( c
 
   QVariant value = parentWrapper->parameterValue();
   mConnection = value.isValid() ? QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context ) : QString();
-  mProvider = dynamic_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId();
+  mProvider = qgis::down_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId();
   if ( mTableComboBox && !mSchema.isEmpty() )
   {
     mTableComboBox->setSchema( mSchema );
     mTableComboBox->setConnectionName( mConnection, mProvider );
 
-    const QgsProcessingParameterDatabaseTable *tableParam = static_cast< const QgsProcessingParameterDatabaseTable * >( parameterDefinition() );
+    const QgsProcessingParameterDatabaseTable *tableParam = qgis::down_cast< const QgsProcessingParameterDatabaseTable * >( parameterDefinition() );
     if ( tableParam->defaultValueForGui().isValid() )
       setWidgetValue( parameterDefinition()->defaultValueForGui(), *context );
   }
@@ -6060,7 +6074,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
   QVariantList availableOptions;
   QStringList fieldNames;
   availableOptions.reserve( mBands.size() );
-  for ( int band : qgis::as_const( mBands ) )
+  for ( int band : std::as_const( mBands ) )
   {
     availableOptions << band;
   }

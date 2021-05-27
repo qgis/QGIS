@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -96,17 +97,17 @@ void QgsGeoPackageProviderConnection::createVectorTable( const QString &schema,
   opts[ QStringLiteral( "update" ) ] = true;
   QMap<int, int> map;
   QString errCause;
-  QgsVectorLayerExporter::ExportError errCode = QgsOgrProvider::createEmptyLayer(
-        uri(),
-        fields,
-        wkbType,
-        srs,
-        overwrite,
-        &map,
-        &errCause,
-        &opts
-      );
-  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
+                                       uri(),
+                                       fields,
+                                       wkbType,
+                                       srs,
+                                       overwrite,
+                                       &map,
+                                       &errCause,
+                                       &opts
+                                     );
+  if ( errCode != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
@@ -220,8 +221,8 @@ bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  const auto res { executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
-                                          QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows() };
+  const QList<QList<QVariant> > res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                      QgsSqliteUtils::quotedString( geometryColumn ) ) ).rows();
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -255,12 +256,12 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
 
   try
   {
-    const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
+    const QString sql = QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
                                         "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
+                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) );
     results = executeSql( sql );
 
-    for ( const auto &row : qgis::as_const( results ) )
+    for ( const auto &row : std::as_const( results ) )
     {
 
       if ( row.size() != 6 )
@@ -398,7 +399,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
         QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
         iterator->setFields( fields );
 
-        for ( const auto &f : qgis::as_const( fields ) )
+        for ( const auto &f : std::as_const( fields ) )
         {
           results.appendColumn( f.name() );
         }
@@ -490,9 +491,9 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
   const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
   if ( ! vl.isValid() || ! vl.dataProvider() )
   {
-    const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
+    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
                                vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" ) };
+                               QObject::tr( "unknown error" );
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();

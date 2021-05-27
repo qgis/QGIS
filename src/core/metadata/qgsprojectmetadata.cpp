@@ -55,6 +55,20 @@ bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDoc
   return true;
 }
 
+void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )
+{
+  QgsAbstractMetadataBase::combine( other );
+
+  if ( const QgsProjectMetadata *otherProjectMetadata = dynamic_cast< const QgsProjectMetadata * >( other ) )
+  {
+    if ( !otherProjectMetadata->author().isEmpty() )
+      mAuthor = otherProjectMetadata->author();
+
+    if ( otherProjectMetadata->creationDateTime().isValid() )
+      mCreationDateTime = otherProjectMetadata->creationDateTime();
+  }
+}
+
 bool QgsProjectMetadata::operator==( const QgsProjectMetadata &metadataOther )  const
 {
   return equals( metadataOther ) &&

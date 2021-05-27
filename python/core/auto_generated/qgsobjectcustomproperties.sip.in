@@ -12,7 +12,7 @@
 
 class QgsObjectCustomProperties
 {
-%Docstring
+%Docstring(signature="appended")
 Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
 in \verbatim <customproperties> \endverbatim element.
 
