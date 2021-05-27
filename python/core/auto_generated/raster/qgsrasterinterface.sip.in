@@ -201,7 +201,10 @@ Gets the extent of the interface.
 :return: :py:class:`QgsRectangle` containing the extent of the layer
 %End
 
-    int dataTypeSize( int bandNo );
+    int dataTypeSize( int bandNo ) const;
+%Docstring
+Returns the size (in bytes) for the data type for the specified band.
+%End
 
     virtual int bandCount() const = 0;
 %Docstring
