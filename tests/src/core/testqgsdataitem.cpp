@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QSignalSpy>
 
 //qgis includes...
 #include "qgsdataitem.h"
@@ -51,6 +52,7 @@ class TestQgsDataItem : public QObject
     void testValid();
     void testDirItem();
     void testDirItemChildren();
+    void testDirItemMonitoring();
     void testLayerItemType();
     void testProjectItemCreation();
 
@@ -131,7 +133,7 @@ void TestQgsDataItem::testDirItemChildren()
   QgsSettings settings;
   QStringList tmpSettings;
   tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  for ( const QString &tmpSetting : tmpSettings )
+  for ( const QString &tmpSetting : std::as_const( tmpSettings ) )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
     QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
@@ -141,7 +143,7 @@ void TestQgsDataItem::testDirItemChildren()
     for ( int i = 0; i < children.size(); i++ )
     {
       QgsDataItem *dataItem = children[i];
-      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( dataItem );
+      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( dataItem );
       if ( ! layerItem )
         continue;
 
@@ -155,23 +157,23 @@ void TestQgsDataItem::testDirItemChildren()
 
       if ( lFile == QLatin1String( "landsat.tif" ) )
       {
-        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "points.vrt" ) )
       {
-        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == QLatin1String( "ogr" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "landsat.vrt" ) )
       {
-        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
       {
-        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == QLatin1String( "gdal" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
       {
-        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lProvider == QLatin1String( "ogr" ), errStr.toLocal8Bit().constData() );
       }
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
@@ -180,19 +182,19 @@ void TestQgsDataItem::testDirItemChildren()
 
       if ( lFile == QLatin1String( "landsat.tif" ) )
       {
-        QVERIFY2( lName == "landsat", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == QLatin1String( "landsat" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "points.shp" ) )
       {
-        QVERIFY2( lName == "points", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == QLatin1String( "points" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
       {
-        QVERIFY2( lName == "landsat_b1", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == QLatin1String( "landsat_b1" ), errStr.toLocal8Bit().constData() );
       }
       else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
       {
-        QVERIFY2( lName == "points3", errStr.toLocal8Bit().constData() );
+        QVERIFY2( lName == QLatin1String( "points3" ), errStr.toLocal8Bit().constData() );
       }
 
     }
@@ -200,6 +202,143 @@ void TestQgsDataItem::testDirItemChildren()
 
     delete dirItem;
   }
+}
+
+void TestQgsDataItem::testDirItemMonitoring()
+{
+  QTemporaryDir dir;
+
+  const QString parentDir = dir.path();
+  const QString child1 = parentDir + QStringLiteral( "/child1" );
+  const QString child2 = parentDir + QStringLiteral( "/child2" );
+  QVERIFY( QDir().mkpath( child1 ) );
+  QVERIFY( QDir().mkpath( child2 ) );
+
+  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
+  dirItem->populate( true );
+  QCOMPARE( dirItem->rowCount(), 2 );
+  QPointer< QgsDirectoryItem > childItem1( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 0 ) ) );
+  QPointer< QgsDirectoryItem > childItem2( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 1 ) ) );
+  QVERIFY( childItem1 );
+  QVERIFY( childItem2 );
+
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+
+  QVERIFY( dirItem->isMonitored() );
+  QVERIFY( childItem1->isMonitored() );
+  QVERIFY( childItem2->isMonitored() );
+
+  QVERIFY( dirItem->mFileSystemWatcher );
+  // file system watchers aren't created until items are populated
+  QVERIFY( !childItem1->mFileSystemWatcher );
+  QVERIFY( !childItem2->mFileSystemWatcher );
+
+  // avoid the normal required timeout between population
+  dirItem->mLastScan = QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ) );
+  const QString child3 = parentDir + QStringLiteral( "/child3" );
+  QVERIFY( QDir().mkpath( child3 ) );
+  QSignalSpy spy( dirItem.get(), &QgsDataItem::endInsertItems );
+  spy.wait();
+  QCOMPARE( dirItem->rowCount(), 3 );
+  QVERIFY( childItem1 );
+  QVERIFY( childItem2 );
+  QPointer< QgsDirectoryItem > childItem3( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 2 ) ) );
+  QCOMPARE( childItem3->dirPath(), child3 );
+
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( childItem3->isMonitored() );
+
+  childItem1->populate( true );
+  childItem2->populate( true );
+  QVERIFY( childItem1->mFileSystemWatcher );
+  QVERIFY( childItem2->mFileSystemWatcher );
+
+  // block monitoring of childItem3
+  childItem3->populate( true );
+  QVERIFY( childItem3->mFileSystemWatcher );
+  QVERIFY( !childItem3->hasChildren() );
+  childItem3->setMonitoring( Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
+
+  // explicitly force monitoring of childItem2
+  childItem2->populate( true );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QVERIFY( !childItem2->hasChildren() );
+  childItem2->setMonitoring( Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+
+  // turn off monitoring of parent item
+  QVERIFY( dirItem->mFileSystemWatcher );
+  dirItem->setMonitoring( Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !dirItem->isMonitored() );
+  QVERIFY( !dirItem->mFileSystemWatcher );
+
+  // child dir without an explicit setting should inherit parent dir setting, others should not
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( !childItem1->isMonitored() );
+  QVERIFY( !childItem1->mFileSystemWatcher );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
+
+  // turn on monitoring of parent item
+  QVERIFY( !dirItem->mFileSystemWatcher );
+  dirItem->setMonitoring( Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( dirItem->isMonitored() );
+  QVERIFY( dirItem->mFileSystemWatcher );
+
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( childItem1->isMonitored() );
+  QVERIFY( childItem1->mFileSystemWatcher );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
+
+  // turn back off monitoring
+  dirItem->setMonitoring( Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !dirItem->isMonitored() );
+  QVERIFY( !dirItem->mFileSystemWatcher );
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( !childItem1->isMonitored() );
+  QVERIFY( !childItem1->mFileSystemWatcher );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
+
+  // now switch parent back to default behavior
+  QVERIFY( !dirItem->mFileSystemWatcher );
+  dirItem->setMonitoring( Qgis::BrowserDirectoryMonitoring::Default );
+  QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( dirItem->isMonitored() );
+  QVERIFY( dirItem->mFileSystemWatcher );
+
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( childItem1->isMonitored() );
+  QVERIFY( childItem1->mFileSystemWatcher );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
 }
 
 void TestQgsDataItem::testLayerItemType()
@@ -292,7 +431,7 @@ void TestQgsDataItem::testProjectItemCreation()
   foundQgzProject = false;
   bool foundCustomQgsProject = false;
   bool foundCustomQgzProject = false;
-  for ( QgsDataItem *child : children )
+  for ( QgsDataItem *child : std::as_const( children ) )
   {
     if ( child->type() == Qgis::BrowserItemType::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
     {

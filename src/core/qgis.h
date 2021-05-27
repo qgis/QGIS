@@ -295,6 +295,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( BrowserLayerType )
 
     /**
+     * Browser directory item monitoring switches.
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserDirectoryMonitoring : int
+    {
+      Default, //!< Use default logic to determine whether directory should be monitored
+      NeverMonitor, //!< Never monitor the directory, regardless of the default logic
+      AlwaysMonitor, //!< Always monitor the directory, regardless of the default logic
+    };
+    Q_ENUM( BrowserDirectoryMonitoring )
+
+    /**
      * Vector layer export result codes.
      *
      * \since QGIS 3.20
