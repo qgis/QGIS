@@ -137,8 +137,8 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+      {
       Never = 0, //!< Macros are never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
@@ -157,6 +157,7 @@ class CORE_EXPORT Qgis
       Uncounted = -2, //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
+    Q_ENUM( FeatureCountState )
 
     /**
      * \brief Symbol types
@@ -169,6 +170,7 @@ class CORE_EXPORT Qgis
       Fill, //!< Fill symbol
       Hybrid //!< Hybrid symbol
     };
+    Q_ENUM( SymbolType )
 
     /**
      * \brief Scale methods
@@ -180,6 +182,7 @@ class CORE_EXPORT Qgis
       ScaleArea,     //!< Calculate scale by the area
       ScaleDiameter  //!< Calculate scale by the diameter
     };
+    Q_ENUM( ScaleMethod )
 
     /**
      * \brief Flags controlling behavior of symbols during rendering
@@ -190,6 +193,7 @@ class CORE_EXPORT Qgis
       {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
+    Q_ENUM( SymbolRenderHint )
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
 
     /**
@@ -201,6 +205,7 @@ class CORE_EXPORT Qgis
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
     };
+    Q_ENUM( SymbolFlag )
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
 
     /**
@@ -212,6 +217,7 @@ class CORE_EXPORT Qgis
       {
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
+    Q_ENUM( SymbolPreviewFlag )
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
@@ -261,6 +267,7 @@ class CORE_EXPORT Qgis
       Rename = 1 << 4, //!< Item can be renamed
       Delete = 1 << 5, //!< Item can be deleted
     };
+    Q_ENUM( BrowserItemCapability )
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
 
     /**
@@ -334,6 +341,7 @@ class CORE_EXPORT Qgis
       FollowEngineSetting, //!< Respect the label engine setting
       NeverShow, //!< Never show unplaced labels, regardless of the engine setting
     };
+    Q_ENUM( UnplacedLabelVisibility )
 
     /**
      * Identify search radius in mm
