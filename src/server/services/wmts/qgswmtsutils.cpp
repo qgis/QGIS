@@ -35,7 +35,7 @@ namespace QgsWmts
     QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
 
     // Constant
-    int tileSize = 256;
+    const int tileSize = 256;
     const double POINTS_TO_M = 2.800005600011068 / 10000.0;
 
     QMap< QString, tileMatrixInfo> fixedTileMatrixInfoMap = populateFixedTileMatrixInfoMap();
