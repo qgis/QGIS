@@ -36,7 +36,7 @@ namespace QgsWmts
 
     // Constant
     int tileSize = 256;
-    double POINTS_TO_M = 2.83464567 / 10000.0;
+    double POINTS_TO_M = 2.800005600011068 / 10000.0;
 
     QMap< QString, tileMatrixInfo> fixedTileMatrixInfoMap = populateFixedTileMatrixInfoMap();
     QMap< QString, tileMatrixInfo> calculatedTileMatrixInfoMap; // for project without WMTSGrids configuration
