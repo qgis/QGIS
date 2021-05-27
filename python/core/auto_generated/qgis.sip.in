@@ -102,8 +102,8 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode
+      {
       Never,
       Ask,
       SessionOnly,
