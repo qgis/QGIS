@@ -397,7 +397,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
 
     def test_table_scan(self):
         """Test that with use estimated metadata disabled all geometry column
-        types can be identified, text for GH #43186 """
+        types can be identified, test for GH #43186 """
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         uri = QgsDataSourceUri(self.uri)
