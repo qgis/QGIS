@@ -30,48 +30,209 @@ void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float
     file.close();
 }
 
-polynomial3CurveFitterWindow3::polynomial3CurveFitterWindow3()
+polynomial3CurveFitter3::polynomial3CurveFitter3()
     : mDegree(2),
-      mNumControls(NUM_SAMPLES / 2),
-      mPolynomials(nullptr),
+      mPolynomialsXYZ(nullptr),
+      mPolynomialsXY(nullptr),
       mAvrError(0.0f),
       mRmsError(0.0f)
 {
-    mPolynomials = std::make_unique<ApprPolynomial3<float>>(3, 3);
-    CreateScene();
+    mPolynomialsXYZ = std::make_unique<ApprPolynomial3<float>>(3, 3);
+    mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(3);
+
+    mXDomain[0] = std::numeric_limits<float>::max();
+    mXDomain[1] = -mXDomain[0];
+    mYDomain[0] = std::numeric_limits<float>::max();
+    mYDomain[1] = -mYDomain[0];
+    mZDomain[0] = std::numeric_limits<float>::max();
+    mZDomain[1] = -mZDomain[0];
+    //LoadDataTest();
 }
 
 
 
-void polynomial3CurveFitterWindow3::CreateScene()
+void polynomial3CurveFitter3::LoadDataTest()
 {
     // Generate samples on a helix.
     std::string name = "/media/wp/TOSHIBA EXT/code/tstdata/line156.asc";
 
-    CreateXYZFromTxt(name, mSamples);
-    CreateBSplinePolyline();
+    CreateXYZFromTxt(name, mSamplesXYZ);
+    CreateXYZPolyline();
 }
 
-void polynomial3CurveFitterWindow3::CreateBSplinePolyline()
+bool polynomial3CurveFitter3::CreateXYZPolyline()
 {
+    bool isfit = mPolynomialsXYZ->Fit(mSamplesXYZ);
+    if (isfit)
+    {
+      std::vector<float> parameters = mPolynomialsXYZ->GetParameters();
+    #ifdef DEBUG
+          for (size_t i = 0; i < parameters.size(); i++)
+          {
+            std::cout << parameters.at(i) << std::endl;
+          }
+    #endif // DEBUG
+          return true;
+    }
+    else
+    {
+      return false;
+    }
+}
 
-    //mPolynomials->FitIndexed(static_cast<int>(mSamples.size()), reinterpret_cast<std::array<float,3> const *>(&mSamples[0]),static_cast<int>(mSamples.size()),)
-    bool isfit = mPolynomials->Fit(mSamples);
-    std::cout << "fit?? :: " << isfit << std::endl;
 
-    std::vector<float> parameters = mPolynomials->GetParameters();
-
-    /*     std::cout << "parameters:-count " << parameters.size() << ": -1: " << parameters.front() << " -2:" << parameters.at(1) << " -3:" << parameters.at(2) << " -4:" << parameters.at(3) << std::endl; */
+bool polynomial3CurveFitter3::CreateXYPolyline()
+{
+  bool isfit = mPolynomialsXY->Fit(mSamplesXY);
+  if (isfit)
+  {
+    std::vector<float> parameters = mPolynomialsXY->GetParameters();
+#ifdef DEBUG
     for (size_t i = 0; i < parameters.size(); i++)
     {
-        std::cout << parameters.at(i) << std::endl;
+      std::cout << parameters.at(i) << std::endl;
     }
-    /*             nx -= 272.845;
-        ny -= 498.125;
-        nz -= 24.815; */
-    float mm = mPolynomials->Evaluate(272.69 - 272.845, 501.0 - 498.125);
-    std::cout << "Test eveluate " << mm + 24.815 << std::endl;
+#endif // DEBUG
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
 
-    unsigned int numSamples = (unsigned int)mSamples.size();
-    
+
+void polynomial3CurveFitter3::ReceivePointDataXYZ(std::array<float, 3> point )
+{
+  mSamplesXYZ.push_back(point);
+  float x = point[0];
+  float y = point[1];
+  float z = point[2];
+  mXDomain[0] = std::min(x, mXDomain[0]);
+  mXDomain[1] = std::max(x, mXDomain[1]);
+  mYDomain[0] = std::min(y, mYDomain[0]);
+  mYDomain[1] = std::max(y, mYDomain[1]);
+  mZDomain[0] = std::min(z, mZDomain[0]);
+  mZDomain[1] = std::max(z, mZDomain[1]);
+}
+
+// 重置samples
+bool polynomial3CurveFitter3::BeginReceiveData()
+{
+  mSamplesXYZ.clear();
+  mSamplesXY.clear();
+  mNumControls = (unsigned int)mSamplesXYZ.size();
+
+  if (mNumControls == 0)
+  {
+    mXDomain[0] = std::numeric_limits<float>::max();
+    mXDomain[1] = -mXDomain[0];
+    mYDomain[0] = std::numeric_limits<float>::max();
+    mYDomain[1] = -mYDomain[0];
+    mZDomain[0] = std::numeric_limits<float>::max();
+    mZDomain[1] = -mZDomain[0];
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+bool polynomial3CurveFitter3::EndReceiveData()
+{
+   mNumControls = (unsigned int)mSamplesXYZ.size();
+   if (mNumControls>0)
+   {
+     Center[0] = (mXDomain[0] + mXDomain[1]) /2.0;
+     Center[1] = (mYDomain[0] + mYDomain[1]) / 2.0;
+     Center[2] = (mZDomain[0] + mZDomain[1]) / 2.0;
+     if (TransformSamples2Center()) // mSamplesXY 生成
+     {
+       CreateXYPolyline();
+       CreateXYZPolyline();
+       return true;
+     }
+     else
+     {
+       return false;
+     }
+   }
+   else
+   {
+     return false;
+   }
+}
+
+// 调用之前应该  确保已经对X进行去中心处理 
+std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
+{
+  float Y = EveluateFromX2Y(X);  // Y 也是去中心的 
+  float Z = mPolynomialsXYZ->Evaluate(X, Y);
+  std::array<float, 3> point = { X, Y, Z };
+  return point;
+}
+
+
+float polynomial3CurveFitter3::EveluateFromX2Y(float X)
+{
+  float Y = mPolynomialsXY->Evaluate(X);
+  return Y;
+}
+
+// 同时生成了2d：mSamplesXY
+bool polynomial3CurveFitter3::TransformSamples2Center()
+{
+  for (std::array<float, 3>& var : mSamplesXYZ)
+  {
+    var[0] -= Center[0];
+    var[1] -= Center[1];
+    var[2] -= Center[2];
+    std::array<float, 2> xy = { var[0], var[1] };
+    mSamplesXY.push_back(xy);
+  }
+  if (mSamplesXY.size() == mSamplesXYZ.size())
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+}
+
+
+int polynomial3CurveFitter3::GenerateXYZSeries()
+{
+  mInterprateXYZ.clear();
+  for (size_t i = 0; i < mTargetPts; i++)
+  {
+    float x = mXDomain[1] - Center[0] + minterval * i;
+    std::array<float, 3> pt =EveluateFromX2YZ(x);
+    mInterprateXYZ.push_back(pt);
+  }
+  return mInterprateXYZ.size() ;
+}
+
+//输入： 插值间隔
+//输出： 插值点数
+int polynomial3CurveFitter3::SetInterVal(float interval)
+{
+  minterval = interval;
+  float delata = mXDomain[1] - mXDomain[0];
+  int numpts =int(delata / minterval);
+  mTargetPts = numpts;
+  return numpts;
+}
+
+
+std::vector<std::array<float, 3>>&  polynomial3CurveFitter3::GetGeneratedPoints()
+{
+  // TODO: 在此处添加实现代码.
+  if (mInterprateXYZ.size()>0)
+  {
+    return mInterprateXYZ;
+  }
 }

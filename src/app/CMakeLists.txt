@@ -510,6 +510,12 @@ include_directories(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
+IF(WITH_GTE )
+      include_directories(${CMAKE_SOURCE_DIR}/external/GTE)
+	    include_directories(${CMAKE_SOURCE_DIR}/external/GTE/Apprpolynomial3)
+      link_directories(${CMAKE_BINARY_DIR}/external/GTE/Apprpolynomial3/${CMAKE_BUILD_TYPE} ${GTE_LIB_DIR})
+ENDIF()
+
 include_directories(
   ../analysis/processing
   ../analysis/raster
@@ -631,6 +637,7 @@ target_link_libraries(qgis_app
   Half.lib
   displaz.lib
   embeddedGLEW.lib
+  polynomial3CurveFitter
 )
 
 if(Boost_FOUND)
