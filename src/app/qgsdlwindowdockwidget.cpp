@@ -30,14 +30,10 @@
 using namespace gte;
 #endif // DEBUG
 
-
-
-
-
- /////-------------------------------电力线点ViewModel-------------------------------------------
+/////-------------------------------电力线点ViewModel-------------------------------------------
 
 QgsDLAttributeTableModel::QgsDLAttributeTableModel(QWidget *parent = nullptr)
-  : QAbstractTableModel(parent)
+    : QAbstractTableModel(parent)
 {
   m_header.push_back("X");
   m_header.push_back("Y");
@@ -48,8 +44,7 @@ QgsDLAttributeTableModel::QgsDLAttributeTableModel(QWidget *parent = nullptr)
   m_parent = parent;
 }
 
-
-void  QgsDLAttributeTableModel::receivepickedpoints(QVector3D pointxyz)
+void QgsDLAttributeTableModel::receivepickedpoints(QVector3D pointxyz)
 {
   ModelItem temp;
   temp.XYZ = Point3D(pointxyz.x(), pointxyz.y(), pointxyz.z());
@@ -60,7 +55,7 @@ void  QgsDLAttributeTableModel::receivepickedpoints(QVector3D pointxyz)
   emit PointAdded();
 }
 
-void QgsDLAttributeTableModel::setProfileWindow(QgsProfileWinow * window)
+void QgsDLAttributeTableModel::setProfileWindow(QgsProfileWinow *window)
 {
   mMapCanvas = window;
 
@@ -99,25 +94,24 @@ std::vector<ModelItem> QgsDLAttributeTableModel::getModelData() const
   return modelData;
 };
 
-int QgsDLAttributeTableModel::rowCount(const QModelIndex &parent = QModelIndex()) const 
+int QgsDLAttributeTableModel::rowCount(const QModelIndex &parent = QModelIndex()) const
 {
   if (parent.isValid())
     return 0;
   return modelData.size();
 };
 
-
-int QgsDLAttributeTableModel::columnCount(const QModelIndex &parent = QModelIndex()) const 
+int QgsDLAttributeTableModel::columnCount(const QModelIndex &parent = QModelIndex()) const
 {
   if (parent.isValid())
     return 0;
   //返回表格列数
-  return  m_header.size();
+  return m_header.size();
 };
 
-QVariant  QgsDLAttributeTableModel:: headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const
+QVariant QgsDLAttributeTableModel::headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const
 {
-  if (role == Qt::DisplayRole&&orientation == Qt::Horizontal)
+  if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
     return m_header[section];
   return QAbstractTableModel::headerData(section, orientation, role);
 };
@@ -125,12 +119,12 @@ QVariant  QgsDLAttributeTableModel:: headerData(int section, Qt::Orientation ori
 bool QgsDLAttributeTableModel::insertModelData(int row, const ModelItem &datas)
 {
   //row为0就是开始，为rowcount就在尾巴
-  if (row<0 || row>rowCount())
+  if (row < 0 || row > rowCount())
     return false;
   //需要将操作放到beginInsertRows和endInsertRows两个函数调用之间
   beginInsertRows(QModelIndex(), row, row);
   //在接口对应行插入空数据
-  std::vector<ModelItem>::iterator  it = modelData.begin() + row;
+  std::vector<ModelItem>::iterator it = modelData.begin() + row;
   modelData.insert(it, datas);
   endInsertRows();
   return true;
@@ -145,25 +139,29 @@ QVariant QgsDLAttributeTableModel::data(const QModelIndex &index, int role) cons
     const int row = index.row();
     switch (index.column())
     {
-    case 0: return  QString::number(modelData.at(row).XYZ.x, 'f', 3);// .toFloat();
-    case 1: return  QString::number(modelData.at(row).XYZ.y, 'f', 3);// .toFloat();
-    case 2: return  QString::number(modelData.at(row).XYZ.z, 'f', 3);// .toFloat();
-    case 3: return  modelData.at(row).type;
-    case 4: return  QString::number(modelData.at(row).error, 'f', 3);// .toFloat();
+    case 0:
+      return QString::number(modelData.at(row).XYZ.x, 'f', 3); // .toFloat();
+    case 1:
+      return QString::number(modelData.at(row).XYZ.y, 'f', 3); // .toFloat();
+    case 2:
+      return QString::number(modelData.at(row).XYZ.z, 'f', 3); // .toFloat();
+    case 3:
+      return modelData.at(row).type;
+    case 4:
+      return QString::number(modelData.at(row).error, 'f', 3); // .toFloat();
     }
   }
   return QVariant();
 };
 
 //单元格的可操作性标志位，如可编辑，可选中等
-Qt::ItemFlags QgsDLAttributeTableModel::flags(const QModelIndex& index) const 
+Qt::ItemFlags QgsDLAttributeTableModel::flags(const QModelIndex &index) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags(index);
   if (index.row() != index.column())
     flags |= Qt::ItemIsEditable;
   return flags;
 };
-
 
 bool QgsDLAttributeTableModel::setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole)
 {
@@ -173,11 +171,16 @@ bool QgsDLAttributeTableModel::setData(const QModelIndex &index, const QVariant 
     const int row = index.row();
     switch (index.column())
     {
-    case 0:  modelData.at(row).XYZ.x = value.toDouble();
-    case 1:  modelData.at(row).XYZ.y = value.toDouble();
-    case 2:  modelData.at(row).XYZ.z = value.toDouble();
-    case 3:  modelData.at(row).type = PointType(value.toInt());
-    case 4:  modelData.at(row).error = value.toDouble();
+    case 0:
+      modelData.at(row).XYZ.x = value.toDouble();
+    case 1:
+      modelData.at(row).XYZ.y = value.toDouble();
+    case 2:
+      modelData.at(row).XYZ.z = value.toDouble();
+    case 3:
+      modelData.at(row).type = PointType(value.toInt());
+    case 4:
+      modelData.at(row).error = value.toDouble();
     }
     //发送信号触发刷新
     emit dataChanged(index, index, QVector<int>() << role);
@@ -188,7 +191,7 @@ bool QgsDLAttributeTableModel::setData(const QModelIndex &index, const QVariant 
 /////-------------------------------电力线工具-------------------------------------------
 
 QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *parent)
-  : QgsDockWidget(parent)
+    : QgsDockWidget(parent)
 {
   setupUi(this);
   setWindowFlags(Qt::FramelessWindowHint);
@@ -207,17 +210,16 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
 
   mActionSaveEdits->setDisabled(true);
   mActionPickPoints->setDisabled(true);
-  polynomial_dialog_widget = new QgsPcdpickeddlgWindowDockWidget("电力线拟合",QgisApp::instance());
+  polynomial_dialog_widget = new QgsPcdpickeddlgWindowDockWidget("电力线拟合", QgisApp::instance());
   polynomial_dialog_widget->hide();
   polynomial_dialog_widget->setVisible(false);
 
-  dltable = std::make_shared< QgsDLAttributeTableModel>(this);
+  dltable = std::make_shared<QgsDLAttributeTableModel>(this);
   polynomial_dialog_widget->alignedPointsTableView->setModel(dltable.get());
-  connect(dltable.get(), &QgsDLAttributeTableModel::PointAdded, polynomial_dialog_widget, &QgsPcdpickeddlgWindowDockWidget::OnPointAdded );
+  connect(dltable.get(), &QgsDLAttributeTableModel::PointAdded, polynomial_dialog_widget, &QgsPcdpickeddlgWindowDockWidget::OnPointAdded);
 
   //QHeaderView *headerGoods = polynomial_dialog_widget->alignedPointsTableView->horizontalHeader();
   //connect(headerGoods, SIGNAL(sectionClicked(int)), dltable.get(), SLOT(sortByColumn(int)));
-
 }
 
 QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
@@ -225,20 +227,20 @@ QgsProfileWinow *QgsDLWindowDockWidget::getmapCanvas()
   return mMapCanvas;
 }
 
-void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow * window)
+void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow *window)
 {
   mMapCanvas = window;
   horizontalLayout->addWidget(mMapCanvas);
   mMapCanvas->setOpenHandCursor();
   connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
- 
-  if (!(dltable ==nullptr))
+
+  if (!(dltable == nullptr))
   {
     dltable->setProfileWindow(window);
   }
 }
 
-void QgsDLWindowDockWidget::setMain3DWindow(QgsProfileWinow * window)
+void QgsDLWindowDockWidget::setMain3DWindow(QgsProfileWinow *window)
 {
   mMainCanvas = window;
 }
@@ -283,7 +285,7 @@ void QgsDLWindowDockWidget::dockpolynomial_dialog()
 
 void QgsDLWindowDockWidget::OnmActionSaveEditsClicked()
 {
- // mMapCanvas->applyclass(classdock->getoriginalClass(), classdock->getTargetClass(), m_rule, m_method);
+  // mMapCanvas->applyclass(classdock->getoriginalClass(), classdock->getTargetClass(), m_rule, m_method);
 }
 void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
 {
@@ -294,7 +296,7 @@ void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
 
 void QgsDLWindowDockWidget::OndrawlieonprofileClicked2()
 {
-  mMapCanvas->StartInterpretMode(2);//1 ,2 
+  mMapCanvas->StartInterpretMode(2); //1 ,2
   m_rule = QString("Line down");
   m_method = QString("override");
 }
@@ -322,12 +324,10 @@ void QgsDLWindowDockWidget::ApplyButtonClicked()
 
 void QgsDLWindowDockWidget::OndrawlieonprofileClicked()
 {
-  mMapCanvas->StartInterpretMode(1);//1 ,2
+  mMapCanvas->StartInterpretMode(1); //1 ,2
   m_rule = QString("Line above");
   m_method = QString("override");
 }
-
-
 
 void QgsDLWindowDockWidget::OnmActionHandClicked()
 {
@@ -335,13 +335,11 @@ void QgsDLWindowDockWidget::OnmActionHandClicked()
   this->setCursor(mCursor);
 }
 
-
 void QgsDLWindowDockWidget::rotatePointCloudLeft()
 {
   //mMapCanvas->m_camera.mouseDrag
   mMapCanvas->RotateCamera(10, true);
 }
-
 
 void QgsDLWindowDockWidget::rotatePointCloudRight()
 {
@@ -352,5 +350,4 @@ void QgsDLWindowDockWidget::GetModelDataFromAoi()
 {
   modeldatas.clear();
   // 从aoi中获取 相应的点 构成 datas
-
 }

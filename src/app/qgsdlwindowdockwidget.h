@@ -28,8 +28,6 @@
 #include "View3D.h"
 #include <QVector3D>
 
-
-
 class QgsScaleComboBox;
 class QgsDoubleSpinBox;
 class QCheckBox;
@@ -38,50 +36,49 @@ class QRadioButton;
 typedef View3D QgsProfileWinow;
 typedef Imath::V3d Point3D;
 
-  enum PointType
+enum PointType
+{
+  Start = 0,
+  End = 0x1,
+  XuanDuan = 0x2,
+  Other = 0x3
+};
+
+struct ModelItem
+{
+  Point3D XYZ;
+  PointType type;
+  double error;
+
+  bool compAsendingX(ModelItem firsrt, ModelItem second)
   {
-    Start = 0,
-    End = 0x1,
-    XuanDuan = 0x2,
-    Other = 0x3
-  };
+    return firsrt.XYZ.x > second.XYZ.x;
+  }
 
-  struct ModelItem
+  bool compDesendingX(ModelItem firsrt, ModelItem second)
   {
-    Point3D XYZ;
-    PointType type;
-    double error;
+    return firsrt.XYZ.x < second.XYZ.x;
+  }
 
-    bool compAsendingX(ModelItem firsrt, ModelItem second)
-    {
-      return firsrt.XYZ.x > second.XYZ.x;
-    }
+  bool compAsendingY(ModelItem firsrt, ModelItem second)
+  {
+    return firsrt.XYZ.y > second.XYZ.y;
+  }
 
-    bool compDesendingX(ModelItem firsrt, ModelItem second)
-    {
-      return firsrt.XYZ.x < second.XYZ.x;
-    }
+  bool compDesendinY(ModelItem firsrt, ModelItem second)
+  {
+    return firsrt.XYZ.y < second.XYZ.y;
+  }
+};
 
-    bool compAsendingY(ModelItem firsrt, ModelItem second)
-    {
-      return firsrt.XYZ.y > second.XYZ.y;
-    }
-
-    bool compDesendinY(ModelItem firsrt, ModelItem second)
-    {
-      return firsrt.XYZ.y < second.XYZ.y;
-    }
-  };
-
-
-class  QgsDLAttributeTableModel : public QAbstractTableModel
+class QgsDLAttributeTableModel : public QAbstractTableModel
 {
   Q_OBJECT
 public:
   QgsDLAttributeTableModel(QWidget *parent = nullptr);
   void receivepickedpoints(QVector3D pointxyz);
   void sortByColumn(int col);
-  void setProfileWindow(QgsProfileWinow * window);
+  void setProfileWindow(QgsProfileWinow *window);
   //自定义导入导出数据的接口
   void setModelData(const std::vector<ModelItem> &datas);
   void ClearModelData();
@@ -92,84 +89,82 @@ public:
   bool insertModelData(int row, const ModelItem &datas);
   QVariant data(const QModelIndex &index, int role) const override;
   //单元格的可操作性标志位，如可编辑，可选中等
-  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
   bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-  Q_SIGNALS:
-    void PointAdded();
+Q_SIGNALS:
+  void PointAdded();
 
 private:
-  QgsProfileWinow * mMapCanvas = nullptr;
+  QgsProfileWinow *mMapCanvas = nullptr;
   QWidget *m_parent = nullptr;
   QStringList m_header;
   std::vector<ModelItem> modelData;
 };
 
-class  APP_EXPORT  QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, public Ui::pcdpickeddlg
+class APP_EXPORT QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, public Ui::pcdpickeddlg
 {
   Q_OBJECT
 
 public:
-    explicit QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent = nullptr)
-    {
-      setupUi(this);
-      setWindowFlags(Qt::FramelessWindowHint);
-      this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
-      this->setWindowTitle(name);
-      this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);// 自适应列宽
-      this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch); //自适应行高
-      this->pushButton->setEnabled(false);
-      this->resetToolButton->setEnabled(true);
-      this->alignedPointsTableView->sortByColumn(1,Qt::AscendingOrder); // x 列按照升序排序
-      this->alignedPointsTableView->setSortingEnabled(true);
-      connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
-      connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetClicked);
-    
-    };
-    void setModel(QAbstractItemModel *model)
-    {
-      this->alignedPointsTableView->setModel(model);
-      //this->resetToolButton->setEnabled(true);
-    }
-private :
-    bool insert_pt_table_(Point3D xyz , PointType type)
-    {
-      //this->alignedPointsTableWidget->setModel();
-      return true;
-    }
-public  slots:
-   void OnPaiXuClicked(int column)
-   {
-     bool ascending = (this->alignedPointsTableView->horizontalHeader()->sortIndicatorSection() == column && this->alignedPointsTableView->horizontalHeader()->sortIndicatorOrder() == Qt::DescendingOrder);
-      Qt::SortOrder order = ascending ? Qt::AscendingOrder : Qt::DescendingOrder;
-      this->alignedPointsTableView->horizontalHeader()->setSortIndicator(column, order);
+  explicit QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent = nullptr)
+  {
+    setupUi(this);
+    setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
+    this->setWindowTitle(name);
+    this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 自适应列宽
+    this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);   //自适应行高
+    this->pushButton->setEnabled(false);
+    this->resetToolButton->setEnabled(true);
+    this->alignedPointsTableView->sortByColumn(1, Qt::AscendingOrder); // x 列按照升序排序
+    this->alignedPointsTableView->setSortingEnabled(true);
+    connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
+    connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetClicked);
+  };
+  void setModel(QAbstractItemModel *model)
+  {
+    this->alignedPointsTableView->setModel(model);
+    //this->resetToolButton->setEnabled(true);
+  }
 
-     this->alignedPointsTableView->model()->sort(column, order);
-     this->alignedPointsTableView->setSortingEnabled(false);
+private:
+  bool insert_pt_table_(Point3D xyz, PointType type)
+  {
+    //this->alignedPointsTableWidget->setModel();
+    return true;
+  }
+public slots:
+  void OnPaiXuClicked(int column)
+  {
+    bool ascending = (this->alignedPointsTableView->horizontalHeader()->sortIndicatorSection() == column && this->alignedPointsTableView->horizontalHeader()->sortIndicatorOrder() == Qt::DescendingOrder);
+    Qt::SortOrder order = ascending ? Qt::AscendingOrder : Qt::DescendingOrder;
+    this->alignedPointsTableView->horizontalHeader()->setSortIndicator(column, order);
 
-   }
-   // 重置 model 数据 清理
-   void OnResetClicked()
-   {
-     dynamic_cast<QgsDLAttributeTableModel*>( this->alignedPointsTableView->model())->ClearModelData();
-     this->alignedPointsTableView->setModel(this->alignedPointsTableView->model());
-     this->niheToolButton->setEnabled(false);
-   }
-    void OnPointAdded()
+    this->alignedPointsTableView->model()->sort(column, order);
+    this->alignedPointsTableView->setSortingEnabled(false);
+  }
+  // 重置 model 数据 清理
+  void OnResetClicked()
+  {
+    dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->ClearModelData();
+    this->alignedPointsTableView->setModel(this->alignedPointsTableView->model());
+    this->niheToolButton->setEnabled(false);
+  }
+  void OnPointAdded()
+  {
+    if (this->alignedPointsTableView->model()->rowCount() > 9)
     {
-      if (this->alignedPointsTableView->model()->rowCount() > 9)
-      {
-        this->niheToolButton->setEnabled(true);
-      }
-      else
-      {
-        this->niheToolButton->setEnabled(false);
-      }
+      this->niheToolButton->setEnabled(true);
     }
-    void OnNiheButtonClicked()
+    else
     {
-
+      this->niheToolButton->setEnabled(false);
     }
+  }
+  void OnNiheButtonClicked()
+  {
+  }
 };
 
 class APP_EXPORT QgsDLWindowDockWidget : public QgsDockWidget, private Ui::QgsDLWindowDockWidgetBase
@@ -180,9 +175,9 @@ public:
   explicit QgsDLWindowDockWidget(const QString &name, QWidget *parent = nullptr);
 
   QgsProfileWinow *getmapCanvas();
-  void setProfileWindow(QgsProfileWinow * window);
-  void setMain3DWindow(QgsProfileWinow * window);
-  
+  void setProfileWindow(QgsProfileWinow *window);
+  void setMain3DWindow(QgsProfileWinow *window);
+
 private slots:
   void OnmActiontiqudianlixianClicked();
   void dockpolynomial_dialog();
@@ -202,7 +197,6 @@ private:
   QgsProfileWinow *mMapCanvas = nullptr;
   QgsProfileWinow *mMainCanvas = nullptr;
 
-
   QRadioButton *mSyncExtentRadio = nullptr;
   QRadioButton *mSyncSelectionRadio = nullptr;
   QgsScaleComboBox *mScaleCombo = nullptr;
@@ -212,11 +206,9 @@ private:
   bool Editing = false;
   QString m_rule;
   QString m_method;
-  QgsPcdpickeddlgWindowDockWidget* polynomial_dialog_widget = nullptr;
+  QgsPcdpickeddlgWindowDockWidget *polynomial_dialog_widget = nullptr;
   std::shared_ptr<QgsDLAttributeTableModel> dltable = nullptr;
   std::vector<ModelItem> modeldatas; // 选中的电力线点
 };
 
-
 #endif // QGSDLWINDOWDOCKWIDGET_H
-
