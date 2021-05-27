@@ -17739,7 +17739,7 @@ void QgisApp::StartCloseDianLiModel()
       }
       DianliXianModuleDock->setProfileWindow(m_pointProfileView);
       DianliXianModuleDock->setMain3DWindow(m_pointView);
-      DianliXianModuleDock->setclassdock(ClasssettingDock);
+
       addDockWidget(Qt::BottomDockWidgetArea, DianliXianModuleDock.get());
       endProfile();
 

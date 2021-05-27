@@ -24,6 +24,7 @@
 
 //-----------------------wp--pointcloud--------
 #include "qgsprofilewindowdockwidget.h"
+#include "qgsdlwindowdockwidget.h"
 #include <View3D.h>
 #include <PointViewerMainWindow.h>
 #include <providers/displaz/qgsdisplazfeatureiterator.h>

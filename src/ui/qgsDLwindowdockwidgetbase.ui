@@ -47,6 +47,7 @@
       <addaction name="action_tiqudianlixian"/>
       <addaction name="separator"/>
       <addaction name="action_xiubudianlixian"/>
+      <addaction name="m_selectiononprofile"/>
       <addaction name="mActionPickPoints"/>
       <addaction name="mActionSaveEdits"/>
       <addaction name="separator"/>
@@ -189,7 +190,16 @@
      <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>
    </property>
    <property name="text">
-    <string>补点</string>
+    <string>多边形框选</string>
+   </property>
+  </action>
+  <action name="m_selectiononprofile">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/square.png</normaloff>:/images/cc/square.png</iconset>
+   </property>
+   <property name="text">
+    <string>在剖面图上框选点云</string>
    </property>
   </action>
  </widget>
