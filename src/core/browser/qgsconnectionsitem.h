@@ -45,6 +45,14 @@ class CORE_EXPORT QgsConnectionsRootItem : public QgsDataCollectionItem
     QgsConnectionsRootItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 
     ~QgsConnectionsRootItem() override = default;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsConnectionsRootItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 };
 
 #endif // QGSCONNECTIONSITEM_H

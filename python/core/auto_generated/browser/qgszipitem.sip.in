@@ -30,6 +30,12 @@ Constructor
 Constructor
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QVector<QgsDataItem *> createChildren();
 
     QStringList getZipFileList();

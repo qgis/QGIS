@@ -42,6 +42,14 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     //! Constructor
     QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path, const QString &providerKey = QString() );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 

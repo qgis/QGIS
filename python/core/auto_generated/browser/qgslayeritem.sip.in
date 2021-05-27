@@ -24,6 +24,12 @@ Item that represents a layer that can be opened with one of the providers
 Constructor for QgsLayerItem.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsLayerItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
 
     virtual bool equal( const QgsDataItem *other );
 

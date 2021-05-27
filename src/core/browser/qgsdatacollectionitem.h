@@ -45,6 +45,14 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     ~QgsDataCollectionItem() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDataCollectionItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
     /**

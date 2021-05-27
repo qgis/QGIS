@@ -29,6 +29,12 @@ A data item holding a reference to a QGIS project file.
 :param providerKey: key of the provider that created this item
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProjectItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual bool hasDragEnabled() const;
 
     virtual QgsMimeDataUtils::UriList mimeUris() const;

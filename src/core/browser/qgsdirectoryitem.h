@@ -69,6 +69,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      */
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
     void setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;

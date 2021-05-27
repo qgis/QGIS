@@ -34,6 +34,12 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
 
     ~QgsDataCollectionItem();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDataCollectionItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     void addChild( QgsDataItem *item /Transfer/ );
 
     static QIcon iconDir( const QColor &fillColor = QColor(), const QColor &strokeColor = QColor() );
