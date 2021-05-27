@@ -1894,10 +1894,19 @@ bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const
 {
   const QStringList multiLineSplit = text.split( '\n' );
   double currentTextLength;
+  float scale;
+
+  #ifdef Q_OS_WIN
+  scale = 1.000;
+  #else
+  scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  #endif
+
+  double currentTextLength;
   if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
-    currentTextLength = QgsTextRenderer::textHeight( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+    currentTextLength = QgsTextRenderer::textHeight( context, format, multiLineSplit ) / scale;
   else
-    currentTextLength = QgsTextRenderer::textWidth( context, format, multiLineSplit ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+    currentTextLength = QgsTextRenderer::textWidth( context, format, multiLineSplit ) / scale;
   return currentTextLength > space;
 }
 
