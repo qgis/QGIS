@@ -3205,7 +3205,7 @@ namespace QgsWms
             dimValue = dimValue.trimmed();
           }
           // Range value is separated by / for example 0/1
-          if ( dimValue.contains( '/' ) )
+          if ( dimValue.count( '/' ) == 1 )
           {
             QStringList rangeValues = dimValue.split( '/' );
             // Check range value size
