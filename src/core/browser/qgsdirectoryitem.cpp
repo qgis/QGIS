@@ -51,6 +51,21 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
   , mRefreshLater( false )
 {
   QgsSettings settings;
+
+  mMonitoring = monitoringForPath( mDirPath );
+  switch ( mMonitoring )
+  {
+    case Qgis::BrowserDirectoryMonitoring::Default:
+      mMonitored = pathShouldByMonitoredByDefault( mDirPath );
+      break;
+    case Qgis::BrowserDirectoryMonitoring::NeverMonitor:
+      mMonitored = false;
+      break;
+    case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
+      mMonitored = true;
+      break;
+  }
+
   settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
   QString settingKey = mDirPath;
   settingKey.replace( '/', QStringLiteral( "|||" ) );
@@ -68,6 +83,47 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
 void QgsDirectoryItem::init()
 {
   setToolTip( QDir::toNativeSeparators( mDirPath ) );
+}
+
+void QgsDirectoryItem::reevaluateMonitoring()
+{
+  mMonitoring = monitoringForPath( mDirPath );
+  switch ( mMonitoring )
+  {
+    case Qgis::BrowserDirectoryMonitoring::Default:
+      mMonitored = pathShouldByMonitoredByDefault( mDirPath );
+      break;
+    case Qgis::BrowserDirectoryMonitoring::NeverMonitor:
+      mMonitored = false;
+      break;
+    case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
+      mMonitored = true;
+      break;
+  }
+
+  const QVector<QgsDataItem *> childItems = children();
+  for ( QgsDataItem *child : childItems )
+  {
+    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+      dirItem->reevaluateMonitoring();
+  }
+
+  createOrDestroyFileSystemWatcher();
+}
+
+void QgsDirectoryItem::createOrDestroyFileSystemWatcher()
+{
+  if ( !mMonitored && mFileSystemWatcher )
+  {
+    mFileSystemWatcher->deleteLater();
+    mFileSystemWatcher = nullptr;
+  }
+  else if ( mMonitored && state() == Qgis::BrowserItemState::Populated && !mFileSystemWatcher )
+  {
+    mFileSystemWatcher = new QFileSystemWatcher( this );
+    mFileSystemWatcher->addPath( mDirPath );
+    connect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
+  }
 }
 
 QColor QgsDirectoryItem::iconColor() const
@@ -123,6 +179,74 @@ QIcon QgsDirectoryItem::icon()
   return iconDir( mIconColor, mIconColor.darker() );
 }
 
+Qgis::BrowserDirectoryMonitoring QgsDirectoryItem::monitoring() const
+{
+  return mMonitoring;
+}
+
+void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitoring )
+{
+  mMonitoring = monitoring;
+
+  QgsSettings settings;
+  QStringList noMonitorDirs = settings.value( QStringLiteral( "qgis/disableMonitorItemUris" ), QStringList() ).toStringList();
+  QStringList alwaysMonitorDirs = settings.value( QStringLiteral( "qgis/alwaysMonitorItemUris" ), QStringList() ).toStringList();
+
+  switch ( mMonitoring )
+  {
+    case Qgis::BrowserDirectoryMonitoring::Default:
+    {
+      // remove disable/always setting for this path, so that default behavior is used
+      noMonitorDirs.removeAll( mDirPath );
+      settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+
+      alwaysMonitorDirs.removeAll( mDirPath );
+      settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+
+      mMonitored = pathShouldByMonitoredByDefault( mDirPath );
+      break;
+    }
+
+    case Qgis::BrowserDirectoryMonitoring::NeverMonitor:
+    {
+      if ( !noMonitorDirs.contains( mDirPath ) )
+      {
+        noMonitorDirs.append( mDirPath );
+        settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+      }
+
+      alwaysMonitorDirs.removeAll( mDirPath );
+      settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+
+      mMonitored = false;
+      break;
+    }
+
+    case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
+    {
+      noMonitorDirs.removeAll( mDirPath );
+      settings.setValue( QStringLiteral( "qgis/disableMonitorItemUris" ), noMonitorDirs );
+
+      if ( !alwaysMonitorDirs.contains( mDirPath ) )
+      {
+        alwaysMonitorDirs.append( mDirPath );
+        settings.setValue( QStringLiteral( "qgis/alwaysMonitorItemUris" ), alwaysMonitorDirs );
+      }
+
+      mMonitored = true;
+      break;
+    }
+  }
+
+  const QVector<QgsDataItem *> childItems = children();
+  for ( QgsDataItem *child : childItems )
+  {
+    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+      dirItem->reevaluateMonitoring();
+  }
+
+  createOrDestroyFileSystemWatcher();
+}
 
 QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 {
@@ -235,7 +359,7 @@ void QgsDirectoryItem::setState( Qgis::BrowserItemState state )
 {
   QgsDataCollectionItem::setState( state );
 
-  if ( state == Qgis::BrowserItemState::Populated )
+  if ( state == Qgis::BrowserItemState::Populated && mMonitored )
   {
     if ( !mFileSystemWatcher )
     {
@@ -292,6 +416,43 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
   return ( idx > -1 );
 }
 
+Qgis::BrowserDirectoryMonitoring QgsDirectoryItem::monitoringForPath( const QString &path )
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/disableMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
+    return Qgis::BrowserDirectoryMonitoring::NeverMonitor;
+  else if ( settings.value( QStringLiteral( "qgis/alwaysMonitorItemUris" ), QStringList() ).toStringList().contains( path ) )
+    return Qgis::BrowserDirectoryMonitoring::AlwaysMonitor;
+  return Qgis::BrowserDirectoryMonitoring::Default;
+}
+
+bool QgsDirectoryItem::pathShouldByMonitoredByDefault( const QString &path )
+{
+  // check through path's parent directories, to see if any have an explicit
+  // always/never monitor setting. If so, this path will inherit that setting
+  const QString originalPath = QDir::cleanPath( path );
+  QString currentPath = originalPath;
+  QString prevPath;
+  while ( currentPath != prevPath )
+  {
+    prevPath = currentPath;
+    currentPath = QFileInfo( currentPath ).path();
+
+    switch ( monitoringForPath( currentPath ) )
+    {
+      case Qgis::BrowserDirectoryMonitoring::NeverMonitor:
+        return false;
+      case Qgis::BrowserDirectoryMonitoring::AlwaysMonitor:
+        return true;
+      case Qgis::BrowserDirectoryMonitoring::Default:
+        break;
+    }
+  }
+
+  // paths are monitored by default if no explicit setting is in place
+  return true;
+}
+
 void QgsDirectoryItem::childrenCreated()
 {
   QgsDebugMsgLevel( QStringLiteral( "mRefreshLater = %1" ).arg( mRefreshLater ), 3 );
@@ -308,7 +469,8 @@ void QgsDirectoryItem::childrenCreated()
     QgsDataCollectionItem::childrenCreated();
   }
   // Re-connect the file watcher after all children have been created
-  connect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
+  if ( mFileSystemWatcher && mMonitored )
+    connect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
 }
 
 bool QgsDirectoryItem::equal( const QgsDataItem *other )

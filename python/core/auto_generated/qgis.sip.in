@@ -202,6 +202,13 @@ The development version
       PointCloud
     };
 
+    enum class BrowserDirectoryMonitoring
+    {
+      Default,
+      NeverMonitor,
+      AlwaysMonitor,
+    };
+
     enum class VectorExportResult
       {
       Success,
