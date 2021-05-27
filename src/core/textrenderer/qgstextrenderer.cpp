@@ -1903,13 +1903,12 @@ bool QgsTextRenderer::requiresWrapping( const QString &text, double space, const
   double currentTextLength;
   float scale;
 
-  #ifdef Q_OS_WIN
+#ifdef Q_OS_WIN
   scale = 1.000;
-  #else
+#else
   scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  #endif
+#endif
 
-  double currentTextLength;
   if ( format.orientation() != QgsTextFormat::HorizontalOrientation )
     currentTextLength = QgsTextRenderer::textHeight( context, format, multiLineSplit ) / scale;
   else
