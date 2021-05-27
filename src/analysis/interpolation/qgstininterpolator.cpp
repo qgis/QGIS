@@ -184,7 +184,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
     case ValueAttribute:
     {
       QVariant attributeVariant = f.attribute( attr );
-      if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+      if ( !attributeVariant.isValid() || attributeVariant.isNull() ) //attribute not found, something must be wrong (e.g. NULL value)
       {
         return 3;
       }
