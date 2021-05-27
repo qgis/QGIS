@@ -97,5 +97,7 @@
 #define PDAL_VERSION_MINOR "${PDAL_VERSION_MINOR}"
 #define PDAL_VERSION_MICRO "${PDAL_VERSION_MICRO}"
 
+#cmakedefine ENABLE_TESTS
+
 #endif
 

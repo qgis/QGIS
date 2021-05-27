@@ -23,6 +23,7 @@
 #include "qgsdataprovider.h"
 #include "qgszipitem.h"
 #include "qgsprojectitem.h"
+#include "qgsfileutils.h"
 #include <QFileSystemWatcher>
 #include <QDir>
 #include <QMouseEvent>
@@ -448,6 +449,11 @@ bool QgsDirectoryItem::pathShouldByMonitoredByDefault( const QString &path )
         break;
     }
   }
+
+  // else if we know that the path is on a slow device, we don't monitor by default
+  // as this can be very expensive and slow down QGIS
+  if ( QgsFileUtils::pathIsSlowDevice( path ) )
+    return false;
 
   // paths are monitored by default if no explicit setting is in place
   return true;
