@@ -377,6 +377,24 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         with self.assertRaises(QgsProviderConnectionException):
             conn.table('my_not_existent_schema', 'my_not_existent_table')
 
+    def test_zm(self):
+        """Test regression GH #43268"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_43268_test_zm;
+        CREATE TABLE qgis_test.gh_43268_test_zm (geom geometry(GeometryZ));
+        INSERT INTO qgis_test.gh_43268_test_zm (geom) VALUES
+            ('POINT(0 0 0)'),
+            ('LINESTRING(0 0 0, 0 0 0)'),
+            ('POLYGON((0 0 0, 0 0 0, 0 0 0, 0 0 0))');
+        """
+        conn.executeSql(sql)
+
+        table_info = conn.table('qgis_test', 'gh_43268_test_zm')
+        self.assertEqual(sorted([QgsWkbTypes.displayString(col.wkbType) for col in table_info.geometryColumnTypes()]), ['LineStringZ', 'PointZ', 'PolygonZ'])
+
 
 if __name__ == '__main__':
     unittest.main()

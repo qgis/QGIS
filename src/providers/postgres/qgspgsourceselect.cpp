@@ -61,10 +61,25 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
     QComboBox *cb = new QComboBox( parent );
     static const QList<QgsWkbTypes::Type> types { QgsWkbTypes::Point,
         QgsWkbTypes::LineString,
+        QgsWkbTypes::LineStringZ,
+        QgsWkbTypes::LineStringM,
+        QgsWkbTypes::LineStringZM,
         QgsWkbTypes::Polygon,
+        QgsWkbTypes::PolygonZ,
+        QgsWkbTypes::PolygonM,
+        QgsWkbTypes::PolygonZM,
         QgsWkbTypes::MultiPoint,
+        QgsWkbTypes::MultiPointZ,
+        QgsWkbTypes::MultiPointM,
+        QgsWkbTypes::MultiPointZM,
         QgsWkbTypes::MultiLineString,
+        QgsWkbTypes::MultiLineStringZ,
+        QgsWkbTypes::MultiLineStringM,
+        QgsWkbTypes::MultiLineStringZM,
         QgsWkbTypes::MultiPolygon,
+        QgsWkbTypes::MultiPolygonZ,
+        QgsWkbTypes::MultiPolygonM,
+        QgsWkbTypes::MultiPolygonZM,
         QgsWkbTypes::NoGeometry };
     for ( QgsWkbTypes::Type type : types )
     {
