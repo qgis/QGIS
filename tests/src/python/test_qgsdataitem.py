@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 from qgis.PyQt.QtCore import QEventLoop
+from qgis.PyQt import sip
 from qgis.core import QgsDataCollectionItem, QgsLayerItem, QgsDirectoryItem
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -65,17 +66,25 @@ class TestQgsDataItem(unittest.TestCase):
             # Python object PyQgsLayerItem should still be alive
             self.assertFalse(tabSetDestroyedFlag[0])
 
-            children = item.children()
-            self.assertEqual(len(children), 2)
-            self.assertEqual(children[0].name(), "name")
-            self.assertEqual(children[1].name(), "name2")
+            self.assertTrue(item.hasChildren())
+            self.assertEqual(item.rowCount(), 2)
 
-            del(children)
+            if i % 2 == 0:
+                # make the test a bit more exhaustive -- on every second run we don't eveb
+                # create any sip wrappers around the children
+                children = item.children()
+                self.assertEqual(len(children), 2)
+                self.assertEqual(children[0].name(), "name")
+                self.assertEqual(children[1].name(), "name2")
 
             # Delete the object and make sure all deferred deletions are processed
             item.destroyed.connect(loop.quit)
             item.deleteLater()
             loop.exec_()
+
+            if i % 2 == 0:
+                self.assertTrue(sip.isdeleted(children[0]))
+                self.assertTrue(sip.isdeleted(children[1]))
 
             # Check that the PyQgsLayerItem Python object is now destroyed
             self.assertTrue(tabSetDestroyedFlag[0])
