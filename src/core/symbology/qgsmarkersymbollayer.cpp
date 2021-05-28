@@ -3615,8 +3615,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   {
     chrWidth *= scaledSize / mOrigSize;
   }
-  if ( !qgsDoubleNear( mFontSizeScale, 1.0 ) )
-    chrWidth *= mFontSizeScale;
+  chrWidth *= mFontSizeScale;
 
   bool hasDataDefinedRotation = false;
   QPointF offset;
