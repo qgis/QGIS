@@ -1004,7 +1004,7 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
   }
 }
 
-void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector, bool hasClipping, QPainterPath clipPath )
+void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector, bool hasClipping, const QPainterPath &clipPath )
 {
   // compose the second pass with the mask
   for ( LayerRenderJob &job : secondPassJobs )

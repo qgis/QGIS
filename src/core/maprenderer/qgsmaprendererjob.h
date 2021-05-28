@@ -459,7 +459,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector, bool hasClipping, QPainterPath clipPath ) SIP_SKIP;
+    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector, bool hasClipping, const QPainterPath &clipPath ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
