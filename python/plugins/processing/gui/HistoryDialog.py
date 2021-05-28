@@ -186,7 +186,7 @@ class HistoryDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
-                              item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(').replace(LOG_SEPARATOR, '\n'))
+                              item.entry.text.replace(LOG_SEPARATOR, '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
