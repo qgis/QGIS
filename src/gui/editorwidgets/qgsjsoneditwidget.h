@@ -22,8 +22,6 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-#include <QAction>
-
 /**
  * \ingroup gui
  * \class QgsJsonEditWidget
@@ -117,8 +115,8 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
 
     QStringList mClickableLinkList;
 
-    QAction mCopyValueAction;
-    QAction mCopyKeyAction;
+    QAction *mCopyValueAction;
+    QAction *mCopyKeyAction;
 };
 
 #endif // QGSJSONEDITWIDGET_H

@@ -15,6 +15,7 @@
 
 #include "qgsjsoneditwidget.h"
 
+#include <QAction>
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QJsonArray>
@@ -25,8 +26,8 @@
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )
-  , mCopyValueAction( tr( "Copy value" ) )
-  , mCopyKeyAction( tr( "Copy key" ) )
+  , mCopyValueAction( new QAction( tr( "Copy value" ), this ) )
+  , mCopyKeyAction( new QAction( tr( "Copy key" ), this ) )
 {
   setupUi( this );
 
@@ -42,14 +43,14 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   mTreeWidget->setStyleSheet( QStringLiteral( "font-family: %1;" ).arg( QgsCodeEditor::getMonospaceFont().family() ) );
 
   mTreeWidget->setContextMenuPolicy( Qt::ActionsContextMenu );
-  mTreeWidget->addAction( &mCopyValueAction );
-  mTreeWidget->addAction( &mCopyKeyAction );
+  mTreeWidget->addAction( mCopyValueAction );
+  mTreeWidget->addAction( mCopyKeyAction );
 
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
 
-  connect( &mCopyValueAction, &QAction::triggered, this, &QgsJsonEditWidget::copyValueActionTriggered );
-  connect( &mCopyKeyAction, &QAction::triggered, this, &QgsJsonEditWidget::copyKeyActionTriggered );
+  connect( mCopyValueAction, &QAction::triggered, this, &QgsJsonEditWidget::copyValueActionTriggered );
+  connect( mCopyKeyAction, &QAction::triggered, this, &QgsJsonEditWidget::copyKeyActionTriggered );
 
   connect( mCodeEditorJson, &QgsCodeEditorJson::textChanged, this, &QgsJsonEditWidget::codeEditorJsonTextChanged );
   // Signal indicatorClicked is used because indicatorReleased has a bug in Scintilla and the keyboard modifier state
