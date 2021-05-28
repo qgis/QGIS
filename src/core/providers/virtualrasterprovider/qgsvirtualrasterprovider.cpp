@@ -104,4 +104,15 @@ int QgsVirtualRasterProvider::yBlockSize() const
   return mYBlockSize;
 }
 
+QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
+  : QgsProviderMetadata( QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY, QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION )
+{
 
+}
+
+QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options)//, QgsDataProvider::ReadFlags flags )
+
+{
+  return new QgsVirtualRasterProvider( uri, options);//, flags );
+
+}

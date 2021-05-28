@@ -61,5 +61,15 @@ private:
     std::vector<int> mDataSizes;
 };
 
+class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
+{
+  public:
+    QgsVirtualRasterProviderMetadata();
+    //QVariantMap decodeUri( const QString &uri ) const override;
+    QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options);//, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+
+    //QString encodeUri( const QVariantMap &parts ) const override;
+};
+
 #endif // QGSVIRTUALRASTERPROVIDER_H
 
