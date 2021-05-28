@@ -1965,6 +1965,10 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
   {
     if ( layer->type() == QgsSymbol::Marker )
     {
+      if ( !layer->enabled()
+           || ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::PropertyLayerEnabled, context.expressionContext(), true ) ) )
+        continue;
+
       QgsMarkerSymbolLayer *symbolLayer = static_cast< QgsMarkerSymbolLayer * >( layer );
       if ( bound.isNull() )
         bound = symbolLayer->bounds( point, symbolContext );
