@@ -29,13 +29,17 @@ public:
 
 
     QgsRectangle extent() const override;
-    int xBlockSize() const override;
-    int yBlockSize() const override;
-    int xSize() const override;
-    int ySize() const override;
     virtual QString name() const override;
     virtual QString description() const override;
+
+    int xBlockSize() const override;
+    int yBlockSize() const override;
     int bandCount() const override;
+    //Qgis::DataType dataType( int bandNo ) const override;
+    //Qgis::DataType sourceDataType( int bandNo ) const override;
+
+    int xSize() const override;
+    int ySize() const override;
 
     static const QString VR_RASTER_PROVIDER_KEY;
     static const QString VR_RASTER_PROVIDER_DESCRIPTION;
@@ -50,6 +54,11 @@ private:
     int mBandCount = 1;
     int mXBlockSize = 0;
     int mYBlockSize = 0;
+
+    //! Data type for each band
+    std::vector<Qgis::DataType> mDataTypes;
+    //! Data size in bytes for each band
+    std::vector<int> mDataSizes;
 };
 
 #endif // QGSVIRTUALRASTERPROVIDER_H

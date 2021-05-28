@@ -29,14 +29,37 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvide
 //QgsRasterBlock *QgsVirtualRasterProvider::block( Qgis::DataType dataType, int width, int height )
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-    std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+    //QgsRasterBlock *tblock = new QgsRasterBlock( dataType( bandNo ), width, height );
+    QgsRasterBlock *tblock = new QgsRasterBlock( );
+
+
+    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+    //qgssize rasterSize = ( qgssize )width * height;
+
+    for ( int i = 0; i < width * height; ++i )
+    {
+        outputData[i] = 42;
+    }
+    return tblock;
 }
+
 */
 
 
 QgsRasterBlock *QgsVirtualRasterProvider::block( Qgis::DataType dataType, int width, int height  )
 {
+    QgsRasterBlock *tblock = new QgsRasterBlock( dataType, width, height );
+    //QgsRasterBlock *tblock = new QgsRasterBlock( );
 
+
+    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+    //qgssize rasterSize = ( qgssize )width * height;
+
+    for ( int i = 0; i < width * height; ++i )
+    {
+        outputData[i] = 42;
+    }
+    return tblock;
 }
 
 
