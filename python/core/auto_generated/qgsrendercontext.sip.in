@@ -909,7 +909,7 @@ Sets the ``range`` of z-values which should be rendered.
 %Docstring
 Add a subpainter for a specific symbolLayer
 
-.. versionadded:: 3.16
+.. versionadded:: 3.22
 %End
 
 };

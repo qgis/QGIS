@@ -812,7 +812,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Lists the symbol layer in carried by the feature renderer.
-     * \since QGIS 3.16
+     * \since QGIS 3.22
      */
     static QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer * > > listSymbolLayers( QgsFeatureRenderer *renderer ); SIP_SKIP
 

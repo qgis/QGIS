@@ -145,6 +145,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /**
      * Returns the symbol layer path as a QPainterPath
      * \returns the path
+     * \since QGIS 3.22
      */
     QPainterPath path();
 
