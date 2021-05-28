@@ -882,7 +882,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns the mask painter path stored in this render context
      * \since QGIS 3.22
      */
-    QPainterPath maskPainterPath() { return mMaskPainterPath; } SIP_SKIP
+    const QPainterPath &maskPainterPath() { return mMaskPainterPath; } SIP_SKIP
 
     /**
      * Add a painter path to the mask label painter path of this render context with id
@@ -894,7 +894,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns the label mask painter path with id
      * \since QGIS 3.22
      */
-    QPainterPath maskLabelPainterPath( int id = 0 ) { return mMaskLabelPainterPaths[id]; } SIP_SKIP
+    const QPainterPath &maskLabelPainterPath( int id = 0 ) { return mMaskLabelPainterPaths[id]; } SIP_SKIP
 
     /**
      * Returns the range of z-values which should be rendered.
