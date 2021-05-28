@@ -5412,7 +5412,14 @@ static void setupVectorLayer( const QString &vectorLayerPath,
   if ( elements.size() >= 4 && layer->name().compare( rawLayerName, Qt::CaseInsensitive ) != 0
        && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
   {
-    layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), rawLayerName ) );
+    if ( layer->name().isEmpty( ) )
+    {
+      layer->setName( rawLayerName );
+    }
+    else
+    {
+      layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), rawLayerName ) );
+    }
   }
 
   // Systematically add a layername= option to OGR datasets in case
