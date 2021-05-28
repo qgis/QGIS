@@ -80,7 +80,7 @@ void QgsMapToolAnnotation::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  if ( !mCanvas )
+  if ( !mCanvas || !( e->buttons() & Qt::LeftButton ) )
   {
     return;
   }
