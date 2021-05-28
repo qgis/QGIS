@@ -216,6 +216,7 @@
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionOpenTableSelected"/>
     <addaction name="mActionOpenTableVisible"/>
+    <addaction name="mActionOpenTableEdited"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -1705,6 +1706,15 @@ Shift+R to enable range selection.</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableEdited">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableEdited.svg</normaloff>:/images/themes/default/mActionOpenTableEdited.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Edited and New Features)</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
