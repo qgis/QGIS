@@ -291,7 +291,12 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see capabilities2()
      */
-    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) { mCapabilities = capabilities; }
+    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) SIP_PYNAME( setCapabilitiesV2 ) { mCapabilities = capabilities; }
+
+    /**
+     * \deprecated use setCapabilitiesV2 instead.
+     */
+    Q_DECL_DEPRECATED void setCapabilities( int capabilities ) SIP_DEPRECATED;
 
     // static methods
 
