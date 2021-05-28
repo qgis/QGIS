@@ -315,6 +315,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
       mFeatureFilterWidget->filterSelected();
       break;
 
+    case QgsAttributeTableFilterModel::ShowEdited:
+      mFeatureFilterWidget->filterEdited();
+      break;
+
     case QgsAttributeTableFilterModel::ShowAll:
     default:
       mFeatureFilterWidget->filterShowAll();
