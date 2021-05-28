@@ -140,6 +140,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) override SIP_SKIP;
 
+    Q_NOWARN_DEPRECATED_PUSH
+
     /**
      * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
@@ -150,13 +152,32 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       QgsAttributeList attributes;      //!< Attributes to fetch
       QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
       int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
+
+      /**
+       * Resolved pointer to the joined layer
+       * \deprecated Do NOT use. This is not thread safe, and should never be accessed from a background thread.
+       */
+      Q_DECL_DEPRECATED QgsVectorLayer *joinLayer SIP_DEPRECATED = nullptr;
+
+      /**
+       * Feature source for join
+       */
+      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource SIP_SKIP;
+
+      /**
+       * Fields from joined layer.
+       *
+       * \since QGIS 3.20
+       */
+      QgsFields joinLayerFields;
+
       int targetField;                  //!< Index of field (of this layer) that drives the join
       int joinField;                    //!< Index of field (of the joined layer) must have equal value
 
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
+    Q_NOWARN_DEPRECATED_POP
 
 
     bool isValid() const override;

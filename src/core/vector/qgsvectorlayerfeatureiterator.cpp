@@ -702,10 +702,14 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   {
     FetchJoinInfo info;
     info.joinInfo = joinInfo;
+    Q_NOWARN_DEPRECATED_PUSH
     info.joinLayer = joinLayer;
+    Q_NOWARN_DEPRECATED_POP
+    info.joinSource = std::make_shared< QgsVectorLayerFeatureSource >( joinLayer );
     info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
     info.targetField = mSource->mFields.indexFromName( joinInfo->targetFieldName() );
     info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName() );
+    info.joinLayerFields = joinLayer->fields();
 
     // for joined fields, we always need to request the targetField from the provider too
     if ( !mPreparedFields.contains( info.targetField ) && !mFieldsToPrepare.contains( info.targetField ) )
@@ -1045,11 +1049,13 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesCached( Qg
 
 void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const
 {
+#if 0 // this is not thread safe -- we cannot access the layer here as this will be called from non-main threads.
   // Shortcut
   if ( joinLayer && ! joinLayer->hasFeatures() )
   {
     return;
   }
+#endif
 
   // no memory cache, query the joined values by setting substring
   QString subsetString;
@@ -1088,7 +1094,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   if ( joinInfo->hasSubset() )
   {
     const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
-    QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+    QVector<int> subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayerFields, subsetNames );
     joinedAttributeIndices = qgis::setToList( qgis::listToSet( attributes ).intersect( qgis::listToSet( subsetIndices.toList() ) ) );
   }
   else
@@ -1105,7 +1111,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   request.setSubsetOfAttributes( joinedAttributeIndices );
   request.setFilterExpression( subsetString );
   request.setLimit( 1 );
-  QgsFeatureIterator fi = joinLayer->getFeatures( request );
+  QgsFeatureIterator fi = joinSource->getFeatures( request );
 
   // get first feature
   const QList<int> sourceAttrIndexes = attributesSourceToDestLayerMap.keys();
