@@ -140,8 +140,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) override SIP_SKIP;
 
-    Q_NOWARN_DEPRECATED_PUSH
-
     /**
      * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
@@ -153,27 +151,24 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       QMap<int, int> attributesSourceToDestLayerMap SIP_SKIP; //!< Mapping from original attribute index to the joined layer index
       int indexOffset;                  //!< At what position the joined fields start
 
-      /**
-       * Resolved pointer to the joined layer
-       * \deprecated Do NOT use. This is not thread safe, and should never be accessed from a background thread.
-       */
 #ifndef SIP_RUN
-      Q_DECL_DEPRECATED QgsVectorLayer *joinLayer = nullptr;
-#else
-      QgsVectorLayer *joinLayer SIP_DEPRECATED;
-#endif
 
       /**
        * Feature source for join
+       *
+       * \note Not available in Python bindings
+       * \since QGIS 3.20
        */
-      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource SIP_SKIP;
+      std::shared_ptr< QgsVectorLayerFeatureSource > joinSource;
 
       /**
        * Fields from joined layer.
        *
+       * \note Not available in Python bindings
        * \since QGIS 3.20
        */
       QgsFields joinLayerFields;
+#endif
 
       int targetField;                  //!< Index of field (of this layer) that drives the join
       int joinField;                    //!< Index of field (of the joined layer) must have equal value
@@ -181,8 +176,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
       void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
       void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
-    Q_NOWARN_DEPRECATED_POP
-
 
     bool isValid() const override;
 
