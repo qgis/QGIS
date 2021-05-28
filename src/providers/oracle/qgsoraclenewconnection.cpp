@@ -160,15 +160,16 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
 
   QVariantMap configuration;
-  configuration.insert("geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  configuration.insert("allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  configuration.insert("onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  configuration.insert("saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
-  configuration.insert("savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
+  configuration.insert( "geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
+  configuration.insert( "allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
+  configuration.insert( "onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  configuration.insert( "saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
+  configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
   QgsOracleProviderConnection *providerConnection =  static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
-  providerConnection->setConfiguration(configuration);
+  providerConnection->setUri( QgsOracleConn::connUri( txtName->text() ).uri( false ) );
+  providerConnection->setConfiguration( configuration );
   providerMetadata->saveConnection( providerConnection, txtName->text() );
 
   QDialog::accept();
