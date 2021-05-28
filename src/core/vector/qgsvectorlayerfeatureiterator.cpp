@@ -710,9 +710,6 @@ void QgsVectorLayerFeatureIterator::prepareJoin( int fieldIdx )
   {
     FetchJoinInfo info;
     info.joinInfo = joinInfo;
-    Q_NOWARN_DEPRECATED_PUSH
-    info.joinLayer = joinLayer;
-    Q_NOWARN_DEPRECATED_POP
     info.joinSource = std::make_shared< QgsVectorLayerFeatureSource >( joinLayer );
     info.indexOffset = mSource->mJoinBuffer->joinedFieldsOffset( joinInfo, mSource->mFields );
     info.targetField = mSource->mFields.indexFromName( joinInfo->targetFieldName() );

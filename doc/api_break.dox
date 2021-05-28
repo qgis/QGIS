@@ -31,6 +31,8 @@ setDataSource       {#qgis_api_break_3_20_setdatasource}
 
 - QgsMapLayer::setDataSource is no longer virtual. It has been replaced with QgsMapLayer::setDataSourcePrivate. This is only relevant for subclassing QgsMapLayer, for code that only uses the subclasses (QgsVectorLayer, QgsRasterLayer, ...) this has no effect.
 
+- QgsVectorLayerFeatureIterator::FetchJoinInfo::joinLayer was removed. This layer pointer was dangerous and not safe to access in any situation. 
+
 QGIS 3.4        {#qgis_api_break_3_4}
 ========
 
