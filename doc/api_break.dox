@@ -18,6 +18,8 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 
 
+- QgsVectorLayerFeatureIterator::FetchJoinInfo::joinLayer was removed. This layer pointer was dangerous and not safe to access in any situation. 
+
 QGIS 3.4        {#qgis_api_break_3_4}
 ========
 
