@@ -177,8 +177,20 @@ void QgsPgNewConnection::accept()
   // remove old save setting
   settings.remove( baseKey + "/save" );
 
+  QVariantMap configuration;
+  configuration.insert("publicOnly", cb_publicSchemaOnly->isChecked() );
+  configuration.insert("geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
+  configuration.insert("dontResolveType", cb_dontResolveType->isChecked() );
+  configuration.insert("allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
+  configuration.insert("sslmode", cbxSSLmode->currentData().toInt() );
+  configuration.insert("saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
+  configuration.insert("savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
+  configuration.insert("estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
+  configuration.insert("projectsInDatabase", cb_projectsInDatabase->isChecked() );
+
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   QgsPostgresProviderConnection *providerConnection =  static_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
+  providerConnection->setConfiguration(configuration);
   providerMetadata->saveConnection( providerConnection, txtName->text() );
 
   QDialog::accept();
