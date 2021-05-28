@@ -104,6 +104,13 @@ Returns a vector of indices for use in join based on field names from the layer
 .. versionadded:: 2.6
 %End
 
+    static QVector<int> joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset );
+%Docstring
+Returns a vector of indices for use in join based on field names from the join layer's fields.
+
+.. versionadded:: 3.20
+%End
+
     QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
 %Docstring
 Returns joins where the field of a target layer is considered as an id.
