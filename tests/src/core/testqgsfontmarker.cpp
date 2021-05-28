@@ -60,6 +60,7 @@ class TestQgsFontMarkerSymbol : public QObject
     void bounds();
     void fontMarkerSymbolDataDefinedProperties();
     void opacityWithDataDefinedColor();
+    void massiveFont();
 
   private:
     bool mTestHasError =  false ;
@@ -216,6 +217,26 @@ void TestQgsFontMarkerSymbol::opacityWithDataDefinedColor()
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty() );
   mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty() );
   mMarkerSymbol->setOpacity( 1.0 );
+  QVERIFY( result );
+}
+
+void TestQgsFontMarkerSymbol::massiveFont()
+{
+  // test rendering a massive font
+  mFontMarkerLayer->setColor( QColor( 0, 0, 0, 100 ) );
+  mFontMarkerLayer->setStrokeColor( QColor( 0, 0, 0, 0 ) );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
+  mFontMarkerLayer->setCharacter( QChar( 'X' ) );
+  mFontMarkerLayer->setSize( 200 );
+  mFontMarkerLayer->setSizeUnit( QgsUnitTypes::RenderMillimeters );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 100, 350)" ) ) );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyLayerEnabled, QgsProperty::fromExpression( QStringLiteral( "$id in (1, 4)" ) ) ); // 3
+  mFontMarkerLayer->setStrokeWidth( 0.5 );
+
+  bool result = imageCheck( QStringLiteral( "fontmarker_largesize" ) );
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
   QVERIFY( result );
 }
 
