@@ -120,13 +120,13 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   const QStringList parts { interval.split( '/' ) };
   if ( parts.length() != 2 )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ) );
   }
   T result { parseDate( parts[0] ), parseDate( parts[1] ) };
   // Check validity
   if ( result.isEmpty() )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ) );
   }
   return result;
 }
