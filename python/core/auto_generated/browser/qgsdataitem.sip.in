@@ -289,11 +289,18 @@ Returns the capabilities for the data item.
 .. seealso:: :py:func:`setCapabilities`
 %End
 
-    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities );
+    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) /PyName=setCapabilitiesV2/;
 %Docstring
 Sets the capabilities for the data item.
 
 .. seealso:: :py:func:`capabilities2`
+%End
+
+ void setCapabilities( int capabilities ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   use setCapabilitiesV2 instead.
 %End
 
 

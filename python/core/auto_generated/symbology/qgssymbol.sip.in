@@ -325,7 +325,7 @@ matches the settings from that context.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) /PyName=bigSymbolPreviewImageV2/;
 %Docstring
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
@@ -336,6 +336,13 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 .. seealso:: :py:func:`asImage`
 
 .. seealso:: :py:func:`drawPreviewIcon`
+%End
+
+ QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   use bigSymbolPreviewImageV2 instead.
 %End
 
     QString dump() const;
