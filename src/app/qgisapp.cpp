@@ -2710,6 +2710,10 @@ void QgisApp::createActions()
   {
     attributeTable( QgsAttributeTableFilterModel::ShowVisible );
   } );
+  connect( mActionOpenTableEdited, &QAction::triggered, this, [ = ]
+  {
+    attributeTable( QgsAttributeTableFilterModel::ShowEdited );
+  } );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
@@ -3359,6 +3363,7 @@ void QgisApp::createToolBars()
   bt->addAction( mActionOpenTable );
   bt->addAction( mActionOpenTableSelected );
   bt->addAction( mActionOpenTableVisible );
+  bt->addAction( mActionOpenTableEdited );
 
   QAction *defOpenTableAction = mActionOpenTable;
   switch ( settings.value( QStringLiteral( "UI/openTableTool" ), 0 ).toInt() )
@@ -3371,6 +3376,9 @@ void QgisApp::createToolBars()
       break;
     case 2:
       defOpenTableAction = mActionOpenTableVisible;
+      break;
+    case 3:
+      defOpenTableAction = mActionOpenTableEdited;
       break;
   }
   bt->setDefaultAction( defOpenTableAction );
@@ -4063,6 +4071,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
   mActionOpenTableSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableSelected.svg" ) ) );
   mActionOpenTableVisible->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableVisible.svg" ) ) );
+  mActionOpenTableEdited->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTableEdited.svg" ) ) );
   mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCalculateField.svg" ) ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
@@ -14815,6 +14824,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionOpenTable->setEnabled( false );
     mActionOpenTableSelected->setEnabled( false );
     mActionOpenTableVisible->setEnabled( false );
+    mActionOpenTableEdited->setEnabled( false );
     mActionSelectAll->setEnabled( false );
     mActionReselect->setEnabled( false );
     mActionInvertSelection->setEnabled( false );
@@ -14967,6 +14977,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( true );
       mActionOpenTableSelected->setEnabled( true );
       mActionOpenTableVisible->setEnabled( true );
+      mActionOpenTableEdited->setEnabled( true );
       mActionSelectAll->setEnabled( true );
       mActionReselect->setEnabled( true );
       mActionInvertSelection->setEnabled( true );
@@ -15211,6 +15222,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15324,6 +15336,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15391,6 +15404,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -15458,6 +15472,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
+      mActionOpenTableEdited->setEnabled( false );
       mActionSelectAll->setEnabled( false );
       mActionReselect->setEnabled( false );
       mActionInvertSelection->setEnabled( false );
@@ -16733,6 +16748,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/openTableTool" ), 1 );
   else if ( action == mActionOpenTableVisible )
     settings.setValue( QStringLiteral( "UI/openTableTool" ), 2 );
+  else if ( action == mActionOpenTableEdited )
+    settings.setValue( QStringLiteral( "UI/openTableTool" ), 3 );
   else if ( action == mActionMeasure )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 0 );
   else if ( action == mActionMeasureArea )
