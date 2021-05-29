@@ -186,7 +186,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
   for ( const auto &entry : std::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;
-    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
+    if ( rlayer && rlayer->dataProvider() && ( rlayer->providerType() == QLatin1String( "gdal" ) || rlayer->providerType() == QLatin1String( "postgresraster" ) ) )
     {
       if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
       {
