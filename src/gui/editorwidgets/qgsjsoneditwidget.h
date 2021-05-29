@@ -87,6 +87,9 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void textToolButtonClicked( bool checked );
     void treeToolButtonClicked( bool checked );
 
+    void copyValueActionTriggered();
+    void copyKeyActionTriggered();
+
     void codeEditorJsonTextChanged();
     void codeEditorJsonIndicatorClicked( int line, int index, Qt::KeyboardModifiers state );
     void codeEditorJsonDwellStart( int position, int x, int y );
@@ -103,13 +106,17 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     const int SCINTILLA_UNDERLINE_INDICATOR_INDEX = 15;
 
     void refreshTreeView( const QJsonDocument &jsonDocument );
-    void refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent );
+    void refreshTreeViewItem( QTreeWidgetItem *treeWidgetItemParent, const QJsonValue &jsonValue );
+    void refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetItem, const QString &jsonValueString, const QColor &textColor );
 
     QString mJsonText;
 
     FormatJson mFormatJsonMode = FormatJson::Indented;
 
     QStringList mClickableLinkList;
+
+    QAction *mCopyValueAction;
+    QAction *mCopyKeyAction;
 };
 
 #endif // QGSJSONEDITWIDGET_H
