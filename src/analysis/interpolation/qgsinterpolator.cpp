@@ -88,7 +88,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
         case ValueAttribute:
         {
           QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
-          if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+          if ( !attributeVariant.isValid() || attributeVariant.isNull() ) //attribute not found, something must be wrong (e.g. NULL value)
           {
             continue;
           }

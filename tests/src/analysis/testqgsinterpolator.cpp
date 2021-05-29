@@ -16,6 +16,9 @@ Email                : nyall dot dawson at gmail dot com
 
 #include "qgsapplication.h"
 #include "qgsdualedgetriangulation.h"
+#include "qgstininterpolator.h"
+#include "qgsidwinterpolator.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsInterpolator : public QObject
 {
@@ -29,6 +32,9 @@ class TestQgsInterpolator : public QObject
     void init() ;// will be called before each testfunction is executed.
     void cleanup() ;// will be called after every testfunction.
     void dualEdge();
+
+    void TIN_IDW_Interpolator_with_attribute();
+    void TIN_IDW_Interpolator_with_Z();
 
   private:
 };
@@ -280,6 +286,160 @@ void TestQgsInterpolator::dualEdge()
   QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 1} ) ) );
 }
 
+void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
+{
+  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ),
+      QStringLiteral( "point" ),
+      QStringLiteral( "memory" ) );
+
+  QString wkt1 = "PointZ (0.0 0.0 1.0)";
+  QString wkt2 = "PointZ (2.0 0.0 2.0)";
+  QString wkt3 = "PointZ (0.0 2.0 3.0)";
+  QString wkt4 = "PointZ (2.0 2.0 4.0)";
+
+
+  QgsFields fields = mLayerPoint->fields();
+
+  QgsFeature f1;
+  f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
+  f1.setFields( fields, true );
+  f1.setAttribute( "ZValue", 1.0 );
+  QgsFeature f2;
+  f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
+  f2.setFields( fields, true );
+  f2.setAttribute( "ZValue", 2.0 );
+  QgsFeature f3;
+  f3.setFields( fields, true );
+  f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
+  f3.setAttribute( "ZValue", 3.0 );
+  QgsFeature f4;
+  f4.setFields( fields, true );
+  f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
+  f4.setAttribute( "ZValue", 4.0 );
+
+
+  QgsFeatureList flist;
+  flist << f1 << f2 << f3 << f4;
+  mLayerPoint->dataProvider()->addFeatures( flist );
+
+  QgsInterpolator::LayerData layerdata;
+  layerdata.source = mLayerPoint.get();
+  layerdata.valueSource = QgsInterpolator::ValueZ;
+  QList<QgsInterpolator::LayerData> layerDataList;
+  layerDataList.append( layerdata );
+
+  QgsTinInterpolator tin( layerDataList );
+  QgsIDWInterpolator idw( layerDataList );
+
+  double resultTIN = -1;
+  double resutlIDW = -1;
+  QCOMPARE( tin.interpolatePoint( 0.5, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.75, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 1.6176470588, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 0.25, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.625, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 1.41999627456, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 1, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 2.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 2.05555555556, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 1, 1.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 1.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 3.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 2.94444444444, 0.00000001 ) );
+
+  //! Outside the hull, TIN interpolator has to return an error
+  QVERIFY( tin.interpolatePoint( 2.5, 1.5, resultTIN, nullptr ) != 0 );
+}
+
+void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
+{
+  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ),
+      QStringLiteral( "point" ),
+      QStringLiteral( "memory" ) );
+
+  QVERIFY( mLayerPoint->fields().field( "ZValue" ).type() == QVariant::Double );
+
+  QString wkt1 = "Point (0 0)";
+  QString wkt2 = "Point (2 0)";
+  QString wkt3 = "Point (0 2)";
+  QString wkt4 = "Point (2 2)";
+  QString wkt5 = "Point (1 1)";
+  QString wkt6 = "Point (3 2)";
+
+  QgsFields fields = mLayerPoint->fields();
+
+  QgsFeature f1;
+  f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
+  f1.setFields( fields, true );
+  f1.setAttribute( "ZValue", 1.0 );
+  QgsFeature f2;
+  f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
+  f2.setFields( fields, true );
+  f2.setAttribute( "ZValue", 2.0 );
+  QgsFeature f3;
+  f3.setFields( fields, true );
+  f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
+  f3.setAttribute( "ZValue", 3.0 );
+  QgsFeature f4;
+  f4.setFields( fields, true );
+  f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
+  f4.setAttribute( "ZValue", 4.0 );
+  QgsFeature f5;
+  f5.setFields( fields, true );
+  f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
+  f5.setAttribute( "ZValue", QVariant( QVariant::Double ) ); //NULL value has to be ignore
+  QgsFeature f6;
+  f6.setFields( fields, true );
+  f6.setGeometry( QgsGeometry::fromWkt( wkt6 ) );
+  f6.setAttribute( "ZValue", QVariant() ); //NULL value has to be ignore
+
+
+  QgsFeatureList flist;
+  flist << f1 << f2 << f3 << f4 << f5 << f6;
+  mLayerPoint->dataProvider()->addFeatures( flist );
+
+  QgsInterpolator::LayerData layerdata;
+  layerdata.source = mLayerPoint.get();
+  layerdata.interpolationAttribute = mLayerPoint->fields().lookupField( "ZValue" );
+  QList<QgsInterpolator::LayerData> layerDataList;
+  layerDataList.append( layerdata );
+
+  QgsTinInterpolator tin( layerDataList );
+  QgsIDWInterpolator idw( layerDataList );
+
+  double resultTIN = -1;
+  double resutlIDW = -1;
+  QCOMPARE( tin.interpolatePoint( 0.5, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.75, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 1.6176470588, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 0.25, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.625, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 1.41999627456, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 1, 0.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 0.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 2.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 2.05555555556, 0.00000001 ) );
+
+  QCOMPARE( tin.interpolatePoint( 1, 1.5, resultTIN, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 1.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultTIN, 3.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resutlIDW, 2.94444444444, 0.00000001 ) );
+
+  //! Outside the hull, TIN interpolator has to return an error
+  QVERIFY( tin.interpolatePoint( 2.5, 1.5, resultTIN, nullptr ) != 0 );
+  QCOMPARE( idw.interpolatePoint( 2.5, 1.5, resutlIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resutlIDW, 3.5108401084, 0.00000001 ) );
+}
 
 QGSTEST_MAIN( TestQgsInterpolator )
 #include "testqgsinterpolator.moc"
