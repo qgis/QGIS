@@ -97,6 +97,12 @@ class CORE_EXPORT Qgis
     // Enumerations
     //
 
+    enum DummyOldStyleEnum
+    {
+      Nope,
+      NothingToSeeHere,
+    };
+
     /**
      * \brief Level for messages
      * This will be used both for message log and message bar in application.
