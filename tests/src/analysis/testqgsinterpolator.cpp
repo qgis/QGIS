@@ -359,7 +359,7 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
 {
-  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ),
+  std::unique_ptr<QgsVectorLayer>mLayerPoint = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ),
       QStringLiteral( "point" ),
       QStringLiteral( "memory" ) );
 
