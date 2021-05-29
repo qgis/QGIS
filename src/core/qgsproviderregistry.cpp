@@ -37,6 +37,7 @@
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 
+#include "providers/virtualrasterprovider/qgsvirtualrasterprovider.h"
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
 #endif
@@ -182,7 +183,7 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
-
+  mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
 #ifdef HAVE_STATIC_PROVIDERS

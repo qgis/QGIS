@@ -3,8 +3,11 @@
 #include "qgsmessagelog.h"
 #include <QImage>
 
-const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY = QStringLiteral( "virtualrasterprovider" );
-const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Virtual Raster data provider" );
+#define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
+#define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
+
+//const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY = QStringLiteral( "virtualrasterprovider" );
+//const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Virtual Raster data provider" );
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions)
     : QgsRasterDataProvider( uri, providerOptions)
@@ -14,6 +17,10 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvider &other)
     : QgsRasterDataProvider (other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
+    , mValid( other.mValid )
+    , mCrs( other.mCrs )
+    , mDataTypes( other.mDataTypes )
+
 {
     mExtent = other.mExtent;
     mWidth = other.mWidth;
@@ -21,6 +28,8 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvide
     mBandCount = other.mBandCount;
     mXBlockSize = other.mXBlockSize;
     mYBlockSize = other.mYBlockSize;
+
+
 
 }
 
@@ -86,12 +95,14 @@ int QgsVirtualRasterProvider::bandCount() const
 
 QString QgsVirtualRasterProvider::name() const
 {
-  return QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY;
+  //return QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY;
+  return PROVIDER_KEY;
 }
 
 QString QgsVirtualRasterProvider::description() const
 {
-  return QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION;
+  //return QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION;
+  return PROVIDER_DESCRIPTION;
 }
 
 int QgsVirtualRasterProvider::xBlockSize() const
@@ -105,14 +116,110 @@ int QgsVirtualRasterProvider::yBlockSize() const
 }
 
 QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
-  : QgsProviderMetadata( QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY, QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION )
+  //: QgsProviderMetadata( QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY, QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION )
+    : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 
 }
 
-QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options)//, QgsDataProvider::ReadFlags flags )
 
+//QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options)//, QgsDataProvider::ReadFlags flags )
+QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsVirtualRasterProvider( uri, options);//, flags );
+    Q_UNUSED( flags );
+    return new QgsVirtualRasterProvider( uri, options);//, flags );
+}
+
+
+
+
+QgsVirtualRasterProvider *QgsVirtualRasterProvider::clone() const
+{
+/*
+  QgsDataProvider::ProviderOptions options;
+  options.transformContext = transformContext();
+  QgsVirtualRasterProvider *provider = new QgsVirtualRasterProvider( *this, options );
+  provider->copyBaseSettings( *this );
+  return provider;
+*/
+    return new QgsVirtualRasterProvider( *this );
+}
+
+
+//__________________________________________________________________________________________________________________________________________________________
+
+Qgis::DataType QgsVirtualRasterProvider::sourceDataType( int bandNo ) const
+{
+  if ( bandNo <= mBandCount && static_cast<unsigned long>( bandNo ) <= mDataTypes.size() )
+  {
+    return mDataTypes[ static_cast<unsigned long>( bandNo - 1 ) ];
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Data type is unknown" ), QStringLiteral( "VirtualRasterProvider" ), Qgis::Warning );
+    return Qgis::DataType::UnknownDataType;
+  }
+}
+
+Qgis::DataType QgsVirtualRasterProvider::dataType( int bandNo ) const
+{
+  if ( mDataTypes.size() < static_cast<unsigned long>( bandNo ) )
+  {
+    QgsMessageLog::logMessage( tr( "Data type size for band %1 could not be found: num bands is: %2 and the type size map for bands contains: %3 items" )
+                               .arg( bandNo )
+                               .arg( mBandCount )
+                               .arg( mDataSizes.size() ),
+                               QStringLiteral( "Virtual Raster Provider" ), Qgis::Warning );
+    return Qgis::DataType::UnknownDataType;
+  }
+  // Band is 1-based
+  return mDataTypes[ static_cast<unsigned long>( bandNo ) - 1 ];
+}
+
+QgsCoordinateReferenceSystem QgsVirtualRasterProvider::crs() const
+{
+  return mCrs;
+}
+
+bool QgsVirtualRasterProvider::isValid() const
+{
+  return mValid;
+}
+
+QString QgsVirtualRasterProvider::lastErrorTitle()
+{
+  return QStringLiteral( "Not implemented" );
+}
+
+QString QgsVirtualRasterProvider::lastError()
+{
+  return QStringLiteral( "Not implemented" );
+}
+
+QString QgsVirtualRasterProvider::htmlMetadata()
+{
+
+  //only test
+  return "Virtual Raster data provider";
+}
+//-----------------------------create raster data prov
+/*
+QgsVirtualRasterProvider *createRasterDataProvider(
+      const QString &uri,
+      const QString &format,
+      int nBands,
+      Qgis::DataType type,
+      int width,
+      int height,
+      double *geoTransform,
+      const QgsCoordinateReferenceSystem &crs,
+      const QStringList &createOptions )
+{
 
 }
+*/
+
+QString QgsVirtualRasterProvider::providerKey()
+{
+  return PROVIDER_KEY;
+};
