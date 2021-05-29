@@ -288,7 +288,7 @@ void TestQgsInterpolator::dualEdge()
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 {
-  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ),
+  std::unique_ptr<QgsVectorLayer>mLayerPoint = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ),
       QStringLiteral( "point" ),
       QStringLiteral( "memory" ) );
 
