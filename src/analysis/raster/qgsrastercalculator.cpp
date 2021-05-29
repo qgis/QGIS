@@ -735,7 +735,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layerIt.value() );
-    if ( rlayer && ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
+    if ( rlayer && rlayer->dataProvider() && ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
     {
       //get number of bands
       for ( int i = 0; i < rlayer->bandCount(); ++i )
