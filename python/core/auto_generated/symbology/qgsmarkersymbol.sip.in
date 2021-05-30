@@ -263,6 +263,23 @@ and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and o
 .. versionadded:: 2.14
 %End
 
+    QgsMarkerSymbolBounds symbolBounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
+%Docstring
+Calculates the bounds of the marker symbol.
+
+This includes the bounding box of all symbol layers for the symbol. It is recommended to use this method only between :py:func:`~QgsMarkerSymbol.startRender`
+and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and offset will not be correctly calculated.
+
+:param point: location of rendered point in painter units
+:param context: render context
+:param feature: feature being rendered at point (optional). If not specified, the bounds calculation will not
+                include data defined parameters such as offset and rotation
+
+:return: symbol bounds properties, in painter units
+
+.. versionadded:: 3.20
+%End
+
     virtual QgsMarkerSymbol *clone() const /Factory/;
 
 

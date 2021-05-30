@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 
 class QgsMarkerSymbolLayer;
+class QgsMarkerSymbolBounds;
 
 /**
  * \ingroup core
@@ -221,6 +222,21 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * \since QGIS 2.14
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
+
+    /**
+     * Calculates the bounds of the marker symbol.
+     *
+     * This includes the bounding box of all symbol layers for the symbol. It is recommended to use this method only between startRender()
+     * and stopRender() calls, or data defined rotation and offset will not be correctly calculated.
+     *
+     * \param point location of rendered point in painter units
+     * \param context render context
+     * \param feature feature being rendered at point (optional). If not specified, the bounds calculation will not
+     * include data defined parameters such as offset and rotation
+     * \returns symbol bounds properties, in painter units
+     * \since QGIS 3.20
+    */
+    QgsMarkerSymbolBounds symbolBounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
     QgsMarkerSymbol *clone() const override SIP_FACTORY;
 

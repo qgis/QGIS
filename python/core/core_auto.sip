@@ -590,6 +590,7 @@
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
 %Include auto_generated/symbology/qgsmarkersymbol.sip
+%Include auto_generated/symbology/qgsmarkersymbolbounds.sip
 %Include auto_generated/symbology/qgsmarkersymbollayer.sip
 %Include auto_generated/symbology/qgsmergedfeaturerenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip

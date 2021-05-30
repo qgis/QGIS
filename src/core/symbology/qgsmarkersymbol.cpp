@@ -17,6 +17,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffect.h"
+#include "qgsmarkersymbolbounds.h"
 
 QgsMarkerSymbol *QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {
@@ -469,6 +470,26 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
         bound = symbolLayer->bounds( point, symbolContext );
       else
         bound = bound.united( symbolLayer->bounds( point, symbolContext ) );
+    }
+  }
+  return bound;
+}
+
+QgsMarkerSymbolBounds QgsMarkerSymbol::symbolBounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature ) const
+{
+  QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, &feature, feature.fields() );
+
+  QgsMarkerSymbolBounds bound;
+  const auto constMLayers = mLayers;
+  for ( QgsSymbolLayer *layer : constMLayers )
+  {
+    if ( layer->type() == Qgis::SymbolType::Marker )
+    {
+      QgsMarkerSymbolLayer *symbolLayer = static_cast< QgsMarkerSymbolLayer * >( layer );
+      if ( bound.isNull() )
+        bound = symbolLayer->symbolBounds( point, symbolContext );
+      else
+        bound.unite( symbolLayer->symbolBounds( point, symbolContext ) );
     }
   }
   return bound;

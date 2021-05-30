@@ -41,6 +41,7 @@ class QgsExpression;
 class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
+class QgsMarkerSymbolBounds;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -858,6 +859,14 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \since QGIS 2.14
      */
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
+
+    /**
+     * Returns the symbol bounds of the marker symbol layer, taking into account
+     * any data defined overrides and offsets which are set for the marker layer.
+     * \returns symbol bounds, in painter units
+     * \since QGIS 3.20
+     */
+    virtual QgsMarkerSymbolBounds symbolBounds( QPointF point, QgsSymbolRenderContext &context );
 
   protected:
 

@@ -31,6 +31,7 @@
 #include "qgstextcharacterformat.h"
 #include "qgstextfragment.h"
 #include "qgslabelingresults.h"
+#include "qgsmarkersymbolbounds.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -209,7 +210,6 @@ void QgsVectorLayerLabelProvider::addPointSymbolProperties( QgsLabelProviderFeat
   // for each point
   for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
   {
-    QRectF bounds;
     QgsPoint p = fet.geometry().constGet()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
@@ -230,19 +230,21 @@ void QgsVectorLayerLabelProvider::addPointSymbolProperties( QgsLabelProviderFeat
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    const auto constSymbols = symbols;
-    for ( QgsSymbol *symbol : constSymbols )
+    QgsMarkerSymbolBounds overallBounds;
+    for ( QgsSymbol *symbol : symbols )
     {
       if ( symbol->type() == Qgis::SymbolType::Marker )
       {
-        if ( bounds.isValid() )
-          bounds = bounds.united( static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet ) );
+        const QgsMarkerSymbolBounds symbolBounds = qgis::down_cast< QgsMarkerSymbol * >( symbol )->symbolBounds( pt, context, fet );
+        if ( !overallBounds.isNull() )
+          overallBounds.unite( symbolBounds );
         else
-          bounds = static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet );
+          overallBounds = symbolBounds;
       }
     }
 
     //convert bounds to a geometry
+    const QRectF bounds = overallBounds.boundingBox();
     QVector< double > bX;
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;

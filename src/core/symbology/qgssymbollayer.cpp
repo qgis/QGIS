@@ -33,6 +33,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
+#include "qgsmarkersymbolbounds.h"
 
 #include <QSize>
 #include <QPainter>
@@ -663,6 +664,13 @@ QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
     return mSizeMapUnitScale;
   }
   return QgsMapUnitScale();
+}
+
+QgsMarkerSymbolBounds QgsMarkerSymbolLayer::symbolBounds( QPointF point, QgsSymbolRenderContext &context )
+{
+  QgsMarkerSymbolBounds res;
+  res.setBoundingBox( bounds( point, context ) );
+  return res;
 }
 
 void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )

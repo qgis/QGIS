@@ -922,6 +922,16 @@ any data defined overrides and offsets which are set for the marker layer.
 .. versionadded:: 2.14
 %End
 
+    virtual QgsMarkerSymbolBounds symbolBounds( QPointF point, QgsSymbolRenderContext &context );
+%Docstring
+Returns the symbol bounds of the marker symbol layer, taking into account
+any data defined overrides and offsets which are set for the marker layer.
+
+:return: symbol bounds, in painter units
+
+.. versionadded:: 3.20
+%End
+
   protected:
 
     QgsMarkerSymbolLayer( bool locked = false );

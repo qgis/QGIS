@@ -1576,6 +1576,7 @@ set(QGIS_CORE_HDRS
   symbology/qgslinesymbollayer.h
   symbology/qgsmapinfosymbolconverter.h
   symbology/qgsmarkersymbol.h
+  symbology/qgsmarkersymbolbounds.h
   symbology/qgsmarkersymbollayer.h
   symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h

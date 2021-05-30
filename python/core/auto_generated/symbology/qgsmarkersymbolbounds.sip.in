@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmarkersymbolbounds.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMarkerSymbolBounds
+{
+%Docstring(signature="appended")
+
+Describes the bounds of a marker symbol.
+
+.. versionadded:: 3.20
+%End
+
+%TypeHeaderCode
+#include "qgsmarkersymbolbounds.h"
+%End
+  public:
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the bounds are null or unset.
+%End
+
+    QRectF boundingBox() const;
+%Docstring
+Returns the bounding box of the symbol, which represents
+the extent of the rendered symbol.
+
+.. seealso:: :py:func:`setBoundingBox`
+%End
+
+    void setBoundingBox( const QRectF &bounds );
+%Docstring
+Sets the bounding box of the symbol, which represents
+the extent of the rendered symbol.
+
+.. seealso:: :py:func:`boundingBox`
+%End
+
+    void unite( const QgsMarkerSymbolBounds &other );
+%Docstring
+Unites these bounds with an ``other`` bounds.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsmarkersymbolbounds.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
