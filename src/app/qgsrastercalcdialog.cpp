@@ -186,17 +186,14 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
   for ( const auto &entry : std::as_const( mAvailableRasterBands ) )
   {
     QgsRasterLayer *rlayer = entry.raster;
-    if ( rlayer && rlayer->dataProvider() && rlayer->providerType() == QLatin1String( "gdal" ) )
+    if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
     {
-      if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
-      {
-        setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
-        mCrsSelector->setCrs( rlayer->crs() );
-      }
-      QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
-      item->setData( Qt::ToolTipRole, rlayer->publicSource() );
-      mRasterBandsListWidget->addItem( item );
+      setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
+      mCrsSelector->setCrs( rlayer->crs() );
     }
+    QListWidgetItem *item = new QListWidgetItem( entry.ref, mRasterBandsListWidget );
+    item->setData( Qt::ToolTipRole, rlayer->publicSource() );
+    mRasterBandsListWidget->addItem( item );
   }
 }
 
