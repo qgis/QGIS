@@ -183,7 +183,7 @@ Set parameters for use in transforming coordinates
 
 .. note::
 
-   if parameters leads to a non valid transform, parameters are not changed
+   if the specified parameters result in an invalid transform then no changes will be applied to the object
 
 .. versionadded:: 2.8
 %End

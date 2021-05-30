@@ -238,7 +238,7 @@ class CORE_EXPORT QgsMapToPixel
      * \param heightPixels Output height, in pixels
      * \param rotation clockwise rotation in degrees
      *
-     * \note if parameters leads to a non valid transform, parameters are not changed
+     * \note if the specified parameters result in an invalid transform then no changes will be applied to the object
      * \since QGIS 2.8
      */
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsMapToPixel
      * \param widthPixels Output width, in pixels
      * \param heightPixels Output height, in pixels
      * \param rotation clockwise rotation in degrees
-     * \param ok will be set to true if parameters leads to a valid transform, otherwise  parameters are not changed and ok will be set to false
+     * \param ok will be set to TRUE if the specified parameters result in a valid transform, otherwise the changes are ignored and ok will be set to FALSE.
      *
      * \since QGIS 3.20
      */
