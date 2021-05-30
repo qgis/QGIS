@@ -161,24 +161,23 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    QgsGeometry obstacleGeometry;
-    const QgsSymbol *symbol = nullptr;
+    QgsLabelProviderFeatureProperties properties;
     if ( mRenderer )
     {
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, ctx );
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
         //point feature, use symbol bounds as obstacle
-        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, ctx, symbols );
+        addPointSymbolProperties( properties, fet, ctx, symbols );
       }
       if ( !symbols.isEmpty() )
       {
-        symbol = symbols.at( 0 );
-        symbolScope = QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
+        properties.symbol = symbols.at( 0 );
+        symbolScope = QgsExpressionContextUtils::updateSymbolScope( properties.symbol, symbolScope );
       }
     }
     ctx.expressionContext().setFeature( fet );
-    registerFeature( fet, ctx, obstacleGeometry, symbol );
+    registerFeature( fet, ctx, properties );
   }
 
   if ( ctx.expressionContext().lastScope() == symbolScope )
@@ -190,17 +189,17 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-void QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+void QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelProviderFeatureProperties &properties )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeature( feature, context, obstacleGeometry, symbol );
+  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, properties );
   if ( label )
     mLabels << label.release();
 }
 
-QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
+void QgsVectorLayerLabelProvider::addPointSymbolProperties( QgsLabelProviderFeatureProperties &properties, QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols )
 {
   if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
-    return QgsGeometry();
+    return;
 
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
   std::unique_ptr< QgsAbstractGeometry > obstacleGeom;
@@ -225,7 +224,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
       }
       catch ( QgsCsException & )
       {
-        return QgsGeometry();
+        return;
       }
     }
     context.mapToPixel().transformInPlace( x, y );
@@ -267,7 +266,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
       }
       catch ( QgsCsException & )
       {
-        return QgsGeometry();
+        return;
       }
     }
     boundLineString->close();
@@ -280,7 +279,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
         return std::isfinite( point.x() ) && std::isfinite( point.y() );
       } );
       if ( !boundLineString->isRing() )
-        return QgsGeometry();
+        return;
     }
 
     std::unique_ptr< QgsPolygon > obstaclePolygon = std::make_unique< QgsPolygon >();
@@ -296,7 +295,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
   }
 
-  return QgsGeometry( std::move( obstacleGeom ) );
+  properties.obstacleGeometry = QgsGeometry( std::move( obstacleGeom ) );
 }
 
 void QgsVectorLayerLabelProvider::drawLabelBackground( QgsRenderContext &context, LabelPosition *label ) const

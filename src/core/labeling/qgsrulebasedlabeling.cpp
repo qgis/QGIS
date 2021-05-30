@@ -38,10 +38,10 @@ bool QgsRuleBasedLabelProvider::prepare( QgsRenderContext &context, QSet<QString
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+void QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsLabelProviderFeatureProperties &properties )
 {
   // will register the feature to relevant sub-providers
-  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry, symbol );
+  mRules->rootRule()->registerFeature( feature, context, mSubProviders, properties );
 }
 
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
@@ -345,7 +345,7 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsLabelProviderFeatureProperties &properties )
 {
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
@@ -358,7 +358,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   // do we have active subprovider for the rule?
   if ( subProviders.contains( this ) && mIsActive )
   {
-    subProviders[this]->registerFeature( feature, context, obstacleGeometry, symbol );
+    subProviders[this]->registerFeature( feature, context, properties );
     registered = true;
   }
 
@@ -370,7 +370,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
     // Don't process else rules yet
     if ( !rule->isElse() )
     {
-      RegisterResult res = rule->registerFeature( feature, context, subProviders, obstacleGeometry );
+      RegisterResult res = rule->registerFeature( feature, context, subProviders, properties );
       // consider inactive items as "registered" so the else rule will ignore them
       willRegisterSomething |= ( res == Registered || res == Inactive );
       registered |= willRegisterSomething;
@@ -382,7 +382,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   {
     for ( Rule *rule : std::as_const( mElseRules ) )
     {
-      registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) != Filtered;
+      registered |= rule->registerFeature( feature, context, subProviders, properties ) != Filtered;
     }
   }
 

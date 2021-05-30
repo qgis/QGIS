@@ -1672,10 +1672,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
 void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext &context )
 {
-  registerFeatureWithDetails( f, context, QgsGeometry(), nullptr );
+  registerFeatureWithDetails( f, context, QgsLabelProviderFeatureProperties() );
 }
 
-std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, QgsGeometry obstacleGeometry, const QgsSymbol *symbol )
+std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails( const QgsFeature &f, QgsRenderContext &context, const QgsLabelProviderFeatureProperties &properties )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
@@ -1685,6 +1685,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::IsObstacle ) )
     isObstacle = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::IsObstacle, context.expressionContext(), isObstacle ); // default to layer default
 
+  QgsGeometry obstacleGeometry = properties.obstacleGeometry;
   if ( !drawLabels )
   {
     if ( isObstacle )
@@ -2528,7 +2529,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
-  labelFeature->setSymbol( symbol );
+  labelFeature->setSymbol( properties.symbol );
   labelFeature->setDocument( doc );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )
     labelFeature->setRotatedSize( QSizeF( rotatedLabelX, rotatedLabelY ) );
