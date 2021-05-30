@@ -630,6 +630,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       delim = QStringLiteral( "," );
     }
 
+    QgsFeatureIds fidsToOr;
     QStringList whereValuesList;
     for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
     {
@@ -640,29 +641,48 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
         QString delim;
         QString whereValues;
+        bool isNotNull = true;
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
+          if ( pkVals[i].isNull() )
+            isNotNull = false;
           whereValues += delim + QgsPostgresConn::quotedValue( pkVals[i] );
           if ( canUseVALUES && withCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
             whereValues += QStringLiteral( "::%1" ).arg( fields.at( pkAttrs[i] ).typeName() );
           delim = QStringLiteral( "," );
         }
-        whereValuesList << whereValues;
+        if ( isNotNull )
+          whereValuesList << whereValues;
+        else
+          fidsToOr.insert( featureId );
       }
     }
 
+    QString whereInString;
     if ( canUseVALUES )
-    {
-      return whereValuesList.isEmpty() ? QString() :
-             whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
-    }
+      whereInString = whereValuesList.isEmpty() ? QString() :
+                      whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+                      whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
     else
+      whereInString = whereValuesList.isEmpty() ? QString() :
+                      whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+                      whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( (" ) ).append( QStringLiteral( ") )" ) );
+
+    QString whereOrString;
+    QStringList whereClauses;
+    for ( const QgsFeatureId featureId : std::as_const( fidsToOr ) )
     {
-      return whereValuesList.isEmpty() ? QString() :
-             whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-             whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( (" ) ).append( QStringLiteral( ") )" ) );
+      whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
     }
+    whereOrString = whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+
+    if ( whereInString.isEmpty() )
+      return whereOrString;
+    if ( whereOrString.isEmpty() )
+      return whereInString;
+
+    return QStringLiteral( "(%1) OR (%2)" ).arg( whereInString, whereOrString );
+
   };
 
   switch ( pkType )
