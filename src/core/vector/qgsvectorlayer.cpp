@@ -284,7 +284,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
       layer->addJoin( join );
   }
 
-  layer->setProviderEncoding( dataProvider()->encoding() );
+  if ( mDataProvider )
+    layer->setProviderEncoding( mDataProvider->encoding() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setReadOnly( isReadOnly() );
@@ -3756,7 +3757,10 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 
 void QgsVectorLayer::addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator )
 {
-  mRendererGenerators << generator;
+  if ( generator )
+  {
+    mRendererGenerators << generator;
+  }
 }
 
 void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )

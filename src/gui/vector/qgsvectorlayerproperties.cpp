@@ -1143,6 +1143,8 @@ void QgsVectorLayerProperties::loadDefaultMetadata()
 
 void QgsVectorLayerProperties::saveStyleAs()
 {
+  if ( !mLayer->dataProvider() )
+    return;
   QgsVectorLayerSaveStyleDialog dlg( mLayer );
   QgsSettings settings;
 
