@@ -24,12 +24,13 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QRadioButton>
+#include <stdlib.h>
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <sstream>
 
-#ifdef USE_GTE_MATH
-#include <Mathematics/ApprPolynomial3.h>
-#include "polynomial3CurveFitter.h"
 using namespace gte;
-#endif // DEBUG
 
 /////-------------------------------电力线点ViewModel-------------------------------------------
 
@@ -55,13 +56,25 @@ void QgsDLAttributeTableModel::receivepickedpoints(QVector3D pointxyz)
   setModelData(modelData);
   emit PointAdded();
 }
+void QgsDLAttributeTableModel::receivepoints(Point3D& pointxyz)
+{
+  ModelItem temp;
+  temp.XYZ = pointxyz;
+  temp.error = 0;
+  temp.type = PointType::Other;
+  modelData.push_back(temp);
+  setModelData(modelData);
+}
 
 void QgsDLAttributeTableModel::setProfileWindow(QgsProfileWinow *window)
 {
   mMapCanvas = window;
 
-  connect(mMapCanvas, &View3D::EmitPointXYZ, this, &QgsDLAttributeTableModel::receivepickedpoints);
-  //connect(mMapCanvas,);
+  if (!isconnected )
+  {
+    connect(mMapCanvas, &View3D::EmitPointXYZ, this, &QgsDLAttributeTableModel::receivepickedpoints);
+    isconnected = true;
+  }
 }
 
 void QgsDLAttributeTableModel::sortByColumn(int col)
@@ -90,7 +103,7 @@ void QgsDLAttributeTableModel::ClearModelData()
   modelData.clear();
   endResetModel();
 }
-std::vector<ModelItem> QgsDLAttributeTableModel::getModelData() const
+std::vector<ModelItem>& QgsDLAttributeTableModel::getModelData() 
 {
   return modelData;
 };
@@ -208,6 +221,8 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   connect(mActionPickPoints, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmActionPickPoints);
   connect(mActionTurnLeft, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudLeft);
   connect(mActionTurnRight, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudRight);
+  connect(m_selectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmselectiononprofileClciekd);
+  connect(action_polygonselectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked);
 
   mActionSaveEdits->setDisabled(true);
   mActionPickPoints->setDisabled(true);
@@ -233,7 +248,12 @@ void QgsDLWindowDockWidget::setProfileWindow(QgsProfileWinow *window)
   mMapCanvas = window;
   horizontalLayout->addWidget(mMapCanvas);
   mMapCanvas->setOpenHandCursor();
-  connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
+  if (! isconnetwith_mMapCanvas)
+  {
+    connect(mActionPan, SIGNAL(triggered()), mMapCanvas, SLOT(setOpenHandCursor()));
+    connect(mMapCanvas, SIGNAL(Interpretpolygonchanged()), this, SLOT(OnInterpretPolygonChanged()));
+    isconnetwith_mMapCanvas = true;
+  }
 
   if (!(dltable == nullptr))
   {
@@ -253,13 +273,15 @@ void QgsDLWindowDockWidget::OnmActiontiqudianlixianClicked()
   {
     mActionSaveEdits->setDisabled(true);
     mActionPickPoints->setDisabled(true);
+    m_selectiononprofile->setDisabled(true);
     OnmActionHandClicked();
-    mMapCanvas->resetState();
+    //mMapCanvas->resetState();
   }
   if (Editing)
   {
     mActionSaveEdits->setEnabled(true);
     mActionPickPoints->setEnabled(true);
+    m_selectiononprofile->setEnabled(true);
   }
   dockpolynomial_dialog();
 }
@@ -290,30 +312,26 @@ void QgsDLWindowDockWidget::OnmActionSaveEditsClicked()
 }
 void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
 {
+  mMapCanvas->resetState();
+  mMapCanvas->StartProfileviewMode();
   mMapCanvas->StartInterpretMode(0);
   m_rule = QString("Box");
-  m_method = QString("override");
+
 }
 
-void QgsDLWindowDockWidget::OndrawlieonprofileClicked2()
+void QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked()
 {
-  mMapCanvas->StartInterpretMode(2); //1 ,2
-  m_rule = QString("Line down");
-  m_method = QString("override");
+  mMapCanvas->resetState();
+  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartInterpretMode(3); //1 ,2
+  m_rule = QString("polygon");
+
 }
 void QgsDLWindowDockWidget::OnmActionPickPoints()
 {
+  mMapCanvas->resetState();
+  mMapCanvas->StartProfileviewMode();
   mMapCanvas->StartPickingMode();
-  /*
-   if (mMapCanvas->ViewStateID == View3D::ViewState::PickingPoint)
-  {
-    connect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
-  }
-  else
-  {
-    disconnect(mMapCanvas, &View3D::EmitPointXYZ, dltable.get(), &QgsDLAttributeTableModel::receivepickedpoints);
-  }
-  */
 }
 void QgsDLWindowDockWidget::OnmActionBrushPoints()
 {
@@ -353,8 +371,28 @@ void QgsDLWindowDockWidget::GetModelDataFromAoi()
   // 从aoi中获取 相应的点 构成 datas
 }
 
+void QgsDLWindowDockWidget::OnInterpretPolygonChanged()
+{
+  std::vector< V3f> points;
+  if (!(dltable == nullptr))
+  {
+    if (mMapCanvas->GetPointsInPolygon(points));
+    {
+      std::vector<ModelItem> models;
+      for (V3f pt : points)
+      {
+        ModelItem model;
+        model.XYZ = pt;
+        models.push_back(model);
+      }
+      dltable->setModelData(models);
+      polynomial_dialog_widget->niheToolButton->setEnabled(true);
+    } 
+  }
+}
 
 QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString &name, QWidget *parent )
+:Fiter_Ptr(nullptr)
 {
   setupUi(this);
   setWindowFlags(Qt::FramelessWindowHint);
@@ -404,8 +442,68 @@ void QgsPcdpickeddlgWindowDockWidget::OnPointAdded()
   }
 }
 
+std::string convertDoubleToString(const float value, const int precision = 0)
+{
+  std::stringstream stream{};
+  stream << std::fixed << std::setprecision(precision) << value;
+  return stream.str();
+}
+
+
 void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
 {
+  std::vector<ModelItem> pointsdata= dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->getModelData();
+   int sanweijie = this->spinBox->value();
+   int erweijie = this->spinBox_2->value();
+  Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie);
+    bool beginok = Fiter_Ptr->BeginReceiveData();
+    if (!beginok)
+    {
+      //TODO::弹出报警框
+      return;
+    }
+    for (ModelItem var : pointsdata)
+    {
+      std::array<float, 3> point = { var.XYZ.x,  var.XYZ.y , var.XYZ.z };
+      Fiter_Ptr->ReceivePointDataXYZ(point);
+    }
+    bool endok = Fiter_Ptr->EndReceiveData();
+    if (!endok)
+    {
+      //TODO::弹出报警框
+      return;
+    }
 
+    int numpts = Fiter_Ptr->SetInterVal(0.1);
+    if (numpts <1)
+    {
+      //TODO::弹出报警框
+      return;
+    }
+    
+    int numpts_generated = Fiter_Ptr->GenerateXYZSeries();
+      if (numpts_generated < 1)
+      {
+        //TODO::弹出报警框
+        return;
+      }
+      else
+      {
+        std::vector<std::array<float, 3>> jiamidian = Fiter_Ptr->GetGeneratedPoints();
+       int x= jiamidian.size();
 
+       std::ofstream fOut("nihe.txt");
+
+       if (!fOut)
+       {
+         std::cout << "Open output file faild." << std::endl;
+       }
+       for (std::array<float, 3> pt : jiamidian)
+       {
+           fOut << convertDoubleToString(pt[0],3) <<"," << convertDoubleToString(pt[1], 3) <<"," << convertDoubleToString(pt[2], 3) << std::endl;
+       }
+       fOut.close();
+
+      }
 }
+

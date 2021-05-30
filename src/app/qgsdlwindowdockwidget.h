@@ -50,8 +50,8 @@ enum PointType
 struct ModelItem
 {
   Point3D XYZ;
-  PointType type;
-  double error;
+  PointType type = PointType::Other;
+  double error = 0;
 
   bool compAsendingX(ModelItem firsrt, ModelItem second)
   {
@@ -80,12 +80,13 @@ class APP_EXPORT QgsDLAttributeTableModel : public QAbstractTableModel
 public:
   QgsDLAttributeTableModel(QWidget *parent = nullptr);
   void receivepickedpoints(QVector3D pointxyz);
+  void receivepoints(Point3D& pointxyz);
   void sortByColumn(int col);
   void setProfileWindow(QgsProfileWinow *window);
   //自定义导入导出数据的接口
   void setModelData(const std::vector<ModelItem> &datas);
   void ClearModelData();
-  std::vector<ModelItem> getModelData() const;
+  std::vector<ModelItem>& getModelData() ;
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -103,6 +104,7 @@ private:
   QWidget *m_parent = nullptr;
   QStringList m_header;
   std::vector<ModelItem> modelData;
+  bool isconnected = false;
 };
 
 class APP_EXPORT QgsPcdpickeddlgWindowDockWidget : public QgsDockWidget, public Ui::pcdpickeddlg
@@ -114,11 +116,14 @@ public:
   void setModel(QAbstractItemModel *model);
 
 private:
+  std::shared_ptr<polynomial3CurveFitter3> Fiter_Ptr = nullptr;
+
   bool insert_pt_table_(Point3D xyz, PointType type)
   {
     //this->alignedPointsTableWidget->setModel();
     return true;
   }
+
 public slots:
   void OnPaiXuClicked(int column);
   // 重置 model 数据 清理
@@ -143,7 +148,7 @@ private slots:
   void dockpolynomial_dialog();
   void OnmActionSaveEditsClicked();
   void OnmselectiononprofileClciekd();
-  void OndrawlieonprofileClicked2();
+  void OnDrawPolygonOnProfileClicked();
   void OnmActionPickPoints();
   void OnmActionBrushPoints();
   void ApplyButtonClicked();
@@ -152,6 +157,7 @@ private slots:
   void rotatePointCloudLeft();
   void rotatePointCloudRight();
   void GetModelDataFromAoi();
+  void OnInterpretPolygonChanged();
 
 private:
   QgsProfileWinow *mMapCanvas = nullptr;
@@ -164,6 +170,7 @@ private:
   QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
   QCheckBox *mSyncScaleCheckBox = nullptr;
   bool Editing = false;
+  bool isconnetwith_mMapCanvas = false;
   QString m_rule;
   QString m_method;
   QgsPcdpickeddlgWindowDockWidget *polynomial_dialog_widget = nullptr;

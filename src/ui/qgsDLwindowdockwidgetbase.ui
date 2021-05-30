@@ -46,7 +46,7 @@
       </property>
       <addaction name="action_tiqudianlixian"/>
       <addaction name="separator"/>
-      <addaction name="action_xiubudianlixian"/>
+      <addaction name="action_polygonselectiononprofile"/>
       <addaction name="m_selectiononprofile"/>
       <addaction name="mActionPickPoints"/>
       <addaction name="mActionSaveEdits"/>
@@ -184,7 +184,7 @@
     <string>电力线重建</string>
    </property>
   </action>
-  <action name="action_xiubudianlixian">
+  <action name="action_polygonselectiononprofile">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>

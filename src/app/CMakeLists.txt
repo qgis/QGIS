@@ -513,7 +513,7 @@ include_directories(SYSTEM
 IF(WITH_GTE )
       include_directories(${CMAKE_SOURCE_DIR}/external/GTE)
 	    include_directories(${CMAKE_SOURCE_DIR}/external/GTE/Apprpolynomial3)
-      link_directories(${CMAKE_BINARY_DIR}/external/GTE/Apprpolynomial3/${CMAKE_BUILD_TYPE} ${GTE_LIB_DIR})
+      #link_directories(${CMAKE_BINARY_DIR}/external/GTE/Apprpolynomial3/${CMAKE_BUILD_TYPE})
 ENDIF()
 
 include_directories(

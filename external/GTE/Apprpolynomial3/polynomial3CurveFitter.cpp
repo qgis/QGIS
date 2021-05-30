@@ -8,7 +8,7 @@
 #include "polynomial3CurveFitter.h"
 #include <Graphics/VertexColorEffect.h>
 #include <random>
-
+using namespace gte;
 void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float, 3>> &cloud)
 {
     std::ifstream file(file_path.c_str()); //c_str()：生成一个const char*指针，指向以空字符终止的数组。
@@ -30,15 +30,15 @@ void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float
     file.close();
 }
 
-polynomial3CurveFitter3::polynomial3CurveFitter3()
+polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie)
     : mDegree(2),
       mPolynomialsXYZ(nullptr),
       mPolynomialsXY(nullptr),
       mAvrError(0.0f),
       mRmsError(0.0f)
 {
-    mPolynomialsXYZ = std::make_unique<ApprPolynomial3<float>>(3, 3);
-    mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(3);
+    mPolynomialsXYZ = std::make_unique<ApprPolynomial3<float>>(sanweijie, sanweijie);
+    mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(erweijie);
 
     mXDomain[0] = std::numeric_limits<float>::max();
     mXDomain[1] = -mXDomain[0];
@@ -49,7 +49,9 @@ polynomial3CurveFitter3::polynomial3CurveFitter3()
     //LoadDataTest();
 }
 
-
+polynomial3CurveFitter3:: ~polynomial3CurveFitter3()
+{
+}
 
 void polynomial3CurveFitter3::LoadDataTest()
 {
@@ -102,12 +104,17 @@ bool polynomial3CurveFitter3::CreateXYPolyline()
 }
 
 
-void polynomial3CurveFitter3::ReceivePointDataXYZ(std::array<float, 3> point )
+void polynomial3CurveFitter3::ReceivePointDataXYZ(std::array<float, 3> &point )
 {
   mSamplesXYZ.push_back(point);
   float x = point[0];
   float y = point[1];
   float z = point[2];
+  if (z<min_z)
+  {
+    min_z = z;
+    Center = {x,y,min_z };
+  }
   mXDomain[0] = std::min(x, mXDomain[0]);
   mXDomain[1] = std::max(x, mXDomain[1]);
   mYDomain[0] = std::min(y, mYDomain[0]);
@@ -122,7 +129,8 @@ bool polynomial3CurveFitter3::BeginReceiveData()
   mSamplesXYZ.clear();
   mSamplesXY.clear();
   mNumControls = (unsigned int)mSamplesXYZ.size();
-
+  min_z = FLT_MAX;
+  Center = { FLT_MAX ,FLT_MAX ,FLT_MAX };
   if (mNumControls == 0)
   {
     mXDomain[0] = std::numeric_limits<float>::max();
@@ -145,9 +153,6 @@ bool polynomial3CurveFitter3::EndReceiveData()
    mNumControls = (unsigned int)mSamplesXYZ.size();
    if (mNumControls>0)
    {
-     Center[0] = (mXDomain[0] + mXDomain[1]) /2.0;
-     Center[1] = (mYDomain[0] + mYDomain[1]) / 2.0;
-     Center[2] = (mZDomain[0] + mZDomain[1]) / 2.0;
      if (TransformSamples2Center()) // mSamplesXY 生成
      {
        CreateXYPolyline();
@@ -170,7 +175,7 @@ std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
 {
   float Y = EveluateFromX2Y(X);  // Y 也是去中心的 
   float Z = mPolynomialsXYZ->Evaluate(X, Y);
-  std::array<float, 3> point = { X, Y, Z };
+  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2] };
   return point;
 }
 
@@ -209,8 +214,9 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
   mInterprateXYZ.clear();
   for (size_t i = 0; i < mTargetPts; i++)
   {
-    float x = mXDomain[1] - Center[0] + minterval * i;
+    float x = mXDomain[0] - Center[0] + minterval * i;
     std::array<float, 3> pt =EveluateFromX2YZ(x);
+
     mInterprateXYZ.push_back(pt);
   }
   return mInterprateXYZ.size() ;

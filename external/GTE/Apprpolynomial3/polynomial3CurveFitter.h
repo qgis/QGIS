@@ -8,17 +8,18 @@
 #include <Mathematics/ApprPolynomial3.h>
 #include <Mathematics/ApprPolynomial2.h>
 #include <Mathematics/Vector3.h>
-using namespace gte;
+
 
 # define CurveFitter_EXPORT __declspec(dllimport)
-
+//using namespace gte;
 
 class CurveFitter_EXPORT polynomial3CurveFitter3
 {
 public:
-    polynomial3CurveFitter3();
+    polynomial3CurveFitter3(int sanweijie,int erweijie);
+    ~polynomial3CurveFitter3();
     bool CreateXYPolyline();
-    void ReceivePointDataXYZ(std::array<float, 3> point);
+    void ReceivePointDataXYZ(std::array<float, 3>& point);
 
 private:
 
@@ -31,14 +32,14 @@ private:
 
     int mDegree, mNumControls; 
     //std::unique_ptr<BSplineCurveFit<float>> mSpline;
-    std::unique_ptr<ApprPolynomial3<float>> mPolynomialsXYZ;
-    std::unique_ptr<ApprPolynomial2<float>> mPolynomialsXY;
+    std::unique_ptr<gte::ApprPolynomial3<float>> mPolynomialsXYZ;
+    std::unique_ptr<gte::ApprPolynomial2<float>> mPolynomialsXY;
     float mAvrError, mRmsError, minterval;
     int mTargetPts;
     std::string mMessage;
     std::array <float,3> Center;
     std::array<float, 2> mXDomain, mYDomain, mZDomain;
-  
+    float min_z;
 
 public:
   bool BeginReceiveData();
