@@ -210,7 +210,7 @@ struct LabelRenderJob
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererJob : public QObject
+class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
   public:
@@ -492,11 +492,11 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
 
     /**
-     *  This virtual method has to be implemented in derived class for starting the rendering.
+     *  This pure virtual method has to be implemented in derived class for starting the rendering.
      *  This method is called in start() method after ckecking if the map can be rendered.
      *  \since QGIS 3.20
      */
-    virtual void startPrivate() {};
+    virtual void startPrivate() = 0;
 
 };
 
@@ -509,7 +509,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob SIP_ABSTRACT
 {
     Q_OBJECT
 

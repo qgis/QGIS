@@ -28,7 +28,7 @@
  *
  * \since QGIS 3.10
  */
-class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRendererJob SIP_ABSTRACT
 {
     Q_OBJECT
   public:
