@@ -190,8 +190,8 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
 {
   QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
-  QString oldMinTextvalue = mMinLineEdit->text();
-  QString oldMaxTextvalue = mMaxLineEdit->text();
+  const QString oldMinTextvalue = mMinLineEdit->text();
+  const QString oldMaxTextvalue = mMaxLineEdit->text();
 
   if ( std::isnan( min ) )
   {
