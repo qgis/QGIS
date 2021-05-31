@@ -18,7 +18,17 @@
 #include "qgslocator.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutmanager.h"
-#include "locator/qgsinbuiltlocatorfilters.h"
+//#include "qgsactionlocatorfilter.h"
+#include "qgsactivelayerfeatureslocatorfilter.h"
+#include "qgsalllayersfeatureslocatorfilter.h"
+//#include "qgsbookmarklocatorfilter.h"
+#include "qgsexpressioncalculatorlocatorfilter.h"
+#include "qgsgotolocatorfilter.h"
+#include "qgslayertreelocatorfilter.h"
+#include "qgslayoutlocatorfilter.h"
+//#include "qgsnominatimlocatorfilter.h"
+//#include "qgssettingslocatorfilter.h"
+
 #include <QSignalSpy>
 #include <QClipboard>
 

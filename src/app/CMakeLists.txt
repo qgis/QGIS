@@ -205,7 +205,17 @@ set(QGIS_APP_SRCS
   layout/qgsreportsectionmodel.cpp
   layout/qgsreportsectionwidget.cpp
 
-  locator/qgsinbuiltlocatorfilters.cpp
+  locator/qgsactionlocatorfilter.cpp
+  locator/qgsactivelayerfeatureslocatorfilter.cpp
+  locator/qgsalllayersfeatureslocatorfilter.cpp
+  locator/qgsbookmarklocatorfilter.cpp
+  locator/qgsexpressioncalculatorlocatorfilter.cpp
+  locator/qgsgotolocatorfilter.cpp
+  locator/qgslayertreelocatorfilter.cpp
+  locator/qgslayoutlocatorfilter.cpp
+  locator/qgsnominatimlocatorfilter.cpp
+  locator/qgssettingslocatorfilter.cpp
+
   locator/qgslocatoroptionswidget.cpp
 
   maptools/qgsappmaptools.cpp
