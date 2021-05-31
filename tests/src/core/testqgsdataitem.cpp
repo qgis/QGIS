@@ -85,6 +85,7 @@ void TestQgsDataItem::initTestCase()
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
   // save current scanItemsSetting value
   QgsSettings settings;
+  settings.clear();
   mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
@@ -340,6 +341,22 @@ void TestQgsDataItem::testDirItemMonitoring()
   QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
   QVERIFY( !childItem3->isMonitored() );
   QVERIFY( !childItem3->mFileSystemWatcher );
+
+  // turn off monitoring
+  QgsSettings().setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), false );
+  dirItem->reevaluateMonitoring();
+  QVERIFY( !dirItem->isMonitored() );
+  QVERIFY( !dirItem->mFileSystemWatcher );
+  QCOMPARE( childItem1->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
+  QVERIFY( !childItem1->isMonitored() );
+  QVERIFY( !childItem1->mFileSystemWatcher );
+  QCOMPARE( childItem2->monitoring(), Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
+  QVERIFY( childItem2->isMonitored() );
+  QVERIFY( childItem2->mFileSystemWatcher );
+  QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  QVERIFY( !childItem3->isMonitored() );
+  QVERIFY( !childItem3->mFileSystemWatcher );
+  QgsSettings().setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true );
 }
 
 void TestQgsDataItem::testDirItemMonitoringSlowDrive()
