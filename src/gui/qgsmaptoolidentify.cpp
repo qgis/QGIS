@@ -537,7 +537,7 @@ QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsP
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-  if ( !layer || !layer->isSpatial() )
+  if ( !layer || !layer->isSpatial() || !layer->dataProvider() )
     return false;
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )

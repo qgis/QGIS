@@ -8742,7 +8742,7 @@ void QgisApp::fieldCalculator()
 void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter )
 {
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( !myLayer )
+  if ( !myLayer || !myLayer->dataProvider() )
   {
     return;
   }
@@ -9016,7 +9016,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
     layer = activeLayer();
   }
 
-  if ( !layer )
+  if ( !layer || !layer->dataProvider() )
     return;
 
   switch ( layer->type() )

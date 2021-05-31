@@ -34,7 +34,9 @@
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
-  mProviderFeatureSource.reset( layer->dataProvider()->featureSource() );
+  const QgsVectorDataProvider *provider = layer->dataProvider();
+  if ( provider )
+    mProviderFeatureSource.reset( provider->featureSource() );
   mFields = layer->fields();
   mId = layer->id();
 
@@ -75,7 +77,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     {
 #endif
       // If we are inside a transaction the iterator "sees" the current status
-      if ( layer->dataProvider() && ! layer->dataProvider()->transaction() )
+      if ( provider && ! provider->transaction() )
       {
         mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
         mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
@@ -293,13 +295,16 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   }
   else // no filter or filter by rect
   {
-    if ( mSource->mHasEditBuffer )
+    if ( mSource->mProviderFeatureSource )
     {
-      mChangedFeaturesIterator = mSource->mProviderFeatureSource->getFeatures( mChangedFeaturesRequest );
-    }
-    else
-    {
-      mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      if ( mSource->mHasEditBuffer )
+      {
+        mChangedFeaturesIterator = mSource->mProviderFeatureSource->getFeatures( mChangedFeaturesRequest );
+      }
+      else
+      {
+        mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      }
     }
 
     rewindEditBuffer();
@@ -437,8 +442,11 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mProviderIterator.isClosed() )
   {
     mChangedFeaturesIterator.close();
-    mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
-    mProviderIterator.setInterruptionChecker( mInterruptionChecker );
+    if ( mSource->mProviderFeatureSource )
+    {
+      mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      mProviderIterator.setInterruptionChecker( mInterruptionChecker );
+    }
   }
 
   while ( mProviderIterator.nextFeature( f ) )
