@@ -501,7 +501,7 @@ void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
 
 QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString &filterExpression )
 {
-  if ( l )
+  if ( l && l->dataProvider() )
   {
     QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
