@@ -24,6 +24,7 @@
 #include "qgsmargins.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabeling.h"
+#include "qgsmarkersymbolbounds.h"
 
 namespace pal
 {
@@ -118,21 +119,26 @@ class CORE_EXPORT QgsLabelFeature
     const QgsMargins &visualMargin() const { return mVisualMargin; }
 
     /**
-     * Sets the size of the rendered symbol associated with this feature. This size is taken into
-     * account in certain label placement modes to avoid placing labels over the rendered
+     * Sets the bounds of the rendered marker symbol associated with this feature.
+     *
+     * These bounds are taken into account in certain label placement modes to avoid placing labels over the rendered
      * symbol for this feature.
-     * \see symbolSize()
+     *
+     * \see markerSymbolBounds()
+     * \since QGIS 3.20
      */
-    void setSymbolSize( QSizeF size ) { mSymbolSize = size; }
+    void setMarkerSymbolBounds( const QgsMarkerSymbolBounds &bounds ) { mMarkerSymbolBounds = bounds; }
 
     /**
-     * Returns the size of the rendered symbol associated with this feature, if applicable.
-     * This size is taken into account in certain label placement modes to avoid placing labels over
-     * the rendered symbol for this feature. The size will only be set for labels associated
-     * with a point feature.
-     * \see symbolSize()
+     * Returns the bounds of the rendered marker symbol associated with this feature.
+     *
+     * These bounds are taken into account in certain label placement modes to avoid placing labels over the rendered
+     * symbol for this feature.
+     *
+     * \see setMarkerSymbolBounds()
+     * \since QGIS 3.20
      */
-    const QSizeF &symbolSize() const { return mSymbolSize; }
+    const QgsMarkerSymbolBounds &markerSymbolBounds() const { return mMarkerSymbolBounds; }
 
     /**
      * Returns the feature's labeling priority.
@@ -560,6 +566,10 @@ class CORE_EXPORT QgsLabelFeature
     QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
     QSizeF mSymbolSize;
+
+    //! Bounds of associated rendered marker symbol, if applicable
+    QgsMarkerSymbolBounds mMarkerSymbolBounds;
+
     //! Priority of the label
     double mPriority = -1;
     //! Z-index of label (higher z-index labels are rendered on top of lower z-index labels)

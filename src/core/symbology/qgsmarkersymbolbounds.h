@@ -59,11 +59,43 @@ class CORE_EXPORT QgsMarkerSymbolBounds
     void unite( const QgsMarkerSymbolBounds &other )
     {
       mBoundingBox = mBoundingBox.united( other.boundingBox() );
+      if ( other.shape() == Rectangle )
+        mShape = Rectangle;
     }
+
+#ifndef SIP_RUN
+
+    /**
+     * Symbol shape.
+     *
+     * \note Not available in Python bindings
+     */
+    enum Shape
+    {
+      Rectangle, //!< Rectangle
+      Ellipse, //!< Ellipse
+    };
+
+    /**
+     * Sets the marker bounds \a shape.
+     *
+     * \note Not available in Python bindings
+     */
+    void setShape( Shape shape ) { mShape = shape; }
+
+    /**
+     * Returns the marker bounds shape.
+     *
+     * \note Not available in Python bindings
+     */
+    Shape shape() const { return mShape; }
+
+#endif
 
   private:
 
     QRectF mBoundingBox;
+    Shape mShape = Rectangle;
 
 };
 

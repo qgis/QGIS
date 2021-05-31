@@ -275,6 +275,8 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
+    virtual QgsMarkerSymbolBounds symbolBounds( QPointF, QgsSymbolRenderContext &context );
+
     virtual QColor fillColor() const;
     virtual void setFillColor( const QColor &color );
     virtual void setColor( const QColor &color );

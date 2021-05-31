@@ -2556,9 +2556,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setMinimumSize( minimumSize );
   if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
-    //register symbol size
-    labelFeature->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
-                                         obstacleGeometry.boundingBox().height() ) );
+    //register marker symbol bounds. Use the transformed obstacleGeometry to do this,
+    //as it's already been transformed into map units
+    QgsMarkerSymbolBounds bounds = properties.markerBounds;
+    bounds.setBoundingBox( obstacleGeometry.boundingBox().toRectF() );
+    labelFeature->setMarkerSymbolBounds( bounds );
   }
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent

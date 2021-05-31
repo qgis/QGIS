@@ -263,6 +263,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
     bool usesMapUnits() const override;
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
+    QgsMarkerSymbolBounds symbolBounds( QPointF, QgsSymbolRenderContext &context ) override;
     QColor fillColor() const override { return mColor; }
     void setFillColor( const QColor &color ) override { mColor = color; }
     void setColor( const QColor &color ) override;

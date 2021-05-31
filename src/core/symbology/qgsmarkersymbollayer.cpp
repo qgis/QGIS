@@ -1689,6 +1689,51 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   return symbolBounds;
 }
 
+QgsMarkerSymbolBounds QgsSimpleMarkerSymbolLayer::symbolBounds( QPointF point, QgsSymbolRenderContext &context )
+{
+  QgsMarkerSymbolBounds res;
+  res.setBoundingBox( bounds( point, context ) );
+
+  switch ( mShape )
+  {
+    case QgsSimpleMarkerSymbolLayerBase::Circle:
+    case QgsSimpleMarkerSymbolLayerBase::SemiCircle:
+    case QgsSimpleMarkerSymbolLayerBase::ThirdCircle:
+    case QgsSimpleMarkerSymbolLayerBase::QuarterCircle:
+      res.setShape( QgsMarkerSymbolBounds::Ellipse );
+      break;
+
+    case QgsSimpleMarkerSymbolLayerBase::Square:
+    case QgsSimpleMarkerSymbolLayerBase::Diamond:
+    case QgsSimpleMarkerSymbolLayerBase::Pentagon:
+    case QgsSimpleMarkerSymbolLayerBase::Hexagon:
+    case QgsSimpleMarkerSymbolLayerBase::Triangle:
+    case QgsSimpleMarkerSymbolLayerBase::EquilateralTriangle:
+    case QgsSimpleMarkerSymbolLayerBase::Star:
+    case QgsSimpleMarkerSymbolLayerBase::Arrow:
+    case QgsSimpleMarkerSymbolLayerBase::Cross:
+    case QgsSimpleMarkerSymbolLayerBase::CrossFill:
+    case QgsSimpleMarkerSymbolLayerBase::Cross2:
+    case QgsSimpleMarkerSymbolLayerBase::Line:
+    case QgsSimpleMarkerSymbolLayerBase::ArrowHead:
+    case QgsSimpleMarkerSymbolLayerBase::ArrowHeadFilled:
+    case QgsSimpleMarkerSymbolLayerBase::QuarterSquare:
+    case QgsSimpleMarkerSymbolLayerBase::HalfSquare:
+    case QgsSimpleMarkerSymbolLayerBase::DiagonalHalfSquare:
+    case QgsSimpleMarkerSymbolLayerBase::RightHalfTriangle:
+    case QgsSimpleMarkerSymbolLayerBase::LeftHalfTriangle:
+    case QgsSimpleMarkerSymbolLayerBase::Octagon:
+    case QgsSimpleMarkerSymbolLayerBase::SquareWithCorners:
+    case QgsSimpleMarkerSymbolLayerBase::AsteriskFill:
+    case QgsSimpleMarkerSymbolLayerBase::HalfArc:
+    case QgsSimpleMarkerSymbolLayerBase::ThirdArc:
+    case QgsSimpleMarkerSymbolLayerBase::QuarterArc:
+      break;
+  }
+
+  return res;
+}
+
 void QgsSimpleMarkerSymbolLayer::setColor( const QColor &color )
 {
   if ( shapeIsFilled( mShape ) )

@@ -430,18 +430,32 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   return std::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this, false, LabelPosition::QuadrantOver );
 }
 
-void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset )
+void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, const QgsMarkerSymbolBounds *symbolBounds )
 {
   double alpha = 0.0;
   double deltaX = 0;
   double deltaY = 0;
+
+  double symbolWidthOffset = ( symbolBounds ? symbolBounds->boundingBox().width() / 2.0 : 0.0 );
+  double symbolHeightOffset = ( symbolBounds ? symbolBounds->boundingBox().height() / 2.0 : 0.0 );
+
   switch ( position )
   {
     case QgsPalLayerSettings::TopLeft:
       quadrant = LabelPosition::QuadrantAboveLeft;
       alpha = 3 * M_PI_4;
-      deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
-      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      deltaX = -labelWidth + visualMargin.right();
+      deltaY = -visualMargin.bottom();
+      if ( symbolBounds && symbolBounds->shape() == QgsMarkerSymbolBounds::Ellipse )
+      {
+        deltaX += symbolWidthOffset * std::cos( 135 * M_PI / 180.0 );
+        deltaY += symbolHeightOffset * std::sin( 135 * M_PI / 180.0 ) ;
+      }
+      else
+      {
+        deltaX -= symbolWidthOffset;
+        deltaY += symbolHeightOffset;
+      }
       break;
 
     case QgsPalLayerSettings::TopSlightlyLeft:
@@ -468,8 +482,20 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
     case QgsPalLayerSettings::TopRight:
       quadrant = LabelPosition::QuadrantAboveRight;
       alpha = M_PI_4;
-      deltaX = - visualMargin.left() + symbolWidthOffset;
-      deltaY = -visualMargin.bottom() + symbolHeightOffset;
+      deltaX = - visualMargin.left();
+      deltaY = -visualMargin.bottom();
+
+      if ( symbolBounds && symbolBounds->shape() == QgsMarkerSymbolBounds::Ellipse )
+      {
+        deltaX += symbolWidthOffset * std::cos( 45 * M_PI / 180.0 );
+        deltaY += symbolHeightOffset * std::sin( 45 * M_PI / 180.0 ) ;
+      }
+      else
+      {
+        deltaX += symbolWidthOffset;
+        deltaY += symbolHeightOffset;
+      }
+
       break;
 
     case QgsPalLayerSettings::MiddleLeft:
@@ -489,8 +515,20 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
     case QgsPalLayerSettings::BottomLeft:
       quadrant = LabelPosition::QuadrantBelowLeft;
       alpha = 5 * M_PI_4;
-      deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
-      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      deltaX = -labelWidth + visualMargin.right();
+      deltaY = -labelHeight + visualMargin.top();
+
+      if ( symbolBounds && symbolBounds->shape() == QgsMarkerSymbolBounds::Ellipse )
+      {
+        deltaX += symbolWidthOffset * std::cos( 225 * M_PI / 180.0 );
+        deltaY += symbolHeightOffset * std::sin( 225 * M_PI / 180.0 ) ;
+      }
+      else
+      {
+        deltaX -= symbolWidthOffset;
+        deltaY -= symbolHeightOffset;
+      }
+
       break;
 
     case QgsPalLayerSettings::BottomSlightlyLeft:
@@ -517,8 +555,20 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
     case QgsPalLayerSettings::BottomRight:
       quadrant = LabelPosition::QuadrantBelowRight;
       alpha = 7 * M_PI_4;
-      deltaX = -visualMargin.left() + symbolWidthOffset;
-      deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
+      deltaX = -visualMargin.left();
+      deltaY = -labelHeight + visualMargin.top();
+
+      if ( symbolBounds && symbolBounds->shape() == QgsMarkerSymbolBounds::Ellipse )
+      {
+        deltaX += symbolWidthOffset * std::cos( 315 * M_PI / 180.0 );
+        deltaY += symbolHeightOffset * std::sin( 315 * M_PI / 180.0 ) ;
+      }
+      else
+      {
+        deltaX += symbolWidthOffset;
+        deltaY -= symbolHeightOffset;
+      }
+
       break;
   }
 
@@ -538,8 +588,8 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
   double distanceToLabel = getLabelDistance();
   const QgsMargins &visualMargin = mLF->visualMargin();
 
-  double symbolWidthOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
-  double symbolHeightOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
+  const QgsMarkerSymbolBounds &symbolBounds = mLF->markerSymbolBounds();
+  const bool useSymbolBounds = mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds;
 
   double cost = 0.0001;
   std::size_t i = lPos.size();
@@ -552,7 +602,7 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
 
     double labelX = 0;
     double labelY = 0;
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, symbolWidthOffset, symbolHeightOffset );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel, visualMargin, useSymbolBounds ? &symbolBounds : nullptr );
 
     if ( ! mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), labelX, labelY, labelWidth, labelHeight, angle ) )
     {
@@ -1826,7 +1876,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
 
     // Satisfy R2: Label should be placed entirely outside at some distance from the area feature.
-    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, 0, 0 );
+    createCandidateAtOrderedPositionOverPoint( labelX, labelY, quadrant, x, y, labelWidth, labelHeight, position, distanceToLabel * 0.5, visualMargin, nullptr );
 
     std::unique_ptr< LabelPosition > candidate = std::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, labelAngle, 0, this, false, quadrant );
     if ( candidate->intersects( preparedBuffer.get() ) )

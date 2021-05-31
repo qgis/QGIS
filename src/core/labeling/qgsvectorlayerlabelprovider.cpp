@@ -230,21 +230,20 @@ void QgsVectorLayerLabelProvider::addPointSymbolProperties( QgsLabelProviderFeat
     context.mapToPixel().transformInPlace( x, y );
 
     QPointF pt( x, y );
-    QgsMarkerSymbolBounds overallBounds;
     for ( QgsSymbol *symbol : symbols )
     {
       if ( symbol->type() == Qgis::SymbolType::Marker )
       {
         const QgsMarkerSymbolBounds symbolBounds = qgis::down_cast< QgsMarkerSymbol * >( symbol )->symbolBounds( pt, context, fet );
-        if ( !overallBounds.isNull() )
-          overallBounds.unite( symbolBounds );
+        if ( !properties.markerBounds.isNull() )
+          properties.markerBounds.unite( symbolBounds );
         else
-          overallBounds = symbolBounds;
+          properties.markerBounds = symbolBounds;
       }
     }
 
     //convert bounds to a geometry
-    const QRectF bounds = overallBounds.boundingBox();
+    const QRectF bounds = properties.markerBounds.boundingBox();
     QVector< double > bX;
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;

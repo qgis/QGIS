@@ -828,6 +828,32 @@ QRectF QgsEllipseSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &con
   return symbolBounds;
 }
 
+QgsMarkerSymbolBounds QgsEllipseSymbolLayer::symbolBounds( QPointF point, QgsSymbolRenderContext &context )
+{
+  QgsMarkerSymbolBounds res;
+  res.setBoundingBox( bounds( point, context ) );
+
+  switch ( mShape )
+  {
+    case QgsEllipseSymbolLayer::Circle:
+      res.setShape( QgsMarkerSymbolBounds::Ellipse );
+      break;
+
+    case QgsEllipseSymbolLayer::Rectangle:
+    case QgsEllipseSymbolLayer::Diamond:
+    case QgsEllipseSymbolLayer::Cross:
+    case QgsEllipseSymbolLayer::Arrow:
+    case QgsEllipseSymbolLayer::HalfArc:
+    case QgsEllipseSymbolLayer::Triangle:
+    case QgsEllipseSymbolLayer::RightHalfTriangle:
+    case QgsEllipseSymbolLayer::LeftHalfTriangle:
+    case QgsEllipseSymbolLayer::SemiCircle:
+      break;
+  }
+
+  return res;
+}
+
 bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
   //width

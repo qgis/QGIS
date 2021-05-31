@@ -22,6 +22,7 @@
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
 #include "qgstextrenderer.h"
+#include "qgsmarkersymbolbounds.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;
@@ -53,6 +54,11 @@ class CORE_EXPORT QgsLabelProviderFeatureProperties
      * \warning ownership is not transferred - the symbol must exist until after labeling is complete.
      */
     const QgsSymbol *symbol = nullptr;
+
+    /**
+     * Marker symbol bounds, for features represented by a marker symbol.
+     */
+    QgsMarkerSymbolBounds markerBounds;
 
 };
 

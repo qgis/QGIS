@@ -239,7 +239,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
-
+    QgsMarkerSymbolBounds symbolBounds( QPointF, QgsSymbolRenderContext &context ) override;
   private:
     Shape mShape = Circle;
     double mSymbolWidth = 4;

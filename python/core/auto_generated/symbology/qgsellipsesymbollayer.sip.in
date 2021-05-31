@@ -292,6 +292,7 @@ Returns the units for the symbol's stroke width.
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
+    virtual QgsMarkerSymbolBounds symbolBounds( QPointF, QgsSymbolRenderContext &context );
 
 };
 

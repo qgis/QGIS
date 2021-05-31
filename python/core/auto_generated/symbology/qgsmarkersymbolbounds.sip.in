@@ -48,6 +48,7 @@ the extent of the rendered symbol.
 Unites these bounds with an ``other`` bounds.
 %End
 
+
 };
 
 
