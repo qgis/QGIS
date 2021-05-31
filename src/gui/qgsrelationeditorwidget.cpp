@@ -625,11 +625,11 @@ QVariantMap QgsRelationEditorConfigWidget::config()
   QgsRelationEditorWidget::Buttons buttons;
   buttons.setFlag( QgsRelationEditorWidget::Button::Link, mRelationShowLinkCheckBox->isChecked() );
   buttons.setFlag( QgsRelationEditorWidget::Button::Unlink, mRelationShowUnlinkCheckBox->isChecked() );
+  buttons.setFlag( QgsRelationEditorWidget::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
   buttons.setFlag( QgsRelationEditorWidget::Button::AddChildFeature, mRelationShowAddChildCheckBox->isChecked() );
   buttons.setFlag( QgsRelationEditorWidget::Button::DuplicateChildFeature, mRelationShowDuplicateChildFeatureCheckBox->isChecked() );
-  buttons.setFlag( QgsRelationEditorWidget::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
   buttons.setFlag( QgsRelationEditorWidget::Button::DeleteChildFeature, mRelationDeleteChildFeatureCheckBox->isChecked() );
-  buttons.setFlag( QgsRelationEditorWidget::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
+  buttons.setFlag( QgsRelationEditorWidget::Button::ZoomToChildFeature, mRelationShowZoomToFeatureCheckBox->isChecked() );
 
   return QVariantMap(
   {

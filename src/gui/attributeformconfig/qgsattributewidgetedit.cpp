@@ -160,6 +160,7 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelat
   QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
   relEdCfg.mRelationWidgetType = mWidgetTypeComboBox->currentData().toString();
   relEdCfg.mRelationWidgetConfig = mConfigWidget->config();
+  relEdCfg.buttons = qgsFlagKeysToValue( relEdCfg.mRelationWidgetConfig.value( QStringLiteral( "buttons" ) ).toString(), QgsAttributeEditorRelation::Button::AllButtons );
   relEdCfg.nmRelationId = mRelationCardinalityCombo->currentData();
   relEdCfg.forceSuppressFormPopup = mRelationForceSuppressFormPopupCheckBox->isChecked();
   relEdCfg.label = mRelationLabelEdit->text();

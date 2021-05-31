@@ -106,6 +106,16 @@ QString QgsAttributeEditorRelation::typeIdentifier() const
   return QStringLiteral( "attributeEditorRelation" );
 }
 
+QgsAttributeEditorRelation::Buttons QgsAttributeEditorRelation::visibleButtons() const
+{
+  return mButtons;
+}
+
+void QgsAttributeEditorRelation::setVisibleButtons( const Buttons &buttons )
+{
+  mButtons = buttons;
+}
+
 void QgsAttributeEditorRelation::setForceSuppressFormPopup( bool forceSuppressFormPopup )
 {
   mForceSuppressFormPopup = forceSuppressFormPopup;
@@ -154,4 +164,6 @@ QVariantMap QgsAttributeEditorRelation::relationEditorConfiguration() const
 void QgsAttributeEditorRelation::setRelationEditorConfiguration( const QVariantMap &config )
 {
   mRelationEditorConfig = config;
+  QString buttonString = config.value( QStringLiteral( "buttons" ) ).toString();
+  setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
 }

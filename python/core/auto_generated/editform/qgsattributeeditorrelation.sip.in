@@ -160,6 +160,20 @@ Sets the relation editor configuration
 .. versionadded:: 3.18
 %End
 
+    Buttons visibleButtons() const;
+%Docstring
+Returns the relation editor visible buttons
+
+.. versionadded:: 3.20
+%End
+
+    void setVisibleButtons( const Buttons &buttons );
+%Docstring
+Sets the relation editor visible ``buttons``
+
+.. versionadded:: 3.20
+%End
+
 };
 
 QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation::Button f1, QFlags<QgsAttributeEditorRelation::Button> f2);

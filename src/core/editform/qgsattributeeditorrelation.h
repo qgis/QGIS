@@ -177,6 +177,20 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     void setRelationEditorConfiguration( const QVariantMap &config );
 
+    /**
+     * Returns the relation editor visible buttons
+     *
+     * \since QGIS 3.20
+     */
+    Buttons visibleButtons() const;
+
+    /**
+     * Sets the relation editor visible \a buttons
+     *
+     * \since QGIS 3.20
+     */
+    void setVisibleButtons( const Buttons &buttons );
+
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element, const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
