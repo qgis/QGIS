@@ -369,3 +369,8 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+if((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  file(GLOB PY_PYIS ${QGIS_PYTHON_OUTPUT_DIRECTORY}/*.pyi)
+  install(FILES ${PY_PYIS} DESTINATION ${QGIS_PYTHON_DIR})
+endif()

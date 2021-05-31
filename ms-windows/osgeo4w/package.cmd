@@ -334,6 +334,7 @@ if errorlevel 1 (echo tar common failed & goto error)
 	"apps/%PACKAGENAME%/resources/server/" ^
 	"apps/%PACKAGENAME%/server/" ^
 	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.pyi" ^
 	"apps/%PACKAGENAME%/python/qgis/server/" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
@@ -369,6 +370,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyi" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
 	--exclude "apps/%PACKAGENAME%/server/" ^
