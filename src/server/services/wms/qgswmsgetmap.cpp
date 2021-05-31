@@ -32,6 +32,13 @@ namespace QgsWms
                     const QString &, const QgsServerRequest &request,
                     QgsServerResponse &response )
   {
+    // version is mandatory for getmap requests
+    if ( request.serverParameters().version().isEmpty() )
+    {
+      throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                 QStringLiteral( "Please add the value of the VERSION parameter" ), 501 );
+    }
+
     // get wms parameters from query
     const QgsWmsParameters parameters( QUrlQuery( request.url() ) );
 
