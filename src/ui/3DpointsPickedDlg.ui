@@ -165,7 +165,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="pushButton_save">
         <property name="text">
          <string>单独保存</string>
         </property>

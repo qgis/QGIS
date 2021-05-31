@@ -327,7 +327,7 @@ void QgsDLWindowDockWidget::OnMultiPolygonSelectiononprofileClciekd()
   mMapCanvas->resetState();
   mMapCanvas->StartProfileviewMode();
   mMapCanvas->StartInterpretMode(3); //1 ,2
-  m_rule = QString("polygon");
+  m_rule = QString("multipolygon");
 
 }
 
@@ -336,7 +336,7 @@ void QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked()
   mMapCanvas->resetState();
   mMapCanvas->StartProfileviewMode();
   mMapCanvas->StartInterpretMode(3); //1 ,2
-  m_rule = QString("multipolygon");
+  m_rule = QString("polygon");
 
 }
 void QgsDLWindowDockWidget::OnmActionPickPoints()
@@ -449,10 +449,14 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
   this->resetToolButton->setEnabled(true);
   this->alignedPointsTableView->sortByColumn(1, Qt::AscendingOrder); // x 列按照升序排序
   this->alignedPointsTableView->setSortingEnabled(true);
+  this->pushButton_save->setEnabled(false);
+
   connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
   connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetClicked);
   connect(pushButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::onGenerateData);
   connect(pushButton_queren, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnAcceptTemp_jiamidian);
+  connect(pushButton_save, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnPushButton_save);
+  
 };
 
 void QgsPcdpickeddlgWindowDockWidget::setModel(QAbstractItemModel *model)
@@ -501,6 +505,7 @@ std::string convertDoubleToString(const float value, const int precision = 0)
 
 void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
 {
+
   std::vector<ModelItem> pointsdata= dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->getModelData();
    int sanweijie = this->spinBox->value();
    int erweijie = this->spinBox_2->value();
@@ -532,6 +537,11 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
     }
 
     int numpts = Fiter_Ptr->SetInterVal(0.05);
+    if (numpts)
+    {
+      this->pushButton->setEnabled(true);
+    }
+   
     if (numpts <1)
     {
       //TODO::弹出报警框
@@ -550,7 +560,11 @@ void QgsPcdpickeddlgWindowDockWidget:: onGenerateData()
   {
      temp_jiamidian.clear();
      temp_jiamidian = Fiter_Ptr->GetGeneratedPoints();
+     this->pushButton_queren->setEnabled(true);
+     this->pushButton->setEnabled(false);
+     this->pushButton_save->setEnabled(true);
   }
+
   // todo:: 推送到 opengl窗口 进行显示(使用红色） ，暂时不保存。
   //确认接受后，push到 全局加密点  
 }
@@ -564,10 +578,21 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
       global_jiamidian.push_back(pt);
     }
     temp_jiamidian.clear();
+    this->pushButton_queren->setEnabled(false);
+    this->pushButton_save->setEnabled(false);
   }
   else
   {
     //TODO::弹出 警告框
+  }
+}
+
+void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
+{
+  std::string filename("temp_save.txt");
+  if (temp_jiamidian.size()>1)
+  {
+    this->savepoints(temp_jiamidian, filename);
   }
 }
 

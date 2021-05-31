@@ -55,6 +55,9 @@ polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , b
 
     mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(erweijie);
 
+    mPolynomialsXYError = std::make_unique<ApprPolynomial3<float>>(3,3);
+
+
     mXDomain[0] = std::numeric_limits<float>::max();
     mXDomain[1] = -mXDomain[0];
     mYDomain[0] = std::numeric_limits<float>::max();
@@ -190,19 +193,34 @@ std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
 {
   float Y = EveluateFromX2Y(X);  // Y 也是去中心的
   float Z = -999;
-  /*
-    if (mUseSpecial)
-  {
-   Z= std::make_shared<ApprPolynomialSpecial3<float>>(mPolynomialsXYZ)->Evaluate(X, Y);
-  }
-  else
-  {
-   Z = std::make_shared<ApprPolynomial3<float>>(mPolynomialsXYZ)->Evaluate(X, Y);
-  }
-  */
   Z =mPolynomialsXYZ->Evaluate(X, Y);
-  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2] };
+  float z_error = mPolynomialsXYError->Evaluate(X, Y);
+  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2]- z_error };
   return point;
+}
+
+bool polynomial3CurveFitter3::EveluateErrorFromXY()
+{
+  mSamplesXYError.clear();
+  for (std::array<float, 3> point :   mSamplesXYZ)
+  {
+   // todo::  误差拟合
+   float errorZ = mPolynomialsXYZ->Error(point);
+
+   std::array<float, 3> pointError = { point[0],point[1],errorZ };
+
+   mSamplesXYError.push_back(pointError);
+  }
+  if (mSamplesXYError.size() == mSamplesXYZ.size())
+  {
+    
+    bool isfit = mPolynomialsXYError->Fit(mSamplesXYError);
+    if (isfit)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 
@@ -238,10 +256,12 @@ bool polynomial3CurveFitter3::TransformSamples2Center()
 int polynomial3CurveFitter3::GenerateXYZSeries()
 {
   mInterprateXYZ.clear();
+  EveluateErrorFromXY();
+
   for (size_t i = 0; i < mTargetPts; i++)
   {
     float percent = float((i+0.01) / mTargetPts);
-    if (percent > 0.15 && percent<0.85)
+    if (percent >= 0.02 && percent<=0.98)
     {
       float x = mXDomain[0] - Center[0] + minterval * i;
       std::array<float, 3> pt = EveluateFromX2YZ(x);
@@ -259,7 +279,7 @@ int polynomial3CurveFitter3::SetInterVal(float interval)
   minterval = interval;
   float delata = mXDomain[1] - mXDomain[0];
   int numpts =int(delata / minterval);
- // mTargetPts = numpts;
+  mTargetPts = numpts;
   return numpts;
 }
 

@@ -140,7 +140,7 @@ public slots:
 
   void OnAcceptTemp_jiamidian();
 
-
+  void OnPushButton_save();
 };
 
 class APP_EXPORT QgsDLWindowDockWidget : public QgsDockWidget, private Ui::QgsDLWindowDockWidgetBase

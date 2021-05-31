@@ -27,6 +27,7 @@ private:
     void LoadDataTest();
     bool CreateXYZPolyline();
     std::vector<std::array<float, 3>> mSamplesXYZ;
+    std::vector<std::array<float, 3>> mSamplesXYError;
     std::vector<std::array<float, 2>> mSamplesXY;
 
     std::vector<std::array<float, 3>> mInterprateXYZ; // 内插结果
@@ -34,6 +35,10 @@ private:
     int mDegree, mNumControls; 
     std::shared_ptr<gte::ApprQuery<float, std::array<float, 3>>> mPolynomialsXYZ;
     std::shared_ptr<gte::ApprPolynomial2<float>> mPolynomialsXY;
+
+    std::shared_ptr<gte::ApprPolynomial3<float>> mPolynomialsXYError;
+
+
     float mAvrError, mRmsError, minterval;
     int mTargetPts;
     std::string mMessage;
@@ -41,6 +46,7 @@ private:
     std::array<float, 2> mXDomain, mYDomain, mZDomain;
     float min_z;
     bool mUseSpecial;
+    bool EveluateErrorFromXY();
 
 public:
   bool BeginReceiveData();
