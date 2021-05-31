@@ -30,6 +30,12 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 
   public:
 
+    enum ContextMenuEntry
+    {
+      NoEntry,
+      OpenForm
+    };
+
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsActiveLayerFeaturesLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "features" ); }
@@ -40,6 +46,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+    void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
     bool hasConfigWidget() const override {return true;}
     void openConfigWidget( QWidget *parent ) override;
 
@@ -63,6 +70,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QgsFeatureIterator mDisplayTitleIterator;
     QgsFeatureIterator mFieldIterator;
     QString mLayerId;
+    bool mLayerIsSpatial = false;
     QIcon mLayerIcon;
     QStringList mAttributeAliases;
     QStringList mFieldsCompletion;
