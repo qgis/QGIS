@@ -112,6 +112,21 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
 
   QList<QgsColorRampShader::ColorRampItem> newColorRampItems = newColorRampShader->colorRampItemList();
   QCOMPARE( newColorRampItems.at( 0 ).label, QStringLiteral( "zero" ) );
+
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
+
+  // change the min/max
+  widget.loadMinMax( 1, min + 1.0, max - 1.0 );
+
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( min + 1.0 ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( max - 1.0 ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );
+  QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
+  QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
 }
 
 
