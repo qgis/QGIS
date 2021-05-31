@@ -38,9 +38,7 @@
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
   , mDirPath( path )
-  , mRefreshLater( false )
 {
-  mType = Qgis::BrowserItemType::Directory;
   init();
 }
 
@@ -49,8 +47,15 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
                                     const QString &providerKey )
   : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path, providerKey )
   , mDirPath( dirPath )
-  , mRefreshLater( false )
 {
+  init();
+}
+
+void QgsDirectoryItem::init()
+{
+  mType = Qgis::BrowserItemType::Directory;
+  setToolTip( QDir::toNativeSeparators( mDirPath ) );
+
   QgsSettings settings;
 
   mMonitoring = monitoringForPath( mDirPath );
@@ -76,14 +81,6 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
     mIconColor = QColor( colorString );
   }
   settings.endGroup();
-
-  mType = Qgis::BrowserItemType::Directory;
-  init();
-}
-
-void QgsDirectoryItem::init()
-{
-  setToolTip( QDir::toNativeSeparators( mDirPath ) );
 }
 
 void QgsDirectoryItem::reevaluateMonitoring()
@@ -455,8 +452,9 @@ bool QgsDirectoryItem::pathShouldByMonitoredByDefault( const QString &path )
   if ( QgsFileUtils::pathIsSlowDevice( path ) )
     return false;
 
-  // paths are monitored by default if no explicit setting is in place
-  return true;
+  // paths are monitored by default if no explicit setting is in place, and the user hasn't
+  // completely opted out of all browser monitoring
+  return QgsSettings().value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool();
 }
 
 void QgsDirectoryItem::childrenCreated()

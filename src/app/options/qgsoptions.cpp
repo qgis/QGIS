@@ -475,6 +475,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
+  mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
+
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() );
 
@@ -1584,6 +1586,8 @@ void QgsOptions::saveOptions()
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
                        cmbScanZipInBrowser->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), mCheckMonitorDirectories->isChecked() );
+
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
   mSettings->setValue( QStringLiteral( "/qgis/legendsymbolMinimumSize" ), mLegendSymbolMinimumSizeSpinBox->value() );

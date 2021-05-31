@@ -186,13 +186,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      */
     void setMonitoring( Qgis::BrowserDirectoryMonitoring monitoring );
 
-  public slots:
-    void childrenCreated() override;
-    void directoryChanged();
-
-  protected:
-    void init();
-
     /**
      * Re-evaluate whether the directory item should be monitored for changes.
      *
@@ -201,6 +194,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \since QGIS 3.20
      */
     void reevaluateMonitoring() SIP_SKIP;
+
+  public slots:
+    void childrenCreated() override;
+    void directoryChanged();
+
+  protected:
+    void init();
 
     QString mDirPath;
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     Qgis::BrowserDirectoryMonitoring mMonitoring = Qgis::BrowserDirectoryMonitoring::Default;
     bool mMonitored = true;
     QFileSystemWatcher *mFileSystemWatcher = nullptr;
-    bool mRefreshLater;
+    bool mRefreshLater = false;
     QDateTime mLastScan;
     QColor mIconColor;
 

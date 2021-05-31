@@ -181,6 +181,7 @@ This is a persistent setting, which is saved in QSettings.
 .. versionadded:: 3.20
 %End
 
+
   public slots:
     virtual void childrenCreated();
 
@@ -188,7 +189,6 @@ This is a persistent setting, which is saved in QSettings.
 
   protected:
     void init();
-
 
 
 };

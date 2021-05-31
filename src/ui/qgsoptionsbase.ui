@@ -2136,25 +2136,8 @@
                   <string>Data Source Handling</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Prompt for sublayers when opening</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>Scan for valid items in the browser dock</string>
-                    </property>
-                   </widget>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
                   </item>
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
@@ -2166,6 +2149,13 @@
                       <string/>
                      </property>
                     </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
                    </widget>
                   </item>
                   <item row="1" column="1">
@@ -2181,13 +2171,30 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Prompt for sublayers when opening</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_29">
                     <property name="text">
                      <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mCheckMonitorDirectories">
+                    <property name="text">
+                     <string>Automatically refresh directories in browser dock when their contents change</string>
                     </property>
                    </widget>
                   </item>
@@ -6338,6 +6345,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptSublayers</tabstop>
+  <tabstop>mCheckMonitorDirectories</tabstop>
   <tabstop>mLocalizedDataPathAddButton</tabstop>
   <tabstop>mLocalizedDataPathRemoveButton</tabstop>
   <tabstop>mLocalizedDataPathUpButton</tabstop>
@@ -6484,6 +6492,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
   <tabstop>mCbEarlyResampling</tabstop>
+  <tabstop>mCrsAccuracySpin</tabstop>
+  <tabstop>mCrsAccuracyIndicatorCheck</tabstop>
+  <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
+  <tabstop>mLegendSymbolMaximumSizeSpinBox</tabstop>
+  <tabstop>mDefaultMValueSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
