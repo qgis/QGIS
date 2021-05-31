@@ -290,7 +290,7 @@ QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelatio
   QList<QgsRelation> result;
   for ( const QgsVectorLayer *layer : std::as_const( layers ) )
   {
-    if (  const QgsVectorDataProvider *provider = layer->dataProvider() )
+    if ( const QgsVectorDataProvider *provider = layer->dataProvider() )
     {
       const auto constDiscoverRelations = provider->discoverRelations( layer, layers );
       for ( const QgsRelation &relation : constDiscoverRelations )
