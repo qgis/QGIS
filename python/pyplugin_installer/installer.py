@@ -523,7 +523,7 @@ class QgsPluginInstaller(QObject):
         self.reloadAndExportData()
 
     # ----------------------------------------- #
-    def deleteRepository(self, reposName):
+    def deleteRepository(self, reposName: str):
         """ delete repository connection """
         if not reposName:
             return
