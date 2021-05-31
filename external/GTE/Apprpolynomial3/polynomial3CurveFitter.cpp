@@ -30,14 +30,29 @@ void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float
     file.close();
 }
 
-polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie)
+polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , bool usespecial)
     : mDegree(2),
-      mPolynomialsXYZ(nullptr),
-      mPolynomialsXY(nullptr),
-      mAvrError(0.0f),
-      mRmsError(0.0f)
+    mPolynomialsXYZ(nullptr),
+    mPolynomialsXY(nullptr),
+    mAvrError(0.0f),
+    mRmsError(0.0f),
+    mUseSpecial(usespecial)
 {
-    mPolynomialsXYZ = std::make_unique<ApprPolynomial3<float>>(sanweijie, sanweijie);
+     std::vector<int> degrees;
+     for (size_t i = 0; i < sanweijie+1; i++)
+     {
+       degrees.push_back(i);
+     }
+
+    if (usespecial)
+    {
+      mPolynomialsXYZ = (std::make_shared<ApprPolynomialSpecial3<float>>(degrees, degrees));
+    }
+    else
+    {
+     mPolynomialsXYZ =  std::make_shared<ApprPolynomial3<float>>(sanweijie, sanweijie);
+    }
+
     mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(erweijie);
 
     mXDomain[0] = std::numeric_limits<float>::max();
@@ -67,8 +82,8 @@ bool polynomial3CurveFitter3::CreateXYZPolyline()
     bool isfit = mPolynomialsXYZ->Fit(mSamplesXYZ);
     if (isfit)
     {
-      std::vector<float> parameters = mPolynomialsXYZ->GetParameters();
     #ifdef DEBUG
+      //  std::vector<float> parameters = mPolynomialsXYZ->GetParameters();
           for (size_t i = 0; i < parameters.size(); i++)
           {
             std::cout << parameters.at(i) << std::endl;
@@ -173,8 +188,19 @@ bool polynomial3CurveFitter3::EndReceiveData()
 // 调用之前应该  确保已经对X进行去中心处理 
 std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
 {
-  float Y = EveluateFromX2Y(X);  // Y 也是去中心的 
-  float Z = mPolynomialsXYZ->Evaluate(X, Y);
+  float Y = EveluateFromX2Y(X);  // Y 也是去中心的
+  float Z = -999;
+  /*
+    if (mUseSpecial)
+  {
+   Z= std::make_shared<ApprPolynomialSpecial3<float>>(mPolynomialsXYZ)->Evaluate(X, Y);
+  }
+  else
+  {
+   Z = std::make_shared<ApprPolynomial3<float>>(mPolynomialsXYZ)->Evaluate(X, Y);
+  }
+  */
+  Z =mPolynomialsXYZ->Evaluate(X, Y);
   std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2] };
   return point;
 }
@@ -214,11 +240,15 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
   mInterprateXYZ.clear();
   for (size_t i = 0; i < mTargetPts; i++)
   {
-    float x = mXDomain[0] - Center[0] + minterval * i;
-    std::array<float, 3> pt =EveluateFromX2YZ(x);
-
-    mInterprateXYZ.push_back(pt);
+    float percent = float((i+0.01) / mTargetPts);
+    if (percent > 0.15 && percent<0.85)
+    {
+      float x = mXDomain[0] - Center[0] + minterval * i;
+      std::array<float, 3> pt = EveluateFromX2YZ(x);
+      mInterprateXYZ.push_back(pt);
+    }
   }
+  mTargetPts = mInterprateXYZ.size();
   return mInterprateXYZ.size() ;
 }
 
@@ -229,7 +259,7 @@ int polynomial3CurveFitter3::SetInterVal(float interval)
   minterval = interval;
   float delata = mXDomain[1] - mXDomain[0];
   int numpts =int(delata / minterval);
-  mTargetPts = numpts;
+ // mTargetPts = numpts;
   return numpts;
 }
 

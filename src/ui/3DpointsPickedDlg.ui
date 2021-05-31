@@ -67,6 +67,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkBox_MapToOne">
+         <property name="text">
+          <string>归一化</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -151,16 +158,16 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="pushButton_queren">
         <property name="text">
-         <string>显示</string>
+         <string>确认</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_3">
         <property name="text">
-         <string>移除</string>
+         <string>单独保存</string>
         </property>
        </widget>
       </item>

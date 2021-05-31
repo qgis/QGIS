@@ -223,6 +223,7 @@ QgsDLWindowDockWidget::QgsDLWindowDockWidget(const QString &name, QWidget *paren
   connect(mActionTurnRight, &QAction::triggered, this, &QgsDLWindowDockWidget::rotatePointCloudRight);
   connect(m_selectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnmselectiononprofileClciekd);
   connect(action_polygonselectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked);
+  connect(m_multipolygonselectiononprofile, &QAction::triggered, this, &QgsDLWindowDockWidget::OnMultiPolygonSelectiononprofileClciekd);
 
   mActionSaveEdits->setDisabled(true);
   mActionPickPoints->setDisabled(true);
@@ -319,12 +320,23 @@ void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
 
 }
 
+void QgsDLWindowDockWidget::OnMultiPolygonSelectiononprofileClciekd()
+{
+  //m_multipolygonselectiononprofile
+
+  mMapCanvas->resetState();
+  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartInterpretMode(3); //1 ,2
+  m_rule = QString("polygon");
+
+}
+
 void QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked()
 {
   mMapCanvas->resetState();
   mMapCanvas->StartProfileviewMode();
   mMapCanvas->StartInterpretMode(3); //1 ,2
-  m_rule = QString("polygon");
+  m_rule = QString("multipolygon");
 
 }
 void QgsDLWindowDockWidget::OnmActionPickPoints()
@@ -373,21 +385,54 @@ void QgsDLWindowDockWidget::GetModelDataFromAoi()
 
 void QgsDLWindowDockWidget::OnInterpretPolygonChanged()
 {
-  std::vector< V3f> points;
-  if (!(dltable == nullptr))
+  if (m_rule == QString("multipolygon") )
   {
-    if (mMapCanvas->GetPointsInPolygon(points));
+
+    std::vector<ModelItem> previus_models =dltable->getModelData();
+
+    std::vector< V3f> points;
+
+    if (!(dltable == nullptr))
     {
-      std::vector<ModelItem> models;
-      for (V3f pt : points)
+      if (mMapCanvas->GetPointsInPolygon(points));
       {
-        ModelItem model;
-        model.XYZ = pt;
-        models.push_back(model);
+        std::vector<ModelItem> models;
+        for (ModelItem previus_model : previus_models)
+        {
+          ModelItem model ( previus_model);
+          models.push_back(model);
+        }
+       // models.insert(models.end(), current_models.begin(), current_models.end());
+        //models.push_back(current_models);
+        for (V3f pt : points)
+        {
+          ModelItem model;
+          model.XYZ = pt;
+          models.push_back(model);
+        }
+        dltable->setModelData(models);
+        polynomial_dialog_widget->niheToolButton->setEnabled(true);
       }
-      dltable->setModelData(models);
-      polynomial_dialog_widget->niheToolButton->setEnabled(true);
-    } 
+    }
+  }
+  else if (m_rule == QString("polygon"))
+  {
+    std::vector< V3f> points;
+    if (!(dltable == nullptr))
+    {
+      if (mMapCanvas->GetPointsInPolygon(points));
+      {
+        std::vector<ModelItem> models;
+        for (V3f pt : points)
+        {
+          ModelItem model;
+          model.XYZ = pt;
+          models.push_back(model);
+        }
+        dltable->setModelData(models);
+        polynomial_dialog_widget->niheToolButton->setEnabled(true);
+      }
+    }
   }
 }
 
@@ -406,6 +451,8 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
   this->alignedPointsTableView->setSortingEnabled(true);
   connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
   connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetClicked);
+  connect(pushButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::onGenerateData);
+  connect(pushButton_queren, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnAcceptTemp_jiamidian);
 };
 
 void QgsPcdpickeddlgWindowDockWidget::setModel(QAbstractItemModel *model)
@@ -444,10 +491,12 @@ void QgsPcdpickeddlgWindowDockWidget::OnPointAdded()
 
 std::string convertDoubleToString(const float value, const int precision = 0)
 {
-  std::stringstream stream{};
+  std::stringstream stream;
+  stream.clear();
   stream << std::fixed << std::setprecision(precision) << value;
   return stream.str();
 }
+
 
 
 void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
@@ -455,7 +504,15 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
   std::vector<ModelItem> pointsdata= dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->getModelData();
    int sanweijie = this->spinBox->value();
    int erweijie = this->spinBox_2->value();
-  Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie);
+   if (this->checkBox_MapToOne->isChecked())
+   {
+     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie,1);
+   }
+   else
+   {
+     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie);
+   }
+
     bool beginok = Fiter_Ptr->BeginReceiveData();
     if (!beginok)
     {
@@ -474,36 +531,65 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
       return;
     }
 
-    int numpts = Fiter_Ptr->SetInterVal(0.1);
+    int numpts = Fiter_Ptr->SetInterVal(0.05);
     if (numpts <1)
     {
       //TODO::弹出报警框
       return;
     }
-    
-    int numpts_generated = Fiter_Ptr->GenerateXYZSeries();
-      if (numpts_generated < 1)
-      {
-        //TODO::弹出报警框
-        return;
-      }
-      else
-      {
-        std::vector<std::array<float, 3>> jiamidian = Fiter_Ptr->GetGeneratedPoints();
-       int x= jiamidian.size();
-
-       std::ofstream fOut("nihe.txt");
-
-       if (!fOut)
-       {
-         std::cout << "Open output file faild." << std::endl;
-       }
-       for (std::array<float, 3> pt : jiamidian)
-       {
-           fOut << convertDoubleToString(pt[0],3) <<"," << convertDoubleToString(pt[1], 3) <<"," << convertDoubleToString(pt[2], 3) << std::endl;
-       }
-       fOut.close();
-
-      }
+}
+void QgsPcdpickeddlgWindowDockWidget:: onGenerateData()
+{
+  int numpts_generated = Fiter_Ptr->GenerateXYZSeries();
+  if (numpts_generated < 1)
+  {
+    //TODO::弹出报警框
+    return;
+  }
+  else
+  {
+     temp_jiamidian.clear();
+     temp_jiamidian = Fiter_Ptr->GetGeneratedPoints();
+  }
+  // todo:: 推送到 opengl窗口 进行显示(使用红色） ，暂时不保存。
+  //确认接受后，push到 全局加密点  
 }
 
+void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
+{
+  if (temp_jiamidian.size()>0)
+  {
+    for (std::array<float, 3> pt : temp_jiamidian)
+    {
+      global_jiamidian.push_back(pt);
+    }
+    temp_jiamidian.clear();
+  }
+  else
+  {
+    //TODO::弹出 警告框
+  }
+}
+
+void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3>>& jiamidian, std::string filename)
+{
+  int x = jiamidian.size();
+  bool existing;
+  std::ofstream fOut(filename);
+  // 判断文件是否存在，
+  if (existing)
+  {
+    //std::ofstream(filename); //  追加模式
+  }
+  else
+  {
+    //fOut = std::ofstream(filename); /// 新建
+  }
+
+  for (std::array<float, 3> pt : jiamidian)
+  {
+    fOut << convertDoubleToString(pt[0], 3) << "," << convertDoubleToString(pt[1], 3) << "," << convertDoubleToString(pt[2], 3) << std::endl;
+  }
+  fOut.close();
+
+}

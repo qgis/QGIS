@@ -195,7 +195,7 @@ namespace gte
             return mYDomain;
         }
 
-        Real Evaluate(Real x, Real y) const
+        Real Evaluate(Real x, Real y) const override
         {
             int i0, i1;
             Real w;

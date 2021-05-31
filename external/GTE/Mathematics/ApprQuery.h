@@ -130,6 +130,7 @@ namespace gte
         // current model parameters.
         virtual Real Error(ObservationType const& observation) const = 0;
 
+        virtual Real Evaluate(Real x, Real y) const { return -999; };
         // Copy the parameters between two models. This is used to copy the
         // candidate-model parameters to the current best-fit model.
         virtual void CopyParameters(ApprQuery const* input) = 0;

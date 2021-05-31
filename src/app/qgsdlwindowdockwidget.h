@@ -118,11 +118,16 @@ public:
 private:
   std::shared_ptr<polynomial3CurveFitter3> Fiter_Ptr = nullptr;
 
+  void savepoints(std::vector<std::array<float, 3>>& jiamidian, std::string filename);
   bool insert_pt_table_(Point3D xyz, PointType type)
   {
     //this->alignedPointsTableWidget->setModel();
     return true;
   }
+  bool _CheckBox_MapToOne = false;
+
+  std::vector<std::array<float, 3>> global_jiamidian;
+  std::vector<std::array<float, 3>> temp_jiamidian;
 
 public slots:
   void OnPaiXuClicked(int column);
@@ -130,6 +135,12 @@ public slots:
   void OnResetClicked();
   void OnPointAdded();
   void OnNiheButtonClicked();
+
+  void onGenerateData();
+
+  void OnAcceptTemp_jiamidian();
+
+
 };
 
 class APP_EXPORT QgsDLWindowDockWidget : public QgsDockWidget, private Ui::QgsDLWindowDockWidgetBase
@@ -148,6 +159,7 @@ private slots:
   void dockpolynomial_dialog();
   void OnmActionSaveEditsClicked();
   void OnmselectiononprofileClciekd();
+  void OnMultiPolygonSelectiononprofileClciekd(); // m_multipolygonselectiononprofile
   void OnDrawPolygonOnProfileClicked();
   void OnmActionPickPoints();
   void OnmActionBrushPoints();

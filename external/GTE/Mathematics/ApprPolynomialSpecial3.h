@@ -139,7 +139,7 @@ namespace gte
             return mYDomain;
         }
 
-        Real Evaluate(Real x, Real y) const
+        Real Evaluate(Real x, Real y) const  override
         {
             // Transform (x,y) to (x',y') in [-1,1]^2.
             x = (Real)-1 + (Real)2 * mScale[0] * (x - mXDomain[0]);

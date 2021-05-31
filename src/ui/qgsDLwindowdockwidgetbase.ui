@@ -48,6 +48,7 @@
       <addaction name="separator"/>
       <addaction name="action_polygonselectiononprofile"/>
       <addaction name="m_selectiononprofile"/>
+      <addaction name="m_multipolygonselectiononprofile"/>
       <addaction name="mActionPickPoints"/>
       <addaction name="mActionSaveEdits"/>
       <addaction name="separator"/>
@@ -200,6 +201,15 @@
    </property>
    <property name="text">
     <string>在剖面图上框选点云</string>
+   </property>
+  </action>
+  <action name="m_multipolygonselectiononprofile">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/tips/symbol_levels.png</normaloff>:/images/tips/symbol_levels.png</iconset>
+   </property>
+   <property name="text">
+    <string>多个多边形在剖面图上框选点云</string>
    </property>
   </action>
  </widget>
