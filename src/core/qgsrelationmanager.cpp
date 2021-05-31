@@ -266,12 +266,15 @@ QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelatio
   const auto constLayers = layers;
   for ( const QgsVectorLayer *layer : constLayers )
   {
-    const auto constDiscoverRelations = layer->dataProvider()->discoverRelations( layer, layers );
-    for ( const QgsRelation &relation : constDiscoverRelations )
+    if ( const QgsVectorDataProvider *provider = layer->dataProvider() )
     {
-      if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
+      const auto constDiscoverRelations = provider->discoverRelations( layer, layers );
+      for ( const QgsRelation &relation : constDiscoverRelations )
       {
-        result.append( relation );
+        if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
+        {
+          result.append( relation );
+        }
       }
     }
   }
