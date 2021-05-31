@@ -2,6 +2,7 @@
 
 #include "qgsmessagelog.h"
 #include <QImage>
+#include "qgslogger.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
@@ -12,7 +13,7 @@
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions)
     : QgsRasterDataProvider( uri, providerOptions)
 {
-
+    QgsDebugMsg("hello from constructor");
 }
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvider &other)
