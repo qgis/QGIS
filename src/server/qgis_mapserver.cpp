@@ -177,11 +177,14 @@ int main( int argc, char *argv[] )
   qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
   qputenv( "QGIS_SERVER_LOG_STDERR", "1" );
 
+  // Create server
+  QTcpServer tcpServer;
+
   if ( ! parser.value( projectOption ).isEmpty( ) )
   {
     // Check it!
     const QString projectFilePath { parser.value( projectOption ) };
-    if ( ! QFile::exists( projectFilePath ) )
+    if ( ! QgsProject::instance()->read( projectFilePath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts  | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }
@@ -194,8 +197,6 @@ int main( int argc, char *argv[] )
   // Disable parallel rendering because if its internal loop
   //qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
 
-  // Create server
-  QTcpServer tcpServer;
 
   QHostAddress address { QHostAddress::AnyIPv4 };
   address.setAddress( ipAddress );
