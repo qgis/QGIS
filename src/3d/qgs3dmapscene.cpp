@@ -37,6 +37,7 @@
 #include <Qt3DRender/QDepthTest>
 #include <QSurface>
 #include <QUrl>
+#include <QtMath>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -240,8 +241,9 @@ void Qgs3DMapScene::viewZoomFull()
 {
   QgsRectangle extent = sceneExtent();
   float side = std::max( extent.width(), extent.height() );
-  // TODO: make this work with arbitrary FOV
-  mCameraController->resetView( side );  // assuming FOV being 45 degrees
+  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
+  // Note: the 1.5 multiplication is to move the view upwards to look better
+  mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
 }
 
 int Qgs3DMapScene::terrainPendingJobsCount() const
@@ -393,7 +395,7 @@ void Qgs3DMapScene::updateScene()
   updateSceneState();
 }
 
-static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
+static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projMatrix, float &fnear, float &ffar )
 {
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -405,13 +407,18 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
       QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
                    ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+
       QVector4D pc = viewMatrix * p;
+      QVector4D pointInProjectionCoords = projMatrix * pc;
+      pointInProjectionCoords /= pointInProjectionCoords.w();
+      if ( pointInProjectionCoords.x() < -1 || pointInProjectionCoords.x() > 1 || pointInProjectionCoords.y() < -1 || pointInProjectionCoords.y() > 1 )
+        continue;
+      if ( pointInProjectionCoords.z() < 0 || pointInProjectionCoords.z() > 1 )
+        continue;
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-      if ( dst < fnear )
-        fnear = dst;
-      if ( dst > ffar )
-        ffar = dst;
+      fnear = std::min( fnear, dst );
+      ffar = std::max( ffar, dst );
     }
   }
 }
@@ -432,6 +439,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   Qt3DRender::QCamera *camera = cameraController()->camera();
   QMatrix4x4 viewMatrix = camera->viewMatrix();
+  QMatrix4x4 projMatrix = camera->projectionMatrix();
   float fnear = 1e9;
   float ffar = 0;
   if ( mTerrain )
@@ -444,7 +452,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
     if ( activeNodes.isEmpty() )
       activeNodes << mTerrain->rootNode();
 
-    _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+    _updateNearFarPlane( activeNodes, viewMatrix, projMatrix, fnear, ffar );
 
     // Also involve all the other chunked entities to make sure that they will not get
     // clipped by the near or far plane
@@ -455,7 +463,7 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
         QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
         if ( activeEntityNodes.empty() )
           activeEntityNodes << e->rootNode();
-        _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
+        _updateNearFarPlane( activeEntityNodes, viewMatrix, projMatrix, fnear, ffar );
       }
     }
 
@@ -484,47 +492,37 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   else
   {
     QList<QgsChunkNode *> activeNodes;
-    for ( QgsMapLayer *layer : mLayerEntities.keys() )
+    // clipped by the near or far plane
+    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
     {
-      if ( QgsChunkedEntity *entity = dynamic_cast< QgsChunkedEntity * >( mLayerEntities[ layer ] ) )
+      if ( e != mTerrain )
       {
-        QList<QgsChunkNode *> layerActiveNodes = entity->activeNodes();
-        activeNodes << layerActiveNodes;
-        if ( layerActiveNodes.empty() )
-          activeNodes << entity->rootNode();
+        QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
+        if ( activeEntityNodes.empty() )
+          activeEntityNodes << e->rootNode();
+        _updateNearFarPlane( activeEntityNodes, viewMatrix, projMatrix, fnear, ffar );
       }
     }
+    if ( fnear < 0.01 )
+      fnear = 0.01;  // does not really make sense to use negative far plane (behind camera)
 
-    // it could be that there are no active nodes - they could be all culled or because root node
-    // is not yet loaded - we still need at least something to understand bounds of our scene
-    // so lets use the root node
-    if ( !activeNodes.isEmpty() )
+    if ( fnear == 1e9 && ffar == 0 )
     {
-      _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+      // the update didn't work out... this should not happen
+      // well at least temporarily use some conservative starting values
+      // qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+      fnear = 1;
+      ffar = 1e9;
     }
-    else
+
+    // set near/far plane - with some tolerance in front/behind expected near/far planes
+    float newFar = ffar * 2;
+    float newNear = fnear / 2;
+    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
     {
-      if ( fnear < 1 )
-        fnear = 1;  // does not really make sense to use negative far plane (behind camera)
-
-      if ( fnear == 1e6 && ffar == 0 )
-      {
-        // the update didn't work out... this should not happen
-        // well at least temporarily use some conservative starting values
-        qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-        fnear = 1;
-        ffar = 1e6;
-      }
-
-      // set near/far plane - with some tolerance in front/behind expected near/far planes
-      float newFar = ffar * 2;
-      float newNear = fnear / 2;
-      if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
-      {
-        camera->setFarPlane( newFar );
-        camera->setNearPlane( newNear );
-        return true;
-      }
+      camera->setFarPlane( newFar );
+      camera->setNearPlane( newNear );
+      return true;
     }
   }
 
@@ -1164,44 +1162,28 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
 
 QgsRectangle Qgs3DMapScene::sceneExtent()
 {
-  QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator();
+  QgsRectangle extent;
+  extent.setMinimal();
 
-  QVector<const QgsChunkNode *> activeChunkNodes;
-  for ( Qt3DCore::QEntity *layerEntity : mLayerEntities.values() )
+  for ( QgsMapLayer *layer : mLayerEntities.keys() )
   {
-    if ( QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity ) )
-      activeChunkNodes <<  c->rootNode();
-  }
-
-  float minX = std::numeric_limits<float>::max();
-  float maxX = std::numeric_limits<float>::lowest();
-  float minY = std::numeric_limits<float>::max();
-  float maxY = std::numeric_limits<float>::lowest();
-  for ( const QgsChunkNode *chunkNode : activeChunkNodes )
-  {
+    Qt3DCore::QEntity *layerEntity = mLayerEntities[ layer ];
+    QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity );
+    if ( !c )
+      continue;
+    QgsChunkNode *chunkNode = c->rootNode();
     QgsAABB bbox = chunkNode->bbox();
-    QgsVector3D bboxMin = bbox.minimum();
-    QgsVector3D bboxMax = bbox.maximum();
-    bboxMin = Qgs3DUtils::worldToMapCoordinates( bboxMin, mMap.origin() );
-    bboxMax = Qgs3DUtils::worldToMapCoordinates( bboxMax, mMap.origin() );
-    minX = std::min<float>( bboxMin.x(), minX );
-    maxX = std::max<float>( bboxMax.x(), maxX );
-    minY = std::min<float>( bboxMin.y(), minY );
-    maxY = std::max<float>( bboxMax.y(), maxY );
+    QgsRectangle layerExtent = Qgs3DUtils::worldToLayerExtent( bbox, layer->crs(), mMap.origin(), mMap.crs(), mMap.transformContext() );
+    extent.combineExtentWith( layerExtent );
   }
 
-  if ( terrainGenerator )
+  if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
   {
     QgsRectangle terrainExtent = terrainGenerator->extent();
     QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
     terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
-
-    minX = std::min<float>( terrainExtent.xMinimum(), minX );
-    maxX = std::max<float>( terrainExtent.xMaximum(), maxX );
-    minY = std::min<float>( terrainExtent.yMinimum(), minY );
-    maxY = std::max<float>( terrainExtent.yMaximum(), maxY );
+    extent.combineExtentWith( terrainExtent );
   }
 
-
-  return QgsRectangle( minX, minY, maxX, maxY );
+  return extent;
 }

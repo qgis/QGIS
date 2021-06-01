@@ -312,7 +312,16 @@ void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
       QgsVector3D centerPoint = mCameraPose.centerPoint();
       centerPoint.set( centerPoint.x(), mTerrainEntity->terrainElevationOffset(), centerPoint.z() );
       mCameraPose.setCenterPoint( centerPoint );
+      mCameraPose.updateCamera( mCamera );
     }
+  }
+
+  if ( mCamera && !mTerrainEntity && centerPointChanged )
+  {
+    QgsVector3D centerPoint = mCameraPose.centerPoint();
+    centerPoint.set( centerPoint.x(), 0, centerPoint.z() );
+    mCameraPose.setCenterPoint( centerPoint );
+    mCameraPose.updateCamera( mCamera );
   }
 
   emit cameraChanged();
