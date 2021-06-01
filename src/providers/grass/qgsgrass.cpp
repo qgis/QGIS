@@ -437,7 +437,7 @@ bool QgsGrass::init( void )
         int state;
 
         QProcess p;
-        p.start( pagers.at( i ) );
+        p.start( pagers.at( i ), QStringList() );
         p.waitForStarted();
         state = p.state();
         p.write( "\004" ); // Ctrl-D
