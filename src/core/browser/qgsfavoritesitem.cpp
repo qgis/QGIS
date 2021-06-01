@@ -127,7 +127,7 @@ void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name 
     if ( dir == path )
     {
       QStringList newParts { path, name };
-      favDirs[i] = newParts.join( QStringLiteral( "|||" ) );
+      favDirs[i] = newParts.join( QLatin1String( "|||" ) );
       break;
     }
   }

@@ -698,7 +698,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       break;
 
     const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields[i].name() );
-    if ( setup.type() == QStringLiteral( "Hidden" ) )
+    if ( setup.type() == QLatin1String( "Hidden" ) )
     {
       continue;
     }
@@ -722,7 +722,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     attrItem->setSortData( 1, value );
     attrItem->setToolTip( 1, value );
 
-    if ( setup.type() == QStringLiteral( "JsonEdit" ) )
+    if ( setup.type() == QLatin1String( "JsonEdit" ) )
     {
       QgsJsonEditWidget *jsonEditWidget = new QgsJsonEditWidget();
       jsonEditWidget->setJsonText( value );

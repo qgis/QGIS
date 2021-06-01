@@ -69,7 +69,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
 
   settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
   QString settingKey = mDirPath;
-  settingKey.replace( '/', QStringLiteral( "|||" ) );
+  settingKey.replace( '/', QLatin1String( "|||" ) );
   if ( settings.childKeys().contains( settingKey ) )
   {
     const QString colorString = settings.value( settingKey ).toString();
@@ -146,7 +146,7 @@ void QgsDirectoryItem::setCustomColor( const QString &directory, const QColor &c
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/browserPathColors" ) );
   QString settingKey = directory;
-  settingKey.replace( '/', QStringLiteral( "|||" ) );
+  settingKey.replace( '/', QLatin1String( "|||" ) );
   if ( color.isValid() )
     settings.setValue( settingKey, color.name( QColor::HexArgb ) );
   else
