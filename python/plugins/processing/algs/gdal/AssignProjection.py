@@ -65,7 +65,9 @@ class AssignProjection(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-add.png'))
 
     def tags(self):
-        return ['assign', 'set', 'transform', 'reproject', 'crs', 'srs', 'warp', self.commandName()]
+        tags = self.tr('assign,set,transform,reproject,crs,srs').split(',')
+        tags.extend(super().tags())
+        return tags
 
     def group(self):
         return self.tr('Raster projections')
