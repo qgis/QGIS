@@ -969,7 +969,7 @@ void QgsGrassMapsetItem::childrenCreated()
 
   if ( mRefreshLater )
   {
-    QgsDebugMsg( "directory changed during createChidren() -> refresh() again" );
+    QgsDebugMsg( QStringLiteral( "directory changed during createChidren() -> refresh() again" ) );
     mRefreshLater = false;
     setState( Qgis::BrowserItemState::Populated );
     refresh();
@@ -982,7 +982,7 @@ void QgsGrassMapsetItem::childrenCreated()
 
 //------------------------ QgsGrassObjectItem ----------------------------------
 
-QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
+QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                                         const QString &name, const QString &path, const QString &uri,
                                         Qgis::BrowserLayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
@@ -1002,7 +1002,7 @@ bool QgsGrassObjectItem::equal( const QgsDataItem *other )
 
 //----------------------- QgsGrassVectorItem ------------------------------
 
-QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, const QString &path, const QString &labelName, bool valid )
+QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, const QgsGrassObject &grassObject, const QString &path, const QString &labelName, bool valid )
   : QgsDataCollectionItem( parent, labelName.isEmpty() ? grassObject.name() : labelName, path )
   , QgsGrassObjectItemBase( grassObject )
   , mValid( valid )
@@ -1068,7 +1068,7 @@ bool QgsGrassVectorItem::equal( const QgsDataItem *other )
 
 //----------------------- QgsGrassVectorLayerItem ------------------------------
 
-QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject grassObject, const QString &layerName,
+QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem *parent, const QgsGrassObject &grassObject, const QString &layerName,
     const QString &path, const QString &uri,
     Qgis::BrowserLayerType layerType, bool singleLayer )
   : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, QStringLiteral( "grass" ) )
@@ -1097,7 +1097,7 @@ bool QgsGrassVectorLayerItem::equal( const QgsDataItem *other )
 
 //----------------------- QgsGrassRasterItem ------------------------------
 
-QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem *parent, QgsGrassObject grassObject,
+QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                                         const QString &path, const QString &uri, bool isExternal )
   : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "grassraster" ) )
   , mExternal( isExternal )
@@ -1121,7 +1121,7 @@ bool QgsGrassRasterItem::equal( const QgsDataItem *other )
 
 //----------------------- QgsGrassGroupItem ------------------------------
 
-QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem *parent, QgsGrassObject grassObject,
+QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                                       const QString &path, const QString &uri )
   : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "grassraster" ) )
 {

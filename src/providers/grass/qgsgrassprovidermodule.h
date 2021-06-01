@@ -140,7 +140,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
+    QgsGrassObjectItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                         const QString &name, const QString &path, const QString &uri,
                         Qgis::BrowserLayerType layerType, const QString &providerKey );
 
@@ -162,7 +162,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     Q_OBJECT
   public:
     // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
-    QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, const QString &path, const QString &labelName = QString(), bool valid = true );
+    QgsGrassVectorItem( QgsDataItem *parent, const QgsGrassObject &grassObject, const QString &path, const QString &labelName = QString(), bool valid = true );
     ~QgsGrassVectorItem() override;
 
 #ifdef HAVE_GUI
@@ -186,7 +186,7 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject vector, const QString &layerName,
+    QgsGrassVectorLayerItem( QgsDataItem *parent, const QgsGrassObject &vector, const QString &layerName,
                              const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, bool singleLayer );
 
     QString layerName() const override;
@@ -201,7 +201,7 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassRasterItem( QgsDataItem *parent, QgsGrassObject grassObject,
+    QgsGrassRasterItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                         const QString &path, const QString &uri, bool isExternal );
 
     QIcon icon() override;
@@ -217,7 +217,7 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassGroupItem( QgsDataItem *parent, QgsGrassObject grassObject,
+    QgsGrassGroupItem( QgsDataItem *parent, const QgsGrassObject &grassObject,
                        const QString &path, const QString &uril );
 
     QIcon icon() override;
