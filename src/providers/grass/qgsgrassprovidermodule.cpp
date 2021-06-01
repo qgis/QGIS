@@ -27,6 +27,7 @@
 #include "qgsgrassprovider.h"
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"
+#include "qgsproject.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"
@@ -856,7 +857,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
         if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
         {
           QgsRasterProjector *projector = new QgsRasterProjector;
-          projector->setCrs( providerCrs, mapsetCrs );
+          projector->setCrs( providerCrs, mapsetCrs, QgsProject::instance()->transformContext() );
           if ( useSrcRegion )
           {
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
