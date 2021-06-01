@@ -279,8 +279,6 @@ if(WITH_CORE)
   endif()
   set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
-  set (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -710,9 +708,7 @@ set(WITH_GSL TRUE CACHE BOOL "Determines whether GSL library should be used")
 if (WITH_ANALYSIS AND WITH_GSL)
   find_package(GSL REQUIRED)
   set(HAVE_GSL TRUE)
-  if (WITH_GEOREFERENCER)
-    set(HAVE_GEOREFERENCER TRUE)
-  endif()
+  set(HAVE_GEOREFERENCER TRUE)
 endif()
 
 if(ENABLE_COVERAGE)

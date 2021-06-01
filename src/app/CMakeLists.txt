@@ -252,7 +252,7 @@ if (WITH_SPATIALITE)
   )
 endif()
 
-if (WITH_GEOREFERENCER)
+if (HAVE_GEOREFERENCER)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
     georeferencer/qgsgcpcanvasitem.cpp
@@ -547,7 +547,7 @@ if (WITH_3D)
   target_link_libraries(qgis_app qgis_3d)
 endif()
 
-if (WITH_GEOREFERENCER)
+if (HAVE_GEOREFERENCER)
   include_directories(SYSTEM
     ${GSL_INCLUDE_DIR}
   )
