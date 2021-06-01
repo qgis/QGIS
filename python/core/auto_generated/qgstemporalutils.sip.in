@@ -79,7 +79,7 @@ support.
          - error: will be set to a descriptive error message if the export fails
 %End
 
-    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval );
+    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval );
 %Docstring
 Calculates the frame time for an animation.
 
