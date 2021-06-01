@@ -66,16 +66,20 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
   {
     if ( element.hasAttribute( "buttons" ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
       config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
       // pre QGIS 3.16 compatibility
+      Q_NOWARN_DEPRECATED_PUSH
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
       buttons.setFlag( QgsAttributeEditorRelation::Button::Link, element.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
       buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, element.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
       buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, element.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+      Q_NOWARN_DEPRECATED_POP
       config.insert( "buttons", qgsFlagValueToKeys( buttons ) );
     }
   }

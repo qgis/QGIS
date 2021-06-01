@@ -71,7 +71,6 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     {
       operator QVariant();
 
-      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
       QString mRelationWidgetType;
       QVariantMap mRelationWidgetConfig;
       QVariant nmRelationId;

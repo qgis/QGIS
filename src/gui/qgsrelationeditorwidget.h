@@ -95,6 +95,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     /**
      * Possible buttons shown in the relation editor
+     * \since QGIS 3.18
      */
     enum Button
     {
