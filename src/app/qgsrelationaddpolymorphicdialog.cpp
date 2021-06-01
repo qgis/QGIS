@@ -67,6 +67,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
                                          "Duplications are made by the feature duplication action.\n"
                                          "The default actions are activated in the Action section of the layer properties." ) );
 
+  mFieldsMappingWidget->setEnabled( false );
   addFieldsRow();
   updateTypeConfigWidget();
   updateDialogButtons();
@@ -78,6 +79,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
   connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
   connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
+  connect( mReferencedLayersComboBox, &QgsCheckableComboBox::checkedItemsChanged, this, &QgsRelationAddPolymorphicDialog::referencedLayersChanged );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateReferencingFieldsComboBoxes );
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox );
@@ -114,7 +116,7 @@ void QgsRelationAddPolymorphicDialog::updateTypeConfigWidget()
 void QgsRelationAddPolymorphicDialog::addFieldsRow()
 {
   QgsFieldComboBox *referencingField = new QgsFieldComboBox( this );
-  QLineEdit *referencedPolymorphicField = new QLineEdit( this );
+  QComboBox *referencedPolymorphicField = new QComboBox( this );
   int index = mFieldsMappingTable->rowCount();
 
   referencingField->setLayer( mReferencingLayerComboBox->currentLayer() );
@@ -196,7 +198,10 @@ QList< QPair< QString, QString > > QgsRelationAddPolymorphicDialog::fieldPairs()
   QList< QPair< QString, QString > > references;
   for ( int i = 0, l = mFieldsMappingTable->rowCount(); i < l; i++ )
   {
-    QString referencedField = static_cast<QLineEdit *>( mFieldsMappingTable->cellWidget( i, 0 ) )->text();
+    QComboBox *referencedFieldComboBox = static_cast<QComboBox *>( mFieldsMappingTable->cellWidget( i, 0 ) );
+    if ( referencedFieldComboBox->currentData().toInt() == -1 )
+      continue;
+    QString referencedField = referencedFieldComboBox->currentText();
     QString referencingField = static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 1 ) )->currentField();
     references << qMakePair( referencingField, referencedField );
   }
@@ -278,4 +283,56 @@ void QgsRelationAddPolymorphicDialog::updateReferencingFieldsComboBoxes()
 void QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox()
 {
   mReferencedLayerFieldComboBox->setLayer( mReferencingLayerComboBox->currentLayer() );
+}
+
+void QgsRelationAddPolymorphicDialog::referencedLayersChanged()
+{
+  const QStringList &layerIds = referencedLayerIds();
+  mFieldsMappingWidget->setEnabled( layerIds.count() > 0 );
+
+  bool firstLayer = true;
+  QSet<QString> fields;
+  for ( const QString &layerId : layerIds )
+  {
+    QgsVectorLayer *vl = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
+    if ( vl && vl->isValid() )
+    {
+      const QSet layerFields = qgis::listToSet( vl->fields().names() );
+      if ( firstLayer )
+      {
+        fields = layerFields;
+        firstLayer = false;
+      }
+      else
+      {
+        fields.intersect( layerFields );
+      }
+    }
+  }
+
+  for ( int i = 0, l = mFieldsMappingTable->rowCount(); i < l; i++ )
+  {
+    QComboBox *cb = static_cast<QComboBox *>( mFieldsMappingTable->cellWidget( i, 0 ) );
+    const QString currentField = cb->currentText();
+    cb->clear();
+    if ( fields.count() > 0 )
+    {
+      const QSet<QString> constFields = fields;
+      for ( const QString &field : constFields )
+      {
+        cb->addItem( field );
+        if ( field == currentField )
+          cb->setCurrentText( field );
+      }
+    }
+    else
+    {
+      cb->addItem( tr( "None" ), -1 );
+      cb->addItem( tr( "the referenced layers have no common fields." ), -1 );
+      QStandardItem *item = qobject_cast<QStandardItemModel *>( cb->model() )->item( 1 );
+      item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+    }
+  }
+
+  updateDialogButtons();
 }

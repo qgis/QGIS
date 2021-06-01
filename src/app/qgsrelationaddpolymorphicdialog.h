@@ -98,6 +98,7 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     void updateChildRelationsComboBox();
     void updateReferencingFieldsComboBoxes();
     void updateReferencedLayerFieldComboBox();
+    void referencedLayersChanged();
 
   private:
     bool isDefinitionValid();
