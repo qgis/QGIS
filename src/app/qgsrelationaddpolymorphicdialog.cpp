@@ -22,7 +22,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "qgsrelationaddpolymorphicdlg.h"
+#include "qgsrelationaddpolymorphicdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
@@ -33,7 +33,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsfieldexpressionwidget.h"
 
-QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( bool isEditDialog, QWidget *parent )
+QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDialog, QWidget *parent )
   : QDialog( parent )
   , Ui::QgsRelationManagerAddPolymorphicDialogBase()
   , mIsEditDialog( isEditDialog )
@@ -45,8 +45,8 @@ QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( bool isEditDialog, Q
                   : tr( "Add Polymorphic Relation" ) );
 
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDlg::accept );
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddPolymorphicDlg::reject );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddPolymorphicDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddPolymorphicDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-polymorphic-relations" ) );
@@ -72,18 +72,18 @@ QgsRelationAddPolymorphicDlg::QgsRelationAddPolymorphicDlg( bool isEditDialog, Q
   updateDialogButtons();
   updateReferencedLayerFieldComboBox();
 
-  connect( mFieldsMappingTable, &QTableWidget::itemSelectionChanged, this, &QgsRelationAddPolymorphicDlg::updateFieldsMappingButtons );
-  connect( mFieldsMappingAddButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDlg::addFieldsRow );
-  connect( mFieldsMappingRemoveButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDlg::removeFieldsRow );
-  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateDialogButtons );
+  connect( mFieldsMappingTable, &QTableWidget::itemSelectionChanged, this, &QgsRelationAddPolymorphicDialog::updateFieldsMappingButtons );
+  connect( mFieldsMappingAddButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::addFieldsRow );
+  connect( mFieldsMappingRemoveButton, &QToolButton::clicked, this, &QgsRelationAddPolymorphicDialog::removeFieldsRow );
+  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
   connect( mRelationStrengthComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { Q_UNUSED( index ); updateDialogButtons(); } );
-  connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDlg::updateDialogButtons );
-  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateChildRelationsComboBox );
-  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateReferencingFieldsComboBoxes );
-  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDlg::updateReferencedLayerFieldComboBox );
+  connect( mReferencedLayerExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRelationAddPolymorphicDialog::updateDialogButtons );
+  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox );
+  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateReferencingFieldsComboBoxes );
+  connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox );
 }
 
-void QgsRelationAddPolymorphicDlg::setPolymorphicRelation( const QgsPolymorphicRelation polyRel )
+void QgsRelationAddPolymorphicDialog::setPolymorphicRelation( const QgsPolymorphicRelation polyRel )
 {
   mIdLineEdit->setText( polyRel.id() );
   mReferencingLayerComboBox->setLayer( polyRel.referencingLayer() );
@@ -106,12 +106,12 @@ void QgsRelationAddPolymorphicDlg::setPolymorphicRelation( const QgsPolymorphicR
     mReferencedLayersComboBox->setItemCheckState( mReferencedLayersComboBox->findData( layerId ), Qt::Checked );
 }
 
-void QgsRelationAddPolymorphicDlg::updateTypeConfigWidget()
+void QgsRelationAddPolymorphicDialog::updateTypeConfigWidget()
 {
   updateDialogButtons();
 }
 
-void QgsRelationAddPolymorphicDlg::addFieldsRow()
+void QgsRelationAddPolymorphicDialog::addFieldsRow()
 {
   QgsFieldComboBox *referencingField = new QgsFieldComboBox( this );
   QLineEdit *referencedPolymorphicField = new QLineEdit( this );
@@ -128,7 +128,7 @@ void QgsRelationAddPolymorphicDlg::addFieldsRow()
   updateDialogButtons();
 }
 
-void QgsRelationAddPolymorphicDlg::removeFieldsRow()
+void QgsRelationAddPolymorphicDialog::removeFieldsRow()
 {
   if ( mFieldsMappingTable->selectionModel()->hasSelection() )
   {
@@ -151,7 +151,7 @@ void QgsRelationAddPolymorphicDlg::removeFieldsRow()
   updateDialogButtons();
 }
 
-void QgsRelationAddPolymorphicDlg::updateFieldsMappingButtons()
+void QgsRelationAddPolymorphicDialog::updateFieldsMappingButtons()
 {
   int rowsCount = mFieldsMappingTable->rowCount();
   int selectedRowsCount = mFieldsMappingTable->selectionModel()->selectedRows().count();
@@ -160,7 +160,7 @@ void QgsRelationAddPolymorphicDlg::updateFieldsMappingButtons()
   mFieldsMappingRemoveButton->setEnabled( isRemoveButtonEnabled );
 }
 
-void QgsRelationAddPolymorphicDlg::updateFieldsMappingHeaders()
+void QgsRelationAddPolymorphicDialog::updateFieldsMappingHeaders()
 {
   int rowsCount = mFieldsMappingTable->rowCount();
   QStringList verticalHeaderLabels;
@@ -171,27 +171,27 @@ void QgsRelationAddPolymorphicDlg::updateFieldsMappingHeaders()
   mFieldsMappingTable->setVerticalHeaderLabels( verticalHeaderLabels );
 }
 
-QString QgsRelationAddPolymorphicDlg::referencingLayerId()
+QString QgsRelationAddPolymorphicDialog::referencingLayerId()
 {
   return mReferencingLayerComboBox->currentLayer()->id();
 }
 
-QString QgsRelationAddPolymorphicDlg::referencedLayerField()
+QString QgsRelationAddPolymorphicDialog::referencedLayerField()
 {
   return mReferencedLayerFieldComboBox->currentField();
 }
 
-QString QgsRelationAddPolymorphicDlg::referencedLayerExpression()
+QString QgsRelationAddPolymorphicDialog::referencedLayerExpression()
 {
   return mReferencedLayerExpressionWidget->expression();
 }
 
-QStringList QgsRelationAddPolymorphicDlg::referencedLayerIds()
+QStringList QgsRelationAddPolymorphicDialog::referencedLayerIds()
 {
   return QVariant( mReferencedLayersComboBox->checkedItemsData() ).toStringList();
 }
 
-QList< QPair< QString, QString > > QgsRelationAddPolymorphicDlg::fieldPairs()
+QList< QPair< QString, QString > > QgsRelationAddPolymorphicDialog::fieldPairs()
 {
   QList< QPair< QString, QString > > references;
   for ( int i = 0, l = mFieldsMappingTable->rowCount(); i < l; i++ )
@@ -204,28 +204,28 @@ QList< QPair< QString, QString > > QgsRelationAddPolymorphicDlg::fieldPairs()
   return references;
 }
 
-QString QgsRelationAddPolymorphicDlg::relationId()
+QString QgsRelationAddPolymorphicDialog::relationId()
 {
   return mIdLineEdit->text();
 }
 
-QString QgsRelationAddPolymorphicDlg::relationName()
+QString QgsRelationAddPolymorphicDialog::relationName()
 {
   QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
 }
 
-QgsRelation::RelationStrength QgsRelationAddPolymorphicDlg::relationStrength()
+QgsRelation::RelationStrength QgsRelationAddPolymorphicDialog::relationStrength()
 {
   return mRelationStrengthComboBox->currentData().value<QgsRelation::RelationStrength>();
 }
 
-void QgsRelationAddPolymorphicDlg::updateDialogButtons()
+void QgsRelationAddPolymorphicDialog::updateDialogButtons()
 {
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isDefinitionValid() );
 }
 
-bool QgsRelationAddPolymorphicDlg::isDefinitionValid()
+bool QgsRelationAddPolymorphicDialog::isDefinitionValid()
 {
   bool isValid = true;
   return isValid;
@@ -241,7 +241,7 @@ bool QgsRelationAddPolymorphicDlg::isDefinitionValid()
   return isValid;
 }
 
-void QgsRelationAddPolymorphicDlg::updateChildRelationsComboBox()
+void QgsRelationAddPolymorphicDialog::updateChildRelationsComboBox()
 {
   QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   if ( !vl || !vl->isValid() )
@@ -262,7 +262,7 @@ void QgsRelationAddPolymorphicDlg::updateChildRelationsComboBox()
   }
 }
 
-void QgsRelationAddPolymorphicDlg::updateReferencingFieldsComboBoxes()
+void QgsRelationAddPolymorphicDialog::updateReferencingFieldsComboBoxes()
 {
   QgsMapLayer *vl = mReferencingLayerComboBox->currentLayer();
   if ( !vl || !vl->isValid() )
@@ -275,7 +275,7 @@ void QgsRelationAddPolymorphicDlg::updateReferencingFieldsComboBoxes()
   }
 }
 
-void QgsRelationAddPolymorphicDlg::updateReferencedLayerFieldComboBox()
+void QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox()
 {
   mReferencedLayerFieldComboBox->setLayer( mReferencingLayerComboBox->currentLayer() );
 }

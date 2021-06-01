@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRELATIONADDPOLYMORPHICDLG_H
-#define QGSRELATIONADDPOLYMORPHICDLG_H
+#ifndef QGSRELATIONADDPOLYMORPHICDIALOG_H
+#define QGSRELATIONADDPOLYMORPHICDIALOG_H
 
 #include <QDialog>
 #include "qgis_app.h"
@@ -36,12 +36,12 @@ class QgsMapLayerComboBox;
  * QgsRelationAddDlg allows configuring a new relation.
  * Multiple field pairs can be set.
  */
-class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsRelationManagerAddPolymorphicDialogBase
+class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::QgsRelationManagerAddPolymorphicDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddPolymorphicDlg( bool isEditDialog, QWidget *parent = nullptr );
+    explicit QgsRelationAddPolymorphicDialog( bool isEditDialog, QWidget *parent = nullptr );
 
     /**
      * Returns the id of the referencing layer
@@ -107,4 +107,4 @@ class APP_EXPORT QgsRelationAddPolymorphicDlg : public QDialog, private Ui::QgsR
 
 };
 
-#endif // QGSRELATIONADDPOLYMORPHICDLG_H
+#endif // QGSRELATIONADDPOLYMORPHICDIALOG_H
