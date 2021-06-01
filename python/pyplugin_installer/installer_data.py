@@ -24,7 +24,8 @@
 """
 from typing import (
     Dict,
-    Optional
+    Optional,
+    Any
 )
 
 from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
@@ -172,22 +173,22 @@ class Repositories(QObject):
 
     def __init__(self):
         QObject.__init__(self)
-        self.mRepositories: Dict[str, Dict[str]] = {}
+        self.mRepositories: Dict[str, Dict[str, Any]] = {}
         self.httpId = {}   # {httpId : repoName}
         self.mInspectionFilter: Optional[str] = None
 
-    def all(self) -> Dict[str, Dict[str]]:
+    def all(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all repositories """
         return self.mRepositories
 
-    def allEnabled(self) -> Dict[str, Dict[str]]:
+    def allEnabled(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all enabled and valid repositories """
         if self.mInspectionFilter:
             return {self.mInspectionFilter: self.mRepositories[self.mInspectionFilter]}
 
         return {k: v for k, v in self.mRepositories.items() if v['enabled'] and v['valid']}
 
-    def allUnavailable(self) -> Dict[str, Dict[str]]:
+    def allUnavailable(self) -> Dict[str, Dict[str, Any]]:
         """ return dict of all unavailable repositories """
         repos = {}
 
