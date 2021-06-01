@@ -67,6 +67,10 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
     if ( element.hasAttribute( "buttons" ) )
     {
       Q_NOWARN_DEPRECATED_PUSH
+      // QgsAttributeEditorRelation::Button has been deprecated in favor of QgsRelationEditorWidget::Button
+      // we cannot use it here since the new flags are in gui, while the current code is in core
+      // TODO: remove this compatibility code in QGIS 4
+      //       or make the enum private if we really want to keep the backward compatibility (but not worth it!)
       QString buttonString = element.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
       config.insert( "buttons", qgsFlagValueToKeys( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) ) );
       Q_NOWARN_DEPRECATED_POP
