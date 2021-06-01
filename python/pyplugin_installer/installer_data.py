@@ -332,7 +332,7 @@ class Repositories(QObject):
 
     def fetchingInProgress(self) -> bool:
         """ return True if fetching repositories is still in progress """
-        return any(v['state'] == Repositories.STATE_LOADING for _, v in self.mRepositories.items())
+        return any(v['state'] == Repositories.STATE_LOADING for v in self.mRepositories.values())
 
     def killConnection(self, key: str):
         """ kill the fetching on demand """
