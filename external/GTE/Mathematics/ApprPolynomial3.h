@@ -169,7 +169,7 @@ namespace gte
         virtual Real Error(std::array<Real, 3> const& observation) const override
         {
             Real w = Evaluate(observation[0], observation[1]);
-            Real error = std::fabs(w - observation[2]);
+            Real error = w - observation[2];
             return error;
         }
 

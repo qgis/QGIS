@@ -17,7 +17,7 @@
 class CurveFitter_EXPORT polynomial3CurveFitter3
 {
 public:
-    polynomial3CurveFitter3(int sanweijie,int erweijie, bool usespecial = false, float coff_error = 0.95);
+    polynomial3CurveFitter3(int sanweijie,int erweijie, bool usespecial = false, float coff_error = 0.98);
     ~polynomial3CurveFitter3();
     bool CreateXYPolyline();
     void ReceivePointDataXYZ(std::array<float, 3>& point);
@@ -27,6 +27,7 @@ private:
     void LoadDataTest();
     bool CreateXYZPolyline();
     std::vector<std::array<float, 3>> mSamplesXYZ;
+    std::vector<std::array<float, 3>> mSamplesXYZ_nihe;
     std::vector<std::array<float, 3>> mSamplesXYError;
     std::vector<std::array<float, 2>> mSamplesXY;
 
@@ -47,6 +48,7 @@ private:
     float min_z;
     bool mUseSpecial;
     bool EveluateErrorFromXY();
+    float CompuateError();
 
 public:
   bool BeginReceiveData();
