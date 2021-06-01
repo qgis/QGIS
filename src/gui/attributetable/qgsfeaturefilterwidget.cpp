@@ -52,12 +52,11 @@ QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   mActionStoredFilterExpressions->setMenu( mStoredFilterExpressionMenu );
 
   // Set filter icon in a couple of places
-  QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
-  mActionShowAllFilter->setIcon( filterIcon );
-  mActionAdvancedFilter->setIcon( filterIcon );
-  mActionSelectedFilter->setIcon( filterIcon );
-  mActionVisibleFilter->setIcon( filterIcon );
   mActionEditedFilter->setIcon( filterIcon );
+  mActionShowAllFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
+  mActionAdvancedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
+  mActionSelectedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableSelected.svg" ) );
+  mActionVisibleFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableVisible.svg" ) );
 
 
   // Set button to store or delete stored filter expressions
