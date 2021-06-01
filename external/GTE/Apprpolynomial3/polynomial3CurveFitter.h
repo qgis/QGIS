@@ -52,6 +52,7 @@ public:
   bool BeginReceiveData();
   bool EndReceiveData();
   std::array<float, 3> EveluateFromX2YZ(float X);
+  std::array<float, 3> GetOffset();
   float EveluateFromX2Y( float X);
   bool TransformSamples2Center();
   int GenerateXYZSeries();

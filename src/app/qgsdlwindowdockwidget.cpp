@@ -445,7 +445,7 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
   this->setWindowTitle(name);
   this->alignedPointsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 自适应列宽
   this->alignedPointsTableView->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);   //自适应行高
-  this->pushButton->setEnabled(false);
+  this->pushButton_Generate->setEnabled(false);
   this->resetToolButton->setEnabled(true);
   this->alignedPointsTableView->sortByColumn(1, Qt::AscendingOrder); // x 列按照升序排序
   this->alignedPointsTableView->setSortingEnabled(true);
@@ -453,7 +453,7 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
 
   connect(niheToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked);
   connect(resetToolButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnResetClicked);
-  connect(pushButton, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::onGenerateData);
+  connect(pushButton_Generate, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::onGenerateData);
   connect(pushButton_queren, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnAcceptTemp_jiamidian);
   connect(pushButton_save, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnPushButton_save);
   
@@ -543,7 +543,7 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
     int numpts = Fiter_Ptr->SetInterVal(0.05);
     if (numpts)
     {
-      this->pushButton->setEnabled(true);
+      this->pushButton_Generate->setEnabled(true);
     }
    
     if (numpts <1)
@@ -564,9 +564,12 @@ void QgsPcdpickeddlgWindowDockWidget:: onGenerateData()
   {
      temp_jiamidian.clear();
      temp_jiamidian = Fiter_Ptr->GetGeneratedPoints();
+     offset = Fiter_Ptr->GetOffset();
      this->pushButton_queren->setEnabled(true);
-     this->pushButton->setEnabled(false);
+     this->pushButton_Generate->setEnabled(false);
      this->pushButton_save->setEnabled(true);
+
+     QgisApp::instance()->addPointCloudFromVectorArray(temp_jiamidian, offset);
   }
 
   // todo:: 推送到 opengl窗口 进行显示(使用红色） ，暂时不保存。

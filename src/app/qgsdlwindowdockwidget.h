@@ -128,6 +128,7 @@ private:
 
   std::vector<std::array<float, 3>> global_jiamidian;
   std::vector<std::array<float, 3>> temp_jiamidian;
+  std::array<float, 3> offset;
 
 public slots:
   void OnPaiXuClicked(int column);

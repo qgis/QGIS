@@ -196,8 +196,13 @@ std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
   float Z = -999;
   Z =mPolynomialsXYZ->Evaluate(X, Y);
   float z_error = mPolynomialsXYError->Evaluate(X, Y);
-  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2]- z_error* m_coff_error };
+  std::array<float, 3> point = { X, Y, Z- z_error* m_coff_error };
   return point;
+}
+
+std::array<float, 3> polynomial3CurveFitter3::GetOffset()
+{
+  return  Center;
 }
 
 bool polynomial3CurveFitter3::EveluateErrorFromXY()

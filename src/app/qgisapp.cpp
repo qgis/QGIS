@@ -18386,12 +18386,14 @@ void QgisApp::addPointCloudFiles()
   m_currPointCloudFileDir = QFileInfo(files[0]).dir();
   m_currPointCloudFileDir.makeAbsolute();
 }
-void QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &pointcloud)
+void QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &pointcloud,  std::array<float, 3> offset)
 {
   bool isloaded = false;
 
+  V3d m_offset(offset[0],offset[1],offset[2]);
+
   std::shared_ptr<Geometry> geom = Geometry::create("");
-  isloaded = geom->loadFromVectorArray(pointcloud, QColor(255, 100, 100));
+  isloaded = geom->loadFromVectorArray(pointcloud,m_offset,QColor(255, 100, 100));
   m_geometries->addGeometry(geom,false,false);
   
   const GeometryCollection::GeometryVec& geoms = m_geometries->get();
