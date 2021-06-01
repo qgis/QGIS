@@ -2452,6 +2452,7 @@ public:
   /// socket previously in use is deleted.
   void startIpcServer(const QString &socketName);
   void addPointCloudFile(const QString &DataSource);
+  void addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &pointcloud);
 
 public slots:
   void handleMessage(QByteArray message);

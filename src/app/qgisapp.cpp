@@ -18386,7 +18386,30 @@ void QgisApp::addPointCloudFiles()
   m_currPointCloudFileDir = QFileInfo(files[0]).dir();
   m_currPointCloudFileDir.makeAbsolute();
 }
+void QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &pointcloud)
+{
+  bool isloaded = false;
 
+  std::shared_ptr<Geometry> geom = Geometry::create("");
+  isloaded = geom->loadFromVectorArray(pointcloud, QColor(255, 100, 100));
+  m_geometries->addGeometry(geom,false,false);
+  
+  const GeometryCollection::GeometryVec& geoms = m_geometries->get();
+
+  for (auto g = geoms.begin(); g != geoms.end(); ++g)
+  {
+    //FileLoadInfo loadInfo((*g)->fileName(), (*g)->label(), false);
+    //m_PointCloudfileLoader->reloadFile(loadInfo);
+    if ((*g)->fileName() == "Memory")
+    {
+      isloaded = true;
+      //g->get()
+      FromGeometriesToLayerMap(*g);
+      break;
+    }
+  }
+   //  必须是 isloaded 状态
+}
 void QgisApp::addPointCloudFile(const QString& DataSource)
 {
   connect(m_PointCloudfileLoader, SIGNAL(geometryLoaded(std::shared_ptr<Geometry>)), this, SLOT(FromGeometriesToLayerMap((std::shared_ptr<Geometry>))));

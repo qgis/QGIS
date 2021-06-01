@@ -30,13 +30,14 @@ void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float
     file.close();
 }
 
-polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , bool usespecial)
+polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , bool usespecial, float coff_error)
     : mDegree(2),
     mPolynomialsXYZ(nullptr),
     mPolynomialsXY(nullptr),
     mAvrError(0.0f),
     mRmsError(0.0f),
-    mUseSpecial(usespecial)
+    mUseSpecial(usespecial),
+    m_coff_error(coff_error)
 {
      std::vector<int> degrees;
      for (size_t i = 0; i < sanweijie+1; i++)
@@ -55,7 +56,7 @@ polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , b
 
     mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(erweijie);
 
-    mPolynomialsXYError = std::make_unique<ApprPolynomial3<float>>(3,3);
+    mPolynomialsXYError = std::make_unique<ApprPolynomial3<float>>(2,2);
 
 
     mXDomain[0] = std::numeric_limits<float>::max();
@@ -195,7 +196,7 @@ std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
   float Z = -999;
   Z =mPolynomialsXYZ->Evaluate(X, Y);
   float z_error = mPolynomialsXYError->Evaluate(X, Y);
-  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2]- z_error };
+  std::array<float, 3> point = { X+ Center[0], Y+ Center[1], Z+ Center[2]- z_error* m_coff_error };
   return point;
 }
 
