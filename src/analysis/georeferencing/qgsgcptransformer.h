@@ -76,7 +76,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      *
      * \returns TRUE on success, FALSE on failure
      */
-    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) = 0;
+    virtual bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) SIP_THROW( QgsNotSupportedException ) = 0;
 
     /**
      * Returns the minimum number of Ground Control Points (GCPs) required for parameter fitting.
@@ -117,7 +117,7 @@ class ANALYSIS_EXPORT QgsGcpTransformerInterface SIP_ABSTRACT
      *
      * Caller takes ownership of the returned object.
      */
-    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates ) SIP_FACTORY;
+    static QgsGcpTransformerInterface *createFromParameters( TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates ) SIP_THROW( QgsNotSupportedException ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 
