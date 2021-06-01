@@ -315,7 +315,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
   }
   else
   {
-//    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: success" ).arg( opInfo ), Qgis::Info, QgisApp::instance()->messageTimeout() );
+//    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: success" ).arg( opInfo ), Qgis::MessageLevel::Info, QgisApp::instance()->messageTimeout() );
 
     //Delete all rows from the UI table widgets
     mRelatedTable->setRowCount( 0 );

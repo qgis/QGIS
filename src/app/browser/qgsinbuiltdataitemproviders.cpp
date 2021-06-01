@@ -263,15 +263,28 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     menu->addAction( actionClearIconColor );
   }
 
-  QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), menu );
+  QMenu *scanningMenu = new QMenu( tr( "Scanning" ), menu );
+
+  QAction *monitorAction = new QAction( tr( "Monitor for Changes" ), scanningMenu );
+  connect( monitorAction, &QAction::triggered, this, [ = ]
+  {
+    toggleMonitor( directoryItem );
+  } );
+  monitorAction->setCheckable( true );
+  monitorAction->setChecked( directoryItem->isMonitored() );
+  scanningMenu->addAction( monitorAction );
+
+  QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), scanningMenu );
   connect( fastScanAction, &QAction::triggered, this, [ = ]
   {
     toggleFastScan( directoryItem );
   } );
-  menu->addAction( fastScanAction );
   fastScanAction->setCheckable( true );
   fastScanAction->setChecked( settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
                               QStringList() ).toStringList().contains( item->path() ) );
+
+  scanningMenu->addAction( fastScanAction );
+  menu->addMenu( scanningMenu );
 
   menu->addSeparator();
 
@@ -380,6 +393,14 @@ void QgsAppDirectoryItemGuiProvider::toggleFastScan( QgsDirectoryItem *item )
     fastScanDirs << item->path();
   }
   settings.setValue( QStringLiteral( "qgis/scanItemsFastScanUris" ), fastScanDirs );
+}
+
+void QgsAppDirectoryItemGuiProvider::toggleMonitor( QgsDirectoryItem *item )
+{
+  if ( item->isMonitored() )
+    item->setMonitoring( Qgis::BrowserDirectoryMonitoring::NeverMonitor );
+  else
+    item->setMonitoring( Qgis::BrowserDirectoryMonitoring::AlwaysMonitor );
 }
 
 void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context )

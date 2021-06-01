@@ -34,7 +34,9 @@
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
-  mProviderFeatureSource.reset( layer->dataProvider()->featureSource() );
+  const QgsVectorDataProvider *provider = layer->dataProvider();
+  if ( provider )
+    mProviderFeatureSource.reset( provider->featureSource() );
   mFields = layer->fields();
   mId = layer->id();
 
@@ -75,7 +77,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     {
 #endif
       // If we are inside a transaction the iterator "sees" the current status
-      if ( layer->dataProvider() && ! layer->dataProvider()->transaction() )
+      if ( provider && ! provider->transaction() )
       {
         mAddedFeatures = QgsFeatureMap( layer->editBuffer()->addedFeatures() );
         mChangedGeometries = QgsGeometryMap( layer->editBuffer()->changedGeometries() );
@@ -293,13 +295,16 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   }
   else // no filter or filter by rect
   {
-    if ( mSource->mHasEditBuffer )
+    if ( mSource->mProviderFeatureSource )
     {
-      mChangedFeaturesIterator = mSource->mProviderFeatureSource->getFeatures( mChangedFeaturesRequest );
-    }
-    else
-    {
-      mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      if ( mSource->mHasEditBuffer )
+      {
+        mChangedFeaturesIterator = mSource->mProviderFeatureSource->getFeatures( mChangedFeaturesRequest );
+      }
+      else
+      {
+        mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      }
     }
 
     rewindEditBuffer();
@@ -389,7 +394,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow, too many nested feature iterators.\nIterated layers:\n%3\n..." ).arg( mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -437,8 +442,11 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mProviderIterator.isClosed() )
   {
     mChangedFeaturesIterator.close();
-    mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
-    mProviderIterator.setInterruptionChecker( mInterruptionChecker );
+    if ( mSource->mProviderFeatureSource )
+    {
+      mProviderIterator = mSource->mProviderFeatureSource->getFeatures( mProviderRequest );
+      mProviderIterator.setInterruptionChecker( mInterruptionChecker );
+    }
   }
 
   while ( mProviderIterator.nextFeature( f ) )
@@ -731,7 +739,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
 
   if ( guard.hasStackOverflow() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Stack overflow when preparing field %1 of layer %2.\nLast frames:\n%3\n..." ).arg( mSource->fields().at( fieldIdx ).name(), mSource->id(), guard.topFrames() ), QObject::tr( "General" ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -887,7 +895,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     {
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
         if ( mRequest.invalidGeometryCallback() )
         {
           mRequest.invalidGeometryCallback()( feature );
@@ -900,7 +908,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     case QgsFeatureRequest::GeometryAbortOnInvalid:
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::MessageLevel::Critical );
         close();
         if ( mRequest.invalidGeometryCallback() )
         {

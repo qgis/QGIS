@@ -100,19 +100,21 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
 
 bool QgsVectorLayerJoinBuffer::removeJoin( const QString &joinLayerId )
 {
-  QMutexLocker locker( &mMutex );
   bool res = false;
-  for ( int i = 0; i < mVectorJoins.size(); ++i )
   {
-    if ( mVectorJoins.at( i ).joinLayerId() == joinLayerId )
+    QMutexLocker locker( &mMutex );
+    for ( int i = 0; i < mVectorJoins.size(); ++i )
     {
-      if ( QgsVectorLayer *vl = mVectorJoins.at( i ).joinLayer() )
+      if ( mVectorJoins.at( i ).joinLayerId() == joinLayerId )
       {
-        disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
-      }
+        if ( QgsVectorLayer *vl = mVectorJoins.at( i ).joinLayer() )
+        {
+          disconnect( vl, &QgsVectorLayer::updatedFields, this, &QgsVectorLayerJoinBuffer::joinedLayerUpdatedFields );
+        }
 
-      mVectorJoins.removeAt( i );
-      res = true;
+        mVectorJoins.removeAt( i );
+        res = true;
+      }
     }
   }
 

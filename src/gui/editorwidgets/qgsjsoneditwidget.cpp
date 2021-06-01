@@ -15,6 +15,8 @@
 
 #include "qgsjsoneditwidget.h"
 
+#include <QAction>
+#include <QClipboard>
 #include <QDesktopServices>
 #include <QJsonArray>
 #include <QLabel>
@@ -24,6 +26,8 @@
 
 QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
   : QWidget( parent )
+  , mCopyValueAction( new QAction( tr( "Copy value" ), this ) )
+  , mCopyKeyAction( new QAction( tr( "Copy key" ), this ) )
 {
   setupUi( this );
 
@@ -38,8 +42,15 @@ QgsJsonEditWidget::QgsJsonEditWidget( QWidget *parent )
 
   mTreeWidget->setStyleSheet( QStringLiteral( "font-family: %1;" ).arg( QgsCodeEditor::getMonospaceFont().family() ) );
 
+  mTreeWidget->setContextMenuPolicy( Qt::ActionsContextMenu );
+  mTreeWidget->addAction( mCopyValueAction );
+  mTreeWidget->addAction( mCopyKeyAction );
+
   connect( mTextToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::textToolButtonClicked );
   connect( mTreeToolButton, &QToolButton::clicked, this, &QgsJsonEditWidget::treeToolButtonClicked );
+
+  connect( mCopyValueAction, &QAction::triggered, this, &QgsJsonEditWidget::copyValueActionTriggered );
+  connect( mCopyKeyAction, &QAction::triggered, this, &QgsJsonEditWidget::copyKeyActionTriggered );
 
   connect( mCodeEditorJson, &QgsCodeEditorJson::textChanged, this, &QgsJsonEditWidget::codeEditorJsonTextChanged );
   // Signal indicatorClicked is used because indicatorReleased has a bug in Scintilla and the keyboard modifier state
@@ -133,6 +144,47 @@ void QgsJsonEditWidget::treeToolButtonClicked( bool checked )
     setView( View::Text );
 }
 
+void QgsJsonEditWidget::copyValueActionTriggered()
+{
+  if ( !mTreeWidget->currentItem() )
+    return;
+
+  const QJsonValue jsonValue = QJsonValue::fromVariant( mTreeWidget->currentItem()->data( static_cast<int>( TreeWidgetColumn::Value ), Qt::UserRole ) );
+
+  switch ( jsonValue.type() )
+  {
+    case QJsonValue::Null:
+    case QJsonValue::Bool:
+    case QJsonValue::Double:
+    case QJsonValue::Undefined:
+      QApplication::clipboard()->setText( mTreeWidget->currentItem()->text( static_cast<int>( TreeWidgetColumn::Value ) ) );
+      break;
+    case QJsonValue::String:
+      QApplication::clipboard()->setText( jsonValue.toString() );
+      break;
+    case QJsonValue::Array:
+    {
+      const QJsonDocument jsonDocument( jsonValue.toArray() );
+      QApplication::clipboard()->setText( jsonDocument.toJson() );
+    }
+    break;
+    case QJsonValue::Object:
+    {
+      const QJsonDocument jsonDocument( jsonValue.toObject() );
+      QApplication::clipboard()->setText( jsonDocument.toJson() );
+    }
+    break;
+  }
+}
+
+void QgsJsonEditWidget::copyKeyActionTriggered()
+{
+  if ( !mTreeWidget->currentItem() )
+    return;
+
+  QApplication::clipboard()->setText( mTreeWidget->currentItem()->text( static_cast<int>( TreeWidgetColumn::Key ) ) );
+}
+
 void QgsJsonEditWidget::codeEditorJsonTextChanged()
 {
   mJsonText = mCodeEditorJson->text();
@@ -204,7 +256,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     {
       const QJsonValue jsonValue = jsonDocument.object().value( key );
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << key );
-      refreshTreeViewItemValue( jsonValue, treeWidgetItem );
+      refreshTreeViewItem( treeWidgetItem, jsonValue );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
       mTreeWidget->expandItem( treeWidgetItem );
     }
@@ -214,7 +266,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     for ( int index = 0; index < jsonDocument.array().size(); index++ )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
-      refreshTreeViewItemValue( jsonDocument.array().at( index ), treeWidgetItem );
+      refreshTreeViewItem( treeWidgetItem, jsonDocument.array().at( index ) );
       mTreeWidget->addTopLevelItem( treeWidgetItem );
       mTreeWidget->expandItem( treeWidgetItem );
     }
@@ -223,35 +275,41 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
   mTreeWidget->resizeColumnToContents( static_cast<int>( TreeWidgetColumn::Key ) );
 }
 
-void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, QTreeWidgetItem *treeWidgetItemParent )
+void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, const QJsonValue &jsonValue )
 {
+  treeWidgetItem->setData( static_cast<int>( TreeWidgetColumn::Value ), Qt::UserRole, jsonValue.toVariant() );
+
   switch ( jsonValue.type() )
   {
     case QJsonValue::Null:
-      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QStringLiteral( "null" ) );
+      refreshTreeViewItemValue( treeWidgetItem,
+                                QStringLiteral( "null" ),
+                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Bool:
-      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+      refreshTreeViewItemValue( treeWidgetItem,
+                                jsonValue.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" ),
+                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Keyword ) );
       break;
     case QJsonValue::Double:
-      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QString::number( jsonValue.toDouble() ) );
+      refreshTreeViewItemValue( treeWidgetItem,
+                                QString::number( jsonValue.toDouble() ),
+                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::Number ) );
       break;
     case QJsonValue::String:
     {
       const QString jsonValueString = jsonValue.toString();
       if ( QUrl( jsonValueString ).scheme().isEmpty() )
       {
-        treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), jsonValueString );
+        refreshTreeViewItemValue( treeWidgetItem,
+                                  jsonValueString,
+                                  QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
       }
       else
       {
         QLabel *label = new QLabel( QString( "<a href='%1'>%1</a>" ).arg( jsonValueString ) );
-        mTreeWidget->setItemWidget( treeWidgetItemParent, static_cast<int>( TreeWidgetColumn::Value ), label );
-
-        connect( label, &QLabel::linkActivated, this, []( const QString & link )
-        {
-          QDesktopServices::openUrl( link );
-        } );
+        label->setOpenExternalLinks( true );
+        mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 
         mClickableLinkList.append( jsonValueString );
         mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, mClickableLinkList.size() );
@@ -266,10 +324,10 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       const QJsonArray jsonArray = jsonValue.toArray();
       for ( int index = 0; index < jsonArray.size(); index++ )
       {
-        QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( treeWidgetItemParent, QStringList() << QString::number( index ) );
-        refreshTreeViewItemValue( jsonArray.at( index ), treeWidgetItem );
-        treeWidgetItemParent->addChild( treeWidgetItem );
-        treeWidgetItemParent->setExpanded( true );
+        QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << QString::number( index ) );
+        refreshTreeViewItem( treeWidgetItemChild, jsonArray.at( index ) );
+        treeWidgetItem->addChild( treeWidgetItemChild );
+        treeWidgetItem->setExpanded( true );
       }
     }
     break;
@@ -279,15 +337,25 @@ void QgsJsonEditWidget::refreshTreeViewItemValue( const QJsonValue &jsonValue, Q
       const QStringList keys = jsonObject.keys();
       for ( const QString &key : keys )
       {
-        QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( treeWidgetItemParent, QStringList() << key );
-        refreshTreeViewItemValue( jsonObject.value( key ), treeWidgetItem );
-        treeWidgetItemParent->addChild( treeWidgetItem );
-        treeWidgetItemParent->setExpanded( true );
+        QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << key );
+        refreshTreeViewItem( treeWidgetItemChild, jsonObject.value( key ) );
+        treeWidgetItem->addChild( treeWidgetItemChild );
+        treeWidgetItem->setExpanded( true );
       }
     }
     break;
     case QJsonValue::Undefined:
-      treeWidgetItemParent->setText( static_cast<int>( TreeWidgetColumn::Value ), QStringLiteral( "Undefined value" ) );
+      refreshTreeViewItemValue( treeWidgetItem,
+                                QStringLiteral( "Undefined value" ),
+                                QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ) );
       break;
   }
+}
+
+void QgsJsonEditWidget::refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetItem, const QString &jsonValueString, const QColor &textColor )
+{
+  QLabel *label = new QLabel( jsonValueString );
+  if ( textColor.isValid() )
+    label->setStyleSheet( QStringLiteral( "color: %1;" ).arg( textColor.name() ) );
+  mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 }

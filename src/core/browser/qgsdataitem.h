@@ -93,6 +93,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     ~QgsDataItem() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     bool hasChildren();
 
     /**
@@ -291,7 +299,12 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see capabilities2()
      */
-    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) { mCapabilities = capabilities; }
+    virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) SIP_PYNAME( setCapabilitiesV2 ) { mCapabilities = capabilities; }
+
+    /**
+     * \deprecated use setCapabilitiesV2 instead.
+     */
+    Q_DECL_DEPRECATED void setCapabilities( int capabilities ) SIP_DEPRECATED;
 
     // static methods
 
@@ -522,6 +535,14 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
   public:
 
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
 };
 

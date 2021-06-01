@@ -120,14 +120,18 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mProtocolCmbBx = new QComboBox( treeSslConfig );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SecureProtocols ),
                            static_cast<int>( QSsl::SecureProtocols ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1SslV3 ),
                            static_cast<int>( QSsl::TlsV1SslV3 ) );
+#endif
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::TlsV1_0 ),
                            static_cast<int>( QSsl::TlsV1_0 ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV3 ),
                            static_cast<int>( QSsl::SslV3 ) );
   mProtocolCmbBx->addItem( QgsAuthCertUtils::getSslProtocolName( QSsl::SslV2 ),
                            static_cast<int>( QSsl::SslV2 ) );
+#endif
   mProtocolCmbBx->setMaximumWidth( 300 );
   mProtocolCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *protocolitem = new QTreeWidgetItem(

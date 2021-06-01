@@ -27,8 +27,6 @@ It is safe to call that function while rendering is active to see preview of the
     QgsMapRendererSequentialJob( const QgsMapSettings &settings );
     ~QgsMapRendererSequentialJob();
 
-    virtual void start();
-
     virtual void cancel();
 
     virtual void cancelWithoutBlocking();

@@ -271,7 +271,7 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
     if ( key.compare( QLatin1String( "MAP" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Changing the 'MAP' parameter will have no effect on config path: use QgsSerververInterface::setConfigFilePath instead" ),
-                                 "Server", Qgis::Warning );
+                                 "Server", Qgis::MessageLevel::Warning );
     }
     mRequest.setParameter( key, value );
   }

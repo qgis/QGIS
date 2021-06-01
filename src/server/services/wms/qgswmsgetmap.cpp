@@ -32,6 +32,12 @@ namespace QgsWms
                     const QgsWmsRequest &request,
                     QgsServerResponse &response )
   {
+    if ( request.serverParameters().version().isEmpty() )
+    {
+      throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
+                                 QStringLiteral( "Please add the value of the VERSION parameter" ), 501 );
+    }
+
     // prepare render context
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UpdateExtent );

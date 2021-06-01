@@ -128,7 +128,7 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Critical, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Critical, 0 );
 }
 
 void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation )
@@ -196,7 +196,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Warning, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Warning, 0 );
 }
 
 void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error )
@@ -220,7 +220,7 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Critical, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Critical, 0 );
 }
 
 void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired )
@@ -281,7 +281,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Critical, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Critical, 0 );
 }
 
 void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired )
@@ -305,7 +305,7 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Warning, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Warning, 0 );
 }
 
 void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
@@ -329,7 +329,7 @@ void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateRef
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Critical, 0 );
+  bar->pushWidget( widget, Qgis::MessageLevel::Critical, 0 );
 }
 
 bool QgsAppMissingGridHandler::shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest )

@@ -28,6 +28,12 @@ Constructor for QgsFavoritesItem. Accepts a path argument specifying the file pa
 the item.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QVector<QgsDataItem *> createChildren();
 
 

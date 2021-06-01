@@ -81,7 +81,7 @@ The development version
       Warning,
       Critical,
       Success,
-      None,
+      NoLevel,
     };
 
     enum class DataType
@@ -102,8 +102,8 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode
+      {
       Never,
       Ask,
       SessionOnly,
@@ -200,6 +200,13 @@ The development version
       Mesh,
       VectorTile,
       PointCloud
+    };
+
+    enum class BrowserDirectoryMonitoring
+    {
+      Default,
+      NeverMonitor,
+      AlwaysMonitor,
     };
 
     enum class VectorExportResult

@@ -400,7 +400,7 @@ QgsMimeDataUtils::UriList QgsGeoPackageCollectionItem::mimeUris() const
 {
   QgsMimeDataUtils::Uri vectorUri;
   vectorUri.providerKey = QStringLiteral( "ogr" );
-  vectorUri.uri = path();
+  vectorUri.uri = path().replace( QLatin1String( "gpkg:/" ), QString() );
   vectorUri.layerType = QStringLiteral( "vector" );
   QgsMimeDataUtils::Uri rasterUri { vectorUri };
   rasterUri.layerType = QStringLiteral( "raster" );

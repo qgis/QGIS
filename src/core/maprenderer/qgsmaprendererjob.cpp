@@ -70,10 +70,18 @@ bool LayerRenderJob::imageCanBeComposed() const
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
+{}
 
+void QgsMapRendererJob::start()
 {
+  if ( mSettings.hasValidSettings() )
+    startPrivate();
+  else
+  {
+    mErrors.append( QgsMapRendererJob::Error( QString(), tr( "Invalid map settings" ) ) );
+    emit finished();
+  }
 }
-
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )

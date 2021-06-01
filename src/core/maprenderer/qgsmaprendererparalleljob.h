@@ -36,7 +36,6 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob() override;
 
-    void start() override;
     void cancel() override;
     void cancelWithoutBlocking() override;
     void waitForFinished() override;
@@ -62,6 +61,8 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     static void renderLayerStatic( LayerRenderJob &job ) SIP_SKIP;
     //! \note not available in Python bindings
     static void renderLabelsStatic( QgsMapRendererParallelJob *self ) SIP_SKIP;
+
+    void startPrivate() override;
 
     QImage mFinalImage;
 

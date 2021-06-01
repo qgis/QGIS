@@ -229,7 +229,7 @@ int QgsProcessingExec::run( const QStringList &constArgs )
   QObject::connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level ) >( &QgsMessageLog::messageReceived ), QgsApplication::instance(),
                     [ = ]( const QString & message, const QString &, Qgis::MessageLevel level )
   {
-    if ( level == Qgis::Critical )
+    if ( level == Qgis::MessageLevel::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )
         std::cerr << message.toLocal8Bit().constData() << '\n';

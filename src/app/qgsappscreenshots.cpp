@@ -148,7 +148,7 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   const QDir topDirectory( mSaveDirectory );
   if ( !topDirectory.exists() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Directory does not exist: %1" ).arg( mSaveDirectory ), QString(), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Directory does not exist: %1" ).arg( mSaveDirectory ), QString(), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -158,14 +158,14 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   {
     if ( !topDirectory.mkpath( folder ) )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Could not create directory %1 in %2" ).arg( folder, mSaveDirectory ), QString(), Qgis::Critical );
+      QgsMessageLog::logMessage( QStringLiteral( "Could not create directory %1 in %2" ).arg( folder, mSaveDirectory ), QString(), Qgis::MessageLevel::Critical );
       return;
     }
   }
   if ( pixmap.save( fileName ) )
     QgsMessageLog::logMessage( QStringLiteral( "Screenshot saved: %1" ).arg( fileName ) );
   else
-    QgsMessageLog::logMessage( QStringLiteral( "Failed to save screenshot: %1" ).arg( fileName ), QString(), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Failed to save screenshot: %1" ).arg( fileName ), QString(), Qgis::MessageLevel::Critical );
 }
 
 void QgsAppScreenShots::moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference )

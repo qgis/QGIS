@@ -36,7 +36,7 @@ QgsMapRendererStagedRenderJob::~QgsMapRendererStagedRenderJob()
 }
 
 
-void QgsMapRendererStagedRenderJob::start()
+void QgsMapRendererStagedRenderJob::startPrivate()
 {
   mRenderingStart.start();
   mErrors.clear();

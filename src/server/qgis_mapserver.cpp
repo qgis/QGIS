@@ -527,7 +527,7 @@ int main( int argc, char *argv[] )
   if ( ! withDisplay )
   {
     QgsMessageLog::logMessage( "DISPLAY environment variable is not set, running in offscreen mode, all printing capabilities will not be available.\n"
-                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::Warning );
+                               "Consider installing an X server like 'xvfb' and export DISPLAY to the actual display value.", "Server", Qgis::MessageLevel::Warning );
   }
 
 #ifdef Q_OS_WIN
@@ -588,11 +588,13 @@ int main( int argc, char *argv[] )
   qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
   qputenv( "QGIS_SERVER_LOG_STDERR", "1" );
 
+  QgsServer server;
+
   if ( ! parser.value( projectOption ).isEmpty( ) )
   {
     // Check it!
     const QString projectFilePath { parser.value( projectOption ) };
-    if ( ! QFile::exists( projectFilePath ) )
+    if ( ! QgsProject::instance()->read( projectFilePath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts  | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }
@@ -605,8 +607,6 @@ int main( int argc, char *argv[] )
   // Disable parallel rendering because if its internal loop
   //qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
 
-
-  QgsServer server;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   server.initPython();

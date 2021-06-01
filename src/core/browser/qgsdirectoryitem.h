@@ -69,6 +69,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      */
     QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
     void setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
@@ -120,19 +127,95 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
 
+    /**
+     * Returns the monitoring setting for a directory \a path.
+     *
+     * This method returns the monitoring setting for \a path only. If no explicit monitoring setting
+     * is in place for the path then Qgis::BrowserDirectoryMonitoring::Default is returned.
+     *
+     * This method does not consider the monitoring setting of parent directories.
+     *
+     * \since QGIS 3.20
+     */
+    static Qgis::BrowserDirectoryMonitoring monitoringForPath( const QString &path );
+
+    /**
+     * Returns TRUE if a directory \a path should be monitored by default.
+     *
+     * In the absence of any other settings this will dictate whether the directory is monitored. This method
+     * does not consider an explicit monitoring setting set for the path, which can be determined by
+     * calling monitoringForPath().
+     *
+     * All parent directories will be checked to determine whether they have monitoring
+     * manually enabled or disabled. As soon as a parent directory is found which has monitoring
+     * manually enabled or disabled then the corresponding value will be returned.
+     *
+     * If no explicit setting is in place for a parent directory, then a check will be made to determine
+     * whether the path resides on a known slow drive. If so, monitoring is disabled by default and
+     * FALSE will be returned. Otherwise paths are monitored by default and the function will return TRUE.
+     *
+     * \see isMonitored()
+     * \see setMonitoring()
+     * \since QGIS 3.20
+     */
+    static bool pathShouldByMonitoredByDefault( const QString &path );
+
+    /**
+     * Returns TRUE if the directory is currently being monitored for changes and the item auto-refreshed
+     * when these occur.
+     *
+     * \since QGIS 3.20
+     */
+    bool isMonitored() const { return mMonitored; }
+
+    /**
+     * Returns the monitoring setting for this directory item.
+     *
+     * \see setMonitoring()
+     * \since QGIS 3.20
+     */
+    Qgis::BrowserDirectoryMonitoring monitoring() const;
+
+    /**
+     * Sets the \a monitoring setting for this directory.
+     *
+     * This is a persistent setting, which is saved in QSettings.
+     *
+     * \see monitoring()
+     * \since QGIS 3.20
+     */
+    void setMonitoring( Qgis::BrowserDirectoryMonitoring monitoring );
+
   public slots:
     void childrenCreated() override;
     void directoryChanged();
 
   protected:
     void init();
+
+    /**
+     * Re-evaluate whether the directory item should be monitored for changes.
+     *
+     * Should be called whenever the parent directory item's monitoring is overridden.
+     *
+     * \since QGIS 3.20
+     */
+    void reevaluateMonitoring() SIP_SKIP;
+
     QString mDirPath;
 
   private:
+
+    void createOrDestroyFileSystemWatcher();
+
+    Qgis::BrowserDirectoryMonitoring mMonitoring = Qgis::BrowserDirectoryMonitoring::Default;
+    bool mMonitored = true;
     QFileSystemWatcher *mFileSystemWatcher = nullptr;
     bool mRefreshLater;
     QDateTime mLastScan;
     QColor mIconColor;
+
+    friend class TestQgsDataItem;
 };
 
 // ---------

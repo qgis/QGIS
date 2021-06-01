@@ -50,6 +50,7 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void clearDirectoryColor( QgsDirectoryItem *item );
     void hideDirectory( QgsDirectoryItem *item );
     void toggleFastScan( QgsDirectoryItem *item );
+    void toggleMonitor( QgsDirectoryItem *item );
     void showProperties( QgsDirectoryItem *item, QgsDataItemGuiContext context );
 };
 

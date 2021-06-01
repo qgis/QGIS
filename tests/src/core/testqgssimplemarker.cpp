@@ -255,7 +255,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation()
   simpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( expression ) );
 
   QgsExpressionContext ec;
-  QImage image = markerSymbol.bigSymbolPreviewImage( &ec );
+  QImage image = markerSymbol.bigSymbolPreviewImage( &ec, Qgis::SymbolPreviewFlags() );
   image.save( _fileNameForTest( name ) );
   QVERIFY( _verifyImage( name, mReport ) );
 }

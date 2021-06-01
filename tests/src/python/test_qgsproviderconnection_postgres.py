@@ -377,6 +377,78 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         with self.assertRaises(QgsProviderConnectionException):
             conn.table('my_not_existent_schema', 'my_not_existent_table')
 
+    def test_zm(self):
+        """Test regression GH #43268"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_43268_test_zm;
+        CREATE TABLE qgis_test.gh_43268_test_zm (geom geometry(GeometryZ));
+        INSERT INTO qgis_test.gh_43268_test_zm (geom) VALUES
+            ('POINT(0 0 0)'),
+            ('LINESTRING(0 0 0, 0 0 0)'),
+            ('POLYGON((0 0 0, 0 0 0, 0 0 0, 0 0 0))');
+        """
+        conn.executeSql(sql)
+
+        table_info = conn.table('qgis_test', 'gh_43268_test_zm')
+        self.assertEqual(sorted([QgsWkbTypes.displayString(col.wkbType) for col in table_info.geometryColumnTypes()]), ['LineStringZ', 'PointZ', 'PolygonZ'])
+
+    def test_table_scan(self):
+        """Test that with use estimated metadata disabled all geometry column
+        types can be identified, test for GH #43186 """
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        uri = QgsDataSourceUri(self.uri)
+        conn = md.createConnection(uri.uri(), {'estimatedMetadata': True})
+
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.geometry_table_with_multiple_types;
+        CREATE TABLE qgis_test.geometry_table_with_multiple_types (
+            id SERIAL PRIMARY KEY,
+            geom geometry(Geometry,4326)
+        );
+        """
+
+        conn.executeSql(sql)
+
+        for i in range(110):
+            sql = "INSERT INTO qgis_test.geometry_table_with_multiple_types (geom) VALUES (ST_GeomFromText('point(9 45)', 4326));"
+            conn.executeSql(sql)
+
+        for i in range(10):
+            sql = "INSERT INTO qgis_test.geometry_table_with_multiple_types (geom) VALUES (ST_GeomFromText('linestring(9 45, 10 46)', 4326));"
+            conn.executeSql(sql)
+
+        table = conn.table('qgis_test', 'geometry_table_with_multiple_types')
+
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+
+        uri = QgsDataSourceUri(self.uri)
+        uri.setUseEstimatedMetadata(False)
+        conn = md.createConnection(uri.uri(), {'estimatedMetadata': False})
+
+        table = conn.table('qgis_test', 'geometry_table_with_multiple_types')
+
+        self.assertEqual(len(table.geometryColumnTypes()), 2)
+
+        # Tesf for #43199
+
+        uri.setSchema('qgis_test')
+        uri.setTable('geometry_table_with_multiple_types')
+        uri.setGeometryColumn('geom')
+        uri.setWkbType(QgsWkbTypes.Point)
+        vl = QgsVectorLayer(uri.uri(), 'points', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 110)
+
+        uri.setGeometryColumn('geom')
+        uri.setWkbType(QgsWkbTypes.LineString)
+        vl = QgsVectorLayer(uri.uri(), 'lines', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 10)
+
 
 if __name__ == '__main__':
     unittest.main()

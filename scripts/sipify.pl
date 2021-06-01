@@ -1086,10 +1086,12 @@ while ($LINE_IDX < $LINE_COUNT){
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
                           if ( $ACTUAL_CLASS ne "" ) {
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.is_monkey_patched = True\n";
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
                             push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                           } else {
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.is_monkey_patched = True\n";
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
                             push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
                           }
@@ -1097,6 +1099,7 @@ while ($LINE_IDX < $LINE_COUNT){
                             if ( $monkeypatch eq 1 )
                             {
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name.is_monkey_patched = True\n";
                             }
                             if ( $ACTUAL_CLASS ne "" ){
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";

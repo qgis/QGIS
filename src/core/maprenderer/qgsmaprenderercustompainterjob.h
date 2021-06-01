@@ -28,7 +28,7 @@
  *
  * \since QGIS 3.10
  */
-class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRendererJob SIP_ABSTRACT
 {
     Q_OBJECT
   public:
@@ -67,7 +67,6 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
     ~QgsMapRendererCustomPainterJob() override;
 
-    void start() override;
     void cancel() override;
     void cancelWithoutBlocking() override;
     void waitForFinished() override;
@@ -128,11 +127,14 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
      */
     void renderPrepared();
 
+
   private slots:
     void futureFinished();
 
   private:
     static void staticRender( QgsMapRendererCustomPainterJob *self ); // function to be used within the thread
+
+    void startPrivate() override;
 
     // these methods are called within worker thread
     void doRender();

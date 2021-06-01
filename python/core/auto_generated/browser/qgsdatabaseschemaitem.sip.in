@@ -36,6 +36,12 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
 
     ~QgsDatabaseSchemaItem();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsDatabaseSchemaItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 

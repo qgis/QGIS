@@ -365,7 +365,7 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
         feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
         deletedCount += context.handledFeatures( contextLayer ).size();
       }
-      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+      mEditorContext.mainMessageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
     }
 
     updateUi();
@@ -559,7 +559,7 @@ void QgsAbstractRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &fids 
     for ( QgsFeatureId fid : constFeatureids )
     {
       QgsVectorLayer *referencingLayer = mRelation.referencingLayer();
-      if ( mRelation.type() == QgsRelation::Normal )
+      if ( mRelation.type() == QgsRelation::Generated )
       {
         QgsPolymorphicRelation polyRel = mRelation.polymorphicRelation();
 

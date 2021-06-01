@@ -53,7 +53,7 @@ QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QW
   {
     if ( static_cast< QgsLabelingEngineSettings::PlacementEngineVersion >( mPlacementVersionComboBox->currentData().toInt() ) != mPreviousEngineVersion )
     {
-      mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::Warning );
+      mMessageBar->pushMessage( QString(), tr( "Version changes will alter label placement in the project." ), Qgis::MessageLevel::Warning );
     }
   } );
 

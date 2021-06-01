@@ -13,7 +13,7 @@
 
 
 
-class QgsMapRendererJob : QObject
+class QgsMapRendererJob : QObject /Abstract/
 {
 %Docstring(signature="appended")
 Abstract base class for map rendering implementations.
@@ -49,7 +49,7 @@ The following subclasses are available:
 
     QgsMapRendererJob( const QgsMapSettings &settings );
 
-    virtual void start() = 0;
+    void start();
 %Docstring
 Start the rendering job and immediately return.
 Does nothing if the rendering is already in progress.
@@ -198,7 +198,7 @@ emitted when asynchronous rendering is finished (or canceled).
 };
 
 
-class QgsMapRendererQImageJob : QgsMapRendererJob
+class QgsMapRendererQImageJob : QgsMapRendererJob /Abstract/
 {
 %Docstring(signature="appended")
 Intermediate base class adding functionality that allows client to query the rendered image.
