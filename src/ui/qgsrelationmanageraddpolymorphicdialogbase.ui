@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>400</height>
+    <width>454</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,13 +39,6 @@
     <widget class="QLabel" name="mIdLabel">
      <property name="text">
       <string>Id</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="mReferencedLayersLabel">
-     <property name="text">
-      <string>Referenced layers</string>
      </property>
     </widget>
    </item>
@@ -118,9 +111,6 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="1" colspan="2">
-    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
-   </item>
    <item row="9" column="0" colspan="2">
     <widget class="QTableWidget" name="mFieldsMappingTable">
      <property name="selectionBehavior">
@@ -167,6 +157,16 @@
    <item row="6" column="1" colspan="2">
     <widget class="QComboBox" name="mRelationStrengthComboBox"/>
    </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mReferencedLayersLabel">
+     <property name="text">
+      <string>Referenced layers</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -200,7 +200,6 @@
   <tabstop>mFieldsMappingTable</tabstop>
   <tabstop>mFieldsMappingAddButton</tabstop>
   <tabstop>mFieldsMappingRemoveButton</tabstop>
-  <tabstop>mReferencedLayersComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
