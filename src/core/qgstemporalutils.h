@@ -208,7 +208,7 @@ class CORE_EXPORT QgsTemporalUtils
      *
      * \since QGIS 3.18
      */
-    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval );
+    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval );
 
     /**
      * Calculates a complete list of datetimes between \a start and \a end, using the specified ISO8601 \a duration string (eg "PT12H").
