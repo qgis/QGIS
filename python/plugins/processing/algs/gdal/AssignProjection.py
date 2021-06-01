@@ -66,7 +66,7 @@ class AssignProjection(GdalAlgorithm):
 
     def tags(self):
         return ['assign', 'set', 'transform', 'reproject', 'crs', 'srs', 'warp', self.commandName()]
-    
+
     def group(self):
         return self.tr('Raster projections')
 
