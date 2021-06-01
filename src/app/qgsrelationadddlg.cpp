@@ -206,7 +206,7 @@ bool QgsRelationAddDlg::isDefinitionValid()
     isValid &= !static_cast<QgsFieldComboBox *>( mFieldsMappingTable->cellWidget( i, 1 ) )->currentField().isNull();
   }
 
-  return isValid;
+  return isValid && mFieldsMappingTable->rowCount() > 1;
 }
 
 void QgsRelationAddDlg::updateChildRelationsComboBox()
