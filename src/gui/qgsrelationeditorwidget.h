@@ -99,6 +99,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
      */
     enum Button
     {
+      NoButton = 0, //!< No button
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
       SaveChildEdits = 1 << 3, //!< Save child edits button
