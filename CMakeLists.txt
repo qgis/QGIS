@@ -279,8 +279,6 @@ if(WITH_CORE)
   endif()
   set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
-  set (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -705,8 +703,11 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-if (WITH_GEOREFERENCER OR WITH_ANALYSIS)
+set(WITH_GSL TRUE CACHE BOOL "Determines whether GSL library should be used")
+
+if (WITH_ANALYSIS AND WITH_GSL)
   find_package(GSL REQUIRED)
+  set(HAVE_GSL TRUE)
   set(HAVE_GEOREFERENCER TRUE)
 endif()
 

@@ -76,6 +76,8 @@
 
 #cmakedefine HAVE_3D
 
+#cmakedefine HAVE_GSL
+
 #cmakedefine HAVE_GEOREFERENCER
 
 #cmakedefine USE_THREAD_LOCAL
