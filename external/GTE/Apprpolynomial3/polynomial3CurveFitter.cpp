@@ -200,10 +200,8 @@ std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
   return point;
 }
 
-
 bool polynomial3CurveFitter3::EveluateErrorFromXY()
 {
-
   mSamplesXYError.clear();
   for (std::array<float, 3> point :   mSamplesXYZ)
   {
@@ -226,48 +224,6 @@ bool polynomial3CurveFitter3::EveluateErrorFromXY()
   return false;
 }
 
-float polynomial3CurveFitter3::CompuateError()
-{
-  float max_error = -999;
-  //mSamplesXYZ_nihe 初始化
-  if (mSamplesXYZ_nihe.size() != mSamplesXYZ.size())
-  {
-    for (size_t i = 0; i < mSamplesXYZ.size(); i++)
-    {
-      float X = mSamplesXYZ.at(i)[0];
-      float Y = mSamplesXYZ.at(i)[1];
-      float Z = mPolynomialsXYZ->Evaluate(X, Y);
-      float z_error = mPolynomialsXYError->Evaluate(X, Y);
-
-      if (mSamplesXYZ_nihe.size() != mSamplesXYZ.size())
-      {
-        std::array<float, 3> point = { X , Y, Z - z_error * m_coff_error };
-        mSamplesXYZ_nihe.push_back(point);
-      }
-    }
-    // 重新计算 误差拟合后的误差水平
-  }
-
-
-  for (size_t i = 0; i < mSamplesXYError.size(); i++)
-  {
-    float X = mSamplesXYError.at(i)[0];
-    float Y = mSamplesXYError.at(i)[1];
-    //float Z = mPolynomialsXYZ->Evaluate(X, Y);
-    float z_error = mPolynomialsXYError->Evaluate(X, Y);
-
-    mSamplesXYZ_nihe.at(i)[2] -= z_error * m_coff_error;
-    z_error = mSamplesXYZ_nihe.at(i)[2] - mSamplesXYZ.at(i)[2];
-    mSamplesXYError.at(i)[2] = z_error;
-    if (std::abs(z_error) > max_error)
-    {
-      max_error = (std::abs(z_error));
-    }
-  }
-  bool isfit = mPolynomialsXYError->Fit(mSamplesXYError);
-
- return max_error;
-}
 
 float polynomial3CurveFitter3::EveluateFromX2Y(float X)
 {
@@ -303,7 +259,6 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
   mInterprateXYZ.clear();
   EveluateErrorFromXY();
 
-
   for (size_t i = 0; i < mTargetPts; i++)
   {
     float percent = float((i+0.01) / mTargetPts);
@@ -315,22 +270,6 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
     }
   }
   mTargetPts = mInterprateXYZ.size();
-  int times = 0;
-  while (CompuateError()>0.05 && times <0 )
-  {
-    for (size_t i = 0; i < mTargetPts; i++)
-    {
-      float x = mInterprateXYZ.at(i)[0] - Center[0];
-      float y = mInterprateXYZ.at(i)[1] - Center[1];
-     // float Z = mPolynomialsXYZ->Evaluate(x, y);
-      float z_error = mPolynomialsXYError->Evaluate(x, y);
-      //std::array<float, 3> point = { x + Center[0], y + Center[1], Z + Center[2] - z_error * m_coff_error };
-     //   std::array<float, 3> pt = EveluateFromX2YZ(x);
-        mInterprateXYZ.at(i)[2] -=  z_error * m_coff_error;
-    }
-    times++;
-  }
-
   return mInterprateXYZ.size() ;
 }
 
