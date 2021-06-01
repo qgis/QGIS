@@ -1,7 +1,7 @@
 #include "qgsvirtualrasterprovider.h"
 
 #include "qgsmessagelog.h"
-#include <QImage>
+//#include <QImage>
 #include "qgslogger.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
@@ -14,15 +14,30 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     : QgsRasterDataProvider( uri, providerOptions)
 {
     QgsDebugMsg("hello from constructor");
+    //mUri = uri;
+    mValid = true;
 }
+
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvider &other)
     : QgsRasterDataProvider (other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
+
+    /*
     , mValid( other.mValid )
     , mCrs( other.mCrs )
     , mDataTypes( other.mDataTypes )
-
+    //
+    , mExtent( other.mExtent )
+    , mWidth( other.mWidth )
+    , mHeight( other.mHeight )
+    , mBandCount( other.mBandCount )
+    , mXBlockSize( other.mXBlockSize )
+    , mYBlockSize( other.mYBlockSize )
+    */
 {
+    mValid = other.mValid;
+    mCrs = other.mCrs;
+    mDataTypes = other.mDataTypes;
     mExtent = other.mExtent;
     mWidth = other.mWidth;
     mHeight = other.mHeight;
@@ -30,8 +45,13 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvide
     mXBlockSize = other.mXBlockSize;
     mYBlockSize = other.mYBlockSize;
 
+}
 
 
+QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
+{
+    Q_UNUSED( expandAuthConfig )
+    return QgsDataProvider::dataSourceUri();
 }
 
 
@@ -224,3 +244,15 @@ QString QgsVirtualRasterProvider::providerKey()
 {
   return PROVIDER_KEY;
 };
+
+int QgsVirtualRasterProvider::capabilities() const
+{
+  const int capability = QgsRasterDataProvider::Identify
+                         | QgsRasterDataProvider::IdentifyValue
+                         | QgsRasterDataProvider::Size
+                         // TODO:| QgsRasterDataProvider::BuildPyramids
+                         | QgsRasterDataProvider::Create
+                         | QgsRasterDataProvider::Remove
+                         | QgsRasterDataProvider::Prefetch;
+  return capability;
+}

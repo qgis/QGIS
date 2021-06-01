@@ -19,15 +19,20 @@ public:
 
     virtual ~QgsVirtualRasterProvider() override = default;
 
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
     QgsRasterBlock *block(Qgis::DataType dataType, int width, int height );
     //QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
     //bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
+    /* //since it was not useful at the moment i keep it away from the class
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override
         { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return true; }
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
         { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); true; }
+
+    */
 
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -39,6 +44,7 @@ public:
     int yBlockSize() const override;
     int bandCount() const override;
     QgsVirtualRasterProvider *clone() const override;
+    int capabilities() const override;
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
 
@@ -50,14 +56,14 @@ public:
     QString lastError() override;
 
     static QString providerKey();
-    //static const QString VR_RASTER_PROVIDER_KEY;
-    //static const QString VR_RASTER_PROVIDER_DESCRIPTION;
+
 
 private:
-    //I don't really understand it now
+
     QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other);
 
     bool mValid = false;
+
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mExtent;
     int mWidth = 0;
