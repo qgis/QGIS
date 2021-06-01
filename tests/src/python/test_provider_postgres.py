@@ -3203,6 +3203,32 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
 
+    def testPkeyIntArray(self):
+        """
+        Test issue #42778 when pkey is an int array
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.test_pkey_intarray')
+        conn.executeSql('CREATE TABLE public.test_pkey_intarray (id _int8 PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("""INSERT INTO public.test_pkey_intarray (id, name) VALUES('{0,0,19111815}', 'test')""")
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\' table="public"."test_pkey_intarray" sql=')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
+
+        fid = feat.id()
+        self.assertTrue(fid > 0)
+
+        feat = vl.getFeature(fid)
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
+
 
 if __name__ == '__main__':
     unittest.main()
