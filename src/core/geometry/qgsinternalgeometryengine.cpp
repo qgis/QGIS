@@ -1553,13 +1553,6 @@ QgsGeometry QgsInternalGeometryEngine::convertToCurves( double distanceTolerance
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
 
-  if ( QgsWkbTypes::isCurvedType( mGeometry->wkbType() ) )
-  {
-    // already curved. In future we may want to allow this, and convert additional candidate segments
-    // in an already curved geometry to curves
-    return QgsGeometry( mGeometry->clone() );
-  }
-
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
