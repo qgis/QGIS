@@ -22,7 +22,7 @@ elif [ $# -eq 1 ] && [ $1 = "SQLSERVER" ]; then
   RUN_SQLSERVER=YES
 
 elif [ $# -eq 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
-  LABELS_TO_EXCLUDE="HANA|POSTGRES|ORACLE|SQLSERVER"
+  LABELS_TO_EXCLUDE="HANA|POSTGRES|POSTGRESREMOTE|ORACLE|SQLSERVER"
 
 elif [ $# -gt 0 ] &&  [ $1 != "ALL" ]; then
   echo "Invalid argument, expected values: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER"
@@ -188,6 +188,35 @@ echo "Print disk space"
 df -h
 
 python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+
+if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
+  ###########
+  echo "Run additional postgres tests"
+  ###########
+
+  echo "apt-get install -y iproute2 iputils-ping"
+  apt-get install -y iproute2 iputils-ping 1> /dev/null
+  ping -c 2 postgres
+
+  pushd /root/QGIS > /dev/null
+  echo "Restoring postgres test data ..."
+  /root/QGIS/tests/testdata/provider/testdata_pg.sh 1> /dev/null
+  echo "Postgres test data restored ..."
+  popd > /dev/null # /root/QGIS
+
+  echo "set delay qgis-deps to postgres = 100ms"
+  echo "tc qdisc add dev eth0 root netem delay 100ms"
+  tc qdisc add dev eth0 root netem delay 100ms
+  ping -c 2 postgres
+
+  echo "Run tests"
+  python3 /root/QGIS/.ci/ctest2ci.py xvfb-run ctest -V -L POSTGRESREMOTE -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/config_test.ctest --output-on-failure
+
+  echo "rollback delay"
+  tc qdisc del dev eth0 root
+  ping -c 2 postgres
+
+fi
 
 echo "Print disk space"
 df -h

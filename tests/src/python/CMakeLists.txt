@@ -377,6 +377,7 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
   ADD_PYTHON_TEST(PyQgsVectorLayerUtilsPostgres test_qgsvectorlayerutils_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+  ADD_PYTHON_TEST(PyQgsPostgresProviderRemote test_provider_postgres_remote.py TEST_TIMEOUT=600)
   ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
   ADD_PYTHON_TEST(PyQgsPostgresDomain test_qgspostgresdomain.py)
   ADD_PYTHON_TEST(PyQgsPostgresTransaction test_qgspostgrestransaction.py)
@@ -407,6 +408,7 @@ if (ENABLE_PGTEST)
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
     PyQgsProviderConnectionPostgres
     PROPERTIES LABELS "POSTGRES")
+  SET_TESTS_PROPERTIES(PyQgsPostgresProviderRemote PROPERTIES LABELS "POSTGRESREMOTE")
 endif()
 
 if (ENABLE_MSSQLTEST)
