@@ -47,6 +47,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         QString layerName;
         QString layerId;
         QIcon layerIcon;
+        bool layerIsSpatial;
     };
 
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
