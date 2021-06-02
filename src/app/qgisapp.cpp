@@ -6807,6 +6807,7 @@ void QgisApp::showRasterCalculator()
                             QgsProject::instance()->transformContext() );
 
     QProgressDialog p( tr( "Calculating raster expression…" ), tr( "Abort" ), 0, 0 );
+    p.setWindowTitle( tr( "Raster calculator" ) );
     p.setWindowModality( Qt::WindowModal );
     p.setMaximum( 100.0 );
     QgsFeedback feedback;
