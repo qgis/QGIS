@@ -29,13 +29,6 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
-    enum ContextMenuEntry
-    {
-      NoEntry,
-      OpenForm
-    };
-
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsActiveLayerFeaturesLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "features" ); }
@@ -58,6 +51,11 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     Q_ENUM( ResultType )
 
   private:
+    enum ContextMenuEntry
+    {
+      NoEntry,
+      OpenForm
+    };
 
     /**
      * Returns the field restriction if defined (starting with @)

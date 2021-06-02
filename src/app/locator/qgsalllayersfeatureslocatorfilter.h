@@ -30,6 +30,21 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
+    QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
+    QgsAllLayersFeaturesLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "allfeatures" ); }
+    QString displayName() const override { return tr( "Features in All Layers" ); }
+    Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "af" ); }
+
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+    void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
+    bool hasConfigWidget() const override {return true;}
+    void openConfigWidget( QWidget *parent ) override;
+
+  private:
     enum ContextMenuEntry
     {
       NoEntry,
@@ -50,21 +65,6 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         bool layerIsSpatial;
     };
 
-    QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
-    QgsAllLayersFeaturesLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "allfeatures" ); }
-    QString displayName() const override { return tr( "Features in All Layers" ); }
-    Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "af" ); }
-
-    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
-    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
-    void triggerResult( const QgsLocatorResult &result ) override;
-    void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
-    bool hasConfigWidget() const override {return true;}
-    void openConfigWidget( QWidget *parent ) override;
-
-  private:
     int mMaxResultsPerLayer = 8;
     int mMaxTotalResults = 15;
     QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
