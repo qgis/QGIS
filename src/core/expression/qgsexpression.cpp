@@ -1192,6 +1192,122 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
           }
         }
       }
+      // Collect ORs
+      else if ( const QgsExpressionNodeBinaryOperator *orOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( e.rootNode() ) )
+      {
+
+        // OR Collector function: returns a possibly empty list of the left and right operands of an OR expression
+        std::function<QStringList( QgsExpressionNode *, QgsExpressionNode * )> collectOrs = [ &collectOrs ]( QgsExpressionNode * opLeft,  QgsExpressionNode * opRight ) -> QStringList
+        {
+          QStringList orParts;
+          if ( const QgsExpressionNodeBinaryOperator *leftOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opLeft ) )
+          {
+            if ( leftOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+            {
+              orParts.append( collectOrs( leftOrOp->opLeft(), leftOrOp->opRight() ) );
+            }
+            else
+            {
+              orParts.append( leftOrOp->dump() );
+            }
+          }
+          else if ( const QgsExpressionNodeInOperator *leftInOp = dynamic_cast<const QgsExpressionNodeInOperator *>( opLeft ) )
+          {
+            orParts.append( leftInOp->dump() );
+          }
+          else
+          {
+            return {};
+          }
+
+          if ( const QgsExpressionNodeBinaryOperator *rightOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opRight ) )
+          {
+            if ( rightOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+            {
+              orParts.append( collectOrs( rightOrOp->opLeft(), rightOrOp->opRight() ) );
+            }
+            else
+            {
+              orParts.append( rightOrOp->dump() );
+            }
+          }
+          else if ( const QgsExpressionNodeInOperator *rightInOp = dynamic_cast<const QgsExpressionNodeInOperator *>( opRight ) )
+          {
+            orParts.append( rightInOp->dump() );
+          }
+          else
+          {
+            return {};
+          }
+
+          return orParts;
+        };
+
+        if ( orOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+        {
+          // Try to collect all OR conditions
+          const QStringList orParts = collectOrs( orOp->opLeft(), orOp->opRight() );
+          if ( orParts.isEmpty() )
+          {
+            return false;
+          }
+          else
+          {
+            QString orPartsResult;
+            if ( attemptReduceToInClause( orParts, orPartsResult ) )
+            {
+              // Need to check if the IN field is correct,
+              QgsExpression inExp { orPartsResult };
+              if ( ! inExp.rootNode() )
+              {
+                return false;
+              }
+
+              if ( const QgsExpressionNodeInOperator *inOpInner = dynamic_cast<const QgsExpressionNodeInOperator *>( inExp.rootNode() ) )
+              {
+                if ( inOpInner->node()->nodeType() != QgsExpressionNode::NodeType::ntColumnRef || inOpInner->node()->referencedColumns().size() < 1 )
+                {
+                  return false;
+                }
+
+                const QString innerInfield { inOpInner->node()->referencedColumns().values().first() };
+
+                if ( first )
+                {
+                  inField = innerInfield;
+                  first = false;
+                }
+
+                if ( innerInfield != inField )
+                {
+                  return false;
+                }
+                else
+                {
+                  const auto constInnerValuesList { inOpInner->list()->list() };
+                  for ( const auto &innerInValueNode : std::as_const( constInnerValuesList ) )
+                  {
+                    values.append( innerInValueNode->dump() );
+                  }
+                }
+
+              }
+              else
+              {
+                return false;
+              }
+            }
+            else
+            {
+              return false;
+            }
+          }
+        }
+        else
+        {
+          return false;
+        }
+      }
       else
       {
         return false;
