@@ -152,12 +152,14 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractProperty
 void QgsPropertyOverrideButton::updateFieldLists()
 {
   mFieldNameList.clear();
-  mFieldTypeList.clear();
+  mFieldDisplayNameList.clear();
+  mFieldIcons.clear();
 
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
     const QgsFields fields = mVectorLayer->fields();
+    int idx = 0;
     for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
@@ -201,8 +203,10 @@ void QgsPropertyOverrideButton::updateFieldLists()
       if ( fieldMatch )
       {
         mFieldNameList << f.name();
-        mFieldTypeList << fieldType;
+        mFieldDisplayNameList << f.displayNameWithAlias();
+        mFieldIcons << fields.iconForField( idx, true );
       }
+      idx++;
     }
   }
 }
@@ -395,7 +399,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       for ( int j = 0; j < mFieldNameList.count(); ++j )
       {
         QString fldname = mFieldNameList.at( j );
-        QAction *act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ')' );
+        QAction *act = mFieldsMenu->addAction( mFieldDisplayNameList.at( j ) );
+        act->setIcon( mFieldIcons.at( j ) );
         act->setData( QVariant( fldname ) );
         if ( mFieldName == fldname )
         {
