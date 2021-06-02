@@ -97,6 +97,9 @@ Allows specifying one value that does not need to match the filter criteria but 
 still be available in the model.
 %End
 
+  private:
+    virtual void requestToReloadCurrentFeature( QgsFeatureRequest &request );
+
 };
 
 /************************************************************************
