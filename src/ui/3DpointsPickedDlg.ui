@@ -233,7 +233,7 @@
       <item>
        <widget class="QPushButton" name="pushButton_save">
         <property name="text">
-         <string>单独保存</string>
+         <string>保存已确认</string>
         </property>
        </widget>
       </item>

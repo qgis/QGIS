@@ -334,7 +334,7 @@ void QgsDLWindowDockWidget::OnMultiPolygonSelectiononprofileClciekd()
 void QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked()
 {
   mMapCanvas->resetState();
-  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartProfileviewMode(false);
   mMapCanvas->StartInterpretMode(3); //1 ,2
   m_rule = QString("polygon");
 
@@ -342,7 +342,7 @@ void QgsDLWindowDockWidget::OnDrawPolygonOnProfileClicked()
 void QgsDLWindowDockWidget::OnmActionPickPoints()
 {
   mMapCanvas->resetState();
-  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartProfileviewMode(false);
   mMapCanvas->StartPickingMode();
 }
 void QgsDLWindowDockWidget::OnmActionBrushPoints()
@@ -580,13 +580,18 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
 {
   if (temp_jiamidian.size()>0)
   {
+    offset = Fiter_Ptr->GetOffset();
+
     for (std::array<float, 3> pt : temp_jiamidian)
     {
+      pt[0] += offset[0];
+      pt[1] += offset[1];
+      pt[2] += offset[2];
       global_jiamidian.push_back(pt);
     }
     temp_jiamidian.clear();
     this->pushButton_queren->setEnabled(false);
-    this->pushButton_save->setEnabled(false);
+    this->pushButton_save->setEnabled(true);
   }
   else
   {
@@ -594,21 +599,91 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
   }
 }
 
+#include <qgsmessagelog.h>
+
 void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
 {
  // this->cunchu
  QString path = this->cunchulujing->text();
+ if (path =="")
+ {
+   QgsMessageLog::logMessage(QStringLiteral("Directory does not exist: %1").arg(":"), QString(), Qgis::Critical);
+   return;
+ }
+
+ const QDir topDirectory;
+ QString _path =topDirectory.filePath(path);
+
+ if (!topDirectory.exists(_path))
+ {
+   QgsMessageLog::logMessage(QStringLiteral("Directory does not exist: %1").arg(path), QString(), Qgis::Critical);
+   return;
+ }
+
   std::string filename(path.toStdString());
-  if (temp_jiamidian.size()>1)
+  if (global_jiamidian.size()>1)
   {
-    this->savepoints(temp_jiamidian, filename);
+    this->savepoints(global_jiamidian, {0,0,0},filename);
   }
+  this->pushButton_save->setEnabled(false);
 }
 
-void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3>>& jiamidian, std::string filename)
+#include "laswriter.hpp"
+void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3>>& jiamidian, std::array<float, 3> offset, std::string filename)
 {
-  
 
+  // 写出流
+  LASwriteOpener laswriteopener;
+  laswriteopener.set_file_name(filename.data());
+
+  // 是否创建成功
+  if (!laswriteopener.active()) {
+    std::cout << "Failed!\n";
+    return;
+  }
+
+  // 初始化头
+  LASheader lasheader;
+  lasheader.x_scale_factor = 1.0;
+  lasheader.y_scale_factor = 1.0;
+  lasheader.z_scale_factor = 1.0;
+  lasheader.x_offset = 0.0;
+  lasheader.y_offset = 0.0;
+  lasheader.z_offset = 0.0;
+  lasheader.point_data_format = 1;
+  lasheader.point_data_record_length = 28;
+
+  // 初始化点
+  LASpoint laspoint;
+  laspoint.init(&lasheader, lasheader.point_data_format, lasheader.point_data_record_length, 0);
+
+  // 写点云
+  LASwriter* laswriter = laswriteopener.open(&lasheader);
+  if (laswriter == 0)
+  {
+    std::cout << "Failed!\n";
+    return;
+  }
+
+  for (std::array<float, 3> pt : jiamidian)
+  {
+    laspoint.set_X(pt[0]);
+    laspoint.set_Y(pt[1]);
+    laspoint.set_Z(pt[2]);
+    laspoint.set_intensity((U16)100);
+    laspoint.set_gps_time(0.00);
+    laspoint.set_classification(14);
+
+    laswriter->write_point(&laspoint);
+    laswriter->update_inventory(&laspoint);
+  }
+
+  // 关闭流
+  laswriter->update_header(&lasheader, TRUE);
+  laswriter->close();
+  delete laswriter;
+
+  /* // 写出 txt
   int x = jiamidian.size();
   bool existing;
   std::ofstream fOut(filename);
@@ -627,5 +702,5 @@ void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3
     fOut << convertDoubleToString(pt[0], 3) << "," << convertDoubleToString(pt[1], 3) << "," << convertDoubleToString(pt[2], 3) << std::endl;
   }
   fOut.close();
-
+  */
 }

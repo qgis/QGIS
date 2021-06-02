@@ -118,7 +118,7 @@ public:
 private:
   std::shared_ptr<polynomial3CurveFitter3> Fiter_Ptr = nullptr;
 
-  void savepoints(std::vector<std::array<float, 3>>& jiamidian, std::string filename);
+  void savepoints(std::vector<std::array<float, 3>>& jiamidian, std::array<float, 3>offset ,std::string filename);
   bool insert_pt_table_(Point3D xyz, PointType type)
   {
     //this->alignedPointsTableWidget->setModel();
@@ -129,6 +129,7 @@ private:
   std::vector<std::array<float, 3>> global_jiamidian;
   std::vector<std::array<float, 3>> temp_jiamidian;
   std::array<float, 3> offset;
+
 
 public slots:
   void OnPaiXuClicked(int column);

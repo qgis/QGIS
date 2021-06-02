@@ -5906,17 +5906,20 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate(const QString &uri, const
 
   // create the layer
   std::unique_ptr<QgsPointCloudLayer> layer(new QgsPointCloudLayer(uri, base, providerKey));
-
-  if (!layer || !layer->isValid())
+  
+  if (uri.split('-')[0] !="nihe")
   {
-    if (guiWarning)
+    if (!layer || !layer->isValid())
     {
-      QString msg = tr("%1 is not a valid or recognized data source.").arg(uri);
-      visibleMessageBar()->pushMessage(tr("Invalid Data Source"), msg, Qgis::Critical);
-    }
+      if (guiWarning)
+      {
+        QString msg = tr("%1 is not a valid or recognized data source.").arg(uri);
+        visibleMessageBar()->pushMessage(tr("Invalid Data Source"), msg, Qgis::Critical);
+      }
 
-    // since the layer is bad, stomp on it
-    return nullptr;
+      // since the layer is bad, stomp on it
+      return nullptr;
+    }
   }
   bool ok = false;
   layer->loadDefaultStyle(ok);
@@ -18392,25 +18395,13 @@ void QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &po
 
   V3d m_offset(offset[0],offset[1],offset[2]);
 
+
+
   std::shared_ptr<Geometry> geom = Geometry::create("");
   isloaded = geom->loadFromVectorArray(pointcloud,m_offset,QColor(255, 100, 100));
   m_geometries->addGeometry(geom,false,false);
-  
-  const GeometryCollection::GeometryVec& geoms = m_geometries->get();
-
-  for (auto g = geoms.begin(); g != geoms.end(); ++g)
-  {
-    //FileLoadInfo loadInfo((*g)->fileName(), (*g)->label(), false);
-    //m_PointCloudfileLoader->reloadFile(loadInfo);
-    if ((*g)->fileName() == "Memory")
-    {
-      isloaded = true;
-      //g->get()
-      FromGeometriesToLayerMap(*g);
-      break;
-    }
-  }
-   //  必须是 isloaded 状态
+  addPointCloudLayer(geom->fileName(), geom->fileName(), QLatin1String("displaz"));
+ // FromGeometriesToLayerMap(geom);
 }
 void QgisApp::addPointCloudFile(const QString& DataSource)
 {
