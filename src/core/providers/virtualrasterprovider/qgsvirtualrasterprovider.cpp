@@ -15,7 +15,13 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 {
     QgsDebugMsg("hello from constructor");
     //mUri = uri;
-    mValid = true;
+    bool check = true;
+    if (check){
+        mValid = true;
+    } else {
+        mValid = false;
+    }
+
 }
 
 
