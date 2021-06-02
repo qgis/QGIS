@@ -262,7 +262,7 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
   for (size_t i = 0; i < mTargetPts; i++)
   {
     float percent = float((i+0.01) / mTargetPts);
-    if (percent >= 0.02 && percent<=0.98)
+    if (percent >= 0.01 && percent<=0.99)
     {
       float x = mXDomain[0] - Center[0] + minterval * i;
       std::array<float, 3> pt = EveluateFromX2YZ(x);

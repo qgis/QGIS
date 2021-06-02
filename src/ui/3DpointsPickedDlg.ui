@@ -45,15 +45,8 @@
       <property name="title">
        <string>多项式参数</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>三维阶次</string>
-         </property>
-        </widget>
-       </item>
-       <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="5" column="1">
         <widget class="QSpinBox" name="spinBox">
          <property name="minimumSize">
           <size>
@@ -66,14 +59,84 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="5" column="7">
+        <widget class="QSpinBox" name="spinBox_2">
+         <property name="value">
+          <number>2</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="2" colspan="2">
+        <widget class="QDoubleSpinBox" name="gaizhengshu">
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>三维阶次</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="8">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>改正系数</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
         <widget class="QCheckBox" name="checkBox_MapToOne">
          <property name="text">
           <string>归一化</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="5" column="4">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -86,22 +149,25 @@
          </property>
         </spacer>
        </item>
-       <item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>保存路径</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="5">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>二维阶次</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QSpinBox" name="spinBox_2">
-         <property name="value">
-          <number>2</number>
-         </property>
-        </widget>
+       <item row="3" column="1" colspan="5">
+        <widget class="QLineEdit" name="cunchulujing"/>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
+       <item row="3" column="8">
+        <spacer name="horizontalSpacer_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

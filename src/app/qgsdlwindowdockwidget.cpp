@@ -314,7 +314,7 @@ void QgsDLWindowDockWidget::OnmActionSaveEditsClicked()
 void QgsDLWindowDockWidget::OnmselectiononprofileClciekd()
 {
   mMapCanvas->resetState();
-  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartProfileviewMode(false);
   mMapCanvas->StartInterpretMode(0);
   m_rule = QString("Box");
 
@@ -325,7 +325,7 @@ void QgsDLWindowDockWidget::OnMultiPolygonSelectiononprofileClciekd()
   //m_multipolygonselectiononprofile
 
   mMapCanvas->resetState();
-  mMapCanvas->StartProfileviewMode();
+  mMapCanvas->StartProfileviewMode(false);
   mMapCanvas->StartInterpretMode(3); //1 ,2
   m_rule = QString("multipolygon");
 
@@ -509,13 +509,17 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
   std::vector<ModelItem> pointsdata= dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->getModelData();
    int sanweijie = this->spinBox->value();
    int erweijie = this->spinBox_2->value();
+   double gaizhengshu =this->gaizhengshu->value();
+
+  // this->gaizhegn
+   //gaizhengxishu->
    if (this->checkBox_MapToOne->isChecked())
    {
-     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie,1);
+     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie,1, gaizhengshu);
    }
    else
    {
-     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie);
+     Fiter_Ptr = std::make_shared<polynomial3CurveFitter3>(sanweijie, erweijie,0, gaizhengshu);
    }
 
     bool beginok = Fiter_Ptr->BeginReceiveData();
@@ -589,7 +593,9 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
 
 void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
 {
-  std::string filename("temp_save.txt");
+ // this->cunchu
+ QString path = this->cunchulujing->text();
+  std::string filename(path.toStdString());
   if (temp_jiamidian.size()>1)
   {
     this->savepoints(temp_jiamidian, filename);
@@ -598,6 +604,8 @@ void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
 
 void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3>>& jiamidian, std::string filename)
 {
+  
+
   int x = jiamidian.size();
   bool existing;
   std::ofstream fOut(filename);
