@@ -2670,15 +2670,6 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   if ( !( stats & QgsRasterBandStats::Mean ) ) pdfMean = nullptr;
   if ( !( stats & QgsRasterBandStats::StdDev ) ) pdfStdDev = nullptr;
 
-  // try to fetch the cached stats (bForce=FALSE)
-  // Unfortunately GDALGetRasterStatistics() does not work as expected according to
-  // API doc, if bApproxOK=false and bForce=false/true and exact statistics
-  // (from all raster pixels) are not available/cached, it should return CE_Warning.
-  // Instead, it is giving estimated (from sample) cached statistics and it returns CE_None.
-  // see above and https://trac.osgeo.org/gdal/ticket/4857
-  // -> Cannot used cached GDAL stats for exact
-  if ( !bApproxOK ) return false;
-
   CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, true, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
   if ( CE_None == myerval ) // CE_Warning if cached not found
