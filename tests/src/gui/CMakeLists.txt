@@ -173,3 +173,4 @@ ADD_QGIS_TEST(singlebandpseudocolorrendererwidget testqgssinglebandpseudocolorre
 ADD_QGIS_TEST(doublevalidator testqgsdoublevalidator.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(externalresourcewidgetwrapper testqgsexternalresourcewidgetwrapper.cpp)
+ADD_QGIS_TEST(querybuilder testqgsquerybuilder.cpp)
