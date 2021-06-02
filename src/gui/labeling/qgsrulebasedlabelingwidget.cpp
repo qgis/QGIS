@@ -603,6 +603,10 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
 {
   setupUi( this );
 
+  QButtonGroup *radioGroup = new QButtonGroup( this );
+  radioGroup->addButton( mFilterRadio );
+  radioGroup->addButton( mElseRadio );
+
   mElseRadio->setChecked( mRule->isElse() );
   mFilterRadio->setChecked( !mRule->isElse() );
   editFilter->setText( mRule->filterExpression() );
