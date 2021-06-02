@@ -571,7 +571,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
   w.featureIdentified( feature );
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
-  
+
   w.setReadOnlySelector( true );
   QVERIFY( !w.mComboBox->enabled() );
 
