@@ -60,16 +60,17 @@ class CORE_EXPORT QgsSettingsEntryBase
 
   public:
 
+    //! Types of settings entries
     enum class SettingsType : int
     {
-      Variant,
-      String,
-      StringList,
-      Bool,
-      Integer,
-      Double,
-      EnumFlag,
-      Color
+      Variant, //!< Generic variant
+      String, //!< String
+      StringList, //!< List of strings
+      Bool, //!< Boolean
+      Integer, //!< Integer
+      Double, //!< Double precision numer
+      EnumFlag, //!< Enum or Flag
+      Color //!< Color
     };
 
 #ifndef SIP_RUN
