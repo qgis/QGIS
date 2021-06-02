@@ -172,6 +172,16 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
       value = nullValue;
     else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
       value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
+    else if ( var.type() == QVariant::List || var.type() == QVariant::StringList )
+    {
+      const QVariantList list = var.toList();
+      for ( const QVariant &val : list )
+      {
+        if ( !value.isEmpty() )
+          value.append( ", " );
+        value.append( val.isNull() ? nullValue : val.toString() );
+      }
+    }
     else
       value = var.toString();
 
