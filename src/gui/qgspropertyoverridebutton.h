@@ -273,7 +273,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     const QgsVectorLayer *mVectorLayer = nullptr;
 
     QStringList mFieldNameList;
-    QStringList mFieldTypeList;
+    QStringList mFieldDisplayNameList;
+    QList< QIcon > mFieldIcons;
 
     QString mExpressionString;
     QString mFieldName;
