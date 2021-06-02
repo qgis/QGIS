@@ -150,5 +150,10 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     //! original subset string
     QString mOrigSubsetString;
+
+    //! whether to ignore subsetStringChanged() signal from the layer
+    bool mIgnoreLayerSubsetStringChangedSignal = false;
+
+    friend class TestQgsQueryBuilder;
 };
 #endif //QGSQUERYBUILDER_H
