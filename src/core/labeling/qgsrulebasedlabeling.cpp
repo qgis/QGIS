@@ -62,8 +62,10 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, double scaleMin
   , mFilterExp( filterExp )
   , mDescription( description )
   , mElseRule( elseRule )
-
 {
+  if ( mElseRule )
+    mFilterExp = QStringLiteral( "ELSE" );
+
   initFilter();
 }
 
@@ -94,18 +96,20 @@ QgsRuleBasedLabeling::RuleList QgsRuleBasedLabeling::Rule::descendants() const
 
 void QgsRuleBasedLabeling::Rule::initFilter()
 {
-  if ( mElseRule || mFilterExp.compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
+  if ( mFilterExp.trimmed().compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter.reset( nullptr );
+    mFilter.reset( );
   }
-  else if ( !mFilterExp.isEmpty() )
+  else if ( mFilterExp.trimmed().isEmpty() )
   {
-    mFilter.reset( new QgsExpression( mFilterExp ) );
+    mElseRule = false;
+    mFilter.reset();
   }
   else
   {
-    mFilter.reset( nullptr );
+    mElseRule = false;
+    mFilter = std::make_unique< QgsExpression >( mFilterExp );
   }
 }
 
