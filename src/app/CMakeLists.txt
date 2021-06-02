@@ -143,7 +143,7 @@ set(QGIS_APP_SRCS
   qgsrastercalcdialog.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
-  qgsrelationaddpolymorphicdlg.cpp
+  qgsrelationaddpolymorphicdialog.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
