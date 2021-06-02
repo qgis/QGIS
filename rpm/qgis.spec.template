@@ -316,11 +316,13 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
 %exclude %{_libdir}/%{name}/server/
 %exclude %{_libdir}/%{name}/grass/
+%exclude %{_prefix}/lib/liboauth2authmethod_static.a
 
 %files devel
 %{_datadir}/%{name}/FindQGIS.cmake
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}*.so
+%{_prefix}/lib/liboauth2authmethod_static.a
 %{?_qt5_plugindir}/designer/libqgis_customwidgets.so*
 
 %files grass
