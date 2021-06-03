@@ -170,7 +170,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   fieldRestriction( searchString );
 
   // propose available fields for restriction
-  for ( const QString &field : std::as_const( mFieldsCompletion ) )
+  for ( const QString &field : qgis::as_const( mFieldsCompletion ) )
   {
     QgsLocatorResult result;
     result.displayString = QStringLiteral( "@%1" ).arg( field );

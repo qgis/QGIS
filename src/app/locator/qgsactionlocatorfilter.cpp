@@ -42,7 +42,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   QList<QAction *> found;
 
-  for ( QWidget *object : std::as_const( mActionParents ) )
+  for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
     searchActions( string, object, found );
   }
