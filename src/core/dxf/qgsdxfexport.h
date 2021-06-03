@@ -585,13 +585,20 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     /**
      * Writes geometry generator symbol layer
      * \param ctx the symbol render context
-     * \param ct the coordinate transform
+     * \param ct coordinate transform from CRS of feature being added to destination DXF CRS
      * \param layer the layer name
      * \param symbolLayer the symbollayer to write to the dxf file
      * \param allSymbolLayers if TRUE, all symbol layers of the subsymbol are written. If FALSE, only the first one is written
     */
     void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
 
+    /**
+     * \param ctx
+     * \param ct coordinate transform from CRS of feature being added to destination DXF CRS
+     * \param layer
+     * \param symbolLayer
+     * \param symbol
+     */
     void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
 
     //returns dxf palette index from symbol layer color
