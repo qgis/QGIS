@@ -87,6 +87,7 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
     preparedLayer->request = req;
     preparedLayer->exactMatchRequest = exactMatchRequest;
     preparedLayer->layerIcon = QgsIconUtils::iconForLayer( layer );
+    preparedLayer->layerIsSpatial = layer->isSpatial();
 
     mPreparedLayers.append( preparedLayer );
   }
@@ -154,11 +155,12 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
 
       result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
 
-      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId << preparedLayer->layerIsSpatial;
       result.icon = preparedLayer->layerIcon;
       result.score = static_cast< double >( string.length() ) / result.displayString.size();
 
-      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+      if ( preparedLayer->layerIsSpatial )
+        result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
       emit resultFetched( result );
 
       foundInCurrentLayer++;
@@ -181,11 +183,12 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
   QVariantList dataList = result.userData.toList();
   QgsFeatureId fid = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
+  bool layerIsSpatial = dataList.at( 2 ).toBool();
   QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
   if ( !layer )
     return;
 
-  if ( actionId == OpenForm )
+  if ( actionId == OpenForm || !layerIsSpatial )
   {
     QgsFeature f;
     QgsFeatureRequest request;
