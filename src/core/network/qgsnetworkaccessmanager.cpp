@@ -43,6 +43,7 @@
 #include <QThreadStorage>
 #include <QAuthenticator>
 #include <QStandardPaths>
+#include <QUuid>
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -52,6 +53,8 @@
 #include "qgsauthmanager.h"
 
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
+
+std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > QgsNetworkAccessManager::sCustomPreprocessors;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -335,6 +338,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     // if caching is disabled then we override whatever the request actually has set!
     pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  }
+
+  for ( const auto &preprocessor :  sCustomPreprocessors )
+  {
+    preprocessor.second( pReq );
   }
 
   static QAtomicInt sRequestId = 0;
@@ -804,6 +812,23 @@ QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &r
   br.setAuthCfg( authCfg );
   br.post( request, data, forceRefresh, feedback );
   return br.reply();
+}
+
+QString QgsNetworkAccessManager::setRequestPreprocessor( const std::function<void ( QNetworkRequest * )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomPreprocessors.emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsNetworkAccessManager::removeRequestPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomPreprocessors.size();
+  sCustomPreprocessors.erase( std::remove_if( sCustomPreprocessors.begin(), sCustomPreprocessors.end(), [id]( std::pair< QString, std::function< void( QNetworkRequest * ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomPreprocessors.end() );
+  return prevCount != sCustomPreprocessors.size();
 }
 
 

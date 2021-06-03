@@ -321,6 +321,55 @@ The contents of the reply will be returned after the request is completed or an 
 .. versionadded:: 3.6
 %End
 
+    static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+Sets a request pre-processor function, which allows to manipulate a network request before it is processed.
+
+The ``processor`` function takes the QNetworkRequest as its argument, and can mutate the request if neccessary.
+
+:return: An auto-generated string uniquely identifying the preprocessor, which can later be
+         used to remove the preprocessor (via a call to :py:func:`~QgsNetworkAccessManager.removeRequestPreprocessor`).
+
+.. seealso:: :py:func:`removeRequestPreprocessor`
+
+.. versionadded:: 3.12
+%End
+%MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QNetworkRequest, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+%End
+
+    static void removeRequestPreprocessor( const QString &id );
+%Docstring
+Removes the custom pre-processor function with matching ``id``.
+
+The ``id`` must correspond to a pre-processor previously added via a call to :py:func:`~QgsNetworkAccessManager.setRequestPreprocessor`.
+
+Returns ``True`` if processor existed and was removed.
+
+.. seealso:: :py:func:`setRequestPreprocessor`
+
+.. versionadded:: 3.12
+%End
+%MethodCode
+    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+%End
+
     void requestAuthOpenBrowser( const QUrl &url ) const;
 %Docstring
 Forwards an external browser login ``url`` opening request to the authentication handler.
