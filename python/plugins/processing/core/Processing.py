@@ -56,9 +56,6 @@ from processing.tools import dataobjects
 with QgsRuntimeProfiler.profile('Import QGIS Provider'):
     from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile('Import GRASS Provider'):
-    from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-
 with QgsRuntimeProfiler.profile('Import GDAL Provider'):
     from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 
@@ -114,7 +111,6 @@ class Processing(object):
             # Add the basic providers
             for c in [
                 QgisAlgorithmProvider,
-                Grass7AlgorithmProvider,
                 GdalAlgorithmProvider,
                 OtbAlgorithmProvider,
                 ScriptAlgorithmProvider,

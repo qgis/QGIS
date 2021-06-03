@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    __init__.py
+    GrassProviderPlugin.py
     ---------------------
     Date                 : June 2021
     Copyright            : (C) 2021 by Alexander Bruy
@@ -22,6 +22,18 @@ __date__ = 'June 2021'
 __copyright__ = '(C) 2021, Alexander Bruy'
 
 
-def classFactory(iface):
-    from grassprovider.GrassProviderPlugin import GrassProviderPlugin
-    return GrassProviderPlugin()
+from qgis.core import QgsApplication
+
+from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+
+
+class GrassProviderPlugin:
+
+    def __init__(self):
+        self.provider = Grass7AlgorithmProvider()
+
+    def initGui(self):
+        QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def unload(self):
+        QgsApplication.processingRegistry().removeProvider(self.provider)

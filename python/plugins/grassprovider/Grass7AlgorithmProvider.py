@@ -35,9 +35,6 @@ from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
 
-pluginPath = os.path.normpath(os.path.join(
-    os.path.split(os.path.dirname(__file__))[0], os.pardir))
-
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
     descriptionFolder = Grass7Utils.grassDescriptionPath()
