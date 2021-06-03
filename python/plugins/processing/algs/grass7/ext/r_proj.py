@@ -69,7 +69,7 @@ def processInputs(alg, parameters, context, feedback):
     if isWindows():
         # TODO: make some tests under a non POSIX shell
         alg.commands.append('set regVar=')
-        alg.commands.append('for /f "delims=" %%a in (\'r.proj -g input="{}" location="{}"\') do @set theValue=%%a'.format(
+        alg.commands.append('for /f "delims=" %%a in (\'r.proj -g input^="{}" location^="{}"\') do @set regVar=%%a'.format(
             grassName, newLocation))
         alg.commands.append('g.region -a %regVar%')
     else:
