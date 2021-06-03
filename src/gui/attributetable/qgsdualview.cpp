@@ -534,6 +534,10 @@ void QgsDualView::updateEditSelectionProgress( int progress, int count )
   mNextFeatureButton->setEnabled( progress + 1 < count );
   mFirstFeatureButton->setEnabled( progress > 0 );
   mLastFeatureButton->setEnabled( progress + 1 < count );
+  if ( mAttributeForm )
+  {
+    mAttributeForm->setVisible( count > 0 );
+  }
 }
 
 void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )

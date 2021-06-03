@@ -176,6 +176,10 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
       emit currentEditSelectionProgressChanged( mModel->mapFromMaster( indexList.first() ).row(), mModel->rowCount() );
     }
   }
+  else if ( mModel->rowCount() == 0 )
+  {
+    emit currentEditSelectionProgressChanged( 0, 0 );
+  }
 }
 
 void QgsFeatureListView::selectAll()
