@@ -46,12 +46,17 @@ void QgsNewAuxiliaryLayerDialog::accept()
 
   if ( idx >= 0 )
   {
+    QString errorMsg;
     const QgsField field = mLayer->fields().field( idx );
-    QgsAuxiliaryLayer *alayer = QgsProject::instance()->auxiliaryStorage()->createAuxiliaryLayer( field, mLayer );
+    QgsAuxiliaryLayer *alayer = QgsProject::instance()->auxiliaryStorage()->createAuxiliaryLayer( field, mLayer, &errorMsg );
 
     if ( alayer )
     {
       mLayer->setAuxiliaryLayer( alayer );
+    }
+    else
+    {
+      QMessageBox::critical( this, tr( "New Auxiliary Layer" ), errorMsg );
     }
   }
 
