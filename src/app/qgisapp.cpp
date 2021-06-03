@@ -268,7 +268,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgotolocatorfilter.h"
 #include "qgslayertreelocatorfilter.h"
 #include "qgslayoutlocatorfilter.h"
-#include "qgsnominatimlocatorfilter.h"
 #include "qgssettingslocatorfilter.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
