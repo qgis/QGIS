@@ -703,6 +703,8 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
       featureStore.addFeature( featureMap[id] );
     }
 
+    featureStore.setCrs( mLayer->crs() );
+
     QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
   }
   else
