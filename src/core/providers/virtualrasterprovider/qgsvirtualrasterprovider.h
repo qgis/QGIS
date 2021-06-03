@@ -20,19 +20,20 @@ public:
     virtual ~QgsVirtualRasterProvider() override = default;
 
     QString dataSourceUri( bool expandAuthConfig = false ) const override;
-    QgsRasterBlock *block(Qgis::DataType dataType, int width, int height );
-    //QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    //QgsRasterBlock *block(Qgis::DataType dataType, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    //QImage *draw( QgsRectangle const   &extent, int width, int height, QgsRasterBlockFeedback *feedback );
 
     //bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
     //bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    /* //since it was not useful at the moment i keep it away from the class
+     //since it was not useful at the moment i keep it away from the class
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override
         { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return true; }
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
-        { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); true; }
+        { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return true; }
 
-    */
+
 
     bool isValid() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -65,9 +66,13 @@ private:
     bool mValid = false;
 
     QgsCoordinateReferenceSystem mCrs;
-    QgsRectangle mExtent;
-    int mWidth = 0;
-    int mHeight = 0;
+    //QgsRectangle mExtent;
+    //int mWidth = 0;
+    //int mHeight = 0;
+    QgsRectangle mExtent = QgsRectangle(1,2,3,4);
+    int mWidth = mExtent.width();
+    int mHeight = mExtent.height();
+
     int mBandCount = 1;
     int mXBlockSize = 0;
     int mYBlockSize = 0;

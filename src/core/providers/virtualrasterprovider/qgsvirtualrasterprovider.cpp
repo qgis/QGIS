@@ -2,6 +2,8 @@
 
 #include "qgsmessagelog.h"
 //#include <QImage>
+#include <QPainter>
+
 #include "qgslogger.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
@@ -13,7 +15,7 @@
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions)
     : QgsRasterDataProvider( uri, providerOptions)
 {
-    QgsDebugMsg("hello from constructor");
+    QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
     //mUri = uri;
     bool check = true;
     if (check){
@@ -60,43 +62,72 @@ QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
     return QgsDataProvider::dataSourceUri();
 }
 
-
 /*
-//QgsRasterBlock *QgsVirtualRasterProvider::block( Qgis::DataType dataType, int width, int height )
-QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QImage *QgsVirtualRasterProvider::draw( QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-    //QgsRasterBlock *tblock = new QgsRasterBlock( dataType( bandNo ), width, height );
-    QgsRasterBlock *tblock = new QgsRasterBlock( );
+    QImage *image = new QImage( width, height, QImage::Format_ARGB32 );
+    const QImage &nimage = QImage( 5, 5, QImage::Format_ARGB32 );
+    image->fill( 0 );
+    QPoint pt = QPoint(2, 5);
+    QPainter p( image );
+    p.drawImage(pt,  nimage);
+    QgsDebugMsg("hello draw");
 
-
-    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
-    //qgssize rasterSize = ( qgssize )width * height;
-
-    for ( int i = 0; i < width * height; ++i )
-    {
-        outputData[i] = 42;
-    }
-    return tblock;
+    return image;
 }
 
+bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &extent, int width, int height, void *block, QgsRasterBlockFeedback *feedback )
+{
+    Q_UNUSED( bandNo )
+    // TODO: optimize to avoid writing to QImage
+    std::unique_ptr< QImage > image( draw( mExtent, mWidth, mHeight, feedback ) );
+    QgsDebugMsg("hello readblock");
+
+    return true;
+}
 */
 
 
+//qgiscrash
+
+QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+{
+    //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+    QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
+
+    QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
+
+    unsigned int* outputData = ( unsigned int* )( block->bits() );
+
+    for ( int i = 0; i < width * height; ++i )
+    {
+        //QgsDebugMsg("inside for loop");
+        outputData[i] = 42;
+
+
+    }
+    Q_ASSERT( block );
+
+    return block;
+}
+
+
+
+
+/*
+//it works
 QgsRasterBlock *QgsVirtualRasterProvider::block( Qgis::DataType dataType, int width, int height  )
 {
-    QgsRasterBlock *tblock = new QgsRasterBlock( dataType, width, height );
-    //QgsRasterBlock *tblock = new QgsRasterBlock( );
-
-
-    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
-    //qgssize rasterSize = ( qgssize )width * height;
-
+    QgsRasterBlock *block = new QgsRasterBlock( dataType, width, height );
+    unsigned int* outputData = ( unsigned int* )( block->bits() );
+    QgsDebugMsg("hello from block method 2");
     for ( int i = 0; i < width * height; ++i )
     {
         outputData[i] = 42;
     }
-    return tblock;
+    return block;
 }
+*/
 
 
 QgsRectangle QgsVirtualRasterProvider::extent() const
