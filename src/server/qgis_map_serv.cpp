@@ -22,6 +22,7 @@
 #include "qgsfcgiserverresponse.h"
 #include "qgsfcgiserverrequest.h"
 #include "qgsapplication.h"
+#include "qgscommandlineutils.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>
@@ -43,6 +44,15 @@ int fcgi_accept()
 
 int main( int argc, char *argv[] )
 {
+  if ( argc >= 2 )
+  {
+    if ( argv[1] == QLatin1String( "--version" ) || argv[1] == QLatin1String( "-v" ) )
+    {
+      std::cout << QgsCommandLineUtils::allVersions().toStdString();
+      return 0;
+    }
+  }
+
   // Test if the environ variable DISPLAY is defined
   // if it's not, the server is running in offscreen mode
   // Qt supports using various QPA (Qt Platform Abstraction) back ends

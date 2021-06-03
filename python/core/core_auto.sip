@@ -20,6 +20,7 @@
 %Include auto_generated/qgscacheindexfeatureid.sip
 %Include auto_generated/qgscadutils.sip
 %Include auto_generated/qgsclipper.sip
+%Include auto_generated/qgscommandlineutils.sip
 %Include auto_generated/qgscolorramp.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
