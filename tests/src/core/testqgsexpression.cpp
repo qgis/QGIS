@@ -4172,11 +4172,12 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "expected" );
       QTest::addColumn<QString>( "expression" );
       QTest::newRow( "OR conditions mixed IN" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field IN( 'value2', 'value3' )" ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions non literal" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = var('qgis_version')" ) ) << false << QString();
       QTest::newRow( "OR conditions mixed IN reverse" ) << ( QStringList() << QStringLiteral( "field IN ('value','value2') OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
       QTest::newRow( "OR conditions mixed IN different fields" ) << ( QStringList() << QStringLiteral( "field2 IN ('value','value2') OR field = 'value3'" ) ) << false << QString();
       QTest::newRow( "OR conditions" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2'" ) ) << true << "field IN ('value','value2')";
       QTest::newRow( "OR conditions different fields" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) ) << false << QString();
-      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3' " ) ) << true << "field IN ('value','value2','value3')";
+      QTest::newRow( "OR conditions three" ) << ( QStringList() << QStringLiteral( "field = 'value' OR field = 'value2' OR field = 'value3'" ) ) << true << "field IN ('value','value2','value3')";
       QTest::newRow( "empty" ) << QStringList() << false << QString();
       QTest::newRow( "invalid" ) << ( QStringList() << QStringLiteral( "a=" ) ) << false << QString();
       QTest::newRow( "not equality" ) << ( QStringList() << QStringLiteral( "field <> 'value'" ) ) << false << "field";
