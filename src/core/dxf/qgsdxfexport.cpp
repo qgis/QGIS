@@ -88,6 +88,7 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 
   mLayerNameAttribute.clear();
 
+  layerList.reserve( layers.size() );
   for ( const DxfLayer &dxfLayer : layers )
   {
     layerList << dxfLayer.layer();
@@ -1219,11 +1220,15 @@ void QgsDxfExport::writePolygon( const QgsCurvePolygon &polygon, const QString &
   QVector<QVector<QgsPoint>> points;
   QVector<QVector<double>> bulges;
 
+  const int ringCount = polygon.numInteriorRings();
+  points.reserve( ringCount + 1 );
+  bulges.reserve( ringCount + 1 );
+
   points << QVector<QgsPoint>();
   bulges << QVector<double>();
   appendCurve( *polygon.exteriorRing(), points.last(), bulges.last() );
 
-  for ( int i = 0; i < polygon.numInteriorRings(); i++ )
+  for ( int i = 0; i < ringCount; i++ )
   {
     points << QVector<QgsPoint>();
     bulges << QVector<double>();
@@ -1330,10 +1335,6 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
         break;
       case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowRight:
         hali = HAlign::HLeft;
-        vali = VAlign::VTop;
-        break;
-      default: // OverHali
-        hali = HAlign::HCenter;
         vali = VAlign::VTop;
         break;
     }
@@ -1869,7 +1870,7 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 {
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
 
-  for ( DxfLayerJob *job : mJobs )
+  for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
     const QgsSymbolList symbols = job->renderer->symbols( context );
 
@@ -2186,6 +2187,7 @@ QStringList QgsDxfExport::encodings()
 {
   QStringList encodings;
   const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  encodings.reserve( codecs.size() );
   for ( const QByteArray &codec : codecs )
   {
     int i;
@@ -2333,7 +2335,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
     txt.replace( QString( QChar( QChar::CarriageReturn ) ) + QString( QChar( QChar::LineFeed ) ), QStringLiteral( "\\P" ) );
     txt.replace( QChar( QChar::CarriageReturn ), QStringLiteral( "\\P" ) );
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
-    txt.replace( " ", "\\~" );
+    txt.replace( QLatin1String( " " ), QLatin1String( "\\~" ) );
 
     if ( tmpLyr.format().font().underline() )
     {
