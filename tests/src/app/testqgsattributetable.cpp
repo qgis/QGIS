@@ -28,6 +28,7 @@
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsfeaturelistmodel.h"
+#include "qgsclipboard.h"
 
 #include "qgstest.h"
 
@@ -56,6 +57,8 @@ class TestQgsAttributeTable : public QObject
     void testOrderColumn();
     void testFilteredFeatures();
     void testVisibleTemporal();
+    void testCopySelectedRows();
+
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -530,6 +533,44 @@ void TestQgsAttributeTable::testFilteredFeatures()
   // smaller 11 (three of four features)
   dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1<11" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
+}
+
+void TestQgsAttributeTable::testCopySelectedRows()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:int&field=col2:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 2 );
+
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 4 );
+
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
+
+  tempLayer->selectByIds( QgsFeatureIds() << 1 << 2 );
+
+  dlg->mActionCopySelectedRows_triggered();
+
+  QgsClipboard *clipboard = QgisApp::instance()->clipboard();
+  QVERIFY( clipboard );
+  QVERIFY( !clipboard->isEmpty() );
+  QCOMPARE( clipboard->fields().names(), QStringList() << "pk" << "col1" << "col2" );
+
+  QgsFeatureList features = clipboard->copyOf();
+  QCOMPARE( features.count(), 2 );
+  QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
+  QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );
+  QCOMPARE( features.at( 0 ).attribute( "col2" ), QVariant() );
+  QCOMPARE( features.at( 1 ).attribute( "pk" ), 2 );
+  QCOMPARE( features.at( 1 ).attribute( "col1" ), 4 );
+  QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
+
+  QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
