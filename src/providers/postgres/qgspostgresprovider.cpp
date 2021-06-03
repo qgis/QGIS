@@ -1237,7 +1237,7 @@ bool QgsPostgresProvider::loadFields()
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
-        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedIdentifier( seqName ) );
+        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedValue( seqName ) );
       }
     }
 
