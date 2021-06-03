@@ -829,7 +829,7 @@ void QgsProject::clear()
   mLabelingEngineSettings->clear();
 
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
-  mArchive->clear();
+  mArchive.reset( new QgsProjectArchive() );
 
   emit labelingEngineSettingsChanged();
 
@@ -1391,8 +1391,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   QString fileName = mFile.fileName();
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
+  std::unique_ptr<QgsProjectArchive> archive = std::move( mArchive );
   clear();
   mAuxiliaryStorage = std::move( aStorage );
+  mArchive = std::move( archive );
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
@@ -2727,7 +2729,7 @@ QgsPathResolver QgsProject::pathResolver() const
       filePath = fileName();
     }
   }
-  return QgsPathResolver( filePath );
+  return QgsPathResolver( filePath, mArchive->dir() );
 }
 
 QString QgsProject::readPath( const QString &src ) const
@@ -3289,12 +3291,15 @@ bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
     return false;
   }
 
+  // Keep the archive
+  mArchive = std::move( archive );
+
   // load auxiliary storage
-  if ( !archive->auxiliaryStorageFile().isEmpty() )
+  if ( !mArchive->auxiliaryStorageFile().isEmpty() )
   {
     // database file is already a copy as it's been unzipped. So we don't open
     // auxiliary storage in copy mode in this case
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( archive->auxiliaryStorageFile(), false ) );
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( mArchive->auxiliaryStorageFile(), false ) );
   }
   else
   {
@@ -3302,14 +3307,13 @@ bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
   }
 
   // read the project file
-  if ( ! readProjectFile( archive->projectFile(), flags ) )
+  if ( ! readProjectFile( mArchive->projectFile(), flags ) )
   {
     setError( tr( "Cannot read unzipped qgs project file" ) );
     return false;
   }
 
-  // keep the archive and remove the temporary .qgs file
-  mArchive = std::move( archive );
+  // Remove the temporary .qgs file
   mArchive->clearProjectFile();
 
   return true;
@@ -3341,7 +3345,8 @@ bool QgsProject::zip( const QString &filename )
 
   // save auxiliary storage
   const QFileInfo info( qgsFile );
-  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
+  QString asExt = QStringLiteral( ".%1" ).arg( QgsAuxiliaryStorage::extension() );
+  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + asExt;
 
   bool auxiliaryStorageSavedOk = true;
   if ( ! saveAuxiliaryStorage( asFileName ) )
@@ -3377,6 +3382,16 @@ bool QgsProject::zip( const QString &filename )
 
   // create the archive
   archive->addFile( qgsFile.fileName() );
+
+  // Add all other files
+  const QStringList &files = mArchive->files();
+  for ( const QString &file : files )
+  {
+    if ( !file.endsWith( ".qgs", Qt::CaseInsensitive ) && !file.endsWith( asExt, Qt::CaseInsensitive ) )
+    {
+      archive->addFile( file );
+    }
+  }
 
   // zip
   bool zipOk = true;
@@ -3601,6 +3616,36 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
+}
+
+QString QgsProject::createAttachedFile( const QString &nameTemplate )
+{
+  QString fileName = nameTemplate;
+  QDir archiveDir( mArchive->dir() );
+  QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
+  tmpFile.setAutoRemove( false );
+  tmpFile.open();
+  mArchive->addFile( tmpFile.fileName() );
+  return tmpFile.fileName();
+}
+
+QStringList QgsProject::attachedFiles() const
+{
+  QStringList attachments;
+  QString baseName = QFileInfo( fileName() ).baseName();
+  for ( const QString &file : mArchive->files() )
+  {
+    if ( QFileInfo( file ).baseName() != baseName )
+    {
+      attachments.append( file );
+    }
+  }
+  return attachments;
+}
+
+bool QgsProject::removeAttachedFile( const QString &path )
+{
+  return mArchive->removeFile( path );
 }
 
 const QgsProjectMetadata &QgsProject::metadata() const

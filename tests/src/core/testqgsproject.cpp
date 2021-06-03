@@ -55,6 +55,7 @@ class TestQgsProject : public QObject
     void testCrsExpressions();
     void testCrsValidAfterReadingProjectFile();
     void testDefaultRelativePaths();
+    void testAttachments();
 };
 
 void TestQgsProject::init()
@@ -717,6 +718,77 @@ void TestQgsProject::testDefaultRelativePaths()
   QCOMPARE( p1PathsAbsolute, false );
   QCOMPARE( p1PathsAbsolute_2, true );
 }
+
+void TestQgsProject::testAttachments()
+{
+  // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
+  {
+    QgsProject p;
+
+    QString fileName = p.createAttachedFile( "myattachment" );
+    QVERIFY( QFile( fileName ).exists() );
+    QVERIFY( p.attachedFiles().contains( fileName ) );
+    QVERIFY( p.removeAttachedFile( fileName ) );
+    QVERIFY( !p.attachedFiles().contains( fileName ) );
+    QVERIFY( !p.removeAttachedFile( fileName ) );
+  }
+
+  // Verify that attachment is exists after re-reading project
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    QFile file;
+    QString fileName = p.createAttachedFile( "myattachment" );
+
+    file.setFileName( fileName );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
+    file.write( "Attachment" );
+    file.close();
+
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+
+    file.setFileName( p2.attachedFiles().at( 0 ) );
+    QVERIFY( file.open( QIODevice::ReadOnly ) );
+    QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
+  }
+
+  // Verify that attachment paths can be used as layer filenames
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    QString fileName = p.createAttachedFile( "testlayer.gpx" );
+    QFile file( fileName );
+    file.open( QIODevice::WriteOnly );
+    file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
+    file.write( "<gpx version=\"1.0\">" );
+    file.write( "<name>Example gpx</name>" );
+    file.write( "<wpt lat=\"0.0\" lon=\"0.0\">" );
+    file.write( "<name>NULL Island</name>" );
+    file.write( "</wpt>" );
+    file.write( "</gpx>" );
+    file.close();
+
+    QgsVectorLayer *layer = new QgsVectorLayer( fileName, "gpx" );
+    p.addMapLayer( layer );
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+    QVERIFY( p2.mapLayers().size() == 1 );
+    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+  }
+
+}
+
 
 QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

@@ -1307,8 +1307,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onSnappingConfigChanged();
 
-    void generateProjectAttachedFiles( QgsStringMap &files );
-
     /**
      * Triggers validation of the specified \a crs.
      */
