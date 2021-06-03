@@ -568,6 +568,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     corePlugins << QStringLiteral( "processing" );
     corePlugins << QStringLiteral( "MetaSearch" );
     corePlugins << QStringLiteral( "sagaprovider" );
+    corePlugins << QStringLiteral( "grassprovider" );
 
     // make the required core plugins enabled by default:
     const auto constCorePlugins = corePlugins;
