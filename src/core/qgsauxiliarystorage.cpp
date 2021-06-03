@@ -611,7 +611,7 @@ bool QgsAuxiliaryStorage::save() const
   }
 }
 
-QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const
+QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer, QString *errorMessage ) const
 {
   QgsAuxiliaryLayer *alayer = nullptr;
 
@@ -623,8 +623,13 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
 
     if ( !tableExists( table, database.get() ) )
     {
-      if ( !createTable( field.typeName(), table, database.get() ) )
+      QString msg;
+      if ( !createTable( field.typeName(), table, database.get(), msg ) )
       {
+        if ( errorMessage )
+        {
+          *errorMessage = msg;
+        }
         return alayer;
       }
     }
@@ -738,25 +743,24 @@ bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
   return rc;
 }
 
-void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
+QString QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
 {
-#ifdef QGISDEBUG
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
   const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
-#else
-  Q_UNUSED( sql )
-  Q_UNUSED( handler )
-#endif
+  return errMsg;
 }
 
-bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
+bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler, QString &errorMsg )
 {
   const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD, type );
 
   if ( !exec( sql, handler ) )
+  {
+    errorMsg = QgsAuxiliaryStorage::debugMsg( sql, handler );
     return false;
+  }
 
   return true;
 }

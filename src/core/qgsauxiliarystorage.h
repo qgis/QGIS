@@ -381,7 +381,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \returns A new auxiliary layer or NULLPTR if an error happened.
      */
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const SIP_FACTORY;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer, QString *errorMessage SIP_OUT = nullptr ) const SIP_FACTORY;
 
     /**
      * Removes a table from the auxiliary storage.
@@ -426,10 +426,10 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static spatialite_database_unique_ptr createDB( const QString &filename );
     static spatialite_database_unique_ptr openDB( const QString &filename );
     static bool tableExists( const QString &table, sqlite3 *handler );
-    static bool createTable( const QString &type, const QString &table, sqlite3 *handler );
+    static bool createTable( const QString &type, const QString &table, sqlite3 *handler, QString &errorMsg );
 
     static bool exec( const QString &sql, sqlite3 *handler );
-    static void debugMsg( const QString &sql, sqlite3 *handler );
+    static QString debugMsg( const QString &sql, sqlite3 *handler );
 
     static QgsDataSourceUri parseOgrUri( const QgsDataSourceUri &uri );
 
