@@ -38,7 +38,6 @@ from processing.tools.system import isWindows, isMac
 
 class Grass7AlgorithmProvider(QgsProcessingProvider):
     descriptionFolder = Grass7Utils.grassDescriptionPath()
-    activateSetting = "ACTIVATE_GRASS7"
 
     def __init__(self):
         super().__init__()
@@ -47,9 +46,6 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def load(self):
         with QgsRuntimeProfiler.profile('Grass Provider'):
             ProcessingConfig.settingIcons[self.name()] = self.icon()
-            if self.activateSetting:
-                ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
-                                                    self.tr('Activate'), True))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 Grass7Utils.GRASS_LOG_COMMANDS,
@@ -84,22 +80,11 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        if self.activateSetting:
-            ProcessingConfig.removeSetting(self.activateSetting)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
-
-    def isActive(self):
-        if self.activateSetting:
-            return ProcessingConfig.getSetting(self.activateSetting)
-        return True
-
-    def setActive(self, active):
-        if self.activateSetting:
-            ProcessingConfig.setSettingValue(self.activateSetting, active)
 
     def createAlgsList(self):
         algs = []
