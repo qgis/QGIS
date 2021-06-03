@@ -26,7 +26,7 @@ QgsMapRendererJob       {#qgis_api_break_3_20_qgsmaprendererjob}
 Subclasses have to implement the virtual method startPrivate to start the rendering of the map. For the actual subclasses (QgsMapRendererParallelJob, QgsMapRendererSequentialJob, ...), the start method
 is replaced by startPrivate method without change.
 
-setDataSource       {#qgis_api_break_3_20_setdatasource}
+QgsMapLayer       {#qgis_api_break_3_20_qgsmaplayer}
 -------------
 
 - QgsMapLayer::setDataSource is no longer virtual. It has been replaced with QgsMapLayer::setDataSourcePrivate. This is only relevant for subclassing QgsMapLayer, for code that only uses the subclasses (QgsVectorLayer, QgsRasterLayer, ...) this has no effect.
