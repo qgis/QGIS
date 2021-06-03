@@ -648,10 +648,10 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
+    const QgsCoordinateTransform ct( job->crs, mMapSettings.destinationCrs(), mMapSettings.transformContext() );
 
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
-    request.setFilterRect( ct.transform( mExtent ) );
+    request.setFilterRect( ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) );
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
