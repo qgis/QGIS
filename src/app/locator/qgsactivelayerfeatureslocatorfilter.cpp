@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsactivelayerfeatureslocatorfilter.h"
-#include "qgssettings.h"
 #include "qgisapp.h"
+#include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmapcanvas.h"
+#include "qgsfeatureaction.h"
 #include "qgsiconutils.h"
 #include "qgslocatorwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgssettings.h"
 
 #include <QSpinBox>
 
@@ -66,6 +67,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   if ( !layer )
     return QStringList();
 
+  mLayerIsSpatial = layer->isSpatial();
   mDispExpression = QgsExpression( layer->displayExpression() );
   mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   mDispExpression.prepare( &mContext );
@@ -197,10 +199,14 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       {
         {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
         {QStringLiteral( "feature_id" ), f.id()},
-        {QStringLiteral( "layer_id" ), mLayerId}
+        {QStringLiteral( "layer_id" ), mLayerId},
+        {QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial}
       } );
       result.icon = mLayerIcon;
       result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
+      if ( mLayerIsSpatial )
+        result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+
       emit resultFetched( result );
 
       featuresFound << f.id();
@@ -248,10 +254,14 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     {
       {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
       {QStringLiteral( "feature_id" ), f.id()},
-      {QStringLiteral( "layer_id" ), mLayerId}
+      {QStringLiteral( "layer_id" ), mLayerId},
+      {QStringLiteral( "layer_is_spatial" ), mLayerIsSpatial}
     } );
     result.icon = mLayerIcon;
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
+    if ( mLayerIsSpatial )
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+
     emit resultFetched( result );
 
     featuresFound << f.id();
@@ -260,7 +270,13 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   }
 }
 
+
 void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  triggerResultFromAction( result, NoEntry );
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )
 {
   QVariantMap data = result.userData.value<QVariantMap>();
   switch ( data.value( QStringLiteral( "type" ) ).value<ResultType>() )
@@ -271,8 +287,29 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
       if ( layer )
       {
         QgsFeatureId fid = data.value( QStringLiteral( "feature_id" ) ).value<QgsFeatureId>();
-        QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
-        QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
+        if ( actionId == OpenForm || !data.value( QStringLiteral( "layer_is_spatial" ), true ).toBool() )
+        {
+          QgsFeature f;
+          QgsFeatureRequest request;
+          request.setFilterFid( fid );
+          bool fetched = layer->getFeatures( request ).nextFeature( f );
+          if ( !fetched )
+            return;
+          QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QString(), -1, QgisApp::instance() );
+          if ( layer->isEditable() )
+          {
+            action.editFeature( false );
+          }
+          else
+          {
+            action.viewFeatureForm();
+          }
+        }
+        else
+        {
+          QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+          QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
+        }
       }
       break;
     }
