@@ -55,6 +55,7 @@ endif()
 add_subdirectory(processing)
 add_subdirectory(sagaprovider)
 add_subdirectory(grassprovider)
+add_subdirectory(otbprovider)
 add_subdirectory(MetaSearch)
 
 PY_COMPILE(staged-plugins "${PYTHON_OUTPUT_DIRECTORY}/plugins")

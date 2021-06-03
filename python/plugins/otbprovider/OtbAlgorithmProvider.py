@@ -35,8 +35,8 @@ from qgis.core import (Qgis,
 from qgis import utils
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.algs.otb.OtbUtils import OtbUtils
-from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
+from .OtbUtils import OtbUtils
+from .OtbAlgorithm import OtbAlgorithm
 
 
 class OtbAlgorithmProvider(QgsProcessingProvider):

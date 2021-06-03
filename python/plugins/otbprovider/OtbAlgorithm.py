@@ -51,8 +51,8 @@ from qgis.core import (Qgis,
                        QgsProviderRegistry)
 
 from processing.core.parameters import getParameterFromString
-from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice
-from processing.algs.otb.OtbUtils import OtbUtils
+from .OtbChoiceWidget import OtbParameterChoice
+from .OtbUtils import OtbUtils
 
 
 class OtbAlgorithm(QgsProcessingAlgorithm):

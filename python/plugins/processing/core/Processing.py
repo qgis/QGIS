@@ -59,9 +59,6 @@ with QgsRuntimeProfiler.profile('Import QGIS Provider'):
 with QgsRuntimeProfiler.profile('Import GDAL Provider'):
     from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile('Import OTB Provider'):
-    from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
-
 with QgsRuntimeProfiler.profile('Import Script Provider'):
     from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 
@@ -112,7 +109,6 @@ class Processing(object):
             for c in [
                 QgisAlgorithmProvider,
                 GdalAlgorithmProvider,
-                OtbAlgorithmProvider,
                 ScriptAlgorithmProvider,
                 ModelerAlgorithmProvider,
                 ProjectProvider
