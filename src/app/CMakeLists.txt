@@ -588,6 +588,7 @@ add_library(qgis_app SHARED ${QGIS_APP_SRCS})
 
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
+  ${QWTPOLAR_LIBRARY}
   ${Qt5Sql_LIBRARIES}
   ${Qt5UiTools_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
