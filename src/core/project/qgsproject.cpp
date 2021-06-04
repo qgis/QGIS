@@ -672,7 +672,6 @@ QgsProjectStorage *QgsProject::projectStorage() const
 
 QDateTime QgsProject::lastModified() const
 {
-  std::cout << "QgsProject::lastModified " << mFile.fileName().toStdString() << std::endl;
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
