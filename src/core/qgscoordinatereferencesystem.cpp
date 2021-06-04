@@ -2105,7 +2105,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       d->mEllipsoidAcronym = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-      d->mIsGeographic = node.toElement().text().compare( QLatin1String( "true" ) );
+      d->mIsGeographic = node.toElement().text() == QLatin1String( "true" );
 
       d->mWktPreferred.clear();
 
