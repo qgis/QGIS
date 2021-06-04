@@ -672,6 +672,7 @@ QgsProjectStorage *QgsProject::projectStorage() const
 
 QDateTime QgsProject::lastModified() const
 {
+  std::cout << "QgsProject::lastModified " << mFile.fileName().toStdString() << std::endl;
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QgsProjectStorage::Metadata metadata;
@@ -3341,25 +3342,30 @@ bool QgsProject::zip( const QString &filename )
   const QFileInfo info( qgsFile );
   const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
 
+  bool asOk = true;
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
     const QString err = mAuxiliaryStorage->errorString();
     setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
-    return false;
+    asOk = false;
+  }
+  else
+  {
+    archive->addFile( asFileName );
   }
 
   // create the archive
   archive->addFile( qgsFile.fileName() );
-  archive->addFile( asFileName );
 
   // zip
+  bool zipOk = true;
   if ( !archive->zip( filename ) )
   {
     setError( tr( "Unable to perform zip" ) );
-    return false;
+    zipOk = false;
   }
 
-  return true;
+  return asOk && zipOk;
 }
 
 bool QgsProject::isZipped() const
