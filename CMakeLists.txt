@@ -47,6 +47,13 @@ if (APPLE)
   if ( QGIS_MAC_DEPS_DIR )
     set(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
     list(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
+     
+    # o2/o3 optimization with clang12 uses too much memory
+    # see https://github.com/qgis/QGIS-Mac-Packager/issues/132
+    if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+      set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-inline")
+      set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-inline")
+    endif()
   endif()
 endif()
 
