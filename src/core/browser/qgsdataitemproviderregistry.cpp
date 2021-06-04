@@ -25,6 +25,12 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 {
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
 
+  // OWS is not useful in the browser.
+  // The OWS type connections (WFS/WMS) are available in their respective menus.
+  // Having an OWS menu in the browser only brings disadvantages.
+  // See https://github.com/qgis/QGIS/issues/24841
+  providersList.removeOne( QStringLiteral( "ows" ) );
+
   const auto constProvidersList = providersList;
   for ( const QString &key : constProvidersList )
   {
