@@ -57,10 +57,6 @@ macro (ADD_QGIS_TEST testname testsrc)
   add_test(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
 endmacro (ADD_QGIS_TEST)
 
-#############################################################
-# Tests:
-
-ADD_QGIS_TEST(qgsquickutils testqgsquickutils.cpp)
 
 #############################################################
 # Add also test application

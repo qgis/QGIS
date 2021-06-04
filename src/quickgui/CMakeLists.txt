@@ -5,7 +5,6 @@ set(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
   qgsquickmaptransform.h
-  qgsquickutils.h
 )
 
 set(QGIS_QUICK_GUI_SRC
@@ -13,7 +12,6 @@ set(QGIS_QUICK_GUI_SRC
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
   qgsquickmaptransform.cpp
-  qgsquickutils.cpp
 )
 
 include_directories(
