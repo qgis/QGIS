@@ -91,6 +91,7 @@ if (WITH_PDAL)
   target_link_libraries(qgis_pdalprovidertest pdalprovider_a qgis_core)
 endif()
 
+ADD_QGIS_TEST(virtualrasterprovidertest testqgsvirtualrasterprovider.cpp)
 #############################################################
 # WCS public servers test:
 # No need to test on all platforms
