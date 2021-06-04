@@ -405,6 +405,7 @@ Abort any outstanding external browser login request.
 
 
 
+    void preprocessRequest( QNetworkRequest *req ) const;
 
   signals:
 
