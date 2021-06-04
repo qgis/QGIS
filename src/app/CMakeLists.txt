@@ -520,6 +520,7 @@ add_dependencies(qgis_gui ui)
 
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
+  ${QWTPOLAR_LIBRARY}
   ${Qt5Sql_LIBRARIES}
   ${Qt5UiTools_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
