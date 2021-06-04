@@ -1323,7 +1323,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Attaches a file to the project
      * \param nameTemplate Any filename template, used as a basename for attachment file, i.e. "myfile.ext"
      * \return The path to the file where the contents can be written to.
-     * \note Attached files are only supported by QGZ file based projects
      * \since QGIS 3.22
      */
     QString createAttachedFile( const QString &nameTemplate );
@@ -1331,7 +1330,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns a map of all attached files with identifier and real paths.
      *
-     * \note Attached files are only supported by QGZ file based projects
      * \see createAttachedFile()
      * \since QGIS 3.22
      */
@@ -2030,7 +2028,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
-    std::unique_ptr<QgsProjectArchive> mArchive;
+    std::unique_ptr<QgsArchive> mArchive;
 
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 

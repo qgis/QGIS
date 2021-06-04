@@ -1254,20 +1254,12 @@ Attaches a file to the project
 
 :return: The path to the file where the contents can be written to.
 
-.. note::
-
-   Attached files are only supported by QGZ file based projects
-
 .. versionadded:: 3.22
 %End
 
     QStringList attachedFiles() const;
 %Docstring
 Returns a map of all attached files with identifier and real paths.
-
-.. note::
-
-   Attached files are only supported by QGZ file based projects
 
 .. seealso:: :py:func:`createAttachedFile`
 
