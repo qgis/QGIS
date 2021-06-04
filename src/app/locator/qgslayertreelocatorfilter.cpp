@@ -18,7 +18,7 @@
 #include "qgslayertreelocatorfilter.h"
 #include "qgslayertree.h"
 #include "qgsproject.h"
-#include "qgsiconutils.h"
+#include "qgsmaplayermodel.h"
 #include "qgisapp.h"
 
 
@@ -44,7 +44,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
     QgsLocatorResult result;
     result.displayString = layer->layer()->name();
     result.userData = layer->layerId();
-    result.icon = QgsIconUtils::iconForLayer( layer->layer() );
+    result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
 
     // return all the layers in case the string query is empty using an equal default score
     if ( context.usingPrefix && string.isEmpty() )

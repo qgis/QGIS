@@ -22,7 +22,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
 #include "qgsfeedback.h"
-#include "qgsiconutils.h"
+#include "qgsmaplayermodel.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -86,7 +86,7 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
     preparedLayer->request = req;
     preparedLayer->exactMatchRequest = exactMatchRequest;
-    preparedLayer->layerIcon = QgsIconUtils::iconForLayer( layer );
+    preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
     preparedLayer->layerIsSpatial = layer->isSpatial();
 
     mPreparedLayers.append( preparedLayer );

@@ -19,7 +19,7 @@
 #include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
-#include "qgsiconutils.h"
+#include "qgsmaplayermodel.h"
 #include "qgslocatorwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
@@ -152,7 +152,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   mFieldIterator = layer->getFeatures( req );
 
   mLayerId = layer->id();
-  mLayerIcon = QgsIconUtils::iconForLayer( layer );
+  mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
   mAttributeAliases.clear();
   for ( int idx = 0; idx < layer->fields().size(); ++idx )
   {
