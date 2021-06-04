@@ -3346,8 +3346,13 @@ bool QgsProject::zip( const QString &filename )
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
     const QString err = mAuxiliaryStorage->errorString();
-    setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
+    setError( tr( "Unable to save auxiliary storage file ('%1'). The project is still saved but last changes on auxiliary data are lost." ).arg( err ) );
     asOk = false;
+
+    // try to retrieve the previous version
+    QgsProjectArchive tmpArchive;
+    tmpArchive.unzip( mFile.fileName() );
+    archive->addFile( tmpArchive.auxiliaryStorageFile(), true );
   }
   else
   {

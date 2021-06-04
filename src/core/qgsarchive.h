@@ -79,7 +79,7 @@ class CORE_EXPORT QgsArchive
      * part of the resulting zipped file.
      * \param filename A file to add when zipping this archive
      */
-    void addFile( const QString &filename );
+    void addFile( const QString &filename, bool copy = false );
 
     /**
      * Remove a file from this archive and from the filesystem.

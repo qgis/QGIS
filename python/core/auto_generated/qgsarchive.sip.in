@@ -61,7 +61,7 @@ Clear the current content of this archive and create a new temporary
 directory.
 %End
 
-    void addFile( const QString &filename );
+    void addFile( const QString &filename, bool copy = false );
 %Docstring
 Add a new file to this archive. During a zip action, this file will be
 part of the resulting zipped file.

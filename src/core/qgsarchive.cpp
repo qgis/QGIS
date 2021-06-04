@@ -104,9 +104,22 @@ bool QgsArchive::unzip( const QString &filename )
   return QgsZipUtils::unzip( filename, mDir->path(), mFiles );
 }
 
-void QgsArchive::addFile( const QString &file )
+void QgsArchive::addFile( const QString &file, bool copy )
 {
-  mFiles.append( file );
+  if ( copy )
+  {
+    QFileInfo fi( file );
+    if ( ! fi.exists() )
+      return;
+
+    const QString newFile = mDir->path() + QDir::separator() + fi.fileName();
+    QFile::copy( file, newFile );
+    mFiles.append( newFile );
+  }
+  else
+  {
+    mFiles.append( file );
+  }
 }
 
 bool QgsArchive::removeFile( const QString &file )
