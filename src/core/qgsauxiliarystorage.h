@@ -381,7 +381,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \returns A new auxiliary layer or NULLPTR if an error happened.
      */
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer, QString *errorMessage SIP_OUT = nullptr ) const SIP_FACTORY;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const SIP_FACTORY;
 
     /**
      * Removes a table from the auxiliary storage.
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString mFileName; // original filename
     QString mTmpFileName; // temporary filename used in copy mode
     bool mCopy = false;
-    QString mErrorString;
+    mutable QString mErrorString;
 };
 
 #endif

@@ -611,7 +611,7 @@ bool QgsAuxiliaryStorage::save() const
   }
 }
 
-QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer, QString *errorMessage ) const
+QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const
 {
   QgsAuxiliaryLayer *alayer = nullptr;
 
@@ -623,13 +623,8 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
 
     if ( !tableExists( table, database.get() ) )
     {
-      QString msg;
-      if ( !createTable( field.typeName(), table, database.get(), msg ) )
+      if ( !createTable( field.typeName(), table, database.get(), mErrorString ) )
       {
-        if ( errorMessage )
-        {
-          *errorMessage = msg;
-        }
         return alayer;
       }
     }
