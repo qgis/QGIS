@@ -806,3 +806,21 @@ tests:
         type: regex
         rules:
           - '1.0|0.0|1.0|1.0|1|2'
+
+  - algorithm: grass7:r.proj
+    name: GRASS7 r.proj
+    params:
+      -n: false
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      crs: EPSG:32634
+      input:
+        name: dem.tif
+        type: raster
+      memory: 300
+      method: 0
+    results:
+      output:
+        hash: caa4870e0f0f1a42583cd562c26f0ad6b7795116961c7f6053f1ccde
+        type: rasterhash
