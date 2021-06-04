@@ -79,7 +79,7 @@ class CORE_EXPORT QgsArchive
      * part of the resulting zipped file.
      * \param filename A file to add when zipping this archive
      */
-    void addFile( const QString &filename, bool copy = false );
+    void addFile( const QString &filename );
 
     /**
      * Remove a file from this archive and from the filesystem.
@@ -97,6 +97,8 @@ class CORE_EXPORT QgsArchive
      * Returns the current temporary directory.
      */
     QString dir() const;
+
+    bool exists() const;
 
   private:
     // content of the archive

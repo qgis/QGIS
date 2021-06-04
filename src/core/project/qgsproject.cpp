@@ -3346,13 +3346,23 @@ bool QgsProject::zip( const QString &filename )
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
     const QString err = mAuxiliaryStorage->errorString();
-    setError( tr( "Unable to save auxiliary storage file ('%1'). The project is still saved but last changes on auxiliary data are lost." ).arg( err ) );
+    setError( tr( "Unable to save auxiliary storage file ('%1'). The project is still saved but last changes on auxiliary data are lost. It is recommended to reload the project." ).arg( err ) );
     asOk = false;
 
-    // try to retrieve the previous version
-    QgsProjectArchive tmpArchive;
-    tmpArchive.unzip( mFile.fileName() );
-    archive->addFile( tmpArchive.auxiliaryStorageFile(), true );
+    // fixes the current archive and keep the previous version of qgd
+    if ( !mArchive->exists() )
+    {
+      mArchive.reset( new QgsProjectArchive() );
+      mArchive->unzip( mFile.fileName() );
+      mArchive->clearProjectFile();
+
+      const QString asFile = mArchive->auxiliaryStorageFile();
+      if ( ! asFile.isEmpty() )
+      {
+        archive->addFile( asFile );
+        mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( asFile, false ) );
+      }
+    }
   }
   else
   {
