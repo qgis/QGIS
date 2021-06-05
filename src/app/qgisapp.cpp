@@ -14822,6 +14822,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSelectByForm->setEnabled( false );
     mActionLabeling->setEnabled( false );
     mActionOpenTable->setEnabled( false );
+    mMenuFilterTable->setEnabled( false );
     mActionOpenTableSelected->setEnabled( false );
     mActionOpenTableVisible->setEnabled( false );
     mActionOpenTableEdited->setEnabled( false );
@@ -14975,6 +14976,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByExpression->setEnabled( true );
       mActionSelectByForm->setEnabled( true );
       mActionOpenTable->setEnabled( true );
+      mMenuFilterTable->setEnabled( true );
       mActionOpenTableSelected->setEnabled( true );
       mActionOpenTableVisible->setEnabled( true );
       mActionOpenTableEdited->setEnabled( true );
@@ -15220,6 +15222,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( true );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
       mActionOpenTableEdited->setEnabled( false );
@@ -15334,6 +15337,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
       mActionOpenTableEdited->setEnabled( false );
@@ -15402,6 +15406,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
       mActionOpenTableEdited->setEnabled( false );
@@ -15470,6 +15475,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
+      mMenuFilterTable->setEnabled( false );
       mActionOpenTableSelected->setEnabled( false );
       mActionOpenTableVisible->setEnabled( false );
       mActionOpenTableEdited->setEnabled( false );
