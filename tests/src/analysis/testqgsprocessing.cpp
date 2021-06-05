@@ -8330,7 +8330,7 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( !def->checkValueIsAcceptable( value ) );
   value[QStringLiteral( "value" )] = QVariantList() << 1 << 5;
   QVERIFY( def->checkValueIsAcceptable( value ) );
-  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,5)}" ) );
+  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'dataset-time-step','value': [1,5]}" ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "dataset-time-step" ) );
   QVERIFY( !QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( value ).isValid() );
   QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( value ) == QgsMeshDatasetIndex( 1, 5 ) );
