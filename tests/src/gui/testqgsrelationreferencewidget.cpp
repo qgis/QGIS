@@ -573,7 +573,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
 
   w.setReadOnlySelector( true );
-  QVERIFY( !w.mComboBox->enabled() );
+  QVERIFY( !w.mComboBox->isEnabled() );
 
   mLayer1->rollBack();
 }
