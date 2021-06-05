@@ -118,7 +118,7 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
   if ( mMeshLayer )
   {
     datasetGroupsIndexes = mMeshLayer->datasetGroupsIndexes();
-    for ( int i : datasetGroupsIndexes )
+    for ( int i : std::as_const( datasetGroupsIndexes ) )
     {
       QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( i );
       if ( mParam->isDataTypeSupported( meta.dataType() ) )
@@ -265,6 +265,11 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
     mWidget->setMeshLayer( meshLayer, layerFromProject );
 }
 
+QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName();
+}
+
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 {
   mWidget = new QgsProcessingMeshDatasetGroupsWidget( nullptr, static_cast<const QgsProcessingParameterMeshDatasetGroups *>( parameterDefinition() ) );
@@ -350,7 +355,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
-  if ( !mWidget )
+  if ( !mWidget || !wrapper )
     return;
 
   // evaluate value to layer
@@ -377,7 +382,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const 
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
-  if ( !mWidget )
+  if ( !mWidget || !wrapper )
     return;
 
   QVariant datasetGroupsVariant = wrapper->parameterValue();
@@ -393,6 +398,11 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
 
   mWidget->setDatasetGroupIndexes( datasetGroupsIndexes );
 
+}
+
+QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList() << QgsProcessingParameterMeshDatasetTime::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
@@ -434,6 +444,8 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
 {
   setupUi( this );
 
+  mValue.insert( QStringLiteral( "type" ), QStringLiteral( "static" ) );
+
   dateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   mCanvas = context.mapCanvas();
@@ -453,6 +465,8 @@ void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer, bool
   if ( mMeshLayer == layer )
     return;
 
+  mReferenceTime = QDateTime();
+
   if ( layerFromProject )
   {
     mMeshLayer = layer;
@@ -461,7 +475,8 @@ void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer, bool
   else
   {
     mMeshLayer = nullptr;
-    mReferenceTime = layer->dataProvider()->temporalCapabilities()->referenceTime();
+    if ( layer )
+      mReferenceTime = layer->dataProvider()->temporalCapabilities()->referenceTime();
     storeTimeStepsFromLayer( layer );
   }
 
@@ -500,9 +515,10 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
   else if ( type == QLatin1String( "dataset-time-step" ) )
   {
     whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
-    whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( mValue.value( QStringLiteral( "value" ) ) ) );
+    QVariantList dataset = mValue.value( QStringLiteral( "value" ) ).toList();
+    whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( dataset ) );
   }
-  else if ( type == QLatin1String( "dataset-time-step" ) )
+  else if ( type == QLatin1String( "defined-date-time" ) )
   {
     radioButtonDefinedDateTime->setChecked( true );
     whileBlocking( dateTimeEdit )->setDate( mValue.value( QStringLiteral( "value" ) ).toDate() );
@@ -604,7 +620,7 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
     return;
 
   QMap<quint64, QgsMeshDatasetIndex> timeStep;
-  for ( int groupIndex : mDatasetGroupIndexes )
+  for ( int groupIndex : std::as_const( mDatasetGroupIndexes ) )
   {
     QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( groupIndex );
     if ( !meta.isTemporal() )
