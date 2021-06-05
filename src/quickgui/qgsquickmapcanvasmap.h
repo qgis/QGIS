@@ -16,6 +16,7 @@
 #ifndef QGSQUICKMAPCANVASMAP_H
 #define QGSQUICKMAPCANVASMAP_H
 
+#include "qgis_quick.h"
 #include "qgsquickmapsettings.h"
 
 #include <QFutureSynchronizer>
@@ -200,8 +201,6 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     bool mIncrementalRendering = false;
 
     QQuickWindow *mWindow = nullptr;
-
-    QSizeF mOutputSize;
 };
 
 #endif // QGSQUICKMAPCANVASMAP_H

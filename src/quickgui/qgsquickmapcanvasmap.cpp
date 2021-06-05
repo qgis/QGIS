@@ -16,15 +16,16 @@
 #include <QQuickWindow>
 #include <QSGSimpleTextureNode>
 #include <QScreen>
-#include <qgis.h>
-#include <qgsexpressioncontextutils.h>
-#include <qgsmaprenderercache.h>
-#include <qgsmaprendererparalleljob.h>
-#include <qgsmessagelog.h>
-#include <qgspallabeling.h>
-#include <qgsproject.h>
-#include <qgsvectorlayer.h>
-#include <qgslabelingresults.h>
+
+#include "qgis.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsmaprenderercache.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmessagelog.h"
+#include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgslabelingresults.h"
 
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
