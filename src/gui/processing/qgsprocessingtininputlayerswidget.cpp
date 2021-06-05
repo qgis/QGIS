@@ -354,7 +354,11 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWr
   return new QgsProcessingTinInputLayersWidgetWrapper( parameter, type );
 }
 
-QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleParameterTypes() const {return QStringList();}
+QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterTinInputLayers::typeName();
+}
 
 QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleOutputTypes() const {return QStringList();}
 

@@ -354,7 +354,7 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
   for ( int i = 0; i < mElementCount; ++i )
   {
     QgsAttributes attributes;
-    for ( const DataGroup &dataGroup : mDataPerGroup )
+    for ( const DataGroup &dataGroup : std::as_const( mDataPerGroup ) )
     {
       const QgsMeshDatasetValue &value = dataGroup.datasetValues.value( i );
       addAttributes( value, attributes, dataGroup.metadata.isVector(), mExportVectorOption );
@@ -592,7 +592,7 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
 
   QList<QgsMeshDatasetGroupMetadata> metaList;
   metaList.reserve( mDataPerGroup.size() );
-  for ( const DataGroup &dataGroup : mDataPerGroup )
+  for ( const DataGroup &dataGroup : std::as_const( mDataPerGroup ) )
     metaList.append( dataGroup.metadata );
   QgsFields fields = createFields( metaList, mExportVectorOption );
 
@@ -738,7 +738,8 @@ void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration 
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
-                  supportedDataType() ) );
+                  supportedDataType(),
+                  true ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
@@ -1108,7 +1109,7 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
     firstAttributes.append( dataGroup.metadata.name() );
     firstAttributes.append( mDateTimeString );
 
-    for ( double level : mLevels )
+    for ( double level : std::as_const( mLevels ) )
     {
       QgsGeometry line = contoursExported.exportLines( level, feedback );
       if ( feedback->isCanceled() )
@@ -1285,7 +1286,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 #endif
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "offset" );
-  for ( const DataGroup &datagroup : mDataPerGroup )
+  for ( const DataGroup &datagroup : std::as_const( mDataPerGroup ) )
     header << datagroup.metadata.name();
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
@@ -1494,7 +1495,7 @@ bool QgsMeshExportTimeSeries::prepareAlgorithm( const QVariantMap &parameters, Q
     while ( mRelativeTimeSteps.last() < relativeEndTime.seconds() * 1000 )
       mRelativeTimeSteps.append( mRelativeTimeSteps.last() + timeStepInterval );
 
-    for ( qint64  relativeTimeStep : mRelativeTimeSteps )
+    for ( qint64  relativeTimeStep : std::as_const( mRelativeTimeSteps ) )
     {
       mTimeStepString.append( meshLayer->formatTime( relativeTimeStep / 3600.0 / 1000.0 ) );
     }
@@ -1601,7 +1602,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
   QStringList header;
   header << QStringLiteral( "fid" ) << QStringLiteral( "x" ) << QStringLiteral( "y" ) << QObject::tr( "time" );
 
-  for ( int gi : mGroupIndexes )
+  for ( int gi : std::as_const( mGroupIndexes ) )
     header << mGroupsMetadata.value( gi ).name();
 
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
@@ -1647,7 +1648,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
           if ( mRelativeTimeToData.contains( timeStep ) )
           {
             const QMap<int, int> &groupToData = mRelativeTimeToData.value( timeStep );
-            for ( int groupIndex : mGroupIndexes )
+            for ( int groupIndex : std::as_const( mGroupIndexes ) )
             {
               if ( !groupToData.contains( groupIndex ) )
                 continue;
@@ -1680,7 +1681,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
                  << QString::number( point.y(), 'f', coordDigits )
                  << QObject::tr( "static dataset" );
         const QMap<int, int> &groupToData = mRelativeTimeToData.value( 0 );
-        for ( int groupIndex : mGroupIndexes )
+        for ( int groupIndex : std::as_const( mGroupIndexes ) )
         {
           if ( !groupToData.contains( groupIndex ) )
             continue;
