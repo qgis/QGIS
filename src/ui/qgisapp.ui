@@ -201,6 +201,14 @@
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
     </widget>
+    <widget class="QMenu" name="mMenuFilterTable">
+     <property name="title">
+      <string>Filter Attribute Table</string>
+     </property>
+     <addaction name="mActionOpenTableSelected"/>
+     <addaction name="mActionOpenTableVisible"/>
+     <addaction name="mActionOpenTableEdited"/>
+    </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mAddLayerMenu"/>
@@ -214,9 +222,7 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
-    <addaction name="mActionOpenTableSelected"/>
-    <addaction name="mActionOpenTableVisible"/>
-    <addaction name="mActionOpenTableEdited"/>
+    <addaction name="mMenuFilterTable"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
