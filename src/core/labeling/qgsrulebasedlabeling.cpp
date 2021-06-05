@@ -109,7 +109,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   else
   {
     mElseRule = false;
-    mFilter = std::make_unique< QgsExpression >( mFilterExp );
+    mFilter = qgis::make_unique< QgsExpression >( mFilterExp );
   }
 }
 
