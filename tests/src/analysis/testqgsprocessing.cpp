@@ -8217,6 +8217,14 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QgsProject project;
   context.setProject( &project );
 
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant() ), QList<int>( {0} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList() ), QList<int>( {0} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( 3 ), QList<int>( {3} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant( "3" ) ), QList<int>( {3} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList( { "3", "4", "5"} ) ), QList<int>( {3, 4, 5 } ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList( { 3, 4, 5} ) ), QList<int>( {3, 4, 5 } ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList( { 3.0, 4.0, 5.0} ) ), QList<int>( {3, 4, 5 } ) );
+
   QSet<int> supportedData;
   supportedData << QgsMeshDatasetGroupMetadata::DataOnVertices;
   std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def(
@@ -8224,15 +8232,17 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
 
   QVERIFY( def->type() == QLatin1String( "meshdatasetgroups" ) );
   QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnVertices ) );
-  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
-  QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( 1.0 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
-  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); //not optional
+
   QVariantList groupsList;
-  QVERIFY( !def->checkValueIsAcceptable( groupsList ) );
+  QVERIFY( !def->checkValueIsAcceptable( groupsList ) ); //not optional
+
   groupsList.append( 0 );
   QVERIFY( def->checkValueIsAcceptable( groupsList ) );
   groupsList.append( 5 );
@@ -8255,8 +8265,8 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
                QStringLiteral( "layer parameter" ),
                supportedData, true ) );
   QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnFaces ) );
-  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
-  QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( 1.0 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
@@ -8295,9 +8305,11 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
 
   QVariantMap value;
+  QVERIFY( !def->checkValueIsAcceptable( value ) );
   value[QStringLiteral( "test" )] = QStringLiteral( "test" );
   QVERIFY( !def->checkValueIsAcceptable( value ) );
 

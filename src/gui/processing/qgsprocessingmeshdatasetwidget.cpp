@@ -16,6 +16,7 @@
 #include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsdatetimeedit.h"
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayertemporalproperties.h"
@@ -267,7 +268,15 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
 
 QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleParameterTypes() const
 {
-  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName();
+  return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingMeshDatasetGroupsWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputNumber::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
@@ -283,9 +292,25 @@ QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 
 void QgsProcessingMeshDatasetGroupsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
-  Q_UNUSED( context );
-  if ( mWidget )
-    mWidget->setValue( value );
+  if ( !mWidget )
+    return;
+
+  QList<int> datasetGroupIndexes;
+  if ( value.type() == QVariant::List )
+  {
+    //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empry list when first value is 0...
+    const QVariantList varList = value.toList();
+    for ( const QVariant &v : varList )
+      datasetGroupIndexes.append( QgsProcessingParameters::parameterAsInt( parameterDefinition(), v, context ) );
+  }
+  else
+    datasetGroupIndexes.append( QgsProcessingParameters::parameterAsInt( parameterDefinition(), value, context ) );
+
+  QVariantList varList;
+  for ( const int index : std::as_const( datasetGroupIndexes ) )
+    varList.append( index );
+
+  mWidget->setValue( varList );
 }
 
 QVariant QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValue() const

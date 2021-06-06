@@ -85,7 +85,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper  : public QgsAbstra
 
   protected:
     QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override {return QStringList();}
+    QStringList compatibleOutputTypes() const override;
     QWidget *createWidget() override;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
