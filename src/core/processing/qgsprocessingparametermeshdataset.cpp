@@ -121,11 +121,20 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
     ret << 0;
   else
   {
-    QVariantList list = value.toList();
-    if ( list.isEmpty() )
-      ret << 0;
-    for ( const QVariant &v : list )
-      ret.append( v.toInt() );
+    if ( value.type() == QVariant::List )
+    {
+      //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empry list when first value is 0...
+      const QVariantList varList = value.toList();
+      if ( varList.isEmpty() )
+        ret << 0;
+      else
+        for ( const QVariant &v : varList )
+          ret << v.toInt();
+    }
+    else
+    {
+      ret << value.toInt();
+    }
   }
 
   return ret;
@@ -137,15 +146,23 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
     return allowEmpty;
 
   if ( input.type() != QVariant::List )
-    return false;
+  {
+    bool ok = false;
+    input.toInt( &ok );
+    return ok;
+  }
   const QVariantList list = input.toList();
 
   if ( !allowEmpty && list.isEmpty() )
     return false;
 
   for ( const QVariant &var : list )
-    if ( var.type() != QVariant::Int )
+  {
+    bool ok = false;
+    var.toInt( &ok );
+    if ( !ok )
       return false;
+  }
 
   return true;
 }

@@ -275,8 +275,6 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
-  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
-
   // Extract the date time used to export dataset values under a relative time
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
   QgsInterval relativeTime = datasetRelativetime( parameterTimeVariant, meshLayer, context );
