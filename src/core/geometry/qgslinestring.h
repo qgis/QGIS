@@ -588,6 +588,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isEmpty() const override SIP_HOLDGIL;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    bool isClosed() const override SIP_HOLDGIL;
+    bool is2DClosed() const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
      * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.

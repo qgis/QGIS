@@ -66,8 +66,21 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     /**
      * Returns TRUE if the curve is closed.
+     *
+     * \see is2DClosed()
      */
     virtual bool isClosed() const SIP_HOLDGIL;
+
+    /**
+     * Returns true if the curve is closed.
+     *
+     * Unlike isClosed. It looks only for XY coordinates.
+     *
+     * \see isClosed()
+     *
+     * \since QGIS 3.20
+     */
+    virtual bool is2DClosed() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the curve is a ring.
