@@ -834,20 +834,24 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
     if ( feedback )
       QObject::connect( &rasterBlockFeedBack, &QgsFeedback::canceled, feedback, &QgsFeedback::cancel );
 
-    QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
-                              mTriangularMesh,
-                              dataGroup.datasetValues,
-                              dataGroup.activeFaces,
-                              dataGroup.metadata.dataType(),
-                              mTransform,
-                              pixelSize,
-                              extent,
-                              &rasterBlockFeedBack );
+    if ( dataGroup.datasetValues.isValid() )
+    {
+      QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
+                                mTriangularMesh,
+                                dataGroup.datasetValues,
+                                dataGroup.activeFaces,
+                                dataGroup.metadata.dataType(),
+                                mTransform,
+                                pixelSize,
+                                extent,
+                                &rasterBlockFeedBack );
 
+      rasterDataProvider->writeBlock( block, i + 1 );
+      rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
+    }
+    else
+      rasterDataProvider->setNoDataValue( i + 1, std::numeric_limits<double>::quiet_NaN() );
 
-
-    rasterDataProvider->writeBlock( block, i + 1 );
-    rasterDataProvider->setNoDataValue( i + 1, block->noDataValue() );
     if ( feedback )
     {
       if ( feedback->isCanceled() )
