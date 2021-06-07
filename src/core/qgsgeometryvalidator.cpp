@@ -99,9 +99,17 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
 
     if ( !line->isClosed() )
     {
-      QString msg = QObject::tr( "ring %1 not closed" ).arg( i );
-      QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg ) );
+      QString msg;
+      if ( line->is3D() && line->is2DClosed() )
+      {
+        msg = QObject::tr( "ring %1 not closed, Z mismatch" ).arg( i );
+      }
+      else
+      {
+        msg = QObject::tr( "ring %1 not closed" ).arg( i );
+        QgsDebugMsgLevel( msg, 2 );
+      }
+      emit errorFound( QgsGeometry::Error( msg, QgsPointXY( line->startPoint().x(), line->startPoint().y() ) ) );
       mErrorCount++;
       return;
     }
