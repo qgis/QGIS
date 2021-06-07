@@ -540,7 +540,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
@@ -548,7 +548,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );
     }
