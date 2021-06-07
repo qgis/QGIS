@@ -273,6 +273,7 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
 
 void QgsRelationEditorWidget::updateButtons()
 {
+  bool toggleEditingButtonEnabled = false;
   bool editable = false;
   bool linkable = false;
   bool spatial = false;
@@ -280,6 +281,7 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mRelation.isValid() )
   {
+    toggleEditingButtonEnabled = mRelation.referencingLayer()->supportsEditing();
     editable = mRelation.referencingLayer()->isEditable();
     linkable = mRelation.referencingLayer()->isEditable();
     spatial = mRelation.referencingLayer()->isSpatial();
@@ -287,10 +289,12 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mNmRelation.isValid() )
   {
-    editable = mNmRelation.referencedLayer()->isEditable();
+    toggleEditingButtonEnabled = mNmRelation.referencedLayer()->supportsEditing() && mRelation.referencingLayer()->supportsEditing();
+    editable = mNmRelation.referencedLayer()->isEditable() && mRelation.referencingLayer()->isEditable();
     spatial = mNmRelation.referencedLayer()->isSpatial();
   }
 
+  mToggleEditingButton->setEnabled( toggleEditingButtonEnabled );
   mAddFeatureButton->setEnabled( editable );
   mAddFeatureGeometryButton->setEnabled( editable );
   mDuplicateFeatureButton->setEnabled( editable && selectionNotEmpty );
@@ -299,7 +303,7 @@ void QgsRelationEditorWidget::updateButtons()
   mUnlinkFeatureButton->setEnabled( linkable && selectionNotEmpty );
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
   mToggleEditingButton->setChecked( editable );
-  mSaveEditsButton->setEnabled( editable );
+  mSaveEditsButton->setEnabled( editable || linkable );
 
   mToggleEditingButton->setVisible( !mLayerInSameTransactionGroup );
 
@@ -503,25 +507,16 @@ void QgsRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRe
 
 void QgsRelationEditorWidget::afterSetRelationFeature()
 {
-  mToggleEditingButton->setEnabled( false );
-
   if ( ! mRelation.isValid() )
+  {
+    updateButtons();
     return;
+  }
 
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
-  QgsVectorLayer *vl = mRelation.referencingLayer();
-  bool canChangeAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !vl->readOnly() )
-  {
-    mToggleEditingButton->setEnabled( true );
-    updateButtons();
-  }
-  else
-  {
-    mToggleEditingButton->setEnabled( false );
-  }
+  updateButtons();
 
   QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
   initDualView( mRelation.referencingLayer(), myRequest );
@@ -557,17 +552,6 @@ void QgsRelationEditorWidget::afterSetRelations()
   {
     connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
     connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
-  }
-
-  QgsVectorLayer *vl = mRelation.referencingLayer();
-  bool canChangeAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !vl->readOnly() )
-  {
-    mToggleEditingButton->setEnabled( true );
-  }
-  else
-  {
-    mToggleEditingButton->setEnabled( false );
   }
 
   updateButtons();
