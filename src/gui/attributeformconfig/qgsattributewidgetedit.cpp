@@ -16,7 +16,6 @@
 #include "qgsattributewidgetedit.h"
 #include "qgsattributesformproperties.h"
 #include "qgsrelationwidgetregistry.h"
-#include "qgsrelationeditorwidget.h"
 
 
 QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *parent )
@@ -127,23 +126,9 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   }
 
   int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
-
-  if ( widgetTypeIdx == -1 )
-  {
-    QMap factories = QgsGui::relationWidgetRegistry()->factories();
-    const QStringList factoryNames = factories.keys();
-
-    for ( int i = 0, l = factoryNames.length(); i < l; i++ )
-    {
-      if ( dynamic_cast<QgsRelationEditorWidgetFactory *>( factories[factoryNames[i]] ) )
-      {
-        widgetTypeIdx = i;
-        break;
-      }
-    }
-  }
-
-  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx );
+  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0
+                                        ? widgetTypeIdx
+                                        : mWidgetTypeComboBox->findData( QgsGui::relationWidgetRegistry()->defaultWidgetType() ) );
 
   const QString widgetType = mWidgetTypeComboBox->currentData().toString();
   mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetType, relation, this );
