@@ -502,6 +502,14 @@ Emitted when external browser logins are to be aborted.
 .. versionadded:: 3.20
 %End
 
+
+    void cookiesChanged( const QList<QNetworkCookie> &cookies );
+%Docstring
+Emitted when the cookies changed.
+
+.. versionadded:: 3.22
+%End
+
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
