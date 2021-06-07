@@ -1754,6 +1754,21 @@ if (WITH_EPT)
     # Use embedded laz-perf from external/laz-perf
     include_directories(SYSTEM
     )
+    set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+	${CMAKE_SOURCE_DIR}/external/laz-perf/charbuf.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/lazperf.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/filestream.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/io.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/vlr.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_point10.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_gpstime10.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_rgb10.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_byte10.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_rgb14.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_nir14.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_point14.cpp
+	${CMAKE_SOURCE_DIR}/external/laz-perf/detail/field_byte14.cpp
+    )
   endif()
 
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}

@@ -1,18 +1,14 @@
 /*
 ===============================================================================
 
-  FILE:  excepts.hpp
-  
-  CONTENTS:
-    Exception types
-
   PROGRAMMERS:
 
     martin.isenburg@rapidlasso.com  -  http://rapidlasso.com
     uday.karan@gmail.com - Hobu, Inc.
-  
+    andrew.bell.ia@gmail.com - Hobu Inc.
+ 
   COPYRIGHT:
-  
+
     (c) 2007-2014, martin isenburg, rapidlasso - tools to catch reality
     (c) 2014, Uday Verma, Hobu, Inc.
 
@@ -22,26 +18,50 @@
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  
-  CHANGE HISTORY:
-  
+
 ===============================================================================
 */
 
-#ifndef __excepts_hpp__
-#define __excepts_hpp__
-
-#include <stdexcept>
+#include <deque>
 
 namespace lazperf
 {
-
-struct error : public std::runtime_error
+namespace detail
 {
-    error(const std::string& what) : std::runtime_error(what)
-    {}
+
+class Byte10Base
+{
+protected:
+    Byte10Base(size_t count);
+
+    size_t count_;
+    bool have_last_;
+    std::vector<uint8_t> lasts_;
+    std::vector<uint8_t> diffs_;
+    std::deque<models::arithmetic> models_;
 };
 
-} // namespace lazperf
+class Byte10Compressor : public Byte10Base
+{
+public:
+    Byte10Compressor(encoders::arithmetic<OutCbStream>& encoder, size_t count);
 
-#endif // __excepts_hpp__
+    const char *compress(const char *buf);
+
+private:
+    encoders::arithmetic<OutCbStream>& enc_;
+};
+
+class Byte10Decompressor : public Byte10Base
+{
+public:
+    Byte10Decompressor(decoders::arithmetic<InCbStream>& decoder, size_t count);
+
+    char *decompress(char *buf);
+
+private:
+    decoders::arithmetic<InCbStream>& dec_;
+};
+
+} // namespace detail
+} // namespace lazperf

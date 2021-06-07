@@ -422,10 +422,11 @@ if(WITH_CORE)
     if (NOT ZSTD_FOUND)
       message(FATAL_ERROR "ZSTD not found - EPT provider cannot be built")
     endif()
-    find_package(LazPerf) # for decompression of point clouds
-    if (NOT LazPerf_FOUND)
-      message(STATUS "Using embedded laz-perf")
-    endif()
+    #For now, always use embedded LazPerf... saves us having to handle older versions
+    #find_package(LazPerf) # for decompression of point clouds
+    #if (NOT LazPerf_FOUND)
+    message(STATUS "Using embedded laz-perf")
+    #endif()
     set(HAVE_EPT TRUE)  # used in qgsconfig.h
   endif()
 

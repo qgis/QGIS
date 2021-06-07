@@ -96,191 +96,259 @@
 #define __decoder_hpp__
 
 #include <cassert>
+#include <memory>
 
-#include "common/types.hpp"
+#include "coderbase.hpp"
 
-namespace laszip {
-	namespace decoders {
-		template<
-			typename TInputStream
-		>
-		struct arithmetic {
-			arithmetic(TInputStream& in) :
-				instream(in), value(0) {
-				length = AC__MaxLength;
-			}
+namespace lazperf
+{
+namespace decoders
+{
 
-			~arithmetic() {
-			}
+template<typename TInputStream>
+struct arithmetic
+{
+public:
+    arithmetic(TInputStream& in) : instream(in)
+    {
+        init();
+    }
 
-			void readInitBytes() {
-				value =
-					(instream.getByte() << 24) |
-					(instream.getByte() << 16) |
-					(instream.getByte() << 8) |
-					instream.getByte();
-			}
+    arithmetic() : pIn(new TInputStream()), instream(*pIn)
+    {
+        init();
+    }
 
-			template<typename TEntropyModel>
-			U32 decodeBit(TEntropyModel& m) {
-				U32 x = m.bit_0_prob * (length >> BM__LengthShift);       // product l x p0
-				U32 sym = (value >= x);                                          // decision
-				// update & shift interval
-				if (sym == 0) {
-					length  = x;
-					++m.bit_0_count;
-				}
-				else {
-					value  -= x;                                  // shifted interval base = 0
-					length -= x;
-				}
+    arithmetic(const arithmetic<TInputStream>& src) :
+        pIn(new TInputStream(*src.pIn)), instream(*pIn)
+    {
+        value = src.value;
+        length = src.length;
+    }
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
-				if (--m.bits_until_update == 0) m.update();       // periodic model update
+    ~arithmetic() {
+    }
 
-				return sym;                                         // return data bit value
-			}
+    template <typename TSrcStream>
+    void initStream(TSrcStream& src, uint32_t cnt)
+    {
+        if (cnt)
+        {
+            instream.copy(src, cnt);
+            readInitBytes();
+        }
+    }
 
-			template<typename TEntropyModel>
-			U32 decodeSymbol(TEntropyModel& m) {
-				U32 n, sym, x, y = length;
+    void readInitBytes()
+    {
+        value =
+            (instream.getByte() << 24) |
+            (instream.getByte() << 16) |
+            (instream.getByte() << 8) |
+            instream.getByte();
+    }
 
-				if (m.decoder_table) {             // use table look-up for faster decoding
-					unsigned dv = value / (length >>= DM__LengthShift);
-					unsigned t = dv >> m.table_shift;
+    template<typename TEntropyModel>
+    uint32_t decodeBit(TEntropyModel& m)
+    {
+        uint32_t x = m.bit_0_prob * (length >> BM__LengthShift);       // product l x p0
+        uint32_t sym = (value >= x);                                   // decision
 
-					sym = m.decoder_table[t];      // initial decision based on table look-up
-					n = m.decoder_table[t+1] + 1;
+        // update & shift interval
+        if (sym == 0)
+        {
+            length  = x;
+            ++m.bit_0_count;
+        }
+        else
+        {
+            value  -= x;                                  // shifted interval base = 0
+            length -= x;
+        }
 
-					while (n > sym + 1) {                      // finish with bisection search
-						U32 k = (sym + n) >> 1;
-						if (m.distribution[k] > dv) n = k; else sym = k;
-					}
+        if (length < AC__MinLength)
+            renorm_dec_interval();        // renormalization
+        if (--m.bits_until_update == 0)
+            m.update();       // periodic model update
+        return sym;                                         // return data bit value
+    }
 
-					// compute products
-					x = m.distribution[sym] * length;
-					if (sym != m.last_symbol) y = m.distribution[sym+1] * length;
-				}
-				else {                                  // decode using only multiplications
-					x = sym = 0;
-					length >>= DM__LengthShift;
-					U32 k = (n = m.symbols) >> 1;
-					// decode via bisection search
-					do {
-						U32 z = length * m.distribution[k];
-						if (z > value) {
-							n = k;
-							y = z;                                             // value is smaller
-						}
-						else {
-							sym = k;
-							x = z;                                     // value is larger or equal
-						}
-					} while ((k = (sym + n) >> 1) != sym);
-				}
+    template<typename TEntropyModel>
+    uint32_t decodeSymbol(TEntropyModel& m)
+    {
+        uint32_t n, sym, x, y = length;
 
-				value -= x;                                               // update interval
-				length = y - x;
+        if (m.decoder_table)               // use table look-up for faster decoding
+        {
+            unsigned dv = value / (length >>= DM__LengthShift);
+            unsigned t = dv >> m.table_shift;
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
+            sym = m.decoder_table[t];      // initial decision based on table look-up
+            n = m.decoder_table[t+1] + 1;
 
-				++m.symbol_count[sym];
-				if (--m.symbols_until_update == 0) m.update();    // periodic model update
+            while (n > sym + 1)                        // finish with bisection search
+            {
+                uint32_t k = (sym + n) >> 1;
+                if (m.distribution[k] > dv)
+                    n = k;
+                else
+                    sym = k;
+            }
 
-				return sym;
-			}
+            // compute products
+            x = m.distribution[sym] * length;
+            if (sym != m.last_symbol)
+                y = m.distribution[sym+1] * length;
+        }
+        else                                    // decode using only multiplications
+        {
+            x = sym = 0;
+            length >>= DM__LengthShift;
+            uint32_t k = (n = m.symbols) >> 1;
+            // decode via bisection search
+            do {
+                uint32_t z = length * m.distribution[k];
+                if (z > value)
+                {
+                    n = k;
+                    y = z;                                             // value is smaller
+                }
+                else
+                {
+                    sym = k;
+                    x = z;                                     // value is larger or equal
+                }
+            } while ((k = (sym + n) >> 1) != sym);
+        }
 
-			U32 readBit() {
-				U32 sym = value / (length >>= 1);            // decode symbol, change length
-				value -= length * sym;                                    // update interval
+        value -= x;                                               // update interval
+        length = y - x;
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
+        // renormalization
+        if (length < AC__MinLength)
+            renorm_dec_interval();
 
-				return sym;
-			}
+        ++m.symbol_count[sym];
+        // periodic model update
+        if (--m.symbols_until_update == 0)
+            m.update();
+        return sym;
+    }
 
-			U32 readBits(U32 bits) {
-				assert(bits && (bits <= 32));
+    uint32_t readBit()
+    {
+        uint32_t sym = value / (length >>= 1);            // decode symbol, change length
+        value -= length * sym;                                    // update interval
 
-				if (bits > 19) {
-					U32 tmp = readShort();
-					bits = bits - 16;
-					U32 tmp1 = readBits(bits) << 16;
-					return (tmp1|tmp);
-				}
+        if (length < AC__MinLength)
+            renorm_dec_interval();        // renormalization
 
-				U32 sym = value / (length >>= bits);// decode symbol, change length
-				value -= length * sym;                                    // update interval
+        return sym;
+    }
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
-				return sym;
-			}
+    uint32_t readBits(uint32_t bits)
+    {
+        assert(bits && (bits <= 32));
 
-			U8 readByte() {
-				U32 sym = value / (length >>= 8);            // decode symbol, change length
-				value -= length * sym;                                    // update interval
+        if (bits > 19)
+        {
+            uint32_t tmp = readShort();
+            bits = bits - 16;
+            uint32_t tmp1 = readBits(bits) << 16;
+            return (tmp1 | tmp);
+        }
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
+        uint32_t sym = value / (length >>= bits);// decode symbol, change length
+        value -= length * sym;                                    // update interval
 
-				assert(sym < (1<<8));
+        if (length < AC__MinLength)
+            renorm_dec_interval();        // renormalization
+        return sym;
+    }
 
-				return (U8)sym;
-			}
+    uint8_t readByte()
+    {
+        uint32_t sym = value / (length >>= 8);            // decode symbol, change length
+        value -= length * sym;                                    // update interval
 
-			U16 readShort() {
-				U32 sym = value / (length >>= 16);           // decode symbol, change length
-				value -= length * sym;                                    // update interval
+        if (length < AC__MinLength)
+            renorm_dec_interval();        // renormalization
 
-				if (length < AC__MinLength) renorm_dec_interval();        // renormalization
+        assert(sym < (1 << 8));
+        return (uint8_t)sym;
+    }
 
-				assert(sym < (1<<16));
+    uint16_t readShort()
+    {
+        uint32_t sym = value / (length >>= 16);           // decode symbol, change length
+        value -= length * sym;                                    // update interval
 
-				return (U16)sym;
-			}
+        if (length < AC__MinLength)
+            renorm_dec_interval();        // renormalization
 
-			U32 readInt() {
-				U32 lowerInt = readShort();
-				U32 upperInt = readShort();
-				return (upperInt<<16)|lowerInt;
-			}
+        assert(sym < (1<<16));
+        return (uint16_t)sym;
+    }
 
-			F32 readFloat() { /* danger in float reinterpretation */
-				U32I32F32 u32i32f32;
-				u32i32f32.u32 = readInt();
-				return u32i32f32.f32;
-			}
+    uint32_t readInt()
+    {
+        uint32_t lowerInt = readShort();
+        uint32_t upperInt = readShort();
+        return (upperInt<<16)|lowerInt;
+    }
 
-			U64 readInt64() {
-				U64 lowerInt = readInt();
-				U64 upperInt = readInt();
-				return (upperInt<<32)|lowerInt;
-			}
+    /* danger in float reinterpretation */
+    float readFloat()
+    {
+        U32I32F32 u32i32f32;
+        u32i32f32.u32 = readInt();
+        return u32i32f32.f32;
+    }
 
-			F64 readDouble() { /* danger in float reinterpretation */
-				U64I64F64 u64i64f64;
-				u64i64f64.u64 = readInt64();
-				return u64i64f64.f64;
-			}
+    uint64_t readInt64()
+    {
+        uint64_t lowerInt = readInt();
+        uint64_t upperInt = readInt();
+        return (upperInt<<32)|lowerInt;
+    }
 
-			TInputStream& getInStream() {
-				return instream;
-			}
+    /* danger in float reinterpretation */
+    double readDouble()
+    {
+        U64I64F64 u64i64f64;
+        u64i64f64.u64 = readInt64();
+        return u64i64f64.f64;
+    }
 
+    TInputStream& getInStream()
+    {
+        return instream;
+    }
 
-			arithmetic<TInputStream>(const arithmetic<TInputStream>&) = delete;
-			arithmetic<TInputStream>& operator = (const arithmetic<TInputStream>&) = delete;
+    arithmetic<TInputStream>& operator = (const arithmetic<TInputStream>&) = delete;
 
-		private:
-			void renorm_dec_interval() {
-				do {                                          // read least-significant byte
-					value = (value << 8) | instream.getByte();
-				} while ((length <<= 8) < AC__MinLength);        // length multiplied by 256
-			}
+private:
+    void init()
+    {
+        value = 0;
+        length = AC__MaxLength;
+    }
 
-			TInputStream& instream;
-			U32 value, length;
-		};
-	}
-}
+    void renorm_dec_interval()
+    {
+        do {                                          // read least-significant byte
+            value = (value << 8) | instream.getByte();
+        } while ((length <<= 8) < AC__MinLength);        // length multiplied by 256
+    }
+
+    uint32_t value;
+    uint32_t length;
+
+    std::unique_ptr<TInputStream> pIn;
+    TInputStream& instream;
+};
+
+} // namespace decoders
+} // namespace lazperf
 
 #endif // __decoder_hpp__

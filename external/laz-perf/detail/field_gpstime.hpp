@@ -39,8 +39,8 @@
 
 #define LASZIP_GPSTIME_MULTI_TOTAL (LASZIP_GPSTIME_MULTI - LASZIP_GPSTIME_MULTI_MINUS + 6)
 
-namespace laszip {
-	namespace formats {
+namespace lazperf
+{
 		// Teach packers how to pack and unpack gps time
 		//
 		template<>
@@ -442,5 +442,4 @@ namespace laszip {
 			bool compressor_inited_;
 			bool decompressor_inited_;
 		};
-	}
-}
+} // namespace lazperf

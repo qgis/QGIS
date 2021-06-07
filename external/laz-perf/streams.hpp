@@ -29,86 +29,133 @@
 #ifndef __streams_hpp__
 #define __streams_hpp__
 
-#include <algorithm>
+#include <vector>
+#include <iostream>
 
-namespace laszip {
-	namespace streams {
-		struct memory_stream {
-			memory_stream(const char *buf, std::streamsize len) :
-				buf_(buf), len_(len), offset_(0),
-				is_bad_(false), is_eof_(false), last_read_count_(0) {
-			}
+#include "lazperf.hpp"
+#include "excepts.hpp"
+#include "filestream.hpp"
+#include "portable_endian.hpp"
 
-			void read(char *into, std::streamsize size) {
-				if (is_eof_) {
-					is_bad_ = true;
-					return;
-				}
+namespace lazperf
+{
 
-				std::streamsize to_read = (std::min)(size, len_ - offset_);
-				std::copy(buf_ + offset_, buf_ + offset_ + to_read, into);
-				offset_ += to_read;
-				last_read_count_ = to_read;
+struct OutCbStream
+{
+    OutCbStream(OutputCb outCb) : outCb_(outCb)
+    {}
 
-				if (offset_ >= len_)
-					is_eof_ = true;
-			}
+    void putBytes(const unsigned char *b, size_t len)
+    {
+        outCb_(b, len);
+    }
 
-			bool eof() {
-				return is_eof_;
-			}
+    void putByte(const unsigned char b)
+    {
+        outCb_(&b, 1);
+    }
 
-			std::streamsize gcount() {
-				return last_read_count_;
-			}
+    OutputCb outCb_;
+};
 
-			bool good() {
-				bool b = is_bad_;
-				is_bad_ = false;
-				return !b;
-			}
+struct InCbStream
+{
+    InCbStream(InputCb inCb) : inCb_(inCb)
+    {}
 
-			void clear() {
-				is_bad_ = false;
-				is_eof_ = false;
-			}
+    unsigned char getByte()
+    {
+        unsigned char c;
+        inCb_(&c, 1);
+        return c;
+    }
 
-			std::streamsize tellg() {
-				return offset_;
-			}
+    void getBytes(unsigned char *b, size_t len)
+    {
+        inCb_(b, len);
+    }
 
-			void seekg(std::ios::pos_type p) {
-				if (p >= len_)
-					is_bad_ = true;
-				else
-					offset_ = p;
-			}
+    InputCb inCb_;
+};
 
-			void seekg(std::ios::off_type p, std::ios_base::seekdir dir) {
-				std::streamoff new_offset_ = 0;
-				switch(dir) {
-					case std::ios::beg: new_offset_ = p; break;
-					case std::ios::end: new_offset_ = len_ + p - 1; break;
-					case std::ios::cur: new_offset_ = offset_ + p; break;
-                    default: break;
-				}
+struct MemoryStream
+{
+    MemoryStream() : buf(), idx(0)
+    {}
 
-				if (new_offset_ >= len_ || new_offset_ < 0)
-					is_bad_ = true;
-				else {
-					is_bad_ = false;
-					offset_ = new_offset_;
-				}
-			}
+    void putBytes(const unsigned char* b, size_t len)
+    {
+        while(len --)
+            buf.push_back(*b++);
+    }
 
+    void putByte(const unsigned char b)
+    {
+        buf.push_back(b);
+    }
 
+    OutputCb outCb()
+    {
+        using namespace std::placeholders;
 
-			const char *buf_;
-			std::streamsize len_, offset_;
-			bool is_bad_, is_eof_;
-			std::streamsize last_read_count_;
-		};
-	}
+        return std::bind(&MemoryStream::putBytes, this, _1, _2);
+    }
+
+    unsigned char getByte()
+    {
+        return buf[idx++];
+    }
+
+    void getBytes(unsigned char *b, int len)
+    {
+        for (int i = 0 ; i < len ; i ++)
+            b[i] = getByte();
+    }
+
+    InputCb inCb()
+    {
+        using namespace std::placeholders;
+
+        return std::bind(&MemoryStream::getBytes, this, _1, _2);
+    }
+
+    uint32_t numBytesPut() const
+    {
+        return buf.size();
+    }
+
+    // Copy bytes from the source stream to this stream.
+    template <typename TSrc>
+    void copy(TSrc& in, size_t bytes)
+    {
+        buf.resize(bytes);
+        in.getBytes(buf.data(), bytes);
+    }
+
+    const uint8_t *data() const
+    { return buf.data(); }
+
+    std::vector<unsigned char> buf; // cuz I'm ze faste
+    size_t idx;
+};
+
+template <typename TStream>
+TStream& operator << (TStream& stream, uint32_t u)
+{
+    uint32_t uLe = htole32(u);
+    stream.putBytes(reinterpret_cast<const unsigned char *>(&uLe), sizeof(uLe));
+    return stream;
 }
+
+template <typename TStream>
+TStream& operator >> (TStream& stream, uint32_t& u)
+{
+    uint32_t uLe;
+    stream.getBytes(reinterpret_cast<unsigned char *>(&uLe), sizeof(u));
+    u = le32toh(uLe);
+    return stream;
+}
+
+} // namespace lazperf
 
 #endif // __streams_hpp__
