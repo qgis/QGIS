@@ -54,8 +54,17 @@ QString QgsPathResolver::readPath( const QString &f ) const
 
   if ( src.startsWith( QLatin1String( "localized:" ) ) )
   {
+    QStringList parts = src.split( "|" );
     // strip away "localized:" prefix, replace with actual  inbuilt data folder path
-    return QgsApplication::localizedDataPathRegistry()->globalPath( src.mid( 10 ) ) ;
+    parts[0] = QgsApplication::localizedDataPathRegistry()->globalPath( parts[0].mid( 10 ) ) ;
+    if ( !parts[0].isEmpty() )
+    {
+      return parts.join( "|" );
+    }
+    else
+    {
+      return QString();
+    }
   }
   if ( src.startsWith( QLatin1String( "attachment:" ) ) )
   {
