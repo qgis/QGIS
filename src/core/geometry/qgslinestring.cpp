@@ -363,6 +363,102 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+bool QgsLineString::is2DClosed() const
+{
+  if ( mX.empty() )
+    return false;
+
+  return qgsDoubleNear( mX.first(), mX.last() ) &&
+         qgsDoubleNear( mY.first(), mY.last() );
+}
+
+bool QgsLineString::isClosed() const
+{
+  bool closed = is2DClosed();
+
+  if ( is3D() && closed )
+    closed &= qgsDoubleNear( mZ.first(), mZ.last() ) || ( std::isnan( mZ.first() ) && std::isnan( mZ.last() ) );
+  return closed;
+}
+
+bool QgsLineString::boundingBoxIntersects( const QgsRectangle &rectangle ) const
+{
+  if ( mX.empty() )
+    return false;
+
+  if ( !mBoundingBox.isNull() )
+  {
+    return mBoundingBox.intersects( rectangle );
+  }
+  const int nb = mX.size();
+
+  // We are a little fancy here!
+  if ( nb > 40 )
+  {
+    // if a large number of vertices, take some sample vertices at 1/5th increments through the linestring
+    // and test whether any are inside the rectangle. Maybe we can shortcut a lot of iterations by doing this!
+    // (why 1/5th? it's picked so that it works nicely for polygon rings which are almost rectangles, so the vertex extremities
+    // will fall on approximately these vertex indices)
+    if ( rectangle.contains( mX.at( 0 ), mY.at( 0 ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.2 ) ), mY.at( static_cast< int >( nb * 0.2 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.4 ) ), mY.at( static_cast< int >( nb * 0.4 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.6 ) ), mY.at( static_cast< int >( nb * 0.6 ) ) ) ||
+         rectangle.contains( mX.at( static_cast< int >( nb * 0.8 ) ), mY.at( static_cast< int >( nb * 0.8 ) ) ) ||
+         rectangle.contains( mX.at( nb - 1 ), mY.at( nb - 1 ) ) )
+      return true;
+  }
+
+  // Be even MORE fancy! Given that bounding box calculation is non-free, cached, and we don't
+  // already have it, we start performing the bounding box calculation while we are testing whether
+  // each point falls inside the rectangle. That way if we end up testing the majority of the points
+  // anyway, we can update the cached bounding box with the results we've calculated along the way
+  // and save future calls to calculate the bounding box!
+  double xmin = std::numeric_limits<double>::max();
+  double ymin = std::numeric_limits<double>::max();
+  double xmax = -std::numeric_limits<double>::max();
+  double ymax = -std::numeric_limits<double>::max();
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  bool foundPointInRectangle = false;
+  for ( int i = 0; i < nb; ++i )
+  {
+    const double px = *x++;
+    xmin = std::min( xmin, px );
+    xmax = std::max( xmax, px );
+    const double py = *y++;
+    ymin = std::min( ymin, py );
+    ymax = std::max( ymax, py );
+
+    if ( !foundPointInRectangle && rectangle.contains( px, py ) )
+    {
+      foundPointInRectangle = true;
+
+      // now... we have a choice to make. If we've already looped through the majority of the points
+      // in this linestring then let's just continue to iterate through the remainder so that we can
+      // complete the overall bounding box calculation we've already mostly done. If however we're only
+      // just at the start of iterating the vertices, we shortcut out early and leave the bounding box
+      // uncalculated
+      if ( i < nb * 0.5 )
+        return true;
+    }
+  }
+
+  // at this stage we now know the overall bounding box of the linestring, so let's cache
+  // it so we don't ever have to calculate this again. We've done all the hard work anyway!
+  mBoundingBox = QgsRectangle( xmin, ymin, xmax, ymax, false );
+
+  if ( foundPointInRectangle )
+    return true;
+
+  // NOTE: if none of the points in the line actually fell inside the rectangle, it doesn't
+  // exclude that the OVERALL bounding box of the linestring itself intersects the rectangle!!
+  // So we fall back to the parent class method which compares the overall bounding box against
+  // the rectangle... and this will be very cheap now that we've already calculated and cached
+  // the linestring's bounding box!
+  return QgsCurve::boundingBoxIntersects( rectangle );
+}
+
 QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
 {
   QVector< QgsVertexId > res;

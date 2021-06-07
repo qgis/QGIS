@@ -420,6 +420,12 @@ segment in the line.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual bool isClosed() const /HoldGIL/;
+
+    virtual bool is2DClosed() const /HoldGIL/;
+
+    virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
+
 
     QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
 %Docstring
