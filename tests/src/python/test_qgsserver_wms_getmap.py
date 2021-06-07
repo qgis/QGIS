@@ -1853,6 +1853,28 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request_project(qs, p))
         self.assertTrue(b"The layer 'test plus' does not exist" in r)
 
+    def test_wms_annotation_item(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_annotation_item.qgz')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "44.9014,8.20346,44.9015,8.20364",
+            "CRS": "EPSG:4326",
+            "WIDTH": "800",
+            "HEIGHT": "400",
+            "LAYERS": "points",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "96",
+            "MAP_RESOLUTION": "96",
+            "FORMAT_OPTIONS": "dpi:96"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_AnnotationItem")
+
 
 if __name__ == '__main__':
     unittest.main()
