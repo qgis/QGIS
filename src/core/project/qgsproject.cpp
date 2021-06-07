@@ -3365,7 +3365,12 @@ bool QgsProject::zip( const QString &filename )
   }
   else
   {
-    archive->addFile( asFileName );
+    // in this case, an empty filename means that the auxiliary database is
+    // empty, so we don't want to save it
+    if ( QFile::exists( asFileName ) )
+    {
+      archive->addFile( asFileName );
+    }
   }
 
   // create the archive
@@ -3560,7 +3565,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
     }
   }
 
-  if ( !mAuxiliaryStorage->exists( *this ) && filename.isEmpty() && empty )
+  if ( !mAuxiliaryStorage->exists( *this ) && empty )
   {
     return true; // it's not an error
   }
