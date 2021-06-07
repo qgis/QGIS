@@ -8299,6 +8299,8 @@ void TestQgsProcessing::parameterMeshDatasetTime()
 
   std::unique_ptr< QgsProcessingParameterMeshDatasetTime> def( new QgsProcessingParameterMeshDatasetTime( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) ) );
   QVERIFY( def->type() == QLatin1String( "meshdatasettime" ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ).toString() ) );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
   QVERIFY( !def->checkValueIsAcceptable( "test" ) );
@@ -8307,6 +8309,13 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ),
+            QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ),
+            QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ) ) );
+  QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ) ), context ),
+            QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 1), QTime(10, 0, 0))}" ) );
 
   QVariantMap value;
   QVERIFY( !def->checkValueIsAcceptable( value ) );
@@ -8321,7 +8330,6 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( def->checkValueIsAcceptable( value ) );
   QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'static'}" ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "static" ) );
-
 
   value[QStringLiteral( "type" )] = QStringLiteral( "current-context-time" );
   QVERIFY( def->checkValueIsAcceptable( value ) );
