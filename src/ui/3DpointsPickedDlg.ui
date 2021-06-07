@@ -226,7 +226,14 @@
       <item>
        <widget class="QPushButton" name="pushButton_queren">
         <property name="text">
-         <string>确认</string>
+         <string>接受</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonbujieshou">
+        <property name="text">
+         <string>不接受</string>
         </property>
        </widget>
       </item>

@@ -2,14 +2,14 @@
     QgsProfileWindowDockWidget.cpp
     --------------------------
     begin                : February 2017
-    copyright            : (C) 2017 by Nyall Dawson
+    copyright            : (C) 2020 by Wang Peng
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 #include "qgsdlwindowdockwidget.h"
@@ -456,6 +456,7 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
   connect(pushButton_Generate, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::onGenerateData);
   connect(pushButton_queren, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnAcceptTemp_jiamidian);
   connect(pushButton_save, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnPushButton_save);
+  connect(pushButtonbujieshou, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnpushButtonbujieshou);
   
 };
 
@@ -505,6 +506,7 @@ std::string convertDoubleToString(const float value, const int precision = 0)
 
 void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
 {
+  OnpushButtonbujieshou();
 
   std::vector<ModelItem> pointsdata= dynamic_cast<QgsDLAttributeTableModel *>(this->alignedPointsTableView->model())->getModelData();
    int sanweijie = this->spinBox->value();
@@ -554,7 +556,17 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
 }
 void QgsPcdpickeddlgWindowDockWidget:: onGenerateData()
 {
-  int numpts_generated = Fiter_Ptr->GenerateXYZSeries();
+  int numpts_generated =0;
+  try
+  {
+     numpts_generated = Fiter_Ptr->GenerateXYZSeries();
+  }
+  catch (const std::exception& cse)
+  {
+    QgsMessageLog::logMessage(tr("Transform error caught at the Tool: %1").arg(cse.what()));
+    return;
+  }
+
   if (numpts_generated < 1)
   {
     //TODO::弹出报警框
@@ -562,14 +574,22 @@ void QgsPcdpickeddlgWindowDockWidget:: onGenerateData()
   }
   else
   {
-     temp_jiamidian.clear();
-     temp_jiamidian = Fiter_Ptr->GetGeneratedPoints();
-     offset = Fiter_Ptr->GetOffset();
-     this->pushButton_queren->setEnabled(true);
-     this->pushButton_Generate->setEnabled(false);
-     this->pushButton_save->setEnabled(true);
+    try
+    {
+      temp_jiamidian.clear();
+      temp_jiamidian = Fiter_Ptr->GetGeneratedPoints();
+      offset = Fiter_Ptr->GetOffset();
+      this->pushButton_queren->setEnabled(true);
+      this->pushButton_Generate->setEnabled(false);
+      this->pushButton_save->setEnabled(true);
+      current_layer = QgisApp::instance()->addPointCloudFromVectorArray(temp_jiamidian, offset);
+    }
+    catch (const std::exception& cse)
+    {
+      QgsMessageLog::logMessage(tr("Transform error caught at the Tool: %1").arg(cse.what()));
+      return;
+    }
 
-     QgisApp::instance()->addPointCloudFromVectorArray(temp_jiamidian, offset);
   }
 
   // todo:: 推送到 opengl窗口 进行显示(使用红色） ，暂时不保存。
@@ -581,13 +601,13 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
   if (temp_jiamidian.size()>0)
   {
     offset = Fiter_Ptr->GetOffset();
-
+    std::array<double, 3> pt_d;
     for (std::array<float, 3> pt : temp_jiamidian)
     {
-      pt[0] += offset[0];
-      pt[1] += offset[1];
-      pt[2] += offset[2];
-      global_jiamidian.push_back(pt);
+      pt_d[0]=  double(pt[0]) + offset[0];
+      pt_d[1] = double(pt[1]) + offset[1];
+      pt_d[2] = double(pt[2]) + offset[2];
+      global_jiamidian.push_back(pt_d);
     }
     temp_jiamidian.clear();
     this->pushButton_queren->setEnabled(false);
@@ -597,9 +617,20 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
   {
     //TODO::弹出 警告框
   }
+
+  QgisApp::instance()->removePointClouddLayer(current_layer);
+  current_layer = nullptr;
 }
 
-#include <qgsmessagelog.h>
+void QgsPcdpickeddlgWindowDockWidget::OnpushButtonbujieshou()
+{
+  if (current_layer != nullptr)
+  {
+    QgisApp::instance()->removePointClouddLayer(current_layer);
+    current_layer = nullptr;
+  }
+
+}
 
 void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
 {
@@ -611,10 +642,14 @@ void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
    return;
  }
 
- const QDir topDirectory;
+ QFileInfo fileInfo(path);
+
+
+ const QDir topDirectory(path,".las");
+ QString name =topDirectory.dirName();
  QString _path =topDirectory.filePath(path);
 
- if (!topDirectory.exists(_path))
+ if (!topDirectory.exists(fileInfo.path()))
  {
    QgsMessageLog::logMessage(QStringLiteral("Directory does not exist: %1").arg(path), QString(), Qgis::Critical);
    return;
@@ -629,7 +664,7 @@ void QgsPcdpickeddlgWindowDockWidget::OnPushButton_save()
 }
 
 #include "laswriter.hpp"
-void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3>>& jiamidian, std::array<float, 3> offset, std::string filename)
+void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<double, 3>>& jiamidian, std::array<float, 3> offset, std::string filename)
 {
 
   // 写出流
@@ -642,16 +677,21 @@ void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3
     return;
   }
 
+  F64 _x_offset =  int(jiamidian[0][0] / 100) * 100;
+  F64 _y_offset =  int(jiamidian[0][1] / 100) * 100;
+  F64  _z_offset = int(jiamidian[0][2] / 100) * 100;
+
   // 初始化头
   LASheader lasheader;
-  lasheader.x_scale_factor = 1.0;
-  lasheader.y_scale_factor = 1.0;
-  lasheader.z_scale_factor = 1.0;
-  lasheader.x_offset = 0.0;
-  lasheader.y_offset = 0.0;
-  lasheader.z_offset = 0.0;
+  lasheader.x_scale_factor = 0.001;
+  lasheader.y_scale_factor = 0.001;
+  lasheader.z_scale_factor = 0.001;
+  lasheader.x_offset = _x_offset;
+  lasheader.y_offset = _y_offset;
+  lasheader.z_offset = _z_offset;
   lasheader.point_data_format = 1;
   lasheader.point_data_record_length = 28;
+
 
   // 初始化点
   LASpoint laspoint;
@@ -665,11 +705,11 @@ void QgsPcdpickeddlgWindowDockWidget::savepoints(std::vector<std::array<float, 3
     return;
   }
 
-  for (std::array<float, 3> pt : jiamidian)
+  for (std::array<double, 3> pt : jiamidian)
   {
-    laspoint.set_X(pt[0]);
-    laspoint.set_Y(pt[1]);
-    laspoint.set_Z(pt[2]);
+    laspoint.set_X((pt[0]- _x_offset)*1000);
+    laspoint.set_Y((pt[1]- _y_offset)*1000);
+    laspoint.set_Z((pt[2]- _z_offset)*1000);
     laspoint.set_intensity((U16)100);
     laspoint.set_gps_time(0.00);
     laspoint.set_classification(14);

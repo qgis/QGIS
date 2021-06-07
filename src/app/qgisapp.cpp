@@ -10,10 +10,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -5921,6 +5921,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate(const QString &uri, const
       return nullptr;
     }
   }
+
   bool ok = false;
   layer->loadDefaultStyle(ok);
   layer->loadDefaultMetadata(ok);
@@ -11743,6 +11744,17 @@ void QgisApp::removingLayers(const QStringList &layers)
   }
 }
 
+void QgisApp::removePointClouddLayer( QgsPointCloudLayer*  layer)
+{
+  mLayerTreeView->setCurrentLayer(nullptr);
+
+  mLayerTreeView->setCurrentLayer(layer);
+  QgsSettings().setValue(QStringLiteral("qgis/askToDeleteLayers"), false);
+  removeLayer();
+  QgsSettings().setValue(QStringLiteral("qgis/askToDeleteLayers"), true);
+
+}
+
 void QgisApp::removeLayer()
 {
   if (!mLayerTreeView)
@@ -11776,6 +11788,12 @@ void QgisApp::removeLayer()
   QStringList activeTaskDescriptions;
   for (QgsMapLayer *layer : selectedLayers)
   {
+    QString layername = layer->name();
+
+    if (layer->type() == QgsMapLayerType::PointCloudLayer)
+    {
+      m_geometries->unloadFiles(layername);
+    }
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer(layer);
     if (!tasks.isEmpty())
     {
@@ -11786,6 +11804,8 @@ void QgisApp::removeLayer()
       }
     }
   }
+
+
 
   if (!activeTaskDescriptions.isEmpty())
   {
@@ -11866,6 +11886,7 @@ void QgisApp::removeLayer()
   }
 
   showStatusMessage(tr("%n legend entries removed.", "number of removed legend entries", selectedNodes.count()));
+
 
   refreshMapCanvas();
 }
@@ -18389,19 +18410,18 @@ void QgisApp::addPointCloudFiles()
   m_currPointCloudFileDir = QFileInfo(files[0]).dir();
   m_currPointCloudFileDir.makeAbsolute();
 }
-void QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> &pointcloud,  std::array<float, 3> offset)
+QgsPointCloudLayer* QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> pointcloud,  std::array<float, 3> offset)
 {
   bool isloaded = false;
 
   V3d m_offset(offset[0],offset[1],offset[2]);
 
-
-
   std::shared_ptr<Geometry> geom = Geometry::create("");
   isloaded = geom->loadFromVectorArray(pointcloud,m_offset,QColor(255, 100, 100));
   m_geometries->addGeometry(geom,false,false);
-  addPointCloudLayer(geom->fileName(), geom->fileName(), QLatin1String("displaz"));
+  QgsPointCloudLayer* layer= addPointCloudLayer(geom->fileName(), geom->fileName(), QLatin1String("displaz"));
  // FromGeometriesToLayerMap(geom);
+  return  layer;
 }
 void QgisApp::addPointCloudFile(const QString& DataSource)
 {

@@ -1,16 +1,6 @@
 /***************************************************************************
-    qgsmapcanvasdockwidget.h
     ------------------------
-    begin                : February 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
  ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
  **************************************************************************/
 #ifndef QGSDLWINDOWDOCKWIDGET_H
 #define QGSDLWINDOWDOCKWIDGET_H
@@ -24,11 +14,13 @@
 #include <QWidgetAction>
 #include <QTimer>
 #include <memory>
-
+#include <qgspointcloudlayer.h>
 #include "View3D.h"
 #include <QVector3D>
 
 #include "polynomial3CurveFitter.h"
+#include <qgsmessagelog.h>
+
 
 class polynomial3CurveFitter3;
 class QgsScaleComboBox;
@@ -118,7 +110,7 @@ public:
 private:
   std::shared_ptr<polynomial3CurveFitter3> Fiter_Ptr = nullptr;
 
-  void savepoints(std::vector<std::array<float, 3>>& jiamidian, std::array<float, 3>offset ,std::string filename);
+  void savepoints(std::vector<std::array<double, 3>>& jiamidian, std::array<float, 3>offset ,std::string filename);
   bool insert_pt_table_(Point3D xyz, PointType type)
   {
     //this->alignedPointsTableWidget->setModel();
@@ -126,10 +118,10 @@ private:
   }
   bool _CheckBox_MapToOne = false;
 
-  std::vector<std::array<float, 3>> global_jiamidian;
+  std::vector<std::array<double, 3>> global_jiamidian;
   std::vector<std::array<float, 3>> temp_jiamidian;
   std::array<float, 3> offset;
-
+  QgsPointCloudLayer* current_layer =nullptr;
 
 public slots:
   void OnPaiXuClicked(int column);
@@ -141,6 +133,8 @@ public slots:
   void onGenerateData();
 
   void OnAcceptTemp_jiamidian();
+
+  void OnpushButtonbujieshou();
 
   void OnPushButton_save();
 };
