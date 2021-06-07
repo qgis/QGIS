@@ -520,6 +520,9 @@ void QgsProject::setDirty( const bool dirty )
   if ( dirty && mDirtyBlockCount > 0 )
     return;
 
+  if ( dirty )
+    emit dirtySet();
+
   if ( mDirty == dirty )
     return;
 
