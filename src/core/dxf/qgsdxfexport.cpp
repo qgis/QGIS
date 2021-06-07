@@ -1870,7 +1870,7 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 {
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
 
-  for ( DxfLayerJob *job : std::as_const( mJobs ) )
+  for ( DxfLayerJob *job : qgis::as_const( mJobs ) )
   {
     const QgsSymbolList symbols = job->renderer->symbols( context );
 
