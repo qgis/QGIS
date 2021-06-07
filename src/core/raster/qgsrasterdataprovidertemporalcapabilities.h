@@ -153,8 +153,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      */
     void setDefaultInterval( const QgsInterval &interval );
 
-  private:
-
     /**
      * Sets the requested temporal \a range to retrieve when
      * returning data from the associated data provider.
@@ -166,6 +164,8 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see requestedTemporalRange()
     */
     void setRequestedTemporalRange( const QgsDateTimeRange &range );
+
+  private:
 
     /**
      * Represents available data provider datetime range.
