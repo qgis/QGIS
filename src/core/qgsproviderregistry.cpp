@@ -37,7 +37,8 @@
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 
-#include "providers/virtualrasterprovider/qgsvirtualrasterprovider.h"
+//#include "providers/virtualrasterprovider/qgsvirtualrasterprovider.h"
+
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
 #endif
@@ -48,6 +49,7 @@
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
 #include "qgspostgresprovider.h"
+#include "qgsvirtualrasterprovider.h"
 #endif
 
 static QgsProviderRegistry *sInstance = nullptr;
@@ -183,12 +185,13 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
-  mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
+  //mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
+  mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
 #endif
 
   // add dynamic providers
