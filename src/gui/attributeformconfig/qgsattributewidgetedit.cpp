@@ -126,7 +126,9 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   }
 
   int widgetTypeIdx = mWidgetTypeComboBox->findData( config.mRelationWidgetType );
-  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0 ? widgetTypeIdx : 0 );
+  mWidgetTypeComboBox->setCurrentIndex( widgetTypeIdx >= 0
+                                        ? widgetTypeIdx
+                                        : mWidgetTypeComboBox->findData( QgsGui::relationWidgetRegistry()->defaultWidgetType() ) );
 
   const QString widgetType = mWidgetTypeComboBox->currentData().toString();
   mConfigWidget = QgsGui::relationWidgetRegistry()->createConfigWidget( widgetType, relation, this );

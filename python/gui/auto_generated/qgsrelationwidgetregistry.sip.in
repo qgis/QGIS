@@ -70,6 +70,23 @@ Creates a configuration widget
 :param parent: The parent widget for the created widget
 %End
 
+
+    void setDefaultWidgetType( const QString &widgetType );
+%Docstring
+Sets the default editor widget type. Does nothing if the provided widget type is not present.
+
+:param widgetType: The widget type to be used by default.
+
+.. versionadded:: 3.20
+%End
+
+    QString defaultWidgetType() const;
+%Docstring
+Returns the default editor widget type.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 /************************************************************************
