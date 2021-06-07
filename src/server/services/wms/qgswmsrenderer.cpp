@@ -3276,13 +3276,13 @@ namespace QgsWms
           QgsCoordinateTransform coordTransform( annotation->mapPositionCrs(), mapSettings.destinationCrs(), mapSettings.transformContext() );
           mapPos = coordTransform.transform( mapPos );
         }
-        QgsPointXY devicePos = mapSettings.mapToPixel().transform( mapPos );
+        const QgsPointXY devicePos = mapSettings.mapToPixel().transform( mapPos );
         offsetX = devicePos.x();
         offsetY = devicePos.y();
       }
       else
       {
-        QPointF relativePos = annotation->relativePosition();
+        const QPointF relativePos = annotation->relativePosition();
         offsetX = mapSettings.outputSize().width() * relativePos.x();
         offsetY = mapSettings.outputSize().height() * relativePos.y();
       }
