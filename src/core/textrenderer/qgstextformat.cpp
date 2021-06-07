@@ -734,7 +734,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontFamily;
   context.expressionContext().setOriginalValueVariable( d->textFont.family() );
   QVariant exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::Family, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString family = exprVal.toString().trimmed();
     if ( d->textFont.family() != family )
@@ -752,7 +752,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontStyle;
   context.expressionContext().setOriginalValueVariable( d->textNamedStyle );
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStyle, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString fontstyle = exprVal.toString().trimmed();
     ddFontStyle = fontstyle;
@@ -857,7 +857,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   }
 
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontSizeUnit, context.expressionContext() );
-  if ( exprVal.isValid() )
+  if ( !exprVal.isNull() )
   {
     QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -872,7 +872,11 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontOpacity ) )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
-    d->opacity = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontOpacity, context.expressionContext(), d->opacity * 100 ).toDouble() / 100.0;
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontOpacity, context.expressionContext(), d->opacity * 100 );
+    if ( !val.isNull() )
+    {
+      d->opacity = val.toDouble() / 100.0;
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::TextOrientation ) )
@@ -885,13 +889,21 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontLetterSpacing ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.letterSpacing() );
-    d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, d->mDataDefinedProperties.value( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), d->textFont.letterSpacing() ).toDouble() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), d->textFont.letterSpacing() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, val.toDouble() );
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontWordSpacing ) )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.wordSpacing() );
-    d->textFont.setWordSpacing( d->mDataDefinedProperties.value( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), d->textFont.wordSpacing() ).toDouble() );
+    const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), d->textFont.wordSpacing() );
+    if ( !val.isNull() )
+    {
+      d->textFont.setWordSpacing( val.toDouble() );
+    }
   }
 
   if ( d->mDataDefinedProperties.isActive( QgsPalLayerSettings::FontBlendMode ) )

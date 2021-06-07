@@ -34,7 +34,7 @@ void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCol
   {
     context.setOriginalValueVariable( mObstacleFactor );
     QVariant exprVal = properties.value( QgsPalLayerSettings::ObstacleFactor, context );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       bool ok;
       double factorD = exprVal.toDouble( &ok );
