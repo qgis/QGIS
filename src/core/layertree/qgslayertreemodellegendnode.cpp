@@ -1184,23 +1184,31 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     // and start a new one ?
 
     QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayerNode->layer() );
-    const QgsLayerTreeModel *mod = model();
-    if ( ! mod )
-      return mImage;
-    const QgsMapSettings *ms = mod->legendFilterMapSettings();
 
-    QgsRasterDataProvider *prov = layer->dataProvider();
-    if ( ! prov )
-      return mImage;
-
-    Q_ASSERT( ! mFetcher );
-    mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
-    if ( mFetcher )
+    if ( layer && layer->isValid() )
     {
-      connect( mFetcher.get(), &QgsImageFetcher::finish, this, &QgsWmsLegendNode::getLegendGraphicFinished );
-      connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
-      connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
-      mFetcher->start();
+      const QgsLayerTreeModel *mod = model();
+      if ( ! mod )
+        return mImage;
+      const QgsMapSettings *ms = mod->legendFilterMapSettings();
+
+      QgsRasterDataProvider *prov = layer->dataProvider();
+      if ( ! prov )
+        return mImage;
+
+      Q_ASSERT( ! mFetcher );
+      mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
+      if ( mFetcher )
+      {
+        connect( mFetcher.get(), &QgsImageFetcher::finish, this, &QgsWmsLegendNode::getLegendGraphicFinished );
+        connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
+        connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
+        mFetcher->start();
+      }
+    }
+    else
+    {
+      QgsDebugMsg( tr( "Failed to download legend graphics: layer is not valid." ) );
     }
   }
 
