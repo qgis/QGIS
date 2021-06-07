@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
+#include <QNetworkCookie>
+#include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 #include <QMutex>
@@ -694,6 +696,13 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void authBrowserAborted();
 
+    /**
+     * Emitted when the cookies changed.
+     * \since QGIS 3.22
+     */
+
+    void cookiesChanged( const QList<QNetworkCookie> &cookies );
+
   private slots:
     void abortRequest();
 
@@ -708,6 +717,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void onAuthRequired( QNetworkReply *reply, QAuthenticator *auth );
     void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
+
+    void syncCookies( const QList<QNetworkCookie> &cookies );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
