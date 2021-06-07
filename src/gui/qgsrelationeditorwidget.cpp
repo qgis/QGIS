@@ -281,7 +281,7 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mRelation.isValid() )
   {
-    toggleEditingButtonEnabled = mRelation.referencingLayer()->supportsEditing();
+    toggleEditingButtonEnabled = mRelation.referencingLayer()->supportsEditing() && !mRelation.referencingLayer()->readOnly();
     editable = mRelation.referencingLayer()->isEditable();
     linkable = mRelation.referencingLayer()->isEditable();
     spatial = mRelation.referencingLayer()->isSpatial();
@@ -289,8 +289,8 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mNmRelation.isValid() )
   {
-    toggleEditingButtonEnabled = mNmRelation.referencedLayer()->supportsEditing() && mRelation.referencingLayer()->supportsEditing();
-    editable = mNmRelation.referencedLayer()->isEditable() && mRelation.referencingLayer()->isEditable();
+    toggleEditingButtonEnabled = toggleEditingButtonEnabled && mNmRelation.referencedLayer()->supportsEditing() && !mNmRelation.referencedLayer()->readOnly();
+    editable = mNmRelation.referencedLayer()->isEditable();
     spatial = mNmRelation.referencedLayer()->isSpatial();
   }
 
