@@ -427,7 +427,16 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperVal
 
 QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleParameterTypes() const
 {
-  return QStringList() << QgsProcessingParameterMeshDatasetTime::typeName();
+  return QStringList()
+         << QgsProcessingParameterMeshDatasetTime::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterDateTime::typeName();
+}
+
+QStringList QgsProcessingMeshDatasetTimeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
 }
 
 QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
@@ -522,10 +531,19 @@ void QgsProcessingMeshDatasetTimeWidget::setDatasetGroupIndexes( const QList<int
 
 void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
 {
-  if ( !value.isValid() || value.type() != QVariant::Map )
+  if ( !value.isValid() || ( value.type() != QVariant::Map && !value.toDateTime().isValid() ) )
     return;
 
-  mValue = value.toMap();
+  mValue.clear();
+  if ( value.toDateTime().isValid() )
+  {
+    QDateTime dateTime = value.toDateTime();
+    dateTime.setTimeSpec( Qt::UTC );
+    mValue.insert( QStringLiteral( "type" ), QStringLiteral( "defined-date-time" ) );
+    mValue.insert( QStringLiteral( "value" ), dateTime );
+  }
+  else
+    mValue = value.toMap();
 
   if ( !mValue.contains( QStringLiteral( "type" ) ) || !mValue.contains( QStringLiteral( "value" ) ) )
     return;
@@ -539,14 +557,14 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
   }
   else if ( type == QLatin1String( "dataset-time-step" ) )
   {
-    whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
     QVariantList dataset = mValue.value( QStringLiteral( "value" ) ).toList();
     whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( dataset ) );
+    whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
   }
   else if ( type == QLatin1String( "defined-date-time" ) )
   {
-    radioButtonDefinedDateTime->setChecked( true );
-    whileBlocking( dateTimeEdit )->setDate( mValue.value( QStringLiteral( "value" ) ).toDate() );
+    whileBlocking( dateTimeEdit )->setDateTime( mValue.value( QStringLiteral( "value" ) ).toDateTime() );
+    whileBlocking( radioButtonDefinedDateTime )->setChecked( true );
   }
   else if ( type == QLatin1String( "current-context-time" ) )
   {

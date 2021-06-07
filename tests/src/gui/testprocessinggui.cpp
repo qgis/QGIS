@@ -9481,6 +9481,13 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {1, 2, 3} ) );
   groupsWrapper.setWidgetValue( QgsProperty::fromExpression( QStringLiteral( "1+3" ) ), context );
   QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {4} ) );
+
+  timeWrapper.setWidgetValue( QDateTime( QDate( 2020, 01, 02 ), QTime( 1, 2, 3 ) ), context );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 2), QTime(1, 2, 3))}" ) );
+  timeWrapper.setWidgetValue( QVariant::fromValue( QDateTime( QDate( 2020, 02, 01 ), QTime( 3, 2, 1 ) ) ).toString(), context );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 2, 1), QTime(3, 2, 1))}" ) );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
