@@ -1288,7 +1288,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
     {
       const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
-      if ( exprVal.isValid() )
+      if ( !exprVal.isNull() )
       {
         offsetQuad = static_cast<QgsPalLayerSettings::QuadrantPosition>( exprVal.toInt() );
       }
@@ -1346,7 +1346,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       const QString haliString = exprVal.toString();
       if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
@@ -1365,7 +1365,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   {
     vali = VAlign::VBottom;
     QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       const QString valiString = exprVal.toString();
       if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )

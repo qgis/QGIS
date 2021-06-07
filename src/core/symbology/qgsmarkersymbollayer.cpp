@@ -213,7 +213,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   {
     context.setOriginalValueVariable( encodeShape( symbol ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       Shape decoded = decodeShape( exprVal.toString(), &ok );
       if ( ok )
