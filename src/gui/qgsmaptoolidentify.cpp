@@ -944,7 +944,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   if ( !layer )
     return false;
 
-  QgsRasterDataProvider *dprovider = layer->dataProvider();
+  QgsRasterDataProvider *dprovider = layer->dataProvider()->clone();
   if ( !dprovider )
     return false;
 
@@ -956,6 +956,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     if ( !layer->temporalProperties()->isVisibleInTemporalRange( identifyContext.temporalRange() ) )
       return false;
+
+    dprovider->temporalCapabilities()->setRequestedTemporalRange( identifyContext.temporalRange() );
   }
 
   QgsPointXY pointInCanvasCrs = point;
