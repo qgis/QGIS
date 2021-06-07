@@ -10,7 +10,7 @@ set(ORACLE_SRCS
   qgsoraclenewconnection.cpp
   qgsoracletablecache.cpp
   qgsoracletablemodel.cpp
-  qgsoraclecolumntypethread.cpp
+  qgsoraclecolumntypetask.cpp
   qgsoraclefeatureiterator.cpp
   qgsoracleconnpool.cpp
   qgsoracleexpressioncompiler.cpp

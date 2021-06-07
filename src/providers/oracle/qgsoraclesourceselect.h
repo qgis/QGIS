@@ -33,10 +33,9 @@
 
 class QPushButton;
 class QStringList;
-class QgsOracleColumnTypeThread;
+class QgsOracleColumnTypeTask;
 class QgisApp;
 class QgsOracleSourceSelect;
-class QgsProxyProgressTask;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
@@ -132,7 +131,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void columnThreadFinished();
+    void columnTaskFinished();
 
   private:
     typedef QPair<QString, QString> geomPair;
@@ -141,7 +140,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     //! try to load list of tables from local cache
     void loadTableFromCache();
 
-    // queue another query for the thread
+    // queue another query for the task
     void addSearchGeometryColumn( QgsOracleLayerProperty layerProperty );
 
     // Set the position of the database connection list to the last
@@ -152,9 +151,8 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     QString fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type );
     // The column labels
     QStringList mColumnLabels;
-    // Our thread for doing long running queries
-    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
-    QgsProxyProgressTask *mColumnTypeTask = nullptr;
+    // Our task for doing long running queries
+    QgsOracleColumnTypeTask *mColumnTypeTask = nullptr;
     QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons
