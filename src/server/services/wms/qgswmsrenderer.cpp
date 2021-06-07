@@ -3274,7 +3274,14 @@ namespace QgsWms
         if ( mapSettings.destinationCrs() != annotation->mapPositionCrs() )
         {
           QgsCoordinateTransform coordTransform( annotation->mapPositionCrs(), mapSettings.destinationCrs(), mapSettings.transformContext() );
-          mapPos = coordTransform.transform( mapPos );
+          try
+          {
+            mapPos = coordTransform.transform( mapPos );
+          }
+          catch ( const QgsCsException &e )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Error transforming coordinates of annotation item: %1" ).arg( e.what() ) );
+          }
         }
         const QgsPointXY devicePos = mapSettings.mapToPixel().transform( mapPos );
         offsetX = devicePos.x();
