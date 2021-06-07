@@ -16,7 +16,7 @@
 
 #include "qgsoracletablemodel.h"
 #include "qgsoraclenewconnection.h"
-#include "qgsoraclecolumntypethread.h"
+#include "qgsoraclecolumntypetask.h"
 #include "qgsoracleprovider.h"
 
 #include "qgslogger.h"
@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QSqlError>
+#include <QStatusBar>
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {
@@ -124,7 +125,7 @@ QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QSt
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Collapse | Fast;
 }
 
 QgsOracleConnectionItem::~QgsOracleConnectionItem()
@@ -134,12 +135,14 @@ QgsOracleConnectionItem::~QgsOracleConnectionItem()
 
 void QgsOracleConnectionItem::stop()
 {
-  if ( mColumnTypeThread )
+  if ( mColumnTypeTask )
   {
-    mColumnTypeThread->stop();
-    mColumnTypeThread->wait();
-    delete mColumnTypeThread;
-    mColumnTypeThread = nullptr;
+    mColumnTypeTask->cancel();
+    disconnect( mColumnTypeTask, nullptr, this, nullptr );
+    disconnect( mColumnTypeTask, nullptr, QgsOracleRootItem::sMainWindow, nullptr );
+
+    // don't delete the task, taskManager takes ownership of it
+    mColumnTypeTask = nullptr;
   }
 }
 
@@ -181,56 +184,49 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
   if ( deferredDelete() )
     return QVector<QgsDataItem *>();
 
-  if ( !mColumnTypeThread )
+  if ( !mColumnTypeTask )
   {
-    mColumnTypeThread = new QgsOracleColumnTypeThread( mName,
+    mColumnTypeTask = new QgsOracleColumnTypeTask( mName,
         QgsOracleConn::restrictToSchema( mName ),
         /* useEstimatedMetadata */ true,
         QgsOracleConn::allowGeometrylessTables( mName ) );
-    mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( mName ) );
-    QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
-    connect( mColumnTypeThread, &QgsOracleColumnTypeThread::setLayerType,
+    connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType,
              this, &QgsOracleConnectionItem::setLayerType );
-    connect( mColumnTypeThread, &QThread::started, this, &QgsOracleConnectionItem::threadStarted );
-    connect( mColumnTypeThread, &QThread::finished, this, &QgsOracleConnectionItem::threadFinished );
+    connect( mColumnTypeTask, &QgsTask::begun, this, &QgsOracleConnectionItem::taskStarted );
+    connect( mColumnTypeTask, &QgsTask::taskCompleted, this, &QgsOracleConnectionItem::taskFinished );
+    connect( mColumnTypeTask, &QgsTask::taskTerminated, this, &QgsOracleConnectionItem::taskFinished );
 
     if ( QgsOracleRootItem::sMainWindow )
     {
-      connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progress,
-               mColumnTypeTask, [ = ]( int i, int n )
+      connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage,
+               QgsOracleRootItem::sMainWindow->statusBar(), [ = ]( const QString & message )
       {
-        mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+        QgsOracleRootItem::sMainWindow->statusBar()->showMessage( message );
       } );
-      connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
-               QgsOracleRootItem::sMainWindow, SLOT( showStatusMessage( QString ) ) );
     }
-  }
 
-  if ( mColumnTypeThread )
-  {
-    mColumnTypeThread->start();
-  }
-  else
-  {
-    setAllAsPopulated();
+    QgsApplication::taskManager()->addTask( mColumnTypeTask );
   }
 
   return QVector<QgsDataItem *>();
 }
 
-void QgsOracleConnectionItem::threadStarted()
+void QgsOracleConnectionItem::taskStarted()
 {
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
 }
 
-void QgsOracleConnectionItem::threadFinished()
+void QgsOracleConnectionItem::taskFinished()
 {
-  mColumnTypeTask->finalize( true );
-  mColumnTypeTask = nullptr;
-
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
-  setAllAsPopulated();
+
+  if ( mColumnTypeTask->status() == QgsTask::Complete )
+    setAllAsPopulated();
+  else
+    setState( Qgis::BrowserItemState::NotPopulated );
+
+  mColumnTypeTask = nullptr;
 }
 
 void QgsOracleConnectionItem::setLayerType( const QgsOracleLayerProperty &layerProperty )
