@@ -392,7 +392,9 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   }
 
   // find the solution
-  mLabels = mPal->solveProblem( mProblem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ), settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) ? &mUnlabeled : nullptr );
+  mLabels = mPal->solveProblem( mProblem.get(),
+                                settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ),
+                                settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) ? &mUnlabeled : nullptr );
 
   // sort labels
   std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mMapSettings ) );
@@ -476,7 +478,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) )
+  if ( settings.testFlag( QgsLabelingEngineSettings::DrawUnplacedLabels ) || settings.testFlag( QgsLabelingEngineSettings::CollectUnplacedLabels ) )
   {
     for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
     {

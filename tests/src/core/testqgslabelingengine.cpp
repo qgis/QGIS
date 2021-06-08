@@ -1914,7 +1914,7 @@ void TestQgsLabelingEngine::labelingResults()
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
-
+  settings.priority = 10;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -1931,6 +1931,8 @@ void TestQgsLabelingEngine::labelingResults()
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
   vl2->updateExtents();
 
+  std::unique_ptr< QgsVectorLayer> vl3( vl2->clone() );
+
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
@@ -1944,7 +1946,7 @@ void TestQgsLabelingEngine::labelingResults()
   mapSettings.setOutputSize( size );
   mapSettings.setExtent( QgsRectangle( -4137976.6, 6557092.6, 1585557.4, 9656515.0 ) );
 // mapSettings.setRotation( 60 );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() << vl3.get() );
   mapSettings.setOutputDpi( 96 );
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
@@ -1965,11 +1967,11 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.count(), 3 );
   std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
   {
-    return a.labelText.compare( b.labelText );
+    return a.labelText.compare( b.labelText ) < 0;
   } );
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
-  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "8888" ) );
-  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
 
   labels = results->labelsAtPosition( QgsPointXY( -654732, 7003282 ) );
   QCOMPARE( labels.count(), 1 );
@@ -2014,6 +2016,41 @@ void TestQgsLabelingEngine::labelingResults()
   QCOMPARE( labels.at( 0 ).rotation, 0.0 );
   labels = results->labelsAtPosition( QgsPointXY( -2463392, 6708478 ) );
   QCOMPARE( labels.count(), 0 );
+
+  // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
+  settings.priority = 1;
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl3->setLabelsEnabled( true );
+  engineSettings.setFlag( QgsLabelingEngineSettings::CollectUnplacedLabels, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob jobB( mapSettings );
+  jobB.start();
+  jobB.waitForFinished();
+
+  results.reset( jobB.takeLabelingResults() );
+  QVERIFY( results );
+
+  labels = results->allLabels();
+  QCOMPARE( labels.count(), 6 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.isUnplaced == b.isUnplaced ? a.labelText.compare( b.labelText ) < 0 : a.isUnplaced < b.isUnplaced;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( labels.at( 3 ).isUnplaced );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( labels.at( 4 ).isUnplaced );
+  QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( labels.at( 5 ).isUnplaced );
+
+  mapSettings.setLayers( {vl2.get() } );
 
   // with rotation
   mapSettings.setRotation( 60 );
