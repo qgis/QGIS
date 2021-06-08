@@ -112,7 +112,6 @@ QString QgsSingleSymbolRenderer::dump() const
 QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( mSymbol->clone() );
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   copyRendererData( r );
   return r;
