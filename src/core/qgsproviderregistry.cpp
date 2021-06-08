@@ -49,7 +49,6 @@
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
 #include "qgspostgresprovider.h"
-#include "qgsvirtualrasterprovider.h"
 #endif
 
 static QgsProviderRegistry *sInstance = nullptr;
@@ -191,7 +190,6 @@ void QgsProviderRegistry::init()
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
   mProviders[ QgsPostgresProvider::providerKey() ] = new QgsPostgresProviderMetadata();
-  mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
 #endif
 
   // add dynamic providers

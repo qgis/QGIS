@@ -4,7 +4,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 
 # providers with implemented both static and dynamic building
 add_subdirectory(wms)
-add_subdirectory(virtualrasterprovider)
+#add_subdirectory(virtualrasterprovider)
 if (POSTGRES_FOUND)
   add_subdirectory(postgres)
 endif()
@@ -19,6 +19,7 @@ if (NOT FORCE_STATIC_PROVIDERS)
   add_subdirectory(gpx)
   add_subdirectory(db2)
   add_subdirectory(mdal)
+  add_subdirectory(virtualrasterprovider)
 
   if (WITH_SPATIALITE)
     add_subdirectory(spatialite)
