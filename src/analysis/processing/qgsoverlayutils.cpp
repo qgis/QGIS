@@ -82,7 +82,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryTy
 }
 
 
-void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
+void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
 {
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   QgsFeatureRequest requestB;
@@ -189,12 +189,12 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     }
 
     ++count;
-    feedback->setProgress( count / ( double ) totalCount * 100. );
+    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
   }
 }
 
 
-void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
+void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB )
 {
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
@@ -267,14 +267,14 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     }
 
     ++count;
-    feedback->setProgress( count / ( double ) totalCount * 100. );
+    feedback->setProgress( count / static_cast<double >( totalCount ) * 100. );
   }
 }
 
 void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback )
 {
-  int count = 0;
-  int totalCount = source.featureCount();
+  long count = 0;
+  const long totalCount = source.featureCount();
   if ( totalCount == 0 )
     return;  // nothing to do here
 
@@ -418,7 +418,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     }
 
     ++count;
-    feedback->setProgress( count / ( double ) totalCount * 100. );
+    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
   }
   if ( feedback->isCanceled() )
     return;
