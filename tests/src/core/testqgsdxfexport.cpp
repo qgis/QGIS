@@ -1176,7 +1176,7 @@ void TestQgsDxfExport::testDashedLine()
 
 void TestQgsDxfExport::testTransform()
 {
-  std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> symbolLayer = qgis::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ) );
   symbolLayer->setWidth( 0.11 );
   symbolLayer->setCustomDashVector( { 0.5, 0.35 } );
   symbolLayer->setCustomDashPatternUnit( QgsUnitTypes::RenderUnit::RenderMapUnits );
@@ -1185,7 +1185,7 @@ void TestQgsDxfExport::testTransform()
   QgsLineSymbol *symbol = new QgsLineSymbol();
   symbol->changeSymbolLayer( 0, symbolLayer.release() );
 
-  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "Linestring?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Linestring?crs=epsg:2056" ), QString(), QStringLiteral( "memory" ) );
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LineString (2689564.82757076947018504 1283554.68540272791869938, 2689565.52996697928756475 1283531.49185784510336816)" ) );
   QgsFeature f;
   f.setGeometry( g );
@@ -1216,7 +1216,7 @@ void TestQgsDxfExport::testTransform()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  std::unique_ptr< QgsVectorLayer > result = std::make_unique< QgsVectorLayer >( file, QStringLiteral( "res" ) );
+  std::unique_ptr< QgsVectorLayer > result = qgis::make_unique< QgsVectorLayer >( file, QStringLiteral( "res" ) );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 2L );
   QgsFeature f2;
@@ -1233,7 +1233,7 @@ void TestQgsDxfExport::testTransform()
   QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile2.close();
 
-  result = std::make_unique< QgsVectorLayer >( file2, QStringLiteral( "res" ) );
+  result = qgis::make_unique< QgsVectorLayer >( file2, QStringLiteral( "res" ) );
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 1L );
   it = result->getFeatures();
