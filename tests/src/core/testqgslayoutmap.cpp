@@ -2009,6 +2009,42 @@ void TestQgsLayoutMap::testLabelResults()
   QVERIFY( !labels.at( 1 ).isUnplaced );
   QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
   QVERIFY( !labels.at( 2 ).isUnplaced );
+
+  // with unplaced labels
+  QgsVectorLayer *vl3( vl2->clone() );
+  p.addMapLayer( vl3 );
+  // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
+  settings.priority = 1;
+  settings.displayAll = false;
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl3->setLabelsEnabled( true );
+  map->setLayers( { vl2, vl3 } );
+
+  painter.begin( &im );
+  map->paint( &painter, nullptr, nullptr );
+  painter.end();
+
+  results = std::move( map->mExportLabelingResults );
+  QVERIFY( results );
+  labels = results->allLabels();
+  QCOMPARE( labels.count(), 6 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.isUnplaced == b.isUnplaced ? a.labelText.compare( b.labelText ) < 0 : a.isUnplaced < b.isUnplaced;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( labels.at( 3 ).isUnplaced );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( labels.at( 4 ).isUnplaced );
+  QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( labels.at( 5 ).isUnplaced );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )
