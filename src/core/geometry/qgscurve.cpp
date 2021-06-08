@@ -37,7 +37,7 @@ bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const
   return !operator==( other );
 }
 
-bool QgsCurve::is2DClosed() const
+bool QgsCurve::isClosed2D() const
 {
   if ( numPoints() == 0 )
     return false;
@@ -51,7 +51,7 @@ bool QgsCurve::is2DClosed() const
 }
 bool QgsCurve::isClosed() const
 {
-  bool closed = is2DClosed();
+  bool closed = isClosed2D();
   if ( is3D() && closed )
   {
     QgsPoint start = startPoint();
