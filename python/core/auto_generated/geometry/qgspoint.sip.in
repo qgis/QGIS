@@ -15,6 +15,17 @@ class QgsPoint: QgsAbstractGeometry
 %Docstring(signature="appended")
 Point geometry type, with support for z-dimension and m-values.
 
+A :py:class:`QgsPoint` represents a 2, 3 or 4-dimensional position, with X and Y and optional
+Z or M coordinates. Since it supports these additional dimensions, :py:class:`QgsPoint` is
+used as the low-level storage of geometry coordinates throughout QGIS.
+
+In some scenarios it is preferable to use the :py:class:`QgsPointXY` class instead, which is
+lighter and has smaller memory requirements compared to :py:class:`QgsPoint`. See the :py:class:`QgsPointXY`
+documentation for examples of situations where it is appropriate to use :py:class:`QgsPointXY`
+instead of :py:class:`QgsPoint`.
+
+.. seealso:: :py:class:`QgsPointXY`
+
 .. versionadded:: 3.0
 %End
 

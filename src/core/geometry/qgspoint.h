@@ -32,6 +32,17 @@
 /**
  * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
+ *
+ * A QgsPoint represents a 2, 3 or 4-dimensional position, with X and Y and optional
+ * Z or M coordinates. Since it supports these additional dimensions, QgsPoint is
+ * used as the low-level storage of geometry coordinates throughout QGIS.
+ *
+ * In some scenarios it is preferable to use the QgsPointXY class instead, which is
+ * lighter and has smaller memory requirements compared to QgsPoint. See the QgsPointXY
+ * documentation for examples of situations where it is appropriate to use QgsPointXY
+ * instead of QgsPoint.
+ *
+ * \see QgsPointXY
  * \since QGIS 3.0, (previously QgsPointV2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
