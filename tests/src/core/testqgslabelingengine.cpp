@@ -1961,7 +1961,17 @@ void TestQgsLabelingEngine::labelingResults()
   QVERIFY( results );
 
   // retrieve some labels
-  QList<QgsLabelPosition> labels = results->labelsAtPosition( QgsPointXY( -654732, 7003282 ) );
+  QList<QgsLabelPosition> labels = results->allLabels();
+  QCOMPARE( labels.count(), 3 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.labelText.compare( b.labelText );
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "8888" ) );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "33333" ) );
+
+  labels = results->labelsAtPosition( QgsPointXY( -654732, 7003282 ) );
   QCOMPARE( labels.count(), 1 );
   QCOMPARE( labels.at( 0 ).featureId, 1 );
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );

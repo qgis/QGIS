@@ -42,6 +42,17 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
   }
 }
 
+QList<QgsLabelPosition> QgsLabelSearchTree::allLabels() const
+{
+  QList<QgsLabelPosition> res;
+  res.reserve( mOwnedPositions.size() );
+  for ( const std::unique_ptr< QgsLabelPosition > &pos : mOwnedPositions )
+  {
+    res.append( * pos );
+  }
+  return res;
+}
+
 void QgsLabelSearchTree::labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const
 {
   QList<QgsLabelPosition *> searchResults;
