@@ -56,6 +56,7 @@
 #include "qgsproxyprogresstask.h"
 #include "qgisapp.h"
 #include "qgsorganizetablecolumnsdialog.h"
+#include "qgsvectorlayereditbuffer.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -192,6 +193,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   else if ( initialMode == QgsAttributeTableFilterModel::ShowSelected )
   {
     r.setFilterFids( layer->selectedFeatureIds() );
+  }
+  else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
+  {
+    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );

@@ -52,6 +52,7 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
     void testNoGeom();
     void testSelected();
+    void testEdited();
     void testSelectedOnTop();
     void testSortByDisplayExpression();
     void testOrderColumn();
@@ -286,6 +287,45 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
   // remove selection
   tempLayer->removeSelection();
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+}
+
+void TestQgsAttributeTable::testEdited()
+{
+  // test attribute table opening in edited features mode
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  //should be nothing - because no edited features!
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+
+  // make some edits
+  tempLayer->startEditing();
+  QVERIFY( tempLayer->changeAttributeValue( 1, 1, 5.5 ) );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 );
+  QgsGeometry geom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 1 1)" ) );
+  QVERIFY( tempLayer->changeGeometry( 3, geom ) );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+
+  // another test - start with edited features when dialog created
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+  // remove edits
+  tempLayer->rollBack();
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
