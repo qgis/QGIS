@@ -92,15 +92,22 @@ QgsPanelWidget *QgsPanelWidgetStack::currentPanel()
 
 QSize QgsPanelWidgetStack::sizeHint() const
 {
-  if ( QWidget *widget = mStackedWidget->currentWidget() )
-    return widget->sizeHint();
+  if ( const QgsPanelWidget *widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
+  {
+    if ( widget->applySizeConstraintsToStack() )
+      return widget->sizeHint();
+  }
   return QWidget::sizeHint();
 }
 
 QSize QgsPanelWidgetStack::minimumSizeHint() const
 {
-  if ( QWidget *widget = mStackedWidget->currentWidget() )
-    return widget->minimumSizeHint();
+  if ( const QgsPanelWidget *widget = qobject_cast<const QgsPanelWidget *>( mStackedWidget->currentWidget() ) )
+  {
+    if ( widget->applySizeConstraintsToStack() )
+      return widget->minimumSizeHint();
+  }
+
   return QWidget::minimumSizeHint();
 }
 

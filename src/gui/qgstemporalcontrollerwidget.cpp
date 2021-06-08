@@ -176,6 +176,11 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsTemporalControllerWidget::onProjectCleared );
 }
 
+bool QgsTemporalControllerWidget::applySizeConstraintsToStack() const
+{
+  return true;
+}
+
 void QgsTemporalControllerWidget::keyPressEvent( QKeyEvent *e )
 {
   if ( mSlider->hasFocus() && e->key() == Qt::Key_Space )
