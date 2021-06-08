@@ -338,6 +338,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      */
     void aboutToClose();
 
+    /**
+     * Emitted whenever a layout is exported from the layout designer.
+     *
+     */
+    void layoutExported();
+
   protected:
 
     void closeEvent( QCloseEvent * ) override;

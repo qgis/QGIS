@@ -398,6 +398,16 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     virtual void showRulers( bool visible ) = 0;
 
+  signals:
+
+    /**
+     * Emitted whenever a layout is exported from the layout designer.
+     *
+     * The results of the export can be retrieved by calling lastExportResults().
+     *
+     * \since QGIS 3.20
+     */
+    void layoutExported();
 
 };
 
