@@ -591,7 +591,7 @@ segment in the line.
 
     virtual bool isClosed() const /HoldGIL/;
 
-    virtual bool is2DClosed() const /HoldGIL/;
+    virtual bool isClosed2D() const /HoldGIL/;
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 

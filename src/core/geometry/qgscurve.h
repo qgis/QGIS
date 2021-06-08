@@ -67,7 +67,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     /**
      * Returns TRUE if the curve is closed.
      *
-     * \see is2DClosed()
+     * \see isClosed2D()
      */
     virtual bool isClosed() const SIP_HOLDGIL;
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      *
      * \since QGIS 3.20
      */
-    virtual bool is2DClosed() const SIP_HOLDGIL;
+    virtual bool isClosed2D() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the curve is a ring.

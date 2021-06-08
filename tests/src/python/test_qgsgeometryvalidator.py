@@ -262,7 +262,7 @@ class TestQgsGeometryValidator(unittest.TestCase):
         self.assertEqual(spy[0][0].where(), QgsPointXY(3, 3))
         self.assertEqual(spy[0][0].what(), 'ring 2 not closed')
 
-        # not closed but 2d close
+        # not closed but 2d closed
         g = QgsGeometry.fromWkt("POLYGONZ((1 1 0, 1 2 1, 2 2 2, 2 1 3, 1 1 4))")
 
         validator = QgsGeometryValidator(g)

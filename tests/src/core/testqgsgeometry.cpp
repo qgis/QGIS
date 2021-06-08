@@ -1805,13 +1805,13 @@ void TestQgsGeometry::circularString()
 
   //isClosed
   QgsCircularString l11;
-  QVERIFY( !l11.is2DClosed() );
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   l11.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
                  << QgsPoint( 11, 2 )
                  << QgsPoint( 11, 22 )
                  << QgsPoint( 1, 22 ) );
-  QVERIFY( !l11.is2DClosed() );
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   QCOMPARE( l11.numPoints(), 4 );
   QCOMPARE( l11.area(), 0.0 );
@@ -1822,17 +1822,17 @@ void TestQgsGeometry::circularString()
                  << QgsPoint( QgsWkbTypes::PointM, 11, 2, 0, 4 )
                  << QgsPoint( QgsWkbTypes::PointM, 11, 22, 0, 5 )
                  << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 6 ) );
-  QVERIFY( l11.is2DClosed() );
+  QVERIFY( l11.isClosed2D() );
   QVERIFY( l11.isClosed() );
 
   // test with z
   l11.addZValue( 123.0 );
-  QVERIFY( l11.is2DClosed() );
+  QVERIFY( l11.isClosed2D() );
   QVERIFY( l11.isClosed() );
   QgsPoint pEnd = l11.endPoint();
   pEnd.setZ( 234.0 );
   l11.moveVertex( QgsVertexId( 0, 0, l11.numPoints() - 1 ), pEnd );
-  QVERIFY( l11.is2DClosed() );
+  QVERIFY( l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
 
   //polygonf
