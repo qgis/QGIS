@@ -2379,8 +2379,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
             if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
             {
               ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-              xPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->x();
-              yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
+              if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( ddPoint.constGet() ) )
+              {
+                xPos = point->x();
+                yPos = point->y();
+              }
             }
 
             anchorPosition = QgsPointXY( xPos, yPos );
