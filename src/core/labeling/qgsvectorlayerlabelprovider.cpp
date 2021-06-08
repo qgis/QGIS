@@ -466,20 +466,23 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
-  if ( !mSettings.drawLabels || mSettings.unplacedVisibility() == Qgis::UnplacedLabelVisibility::NeverShow )
-    return;
-
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
 
-  QgsPalLayerSettings tmpLyr( mSettings );
-  QgsTextFormat format = tmpLyr.format();
-  format.setColor( mEngine->engineSettings().unplacedLabelColor() );
-  tmpLyr.setFormat( format );
-  drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+  QgsTextFormat format = mSettings.format();
+  if ( mSettings.drawLabels
+       && mSettings.unplacedVisibility() != Qgis::UnplacedLabelVisibility::NeverShow
+       && mEngine->engineSettings().flags() & QgsLabelingEngineSettings::DrawUnplacedLabels )
+  {
+    QgsPalLayerSettings tmpLyr( mSettings );
+    format = tmpLyr.format();
+    format.setColor( mEngine->engineSettings().unplacedLabelColor() );
+    tmpLyr.setFormat( format );
+    drawLabelPrivate( label, context, tmpLyr, QgsTextRenderer::Text );
+  }
 
   // add to the results
   QString labeltext = label->getFeaturePart()->feature()->labelText();
-  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, tmpLyr.format().font(), false, lf->hasFixedPosition(), mProviderId, true );
+  mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, labeltext, format.font(), false, lf->hasFixedPosition(), mProviderId, true );
 }
 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio ) const
