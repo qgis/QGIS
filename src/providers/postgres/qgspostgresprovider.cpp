@@ -614,7 +614,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     return expr;
   };
 
-  auto lookupComboKeyWhereClause = [ = ]( bool canUseVALUES, QList<QString> withCastTypeName )
+  auto lookupComboKeyWhereClause = [ = ]( bool canUseVALUES, QList<QString> withCastPkTypeName )
   {
     if ( pkAttrs.size() == 1 )
       return lookupKeyWhereClause();
@@ -645,10 +645,13 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           if ( pkVals[i].isNull() )
+          {
             isNotNull = false;
+            break;
+          }
           whereValues += delim + QgsPostgresConn::quotedValue( pkVals[i] );
-          if ( canUseVALUES && withCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
-            whereValues += QStringLiteral( "::%1" ).arg( fields.at( pkAttrs[i] ).typeName() );
+          if ( canUseVALUES && !withCastPkTypeName[i].isEmpty() )
+            whereValues += QStringLiteral( "::%1" ).arg( withCastPkTypeName[i] );
           delim = QStringLiteral( "," );
         }
         if ( isNotNull )
@@ -659,27 +662,29 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
     }
 
     QString whereInString;
-    if ( canUseVALUES )
-      whereInString = whereValuesList.isEmpty() ? QString() :
-                      whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-                      whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( VALUES (" ) ).append( QStringLiteral( ") )" ) );
-    else
-      whereInString = whereValuesList.isEmpty() ? QString() :
-                      whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-                      whereValuesList.join( QStringLiteral( "),(" ) ).prepend( QStringLiteral( "( (" ) ).append( QStringLiteral( ") )" ) );
+    whereInString = whereValuesList.isEmpty() ? QString() :
+                    whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+                    whereValuesList.join( QStringLiteral( "),(" ) )
+                    .prepend( QStringLiteral( "( %1(" ).arg( canUseVALUES ? QStringLiteral( "VALUES " ) : QString() ) )
+                    .append( QStringLiteral( ") )" ) );
 
     QString whereOrString;
-    QStringList whereClauses;
-    for ( const QgsFeatureId featureId : std::as_const( fidsToOr ) )
+    if ( fidsToOr.isEmpty() )
     {
-      whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
+      return whereInString;
     }
-    whereOrString = whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+    else
+    {
+      QStringList whereClauses;
+      for ( const QgsFeatureId featureId : std::as_const( fidsToOr ) )
+      {
+        whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
+      }
+      whereOrString = whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+    }
 
     if ( whereInString.isEmpty() )
       return whereOrString;
-    if ( whereOrString.isEmpty() )
-      return whereInString;
 
     return QStringLiteral( "(%1) OR (%2)" ).arg( whereInString, whereOrString );
 
@@ -745,20 +750,29 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         allowedValuesWithCastTypeName << QLatin1String( "macaddr" );
         allowedValuesWithCastTypeName << QLatin1String( "macaddr8" );
 
+        QList<QString> withCastPkTypeName;
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           if ( canUseIN && !allowedType.contains( fields.at( pkAttrs[i] ).type() ) )
+          {
             canUseIN = false;
+            break;
+          }
+
+          if ( allowedValuesWithCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
+            withCastPkTypeName << fields.at( pkAttrs[i] ).typeName();
+          else
+            withCastPkTypeName << QString();
 
           if ( canUseVALUES
                && !allowedValuesType.contains( fields.at( pkAttrs[i] ).type() )
                && !allowedValuesTypeName.contains( fields.at( pkAttrs[i] ).typeName() )
-               && !allowedValuesWithCastTypeName.contains( fields.at( pkAttrs[i] ).typeName() ) )
+               && withCastPkTypeName[i].isEmpty() )
             canUseVALUES = false;
         }
 
         if ( canUseIN )
-          return lookupComboKeyWhereClause( canUseVALUES, allowedValuesWithCastTypeName );
+          return lookupComboKeyWhereClause( canUseVALUES, withCastPkTypeName );
       }
 
       [[fallthrough]];
