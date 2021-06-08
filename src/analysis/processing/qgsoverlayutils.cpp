@@ -90,6 +90,8 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
   QgsSpatialIndex indexB( sourceB.getFeatures( requestB ), feedback );
+  if ( feedback->isCanceled() )
+    return;
 
   int fieldsCountA = sourceA.fields().count();
   int fieldsCountB = sourceB.fields().count();
@@ -203,6 +205,8 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
 
   QgsFeature outFeat;
   QgsSpatialIndex indexB( sourceB.getFeatures( request ), feedback );
+  if ( feedback->isCanceled() )
+    return;
 
   if ( totalCount == 0 )
     totalCount = 1;  // avoid division by zero
@@ -416,6 +420,8 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     ++count;
     feedback->setProgress( count / ( double ) totalCount * 100. );
   }
+  if ( feedback->isCanceled() )
+    return;
 
   // release some memory of structures we don't need anymore
 
