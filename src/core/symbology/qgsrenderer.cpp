@@ -55,17 +55,15 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
     return;
 
   destRenderer->setPaintEffect( mPaintEffect->clone() );
+  destRenderer->setForceRasterRender( mForceRaster );
+  destRenderer->setUsingSymbolLevels( mUsingSymbolLevels );
   destRenderer->mOrderBy = mOrderBy;
   destRenderer->mOrderByEnabled = mOrderByEnabled;
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
-  , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
-  , mCurrentVertexMarkerSize( 2 )
-  , mForceRaster( false )
-  , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );

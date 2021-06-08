@@ -92,7 +92,6 @@ bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const
 QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::clone() const
 {
   QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( mDefaultSymbol->clone() );
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   copyRendererData( r );
   return r;
 }

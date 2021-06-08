@@ -1061,7 +1061,6 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::clone() const
 
   QgsRuleBasedRenderer *r = new QgsRuleBasedRenderer( clonedRoot );
 
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   copyRendererData( r );
   return r;
 }

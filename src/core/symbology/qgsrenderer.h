@@ -527,16 +527,16 @@ class CORE_EXPORT QgsFeatureRenderer
 
     QString mType;
 
-    bool mUsingSymbolLevels;
+    bool mUsingSymbolLevels = false;
 
     //! The current type of editing marker
     int mCurrentVertexMarkerType;
     //! The current size of editing marker
-    double mCurrentVertexMarkerSize;
+    double mCurrentVertexMarkerSize = 2;
 
     QgsPaintEffect *mPaintEffect = nullptr;
 
-    bool mForceRaster;
+    bool mForceRaster = false;
 
     /**
      * \note this function is used to convert old sizeScale expressions to symbol
@@ -552,7 +552,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     QgsFeatureRequest::OrderBy mOrderBy;
 
-    bool mOrderByEnabled;
+    bool mOrderByEnabled = false;
 
   private:
 #ifdef SIP_RUN
