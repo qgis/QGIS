@@ -6511,14 +6511,17 @@ void QgsProcessingMultipleLayerPanelWidget::setValue( const QVariant &value )
 void QgsProcessingMultipleLayerPanelWidget::setProject( QgsProject *project )
 {
   mProject = project;
-  connect( mProject, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
+  if ( mProject )
   {
-    if ( mValue.removeAll( layerId ) )
+    connect( mProject, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
     {
-      updateSummaryText();
-      emit changed();
-    }
-  } );
+      if ( mValue.removeAll( layerId ) )
+      {
+        updateSummaryText();
+        emit changed();
+      }
+    } );
+  }
 }
 
 void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorithm *model, const QString &modelChildAlgorithmID )
@@ -6725,7 +6728,8 @@ QWidget *QgsProcessingMultipleLayerWidgetWrapper::createWidget()
   mPanel = new QgsProcessingMultipleLayerPanelWidget( nullptr, layerParam );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->setProject( widgetContext().project() );
-  mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  if ( type() == QgsProcessingGui::Modeler )
+    mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
   connect( mPanel, &QgsProcessingMultipleLayerPanelWidget::changed, this, [ = ]
   {
     emit widgetValueHasChanged( this );
@@ -6739,7 +6743,8 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcess
   if ( mPanel )
   {
     mPanel->setProject( context.project() );
-    mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+    if ( type() == QgsProcessingGui::Modeler )
+      mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
   }
 }
 
