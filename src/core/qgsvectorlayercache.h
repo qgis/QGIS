@@ -24,7 +24,8 @@
 #include "qgsfield.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
-
+#include <unordered_set>
+#include <deque>
 #include <QCache>
 
 class QgsVectorLayer;
@@ -393,12 +394,20 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     {
       QgsCachedFeature *cachedFeature = new QgsCachedFeature( feat, this );
       mCache.insert( feat.id(), cachedFeature );
-      if ( !mCacheOrderedKeys.contains( feat.id() ) )
+      if ( mCacheUnorderedKeys.find( feat.id() ) == mCacheUnorderedKeys.end() )
+      {
+        mCacheUnorderedKeys.insert( feat.id() );
         mCacheOrderedKeys << feat.id();
+      }
     }
 
     QgsVectorLayer *mLayer = nullptr;
     QCache< QgsFeatureId, QgsCachedFeature > mCache;
+
+    // we need two containers here. One is used for efficient tracking of the IDs which have been added to the cache, the other
+    // is used to store the order of the incoming feature ids, so that we can correctly iterate through features in the original order.
+    // the ordered list alone is far too slow to handle this -- searching for existing items in a list is magnitudes slower than the unordered_set
+    std::unordered_set< QgsFeatureId > mCacheUnorderedKeys;
     QList< QgsFeatureId > mCacheOrderedKeys;
 
     bool mCacheGeometry = true;
