@@ -28,6 +28,7 @@
 #include "qgslayoutgeopdfexporter.h"
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
+#include "qgslabelingresults.h"
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
@@ -148,6 +149,11 @@ QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
 {
 
+}
+
+QgsLayoutExporter::~QgsLayoutExporter()
+{
+  qDeleteAll( mLabelingResults );
 }
 
 QgsLayout *QgsLayoutExporter::layout() const
@@ -462,6 +468,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
     }
 
   }
+  captureLabelingResults();
   return Success;
 }
 
@@ -699,6 +706,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       georeferenceOutputPrivate( filePath, nullptr, QRectF(), settings.dpi, shouldAppendGeoreference, settings.exportMetadata );
     }
   }
+  captureLabelingResults();
   return result;
 }
 
@@ -879,6 +887,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
+  captureLabelingResults();
   return result;
 }
 
@@ -1132,7 +1141,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       }
     }
   }
-
+  captureLabelingResults();
   return Success;
 }
 
@@ -1185,6 +1194,18 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
   iterator->endRender();
   return Success;
 
+}
+
+QMap<QString, QgsLabelingResults *> QgsLayoutExporter::labelingResults()
+{
+  return mLabelingResults;
+}
+
+QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
+{
+  QMap<QString, QgsLabelingResults *> res;
+  std::swap( mLabelingResults, res );
+  return res;
 }
 
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
@@ -2011,6 +2032,20 @@ QString QgsLayoutExporter::generateFileName( const PageExportDetails &details ) 
   else
   {
     return details.directory + '/' + details.baseName + '_' + QString::number( details.page + 1 ) + '.' + details.extension;
+  }
+}
+
+void QgsLayoutExporter::captureLabelingResults()
+{
+  qDeleteAll( mLabelingResults );
+  mLabelingResults.clear();
+
+  QList< QgsLayoutItemMap * > maps;
+  mLayout->layoutItems( maps );
+
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+  {
+    mLabelingResults[ map->uuid() ] = map->mExportLabelingResults.release();
   }
 }
 
