@@ -31,6 +31,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerselectionmanager.h"
+#include "qgsvectorlayercache.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
