@@ -338,11 +338,21 @@ The ``processor`` function takes the QNetworkRequest as its argument, and can mu
     PyObject *s = 0;
     Py_BEGIN_ALLOW_THREADS
     Py_XINCREF( a0 );
-    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )
+    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
     {
+      QString res;
       SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QNetworkRequest, NULL ) );
+      PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
+      int state;
+      int sipIsError = 0;
+      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QString( *t1 );
+      }
+      sipReleaseType( t1, sipType_QString, state );
       SIP_UNBLOCK_THREADS
+      return res;
     } );
 
     s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
