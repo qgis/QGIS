@@ -53,7 +53,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       break;
 
     default:
-      mFeatureIds = mVectorLayerCache->mCacheOrderedKeys;
+      mFeatureIds = QList( mVectorLayerCache->mCacheOrderedKeys.begin(), mVectorLayerCache->mCacheOrderedKeys.end() );
       break;
   }
 
