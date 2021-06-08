@@ -867,6 +867,15 @@ Returns map rendering errors
 :return: list of errors
 %End
 
+    QgsLabelingResults *previewLabelingResults() const;
+%Docstring
+Returns the labeling results of the most recent preview map render. May be ``None`` if no map preview has been rendered in the item.
+
+The map item retains ownership of the returned results.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
