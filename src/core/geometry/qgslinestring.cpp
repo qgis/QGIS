@@ -363,7 +363,7 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
-bool QgsLineString::is2DClosed() const
+bool QgsLineString::isClosed2D() const
 {
   if ( mX.empty() )
     return false;
@@ -374,7 +374,7 @@ bool QgsLineString::is2DClosed() const
 
 bool QgsLineString::isClosed() const
 {
-  bool closed = is2DClosed();
+  bool closed = isClosed2D();
 
   if ( is3D() && closed )
     closed &= qgsDoubleNear( mZ.first(), mZ.last() ) || ( std::isnan( mZ.first() ) && std::isnan( mZ.last() ) );
