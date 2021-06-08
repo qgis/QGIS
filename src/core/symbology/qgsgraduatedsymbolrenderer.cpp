@@ -316,7 +316,6 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   r->setGraduatedMethod( graduatedMethod() );
   copyRendererData( r );
