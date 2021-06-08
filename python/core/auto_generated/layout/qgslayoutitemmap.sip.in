@@ -508,15 +508,17 @@ be used instead.
 
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Sets the stored ``layers`` set. If empty, the current project layers or the
-layer specified in the map theme (if the follow visibility preset flag is set)
-will be used instead.
+Sets the stored ``layers`` set. If empty, the current project layers will be used.
+If the map item is set to follow a map theme (via :py:func:`~QgsLayoutItemMap.followVisibilityPreset` and :py:func:`~QgsLayoutItemMap.followVisibilityPresetName` ),
+then this method will have no effect and the layers rendered in the map will always follow the map theme.
 
 .. seealso:: :py:func:`layers`
 
 .. seealso:: :py:func:`keepLayerSet`
 
 .. seealso:: :py:func:`followVisibilityPreset`
+
+.. seealso:: :py:func:`followVisibilityPresetName`
 %End
 
     bool keepLayerStyles() const;
