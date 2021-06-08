@@ -102,7 +102,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
       QgsPoint startPoint = line->startPoint();
       QgsPoint endPoint = line->endPoint();
       QString msg;
-      if ( line->is3D() && line->is2DClosed() )
+      if ( line->is3D() && line->isClosed2D() )
       {
         msg = QObject::tr( "ring %1 not closed, Z mismatch: %2 vs %3" ).arg( i ).arg( startPoint.z() ).arg( endPoint.z() );
       }

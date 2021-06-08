@@ -589,7 +589,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     bool isClosed() const override SIP_HOLDGIL;
-    bool is2DClosed() const override SIP_HOLDGIL;
+    bool isClosed2D() const override SIP_HOLDGIL;
     bool boundingBoxIntersects( const QgsRectangle &rectangle ) const override SIP_HOLDGIL;
 
     /**
