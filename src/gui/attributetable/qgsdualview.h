@@ -358,6 +358,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void onSortColumnChanged();
 
     void updateSelectedFeatures();
+    void updateEditedAddedFeatures();
 
     void extentChanged();
 
