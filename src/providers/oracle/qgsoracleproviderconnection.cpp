@@ -21,6 +21,7 @@
 #include "qgsexception.h"
 #include "qgsapplication.h"
 #include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
 
 #include <QSqlRecord>
 #include <QSqlField>

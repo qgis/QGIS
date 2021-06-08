@@ -176,8 +176,8 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         results = conn.executeSql(sql)
         self.assertEqual(results[0][:2], [8, 'Sülfeld'])
         self.assertEqual(results[1][:2], [16, 'Steimker Berg'])
-        self.assertEqual(results[0][2][:20], b'\x01\x03\x00\x00\x00\x01\x00\x00\x00/\x00\x00\x00\xf6\x88\x16Y\xad\xb2"')
-        self.assertEqual(results[1][2][:20], b'\x01\x03\x00\x00\x00\x01\x00\x00\x00F\x00\x00\x00 \xc1\x9f\xda\xb4\xfb"')
+        self.assertEqual(results[0][2][:20], 'Polygon ((612694.674')
+        self.assertEqual(results[1][2][:20], 'Polygon ((622042.427')
 
         sql = 'SELECT name, st_astext(geom) FROM cdb_lines WHERE name LIKE \'S%\' LIMIT 2'
         results = conn.executeSql(sql)
