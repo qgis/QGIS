@@ -344,6 +344,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      */
     void layoutExported();
 
+    /**
+     * Emitted when a \a map preview has been refreshed.
+     */
+    void mapPreviewRefreshed( QgsLayoutItemMap *map );
+
   protected:
 
     void closeEvent( QCloseEvent * ) override;
@@ -410,6 +415,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void updateWindowTitle();
 
     void backgroundTaskCountChanged( int total );
+    void onMapPreviewRefreshed();
+    void onItemAdded( QgsLayoutItem *item );
 
   private:
 

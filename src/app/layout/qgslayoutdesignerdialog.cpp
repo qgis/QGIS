@@ -115,6 +115,7 @@ QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerD
   , mDesigner( dialog )
 {
   connect( mDesigner, &QgsLayoutDesignerDialog::layoutExported, this, &QgsLayoutDesignerInterface::layoutExported );
+  connect( mDesigner, &QgsLayoutDesignerDialog::mapPreviewRefreshed, this, &QgsLayoutDesignerInterface::mapPreviewRefreshed );
 }
 
 QWidget *QgsAppLayoutDesignerInterface::window()
@@ -1210,6 +1211,13 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     if ( mLayout )
     {
       disconnect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
+      QList< QgsLayoutItemMap * > maps;
+      mLayout->layoutItems( maps );
+      for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+      {
+        disconnect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
+      }
+      disconnect( mLayout, &QgsLayout::itemAdded, this, &QgsLayoutDesignerDialog::onItemAdded );
     }
 
     layout->deselectAll();
@@ -1254,6 +1262,14 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #endif
 
     connect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
+
+    QList< QgsLayoutItemMap * > maps;
+    mLayout->layoutItems( maps );
+    for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+    {
+      connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
+    }
+    connect( mLayout, &QgsLayout::itemAdded, this, &QgsLayoutDesignerDialog::onItemAdded );
 
     createLayoutPropertiesWidget();
     toggleActions( true );
@@ -4888,6 +4904,23 @@ void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
     {
       mStatusProgressBar->show();
     }
+  }
+}
+
+void QgsLayoutDesignerDialog::onMapPreviewRefreshed()
+{
+  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( sender() );
+  if ( !map )
+    return;
+
+  emit mapPreviewRefreshed( map );
+}
+
+void QgsLayoutDesignerDialog::onItemAdded( QgsLayoutItem *item )
+{
+  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item ) )
+  {
+    connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
   }
 }
 
