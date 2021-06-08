@@ -113,7 +113,9 @@ bool QgsLayoutDesignerDialog::sInitializedRegistry = false;
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
   , mDesigner( dialog )
-{}
+{
+  connect( mDesigner, &QgsLayoutDesignerDialog::layoutExported, this, &QgsLayoutDesignerInterface::layoutExported );
+}
 
 QWidget *QgsAppLayoutDesignerInterface::window()
 {
@@ -4904,6 +4906,8 @@ void QgsLayoutDesignerDialog::storeExportResults( QgsLayoutExporter::ExportResul
     qDeleteAll( mLastExportLabelingResults );
     mLastExportLabelingResults.clear();
   }
+
+  emit layoutExported();
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )

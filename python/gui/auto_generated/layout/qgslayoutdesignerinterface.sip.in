@@ -457,6 +457,16 @@ Toggles whether or not the rulers should be ``visible`` in the designer.
 .. versionadded:: 3.4
 %End
 
+  signals:
+
+    void layoutExported();
+%Docstring
+Emitted whenever a layout is exported from the layout designer.
+
+The results of the export can be retrieved by calling :py:func:`~QgsLayoutDesignerInterface.lastExportResults`.
+
+.. versionadded:: 3.20
+%End
 
 };
 
