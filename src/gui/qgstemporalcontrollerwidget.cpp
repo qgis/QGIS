@@ -501,7 +501,7 @@ void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &rang
   switch ( mNavigationObject->navigationMode() )
   {
     case QgsTemporalNavigationObject::Animated:
-      mCurrentRangeLabel->setText( tr( "Frame: %1 ≤ <i>t</i> &lt; %2" ).arg(
+      mCurrentRangeLabel->setText( tr( "Current frame: %1 ≤ <i>t</i> &lt; %2" ).arg(
                                      range.begin().toString( timeFrameFormat ),
                                      range.end().toString( timeFrameFormat ) ) );
       break;
