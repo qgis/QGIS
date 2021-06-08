@@ -74,6 +74,15 @@ class CORE_EXPORT QgsLabelPosition
     //! Constructor for QgsLabelPosition
     QgsLabelPosition() = default;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString text = sipCpp->labelText;
+    QString str = QStringLiteral( "<QgsLabelPosition: \"%1\"%2>" ).arg( text, sipCpp->isUnplaced ? QStringLiteral( " (unplaced)" ) : QString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     /**
      * ID of feature associated with this label.
      */
