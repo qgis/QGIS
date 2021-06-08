@@ -36,6 +36,9 @@ Returns the temporal controller object used by this object in navigation.
 The dock widget retains ownership of the returned object.
 %End
 
+    virtual bool applySizeConstraintsToStack() const;
+
+
 
   protected:
 
