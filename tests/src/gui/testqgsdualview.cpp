@@ -27,7 +27,7 @@
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 #include "qgsgui.h"
-
+#include "qgsvectorlayercache.h"
 #include "qgstest.h"
 
 class TestQgsDualView : public QObject

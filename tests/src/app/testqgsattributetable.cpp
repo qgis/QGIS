@@ -29,8 +29,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
-
-#include "qgstest.h"
+#include "qgsvectorlayercache.h"
 
 /**
  * \ingroup UnitTests
