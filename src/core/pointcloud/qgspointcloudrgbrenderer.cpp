@@ -200,7 +200,7 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 			color = field.as<uint16_t>();
 		}
 	}
-	V3f Vertex;
+	V3d Vertex;
 	uint16_t red;
 	uint16_t green;
 	uint16_t blue;

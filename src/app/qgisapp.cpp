@@ -11789,10 +11789,18 @@ void QgisApp::removeLayer()
   for (QgsMapLayer *layer : selectedLayers)
   {
     QString layername = layer->name();
-
     if (layer->type() == QgsMapLayerType::PointCloudLayer)
     {
-      m_geometries->unloadFiles(layername);
+      QString layerdatasource = layer->source();
+      if (layerdatasource.isEmpty())
+      {
+        m_geometries->unloadFiles(layername);
+      }
+      else
+      {
+        m_geometries->unloadFiles(layerdatasource);
+      }
+
     }
     QList< QgsTask * > tasks = QgsApplication::taskManager()->tasksDependentOnLayer(layer);
     if (!tasks.isEmpty())

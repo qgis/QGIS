@@ -175,7 +175,7 @@ void QgsPointCloudClassifiedRenderer::renderDisplaz(DrawCount mdrawlist, std::sh
 		}
 	}
 
-	V3f Vertex;
+	V3d Vertex;
 	 QColor color;
 	while (mdrawlist.index.size() > decimal_step && mdrawlist.numVertices>1)
 	{

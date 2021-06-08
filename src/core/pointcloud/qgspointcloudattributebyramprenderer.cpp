@@ -177,7 +177,7 @@ void QgsPointCloudAttributeByRampRenderer::renderDisplaz(DrawCount mdrawlist, st
 		}
 	}
 
-	V3f Vertex;
+	V3d Vertex;
 	double attributeValue;
 	int red;
 	int green;
