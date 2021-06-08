@@ -247,6 +247,11 @@ void QgsAppLayoutDesignerInterface::activateTool( QgsLayoutDesignerInterface::St
   }
 }
 
+QgsLayoutDesignerInterface::ExportResults *QgsAppLayoutDesignerInterface::lastExportResults() const
+{
+  return mDesigner->lastExportResults().release();
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
@@ -1010,6 +1015,9 @@ QgsLayoutDesignerDialog::~QgsLayoutDesignerDialog()
     settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksTitle" ), QgsSettings::App );
     settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksActive" ), QgsSettings::App );
   }
+
+  qDeleteAll( mLastExportLabelingResults );
+  mLastExportLabelingResults.clear();
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -1101,6 +1109,11 @@ QgsLayoutGuideWidget *QgsLayoutDesignerDialog::guideWidget()
 void QgsLayoutDesignerDialog::showGuideDock( bool show )
 {
   mGuideDock->setUserVisible( show );
+}
+
+std::unique_ptr<QgsLayoutDesignerInterface::ExportResults> QgsLayoutDesignerDialog::lastExportResults() const
+{
+  return mLastExportResults ? std::make_unique< QgsLayoutDesignerInterface::ExportResults>( *mLastExportResults ) : nullptr;
 }
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
@@ -2097,6 +2110,7 @@ void QgsLayoutDesignerDialog::print()
   QgsLayoutExporter::ExportResult result = exporter.print( *p, printSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2211,6 +2225,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgsLayoutExporter::ExportResult result = exporter.exportToImage( fileNExt.first, settings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2324,6 +2339,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QgsLayoutExporter::ExportResult result = exporter.exportToPdf( outputFileName, pdfSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2435,6 +2451,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QgsLayoutExporter::ExportResult result = exporter.exportToSvg( outputFileName, svgSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2709,6 +2726,7 @@ void QgsLayoutDesignerDialog::printAtlas()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( printAtlas, *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   switch ( result )
   {
@@ -2914,6 +2932,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, fileName, fileExt, settings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
 
@@ -3079,6 +3098,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, filename, svgSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
   switch ( result )
@@ -3317,6 +3337,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   }
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
   switch ( result )
@@ -3446,6 +3467,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( static_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
 
   switch ( result )
@@ -3563,6 +3585,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( static_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
   switch ( result )
   {
@@ -3696,6 +3719,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( static_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
 
   switch ( result )
@@ -3804,6 +3828,7 @@ void QgsLayoutDesignerDialog::printReport()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   switch ( result )
   {
@@ -4861,6 +4886,23 @@ void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
     {
       mStatusProgressBar->show();
     }
+  }
+}
+
+void QgsLayoutDesignerDialog::storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter )
+{
+  mLastExportResults = std::make_unique< QgsLayoutDesignerInterface::ExportResults >();
+  mLastExportResults->result = result;
+
+  if ( exporter )
+  {
+    mLastExportLabelingResults = exporter->takeLabelingResults();
+    mLastExportResults->labelingResults = mLastExportLabelingResults;
+  }
+  else
+  {
+    qDeleteAll( mLastExportLabelingResults );
+    mLastExportLabelingResults.clear();
   }
 }
 

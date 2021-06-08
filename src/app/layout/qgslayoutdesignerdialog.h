@@ -81,7 +81,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
     void activateTool( StandardTool tool ) override;
-
+    QgsLayoutDesignerInterface::ExportResults *lastExportResults() const override;
   public slots:
 
     void close() override;
@@ -202,6 +202,13 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
      * Toggles the visibility of the guide manager dock widget.
      */
     void showGuideDock( bool show );
+
+    /**
+     * Returns the results of the last export operation performed in the designer.
+     *
+     * May be NULLPTR if no export has been performed in the designer.
+     */
+    std::unique_ptr< QgsLayoutDesignerInterface::ExportResults > lastExportResults() const;
 
   public slots:
 
@@ -492,6 +499,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QgsLayoutGuideWidget *mGuideWidget = nullptr;
 
     bool mIsExportingAtlas = false;
+    void storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter = nullptr );
+    std::unique_ptr< QgsLayoutDesignerInterface::ExportResults> mLastExportResults;
+    QMap< QString, QgsLabelingResults *> mLastExportLabelingResults;
 
     //! Save window state
     void saveWindowState();
