@@ -37,8 +37,6 @@
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 
-//#include "providers/virtualrasterprovider/qgsvirtualrasterprovider.h"
-
 #ifdef HAVE_EPT
 #include "providers/ept/qgseptprovider.h"
 #endif
@@ -184,7 +182,7 @@ void QgsProviderRegistry::init()
     mProviders[ pc->key() ] = pc;
   }
 #endif
-  //mProviders[ QgsVirtualRasterProvider::providerKey() ] = new QgsVirtualRasterProviderMetadata();
+
   registerUnusableUriHandler( new PdalUnusableUriHandlerInterface() );
 
 #ifdef HAVE_STATIC_PROVIDERS
@@ -229,7 +227,7 @@ void QgsProviderRegistry::init()
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+     if ( !fileRegexp.isEmpty() )
     {
       if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
       {

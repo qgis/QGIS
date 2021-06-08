@@ -293,3 +293,8 @@ int QgsVirtualRasterProvider::capabilities() const
                          | QgsRasterDataProvider::Prefetch;
   return capability;
 }
+
+QGISEXTERN QgsVirtualRasterProviderMetadata *providerMetadataFactory()
+{
+  return new QgsVirtualRasterProviderMetadata();
+}

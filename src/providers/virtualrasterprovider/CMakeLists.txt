@@ -49,6 +49,16 @@ if (WITH_GUI)
 endif()
 ]]
 
+target_compile_definitions(virtualrasterprovider PRIVATE "-DQT_NO_FOREACH")
+
+# clang-tidy
+if(CLANG_TIDY_EXE)
+  set_target_properties(
+    virtualrasterprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+endif()
+
 ########################################################
 # Install
 
