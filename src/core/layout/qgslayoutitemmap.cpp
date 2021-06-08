@@ -36,6 +36,7 @@
 #include "qgsannotationlayer.h"
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgsprojoperation.h"
+#include "qgslabelingresults.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1138,7 +1139,10 @@ bool QgsLayoutItemMap::nextExportPart()
         if ( mStagedRendererJob->nextPart() )
           return true;
         else
+        {
+          mExportLabelingResults.reset( mStagedRendererJob->takeLabelingResults() );
           mStagedRendererJob.reset(); // no more map layer parts
+        }
       }
 
       if ( mExportThemeIt != mExportThemes.end() && ++mExportThemeIt != mExportThemes.end() )
@@ -1357,6 +1361,8 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
   job.renderSynchronously();
+
+  mExportLabelingResults.reset( job.takeLabelingResults() );
 
   mRenderingErrors = job.errors();
 }
@@ -1754,6 +1760,11 @@ bool QgsLayoutItemMap::isLabelBlockingItem( QgsLayoutItem *item ) const
   return mBlockingLabelItems.contains( item );
 }
 
+QgsLabelingResults *QgsLayoutItemMap::previewLabelingResults() const
+{
+  return mPreviewLabelingResults.get();
+}
+
 bool QgsLayoutItemMap::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
   // NOTE: if visitEnter returns false it means "don't visit the item", not "abort all further visitations"
@@ -1951,6 +1962,7 @@ void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layer
 void QgsLayoutItemMap::painterJobFinished()
 {
   mPainter->end();
+  mPreviewLabelingResults.reset( mPainterJob->takeLabelingResults() );
   mPainterJob.reset( nullptr );
   mPainter.reset( nullptr );
   mCacheFinalImage = std::move( mCacheRenderingImage );

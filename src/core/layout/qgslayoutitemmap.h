@@ -811,6 +811,15 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 
+    /**
+     * Returns the labeling results of the most recent preview map render. May be NULLPTR if no map preview has been rendered in the item.
+     *
+     * The map item retains ownership of the returned results.
+     *
+     * \since QGIS 3.20
+     */
+    QgsLabelingResults *previewLabelingResults() const;
+
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -1099,6 +1108,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     std::unique_ptr< QgsMapRendererStagedRenderJob > mStagedRendererJob;
 
+    std::unique_ptr< QgsLabelingResults > mPreviewLabelingResults;
+    std::unique_ptr< QgsLabelingResults > mExportLabelingResults;
+
     void init();
 
     //! Resets the item tooltip to reflect current map id
@@ -1172,6 +1184,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
     friend class QgsGeoPdfRenderedFeatureHandler;
+    friend class QgsLayoutExporter;
 
 };
 
