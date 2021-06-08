@@ -383,7 +383,10 @@ void TestQgsLayout::addItem()
   shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
 
+  QSignalSpy itemAddedSpy( &l, &QgsLayout::itemAdded );
   l.addLayoutItem( shape1 );
+  QCOMPARE( itemAddedSpy.count(), 1 );
+  QCOMPARE( itemAddedSpy.at( 0 ).at( 0 ).value< QgsLayoutItem * >(), shape1 );
   QVERIFY( l.items().contains( shape1 ) );
   // bounds should be updated to include item
   QGSCOMPARENEAR( l.sceneRect().left(), 89.850, 0.001 );
