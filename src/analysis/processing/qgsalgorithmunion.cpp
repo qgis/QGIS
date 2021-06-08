@@ -102,8 +102,8 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
   QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
 
-  int count = 0;
-  int total = sourceA->featureCount() * 2 + sourceB->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount() * 2 + sourceB->featureCount();
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
   if ( feedback->isCanceled() )
