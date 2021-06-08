@@ -212,10 +212,7 @@ set(QGIS_CORE_SRCS
   providers/gdal/qgsgdalproviderbase.cpp
   providers/gdal/qgsgdalprovider.cpp
   providers/gdal/qgsgdaldataitems.cpp
-#####################################################################
-  #providers/virtualrasterprovider/qgsvirtualrasterprovider.cpp
-  #providers/virtualrasterprovider/qgsvirtualrasterprovider.h
-#####################################################################
+
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
   providers/memory/qgsmemoryproviderutils.cpp
