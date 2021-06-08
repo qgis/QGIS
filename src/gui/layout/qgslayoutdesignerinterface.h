@@ -409,6 +409,14 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     void layoutExported();
 
+
+    /**
+     * Emitted when a \a map item's preview has been refreshed.
+     *
+     * \since QGIS 3.20
+     */
+    void mapPreviewRefreshed( QgsLayoutItemMap *map );
+
 };
 
 #endif // QGSLAYOUTDESIGNERINTERFACE_H

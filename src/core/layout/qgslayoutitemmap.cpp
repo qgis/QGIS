@@ -1971,6 +1971,7 @@ void QgsLayoutItemMap::painterJobFinished()
   mLastRenderedImageOffsetY = 0;
   emit backgroundTaskCountChanged( 0 );
   update();
+  emit previewRefreshed();
 }
 
 void QgsLayoutItemMap::shapeChanged()

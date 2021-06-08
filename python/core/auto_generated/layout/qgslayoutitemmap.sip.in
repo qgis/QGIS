@@ -1011,6 +1011,13 @@ Emitted when the map's coordinate reference system is changed.
 .. versionadded:: 3.18
 %End
 
+    void previewRefreshed();
+%Docstring
+Emitted whenever the item's map preview has been refreshed.
+
+.. versionadded:: 3.20
+%End
+
   public slots:
 
     virtual void refresh();

@@ -929,6 +929,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     void crsChanged();
 
+    /**
+     * Emitted whenever the item's map preview has been refreshed.
+     *
+     * \since QGIS 3.20
+     */
+    void previewRefreshed();
+
   public slots:
 
     void refresh() override;
