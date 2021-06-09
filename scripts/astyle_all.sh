@@ -34,7 +34,7 @@ find python src tests -type f -print | while read -r f; do
         fi
 
 	echo -ne "Reformatting $f $elcr"
-	astyle.sh "$f" || true &
+	astyle.sh "$f" || true
 done
 
 remove_temporary_files.sh

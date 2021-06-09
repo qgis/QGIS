@@ -33,10 +33,7 @@ Some valid use cases for :py:class:`QgsPointXY` include:
 
 Use cases for which :py:class:`QgsPointXY` is NOT a valid choice include:
 
-- Storage of coordinates for a geometry. Since :py:class:`QgsPointXY` is strictly 2-dimensional
-
-it should never be used to store coordinates for vector geometries, as this will involve
-a loss of any z or m values present in the geometry.
+- Storage of coordinates for a geometry. Since :py:class:`QgsPointXY` is strictly 2-dimensional it should never be used to store coordinates for vector geometries, as this will involve a loss of any z or m values present in the geometry.
 
 .. seealso:: :py:class:`QgsPoint`
 
