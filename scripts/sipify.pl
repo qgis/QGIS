@@ -75,7 +75,7 @@ my $LINE_IDX = 0;
 my $LINE;
 my @OUTPUT = ();
 my @OUTPUT_PYTHON = ();
-
+my $DOXY_INSIDE_SIP_RUN = 0;
 
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
@@ -182,6 +182,27 @@ sub create_class_links {
 
 sub processDoxygenLine {
     my $line = $_[0];
+
+    if ( $line =~ m/\s*#ifdef SIP_RUN/ ) {
+      $DOXY_INSIDE_SIP_RUN = 1;
+      return "";
+    }
+    elsif ( $line =~ m/\s*#ifndef SIP_RUN/ ) {
+      $DOXY_INSIDE_SIP_RUN = 2;
+      return "";
+    }
+    elsif ($DOXY_INSIDE_SIP_RUN != 0 && $line =~ m/\s*#else/ ) {
+      $DOXY_INSIDE_SIP_RUN = $DOXY_INSIDE_SIP_RUN == 1 ? 2 : 1;
+      return "";
+    }
+    elsif ($DOXY_INSIDE_SIP_RUN != 0 && $line =~ m/\s*#endif/ ) {
+      $DOXY_INSIDE_SIP_RUN = 0;
+      return "";
+    }
+
+    if ($DOXY_INSIDE_SIP_RUN == 2) {
+      return "";
+    }
 
     # detect code snippet
     if ( $line =~ m/\\code(\{\.?(\w+)\})?/ ) {

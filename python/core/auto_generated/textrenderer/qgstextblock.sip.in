@@ -76,7 +76,6 @@ Applies a ``capitalization`` style to the block's text.
     sipRes = sipCpp->size();
 %End
 
-
     const QgsTextFragment &at( int index ) const /Factory/;
 %Docstring
 Returns the fragment at the specified ``index``.
