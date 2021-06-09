@@ -151,7 +151,6 @@ Returns if a field index is valid
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
 %End
 
-
     QgsField at( int i ) const /Factory/;
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
@@ -169,7 +168,6 @@ Returns the field at particular index (must be in range 0..N-1).
       sipRes = new QgsField( sipCpp->at( a0 ) );
     }
 %End
-
 
     QgsField field( int fieldIdx ) const /Factory/;
 %Docstring
@@ -209,7 +207,6 @@ Returns the field with matching name.
     }
 %End
 
-
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 %Docstring
 Returns the field's origin (value from an enumeration).
@@ -227,7 +224,6 @@ Returns the field's origin (value from an enumeration).
       sipRes = sipCpp->fieldOrigin( a0 );
     }
 %End
-
 
     int fieldOriginIndex( int fieldIdx ) const;
 %Docstring
@@ -250,8 +246,10 @@ Returns the field's origin index (its meaning is specific to each type of origin
     int indexFromName( const QString &fieldName ) const;
 %Docstring
 Gets the field index from the field name.
+
 This method is case sensitive and only matches the data source
 name of the field.
+
 Alias for indexOf
 
 :param fieldName: The name of the field.
@@ -264,6 +262,7 @@ Alias for indexOf
     int indexOf( const QString &fieldName ) const;
 %Docstring
 Gets the field index from the field name.
+
 This method is case sensitive and only matches the data source
 name of the field.
 
@@ -309,7 +308,6 @@ Utility function to return a list of :py:class:`QgsField` instances
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
 
-
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
 %Docstring
 Returns an icon corresponding to a field index, based on the field's type and source
@@ -332,7 +330,6 @@ Returns an icon corresponding to a field index, based on the field's type and so
       sipRes = new QIcon( sipCpp->iconForField( a0 ) );
     }
 %End
-
 
     static QIcon iconForFieldType( const QVariant::Type &type ) /Factory/;
 %Docstring

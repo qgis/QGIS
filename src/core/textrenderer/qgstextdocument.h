@@ -78,19 +78,16 @@ class CORE_EXPORT QgsTextDocument
      */
     void reserve( int count );
 
-#ifndef SIP_RUN
-
     /**
      * Returns the block at the specified \a index.
-     */
-    const QgsTextBlock &at( int index ) const SIP_FACTORY;
-#else
-
-    /**
-     * Returns the block at the specified \a index.
+     #ifdef SIP_RUN
      *
      * \throws KeyError if no block exists at the specified index.
+     #endif
      */
+#ifndef SIP_RUN
+    const QgsTextBlock &at( int index ) const SIP_FACTORY;
+#else
     const QgsTextBlock &at( int index ) const SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->size() )

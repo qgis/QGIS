@@ -62,7 +62,6 @@ Appends a ``block`` to the document.
 Reserves the specified ``count`` of blocks for optimised block appending.
 %End
 
-
     const QgsTextBlock &at( int index ) const /Factory/;
 %Docstring
 Returns the block at the specified ``index``.
