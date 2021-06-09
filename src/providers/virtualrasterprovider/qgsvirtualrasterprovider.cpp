@@ -1,5 +1,8 @@
 #include "qgsvirtualrasterprovider.h"
 
+#include "qgsrastercalculator.h"
+#include "qgsrastercalcnode.h"
+#include "qgsrastermatrix.h"
 #include "qgsmessagelog.h"
 //#include <QImage>
 #include <QPainter>
@@ -88,13 +91,11 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 */
 
 
-//qgiscrash
-
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
     //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
     QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
-
+    QgsRasterMatrix matrix;
     QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
 
     unsigned int* outputData = ( unsigned int* )( block->bits() );
