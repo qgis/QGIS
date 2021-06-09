@@ -93,16 +93,19 @@ class CORE_EXPORT QgsTextBlock
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Returns the fragment at the specified \a index.
-     #ifdef SIP_RUN
-     *
-     * \throws KeyError if no fragment exists at the specified index.
-     #endif
      */
-#ifndef SIP_RUN
     const QgsTextFragment &at( int index ) const SIP_FACTORY;
 #else
+
+    /**
+     * Returns the fragment at the specified \a index.
+     *
+     * \throws KeyError if no fragment exists at the specified index.
+     */
     const QgsTextFragment &at( int index ) const SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->size() )

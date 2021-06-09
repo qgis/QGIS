@@ -111,17 +111,19 @@ class CORE_EXPORT  QgsFields
     //! Appends an expression field. The field must have unique name, otherwise it is rejected (returns FALSE)
     bool appendExpressionField( const QgsField &field, int originIndex );
 
+#ifndef SIP_RUN
 
     /**
      * Removes the field with the given index.
-     #ifdef SIP_RUN
-     *
-     * \throws KeyError if no field with the specified index exists
-     #endif
      */
-#ifndef SIP_RUN
     void remove( int fieldIdx );
 #else
+
+    /**
+     * Removes the field with the given index.
+     *
+     * \throws KeyError if no field with the specified index exists
+     */
     void remove( int fieldIdx );
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -191,15 +193,18 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Returns the field at particular index (must be in range 0..N-1).
-     #ifdef SIP_RUN
-     * \throws KeyError if no field exists at the specified index
-     #endif
      */
-#ifndef SIP_RUN
     QgsField at( int i ) const SIP_FACTORY;
 #else
+
+    /**
+     * Returns the field at particular index (must be in range 0..N-1).
+     * \throws KeyError if no field exists at the specified index
+     */
     QgsField at( int i ) const SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -214,15 +219,18 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Returns the field at particular index (must be in range 0..N-1).
-     #ifdef SIP_RUN
-     * \throws KeyError if no field exists at the specified index
-     #endif
      */
-#ifndef SIP_RUN
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #else
+
+    /**
+     * Returns the field at particular index (must be in range 0..N-1).
+     * \throws KeyError if no field exists at the specified index
+     */
     QgsField field( int fieldIdx ) const SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -237,16 +245,18 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Returns the field with matching name.
-     #ifdef SIP_RUN
-     * \throws KeyError if no matching field was found.
-     #endif
      */
-#ifndef SIP_RUN
     QgsField field( const QString &name ) const SIP_FACTORY;
 #else
 
+    /**
+     * Returns the field with matching name.
+     * \throws KeyError if no matching field was found.
+     */
     QgsField field( const QString &name ) const SIP_FACTORY;
     % MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
@@ -262,16 +272,19 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns the field's origin (value from an enumeration).
+     */
+    FieldOrigin fieldOrigin( int fieldIdx ) const;
+#else
+
     /**
      * Returns the field's origin (value from an enumeration).
      *
-     #ifdef SIP_RUN
      * \throws KeyError if no field exists at the specified index
-     #endif
      */
-#ifndef SIP_RUN
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
-#else
     FieldOrigin fieldOrigin( int fieldIdx ) const;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -286,16 +299,19 @@ class CORE_EXPORT  QgsFields
     % End
 #endif
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns the field's origin index (its meaning is specific to each type of origin).
+     */
+    int fieldOriginIndex( int fieldIdx ) const;
+#else
+
     /**
      * Returns the field's origin index (its meaning is specific to each type of origin).
      *
-     #ifdef SIP_RUN
      * \throws KeyError if no field exists at the specified index
-     #endif
      */
-#ifndef SIP_RUN
-    int fieldOriginIndex( int fieldIdx ) const;
-#else
     int fieldOriginIndex( int fieldIdx ) const;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -369,18 +385,24 @@ class CORE_EXPORT  QgsFields
     //! \since QGIS 2.6
     bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
+#ifndef SIP_RUN
+
     /**
      * Returns an icon corresponding to a field index, based on the field's type and source
      * \param fieldIdx the field index
      * \param considerOrigin if TRUE the icon will the origin of the field
-     #ifdef SIP_RUN
-     * \throws KeyError if no field exists at the specified index
-     #endif
      * \since QGIS 2.14
      */
-#ifndef SIP_RUN
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
 #else
+
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
+     * \param fieldIdx the field index
+     * \param considerOrigin if TRUE the icon will the origin of the field
+     * \throws KeyError if no field exists at the specified index
+     * \since QGIS 2.14
+     */
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )

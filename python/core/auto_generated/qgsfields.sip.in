@@ -151,6 +151,7 @@ Returns if a field index is valid
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
 %End
 
+
     QgsField at( int i ) const /Factory/;
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
@@ -168,6 +169,7 @@ Returns the field at particular index (must be in range 0..N-1).
       sipRes = new QgsField( sipCpp->at( a0 ) );
     }
 %End
+
 
     QgsField field( int fieldIdx ) const /Factory/;
 %Docstring
@@ -207,6 +209,7 @@ Returns the field with matching name.
     }
 %End
 
+
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 %Docstring
 Returns the field's origin (value from an enumeration).
@@ -224,6 +227,7 @@ Returns the field's origin (value from an enumeration).
       sipRes = sipCpp->fieldOrigin( a0 );
     }
 %End
+
 
     int fieldOriginIndex( int fieldIdx ) const;
 %Docstring
@@ -307,6 +311,7 @@ Utility function to return a list of :py:class:`QgsField` instances
 
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
+
 
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
 %Docstring
