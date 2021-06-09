@@ -46,7 +46,7 @@ QString QgsPointsToPathsAlgorithm::shortHelpString() const
 
 QStringList QgsPointsToPathsAlgorithm::tags() const
 {
-  return QObject::tr( "create,lines,points,connect,convert,join" ).split( ',' );
+  return QObject::tr( "create,lines,points,connect,convert,join,path" ).split( ',' );
 }
 
 QString QgsPointsToPathsAlgorithm::group() const
