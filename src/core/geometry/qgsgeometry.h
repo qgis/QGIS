@@ -1712,9 +1712,10 @@ class CORE_EXPORT QgsGeometry
      * Optionally, a specific random \a seed can be used when generating points. If \a seed
      * is 0, then a completely random sequence of points will be generated.
      *
-     * This method works only with (multi)polygon geometry types. If the geometry
-     * is not a polygon type, a TypeError will be raised. If the geometry
-     * is null, a ValueError will be raised.
+     * This method works only with (multi)polygon geometry types.
+     *
+     * \throws TypeError if the geometry is not a polygon type
+     * \throws ValueError if the geometry is null
      *
      * \since QGIS 3.10
      */
@@ -1853,9 +1854,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * This method works only with single-point geometry types. If the geometry
-     * is not a single-point type, a TypeError will be raised. If the geometry
-     * is null, a ValueError will be raised.
+     * This method works only with single-point geometry types.
+     *
+     * \throws TypeError if the geometry is not a single-point type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
     % MethodCode
@@ -1896,9 +1898,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
      * (such as a CircularString), it will be automatically segmentized.
      *
-     * This method works only with single-line (or single-curve) geometry types. If the geometry
-     * is not a single-line type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with single-line (or single-curve).
+     *
+     * \throws TypeError if the geometry is not a single-line type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
@@ -1940,9 +1943,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
      * (such as a CurvePolygon), it will be automatically segmentized.
      *
-     * This method works only with single-polygon (or single-curve polygon) geometry types. If the geometry
-     * is not a single-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with single-polygon (or single-curve polygon) geometry types.
+     *
+     * \throws TypeError if the geometry is not a single-polygon type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
     % MethodCode
@@ -1982,9 +1986,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * This method works only with multi-point geometry types. If the geometry
-     * is not a multi-point type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-point geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-point type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPoint() const SIP_TYPEHINT( QgsMultiPointXY );
     % MethodCode
@@ -2026,9 +2031,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
      * (such as a MultiCurve), it will be automatically segmentized.
      *
-     * This method works only with multi-linestring (or multi-curve) geometry types. If the geometry
-     * is not a multi-linestring type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-linestring (or multi-curve) geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-linestring type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPolyline() const SIP_TYPEHINT( QgsMultiPolylineXY );
     % MethodCode
@@ -2070,9 +2076,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
      * (such as a MultiSurface), it will be automatically segmentized.
      *
-     * This method works only with multi-polygon (or multi-curve polygon) geometry types. If the geometry
-     * is not a multi-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-polygon (or multi-curve polygon) geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-polygon type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPolygon() const SIP_TYPEHINT( QgsMultiPolygonXY );
     % MethodCode

@@ -33,7 +33,7 @@ Constructor for an empty multipolygon geometry.
 %Docstring
 Returns the polygon with the specified ``index``.
 
-An IndexError will be raised if no polygon with the specified index exists.
+:raises IndexError: if no polygon with the specified index exists.
 
 .. versionadded:: 3.16
 %End

@@ -316,10 +316,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #else
 
     /**
-     * Returns the point at the specified index. An IndexError will be raised if no point with the specified index exists.
+     * Returns the point at the specified index.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
      */
     SIP_PYOBJECT pointN( int i ) const SIP_TYPEHINT( QgsPoint );
     % MethodCode
@@ -348,10 +350,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /**
      * Returns the x-coordinate of the specified node in the line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
     */
     double xAt( int index ) const override;
     % MethodCode
@@ -378,10 +380,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /**
      * Returns the y-coordinate of the specified node in the line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
     */
     double yAt( int index ) const override;
     % MethodCode
@@ -476,12 +478,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /**
      * Returns the z-coordinate of the specified node in the line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * If the LineString does not have a z-dimension then ``nan`` will be returned.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
     */
     double zAt( int index ) const;
     % MethodCode
@@ -522,12 +524,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /**
      * Returns the m-coordinate of the specified node in the line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * If the LineString does not have a m-dimension then ``nan`` will be returned.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
     */
     double mAt( int index ) const;
     % MethodCode
@@ -563,10 +565,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Sets the x-coordinate of the specified node in the line string.
      * The corresponding node must already exist in line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
      *
      * \see xAt()
      */
@@ -604,10 +606,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Sets the y-coordinate of the specified node in the line string.
      * The corresponding node must already exist in line string.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
+     *
+     * \throws IndexError if no point with the specified index exists.
      *
      * \see yAt()
      */
@@ -649,11 +651,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Sets the z-coordinate of the specified node in the line string.
      * The corresponding node must already exist in line string and the line string must have z-dimension.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
      *
+     * \throws IndexError if no point with the specified index exists.
      * \see zAt()
      */
     void setZAt( int index, double z );
@@ -694,11 +695,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Sets the m-coordinate of the specified node in the line string.
      * The corresponding node must already exist in line string and the line string must have m-dimension.
      *
-     * An IndexError will be raised if no point with the specified index exists.
-     *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
      *
+     * \throws IndexError if no point with the specified index exists.
      * \see mAt()
      */
     void setMAt( int index, double m );
@@ -901,11 +901,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % End
 
     /**
-    * Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
+    * Returns the point at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
     * corresponds to the last point in the line.
     *
+    * \throws IndexError if no point with the specified ``index`` exists.
     * \since QGIS 3.6
     */
     SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsPoint );
@@ -928,11 +929,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % End
 
     /**
-    * Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+    * Sets the point at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
     * corresponds to the last point in the line.
     *
+    * \throws IndexError if no point with the specified ``index`` exists.
     * \since QGIS 3.6
     */
     void __setitem__( int index, const QgsPoint &point );
@@ -958,11 +960,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
 
     /**
-     * Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+     * Deletes the vertex at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
      * corresponds to the last point in the line.
      *
+     * \throws IndexError if no point with the specified ``index`` exists.
      * \since QGIS 3.6
      */
     void __delitem__( int index );
