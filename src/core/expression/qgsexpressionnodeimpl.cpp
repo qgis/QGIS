@@ -1345,7 +1345,7 @@ bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpr
 }
 
 
-QString QgsExpressionNodeLiteral::dump() const
+QString QgsExpressionNodeLiteral::valueAsString() const
 {
   if ( mValue.isNull() )
     return QStringLiteral( "NULL" );
@@ -1365,6 +1365,11 @@ QString QgsExpressionNodeLiteral::dump() const
     default:
       return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
   }
+}
+
+QString QgsExpressionNodeLiteral::dump() const
+{
+  return valueAsString();
 }
 
 QSet<QString> QgsExpressionNodeLiteral::referencedColumns() const
