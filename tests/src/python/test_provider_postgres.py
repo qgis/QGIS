@@ -2710,7 +2710,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                   3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
               100.0 * dx,
               100.0 * dy )
-          FROM generate_series(1,8) dx, generate_series(1,8) dy;
+          FROM generate_series(1,3) dx, generate_series(1,3) dy;
         REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
 
         pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
@@ -2718,11 +2718,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for n in [1, 2, len(pk_col_list)]:
             pk_col_set_list = list(combinations(pk_col_list, n))
             for pk_col_set in pk_col_set_list:
-                test_for_pk_combinations(test_type_list, pk_col_set, 42)
+                test_for_pk_combinations(test_type_list, pk_col_set, 7)
 
         for col_name in ["id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4"]:
-            test_for_pk_combinations(["view", "mat_view"], ["id_half_null_uuid", col_name], 42)
-            test_for_pk_combinations(["view", "mat_view"], ["id_all_null_uuid", col_name], 42)
+            test_for_pk_combinations(["view", "mat_view"], ["id_half_null_uuid", col_name], 7)
+            test_for_pk_combinations(["view", "mat_view"], ["id_all_null_uuid", col_name], 7)
 
     def testMultiColumnPkBigData(self):
         """Test Multi Column PK & `Big` Data"""
@@ -2759,9 +2759,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 geom geometry(Polygon,3857),
                 CONSTRAINT multi_column_pk_big_data_pk PRIMARY KEY (id_int) );''')
         self.execSQLCommand('''
-            CREATE INDEX multi_column_pk_big_data_geom_indx
-                ON qgis_test.multi_column_pk_big_data USING gist
-                (geom);
             CREATE UNIQUE INDEX multi_column_pk_big_data_indx
                 ON qgis_test.multi_column_pk_big_data USING btree
                 (id_int ASC NULLS LAST);''')
@@ -2779,11 +2776,11 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                               3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))', 3857 ),
                         100.0 * dx,
                         100.0 * dy )
-                FROM generate_series(1,333) dx, generate_series(1,333) dy;''')
+                FROM generate_series(1,115) dx, generate_series(1,115) dy;''')
 
-        test_for_pk_from_list(['id_uuid', 'id_int', 'id_str', ], 20000)
-        test_for_pk_from_list(['id_uuid', ], 20000)
-        test_for_pk_from_list(['id_int', 'id_int2', ], 20000)
+        test_for_pk_from_list(['id_uuid', 'id_int', 'id_str', ], 12000)
+        test_for_pk_from_list(['id_uuid', ], 12000)
+        test_for_pk_from_list(['id_int', 'id_int2', ], 12000)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
