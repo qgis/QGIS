@@ -112,7 +112,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     /**
      * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see numInteriorRings()
      * \see exteriorRing()
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * The corresponding ring is removed from the polygon and deleted.
      * It is not possible to remove the exterior ring using this method.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see removeInteriorRings()
      */

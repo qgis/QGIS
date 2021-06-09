@@ -256,19 +256,28 @@ class CORE_EXPORT QgsFeature
      */
     void setAttributes( const QgsAttributes &attrs );
 
+#ifndef SIP_RUN
+
     /**
      * Set an attribute's value by field index.
      * The feature will be valid if it was successful.
      * \param field the index of the field to set
      * \param attr the value of the attribute
      * \returns FALSE, if the field index does not exist
-     * \note For Python: raises a KeyError exception instead of returning FALSE
+     * \see setAttributes
+     */
+    bool setAttribute( int field, const QVariant &attr );
+#else
+
+    /**
+     * Set an attribute's value by field index.
+     * The feature will be valid if it was successful.
+     * \param field the index of the field to set
+     * \param attr the value of the attribute
+     * \throws KeyError if the field index does not exist
      * \note Alternatively in Python: @code feature[field] = attr @endcode
      * \see setAttributes
      */
-#ifndef SIP_RUN
-    bool setAttribute( int field, const QVariant &attr );
-#else
     bool setAttribute( int field, const QVariant &attr / GetWrapper / );
     % MethodCode
     bool rv;
@@ -323,15 +332,24 @@ class CORE_EXPORT QgsFeature
      */
     void padAttributes( int count );
 
+#ifndef SIP_RUN
+
     /**
      * Deletes an attribute and its value.
      * \param field the index of the field
      * \see setAttribute
-     * \note For Python: raises a KeyError exception if the field is not found
+     */
+    void deleteAttribute( int field );
+#else
+
+    /**
+     * Deletes an attribute and its value.
+     * \param field the index of the field
+     * \see setAttribute
+     * \throws KeyError if the field is not found
      * \note Alternatively in Python: @code del feature[field] @endcode
      */
     void deleteAttribute( int field );
-#ifdef SIP_RUN
     % MethodCode
     if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
       sipCpp->deleteAttribute( a0 );
@@ -442,6 +460,8 @@ class CORE_EXPORT QgsFeature
      */
     QgsFields fields() const;
 
+#ifndef SIP_RUN
+
     /**
      * Insert a value into attribute. Returns FALSE if attribute name could not be converted to index.
      *  Field map must be associated using setFields() before this method can be used.
@@ -449,13 +469,21 @@ class CORE_EXPORT QgsFeature
      *  \param name The name of the field to set
      *  \param value The value to set
      *  \returns FALSE if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning FALSE
+     *  \see setFields
+     */
+    bool setAttribute( const QString &name, const QVariant &value );
+#else
+
+    /**
+     * Insert a value into attribute. Returns FALSE if attribute name could not be converted to index.
+     *  Field map must be associated using setFields() before this method can be used.
+     *  The feature will be valid if it was successful
+     *  \param name The name of the field to set
+     *  \param value The value to set
+     *  \throws KeyError if the attribute name could not be converted to an index
      *  \note Alternatively in Python: @code feature[name] = attr @endcode
      *  \see setFields
      */
-#ifndef SIP_RUN
-    bool setAttribute( const QString &name, const QVariant &value );
-#else
     void setAttribute( const QString &name, const QVariant &value / GetWrapper / );
     % MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -478,17 +506,27 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Removes an attribute value by field name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the field to delete
      *  \returns FALSE if attribute name could not be converted to index (C++ only)
-     *  \note For Python: raises a KeyError exception instead of returning FALSE
+     *  \see setFields
+     */
+    bool deleteAttribute( const QString &name );
+#else
+
+    /**
+     * Removes an attribute value by field name. Field map must be associated using setFields()
+     *  before this method can be used.
+     *  \param name The name of the field to delete
+     *  \throws KeyError if attribute name could not be converted to index
      *  \note Alternatively in Python: @code del feature[name] @endcode
      *  \see setFields
      */
     bool deleteAttribute( const QString &name );
-#ifdef SIP_RUN
     % MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
@@ -505,18 +543,26 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Lookup attribute value from attribute name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
-     *  \note For Python: raises a KeyError exception if the field is not found
+     *  \see setFields
+     */
+    QVariant attribute( const QString &name ) const;
+#else
+
+    /**
+     * Lookup attribute value from attribute name. Field map must be associated using setFields()
+     *  before this method can be used.
+     *  \param name The name of the attribute to get
+     *  \throws KeyError if the field is not found
      *  \note Alternatively in Python: @code feature[name] @endcode
      *  \see setFields
      */
-#ifndef SIP_RUN
-    QVariant attribute( const QString &name ) const;
-#else
     SIP_PYOBJECT attribute( const QString &name ) const;
     % MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -533,18 +579,26 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
+#ifndef SIP_RUN
+
     /**
      * Lookup attribute value from its index. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldIdx The index of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
-     *  \note For Python: raises a KeyError exception if the field is not found
+     *  \see setFields
+     */
+    QVariant attribute( int fieldIdx ) const;
+#else
+
+    /**
+     * Lookup attribute value from its index. Field map must be associated using setFields()
+     *  before this method can be used.
+     *  \param fieldIdx The index of the attribute to get
+     *  \throws KeyError if the field is not found
      *  \note Alternatively in Python: @code feature[fieldIdx] @endcode
      *  \see setFields
      */
-#ifndef SIP_RUN
-    QVariant attribute( int fieldIdx ) const;
-#else
     SIP_PYOBJECT attribute( int fieldIdx ) const;
     % MethodCode
     {

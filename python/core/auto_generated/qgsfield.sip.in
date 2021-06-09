@@ -300,7 +300,7 @@ Converts the provided variant to a compatible format
 
 :param v: The value to convert
 
-:return: ``True`` if the conversion was successful
+:raises ValueError: if the value could not be converted to a compatible format
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;

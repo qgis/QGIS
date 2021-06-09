@@ -156,7 +156,8 @@ class CORE_EXPORT QgsPathResolver
      * Removes the custom pre-processor function with matching \a id.
      *
      * The \a id must correspond to a pre-processor previously added via a call to setPathPreprocessor().
-     * An KeyError will be raised if no processor with the specified \a id exists.
+     *
+     * \throws KeyError if no processor with the specified \a id exists.
      *
      * \see setPathPreprocessor()
      * \since QGIS 3.10
