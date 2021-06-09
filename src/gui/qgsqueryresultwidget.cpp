@@ -161,7 +161,7 @@ void QgsQueryResultWidget::updateButtons()
 {
   mFilterToolButton->setEnabled( false );
   mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
-  mLoadAsNewLayerGroupBox->setVisible( mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
+  mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
   mLoadAsNewLayerGroupBox->setEnabled(
     mSqlErrorMessage.isEmpty() &&
     mFirstRowFetched

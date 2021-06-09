@@ -85,8 +85,8 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   auto res = new QgsAbstractDatabaseProviderConnection::QueryResult( mConn->execSql( QStringLiteral( "SELECT * FROM qgis_test.random_big_data" ) ) );
   auto model = new QgsQueryResultModel( *res );
   bool exited { false };
-  QTimer::singleShot( 0, model, [ & ] { delete res; } );
-  QTimer::singleShot( 1, model, [ & ] { exited = true; } );
+  QTimer::singleShot( 1, model, [ & ] { delete res; } );
+  QTimer::singleShot( 2, model, [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
   const auto rowCount { model->rowCount( model->index( -1, -1 ) ) };
@@ -140,9 +140,9 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
-  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "qgis_test" ) ) );
-  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "random_big_data" ) ) );
-  QVERIFY( w->mSqlEditor->fieldNames().contains( QStringLiteral( "descr" ) ) );
+  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "qgis_test" ) ) );
+  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "random_big_data" ) ) );
+  QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "descr" ) ) );
 
   // Test feedback interrupt
   w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
