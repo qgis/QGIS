@@ -24,6 +24,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgslabelpropertydialog.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsmapcanvas.h"
 
 class TestQgsLabelPropertyDialog : public QObject
 {
@@ -80,8 +81,10 @@ class TestQgsLabelPropertyDialog : public QObject
       QgsFeatureId fid = 0;
       QVariant val = vl->getFeature( fid ).attribute( propName );
 
+      std::unique_ptr< QgsMapCanvas > mapCanvas = std::make_unique< QgsMapCanvas >();
+
       // init label property dialog and togle buffer draw
-      QgsLabelPropertyDialog dialog( vl->id(), QString(), fid, QFont(), QString(), false, settings );
+      QgsLabelPropertyDialog dialog( vl->id(), QString(), fid, QFont(), QString(), false, settings, mapCanvas.get() );
       dialog.bufferDrawToggled( true );
 
       // apply changes
