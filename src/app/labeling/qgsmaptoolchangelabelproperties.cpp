@@ -111,6 +111,7 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
                               labeltext,
                               mCurrentLabel.pos.isPinned,
                               mCurrentLabel.settings,
+                              mCanvas,
                               nullptr );
     d.setMapCanvas( canvas() );
 

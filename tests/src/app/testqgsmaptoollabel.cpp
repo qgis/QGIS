@@ -28,6 +28,7 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsexpressioncontextutils.h"
 
 class TestQgsMapToolLabel : public QObject
 {
@@ -374,6 +375,79 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( hali, QStringLiteral( "right" ) );
       QCOMPARE( vali, QStringLiteral( "half" ) );
     }
+
+    void dataDefinedColumnName()
+    {
+      QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=label_x_1:string&field=label_y_1:string&field=label_x_2:string&field=label_y_2:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QVERIFY( vl1->isValid() );
+      QgsProject::instance()->addMapLayer( vl1 );
+
+      std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+      canvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+      canvas->setLayers( QList<QgsMapLayer *>() << vl1 );
+      std::unique_ptr< QgsAdvancedDigitizingDockWidget > advancedDigitizingDockWidget = std::make_unique< QgsAdvancedDigitizingDockWidget >( canvas.get() );
+
+      std::unique_ptr< QgsMapToolLabel > tool( new QgsMapToolLabel( canvas.get(), advancedDigitizingDockWidget.get() ) );
+
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "1" ) );
+
+      // add some labels
+      QgsPalLayerSettings pls1;
+      pls1.fieldName = QStringLiteral( "'label'" );
+
+      // not using a column
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromValue( 5 ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromValue( 6 ) );
+
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QString() );
+
+      // using direct field references
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "label_x_2" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "label_y_2" ) ) );
+
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+
+      // using expressions which are just field references, should still work
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "\"label_x_1\"" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "\"label_y_1\"" ) ) );
+
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+
+
+      // using complex expressions which change field depending on a project level variable
+
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_x_1\" else \"label_x_2\" end" ) ) );
+      pls1.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when @var_1 = '1' then \"label_y_1\" else \"label_y_2\" end" ) ) );
+      vl1->setLabeling( new QgsVectorLayerSimpleLabeling( pls1 ) );
+      vl1->setLabelsEnabled( true );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_1" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_1" ) );
+
+      QgsExpressionContextUtils::setProjectVariable( QgsProject::instance(), QStringLiteral( "var_1" ), QStringLiteral( "2" ) );
+
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::AlwaysShow, pls1, vl1 ), QString() );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionX, pls1, vl1 ), QStringLiteral( "label_x_2" ) );
+      QCOMPARE( tool->dataDefinedColumnName( QgsPalLayerSettings::PositionY, pls1, vl1 ), QStringLiteral( "label_y_2" ) );
+    }
+
+
 };
 
 QGSTEST_MAIN( TestQgsMapToolLabel )

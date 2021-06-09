@@ -35,6 +35,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgslabelingresults.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QMouseEvent>
 
@@ -500,21 +501,50 @@ bool QgsMapToolLabel::hasDataDefinedColumn( QgsPalLayerSettings::DataDefinedProp
 }
 #endif
 
-QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings ) const
+QString QgsMapToolLabel::dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const
 {
   if ( !labelSettings.dataDefinedProperties().isActive( p ) )
     return QString();
 
-  QgsProperty prop = labelSettings.dataDefinedProperties().property( p );
-  if ( prop.propertyType() != QgsProperty::FieldBasedProperty )
-    return QString();
+  const QgsProperty property = labelSettings.dataDefinedProperties().property( p );
 
-  return prop.field();
+  switch ( property.propertyType() )
+  {
+    case QgsProperty::InvalidProperty:
+    case QgsProperty::StaticProperty:
+      break;
+
+    case QgsProperty::FieldBasedProperty:
+      return property.field();
+
+    case QgsProperty::ExpressionBasedProperty:
+    {
+      // an expression based property may still be a effectively a single field reference in the map canvas context.
+      // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
+
+      QgsExpressionContext context = mCanvas->createExpressionContext();
+      context.appendScope( layer->createExpressionContextScope() );
+
+      QgsExpression expression( property.expressionString() );
+      if ( expression.prepare( &context ) )
+      {
+        const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
+        if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
+        {
+          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
+          return columnRef->name();
+        }
+      }
+      break;
+    }
+  }
+
+  return QString();
 }
 
 int QgsMapToolLabel::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const
 {
-  QString fieldname = dataDefinedColumnName( p, labelSettings );
+  QString fieldname = dataDefinedColumnName( p, labelSettings, vlayer );
   if ( !fieldname.isEmpty() )
     return vlayer->fields().lookupField( fieldname );
   return -1;
@@ -595,7 +625,7 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol
 
 bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
-  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings );
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings, layer );
   rotationCol = layer->fields().lookupField( rColName );
   return rotationCol != -1;
 }
@@ -717,8 +747,8 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCo
 
 bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const
 {
-  QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings );
-  QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings );
+  QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings, vlayer );
+  QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings, vlayer );
   //return !xColName.isEmpty() && !yColName.isEmpty();
   xCol = vlayer->fields().lookupField( xColName );
   yCol = vlayer->fields().lookupField( yColName );
@@ -743,7 +773,7 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
   for ( const QString &providerId : constSubProviders )
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
-                        vlayer->labeling()->settings( providerId ) );
+                        vlayer->labeling()->settings( providerId ), vlayer );
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
       return true;
