@@ -344,9 +344,9 @@ sub processDoxygenLine {
             }
         }
     }
-    else
-    {
+    elsif ( $line !~ m/\\throws.*/ ) {
         # create links in plain text too (less performant)
+        # we don't do this for "throws" lines, as Sphinx does not format these correctly
         $line = create_class_links($line)
     }
 
@@ -366,7 +366,7 @@ sub processDoxygenLine {
         $PREV_INDENT = $INDENT;
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
-        return "\n:raises $1: $2\n";
+        return "\n:raises `$1` $2\n";
     }
 
     if ( $line !~ m/^\s*$/ ){
