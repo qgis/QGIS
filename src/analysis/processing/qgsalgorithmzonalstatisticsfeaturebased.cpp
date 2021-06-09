@@ -158,12 +158,28 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
 
 QgsFeatureList QgsZonalStatisticsFeatureBasedAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( context )
+  if ( !mCreatedTransform )
+  {
+    mCreatedTransform = true;
+    mFeatureToRasterTransform = QgsCoordinateTransform( sourceCrs(), mCrs, context.transformContext() );
+  }
+
   Q_UNUSED( feedback )
   QgsAttributes attributes = feature.attributes();
   attributes.resize( mOutputFields.size() );
 
-  QMap<QgsZonalStatistics::Statistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), feature.geometry(), mPixelSizeX, mPixelSizeY, mBand, mStats );
+  QgsGeometry geometry = feature.geometry();
+  try
+  {
+    geometry.transform( mFeatureToRasterTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    if ( feedback )
+      feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+  }
+
+  QMap<QgsZonalStatistics::Statistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand, mStats );
   for ( auto result = results.constBegin(); result != results.constEnd(); ++result )
   {
     attributes.replace( mStatFieldsMapping.value( result.key() ), result.value() );
