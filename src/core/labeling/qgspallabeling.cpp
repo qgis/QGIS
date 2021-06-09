@@ -2141,7 +2141,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
 
   //data defined position / alignment / rotation?
-  bool dataDefinedPosition = false;
+  bool hasDataDefinedPosition = false;
   bool layerDefinedRotation = false;
   bool dataDefinedRotation = false;
   double xPos = 0.0, yPos = 0.0, angle = 0.0;
@@ -2306,7 +2306,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
 
           if ( ddXPos && ddYPos )
           {
-            dataDefinedPosition = true;
+            hasDataDefinedPosition = true;
             // layer rotation set, but don't rotate pinned labels unless data defined
             if ( layerDefinedRotation && !dataDefinedRotation )
             {
@@ -2383,10 +2383,18 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
               {
                 xPos = point->x();
                 yPos = point->y();
+                anchorPosition = QgsPointXY( xPos, yPos );
+              }
+              else
+              {
+                QgsMessageLog::logMessage( QObject::tr( "Invalid data defined label position (%1, %2)" ).arg( xPos ).arg( yPos ), QObject::tr( "Labeling" ) );
+                hasDataDefinedPosition = false;
               }
             }
-
-            anchorPosition = QgsPointXY( xPos, yPos );
+            else
+            {
+              anchorPosition = QgsPointXY( xPos, yPos );
+            }
 
             xPos += xdiff;
             yPos += ydiff;
@@ -2462,8 +2470,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   // users with options they likely don't need to see...
   const double overrunSmoothDist = context.convertToMapUnits( 1, QgsUnitTypes::RenderMillimeters );
 
-  bool labelAll = labelPerPart && !dataDefinedPosition;
-  if ( !dataDefinedPosition )
+  bool labelAll = labelPerPart && !hasDataDefinedPosition;
+  if ( !hasDataDefinedPosition )
   {
     if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LabelAllParts ) )
     {
@@ -2483,10 +2491,10 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   mFeatsRegPal++;
 
   *labelFeature = lf;
-  ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
+  ( *labelFeature )->setHasFixedPosition( hasDataDefinedPosition );
   ( *labelFeature )->setFixedPosition( QgsPointXY( xPos, yPos ) );
   // use layer-level defined rotation, but not if position fixed
-  ( *labelFeature )->setHasFixedAngle( dataDefinedRotation || ( !dataDefinedPosition && !qgsDoubleNear( angle, 0.0 ) ) );
+  ( *labelFeature )->setHasFixedAngle( dataDefinedRotation || ( !hasDataDefinedPosition && !qgsDoubleNear( angle, 0.0 ) ) );
   ( *labelFeature )->setFixedAngle( angle );
   ( *labelFeature )->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
   ( *labelFeature )->setPositionOffset( QgsPointXY( offsetX, offsetY ) );
