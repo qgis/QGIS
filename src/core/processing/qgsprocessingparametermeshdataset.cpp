@@ -123,7 +123,6 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
   {
     if ( value.type() == QVariant::List )
     {
-      //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empty list when first value is 0...
       const QVariantList varList = value.toList();
       if ( varList.isEmpty() )
         ret << 0;
