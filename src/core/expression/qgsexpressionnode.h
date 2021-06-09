@@ -335,7 +335,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      *
      * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
      * be replaced entirely by a QgsExpressionNodeColumnRef referencing the "some_field" field, as the
-     * CASE WHEN ... will ALWAYS evalute to "some_field".
+     * CASE WHEN ... will ALWAYS evaluate to "some_field".
      *
      * Returns a reference to the current object if no optimizations were applied.
      *
@@ -347,7 +347,9 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
     QgsExpressionNode() = default;
 
+    //! Copy constructor
     QgsExpressionNode( const QgsExpressionNode &other );
+    //! Assignment operator
     QgsExpressionNode &operator=( const QgsExpressionNode &other );
 
     /**
@@ -383,7 +385,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      *
      * Eg. a node like "CASE WHEN true THEN "some_field" WHEN other condition THEN ... END" can effectively
      * be replaced entirely by a QgsExpressionNodeColumnRef referencing the "some_field" field, as the
-     * CASE WHEN ... will ALWAYS evalute to "some_field".
+     * CASE WHEN ... will ALWAYS evaluate to "some_field".
      *
      * \since QGIS 3.20
      */
