@@ -1572,17 +1572,60 @@ QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsE
 
 bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  bool res;
+  bool foundAnyNonStaticConditions = false;
   for ( WhenThen *cond : std::as_const( mConditions ) )
   {
-    res = cond->mWhenExp->prepare( parent, context )
-          & cond->mThenExp->prepare( parent, context );
+    const bool res = cond->mWhenExp->prepare( parent, context )
+                     && cond->mThenExp->prepare( parent, context );
     if ( !res )
       return false;
+
+    foundAnyNonStaticConditions |= !cond->mWhenExp->hasCachedStaticValue();
+    if ( !foundAnyNonStaticConditions && QgsExpressionUtils::getTVLValue( cond->mWhenExp->cachedStaticValue(), parent ) == QgsExpressionUtils::True )
+    {
+      // ok, we now that we'll ALWAYS be picking the same condition, as the "WHEN" clause for this condition (and all previous conditions) is a static
+      // value, and the static value for this WHEN clause is True.
+      if ( cond->mThenExp->hasCachedStaticValue() )
+      {
+        // then "THEN" clause ALSO has a static value, so we can replace the whole node with a static value
+        mCachedStaticValue = cond->mThenExp->cachedStaticValue();
+        mHasCachedValue = true;
+        return true;
+      }
+      else
+      {
+        // we know at least that we'll ALWAYS be picking the same condition, so even though the THEN node is non-static we can effectively replace
+        // this whole QgsExpressionNodeCondition node with just the THEN node for this condition.
+        mCompiledSimplifiedNode.reset( cond->mThenExp->effectiveNode()->clone() );
+        return true;
+      }
+    }
   }
 
   if ( mElseExp )
-    return mElseExp->prepare( parent, context );
+  {
+    const bool res = mElseExp->prepare( parent, context );
+    if ( !res )
+      return false;
+
+    if ( !foundAnyNonStaticConditions )
+    {
+      // all condition nodes are static conditions and not TRUE, so we know we'll ALWAYS be picking the ELSE node
+      if ( mElseExp->hasCachedStaticValue() )
+      {
+        mCachedStaticValue = mElseExp->cachedStaticValue();
+        mHasCachedValue = true;
+        return true;
+      }
+      else
+      {
+        // so even though the ELSE node is non-static we can effectively replace
+        // this whole QgsExpressionNodeCondition node with just the ELSE node for this condition.
+        mCompiledSimplifiedNode.reset( mElseExp->effectiveNode()->clone() );
+        return true;
+      }
+    }
+  }
 
   return true;
 }
