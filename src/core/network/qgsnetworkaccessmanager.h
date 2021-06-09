@@ -517,9 +517,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
-     * Sets a request pre-processor function, which allows to manipulate a network request before it is processed.
+     * Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
      *
-     * The \a processor function takes the QNetworkRequest as its argument, and can mutate the request if neccessary.
+     * The \a processor function takes the QNetworkRequest as its argument, and can mutate the request if necessary.
      *
      * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
      * used to remove the preprocessor (via a call to removeRequestPreprocessor()).

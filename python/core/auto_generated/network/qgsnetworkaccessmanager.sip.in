@@ -323,9 +323,9 @@ The contents of the reply will be returned after the request is completed or an 
 
     static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
 %Docstring
-Sets a request pre-processor function, which allows to manipulate a network request before it is processed.
+Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
 
-The ``processor`` function takes the QNetworkRequest as its argument, and can mutate the request if neccessary.
+The ``processor`` function takes the QNetworkRequest as its argument, and can mutate the request if necessary.
 
 :return: An auto-generated string uniquely identifying the preprocessor, which can later be
          used to remove the preprocessor (via a call to :py:func:`~QgsNetworkAccessManager.removeRequestPreprocessor`).
