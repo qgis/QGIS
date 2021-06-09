@@ -1602,7 +1602,7 @@ void QgsProjectProperties::apply()
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
-    canvas->refresh();
+    canvas->redrawAllLayers();
   }
 }
 
