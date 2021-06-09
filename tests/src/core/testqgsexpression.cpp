@@ -4323,6 +4323,112 @@ class TestQgsExpression: public QObject
       QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
     }
 
+    void testPrecomputedNodesReplacedWithEffectiveNodes()
+    {
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "first_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "second_field" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "third_field" ), QVariant::Int ) );
+
+      QgsFeature f( fields );
+      f.setAttributes( QgsAttributes() << 11 << 20 << 300 );
+
+      QgsExpressionContext context;
+      context.setFields( fields );
+      context.setFeature( f );
+
+      // nothing we can do to optimize this expression
+      QgsExpression exp( QStringLiteral( "CASE WHEN \"first_field\" = 5 then \"second_field\" when \"first_field\" = 6 then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 60 );
+
+      exp = QgsExpression( QStringLiteral( "CASE WHEN \"first_field\" = 5 then \"second_field\" when \"first_field\" = 11 then \"second_field\" * 2 else 77 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 40 );
+
+      // slightly more complex expression
+      exp = QgsExpression( QStringLiteral( "CASE WHEN (upper(\"first_field\") = 'AA') then \"second_field\" when \"first_field\" = 11 then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 40 );
+
+      // first condition is non-static, second is static... still nothing we can do to optimize this one
+      exp = QgsExpression( QStringLiteral( "CASE WHEN (upper(\"first_field\") = 'AA') then \"second_field\" when 3 * 2 = 6 then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 40 );
+
+      // first condition is static but false, second condition is non static ... can't optimize
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 7 then \"second_field\" when \"second_field\" = 'B' then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 60 );
+
+      // first condition is static but NULL, second condition is non static ... can't optimize
+      exp = QgsExpression( QStringLiteral( "CASE WHEN NULL then \"second_field\" when \"second_field\" = 'B' then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 60 );
+
+      // first condition is static AND true, and THEN expression for this node is static -- yay, we CAN optimize this down to a static value for the whole node
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 6 then 7 + 4 when \"second_field\" = 'B' then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->cachedStaticValue().toInt(), 11 );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntCondition );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 11 );
+
+      // first condition is static AND true, but THEN expression is non-static -- yay, we CAN still optimize this, because we will ALWAYS be returning the evaluated
+      // value for the THEN clause of the first condition, so we can effectively replace the entire node with the THEN expression of the first condition
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 6 then \"first_field\" when \"second_field\" = 'B' then \"second_field\" * 2 else \"second_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntColumnRef );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeColumnRef * >( exp.rootNode()->effectiveNode() )->name(), QStringLiteral( "first_field" ) );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 11 );
+
+      // first condition is static AND false, second is static AND true, so we can effectively replace the entire node with the THEN expression of the second condition
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 7 then \"first_field\" when 'B'='B' then \"second_field\" else \"third_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntColumnRef );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeColumnRef * >( exp.rootNode()->effectiveNode() )->name(), QStringLiteral( "second_field" ) );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 20 );
+
+      // first two conditions are static AND false, so we can effectively replace the entire node with the ELSE expression
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 7 then \"first_field\" when 'B'='C' then \"second_field\" else \"third_field\" end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntColumnRef );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeColumnRef * >( exp.rootNode()->effectiveNode() )->name(), QStringLiteral( "third_field" ) );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 300 );
+
+      // slightly more complex -- second condition is static and TRUE, but uses a more complicated THEN node
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 7 then \"first_field\" when 'B'='B' then upper(\"second_field\") || \"first_field\" else \"third_field\" * 3 end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeBinaryOperator * >( exp.rootNode()->effectiveNode() )->opLeft()->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeBinaryOperator * >( exp.rootNode()->effectiveNode() )->opRight()->nodeType(), QgsExpressionNode::NodeType::ntColumnRef );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 2011 );
+
+      // EVEN more complex -- second condition is static and TRUE, and uses a nested CASE as the THEN node
+      // the whole root node can be replaced by a column ref to "second_field"
+      exp = QgsExpression( QStringLiteral( "CASE WHEN 3 * 2 = 7 then \"first_field\" when 'B'='B' then ( CASE WHEN 3*3=11 then \"first_field\" ELSE \"second_field\" END) else \"third_field\" end" ) );
+      QVERIFY( exp.prepare( &context ) );
+      QVERIFY( !exp.rootNode()->hasCachedStaticValue() );
+      QCOMPARE( exp.rootNode()->effectiveNode()->nodeType(), QgsExpressionNode::NodeType::ntColumnRef );
+      QCOMPARE( qgis::down_cast< const QgsExpressionNodeColumnRef * >( exp.rootNode()->effectiveNode() )->name(), QStringLiteral( "second_field" ) );
+      QCOMPARE( exp.evaluate( &context ).toInt(), 20 );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )
