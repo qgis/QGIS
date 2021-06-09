@@ -218,6 +218,7 @@ The number of provided attributes need to exactly match the number of the featur
 .. seealso:: :py:func:`attributes`
 %End
 
+
     bool setAttribute( int field, const QVariant &attr /GetWrapper/ );
 %Docstring
 Sets an attribute's value by field index.
@@ -292,6 +293,7 @@ Resizes the attributes attached to this feature by appending the specified ``cou
 
 .. versionadded:: 3.18
 %End
+
 
     void deleteAttribute( int field );
 %Docstring
@@ -439,6 +441,7 @@ Returns the field map associated with the feature.
 .. seealso:: :py:func:`setFields`
 %End
 
+
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
 %Docstring
 Insert a value into attribute, by field ``name``.
@@ -511,6 +514,7 @@ Field map must be associated using setFields()before this method can be used.
       sipRes = true;
     }
 %End
+
 
     SIP_PYOBJECT attribute( const QString &name ) const;
 %Docstring
