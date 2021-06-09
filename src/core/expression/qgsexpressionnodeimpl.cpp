@@ -1788,7 +1788,8 @@ QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const 
     }
 
     default:
-      parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
+      if ( !container.isNull() )
+        parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
       return QVariant();
   }
 }
