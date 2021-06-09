@@ -228,7 +228,7 @@ The feature will be valid if it was successful.
 :param field: the index of the field to set
 :param attr: the value of the attribute
 
-:raises KeyError: if the field index does not exist
+:raises `KeyError` if the field index does not exist
 
 .. note::
 
@@ -301,7 +301,7 @@ Deletes an attribute and its value.
 
 .. seealso:: :py:func:`setAttribute`
 
-:raises KeyError: if the field is not found
+:raises `KeyError` if the field is not found
 
 .. note::
 
@@ -445,7 +445,7 @@ The feature will be valid if it was successful
 :param name: The name of the field to set
 :param value: The value to set
 
-:raises KeyError: if the attribute name could not be converted to an index
+:raises `KeyError` if the attribute name could not be converted to an index
 
 .. note::
 
@@ -481,7 +481,7 @@ before this method can be used.
 
 :param name: The name of the field to delete
 
-:raises KeyError: if attribute name could not be converted to index
+:raises `KeyError` if attribute name could not be converted to index
 
 .. note::
 
@@ -512,7 +512,7 @@ before this method can be used.
 
 :param name: The name of the attribute to get
 
-:raises KeyError: if the field is not found
+:raises `KeyError` if the field is not found
 
 .. note::
 
@@ -542,7 +542,7 @@ before this method can be used.
 
 :param fieldIdx: The index of the attribute to get
 
-:raises KeyError: if the field is not found
+:raises `KeyError` if the field is not found
 
 .. note::
 

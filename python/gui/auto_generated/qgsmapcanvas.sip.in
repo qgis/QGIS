@@ -234,7 +234,7 @@ Sets the canvas to the specified ``extent``.
 
 :return: ``True`` if the zoom was successful.
 
-:raises :: py:class:`QgsCsException` if a transformation error occurred.
+:raises `QgsCsException` if a transformation error occurred.
 
 .. versionadded:: 3.10
 %End

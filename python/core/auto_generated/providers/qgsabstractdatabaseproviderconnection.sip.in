@@ -364,7 +364,7 @@ Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
 Returns the URI string for the given ``table`` and ``schema``.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.12
 %End
@@ -374,7 +374,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual bool tableExists( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
@@ -382,7 +382,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Checks whether a table ``name`` exists in the given ``schema``.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void dropVectorTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
@@ -394,7 +394,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
@@ -406,7 +406,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
@@ -418,7 +418,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
@@ -430,14 +430,14 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void createSchema( const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Creates a new schema with the specified ``name``
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
@@ -452,7 +452,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const throw( QgsProviderConnectionException );
@@ -469,7 +469,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.16
 %End
@@ -487,7 +487,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.16
 %End
@@ -502,7 +502,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -512,7 +512,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
 .. seealso:: :py:func:`execSql`
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -522,7 +522,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
 .. seealso:: :py:func:`executeSql`
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.18
 %End
@@ -532,7 +532,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Vacuum the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     struct SpatialIndexOptions
@@ -548,7 +548,7 @@ The ``options`` argument can be used to provide extra options controlling the sp
 
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.14
 %End
@@ -560,7 +560,7 @@ ignored if not supported by the backend).
 
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.14
 %End
@@ -572,7 +572,7 @@ ignored if not supported by the backend).
 
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.14
 %End
@@ -583,7 +583,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Returns information on a ``table`` in the given ``schema``.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered or if the table does not exist.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. note::
 
@@ -600,7 +600,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 :param schema: name of the schema (ignored if not supported by the backend)
 :param flags: filter tables by flags, this option completely overrides search options stored in the connection
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
 
@@ -610,7 +610,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Returns information about the existing schemas.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
     virtual QgsFields fields( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
@@ -623,7 +623,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
    the default implementation creates a temporary vector layer, providers may
    choose to override this method for a greater efficiency.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.16
 %End
@@ -632,7 +632,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 %Docstring
 Returns a list of native types supported by the connection.
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 
 .. versionadded:: 3.16
 %End
@@ -651,7 +651,7 @@ Returns the provider key
 %Docstring
 Checks if ``capability`` is supported and throws and exception if it's not
 
-:raises :: py:class:`QgsProviderConnectionException`
+:raises `QgsProviderConnectionException` 
 %End
 
 

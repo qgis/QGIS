@@ -80,7 +80,7 @@ Appends an expression field. The field must have unique name, otherwise it is re
 %Docstring
 Removes the field with the given index.
 
-:raises KeyError: if no field with the specified index exists
+:raises `KeyError` if no field with the specified index exists
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -156,7 +156,7 @@ Returns if a field index is valid
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
 
-:raises KeyError: if no field exists at the specified index
+:raises `KeyError` if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -175,7 +175,7 @@ Returns the field at particular index (must be in range 0..N-1).
 %Docstring
 Returns the field at particular index (must be in range 0..N-1).
 
-:raises KeyError: if no field exists at the specified index
+:raises `KeyError` if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -194,7 +194,7 @@ Returns the field at particular index (must be in range 0..N-1).
 %Docstring
 Returns the field with matching name.
 
-:raises KeyError: if no matching field was found.
+:raises `KeyError` if no matching field was found.
 %End
 %MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
@@ -214,7 +214,7 @@ Returns the field with matching name.
 %Docstring
 Returns the field's origin (value from an enumeration).
 
-:raises KeyError: if no field exists at the specified index
+:raises `KeyError` if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -233,7 +233,7 @@ Returns the field's origin (value from an enumeration).
 %Docstring
 Returns the field's origin index (its meaning is specific to each type of origin).
 
-:raises KeyError: if no field exists at the specified index
+:raises `KeyError` if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -317,7 +317,7 @@ Returns an icon corresponding to a field index, based on the field's type and so
 :param fieldIdx: the field index
 :param considerOrigin: if ``True`` the icon will the origin of the field
 
-:raises KeyError: if no field exists at the specified index
+:raises `KeyError` if no field exists at the specified index
 
 .. versionadded:: 2.14
 %End
