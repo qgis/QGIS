@@ -699,11 +699,14 @@ void QgsDualView::toggleSearchMode( bool enabled )
   {
     setView( AttributeEditor );
     mAttributeForm->setMode( QgsAttributeEditorContext::SearchMode );
+    mAttributeForm->setVisible( true );
   }
   else
   {
     mAttributeForm->setMode( QgsAttributeEditorContext::SingleEditMode );
+    mAttributeForm->setVisible( mFilterModel->rowCount( ) > 0 );
   }
+
 }
 
 void QgsDualView::previewExpressionBuilder()
