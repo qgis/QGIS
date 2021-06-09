@@ -3,6 +3,7 @@
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrastermatrix.h"
+
 #include "qgsmessagelog.h"
 //#include <QImage>
 #include <QPainter>
@@ -66,18 +67,6 @@ QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
 }
 
 /*
-QImage *QgsVirtualRasterProvider::draw( QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
-{
-    QImage *image = new QImage( width, height, QImage::Format_ARGB32 );
-    const QImage &nimage = QImage( 5, 5, QImage::Format_ARGB32 );
-    image->fill( 0 );
-    QPoint pt = QPoint(2, 5);
-    QPainter p( image );
-    p.drawImage(pt,  nimage);
-    QgsDebugMsg("hello draw");
-
-    return image;
-}
 
 bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &extent, int width, int height, void *block, QgsRasterBlockFeedback *feedback )
 {
@@ -95,7 +84,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 {
     //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
     QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
-    QgsRasterMatrix matrix;
     QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
 
     unsigned int* outputData = ( unsigned int* )( block->bits() );
@@ -108,6 +96,22 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
     }
     Q_ASSERT( block );
+
+    QString mFormulaString = "dem@1";
+    QString mLastError = "last error";
+
+    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+    QgsRasterMatrix matrix;
+
+    QVector<QgsRasterCalculatorEntry> mRasterEntries;
+    QMap< QString, QgsRasterBlock * > inputBlocks;
+    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
+
+    for ( ; it != mRasterEntries.constEnd(); ++it )
+    {
+
+    }
+
 
     return block;
 }
