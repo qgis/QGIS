@@ -62,6 +62,8 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
     QString mPrefix;
     QgsZonalStatistics::Statistics mStats = QgsZonalStatistics::All;
     QgsCoordinateReferenceSystem mCrs;
+    bool mCreatedTransform = false;
+    QgsCoordinateTransform mFeatureToRasterTransform;
     double mPixelSizeX;
     double mPixelSizeY;
     QgsFields mOutputFields;
