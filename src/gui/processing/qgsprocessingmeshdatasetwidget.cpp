@@ -299,9 +299,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setWidgetValue( const QVariant
   if ( value.type() == QVariant::List )
   {
     //here we can't use  QgsProcessingParameters::parameterAsInts() because this method return empry list when first value is 0...
-    const QVariantList varList = value.toList();
-    for ( const QVariant &v : varList )
-      datasetGroupIndexes.append( QgsProcessingParameters::parameterAsInt( parameterDefinition(), v, context ) );
+    datasetGroupIndexes = QgsProcessingParameters::parameterAsInts( parameterDefinition(), value, context );
   }
   else
     datasetGroupIndexes.append( QgsProcessingParameters::parameterAsInt( parameterDefinition(), value, context ) );

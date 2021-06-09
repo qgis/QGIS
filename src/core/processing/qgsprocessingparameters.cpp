@@ -280,9 +280,8 @@ QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParame
     }
   }
 
-  if ( ( resultList.isEmpty() || resultList.at( 0 ) == 0 ) )
+  if ( resultList.isEmpty() )
   {
-    resultList.clear();
     // check default
     if ( definition->defaultValue().isValid() )
     {
