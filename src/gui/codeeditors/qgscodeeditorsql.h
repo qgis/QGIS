@@ -90,9 +90,9 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     void updateApis();
     QsciAPIs *mApis = nullptr;
     QsciLexerSQL *mSqlLexer = nullptr;
-    QStringList mExtraKeywords;
+    QSet<QString> mExtraKeywords;
 
-    QStringList mFieldNames;
+    QSet<QString> mFieldNames;
 
     friend class TestQgsQueryResultWidget;
 };

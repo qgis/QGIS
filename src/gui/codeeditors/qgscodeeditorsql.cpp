@@ -111,23 +111,23 @@ void QgsCodeEditorSQL::updateApis()
 
 QStringList QgsCodeEditorSQL::extraKeywords() const
 {
-  return mExtraKeywords;
+  return mExtraKeywords.values();
 }
 
 void QgsCodeEditorSQL::setExtraKeywords( const QStringList &extraKeywords )
 {
-  mExtraKeywords = extraKeywords;
+  mExtraKeywords = extraKeywords.toSet();
   updateApis();
 }
 
 QStringList QgsCodeEditorSQL::fieldNames() const
 {
-  return mFieldNames;
+  return mFieldNames.values();
 }
 
 void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
 {
-  mFieldNames = fieldNames;
+  mFieldNames = fieldNames.toSet();
   updateApis();
 }
 
