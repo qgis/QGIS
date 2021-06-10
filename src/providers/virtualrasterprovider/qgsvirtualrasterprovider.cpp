@@ -3,18 +3,13 @@
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrastermatrix.h"
+#include "qgsrasterlayer.h"
 
 #include "qgsmessagelog.h"
-//#include <QImage>
-#include <QPainter>
-
 #include "qgslogger.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
-
-//const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY = QStringLiteral( "virtualrasterprovider" );
-//const QString QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Virtual Raster data provider" );
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions)
     : QgsRasterDataProvider( uri, providerOptions)
@@ -66,24 +61,81 @@ QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
     return QgsDataProvider::dataSourceUri();
 }
 
-/*
+
 
 bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &extent, int width, int height, void *block, QgsRasterBlockFeedback *feedback )
 {
     Q_UNUSED( bandNo )
-    // TODO: optimize to avoid writing to QImage
-    std::unique_ptr< QImage > image( draw( mExtent, mWidth, mHeight, feedback ) );
+
+    //from rastercalculator.cpp
+    QString mFormulaString = "dem@1";
+    QString mLastError = "last error";
+
+    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+    QVector<QgsRasterCalculatorEntry> mRasterEntries;
+    //else  // Original code (memory inefficient route)
+    QMap< QString, QgsRasterBlock * > inputBlocks;
+    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
+
+    for ( ; it != mRasterEntries.constEnd(); ++it )
+    {
+        std::unique_ptr< QgsRasterBlock > block;
+        //block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
+        block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+        inputBlocks.insert( it->ref, block.release() );
+    }
+
+    QgsRasterMatrix resultMatrix;
+
+    for ( int i = 0; i < mHeight; ++i )
+    {
+        if ( feedback )
+        {
+          feedback->setProgress( 100.0 * static_cast< double >( i ) / mHeight );
+        }
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
+        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
+        {
+            bool resultIsNumber = resultMatrix.isNumber();
+            float *calcData = new float[mWidth];
+
+            for ( int j = 0; j < mWidth; ++j )
+            {
+                calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
+            }
+            //write scanline to the dataset (here replace GDALRasterIO
+
+            delete[] calcData;
+        }
+        else
+        {
+          qDeleteAll( inputBlocks );
+          inputBlocks.clear();
+          //gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
+          //return CalculationError;
+        }
+        resultMatrix.takeData();
+
+    }
+
     QgsDebugMsg("hello readblock");
 
     return true;
 }
-*/
 
 
+/*
+ * //works for displaying a black square
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
     //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
-    QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
+    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+    std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+    //QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
     QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
 
     unsigned int* outputData = ( unsigned int* )( block->bits() );
@@ -97,41 +149,10 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     }
     Q_ASSERT( block );
 
-    QString mFormulaString = "dem@1";
-    QString mLastError = "last error";
 
-    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-    QgsRasterMatrix matrix;
-
-    QVector<QgsRasterCalculatorEntry> mRasterEntries;
-    QMap< QString, QgsRasterBlock * > inputBlocks;
-    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
-
-    for ( ; it != mRasterEntries.constEnd(); ++it )
-    {
-
-    }
-
-
-    return block;
+    return block.release();
 }
 
-
-
-
-/*
-//it works
-QgsRasterBlock *QgsVirtualRasterProvider::block( Qgis::DataType dataType, int width, int height  )
-{
-    QgsRasterBlock *block = new QgsRasterBlock( dataType, width, height );
-    unsigned int* outputData = ( unsigned int* )( block->bits() );
-    QgsDebugMsg("hello from block method 2");
-    for ( int i = 0; i < width * height; ++i )
-    {
-        outputData[i] = 42;
-    }
-    return block;
-}
 */
 
 
