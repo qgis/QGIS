@@ -233,18 +233,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 
   updateTitle();
 
-  QgsVectorLayer *lyr = relation.referencingLayer();
-
-  bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !lyr->readOnly() )
-  {
-    mToggleEditingButton->setEnabled( true );
-    updateButtons();
-  }
-  else
-  {
-    mToggleEditingButton->setEnabled( false );
-  }
+  updateButtons();
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
@@ -345,18 +334,6 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 
   updateTitle();
 
-  QgsVectorLayer *lyr = relation.referencingLayer();
-
-  bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  if ( canChangeAttributes && !lyr->readOnly() )
-  {
-    mToggleEditingButton->setEnabled( true );
-  }
-  else
-  {
-    mToggleEditingButton->setEnabled( false );
-  }
-
   updateButtons();
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
@@ -405,6 +382,7 @@ void QgsRelationEditorWidget::setFeature( const QgsFeature &feature, bool update
 
 void QgsRelationEditorWidget::updateButtons()
 {
+  bool toggleEditingButtonEnabled = false;
   bool editable = false;
   bool linkable = false;
   bool spatial = false;
@@ -412,6 +390,9 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mRelation.isValid() )
   {
+    bool canSupportEditing = mRelation.referencingLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities;
+    canSupportEditing &= !mRelation.referencingLayer()->readOnly();
+    toggleEditingButtonEnabled = canSupportEditing;
     editable = mRelation.referencingLayer()->isEditable();
     linkable = mRelation.referencingLayer()->isEditable();
     spatial = mRelation.referencingLayer()->isSpatial();
@@ -419,10 +400,14 @@ void QgsRelationEditorWidget::updateButtons()
 
   if ( mNmRelation.isValid() )
   {
+    bool canSupportEditing = mNmRelation.referencedLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities;
+    canSupportEditing &= !mNmRelation.referencedLayer()->readOnly();
+    toggleEditingButtonEnabled |= canSupportEditing;
     editable = mNmRelation.referencedLayer()->isEditable();
     spatial = mNmRelation.referencedLayer()->isSpatial();
   }
 
+  mToggleEditingButton->setEnabled( toggleEditingButtonEnabled );
   mAddFeatureButton->setEnabled( editable );
   mAddFeatureGeometryButton->setEnabled( editable );
   mDuplicateFeatureButton->setEnabled( editable && selectionNotEmpty );
@@ -431,7 +416,7 @@ void QgsRelationEditorWidget::updateButtons()
   mUnlinkFeatureButton->setEnabled( linkable && selectionNotEmpty );
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
   mToggleEditingButton->setChecked( editable );
-  mSaveEditsButton->setEnabled( editable );
+  mSaveEditsButton->setEnabled( editable || linkable );
 
   mToggleEditingButton->setVisible( !mLayerInSameTransactionGroup );
   mLinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Link ) );
