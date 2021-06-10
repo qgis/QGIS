@@ -1808,7 +1808,7 @@ Emitted when setDirty(true) is called.
    As opposed to :py:func:`~QgsProject.isDirtyChanged`, this signal is invoked every time setDirty(true)
    is called, regardless of whether the project was already dirty.
 
-.. versionadded:: 3.22
+.. versionadded:: 3.20
 %End
 
 
