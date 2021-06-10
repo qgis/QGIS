@@ -21,16 +21,13 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   , mColumns( queryResult.columns() )
 {
   qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
-  if ( mQueryResult.hasNextRow() )
-  {
-    mWorker = new QgsQueryResultFetcher( &mQueryResult );
-    mWorker->moveToThread( &mWorkerThread );
-    connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
-    connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
-    // Forward signal
-    connect( mWorker, &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
-    mWorkerThread.start();
-  }
+  mWorker = new QgsQueryResultFetcher( &mQueryResult );
+  mWorker->moveToThread( &mWorkerThread );
+  connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
+  connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
+  // Forward signal
+  connect( mWorker, &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
+  mWorkerThread.start();
 }
 
 void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
