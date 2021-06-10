@@ -573,7 +573,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 {
   if ( !layer || !layer->isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Layer %1 is invalid and cannot be coppied" ).arg( layer ? layer->id() : QStringLiteral( "<UNKNOWN>" ) ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Layer %1 is invalid and cannot be copied" ).arg( layer ? layer->id() : QStringLiteral( "<UNKNOWN>" ) ), 4 );
     return nullptr;
   }
 
@@ -1839,5 +1839,4 @@ void QgsOfflineEditing::layerAdded( QgsMapLayer *layer )
     connect( vLayer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
   }
 }
-
 
