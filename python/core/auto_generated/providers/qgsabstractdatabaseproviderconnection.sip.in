@@ -89,6 +89,13 @@ Returns the number of fetched rows.
 .. seealso:: :py:func:`rowCount`
 %End
 
+        qlonglong rowCount( ) const;
+%Docstring
+Returns the number of rows returned by a SELECT query or -1 if unknown
+
+.. seealso:: :py:func:`fetchedRowCount`
+%End
+
 
         // Python iterator
         QueryResult *__iter__();

@@ -39,6 +39,9 @@ struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnec
 
     QVariantList nextRowInternal();
 
+
+    // QueryResultIterator interface
+    qlonglong rowCountPrivate() const override;
 };
 
 class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection

@@ -554,6 +554,17 @@ void QgsSpatialiteProviderResultIterator::setFields( const QgsFields &fields )
 }
 
 
+QgsSpatialiteProviderResultIterator::QgsSpatialiteProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+  : mHDS( std::move( hDS ) )
+  , mOgrLayer( ogrLayer )
+{
+  if ( mOgrLayer )
+  {
+    // Do not scan the layer!
+    mRowCount = OGR_L_GetFeatureCount( mOgrLayer, false );
+  }
+}
+
 QgsSpatialiteProviderResultIterator::~QgsSpatialiteProviderResultIterator()
 {
   if ( mHDS )
@@ -609,6 +620,11 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
     }
   }
   return row;
+}
+
+qlonglong QgsSpatialiteProviderResultIterator::rowCountPrivate() const
+{
+  return mRowCount;
 }
 
 

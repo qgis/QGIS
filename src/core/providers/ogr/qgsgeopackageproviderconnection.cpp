@@ -29,6 +29,8 @@
 #include <QTextCodec>
 
 
+///@cond PRIVATE
+
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -616,6 +618,11 @@ bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
   return ! mNextRow.isEmpty();
 }
 
+qlonglong QgsGeoPackageProviderResultIterator::rowCountPrivate() const
+{
+  return  mRowCount;
+}
+
 void QgsGeoPackageProviderResultIterator::setFields( const QgsFields &fields )
 {
   mFields = fields;
@@ -1153,6 +1160,17 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
   } );
 }
 
+QgsGeoPackageProviderResultIterator::QgsGeoPackageProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
+  : mHDS( std::move( hDS ) )
+  , mOgrLayer( ogrLayer )
+{
+  if ( mOgrLayer )
+  {
+    // Do not scan the layer!
+    mRowCount = OGR_L_GetFeatureCount( mOgrLayer, false );
+  }
+}
+
 QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
 {
   if ( mHDS )
@@ -1160,3 +1178,5 @@ QgsGeoPackageProviderResultIterator::~QgsGeoPackageProviderResultIterator()
     GDALDatasetReleaseResultSet( mHDS.get(), mOgrLayer );
   }
 }
+
+///@endcond

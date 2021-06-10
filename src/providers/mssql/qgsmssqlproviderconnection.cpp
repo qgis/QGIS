@@ -331,6 +331,11 @@ QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
   return row;
 }
 
+qlonglong QgssMssqlProviderResultIterator::rowCountPrivate() const
+{
+  return mQuery.size();
+}
+
 
 QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {

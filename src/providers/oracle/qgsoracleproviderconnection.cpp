@@ -1407,6 +1407,11 @@ QVariantList QgsOracleProviderResultIterator::nextRowInternal()
   return row;
 }
 
+qlonglong QgsOracleProviderResultIterator::rowCountPrivate() const
+{
+  return mQuery.size();
+}
+
 void QgsOracleProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,

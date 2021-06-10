@@ -273,6 +273,7 @@ class TestPyQgsProviderConnectionBase():
 
                 # Test column names
                 res = conn.execSql(sql)
+                self.assertEqual(res.rowCount(), 1)
                 rows = res.rows()
                 self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, expected_date, QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])

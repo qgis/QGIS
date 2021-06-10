@@ -52,6 +52,12 @@ bool QgsHanaProviderResultIterator::hasNextRowPrivate() const
   return mNextRow;
 }
 
+qlonglong QgsHanaProviderResultIterator::rowCountPrivate() const
+{
+  // TODO: hana team, this is for you.
+  return -1;
+}
+
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {

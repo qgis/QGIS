@@ -40,9 +40,9 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   public:
 
-    //! Constructs a result fetcher from \a queryResult.
-    QgsConnectionsApiFetcher( const QgsAbstractDatabaseProviderConnection *conn )
-      : mConnection( conn )
+    //! Constructs a result fetcher from \a connection.
+    QgsConnectionsApiFetcher( const QgsAbstractDatabaseProviderConnection *connection )
+      : mConnection( connection )
     {}
 
     //! Start fetching
@@ -155,6 +155,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     bool mFirstRowFetched = false;
     QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult> mQueryResultWatcher;
     QString mSqlErrorMessage;
+    qlonglong mActualRowCount = -1;
 
     /**
      * Updates buttons status.

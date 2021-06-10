@@ -37,7 +37,7 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     QVariantList mNextRow;
 
     QVariantList nextRowInternal();
-
+    qlonglong rowCountPrivate() const override;
 };
 
 class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection

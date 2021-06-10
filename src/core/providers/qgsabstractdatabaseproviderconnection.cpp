@@ -1438,6 +1438,15 @@ qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() 
   return mResultIterator->fetchedRowCount();
 }
 
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
+{
+  if ( ! mResultIterator )
+  {
+    return -1;
+  }
+  return mResultIterator->rowCount();
+}
+
 
 bool QgsAbstractDatabaseProviderConnection::QueryResult::hasNextRow() const
 {
@@ -1480,6 +1489,12 @@ qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterato
 {
   QMutexLocker lock( &mMutex );
   return mFetchedRowCount;
+}
+
+qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::rowCount()
+{
+  QMutexLocker lock( &mMutex );
+  return rowCountPrivate();
 }
 
 

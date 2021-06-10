@@ -427,6 +427,11 @@ bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
   return result && mRowIndex < result->PQntuples();
 }
 
+qlonglong QgsPostgresProviderResultIterator::rowCountPrivate() const
+{
+  return result ? result->PQntuples() : -1;
+}
+
 
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {

@@ -219,7 +219,6 @@ void QgsQueryResultWidget::cancelApiFetcher()
     mApiFetcher->stopFetching();
     mApiFetcherWorkerThread.quit();
     mApiFetcherWorkerThread.wait();
-    mApiFetcherWorkerThread.deleteLater();
   }
 }
 
@@ -250,10 +249,19 @@ void QgsQueryResultWidget::startFetching()
           mQueryResultsTableView->show();
           updateButtons();
           updateSqlLayerColumns( );
+          mActualRowCount = result.rowCount();
+          if ( mActualRowCount != -1 )
+          {
+            mProgressBar->setRange( 0, mActualRowCount );
+          }
         }
         mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
                                .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
                                .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
+        if ( mActualRowCount != -1 )
+        {
+          mProgressBar->setValue( mModel->rowCount( mModel->index( -1, -1 ) ) );
+        }
       } );
 
       mQueryResultsTableView->setModel( mModel.get() );
@@ -356,6 +364,11 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
       mApiFetcher = nullptr;
     } );
     connect( mApiFetcher, &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
+    connect( mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, &mApiFetcherWorkerThread, [ =  ]
+    {
+      mApiFetcherWorkerThread.quit();
+      mApiFetcherWorkerThread.wait();
+    } );
     mApiFetcherWorkerThread.start();
   }
 

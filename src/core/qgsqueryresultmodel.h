@@ -122,7 +122,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     QgsAbstractDatabaseProviderConnection::QueryResult mQueryResult;
     QStringList mColumns;
     QThread mWorkerThread;
-    QgsQueryResultFetcher *mWorker = nullptr;
+    std::unique_ptr<QgsQueryResultFetcher> mWorker;
     QList<QVariantList> mRows;
 
 };

@@ -119,6 +119,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         qlonglong fetchedRowCount( ) const;
 
+        /**
+         * Returns the number of rows returned by a SELECT query or -1 if unknown
+         *
+         * \see fetchedRowCount()
+         */
+        qlonglong rowCount( ) const;
+
 
 #ifdef SIP_RUN
         // Python iterator
@@ -154,15 +161,26 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         struct CORE_EXPORT QueryResultIterator SIP_SKIP
         {
+            //! Returns the next result row
             QVariantList nextRow();
+
+            //! Returns TRUE if there is another row to fetch
             bool hasNextRow() const;
+
+            //! Returns the number of actually fetched rows
             qlonglong fetchedRowCount();
+
+            //! Returns the total number of rows returned by a SELECT query or -1 if this is not known.
+            qlonglong rowCount();
+
             virtual ~QueryResultIterator() = default;
 
           private:
 
             virtual QVariantList nextRowPrivate() = 0;
             virtual bool hasNextRowPrivate() const = 0;
+            virtual qlonglong rowCountPrivate() const = 0;
+
             mutable qlonglong mFetchedRowCount = 0;
             mutable QMutex mMutex;
 

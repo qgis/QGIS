@@ -21,12 +21,12 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   , mColumns( queryResult.columns() )
 {
   qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
-  mWorker = new QgsQueryResultFetcher( &mQueryResult );
+  mWorker = std::make_unique<QgsQueryResultFetcher>( &mQueryResult );
   mWorker->moveToThread( &mWorkerThread );
-  connect( &mWorkerThread, &QThread::started, mWorker, &QgsQueryResultFetcher::fetchRows );
-  connect( mWorker, &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
-  // Forward signal
-  connect( mWorker, &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
+  connect( &mWorkerThread, &QThread::started, mWorker.get(), &QgsQueryResultFetcher::fetchRows );
+  // Forward signals to the model
+  connect( mWorker.get(), &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
+  connect( mWorker.get(), &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
   mWorkerThread.start();
 }
 
@@ -57,7 +57,6 @@ QgsQueryResultModel::~QgsQueryResultModel()
     mWorker->stopFetching();
     mWorkerThread.quit();
     mWorkerThread.wait();
-    mWorker->deleteLater();
   }
   else
   {

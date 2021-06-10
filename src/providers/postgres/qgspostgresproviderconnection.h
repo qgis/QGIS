@@ -32,11 +32,11 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
+    qlonglong rowCountPrivate() const override;
 
     bool mResolveTypes = true;
     std::shared_ptr<QgsPoolPostgresConn> mConn;
     qlonglong mRowIndex = 0;
-
 };
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
