@@ -22,6 +22,17 @@
 //qgis includes...
 #include <qgstemporalnavigationobject.h>
 
+char *toString( const QgsDateTimeRange &range )
+{
+  QString str = QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg(
+                  range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+                  range.begin().toString( Qt::ISODateWithMs ),
+                  range.end().toString( Qt::ISODateWithMs ),
+                  range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+  char *dst = new char[str.size() + 1];
+  return qstrcpy( dst, str.toLocal8Bit().constData() );
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsTemporalNavigationObject class.
@@ -189,14 +200,22 @@ void TestQgsTemporalNavigationObject::frameSettings()
                              true,
                              false
                            );
-  QgsDateTimeRange lastRange = QgsDateTimeRange(
-                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
-                                 true,
-                                 false
-                               );
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
+  // two frames - 8-10am, 10-12am
+  QCOMPARE( navigationObject->totalFrameCount(), 2LL );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 0, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 1 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+              true,
+              false
+            ) );
 
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
@@ -206,7 +225,32 @@ void TestQgsTemporalNavigationObject::frameSettings()
   QCOMPARE( navigationObject->frameDuration().originalUnit(), QgsUnitTypes::TemporalHours );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
-  QCOMPARE( navigationObject->totalFrameCount(), 5 );
+  // four frames - 8-9, 9-10, 10-11, 11-12am
+  QCOMPARE( navigationObject->totalFrameCount(), 4LL );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 9, 0, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 1 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 9, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 0, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 2 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 0, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 3 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+              true,
+              false
+            ) );
 
   navigationObject->setCurrentFrameNumber( 1 );
   QCOMPARE( navigationObject->currentFrameNumber(), 1 );
@@ -225,19 +269,69 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
 
-  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), lastRange );
-
   // Test if changing the frame duration 'keeps' the current frameNumber
-  navigationObject->setCurrentFrameNumber( 4 ); // 12:00-...
-  QCOMPARE( navigationObject->currentFrameNumber(), 4 );
+  navigationObject->setCurrentFrameNumber( 2 ); // 10:00-11
+  QCOMPARE( navigationObject->currentFrameNumber(), 2 );
   navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
-  QCOMPARE( navigationObject->currentFrameNumber(), 2 ); // going from 1 hour to 2 hour frames, but stay on 12:00-...
+  QCOMPARE( navigationObject->currentFrameNumber(), 1 ); // going from 1 hour to 2 hour frames, but stay on 10:00-...
   QCOMPARE( temporalRangeSignal.count(), 7 );
 
-  // Test if, when changing to Cumulative mode, the dateTimeRange for frame 4 (with 2 hours frames) is indeed the full range
+  // two frames - 8-10, 10-12am
+  QCOMPARE( navigationObject->totalFrameCount(), 2LL );
+
+  // Test if, when changing to Cumulative mode, the dateTimeRange for frame 2 (with 2 hours frames) is indeed the full range
   navigationObject->setTemporalRangeCumulative( true );
-  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 1 ), QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+              true,
+              false
+            ) );
   QCOMPARE( temporalRangeSignal.count(), 7 );
+
+  navigationObject->setTemporalRangeCumulative( false );
+  // interval which doesn't fit exactly into overall range
+  navigationObject->setFrameDuration( QgsInterval( 0.75, QgsUnitTypes::TemporalHours ) );
+  // six frames - 8-8.45, 8.45-9.30, 9.30-10.15, 10.15-11.00, 11.00-11.45, 11.45-12.30
+  QCOMPARE( navigationObject->totalFrameCount(), 6LL );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 0 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 45, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 1 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 45, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 9, 30, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 2 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 9, 30, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 15, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 3 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 10, 15, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 0, 0 ) ),
+              true,
+              false
+            ) );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 0, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 45, 0 ) ),
+              true,
+              false
+            ) );
+  // yes, this frame goes PAST the end of the overall animation range -- but we need to ensure that
+  // every frame has equal length!
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 5 ),  QgsDateTimeRange(
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 11, 45, 0 ) ),
+              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 30, 0 ) ),
+              true,
+              false
+            ) );
 }
 
 void TestQgsTemporalNavigationObject::expressionContext()
