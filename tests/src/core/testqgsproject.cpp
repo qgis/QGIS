@@ -39,6 +39,7 @@ class TestQgsProject : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
+    void testDirtySet();
     void testReadPath();
     void testPathResolver();
     void testPathResolverSvg();
@@ -83,6 +84,15 @@ void TestQgsProject::cleanupTestCase()
 {
   // Runs once after all tests are run
   QgsApplication::exitQgis();
+}
+
+void TestQgsProject::testDirtySet()
+{
+  QgsProject p;
+  bool dirtySet = false;
+  connect( &p, &QgsProject::dirtySet, [&] { dirtySet = true; } );
+  p.setDirty( true );
+  QVERIFY( dirtySet );
 }
 
 void TestQgsProject::testReadPath()

@@ -1799,6 +1799,18 @@ Emitted when the project dirty status changes.
 .. versionadded:: 3.2
 %End
 
+    void dirtySet();
+%Docstring
+Emitted when setDirty(true) is called.
+
+.. note::
+
+   As opposed to :py:func:`~QgsProject.isDirtyChanged`, this signal is invoked every time setDirty(true)
+   is called, regardless of whether the project was already dirty.
+
+.. versionadded:: 3.20
+%End
+
 
  void mapScalesChanged() /Deprecated/;
 %Docstring

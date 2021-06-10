@@ -1825,6 +1825,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void isDirtyChanged( bool dirty );
 
     /**
+     * Emitted when setDirty(true) is called.
+     * \note As opposed to isDirtyChanged(), this signal is invoked every time setDirty(true)
+     * is called, regardless of whether the project was already dirty.
+     *
+     * \since QGIS 3.20
+     */
+    void dirtySet();
+
+    /**
      * Emitted whenever the project is saved to a qgz file.
      * This can be used to package additional files into the qgz file by modifying the \a files map.
      *
