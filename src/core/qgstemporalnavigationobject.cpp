@@ -156,7 +156,7 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
   {
     case Animated:
     {
-      int currentFrameNumber = mCurrentFrameNumber;
+      long long currentFrameNumber = mCurrentFrameNumber;
 
       // Force to emit signal if the current frame number doesn't change
       if ( currentFrameNumber == mCurrentFrameNumber && !mBlockUpdateTemporalRangeSignal )
@@ -235,7 +235,7 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
   if ( framesPerSeconds > 0 )
   {
     mFramesPerSecond = framesPerSeconds;
-    mNewFrameTimer->setInterval( ( 1.0 / mFramesPerSecond ) * 1000 );
+    mNewFrameTimer->setInterval( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) );
   }
 }
 
@@ -256,7 +256,7 @@ bool QgsTemporalNavigationObject::temporalRangeCumulative() const
 
 void QgsTemporalNavigationObject::play()
 {
-  mNewFrameTimer->start( ( 1.0 / mFramesPerSecond ) * 1000 );
+  mNewFrameTimer->start( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) );
 }
 
 void QgsTemporalNavigationObject::pause()
@@ -367,7 +367,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
       // We tend to receive a framestart of 'now()' upon startup for example
       if ( mTemporalExtents.contains( frameStart ) )
       {
-        roughFrameStart = std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() );
+        roughFrameStart = static_cast< long long >( std::floor( ( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() ) );
       }
       roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
     }
