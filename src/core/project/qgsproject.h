@@ -1829,7 +1829,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note As opposed to isDirtyChanged(), this signal is invoked every time setDirty(true)
      * is called, regardless of whether the project was already dirty.
      *
-     * \since QGIS 3.22
+     * \since QGIS 3.20
      */
     void dirtySet();
 
