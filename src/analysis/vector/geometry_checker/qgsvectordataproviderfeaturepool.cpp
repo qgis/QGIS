@@ -35,7 +35,7 @@ QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLay
   QgsFeatureIterator it = layer->getFeatures( req );
   while ( it.nextFeature( feature ) )
   {
-    if ( feature.hasGeometry() )
+    if ( feature.hasGeometry() && !feature.geometry().isEmpty() )
     {
       insertFeature( feature );
       featureIds.insert( feature.id() );
