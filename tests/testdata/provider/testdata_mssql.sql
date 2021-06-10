@@ -39,6 +39,9 @@ GO
 DROP TABLE IF EXISTS qgis_test.[tb_test_composite_float_pk];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[constraints];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
@@ -284,4 +287,14 @@ INSERT INTO [qgis_test].[tb_test_composite_float_pk] (pk1, pk2, pk3, value, geom
     (1, 2, 3.141592741, 'test 2', geometry::STGeomFromText('POINT(-47.887 -15.864)', 4326)),
     (2, 2, 2.718281828, 'test 3', geometry::STGeomFromText('POINT(-47.902 -15.763)', 4326)),
     (2, 2, 1.0,         'test 4', geometry::STGeomFromText('POINT(-47.952 -15.781)', 4326));
+GO
+
+-- Table for constraint tests
+CREATE TABLE [qgis_test].[constraints]
+(
+  gid integer PRIMARY KEY,
+  val int,
+  name text NOT NULL,
+  description text
+);
 GO

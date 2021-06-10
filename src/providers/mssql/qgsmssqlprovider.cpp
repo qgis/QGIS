@@ -364,12 +364,9 @@ void QgsMssqlProvider::loadFields()
     return;
   }
 
-  if ( query.isActive() )
+  while ( query.next() )
   {
-    while ( query.next() )
-    {
-      mComputedColumns.append( query.value( 0 ).toString() );
-    }
+    mComputedColumns.append( query.value( 0 ).toString() );
   }
 
   if ( !query.exec( QStringLiteral( "exec sp_columns @table_name = N%1, @table_owner = %2" ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) ) )
@@ -377,162 +374,165 @@ void QgsMssqlProvider::loadFields()
     pushError( query.lastError().text() );
     return;
   }
-  if ( query.isActive() )
-  {
-    int i = 0;
-    QStringList pkCandidates;
-    while ( query.next() )
-    {
-      const QString colName = query.value( 3 ).toString();
-      const QString sqlTypeName = query.value( 5 ).toString();
 
-      // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
-      // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
-      if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
-           || colName == mGeometryColName )
+  int i = 0;
+  QStringList pkCandidates;
+  while ( query.next() )
+  {
+    const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
+    const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
+
+    // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
+    // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
+    if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
+         || colName == mGeometryColName )
+    {
+      mGeometryColName = colName;
+      mGeometryColType = sqlTypeName;
+      mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
+    }
+    else
+    {
+      QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
+      if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
       {
-        mGeometryColName = colName;
-        mGeometryColType = sqlTypeName;
-        mParser.mIsGeography = sqlTypeName == QLatin1String( "geography" );
+        mPrimaryKeyType = PktInt;
+        mPrimaryKeyAttrs << mAttributeFields.size();
+        isIdentity = true;
+      }
+      else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
+      {
+        pkCandidates << query.value( 3 ).toString();
+      }
+
+      QgsField field;
+      if ( sqlType == QVariant::String )
+      {
+        // Field length in chars is column 7 ("Length") of the sp_columns output,
+        // except for uniqueidentifiers which must use column 6 ("Precision").
+        int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
+        if ( sqlTypeName.startsWith( QLatin1Char( 'n' ) ) )
+        {
+          length = length / 2;
+        }
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          length );
+      }
+      else if ( sqlType == QVariant::Double )
+      {
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          query.value( 6 ).toInt(),
+                          sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 );
+      }
+      else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
+      {
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          -1,
+                          -1 );
       }
       else
       {
-        QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
-        if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
-        {
-          mPrimaryKeyType = PktInt;
-          mPrimaryKeyAttrs << mAttributeFields.size();
-          isIdentity = true;
-        }
-        else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
-        {
-          pkCandidates << query.value( 3 ).toString();
-        }
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName );
+      }
 
-        if ( sqlType == QVariant::String )
-        {
-          // Field length in chars is column 7 ("Length") of the sp_columns output,
-          // except for uniqueidentifiers which must use column 6 ("Precision").
-          int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
-          if ( sqlTypeName.startsWith( QLatin1Char( 'n' ) ) )
-          {
-            length = length / 2;
-          }
-          mAttributeFields.append(
-            QgsField(
-              colName, sqlType,
-              sqlTypeName,
-              length ) );
-        }
-        else if ( sqlType == QVariant::Double )
-        {
-          mAttributeFields.append(
-            QgsField(
-              colName, sqlType,
-              sqlTypeName,
-              query.value( 6 ).toInt(),
-              sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 ) );
-        }
-        else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
-        {
-          mAttributeFields.append(
-            QgsField(
-              colName, sqlType,
-              sqlTypeName,
-              -1,
-              -1 ) );
-        }
-        else
-        {
-          mAttributeFields.append(
-            QgsField(
-              colName, sqlType,
-              sqlTypeName ) );
-        }
+      // Field nullable
+      const bool nullable = query.value( QStringLiteral( "NULLABLE" ) ).toBool();
+      QgsFieldConstraints constraints;
+      if ( !nullable )
+        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      field.setConstraints( constraints );
 
-        //COLUMN_DEF
-        if ( !query.value( 12 ).isNull() )
-        {
-          mDefaultValues.insert( i, query.value( 12 ).toString() );
-        }
+      mAttributeFields.append( field );
 
-        ++i;
+      //COLUMN_DEF
+      if ( !query.value( 12 ).isNull() )
+      {
+        mDefaultValues.insert( i, query.value( 12 ).toString() );
+      }
+
+      ++i;
+    }
+  }
+  // get primary key
+  if ( mPrimaryKeyAttrs.isEmpty() )
+  {
+    query.clear();
+    query.setForwardOnly( true );
+    if ( !query.exec( QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) ) )
+    {
+      QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
+    }
+
+    if ( query.isActive() )
+    {
+      mPrimaryKeyType = PktInt;
+
+      while ( query.next() )
+      {
+        QString fidColName = query.value( 3 ).toString();
+        int idx = mAttributeFields.indexFromName( fidColName );
+        const QgsField &fld = mAttributeFields.at( idx );
+
+        if ( !mPrimaryKeyAttrs.isEmpty() ||
+             ( fld.type() != QVariant::Int &&
+               fld.type() != QVariant::LongLong &&
+               ( fld.type() != QVariant::Double || fld.precision() != 0 ) ) )
+          mPrimaryKeyType = PktFidMap;
+
+        mPrimaryKeyAttrs << idx;
+      }
+
+      if ( mPrimaryKeyAttrs.isEmpty() )
+      {
+        mPrimaryKeyType = PktUnknown;
       }
     }
-    // get primary key
-    if ( mPrimaryKeyAttrs.isEmpty() )
+  }
+
+  if ( mPrimaryKeyAttrs.isEmpty() )
+  {
+    const auto constPkCandidates = pkCandidates;
+    for ( const QString &pk : constPkCandidates )
     {
       query.clear();
       query.setForwardOnly( true );
-      if ( !query.exec( QStringLiteral( "exec sp_pkeys @table_name = N%1, @table_owner = %2 " ).arg( quotedValue( mTableName ), quotedValue( mSchemaName ) ) ) )
+      if ( !query.exec( QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
+                        .arg( pk, mSchemaName, mTableName ) ) )
       {
         QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
       }
 
-      if ( query.isActive() )
+      if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
       {
         mPrimaryKeyType = PktInt;
-
-        while ( query.next() )
-        {
-          QString fidColName = query.value( 3 ).toString();
-          int idx = mAttributeFields.indexFromName( fidColName );
-          const QgsField &fld = mAttributeFields.at( idx );
-
-          if ( !mPrimaryKeyAttrs.isEmpty() ||
-               ( fld.type() != QVariant::Int &&
-                 fld.type() != QVariant::LongLong &&
-                 ( fld.type() != QVariant::Double || fld.precision() != 0 ) ) )
-            mPrimaryKeyType = PktFidMap;
-
-          mPrimaryKeyAttrs << idx;
-        }
-
-        if ( mPrimaryKeyAttrs.isEmpty() )
-        {
-          mPrimaryKeyType = PktUnknown;
-        }
+        mPrimaryKeyAttrs << mAttributeFields.indexFromName( pk );
+        return;
       }
     }
+  }
 
-    if ( mPrimaryKeyAttrs.isEmpty() )
-    {
-      const auto constPkCandidates = pkCandidates;
-      for ( const QString &pk : constPkCandidates )
-      {
-        query.clear();
-        query.setForwardOnly( true );
-        if ( !query.exec( QStringLiteral( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
-                          .arg( pk, mSchemaName, mTableName ) ) )
-        {
-          QgsDebugMsg( QStringLiteral( "SQL:%1\n  Error:%2" ).arg( query.lastQuery(), query.lastError().text() ) );
-        }
+  if ( mPrimaryKeyAttrs.isEmpty() )
+  {
+    QString error = QStringLiteral( "No primary key could be found on table %1" ).arg( mTableName );
+    QgsDebugMsg( error );
+    mValid = false;
+    setLastError( error );
+  }
 
-        if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
-        {
-          mPrimaryKeyType = PktInt;
-          mPrimaryKeyAttrs << mAttributeFields.indexFromName( pk );
-          return;
-        }
-      }
-    }
-
-    if ( mPrimaryKeyAttrs.isEmpty() )
-    {
-      QString error = QStringLiteral( "No primary key could be found on table %1" ).arg( mTableName );
-      QgsDebugMsg( error );
-      mValid = false;
-      setLastError( error );
-    }
-
-    if ( mPrimaryKeyAttrs.size() == 1 && !isIdentity )
-    {
-      // primary key has not null, unique constraints
-      QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
-      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
-    }
+  if ( mPrimaryKeyAttrs.size() == 1 && !isIdentity )
+  {
+    // primary key has unique constraints
+    QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
   }
 }
 
