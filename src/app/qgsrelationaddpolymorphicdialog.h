@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsrelationaddpolymorphicdlg.h
+    qgsrelationaddpolymorphicdialog.h
     ---------------------
     begin                : December 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -19,18 +19,6 @@
 #include "qgis_app.h"
 #include "ui_qgsrelationmanageraddpolymorphicdialogbase.h"
 #include "qgsrelation.h"
-
-class QDialogButtonBox;
-class QComboBox;
-class QLineEdit;
-class QSpacerItem;
-class QToolButton;
-class QVBoxLayout;
-class QHBoxLayout;
-
-class QgsVectorLayer;
-class QgsFieldComboBox;
-class QgsMapLayerComboBox;
 
 /**
  * QgsRelationAddDlg allows configuring a new relation.
