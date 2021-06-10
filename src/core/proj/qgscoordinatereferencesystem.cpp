@@ -2122,8 +2122,7 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
 
   thread_local const QRegularExpression ellipseRegExp( QStringLiteral( "\\+(?:ellps|datum)=(\\S+)" ) );
   const QRegularExpressionMatch ellipseMatch = projRegExp.match( proj );
-  QString ellps;
-  if ( !ellipseMatch.hasMatch() )
+  if ( ellipseMatch.hasMatch() )
   {
     ellipsoid = ellipseMatch.captured( 1 );
   }
@@ -2134,7 +2133,7 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
     // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
     // set for these CRSes). Better just hack around and make the constraint happy for now,
     // and hope that the definitions get corrected in future.
-    ellipsoid.clear();
+    ellipsoid = "";
   }
 }
 
