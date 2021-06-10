@@ -379,8 +379,8 @@ void QgsMssqlProvider::loadFields()
   QStringList pkCandidates;
   while ( query.next() )
   {
-    const QString colName = query.value( 3 ).toString();
-    const QString sqlTypeName = query.value( 5 ).toString();
+    const QString colName = query.value( QStringLiteral( "COLUMN_NAME" ) ).toString();
+    const QString sqlTypeName = query.value( QStringLiteral( "TYPE_NAME" ) ).toString();
 
     // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
     // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
@@ -405,15 +405,7 @@ void QgsMssqlProvider::loadFields()
         pkCandidates << query.value( 3 ).toString();
       }
 
-      // Field nullable
-      const bool nullable = query.value( 10 ).toBool();
-
-      QgsDebugMsg( QStringLiteral( "Col name: %1, Nullable: %2" ).arg( colName ).arg( query.value( 10 ).toString() ) );
-
-      QgsFieldConstraints constraints;
-      if ( !nullable )
-        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-
+      QgsField field;
       if ( sqlType == QVariant::String )
       {
         // Field length in chars is column 7 ("Length") of the sp_columns output,
@@ -423,45 +415,42 @@ void QgsMssqlProvider::loadFields()
         {
           length = length / 2;
         }
-        QgsField field = QgsField(
-                           colName, sqlType,
-                           sqlTypeName,
-                           length );
-        if ( !nullable )
-          field.setConstraints( constraints );
-        mAttributeFields.append( field );
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          length );
       }
       else if ( sqlType == QVariant::Double )
       {
-        QgsField field = QgsField(
-                           colName, sqlType,
-                           sqlTypeName,
-                           query.value( 6 ).toInt(),
-                           sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 );
-        if ( !nullable )
-          field.setConstraints( constraints );
-        mAttributeFields.append( field );
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          query.value( 6 ).toInt(),
+                          sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 );
       }
       else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
       {
-        QgsField field = QgsField(
-                           colName, sqlType,
-                           sqlTypeName,
-                           -1,
-                           -1 );
-        if ( !nullable )
-          field.setConstraints( constraints );
-        mAttributeFields.append( field );
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName,
+                          -1,
+                          -1 );
       }
       else
       {
-        QgsField field = QgsField(
-                           colName, sqlType,
-                           sqlTypeName );
-        if ( !nullable )
-          field.setConstraints( constraints );
-        mAttributeFields.append( field );
+        field = QgsField( colName,
+                          sqlType,
+                          sqlTypeName );
       }
+
+      // Field nullable
+      const bool nullable = query.value( QStringLiteral( "NULLABLE" ) ).toBool();
+      QgsFieldConstraints constraints;
+      if ( !nullable )
+        constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      field.setConstraints( constraints );
+
+      mAttributeFields.append( field );
 
       //COLUMN_DEF
       if ( !query.value( 12 ).isNull() )
@@ -540,7 +529,7 @@ void QgsMssqlProvider::loadFields()
 
   if ( mPrimaryKeyAttrs.size() == 1 && !isIdentity )
   {
-    // primary key has not null, unique constraints
+    // primary key has unique constraints
     QgsFieldConstraints constraints = mAttributeFields.at( mPrimaryKeyAttrs[0] ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     mAttributeFields[ mPrimaryKeyAttrs[0] ].setConstraints( constraints );
