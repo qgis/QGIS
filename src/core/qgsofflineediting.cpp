@@ -1654,12 +1654,14 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
     QgsAttributeMap attrMap = cit.value();
     for ( QgsAttributeMap::const_iterator it = attrMap.constBegin(); it != attrMap.constEnd(); ++it )
     {
+      QString value = it.value().type() == QVariant::StringList || it.value().type() == QVariant::List ? QgsJsonUtils::encodeValue( it.value() ) : it.value().toString();
+      value.replace( QLatin1String( "'" ), QLatin1String( "''" ) ); // escape quote
       QString sql = QStringLiteral( "INSERT INTO 'log_feature_updates' VALUES ( %1, %2, %3, %4, '%5' )" )
                     .arg( layerId )
                     .arg( commitNo )
                     .arg( fid )
-                    .arg( it.key() ) // attr
-                    .arg( it.value().type() == QVariant::StringList || it.value().type() == QVariant::List ? QgsJsonUtils::encodeValue( it.value() ) : it.value().toString() ); // value
+                    .arg( it.key() ) // attribute
+                    .arg( value );
       sqlExec( database.get(), sql );
     }
   }
