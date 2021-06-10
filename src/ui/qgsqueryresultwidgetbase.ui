@@ -21,7 +21,7 @@
     <widget class="QgsCodeEditorSQL" name="mSqlEditor" native="true"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,2,0,1,1">
      <item>
       <widget class="QPushButton" name="mClearButton">
        <property name="text">
@@ -33,6 +33,13 @@
       <widget class="QLabel" name="mStatusLabel">
        <property name="text">
         <string>Status and errors goes here.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="mProgressBar">
+       <property name="value">
+        <number>24</number>
        </property>
       </widget>
      </item>
@@ -127,7 +134,7 @@
            <string/>
           </property>
           <property name="placeholderText">
-           <string>Enter the optional SQL filter ro click on the button to open the query builder tool</string>
+           <string>Enter the optional SQL filter or click on the button to open the query builder tool</string>
           </property>
          </widget>
         </item>

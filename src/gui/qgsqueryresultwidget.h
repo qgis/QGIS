@@ -32,7 +32,7 @@
 #ifndef SIP_RUN
 
 /**
- * \brief The QgsConnectionsApiFetcher class fetches tokens (table and field names) of a connection from a separate thread.
+ * \brief The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
  */
 class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 {
@@ -123,10 +123,6 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void tokensReady( const QStringList &tokens );
 
-  private slots:
-
-    void syncSqlOptions();
-
   signals:
 
     /**
@@ -143,6 +139,9 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void firstResultBatchFetched();
 
+  private slots:
+
+    void syncSqlOptions();
 
   private:
 
@@ -150,7 +149,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
     QgsConnectionsApiFetcher *mApiFetcher = nullptr;
-    QThread mWorkerThread;
+    QThread mApiFetcherWorkerThread;
     bool mWasCanceled = false;
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
     bool mFirstRowFetched = false;
@@ -172,6 +171,10 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void cancelRunningQuery();
 
+    /**
+     * Cancel API fetching.
+     */
+    void cancelApiFetcher();
 
     /**
      * Starts the model population after initial query run.
@@ -182,7 +185,6 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      * Returns the sqlVectorLayerOptions
      */
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
-
 
     friend class TestQgsQueryResultWidget;
 

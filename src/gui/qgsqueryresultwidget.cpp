@@ -19,8 +19,6 @@
 #include "qgsmessagelog.h"
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
-#include <QStandardItem>
-
 
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
@@ -30,6 +28,9 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
   // Unsure :/
   // mSqlEditor->setLineNumbersVisible( true );
+
+  mQueryResultsTableView->hide();
+  mProgressBar->hide();
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
   connect( mClearButton, &QPushButton::pressed, this, [ = ]
@@ -98,13 +99,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
 
 QgsQueryResultWidget::~QgsQueryResultWidget()
 {
-  if ( mApiFetcher )
-  {
-    mApiFetcher->stopFetching();
-    mWorkerThread.quit();
-    mWorkerThread.wait();
-    mWorkerThread.deleteLater();
-  }
+  cancelApiFetcher();
   cancelRunningQuery();
 }
 
@@ -125,12 +120,15 @@ void QgsQueryResultWidget::executeQuery()
     mStopButton->setEnabled( true );
     mStatusLabel->show();
     mStatusLabel->setText( tr( "Running⋯" ) );
+    mProgressBar->show();
+    mProgressBar->setRange( 0, 0 );
     mSqlErrorMessage.clear();
 
     connect( mStopButton, &QPushButton::pressed, mFeedback.get(), [ = ]
     {
       mStatusLabel->setText( tr( "Stopped" ) );
       mFeedback->cancel();
+      mProgressBar->hide();
       mWasCanceled = true;
     } );
 
@@ -214,6 +212,17 @@ void QgsQueryResultWidget::cancelRunningQuery()
   }
 }
 
+void QgsQueryResultWidget::cancelApiFetcher()
+{
+  if ( mApiFetcher )
+  {
+    mApiFetcher->stopFetching();
+    mApiFetcherWorkerThread.quit();
+    mApiFetcherWorkerThread.wait();
+    mApiFetcherWorkerThread.deleteLater();
+  }
+}
+
 void QgsQueryResultWidget::startFetching()
 {
   if ( ! mWasCanceled )
@@ -242,7 +251,7 @@ void QgsQueryResultWidget::startFetching()
           updateButtons();
           updateSqlLayerColumns( );
         }
-        mStatusLabel->setText( tr( "Fetched rows: %1 %2." )
+        mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
                                .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
                                .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
       } );
@@ -256,6 +265,7 @@ void QgsQueryResultWidget::startFetching()
         if ( ! mWasCanceled )
         {
           mStatusLabel->setText( "Query executed successfully." );
+          mProgressBar->hide();
         }
       } );
     }
@@ -263,6 +273,7 @@ void QgsQueryResultWidget::startFetching()
   else
   {
     mStatusLabel->setText( tr( "SQL command aborted." ) );
+    mProgressBar->hide();
   }
 }
 
@@ -270,6 +281,7 @@ void QgsQueryResultWidget::showError( const QString &title, const QString &messa
 {
   mStatusLabel->show();
   mStatusLabel->setText( tr( "There was an error executing the query." ) );
+  mProgressBar->hide();
   mQueryResultsTableView->hide();
   if ( isSqlError )
   {
@@ -317,14 +329,7 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 {
   mConnection.reset( connection );
 
-  if ( mApiFetcher )
-  {
-    mApiFetcher->stopFetching();
-    mWorkerThread.quit();
-    mWorkerThread.wait();
-    mApiFetcher->deleteLater();
-    mApiFetcher = nullptr;
-  }
+  cancelApiFetcher();
 
   if ( connection )
   {
@@ -343,15 +348,15 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
 
     // Add dynamic keywords in a separate thread
     mApiFetcher = new QgsConnectionsApiFetcher( connection );
-    mApiFetcher->moveToThread( &mWorkerThread );
-    connect( &mWorkerThread, &QThread::started, mApiFetcher, &QgsConnectionsApiFetcher::fetchTokens );
-    connect( &mWorkerThread, &QThread::finished, mApiFetcher, [ = ]
+    mApiFetcher->moveToThread( &mApiFetcherWorkerThread );
+    connect( &mApiFetcherWorkerThread, &QThread::started, mApiFetcher, &QgsConnectionsApiFetcher::fetchTokens );
+    connect( &mApiFetcherWorkerThread, &QThread::finished, mApiFetcher, [ = ]
     {
       mApiFetcher->deleteLater();
       mApiFetcher = nullptr;
     } );
     connect( mApiFetcher, &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
-    mWorkerThread.start();
+    mApiFetcherWorkerThread.start();
   }
 
   updateButtons();
@@ -380,7 +385,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
       }
       catch ( QgsProviderConnectionException &ex )
       {
-        QgsMessageLog::logMessage( tr( "Error retrieving schemas: %1" ).arg( ex.what() ) );
+        QgsMessageLog::logMessage( tr( "Error retrieving schemas: %1" ).arg( ex.what() ), QStringLiteral( "QGIS" ), Qgis::MessageLevel::Warning );
       }
     }
     else
@@ -404,7 +409,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
       }
       catch ( QgsProviderConnectionException &ex )
       {
-        QgsMessageLog::logMessage( tr( "Error retrieving tables: %1" ).arg( ex.what() ) );
+        QgsMessageLog::logMessage( tr( "Error retrieving tables: %1" ).arg( ex.what() ), QStringLiteral( "QGIS" ), Qgis::MessageLevel::Warning );
       }
 
       // Get fields
@@ -425,7 +430,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
         }
         catch ( QgsProviderConnectionException &ex )
         {
-          QgsMessageLog::logMessage( tr( "Error retrieving fields for table %1: %2" ).arg( table, ex.what() ) );
+          QgsMessageLog::logMessage( tr( "Error retrieving fields for table %1: %2" ).arg( table, ex.what() ), QStringLiteral( "QGIS" ), Qgis::MessageLevel::Warning );
         }
       }
     }
