@@ -408,7 +408,7 @@ void QgsMssqlProvider::loadFields()
       // Field nullable
       const bool nullable = query.value( 10 ).toBool();
 
-      QgsDebugMsg( QString( "Col name: %1, Nullable: %2" ).arg( colName ).arg( query.value( 10 ).toString() ) );
+      QgsDebugMsg( QStringLiteral( "Col name: %1, Nullable: %2" ).arg( colName ).arg( query.value( 10 ).toString() ) );
 
       QgsFieldConstraints constraints;
       if ( !nullable )
