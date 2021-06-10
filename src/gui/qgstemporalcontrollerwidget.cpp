@@ -441,10 +441,17 @@ void QgsTemporalControllerWidget::onProjectCleared()
   mNavigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
   setWidgetStateFromNavigationMode( QgsTemporalNavigationObject::NavigationOff );
 
-  whileBlocking( mStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC ) );
-  whileBlocking( mEndDateTime )->setDateTime( mStartDateTime->dateTime() );
-  whileBlocking( mFixedRangeStartDateTime )->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC ) );
-  whileBlocking( mFixedRangeEndDateTime )->setDateTime( mStartDateTime->dateTime() );
+  // default to showing the last 24 hours, ending at the current date's hour, in one hour blocks...
+  // it's COMPLETELY arbitrary, but better than starting with a "zero length" duration!
+  const QTime startOfCurrentHour = QTime( QTime::currentTime().hour(), 0, 0 );
+  const QDateTime end = QDateTime( QDate::currentDate(), startOfCurrentHour, Qt::UTC );
+  const QDateTime start = end.addSecs( -24 * 60 * 60 );
+
+  whileBlocking( mStartDateTime )->setDateTime( start );
+  whileBlocking( mEndDateTime )->setDateTime( end );
+  whileBlocking( mFixedRangeStartDateTime )->setDateTime( start );
+  whileBlocking( mFixedRangeEndDateTime )->setDateTime( end );
+
   updateTemporalExtent();
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
   mStepSpinBox->setValue( 1 );
