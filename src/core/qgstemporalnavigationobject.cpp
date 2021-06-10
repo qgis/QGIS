@@ -98,9 +98,6 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   if ( mCumulativeTemporalRange )
     frameStart = start;
 
-  if ( end <= mTemporalExtents.end() )
-    return QgsDateTimeRange( frameStart, end, true, false );
-
   return QgsDateTimeRange( frameStart, mTemporalExtents.end(), true, false );
 }
 
@@ -291,7 +288,7 @@ void QgsTemporalNavigationObject::skipToEnd()
 long long QgsTemporalNavigationObject::totalFrameCount() const
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  return std::floor( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+  return static_cast< long long >( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
 }
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
