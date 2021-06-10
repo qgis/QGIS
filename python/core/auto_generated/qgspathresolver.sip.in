@@ -49,9 +49,8 @@ or data source), and return a processed version of this path.
 
 The path pre-processor function is called before any bad layer handler.
 
-.. note::
-
-   Setting a new ``processor`` replaces any existing processor.
+If multiple preprocessors are set, they will be called in sequence based on the order in which
+they were originally set.
 
 Example - replace an outdated folder path with a new one:
 
@@ -61,7 +60,6 @@ Example - replace an outdated folder path with a new one:
           return path.replace('c:/Users/ClintBarton/Documents/Projects', 'x:/Projects/')
 
        QgsPathResolver.setPathPreprocessor(my_processor)
-
 
 Example - replace a stored database host with a new one:
 

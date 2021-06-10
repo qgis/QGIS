@@ -76,7 +76,8 @@ class CORE_EXPORT QgsPathResolver
      *
      * The path pre-processor function is called before any bad layer handler.
      *
-     * \note Setting a new \a processor replaces any existing processor.
+     * If multiple preprocessors are set, they will be called in sequence based on the order in which
+     * they were originally set.
      *
      * Example - replace an outdated folder path with a new one:
      *
