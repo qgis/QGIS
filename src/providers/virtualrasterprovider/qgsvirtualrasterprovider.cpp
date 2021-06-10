@@ -62,17 +62,53 @@ QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
 }
 
 
-
+/*
 bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &extent, int width, int height, void *block, QgsRasterBlockFeedback *feedback )
 {
     Q_UNUSED( bandNo )
 
-    //from rastercalculator.cpp
+
+    QgsDebugMsg("hello readblock");
+
+    return true;
+}
+*/
+
+//works for displaying a black square
+QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+{
+    /*
+    //this part was only to show a black square
+    //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+    //QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
+    QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
+
+    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+
+    for ( int i = 0; i < width * height; ++i )
+    {
+        //QgsDebugMsg("inside for loop");
+        outputData[i] = 42;
+
+
+    }
+
+    */
+    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+    //use bits instead of setValue
+    //unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+
+    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
+    QVector<QgsRasterCalculatorEntry> mRasterEntries;
+    //from rastercalculator.cpp processCalculation
     QString mFormulaString = "dem@1";
     QString mLastError = "last error";
 
     std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-    QVector<QgsRasterCalculatorEntry> mRasterEntries;
+
     //else  // Original code (memory inefficient route)
     QMap< QString, QgsRasterBlock * > inputBlocks;
     QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
@@ -106,8 +142,9 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
             for ( int j = 0; j < mWidth; ++j )
             {
                 calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
+                tblock->setValue(i,j,calcData[j]);
             }
-            //write scanline to the dataset (here replace GDALRasterIO
+            //write scanline to the dataset (here replace GDALRasterIO)
 
             delete[] calcData;
         }
@@ -115,45 +152,17 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
         {
           qDeleteAll( inputBlocks );
           inputBlocks.clear();
-          //gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-          //return CalculationError;
+
         }
         resultMatrix.takeData();
 
     }
 
-    QgsDebugMsg("hello readblock");
-
-    return true;
+    Q_ASSERT( tblock );
+    return tblock.release();
 }
 
 
-/*
- * //works for displaying a black square
-QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
-{
-    //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
-    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-    std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
-    //QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
-    QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
-
-    unsigned int* outputData = ( unsigned int* )( block->bits() );
-
-    for ( int i = 0; i < width * height; ++i )
-    {
-        //QgsDebugMsg("inside for loop");
-        outputData[i] = 42;
-
-
-    }
-    Q_ASSERT( block );
-
-
-    return block.release();
-}
-
-*/
 
 
 QgsRectangle QgsVirtualRasterProvider::extent() const
