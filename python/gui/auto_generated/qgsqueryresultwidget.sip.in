@@ -24,7 +24,7 @@ Query execution and result fetching can be interrupted by pressing the "Stop" pu
 
    the ownership of the connection is transferred to the widget.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
 %TypeHeaderCode

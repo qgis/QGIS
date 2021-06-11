@@ -22,7 +22,7 @@
 
 
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
-  : QWidget::QWidget( parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
@@ -50,11 +50,18 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   {
     if ( mConnection )
     {
-      std::unique_ptr<QgsVectorLayer> vlayer { mConnection->createSqlVectorLayer( sqlVectorLayerOptions() ) };
-      QgsQueryBuilder builder{ vlayer.get() };
-      if ( builder.exec() == QDialog::Accepted )
+      try
       {
-        mFilterLineEdit->setText( builder.sql() );
+        std::unique_ptr<QgsVectorLayer> vlayer { mConnection->createSqlVectorLayer( sqlVectorLayerOptions() ) };
+        QgsQueryBuilder builder{ vlayer.get() };
+        if ( builder.exec() == QDialog::Accepted )
+        {
+          mFilterLineEdit->setText( builder.sql() );
+        }
+      }
+      catch ( const QgsProviderConnectionException &ex )
+      {
+        mMessageBar->pushCritical( tr( "Error opening filter dialog" ), tr( "There was an error while preparing SQL filter dialog: %1." ).arg( ex.what() ) );
       }
     }
   } );
