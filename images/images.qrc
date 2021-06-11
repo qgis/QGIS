@@ -644,6 +644,7 @@
         <file>themes/default/renderer25dSymbol.svg</file>
         <file>themes/default/rendererGrassSymbol.svg</file>
         <file>themes/default/rendererMergedFeatures.svg</file>
+        <file>themes/default/rendererEmbeddedSymbols.svg</file>
         <file>themes/default/labelingNone.svg</file>
         <file>themes/default/labelingSingle.svg</file>
         <file>themes/default/labelingRuleBased.svg</file>
@@ -921,6 +922,7 @@
         <file>themes/default/mIconFolderOpenParams.svg</file>
         <file>themes/default/mIconFolderLinkParams.svg</file>
         <file>themes/default/mIconFolderHomeParams.svg</file>
+
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
