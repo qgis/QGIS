@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
+#include <QTemporaryDir>
 
 //qgis includes...
 #include <qgis.h>
@@ -31,7 +32,6 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include <qgsrectangle.h>
-#include "qgspoint.h"
 
 /**
 * \ingroup UnitTests
@@ -45,7 +45,7 @@ class TestQgsVirtualRasterProvider : public QObject
 
  private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase(){}// will be called after the last testfunction was executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
 
@@ -82,6 +82,19 @@ void TestQgsVirtualRasterProvider::validLayer()
 
 }
 
+//runs after all tests
+void TestQgsVirtualRasterProvider::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+}
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"

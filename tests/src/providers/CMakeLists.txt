@@ -75,6 +75,7 @@ SET_TESTS_PROPERTIES(qgis_postgresconntest PROPERTIES LABELS "POSTGRES")
 
 if (NOT FORCE_STATIC_PROVIDERS)
   ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
+  ADD_QGIS_TEST(virtualrasterprovidertest testqgsvirtualrasterprovider.cpp)
 endif()
 
 if (WITH_EPT)
@@ -91,7 +92,6 @@ if (WITH_PDAL)
   target_link_libraries(qgis_pdalprovidertest pdalprovider_a qgis_core)
 endif()
 
-ADD_QGIS_TEST(virtualrasterprovidertest testqgsvirtualrasterprovider.cpp)
 #############################################################
 # WCS public servers test:
 # No need to test on all platforms
