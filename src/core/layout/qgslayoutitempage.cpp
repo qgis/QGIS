@@ -103,6 +103,27 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
   }
 }
 
+QPageLayout QgsLayoutItemPage::pageLayout() const
+{
+  QPageLayout pageLayout;
+  pageLayout.setMargins( {0, 0, 0, 0} );
+  pageLayout.setMode( QPageLayout::FullPageMode );
+  QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), QgsUnitTypes::LayoutMillimeters ).toQSizeF();
+
+  if ( pageSize().width() > pageSize().height() )
+  {
+    pageLayout.setOrientation( QPageLayout::Landscape );
+    pageLayout.setPageSize( QPageSize( QSizeF( size.height(), size.width() ), QPageSize::Millimeter ) );
+  }
+  else
+  {
+    pageLayout.setOrientation( QPageLayout::Portrait );
+    pageLayout.setPageSize( QPageSize( size, QPageSize::Millimeter ) );
+  }
+  pageLayout.setUnits( QPageLayout::Millimeter );
+  return pageLayout;
+}
+
 QgsLayoutSize QgsLayoutItemPage::pageSize() const
 {
   return sizeWithUnits();
