@@ -1085,6 +1085,44 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += QLatin1Char( ']' );
     return listStr;
   }
+  else if ( value.type() == QVariant::Int || value.type() == QVariant::UInt || value.type() == QVariant::LongLong || value.type() == QVariant::ULongLong )
+  {
+    bool ok;
+    QString res;
+
+    if ( value.type() == QVariant::ULongLong )
+    {
+      res = QLocale().toString( value.toULongLong( &ok ) );
+    }
+    else
+    {
+      res = QLocale().toString( value.toLongLong( &ok ) );
+    }
+
+    if ( ok )
+    {
+      return res;
+    }
+    else
+    {
+      return value.toString();
+    }
+  }
+  // Qt madness with QMetaType::Float :/
+  else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
+  {
+    bool ok;
+    const QString res { QLocale().toString( value.toDouble( &ok ), 'f', 6 ) };
+
+    if ( ok )
+    {
+      return res;
+    }
+    else
+    {
+      return value.toString();
+    }
+  }
   else
   {
     return value.toString();
