@@ -3959,15 +3959,15 @@ class TestQgsExpression: public QObject
 
     void test_formatPreviewStringWithLocale()
     {
-      const QVariant t_int { 12345 };
+      const QVariant t_int( 12345 );
       QVariant t_uint( QVariant::UInt );
       t_uint = 12345;
       QVariant t_long( QVariant::LongLong );
       t_long = 12345;
       QVariant t_ulong( QVariant::ULongLong );
       t_ulong = 12345;
-      const QVariant t_float { 12345.001F };
-      const QVariant t_double { 12345.001 };
+      const QVariant t_float( 12345.001F );
+      const QVariant t_double( 12345.001 );
 
       QLocale().setDefault( QLocale::English );
 
