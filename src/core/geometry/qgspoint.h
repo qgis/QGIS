@@ -349,6 +349,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the Cartesian 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared()
      * \since QGIS 3.0
     */
     double distance( const QgsPoint &other ) const SIP_HOLDGIL
@@ -391,26 +392,27 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
-     * this is faster than calling distance(), and may be useful in use cases such as comparing
-     * distances where the extra expense of calling distance() is not required.
-     * \see distance()
+     * this is faster than calling distance3D(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance3D() is not required.
+     * \see distance3D()
      * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;
