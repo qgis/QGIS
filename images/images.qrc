@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.png">splash/dev-splash.png</file>
         <file>flags/af.svg</file>
         <file>flags/ar.svg</file>
         <file>flags/bg.svg</file>
