@@ -66,6 +66,15 @@ QIcon QgsLayerItem::iconPointCloud()
   return QgsIconUtils::iconPointCloud();
 }
 
+QgsAbstractDatabaseProviderConnection *QgsLayerItem::databaseConnection() const
+{
+  if ( parent() )
+  {
+    return parent()->databaseConnection();
+  }
+  return nullptr;
+}
+
 QIcon QgsLayerItem::iconDefault()
 {
   return QgsIconUtils::iconDefaultLayer();
