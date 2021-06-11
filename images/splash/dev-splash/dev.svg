@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   viewBox="0 0 132.29167 132.29167"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c4e8f9e, 2021-05-24)"
+   sodipodi:docname="dev.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="0.67081229"
+     inkscape:cx="452.43655"
+     inkscape:cy="364.48348"
+     inkscape:window-width="1352"
+     inkscape:window-height="877"
+     inkscape:window-x="152"
+     inkscape:window-y="171"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     units="px"
+     width="500px" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#2e2e2e;stroke-width:2.12246;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke;fill-opacity:1"
+       id="rect1217"
+       width="140.71788"
+       height="132.29167"
+       x="-0.39442232"
+       y="0.39442232" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:65.8435px;line-height:1.25;font-family:sans-serif;fill:#c9c9c9;fill-opacity:1;stroke:none;stroke-width:1.64609"
+       x="12.352212"
+       y="88.828918"
+       id="text219"><tspan
+         sodipodi:role="line"
+         id="tspan217"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Source Sans Pro';-inkscape-font-specification:'Source Sans Pro Bold';fill:#c9c9c9;fill-opacity:1;stroke-width:1.64609"
+         x="12.352212"
+         y="88.828918">dev</tspan></text>
+  </g>
+</svg>
