@@ -143,6 +143,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
             {
                 calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
                 //tblock->setValue(i,j,calcData[j]);
+                resultMatrix.takeData();
                 outputData[i*mWidth+j]=calcData[j];
             }
             //write scanline to the dataset ( replace GDALRasterIO)
@@ -155,7 +156,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
           inputBlocks.clear();
 
         }
-        resultMatrix.takeData();
 
     }
 
