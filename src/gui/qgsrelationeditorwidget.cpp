@@ -135,14 +135,14 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mDuplicateFeatureButton = new QToolButton( this );
   mDuplicateFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) );
   mDuplicateFeatureButton->setText( tr( "Duplicate Child Feature" ) );
-  mDuplicateFeatureButton->setToolTip( tr( "Duplicate child feature" ) );
+  mDuplicateFeatureButton->setToolTip( tr( "Duplicate selected child feature" ) );
   mDuplicateFeatureButton->setObjectName( QStringLiteral( "mDuplicateFeatureButton" ) );
   buttonLayout->addWidget( mDuplicateFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
   mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
   mDeleteFeatureButton->setText( tr( "Delete Child Feature" ) );
-  mDeleteFeatureButton->setToolTip( tr( "Delete child feature" ) );
+  mDeleteFeatureButton->setToolTip( tr( "Delete selected child feature" ) );
   mDeleteFeatureButton->setObjectName( QStringLiteral( "mDeleteFeatureButton" ) );
   buttonLayout->addWidget( mDeleteFeatureButton );
   // link feature
@@ -156,14 +156,14 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
   mUnlinkFeatureButton = new QToolButton( this );
   mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ) );
   mUnlinkFeatureButton->setText( tr( "Unlink Feature" ) );
-  mUnlinkFeatureButton->setToolTip( tr( "Unlink child feature" ) );
+  mUnlinkFeatureButton->setToolTip( tr( "Unlink selected child feature" ) );
   mUnlinkFeatureButton->setObjectName( QStringLiteral( "mUnlinkFeatureButton" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
   // zoom to linked feature
   mZoomToFeatureButton = new QToolButton( this );
   mZoomToFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
   mZoomToFeatureButton->setText( tr( "Zoom To Feature" ) );
-  mZoomToFeatureButton->setToolTip( tr( "Zoom to child feature" ) );
+  mZoomToFeatureButton->setToolTip( tr( "Zoom to selected child feature" ) );
   mZoomToFeatureButton->setObjectName( QStringLiteral( "mZoomToFeatureButton" ) );
   buttonLayout->addWidget( mZoomToFeatureButton );
   // spacer
