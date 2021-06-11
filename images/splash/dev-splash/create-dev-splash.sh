@@ -3,7 +3,7 @@
 # = 12x9-2*9(QGIS blocks)
 total_images=90
 images_per_block=9
-blocks=$((${total_images}/${images_per_block}))
+blocks=$((total_images/images_per_block))
 
 curl  -H "Accept: application/vnd.github.v3+json" \
   https://api.github.com/repos/qgis/QGIS/contributors?per_page=${total_images} \
@@ -18,7 +18,7 @@ done
 
 i=0
 while read -r line; do
-  p=$((($i - $i%${images_per_block})/${images_per_block}))
+  p=$(((i - i%images_per_block)/images_per_block))
   odir=avatars_${p}
   echo "wget ${line} -O ${odir}/${i}.png"
   wget -q ${line} -O ${odir}/${i}.png
