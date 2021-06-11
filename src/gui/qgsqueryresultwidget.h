@@ -32,7 +32,8 @@
 #ifndef SIP_RUN
 
 /**
- * \brief The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
+ * The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
+ * WARNING: this class is an implementation detail and it is not part of public API!
  */
 class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 {
@@ -79,7 +80,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
  *
  * \note the ownership of the connection is transferred to the widget.
  *
- * \since QGIS 3.20
+ * \since QGIS 3.22
  */
 class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResultWidgetBase
 {

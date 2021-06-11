@@ -30,6 +30,7 @@
 
 /**
  * The QgsQueryResultFetcher class fetches query results from a separate thread
+ * WARNING: this class is an implementation detail and it is not part of public API!
  */
 class QgsQueryResultFetcher: public QObject
 {
