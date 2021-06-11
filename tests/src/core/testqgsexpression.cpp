@@ -3957,6 +3957,41 @@ class TestQgsExpression: public QObject
                 QStringLiteral( "[ 'One', 'Two', 'A very long string that is going to be tr… ]" ) );
     }
 
+    void test_formatPreviewStringWithLocale()
+    {
+      const QVariant t_int { 12345 };
+      QVariant t_uint( QVariant::UInt );
+      t_uint = 12345;
+      QVariant t_long( QVariant::LongLong );
+      t_long = 12345;
+      QVariant t_ulong( QVariant::ULongLong );
+      t_ulong = 12345;
+      const QVariant t_float { 12345.001F };
+      const QVariant t_double { 12345.001 };
+
+      QLocale().setDefault( QLocale::English );
+
+      QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12,345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12,345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_long ), QStringLiteral( "12,345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_ulong ), QStringLiteral( "12,345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12,345.000977" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12,345.001000" ) );
+
+      QLocale().setDefault( QLocale::Italian );
+
+      QCOMPARE( QgsExpression::formatPreviewString( t_int ), QStringLiteral( "12.345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12.345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_long ), QStringLiteral( "12.345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_ulong ), QStringLiteral( "12.345" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12.345,000977" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12.345,001000" ) );
+
+      QLocale().setDefault( QLocale::English );
+
+    }
+
+
     void test_nowStatic()
     {
       QgsExpression e( QStringLiteral( "now()" ) );
