@@ -101,13 +101,37 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     //use bits instead of setValue
     float * outputData = ( float * )( tblock->bits() );
 
+
     //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
     //from rastercalculator.cpp processCalculation
     QString mFormulaString = "dem@1";
     QString mLastError = "last error";
-
+    mLastError.clear();
     std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+
+    if ( !calcNode )
+    {
+      //error
+      //return ParserError;
+      QgsDebugMsg("ParserError = 4, Error parsing formula");
+    }
+
+    // Check input layers and bands
+      for ( const auto &entry : std::as_const( mRasterEntries ) )
+      {
+        if ( !entry.raster ) // no raster layer in entry
+        {
+          mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
+          //return InputLayerError;
+          QgsDebugMsg("InputLayerError = 2, Error reading input layer");
+        }
+        if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
+        {
+          mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
+          QgsDebugMsg("BandError = 6, Invalid band number for input");
+        }
+      }
 
     //else  // Original code (memory inefficient route)
     QMap< QString, QgsRasterBlock * > inputBlocks;
@@ -144,7 +168,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
                 calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
                 //tblock->setValue(i,j,calcData[j]);
                 resultMatrix.takeData();
-                outputData[i*mWidth+j]=calcData[j];
+                outputData[ i*mWidth + j ]=calcData[j];
             }
             //write scanline to the dataset ( replace GDALRasterIO)
 
