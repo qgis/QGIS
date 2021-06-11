@@ -41,6 +41,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsjsonutils.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -784,7 +785,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         else if ( type == QVariant::StringList || type == QVariant::List )
         {
           ogrType = OFTString;
-          showWarning( tr( "Field '%1' from layer %2 has been converted from a list to a string of comma-separated values." ).arg( fieldName, layer->name() ) );
+          ogrSubType = OFSTJSON;
+          showWarning( tr( "Field '%1' from layer %2 has been converted from a list to a JSON-formatted string value." ).arg( fieldName, layer->name() ) );
         }
         else
           ogrType = OFTString;
@@ -867,7 +869,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         QVariant attr = attrs.at( it );
         if ( layer->fields().at( it ).type() == QVariant::StringList || layer->fields().at( it ).type() == QVariant::List )
         {
-          attr = convertStringListToString( attr.toStringList() );
+          attr = QgsJsonUtils::encodeValue( attr );
         }
         newAttrs[column++] = attr;
       }
@@ -1061,11 +1063,25 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
       QVariant attr = attrs.at( it );
       if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
       {
-        attr = convertStringToStringList( attr.toString() );
+        if ( attr.type() == QVariant::StringList || attr.type() == QVariant::List )
+        {
+          attr = attr.toStringList();
+        }
+        else
+        {
+          attr = QgsJsonUtils::parseArray( attr.toString(), QVariant::String );
+        }
       }
       else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
       {
-        attr = convertStringToList( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
+        if ( attr.type() == QVariant::StringList || attr.type() == QVariant::List )
+        {
+          attr = attr.toList();
+        }
+        else
+        {
+          attr = QgsJsonUtils::parseArray( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
+        }
       }
       newAttrs[ remoteAttributeIndex ] = attr;
     }
@@ -1076,51 +1092,6 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVec
 
     emit progressUpdated( i++ );
   }
-}
-
-QStringList QgsOfflineEditing::convertStringToStringList( const QString &string )
-{
-  QStringList stringList = string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
-  for ( QString &string : stringList )
-  {
-    string.replace( QLatin1String( "\\," ), QLatin1String( "," ) );
-  }
-  return stringList;
-}
-
-QString QgsOfflineEditing::convertStringListToString( const QStringList &stringList )
-{
-  QStringList modifiedStringList = stringList;
-  for ( QString &string : modifiedStringList )
-  {
-    string.replace( QLatin1String( "," ), QLatin1String( "\\," ) );
-  }
-  return modifiedStringList.join( QLatin1Char( ',' ) );
-}
-
-QVariantList QgsOfflineEditing::convertStringToList( const QString &string, QVariant::Type type )
-{
-  QVariantList variantList;
-  const QStringList stringList = string.split( QRegularExpression( "(?<!\\\\)\\s*,\\s*" ) );
-  for ( const QString &string : stringList )
-  {
-    switch ( type )
-    {
-      case QVariant::Int:
-        variantList << string.toInt();
-        break;
-      case QVariant::LongLong:
-        variantList << string.toLongLong();
-        break;
-      case QVariant::Double:
-        variantList << string.toDouble();
-        break;
-      default:
-        // unsupported list type
-        break;
-    }
-  }
-  return variantList;
 }
 
 void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId )
@@ -1159,16 +1130,15 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
 
-
     int remoteAttributeIndex = attrLookup[ values.at( i ).attr ];
     QVariant attr = values.at( i ).value;
     if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::StringList )
     {
-      attr = convertStringToStringList( attr.toString() );
+      attr = QgsJsonUtils::parseArray( attr.toString(), QVariant::String );
     }
     else if ( remoteLayer->fields().at( remoteAttributeIndex ).type() == QVariant::List )
     {
-      attr = convertStringToList( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
+      attr = QgsJsonUtils::parseArray( attr.toString(), remoteLayer->fields().at( remoteAttributeIndex ).subType() );
     }
 
     remoteLayer->changeAttributeValue( fid, remoteAttributeIndex, attr );
@@ -1733,12 +1703,14 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
     QgsAttributeMap attrMap = cit.value();
     for ( QgsAttributeMap::const_iterator it = attrMap.constBegin(); it != attrMap.constEnd(); ++it )
     {
+      QString value = it.value().type() == QVariant::StringList || it.value().type() == QVariant::List ? QgsJsonUtils::encodeValue( it.value() ) : it.value().toString();
+      value.replace( QLatin1String( "'" ), QLatin1String( "''" ) ); // escape quote
       QString sql = QStringLiteral( "INSERT INTO 'log_feature_updates' VALUES ( %1, %2, %3, %4, '%5' )" )
                     .arg( layerId )
                     .arg( commitNo )
                     .arg( fid )
-                    .arg( it.key() ) // attr
-                    .arg( it.value().toString() ); // value
+                    .arg( it.key() ) // attribute
+                    .arg( value );
       sqlExec( database.get(), sql );
     }
   }
