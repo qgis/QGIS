@@ -126,7 +126,7 @@ void QgsQueryResultWidget::executeQuery()
     mFeedback = std::make_unique<QgsFeedback>();
     mStopButton->setEnabled( true );
     mStatusLabel->show();
-    mStatusLabel->setText( tr( "Running⋯" ) );
+    mStatusLabel->setText( tr( "Executing query…" ) );
     mProgressBar->show();
     mProgressBar->setRange( 0, 0 );
     mSqlErrorMessage.clear();
