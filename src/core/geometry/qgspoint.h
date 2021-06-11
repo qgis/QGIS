@@ -383,9 +383,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Returns the Cartesian 3D distance between this point and a specified x, y, z coordinate. In certain
-     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * cases it may be more appropriate to call the faster distanceSquared3D() method, e.g.,
      * when comparing distances.
-     * \see distanceSquared()
+     * \see distanceSquared3D()
      * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
