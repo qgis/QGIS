@@ -17,6 +17,8 @@
 #ifndef QGSLAYOUTITEMPAGE_H
 #define QGSLAYOUTITEMPAGE_H
 
+#include <QPageLayout>
+
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
@@ -105,6 +107,12 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      * \see pageSize()
      */
     bool setPageSize( const QString &size, Orientation orientation = Portrait );
+
+    /**
+     * Returns the page layout for the page, suitable to pass to QPrinter::setPageLayout
+     * \since QGIS 3.20
+     */
+    QPageLayout pageLayout() const;
 
     /**
      * Returns the size of the page.

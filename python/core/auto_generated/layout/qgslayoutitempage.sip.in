@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring(signature="appended")
@@ -69,6 +70,13 @@ size was changed. If ``False`` is returned then ``size`` could not be matched
 to a known page size.
 
 .. seealso:: :py:func:`pageSize`
+%End
+
+    QPageLayout pageLayout() const;
+%Docstring
+Returns the page layout for the page, suitable to pass to QPrinter.setPageLayout
+
+.. versionadded:: 3.20
 %End
 
     QgsLayoutSize pageSize() const;
