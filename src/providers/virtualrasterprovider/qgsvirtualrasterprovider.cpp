@@ -99,7 +99,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
     std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
     //use bits instead of setValue
-    //unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+    float * outputData = ( float * )( tblock->bits() );
 
     //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
@@ -142,9 +142,10 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
             for ( int j = 0; j < mWidth; ++j )
             {
                 calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
-                tblock->setValue(i,j,calcData[j]);
+                //tblock->setValue(i,j,calcData[j]);
+                outputData[i*mWidth+j]=calcData[j];
             }
-            //write scanline to the dataset (here replace GDALRasterIO)
+            //write scanline to the dataset ( replace GDALRasterIO)
 
             delete[] calcData;
         }
