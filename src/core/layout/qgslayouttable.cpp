@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
 #include "qgslayouttable.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
@@ -525,7 +526,8 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
         currentX += mCellMargin;
 
         QVariant cellContents = mTableContents.at( row ).at( col );
-        QStringList str = cellContents.toString().split( '\n' );
+        const QString localizedString { QgsExpressionUtils::toLocalizedString( cellContents ) };
+        QStringList str = localizedString.split( '\n' );
 
         QgsTextFormat cellFormat = textFormatForCell( row, col );
         QgsExpressionContextScopePopper popper( context.renderContext().expressionContext(), scopeForCell( row, col ) );
@@ -533,9 +535,9 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
         // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
         // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
-        if ( ( mWrapBehavior != TruncateText || column.width() > 0 ) && textRequiresWrapping( context.renderContext(), cellContents.toString(), column.width(), cellFormat ) )
+        if ( ( mWrapBehavior != TruncateText || column.width() > 0 ) && textRequiresWrapping( context.renderContext(), localizedString, column.width(), cellFormat ) )
         {
-          str = wrappedText( context.renderContext(), cellContents.toString(), column.width(), cellFormat );
+          str = wrappedText( context.renderContext(), localizedString, column.width(), cellFormat );
         }
 
         p->save();
@@ -1127,7 +1129,7 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
       if ( mColumns.at( col ).width() <= 0 )
       {
         //column width set to automatic, so check content size
-        const QStringList multiLineSplit = ( *colIt ).toString().split( '\n' );
+        const QStringList multiLineSplit = QgsExpressionUtils::toLocalizedString( *colIt ).split( '\n' );
 
         QgsTextFormat cellFormat = textFormatForCell( row - 1, col );
         QgsExpressionContextScopePopper popper( context.expressionContext(), scopeForCell( row - 1, col ) );
@@ -1215,15 +1217,16 @@ bool QgsLayoutTable::calculateMaxRowHeights()
       QgsExpressionContextScopePopper popper( context.expressionContext(), scopeForCell( row - 1, i ) );
       cellFormat.updateDataDefinedProperties( context );
       const double contentDescentMm = QgsTextRenderer::fontMetrics( context, cellFormat, QgsTextRenderer::FONT_WORKAROUND_SCALE ).descent() / QgsTextRenderer::FONT_WORKAROUND_SCALE  / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+      const QString localizedString { QgsExpressionUtils::toLocalizedString( *colIt ) };
 
-      if ( textRequiresWrapping( context, ( *colIt ).toString(), mColumns.at( i ).width(), cellFormat ) )
+      if ( textRequiresWrapping( context, localizedString, mColumns.at( i ).width(), cellFormat ) )
       {
         //contents too wide for cell, need to wrap
-        heights[ row * cols + i ] = QgsTextRenderer::textHeight( context, cellFormat, wrappedText( context, ( *colIt ).toString(), mColumns.at( i ).width(), cellFormat ), QgsTextRenderer::Rect ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) - contentDescentMm;
+        heights[ row * cols + i ] = QgsTextRenderer::textHeight( context, cellFormat, wrappedText( context, localizedString, mColumns.at( i ).width(), cellFormat ), QgsTextRenderer::Rect ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) - contentDescentMm;
       }
       else
       {
-        heights[ row * cols + i ] = QgsTextRenderer::textHeight( context, cellFormat, QStringList() << ( *colIt ).toString().split( '\n' ), QgsTextRenderer::Rect ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) - contentDescentMm;
+        heights[ row * cols + i ] = QgsTextRenderer::textHeight( context, cellFormat, QStringList() << localizedString.split( '\n' ), QgsTextRenderer::Rect ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) - contentDescentMm;
       }
 
       i++;
