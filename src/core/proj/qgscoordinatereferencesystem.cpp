@@ -2355,8 +2355,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
-  int nextSrsId = 63321;
-  int nextSrId = 520003321;
+  int nextSrsId = 63322;
+  int nextSrId = 520003322;
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
     const QString authority( *authIter );
