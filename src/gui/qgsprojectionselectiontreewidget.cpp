@@ -795,7 +795,7 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 
 void QgsProjectionSelectionTreeWidget::updateFilter()
 {
-  QString filterTxtCopy = leSearch->text();
+  QString filterTxtCopy = QRegExp::escape( leSearch->text() );
   filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
   QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
 
