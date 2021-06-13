@@ -63,12 +63,25 @@ private:
     bool mValid = false;
 
     QgsCoordinateReferenceSystem mCrs;
+    //Needs extent and pixel size/nr of row and columns (Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows)
     //QgsRectangle mExtent;
-    //int mWidth = 0;
-    //int mHeight = 0;
+    //int mWidth= 0;
+    //int mHeight= 0;
+    //hardcoded to show a black square
+
+
+ //  another hardcoded ex.
+    QgsRectangle mExtent = QgsRectangle(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+    int mWidth= mExtent.width();
+    int mHeight= mExtent.height();
+
+
+/*
+    //rect to show also added hardcoded layer (only for this case)
     QgsRectangle mExtent = QgsRectangle(1,2,3,4);
     int mWidth = mExtent.width();
     int mHeight = mExtent.height();
+*/
 
     int mBandCount = 1;
     int mXBlockSize = 0;

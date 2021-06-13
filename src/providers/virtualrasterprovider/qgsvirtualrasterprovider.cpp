@@ -8,6 +8,9 @@
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
+//for hardcoded data
+#include <qgsproject.h>
+
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
@@ -74,119 +77,139 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 }
 */
 
+
 //works for displaying a black square
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-    /*
-    //this part was only to show a black square
-    //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
-    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
-    //QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
-    QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
+   /*
+   //this part was only to show a black square
+   //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+   //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+   //QgsRasterBlock *block = new QgsRasterBlock( Qgis::DataType::UInt32, width, height );
+   QgsDebugMsg("QgsVirtualRasterProvider::block method was called");
 
-    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
+   unsigned int* outputData = ( unsigned int* )( tblock->bits() );
 
-    for ( int i = 0; i < width * height; ++i )
-    {
-        //QgsDebugMsg("inside for loop");
-        outputData[i] = 42;
-
-
-    }
-
-    */
-    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
-    //use bits instead of setValue
-    float * outputData = ( float * )( tblock->bits() );
+   for ( int i = 0; i < width * height; ++i )
+   {
+       //QgsDebugMsg("inside for loop");
+       outputData[i] = 42;
 
 
-    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
-    QVector<QgsRasterCalculatorEntry> mRasterEntries;
-    //from rastercalculator.cpp processCalculation
-    QString mFormulaString = "dem@1";
-    QString mLastError = "last error";
-    mLastError.clear();
-    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+   }
 
-    if ( !calcNode )
-    {
-      //error
-      //return ParserError;
-      QgsDebugMsg("ParserError = 4, Error parsing formula");
-    }
+   */
 
-    // Check input layers and bands
-      for ( const auto &entry : std::as_const( mRasterEntries ) )
-      {
-        if ( !entry.raster ) // no raster layer in entry
-        {
-          mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
-          //return InputLayerError;
-          QgsDebugMsg("InputLayerError = 2, Error reading input layer");
-        }
-        if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
-        {
-          mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
-          QgsDebugMsg("BandError = 6, Invalid band number for input");
-        }
-      }
+   //hardcoded data
+   QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
+   QgsProject::instance()->addMapLayers(
+               QList<QgsMapLayer *>() << r);
 
-    //else  // Original code (memory inefficient route)
-    QMap< QString, QgsRasterBlock * > inputBlocks;
-    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
+   //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+   /*
+   int lwidth = 373;
+   int lheight = 350;
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, lwidth, lheight );
+   */
+   float * outputData = ( float * )( tblock->bits() );
 
-    for ( ; it != mRasterEntries.constEnd(); ++it )
-    {
-        std::unique_ptr< QgsRasterBlock > block;
-        //block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
-        block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
-        inputBlocks.insert( it->ref, block.release() );
-    }
 
-    QgsRasterMatrix resultMatrix;
+   //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
+   QVector<QgsRasterCalculatorEntry> mRasterEntries;
+   //from rastercalculator.cpp processCalculation
+   QString mFormulaString = "\"dem@1\" + 200";
+   QString mLastError = "last error";
+   mLastError.clear();
+   std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
-    for ( int i = 0; i < mHeight; ++i )
-    {
-        if ( feedback )
-        {
-          feedback->setProgress( 100.0 * static_cast< double >( i ) / mHeight );
-        }
 
-        if ( feedback && feedback->isCanceled() )
-        {
-          break;
-        }
-        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
-        {
-            bool resultIsNumber = resultMatrix.isNumber();
-            float *calcData = new float[mWidth];
+//checks
+   if ( !calcNode )
+   {
+     //error
+     //return ParserError;
+     QgsDebugMsg("ParserError = 4, Error parsing formula");
+   }
 
-            for ( int j = 0; j < mWidth; ++j )
-            {
-                calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
-                //tblock->setValue(i,j,calcData[j]);
-                resultMatrix.takeData();
-                outputData[ i*mWidth + j ]=calcData[j];
-            }
-            //write scanline to the dataset ( replace GDALRasterIO)
+   // Check input layers and bands
+     for ( const auto &entry : std::as_const( mRasterEntries ) )
+     {
+       if ( !entry.raster ) // no raster layer in entry
+       {
+         mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
+         //return InputLayerError;
+         QgsDebugMsg("InputLayerError = 2, Error reading input layer");
+       }
+       if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
+       {
+         mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
+         QgsDebugMsg("BandError = 6, Invalid band number for input");
+       }
+     }
+  //end checks
 
-            delete[] calcData;
-        }
-        else
-        {
-          qDeleteAll( inputBlocks );
-          inputBlocks.clear();
 
-        }
 
-    }
+   //else  // Original code (memory inefficient route)
+   QMap< QString, QgsRasterBlock * > inputBlocks;
+   QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
 
-    Q_ASSERT( tblock );
-    return tblock.release();
+   for ( ; it != mRasterEntries.constEnd(); ++it )
+   {
+       std::unique_ptr< QgsRasterBlock > block;
+       //block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
+       block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+       inputBlocks.insert( it->ref, block.release() );
+   }
+
+
+   QgsRasterMatrix resultMatrix;
+
+   for ( int i = 0; i < mHeight; ++i )
+   //for ( int i = 0; i < height; ++i )
+   {
+       if ( feedback )
+       {
+         feedback->setProgress( 100.0 * static_cast< double >( i ) / mHeight );
+       }
+
+       if ( feedback && feedback->isCanceled() )
+       {
+         break;
+       }
+       if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
+       {
+           bool resultIsNumber = resultMatrix.isNumber();
+           float *calcData = new float[mWidth];
+           //float *calcData = new float[width];
+
+           for ( int j = 0; j < mWidth; ++j )
+           //for ( int j = 0; j < width; ++j )
+           {
+               calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
+               //tblock->setValue(i,j,calcData[j]);
+               resultMatrix.takeData();
+               outputData[ i*mWidth + j ]=calcData[j];
+               //outputData[ i*width + j ]=calcData[j]*0;
+           }
+           //write scanline to the dataset ( replace GDALRasterIO)
+
+           delete[] calcData;
+       }
+       else
+       {
+         qDeleteAll( inputBlocks );
+         inputBlocks.clear();
+
+       }
+
+   }
+
+   Q_ASSERT( tblock );
+   return tblock.release();
 }
-
 
 
 
