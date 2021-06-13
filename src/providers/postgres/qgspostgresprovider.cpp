@@ -630,8 +630,10 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       delim = QStringLiteral( "," );
     }
 
-    QgsFeatureIds fidsToOr;
-    QStringList whereValuesList;
+    QString whereInString; // ("id_int1","id_str2") IN ( VALUES (130,E'\\0'''),(130,E'\\1'''),(130,E'\\2''') ... )
+    QString whereOrString; // "id_int1" = 139 AND "id_str2" IS NULL OR "id_int1" IS NULL AND "id_str2" = E'\\4''' ...
+    QStringList whereInList;
+    QStringList whereOrList;
     for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
     {
       const QVariantList pkVals = sharedData->lookupKey( featureId );
@@ -655,35 +657,24 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
           delim = QStringLiteral( "," );
         }
         if ( isNotNull )
-          whereValuesList << whereValues;
+          whereInList << whereValues;
         else
-          fidsToOr.insert( featureId );
+          whereOrList << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
     }
 
-    QString whereInString;
-    whereInString = whereValuesList.isEmpty() ? QString() :
+    whereInString = whereInList.isEmpty() ? QString() :
                     whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-                    whereValuesList.join( QStringLiteral( "),(" ) )
+                    whereInList.join( QStringLiteral( "),(" ) )
                     .prepend( QStringLiteral( "( %1(" ).arg( canUseVALUES ? QStringLiteral( "VALUES " ) : QString() ) )
                     .append( QStringLiteral( ") )" ) );
 
-    QString whereOrString;
-    if ( fidsToOr.isEmpty() )
-    {
+    if ( whereOrList.isEmpty() )
       return whereInString;
-    }
     else
-    {
-      QStringList whereClauses;
-      for ( const QgsFeatureId featureId : std::as_const( fidsToOr ) )
-      {
-        whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
-      }
-      whereOrString = whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
-    }
+      whereOrString = whereOrList.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
 
-    if ( whereInString.isEmpty() )
+    if ( whereInList.isEmpty() )
       return whereOrString;
 
     return QStringLiteral( "(%1) OR (%2)" ).arg( whereInString, whereOrString );
