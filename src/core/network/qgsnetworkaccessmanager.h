@@ -611,6 +611,10 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
 #endif
 
+    /**
+     * Preprocesses request
+     * \param req the request to preprocess
+     */
     void preprocessRequest( QNetworkRequest *req ) const;
 
   signals:

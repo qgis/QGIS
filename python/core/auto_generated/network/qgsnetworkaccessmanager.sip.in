@@ -416,6 +416,11 @@ Abort any outstanding external browser login request.
 
 
     void preprocessRequest( QNetworkRequest *req ) const;
+%Docstring
+Preprocesses request
+
+:param req: the request to preprocess
+%End
 
   signals:
 
