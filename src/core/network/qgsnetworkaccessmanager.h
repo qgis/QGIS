@@ -525,7 +525,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * used to remove the preprocessor (via a call to removeRequestPreprocessor()).
      *
      * \see removeRequestPreprocessor()
-     * \since QGIS 3.12
+     * \since QGIS 3.22
      */
 #ifndef SIP_RUN
     static QString setRequestPreprocessor( const std::function< void( QNetworkRequest *request )> &processor );
@@ -566,7 +566,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * Returns TRUE if processor existed and was removed.
      *
      * \see setRequestPreprocessor()
-     * \since QGIS 3.12
+     * \since QGIS 3.22
      */
 #ifndef SIP_RUN
     static bool removeRequestPreprocessor( const QString &id );
@@ -614,6 +614,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     /**
      * Preprocesses request
      * \param req the request to preprocess
+     * \since QGIS 3.22
      */
     void preprocessRequest( QNetworkRequest *req ) const;
 

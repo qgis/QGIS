@@ -332,7 +332,7 @@ The ``processor`` function takes the QNetworkRequest as its argument, and can mu
 
 .. seealso:: :py:func:`removeRequestPreprocessor`
 
-.. versionadded:: 3.12
+.. versionadded:: 3.22
 %End
 %MethodCode
     PyObject *s = 0;
@@ -370,7 +370,7 @@ Returns ``True`` if processor existed and was removed.
 
 .. seealso:: :py:func:`setRequestPreprocessor`
 
-.. versionadded:: 3.12
+.. versionadded:: 3.22
 %End
 %MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
@@ -420,6 +420,8 @@ Abort any outstanding external browser login request.
 Preprocesses request
 
 :param req: the request to preprocess
+
+.. versionadded:: 3.22
 %End
 
   signals:
