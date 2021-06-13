@@ -54,7 +54,7 @@
 
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
-std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > QgsNetworkAccessManager::sCustomPreprocessors;
+static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory

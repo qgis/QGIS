@@ -823,9 +823,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QMutex mAuthRequestHandlerMutex;
     // only in use by worker threads, unused in main thread
     QWaitCondition mAuthRequestWaitCondition;
-
-    static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
-
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
