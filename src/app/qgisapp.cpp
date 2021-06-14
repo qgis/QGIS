@@ -457,6 +457,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolpinlabels.h"
 #include "qgsmaptoolmeasureangle.h"
+#include "qgsmaptoolmeasurebearing.h"
 #include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptooldigitizefeature.h"
 #include "qgsmaptooloffsetpointsymbol.h"
@@ -2641,6 +2642,7 @@ void QgisApp::createActions()
   connect( mActionMeasure, &QAction::triggered, this, &QgisApp::measure );
   connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
+  connect( mActionMeasureBearing, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureBearing ) ); } );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -2949,6 +2951,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasure );
   mMapToolGroup->addAction( mActionMeasureArea );
   mMapToolGroup->addAction( mActionMeasureAngle );
+  mMapToolGroup->addAction( mActionMeasureBearing );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionCircularStringCurvePoint );
   mMapToolGroup->addAction( mActionCircularStringRadius );
@@ -3394,6 +3397,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionMeasure );
   bt->addAction( mActionMeasureArea );
+  bt->addAction( mActionMeasureBearing );
   bt->addAction( mActionMeasureAngle );
 
   QAction *defMeasureAction = mActionMeasure;
@@ -3406,6 +3410,9 @@ void QgisApp::createToolBars()
       defMeasureAction = mActionMeasureArea;
       break;
     case 2:
+      defMeasureAction = mActionMeasureBearing;
+      break;
+    case 3:
       defMeasureAction = mActionMeasureAngle;
       break;
   }
@@ -4076,6 +4083,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasure.svg" ) ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureArea.svg" ) ) );
   mActionMeasureAngle->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureAngle.svg" ) ) );
+  mActionMeasureBearing->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeasureBearing.svg" ) ) );
   mActionMapTips->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapTips.svg" ) ) );
   mActionShowBookmarkManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
   mActionShowBookmarks->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowBookmarks.svg" ) ) );
@@ -4295,6 +4303,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MeasureDistance )->setAction( mActionMeasure );
   mMapTools->mapTool( QgsAppMapTools::MeasureArea )->setAction( mActionMeasureArea );
   mMapTools->mapTool( QgsAppMapTools::MeasureAngle )->setAction( mActionMeasureAngle );
+  mMapTools->mapTool( QgsAppMapTools::MeasureBearing )->setAction( mActionMeasureBearing );
   mMapTools->mapTool( QgsAppMapTools::TextAnnotation )->setAction( mActionTextAnnotation );
   mMapTools->mapTool( QgsAppMapTools::FormAnnotation )->setAction( mActionFormAnnotation );
   mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation )->setAction( mActionHtmlAnnotation );
@@ -12675,6 +12684,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureDistance )->updateSettings();
     mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureArea )->updateSettings();
     mMapTools->mapTool< QgsMapToolMeasureAngle >( QgsAppMapTools::MeasureAngle )->updateSettings();
+    mMapTools->mapTool< QgsMapToolMeasureBearing >( QgsAppMapTools::MeasureBearing )->updateSettings();
 
 #ifdef HAVE_3D
     const QList< Qgs3DMapCanvasDockWidget * > canvases3D = findChildren< Qgs3DMapCanvasDockWidget * >();
@@ -14596,6 +14606,7 @@ void QgisApp::projectProperties( const QString &currentPage )
   mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureDistance )->updateSettings();
   mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureArea )->updateSettings();
   mMapTools->mapTool< QgsMapToolMeasureAngle >( QgsAppMapTools::MeasureAngle )->updateSettings();
+  mMapTools->mapTool< QgsMapToolMeasureBearing >( QgsAppMapTools::MeasureBearing )->updateSettings();
 
   // Set the window title.
   setTitleBarText_( *this );

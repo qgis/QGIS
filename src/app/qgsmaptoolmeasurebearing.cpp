@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsmaptoolmeasureangle.cpp
-    --------------------------
-    begin                : December 2009
-    copyright            : (C) 2009 by Marco Hugentobler
-    email                : marco at hugis dot net
+    qgsmaptoolmeasurebearing.cpp
+    ------------------------
+    begin                : June 2021
+    copyright            : (C) 2021 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolmeasureangle.h"
+#include "qgsmaptoolmeasurebearing.h"
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
@@ -28,33 +28,33 @@
 
 #include <cmath>
 
-QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
+QgsMapToolMeasureBearing::QgsMapToolMeasureBearing( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mToolName = tr( "Measure angle" );
+  mToolName = tr( "Measure bearing" );
 
   connect( canvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgsMapToolMeasureAngle::updateSettings );
+           this, &QgsMapToolMeasureBearing::updateSettings );
 }
 
-QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
+QgsMapToolMeasureBearing::~QgsMapToolMeasureBearing()
 {
   stopMeasuring();
 }
 
-void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
+void QgsMapToolMeasureBearing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPointXY point = e->snapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  if ( !mRubberBand || mAnglePoints.empty() || mAnglePoints.size() > 2 )
+  if ( !mRubberBand || mAnglePoints.empty() || mAnglePoints.size() >= 2 )
   {
     return;
   }
 
   mRubberBand->movePoint( point );
-  if ( mAnglePoints.size() == 2 )
+  if ( mAnglePoints.size() == 1 )
   {
     if ( !mResultDisplay->isVisible() )
     {
@@ -62,32 +62,22 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
       mResultDisplay->show();
     }
 
-    //angle calculation
-    double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-    double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), point );
-    double resultAngle = azimuthTwo - azimuthOne;
-    QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
-    QgsDebugMsg( QString::number( M_PI ) );
-    if ( std::fabs( resultAngle ) > M_PI )
-    {
-      if ( resultAngle < 0 )
-      {
-        resultAngle = M_PI + ( resultAngle + M_PI );
-      }
-      else
-      {
-        resultAngle = -M_PI + ( resultAngle - M_PI );
-      }
-    }
-
-    mResultDisplay->setAngleInRadians( resultAngle );
+    const double bearing = mDa.bearing( mAnglePoints.at( 0 ), point );
+    mResultDisplay->setBearingInRadians( bearing );
   }
 }
 
-void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolMeasureBearing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  //add points until we have three
-  if ( mAnglePoints.size() == 3 )
+  // if we clicked the right button we cancel the operation, unless it's the "final" click
+  if ( e->button() == Qt::RightButton && mAnglePoints.size() != 1 )
+  {
+    stopMeasuring();
+    return;
+  }
+
+  //add points until we have two
+  if ( mAnglePoints.size() == 2 )
   {
     mAnglePoints.clear();
   }
@@ -98,13 +88,14 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mResultDisplay = new QgsDisplayAngle( this );
       mResultDisplay->setWindowFlags( mResultDisplay->windowFlags() | Qt::Tool );
-      connect( mResultDisplay, &QDialog::rejected, this, &QgsMapToolMeasureAngle::stopMeasuring );
+      mResultDisplay->setWindowTitle( tr( "Bearing" ) );
+      connect( mResultDisplay, &QDialog::rejected, this, &QgsMapToolMeasureBearing::stopMeasuring );
     }
     configureDistanceArea();
     createRubberBand();
   }
 
-  if ( mAnglePoints.size() < 3 )
+  if ( mAnglePoints.size() < 2 )
   {
     QgsPointXY newPoint = e->snapPoint();
     mAnglePoints.push_back( newPoint );
@@ -112,7 +103,35 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolMeasureAngle::stopMeasuring()
+void QgsMapToolMeasureBearing::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    stopMeasuring();
+  }
+  else if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  {
+    if ( !mAnglePoints.empty() && mRubberBand )
+    {
+      if ( mAnglePoints.size() == 1 )
+      {
+        //removing first point, so restart everything
+        stopMeasuring();
+      }
+      else
+      {
+        //remove second last point from line band, and last point from points band
+        mRubberBand->removePoint( -2, true );
+        mAnglePoints.removeLast();
+      }
+    }
+
+    // Override default shortcut management in MapCanvas
+    e->ignore();
+  }
+}
+
+void QgsMapToolMeasureBearing::stopMeasuring()
 {
   delete mRubberBand;
   mRubberBand = nullptr;
@@ -121,12 +140,12 @@ void QgsMapToolMeasureAngle::stopMeasuring()
   mAnglePoints.clear();
 }
 
-void QgsMapToolMeasureAngle::activate()
+void QgsMapToolMeasureBearing::activate()
 {
   QgsMapTool::activate();
 }
 
-void QgsMapToolMeasureAngle::deactivate()
+void QgsMapToolMeasureBearing::deactivate()
 {
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
@@ -134,7 +153,7 @@ void QgsMapToolMeasureAngle::deactivate()
   QgsMapTool::deactivate();
 }
 
-void QgsMapToolMeasureAngle::createRubberBand()
+void QgsMapToolMeasureBearing::createRubberBand()
 {
   delete mRubberBand;
   mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
@@ -147,9 +166,9 @@ void QgsMapToolMeasureAngle::createRubberBand()
   mRubberBand->setWidth( 3 );
 }
 
-void QgsMapToolMeasureAngle::updateSettings()
+void QgsMapToolMeasureBearing::updateSettings()
 {
-  if ( mAnglePoints.size() != 3 )
+  if ( mAnglePoints.size() != 2 )
     return;
 
   if ( !mResultDisplay )
@@ -157,28 +176,11 @@ void QgsMapToolMeasureAngle::updateSettings()
 
   configureDistanceArea();
 
-  //angle calculation
-  double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-  double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
-  double resultAngle = azimuthTwo - azimuthOne;
-  QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
-  QgsDebugMsg( QString::number( M_PI ) );
-  if ( std::fabs( resultAngle ) > M_PI )
-  {
-    if ( resultAngle < 0 )
-    {
-      resultAngle = M_PI + ( resultAngle + M_PI );
-    }
-    else
-    {
-      resultAngle = -M_PI + ( resultAngle - M_PI );
-    }
-  }
-
-  mResultDisplay->setAngleInRadians( resultAngle );
+  const double bearing = mDa.bearing( mAnglePoints.at( 0 ), mAnglePoints.at( 1 ) );
+  mResultDisplay->setBearingInRadians( bearing );
 }
 
-void QgsMapToolMeasureAngle::configureDistanceArea()
+void QgsMapToolMeasureBearing::configureDistanceArea()
 {
   QString ellipsoidId = QgsProject::instance()->ellipsoid();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
