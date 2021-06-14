@@ -18,6 +18,7 @@
 #include "qgssimplifymethod.h"
 #include "qgsexception.h"
 #include "qgsexpressionsorter.h"
+#include "qgsfeedback.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
@@ -31,6 +32,9 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature &f )
   {
     return false;
   }
+
+  if ( mRequest.feedback() && mRequest.feedback()->isCanceled() )
+    return false;
 
   if ( mUseCachedFeatures )
   {
