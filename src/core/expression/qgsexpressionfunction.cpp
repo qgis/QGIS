@@ -6073,8 +6073,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsFeatureRequest request;
   request.setTimeout( 10000 );
   request.setRequestMayBeNested( true );
-  if ( context )
-    request.setFeedback( context->feedback() );
+  request.setFeedback( context->feedback() );
 
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
