@@ -763,7 +763,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( const QString &legendKey ) const
+long long QgsVectorLayer::featureCount( const QString &legendKey ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -3417,7 +3417,7 @@ QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
   return pkAttributesList;
 }
 
-long QgsVectorLayer::featureCount() const
+long long QgsVectorLayer::featureCount() const
 {
   if ( ! mDataProvider )
     return -1;

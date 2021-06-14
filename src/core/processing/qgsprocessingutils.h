@@ -506,7 +506,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QString sourceName() const override;
     QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
     QVariant minimumValue( int fieldIndex ) const override;

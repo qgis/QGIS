@@ -348,7 +348,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QString sourceName() const override;
     QgsExpressionContextScope *createExpressionContextScope() const override;
     SpatialIndexPresence hasSpatialIndex() const override;

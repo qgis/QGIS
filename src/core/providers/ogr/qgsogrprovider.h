@@ -122,7 +122,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     QgsWkbTypes::Type wkbType() const override;
     virtual size_t layerCount() const;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsFields fields() const override;
     QgsRectangle extent() const override;
     QVariant defaultValue( int fieldId ) const override;
@@ -309,7 +309,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Whether the next call to featureCount() should refresh the feature count
     mutable bool mRefreshFeatureCount = true;
 
-    mutable long mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::Uncounted );
+    mutable long long mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
 
     mutable QStringList mSubLayerList;
 

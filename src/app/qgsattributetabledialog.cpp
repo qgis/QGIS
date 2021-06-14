@@ -387,7 +387,7 @@ void QgsAttributeTableDialog::updateTitle()
                : qobject_cast<QWidget *>( this );
   w->setWindowTitle( tr( " %1 — Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
-                     .arg( std::max( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
+                     .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
                    );

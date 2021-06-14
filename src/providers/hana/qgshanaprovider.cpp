@@ -483,7 +483,7 @@ QString QgsHanaProvider::dataComment() const
   return mLayerMetadata.abstract();
 }
 
-long QgsHanaProvider::featureCount() const
+long long QgsHanaProvider::featureCount() const
 {
   if ( mFeaturesCount >= 0 )
     return mFeaturesCount;
@@ -1529,14 +1529,14 @@ void QgsHanaProvider::determinePrimaryKey( QgsHanaConnection &conn )
   }
 }
 
-long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
+long long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
 {
   QgsHanaConnectionRef conn = createConnection();
   if ( conn.isNull() )
     return -1;
   QString sql = buildQuery( QStringLiteral( "COUNT(*)" ), whereClause );
   size_t count = conn->executeCountQuery( sql );
-  return static_cast<long>( count );
+  return static_cast<long long>( count );
 }
 
 void QgsHanaProvider::updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMap &attributes )

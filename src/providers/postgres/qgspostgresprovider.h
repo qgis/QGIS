@@ -114,7 +114,7 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     /**
      * Determines if there is at least one feature available on this table.
@@ -556,10 +556,10 @@ class QgsPostgresSharedData
   public:
     QgsPostgresSharedData() = default;
 
-    long featuresCounted();
-    void setFeaturesCounted( long count );
-    void addFeaturesCounted( long diff );
-    void ensureFeaturesCountedAtLeast( long fetched );
+    long long featuresCounted();
+    void setFeaturesCounted( long long count );
+    void addFeaturesCounted( long long diff );
+    void ensureFeaturesCountedAtLeast( long long fetched );
 
     // FID lookups
     QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
@@ -576,7 +576,7 @@ class QgsPostgresSharedData
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    long mFeaturesCounted = -1 ;    //!< Number of features in the layer
+    long long mFeaturesCounted = -1 ;    //!< Number of features in the layer
 
     QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id

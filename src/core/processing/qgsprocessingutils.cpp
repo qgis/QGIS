@@ -1311,12 +1311,12 @@ QgsWkbTypes::Type QgsProcessingFeatureSource::wkbType() const
   return mSource->wkbType();
 }
 
-long QgsProcessingFeatureSource::featureCount() const
+long long QgsProcessingFeatureSource::featureCount() const
 {
   if ( mFeatureLimit == -1 )
     return mSource->featureCount();
   else
-    return std::min( mFeatureLimit, static_cast< long long >( mSource->featureCount() ) );
+    return std::min( mFeatureLimit, mSource->featureCount() );
 }
 
 QString QgsProcessingFeatureSource::sourceName() const

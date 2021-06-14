@@ -1282,7 +1282,7 @@ QgsWkbTypes::Type QgsVectorLayerSelectedFeatureSource::wkbType() const
   return mWkbType;
 }
 
-long QgsVectorLayerSelectedFeatureSource::featureCount() const
+long long QgsVectorLayerSelectedFeatureSource::featureCount() const
 {
   return mSelectedFeatureIds.count();
 }

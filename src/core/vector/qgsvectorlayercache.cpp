@@ -209,7 +209,7 @@ QgsFields QgsVectorLayerCache::fields() const
   return mLayer->fields();
 }
 
-long QgsVectorLayerCache::featureCount() const
+long long QgsVectorLayerCache::featureCount() const
 {
   return mLayer->featureCount();
 }

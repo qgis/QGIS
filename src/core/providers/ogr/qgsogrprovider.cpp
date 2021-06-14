@@ -260,10 +260,10 @@ void QgsOgrProvider::repack()
 
   }
 
-  if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
-       mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
+  if ( mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
   {
-    long oldcount = mFeaturesCounted;
+    long long oldcount = mFeaturesCounted;
     recalculateFeatureCount();
     if ( oldcount != mFeaturesCounted )
       emit dataChanged();
@@ -854,7 +854,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
   if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
   {
-    int layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
+    long long layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
 
     QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
@@ -1839,11 +1839,11 @@ QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 /**
  * Returns the feature count
  */
-long QgsOgrProvider::featureCount() const
+long long QgsOgrProvider::featureCount() const
 {
   if ( ( mReadFlags & QgsDataProvider::SkipFeatureCount ) != 0 )
   {
-    return static_cast< long >( Qgis::FeatureCountState::UnknownCount );
+    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
   }
   if ( mRefreshFeatureCount )
   {
@@ -2239,8 +2239,8 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     returnvalue = false;
   }
 
-  if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
-       mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
+  if ( mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) &&
+       mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
   {
     if ( returnvalue )
       mFeaturesCounted += flist.size();
@@ -2585,7 +2585,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( !mOgrOrigLayer )
     return false;
 
-  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) )
+  if ( theSQL == mSubsetString && mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) )
     return true;
 
   const bool subsetStringHasChanged { theSQL != mSubsetString };
@@ -3205,8 +3205,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
   }
   else
   {
-    if ( mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::Uncounted ) &&
-         mFeaturesCounted != static_cast< long >( Qgis::FeatureCountState::UnknownCount ) )
+    if ( mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::Uncounted ) &&
+         mFeaturesCounted != static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
     {
       if ( returnvalue )
         mFeaturesCounted -= id.size();
@@ -5046,7 +5046,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 {
   if ( !mOgrLayer )
   {
-    mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::Uncounted );
+    mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
     return;
   }
 
@@ -5064,7 +5064,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )
     {
-      mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::UnknownCount );
+      mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
     }
   }
   else
@@ -5408,7 +5408,7 @@ void QgsOgrProvider::close()
 
 void QgsOgrProvider::reloadProviderData()
 {
-  mFeaturesCounted = static_cast< long >( Qgis::FeatureCountState::Uncounted );
+  mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
   bool wasValid = mValid;
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   close();

@@ -60,7 +60,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
     QgsLayerMetadata layerMetadata() const override;
     QString dataComment() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
@@ -117,7 +117,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     void readMetadata( QgsHanaConnection &conn );
     void readSrsInformation( QgsHanaConnection &conn );
     void determinePrimaryKey( QgsHanaConnection &conn );
-    long getFeatureCount( const QString &whereClause ) const;
+    long long getFeatureCount( const QString &whereClause ) const;
     void updateFeatureIdMap( QgsFeatureId fid, const QgsAttributeMap &attributes );
 
   private:
@@ -164,7 +164,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     // Default values of the result set
     QMap<int, QVariant> mDefaultValues;
     // Number of features in the layer
-    mutable long mFeaturesCount = 0;
+    mutable long long mFeaturesCount = 0;
     QgsLayerMetadata mLayerMetadata;
     std::shared_ptr<QgsHanaPrimaryKeyContext> mPrimaryKeyCntx;
 

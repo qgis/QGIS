@@ -70,7 +70,7 @@ class QgsBackgroundCachedSharedData
     bool downloadFinished() const { return mDownloadFinished; }
 
     //! Returns layer feature count. Might issue a network request if issueRequestIfNeeded == true
-    int getFeatureCount( bool issueRequestIfNeeded = true );
+    long long getFeatureCount( bool issueRequestIfNeeded = true );
 
     //! Return a "consolidated" extent mixing the one from the capabilities from the one of the features already downloaded.
     QgsRectangle consolidatedExtent() const;
@@ -151,10 +151,10 @@ class QgsBackgroundCachedSharedData
     void serializeFeatures( QVector<QgsFeatureUniqueIdPair> &featureList );
 
     //! Called by QgsFeatureDownloader::run() at the end of the download process.
-    void endOfDownload( bool success, int featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
+    void endOfDownload( bool success, long long featureCount, bool truncatedResponse, bool interrupted, const QString &errorMsg );
 
     //! Force an update of the feature count
-    void setFeatureCount( int featureCount, bool featureCountExact );
+    void setFeatureCount( long long featureCount, bool featureCountExact );
 
     //! Returns the name of temporary directory. To be paired with releaseCacheDirectory()
     QString acquireCacheDirectory();
@@ -199,10 +199,10 @@ class QgsBackgroundCachedSharedData
     QString mClientSideFilterExpression;
 
     //! Server-side or user-side limit of downloaded features (including with paging). Valid if > 0
-    int mMaxFeatures = 0;
+    long long mMaxFeatures = 0;
 
     //! Server-side limit of downloaded features (including with paging). Valid if > 0
-    int mServerMaxFeatures = 0;
+    long long mServerMaxFeatures = 0;
 
     //! Bounding box for the layer as returned by GetCapabilities
     QgsRectangle mCapabilityExtent;
@@ -288,13 +288,13 @@ class QgsBackgroundCachedSharedData
     QgsFeatureId mNextCachedIdQgisId = 1;
 
     //! Number of features that have been cached, or attempted to be cached
-    int mTotalFeaturesAttemptedToBeCached = 0;
+    long long mTotalFeaturesAttemptedToBeCached = 0;
 
     //! Whether we have already tried fetching one feature after realizing that the capabilities extent is wrong
     bool mTryFetchingOneFeature = false;
 
     //! Number of features of the layer
-    int mFeatureCount = 0;
+    long long mFeatureCount = 0;
 
     //! Whether mFeatureCount value is exact or approximate / in construction
     bool mFeatureCountExact = false;
@@ -340,7 +340,7 @@ class QgsBackgroundCachedSharedData
     virtual QgsRectangle getExtentFromSingleFeatureRequest() const = 0;
 
     //! Launch a synchronous request to count the number of features (return -1 in case of error)
-    virtual int getFeatureCountFromServer() const = 0;
+    virtual long long getFeatureCountFromServer() const = 0;
 };
 
 #endif

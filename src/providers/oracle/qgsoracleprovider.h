@@ -102,7 +102,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     /**
      * Gets the number of fields in the layer
@@ -282,7 +282,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;     //!< Number of features in the layer
+    mutable long long mFeaturesCounted;     //!< Number of features in the layer
     int mSrid;                         //!< Srid of column
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;          //!< Capabilities of layer
 

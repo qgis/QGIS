@@ -1109,7 +1109,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * calculated by countSymbolFeatures()
      * \returns number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( const QString &legendKey ) const;
+    long long featureCount( const QString &legendKey ) const;
 
     /**
      * Ids of features rendered with specified legend key. Features must be first
@@ -1708,7 +1708,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * If you need only the count of committed features call this method on this layer's provider.
      * \returns the number of features on this layer or -1 if unknown.
      */
-    long featureCount() const FINAL;
+    long long featureCount() const FINAL;
 
     /**
      * Makes layer read-only (editing disabled) or not
@@ -2977,7 +2977,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mSymbolFeatureCounted = false;
 
     // Feature counts for each renderer legend key
-    QHash<QString, long> mSymbolFeatureCountMap;
+    QHash<QString, long long> mSymbolFeatureCountMap;
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
 
     //! True while an undo command is active

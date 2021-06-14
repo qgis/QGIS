@@ -3598,9 +3598,9 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 /**
  * Returns the feature count
  */
-long QgsPostgresProvider::featureCount() const
+long long QgsPostgresProvider::featureCount() const
 {
-  long featuresCounted = mShared->featuresCounted();
+  long long featuresCounted = mShared->featuresCounted();
   if ( featuresCounted >= 0 )
     return featuresCounted;
 
@@ -3616,7 +3616,7 @@ long QgsPostgresProvider::featureCount() const
   // use estimated metadata even when there is a where clause,
   // although we get an incorrect feature count for the subset
   // - but make huge dataset usable.
-  long num = -1;
+  long long num = -1;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
     if ( relkind() == Relkind::View && connectionRO()->pgVersion() >= 90000 )
@@ -3632,7 +3632,7 @@ long QgsPostgresProvider::featureCount() const
       const QVariant nbRows = countPlan.value( "Plan Rows" );
 
       if ( nbRows.isValid() )
-        num = nbRows.toInt();
+        num = nbRows.toLongLong();
       else
         QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
     }
@@ -3640,7 +3640,7 @@ long QgsPostgresProvider::featureCount() const
     {
       sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
       QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-      num = result.PQgetvalue( 0, 0 ).toLong();
+      num = result.PQgetvalue( 0, 0 ).toLongLong();
     }
   }
   else
@@ -3650,7 +3650,7 @@ long QgsPostgresProvider::featureCount() const
 
     QgsDebugMsgLevel( "number of features as text: " + result.PQgetvalue( 0, 0 ), 2 );
 
-    num = result.PQgetvalue( 0, 0 ).toLong();
+    num = result.PQgetvalue( 0, 0 ).toLongLong();
   }
 
   mShared->setFeaturesCounted( num );
@@ -5650,7 +5650,7 @@ void QgsPostgresProviderMetadata::cleanupProvider()
 
 // ----------
 
-void QgsPostgresSharedData::addFeaturesCounted( long diff )
+void QgsPostgresSharedData::addFeaturesCounted( long long diff )
 {
   QMutexLocker locker( &mMutex );
 
@@ -5658,7 +5658,7 @@ void QgsPostgresSharedData::addFeaturesCounted( long diff )
     mFeaturesCounted += diff;
 }
 
-void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long fetched )
+void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long long fetched )
 {
   QMutexLocker locker( &mMutex );
 
@@ -5673,13 +5673,13 @@ void QgsPostgresSharedData::ensureFeaturesCountedAtLeast( long fetched )
   }
 }
 
-long QgsPostgresSharedData::featuresCounted()
+long long QgsPostgresSharedData::featuresCounted()
 {
   QMutexLocker locker( &mMutex );
   return mFeaturesCounted;
 }
 
-void QgsPostgresSharedData::setFeaturesCounted( long count )
+void QgsPostgresSharedData::setFeaturesCounted( long long count )
 {
   QMutexLocker locker( &mMutex );
   mFeaturesCounted = count;

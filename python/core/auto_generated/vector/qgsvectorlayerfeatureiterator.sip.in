@@ -192,7 +192,7 @@ the QgsVectorLayerSelectedFeatureSource will not be reflected.
 
     virtual QgsWkbTypes::Type wkbType() const;
 
-    virtual long featureCount() const;
+    virtual long long featureCount() const;
 
     virtual QString sourceName() const;
 

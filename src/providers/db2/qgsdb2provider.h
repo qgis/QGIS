@@ -64,7 +64,7 @@ class QgsDb2Provider final: public QgsVectorDataProvider
 
     QgsWkbTypes::Type wkbType() const override;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     /**
      * Update the extent for this layer.

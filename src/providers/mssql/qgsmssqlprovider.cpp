@@ -1019,7 +1019,7 @@ QgsWkbTypes::Type QgsMssqlProvider::wkbType() const
 /**
  * Returns the feature type
  */
-long QgsMssqlProvider::featureCount() const
+long long QgsMssqlProvider::featureCount() const
 {
   // Return the count that we get from the subset.
   if ( !mSqlWhereClause.isEmpty() )
@@ -1038,7 +1038,7 @@ long QgsMssqlProvider::featureCount() const
 
   if ( query.exec( statement ) && query.next() )
   {
-    return query.value( 0 ).toInt();
+    return query.value( 0 ).toLongLong();
   }
   else
   {
@@ -1871,7 +1871,7 @@ bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
   }
 
   if ( query.isActive() && query.next() )
-    mNumberFeatures = query.value( 0 ).toInt();
+    mNumberFeatures = query.value( 0 ).toLongLong();
 
   QgsDataSourceUri anUri = QgsDataSourceUri( dataSourceUri() );
   anUri.setSql( mSqlWhereClause );

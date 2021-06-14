@@ -47,7 +47,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
     QgsCoordinateReferenceSystem crs() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsRectangle extent() const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;

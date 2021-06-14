@@ -2387,7 +2387,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 /**
  * Returns the feature count
  */
-long QgsOracleProvider::featureCount() const
+long long QgsOracleProvider::featureCount() const
 {
   QgsOracleConn *conn = connectionRO();
   if ( mFeaturesCounted >= 0 || !conn )
@@ -2418,7 +2418,7 @@ long QgsOracleProvider::featureCount() const
   QSqlQuery qry( *conn );
   if ( exec( qry, sql, args ) && qry.next() )
   {
-    mFeaturesCounted = qry.value( 0 ).toInt();
+    mFeaturesCounted = qry.value( 0 ).toLongLong();
   }
   qry.finish();
 
