@@ -122,14 +122,14 @@ void QgsSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const
 
 void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
-  if ( subSymbol() )
-    subSymbol()->startFeatureRender( feature, context );
+  if ( QgsSymbol *lSubSymbol = subSymbol() )
+    lSubSymbol->startFeatureRender( feature, context );
 }
 
 void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
-  if ( subSymbol() )
-    subSymbol()->stopFeatureRender( feature, context );
+  if ( QgsSymbol *lSubSymbol = subSymbol() )
+    lSubSymbol->stopFeatureRender( feature, context );
 }
 
 QgsSymbol *QgsSymbolLayer::subSymbol()
