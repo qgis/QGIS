@@ -287,14 +287,11 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     mRadGpsd->setChecked( true );
   }
-  //hide the internal port method if build is without QtLocation
-#ifndef HAVE_QT_MOBILITY_LOCATION
   if ( mRadInternal->isChecked() )
   {
     mRadAutodetect->setChecked( true );
   }
   mRadInternal->hide();
-#endif
 
   //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "gps/autoAddVertices" ), "false" ).toBool() );
