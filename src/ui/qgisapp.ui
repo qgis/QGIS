@@ -97,6 +97,7 @@
      </property>
      <addaction name="mActionMeasure"/>
      <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureBearing"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
     <widget class="QMenu" name="mMenuDecorations">
@@ -3533,8 +3534,24 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Toggles stream digitizing mode</string>
    </property>
   </action>
+  <action name="mActionMeasureBearing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureBearing.svg</normaloff>:/images/themes/default/mActionMeasureBearing.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Bearing</string>
+   </property>
+   <property name="toolTip">
+    <string>Measure Bearing</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

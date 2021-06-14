@@ -56,6 +56,7 @@ class QgsAppMapTools
       MeasureDistance,
       MeasureArea,
       MeasureAngle,
+      MeasureBearing,
       AddFeature,
       CircularStringCurvePoint,
       CircularStringRadius,
