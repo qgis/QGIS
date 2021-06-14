@@ -2458,7 +2458,8 @@ and maximum values are required.
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
                         bool *ok = 0,
-                        QgsFeatureIds *fids = 0 ) const;
+                        QgsFeatureIds *fids = 0,
+                        QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 Currently any filtering expression provided will override filters in the FeatureRequest.
@@ -2469,6 +2470,7 @@ Currently any filtering expression provided will override filters in the Feature
 :param context: expression context for expressions and filters
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
 :param fids: list of fids to filter, otherwise will use all fids
+:param feedback: optional feedback argument for early cancellation (since QGIS 3.22)
 
 :return: calculated aggregate value
 

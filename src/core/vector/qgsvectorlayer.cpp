@@ -4428,7 +4428,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QgsFeatureIds *fids ) const
+                                    bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback ) const
 {
   if ( ok )
     *ok = false;
@@ -4464,7 +4464,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   if ( fids )
     c.setFidsFilter( *fids );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok );
+  return c.calculate( aggregate, fieldOrExpression, context, ok, feedback );
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
