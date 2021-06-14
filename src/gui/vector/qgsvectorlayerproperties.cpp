@@ -1590,7 +1590,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, tr( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QString::number( list->count() ) );
+    childFields->setText( 1, QLocale().toString( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );
@@ -1915,8 +1915,8 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
 
     // update feature count
-    long features = alayer->featureCount();
-    mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
+    const qlonglong features = alayer->featureCount();
+    mAuxiliaryStorageFeaturesLineEdit->setText( QLocale().toString( features ) );
 
     // update actions
     mAuxiliaryLayerActionClear->setEnabled( true );
@@ -1928,7 +1928,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     if ( alayer )
     {
       const int fields = alayer->auxiliaryFields().count();
-      mAuxiliaryStorageFieldsLineEdit->setText( QString::number( fields ) );
+      mAuxiliaryStorageFieldsLineEdit->setText( QLocale().toString( fields ) );
 
       // add fields
       mAuxiliaryStorageFieldsTree->clear();

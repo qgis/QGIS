@@ -67,7 +67,7 @@ class QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshR
     void onEdgeStrokeWidthMethodChanged();
 
   private:
-    double lineEditValue( const QLineEdit *lineEdit ) const;
+    double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
     QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
 
     bool dataIsDefinedOnFaces() const;

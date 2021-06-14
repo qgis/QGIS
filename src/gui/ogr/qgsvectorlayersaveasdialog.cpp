@@ -402,7 +402,7 @@ void QgsVectorLayerSaveAsDialog::accept()
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Warning );
         msgBox.setWindowTitle( tr( "Overwrite File" ) );
-        msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QString::number( layerList.length() ) ) );
+        msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QLocale().toString( layerList.length() ) ) );
         msgBox.setDetailedText( tr( "The following layers will be permanently lost:\n\n%1" ).arg( layerList.join( "\n" ) ) );
         msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
         if ( msgBox.exec() == QMessageBox::Cancel )

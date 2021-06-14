@@ -389,6 +389,6 @@ void QgsInterpolatedLineSymbolLayerWidget::setLineEditValue( QLineEdit *lineEdit
 {
   QString strValue;
   if ( !std::isnan( value ) )
-    strValue = QString::number( value );
+    strValue = QLocale().toString( value );
   whileBlocking( lineEdit )->setText( strValue );
 }

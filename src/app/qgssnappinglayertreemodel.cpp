@@ -626,7 +626,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        return QString::number( ls.tolerance() );
+        return QLocale().toString( ls.tolerance() );
       }
 
       if ( role == Qt::UserRole )
@@ -683,7 +683,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
         else
         {
-          return QString::number( ls.minimumScale() );
+          return QLocale().toString( ls.minimumScale() );
         }
       }
 
@@ -703,7 +703,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
         else
         {
-          return QString::number( ls.maximumScale() );
+          return QLocale().toString( ls.maximumScale() );
         }
       }
 

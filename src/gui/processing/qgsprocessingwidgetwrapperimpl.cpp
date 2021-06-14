@@ -61,6 +61,7 @@
 #include "qgscheckablecombobox.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsdoublevalidator.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -647,8 +648,8 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
   if ( const QgsProcessingParameterNumber *numberParam = dynamic_cast<const QgsProcessingParameterNumber *>( definition ) )
   {
     mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( numberParam->dataType() ) );
-    mMinLineEdit->setText( QString::number( numberParam->minimum() ) );
-    mMaxLineEdit->setText( QString::number( numberParam->maximum() ) );
+    mMinLineEdit->setText( QLocale().toString( numberParam->minimum() ) );
+    mMaxLineEdit->setText( QLocale().toString( numberParam->maximum() ) );
     mDefaultLineEdit->setText( numberParam->defaultValueForGui().toString() );
   }
 
@@ -658,18 +659,18 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
 QgsProcessingParameterDefinition *QgsProcessingNumberParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   bool ok;
-  double val = mDefaultLineEdit->text().toDouble( &ok );
+  double val = QgsDoubleValidator::toDouble( mDefaultLineEdit->text(), &ok );
 
   QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
   auto param = std::make_unique< QgsProcessingParameterNumber >( name, description, dataType, ok ? val : QVariant() );
 
-  val = mMinLineEdit->text().toDouble( &ok );
+  val = QgsDoubleValidator::toDouble( mMinLineEdit->text( ), &ok );
   if ( ok )
   {
     param->setMinimum( val );
   }
 
-  val = mMaxLineEdit->text().toDouble( &ok );
+  val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
   if ( ok )
   {
     param->setMaximum( val );
@@ -990,8 +991,8 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
 
   if ( const QgsProcessingParameterDistance *distParam = dynamic_cast<const QgsProcessingParameterDistance *>( definition ) )
   {
-    mMinLineEdit->setText( QString::number( distParam->minimum() ) );
-    mMaxLineEdit->setText( QString::number( distParam->maximum() ) );
+    mMinLineEdit->setText( QLocale().toString( distParam->minimum() ) );
+    mMaxLineEdit->setText( QLocale().toString( distParam->maximum() ) );
     mDefaultLineEdit->setText( distParam->defaultValueForGui().toString() );
   }
 
@@ -1001,17 +1002,17 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
 QgsProcessingParameterDefinition *QgsProcessingDistanceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   bool ok;
-  double val = mDefaultLineEdit->text().toDouble( &ok );
+  double val = QgsDoubleValidator::toDouble( mDefaultLineEdit->text(), &ok );
 
   auto param = std::make_unique< QgsProcessingParameterDistance >( name, description, ok ? val : QVariant(), mParentLayerComboBox->currentData().toString() );
 
-  val = mMinLineEdit->text().toDouble( &ok );
+  val = QgsDoubleValidator::toDouble( mMinLineEdit->text(), &ok );
   if ( ok )
   {
     param->setMinimum( val );
   }
 
-  val = mMaxLineEdit->text().toFloat( &ok );
+  val = QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok );
   if ( ok )
   {
     param->setMaximum( val );
@@ -1324,8 +1325,8 @@ QgsProcessingRangeParameterDefinitionWidget::QgsProcessingRangeParameterDefiniti
   {
     mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( rangeParam->dataType() ) );
     const QList< double > range = QgsProcessingParameters::parameterAsRange( rangeParam, rangeParam->defaultValueForGui(), context );
-    mMinLineEdit->setText( QString::number( range.at( 0 ) ) );
-    mMaxLineEdit->setText( QString::number( range.at( 1 ) ) );
+    mMinLineEdit->setText( QLocale().toString( range.at( 0 ) ) );
+    mMaxLineEdit->setText( QLocale().toString( range.at( 1 ) ) );
   }
 
   setLayout( vlayout );
@@ -1340,7 +1341,12 @@ QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::c
   }
   else
   {
-    defaultValue = mMinLineEdit->text();
+    bool ok;
+    defaultValue = QgsDoubleValidator::toDouble( mMinLineEdit->text(), &ok );
+    if ( ! ok )
+    {
+      defaultValue = QStringLiteral( "None" );
+    }
   }
 
   if ( mMaxLineEdit->text().isEmpty() )
@@ -1349,7 +1355,9 @@ QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::c
   }
   else
   {
-    defaultValue += QStringLiteral( "," ) + mMaxLineEdit->text();
+    bool ok;
+    const double val { QgsDoubleValidator::toDouble( mMaxLineEdit->text(), &ok ) };
+    defaultValue += QStringLiteral( ",%1" ).arg( ok ? QString::number( val ) : QLatin1String( "None" ) );
   }
 
   QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );

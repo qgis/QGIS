@@ -319,7 +319,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     {
       const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, point, searchRadius );
       const double scalar = scalarValue.scalar();
-      attribute.insert( tr( "Scalar Value" ), std::isnan( scalar ) ? tr( "no data" ) : QString::number( scalar ) );
+      attribute.insert( tr( "Scalar Value" ), std::isnan( scalar ) ? tr( "no data" ) : QLocale().toString( scalar ) );
     }
 
     if ( groupMeta.isVector() )
@@ -331,9 +331,9 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
         attribute.insert( tr( "Vector Value" ), tr( "no data" ) );
       else
       {
-        attribute.insert( tr( "Vector Magnitude" ), QString::number( vectorValue.scalar() ) );
-        derivedAttributes.insert( tr( "Vector x-component" ), QString::number( vectorY ) );
-        derivedAttributes.insert( tr( "Vector y-component" ), QString::number( vectorX ) );
+        attribute.insert( tr( "Vector Magnitude" ), QLocale().toString( vectorValue.scalar() ) );
+        derivedAttributes.insert( tr( "Vector x-component" ), QLocale().toString( vectorY ) );
+        derivedAttributes.insert( tr( "Vector y-component" ), QLocale().toString( vectorX ) );
       }
     }
 
@@ -360,22 +360,22 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   QgsPointXY vertexPoint = layer->snapOnElement( QgsMesh::Vertex, point, searchRadius );
   if ( !vertexPoint.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Snapped Vertex Position X" ), QString::number( vertexPoint.x() ) );
-    derivedGeometry.insert( tr( "Snapped Vertex Position Y" ), QString::number( vertexPoint.y() ) );
+    derivedGeometry.insert( tr( "Snapped Vertex Position X" ), QLocale().toString( vertexPoint.x() ) );
+    derivedGeometry.insert( tr( "Snapped Vertex Position Y" ), QLocale().toString( vertexPoint.y() ) );
   }
 
   QgsPointXY faceCentroid = layer->snapOnElement( QgsMesh::Face, point, searchRadius );
   if ( !faceCentroid.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Face Centroid X" ), QString::number( faceCentroid.x() ) );
-    derivedGeometry.insert( tr( "Face Centroid Y" ), QString::number( faceCentroid.y() ) );
+    derivedGeometry.insert( tr( "Face Centroid X" ), QLocale().toString( faceCentroid.x() ) );
+    derivedGeometry.insert( tr( "Face Centroid Y" ), QLocale().toString( faceCentroid.y() ) );
   }
 
   QgsPointXY pointOnEdge = layer->snapOnElement( QgsMesh::Edge, point, searchRadius );
   if ( !pointOnEdge.isEmpty() )
   {
-    derivedGeometry.insert( tr( "Point on Edge X" ), QString::number( pointOnEdge.x() ) );
-    derivedGeometry.insert( tr( "Point on Edge Y" ), QString::number( pointOnEdge.y() ) );
+    derivedGeometry.insert( tr( "Point on Edge X" ), QLocale().toString( pointOnEdge.x() ) );
+    derivedGeometry.insert( tr( "Point on Edge Y" ), QLocale().toString( pointOnEdge.y() ) );
   }
 
   const IdentifyResult result( layer,
@@ -532,7 +532,7 @@ QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsP
   derivedAttributes.insert( tr( "(clicked coordinate X)" ), formatXCoordinate( point ) );
   derivedAttributes.insert( tr( "(clicked coordinate Y)" ), formatYCoordinate( point ) );
   if ( point.is3D() )
-    derivedAttributes.insert( tr( "(clicked coordinate Z)" ), QString::number( point.z(), 'f' ) );
+    derivedAttributes.insert( tr( "(clicked coordinate Z)" ), QLocale().toString( point.z(), 'f' ) );
   return derivedAttributes;
 }
 

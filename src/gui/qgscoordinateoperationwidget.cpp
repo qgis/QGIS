@@ -301,7 +301,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
     item = std::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-    item->setText( transform.accuracy >= 0 ? QString::number( transform.accuracy ) : tr( "Unknown" ) );
+    item->setText( transform.accuracy >= 0 ? QLocale().toString( transform.accuracy ) : tr( "Unknown" ) );
     item->setToolTip( toolTipString );
     if ( !transform.isAvailable )
     {

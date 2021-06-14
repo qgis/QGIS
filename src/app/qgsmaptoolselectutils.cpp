@@ -570,7 +570,7 @@ QString QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::textForChooseAll( qi
   if ( featureCount < 0 )
     featureCountText = tr( "Searching…" );
   else
-    featureCountText = QString::number( featureCount );
+    featureCountText = QLocale().toString( featureCount );
 
   switch ( mBehavior )
   {

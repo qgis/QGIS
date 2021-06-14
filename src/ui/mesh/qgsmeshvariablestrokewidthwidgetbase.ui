@@ -14,6 +14,20 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Min Value</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Max Value</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
@@ -21,15 +35,53 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QgsDoubleSpinBox" name="mWidthMinimumSpinBox">
-     <property name="value">
-      <double>1.000000000000000</double>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Min Width</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="mValueMinimumLineEdit"/>
+   <item row="3" column="0" colspan="4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="mIgnoreOutOfRangecheckBox">
+       <property name="text">
+        <string>Ignore Out of Range Values</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mUseAbsoluteValueCheckBox">
+       <property name="text">
+        <string>Use Absolute Value</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0" colspan="4">
+    <widget class="Line" name="line">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Max Width</string>
+     </property>
+    </widget>
    </item>
    <item row="9" column="0">
     <spacer name="verticalSpacer">
@@ -44,10 +96,7 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="mValueMaximumLineEdit"/>
-   </item>
-   <item row="1" column="2" rowspan="2">
+   <item row="1" column="3" rowspan="2">
     <widget class="QPushButton" name="mDefaultMinMaxButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -70,74 +119,39 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Min Width</string>
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="mValueMaximumSpinBox">
+     <property name="minimum">
+      <double>-1000000000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>1000000000.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Max Width</string>
+   <item row="1" column="1" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="mValueMinimumSpinBox">
+     <property name="minimum">
+      <double>-1000000000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>1000000000.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="Line" name="line">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>10</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="7" column="1" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="mWidthMinimumSpinBox">
+     <property name="value">
+      <double>1.000000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Max Value</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Min Value</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1">
+   <item row="8" column="1" colspan="2">
     <widget class="QgsDoubleSpinBox" name="mWidthMaximumSpinBox">
      <property name="value">
       <double>5.000000000000000</double>
      </property>
     </widget>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QCheckBox" name="mIgnoreOutOfRangecheckBox">
-       <property name="text">
-        <string>Ignore Out of Range Values</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mUseAbsoluteValueCheckBox">
-       <property name="text">
-        <string>Use Absolute Value</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -149,8 +163,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mValueMinimumLineEdit</tabstop>
-  <tabstop>mValueMaximumLineEdit</tabstop>
   <tabstop>mDefaultMinMaxButton</tabstop>
   <tabstop>mIgnoreOutOfRangecheckBox</tabstop>
   <tabstop>mUseAbsoluteValueCheckBox</tabstop>

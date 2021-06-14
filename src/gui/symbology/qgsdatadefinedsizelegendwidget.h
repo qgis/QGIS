@@ -23,6 +23,7 @@
 #include "ui_qgsdatadefinedsizelegendwidget.h"
 
 #include "qgspanelwidget.h"
+#include "qgsdoublevalidator.h"
 #include "qgsproperty.h"
 #include <QStyledItemDelegate>
 
@@ -98,7 +99,7 @@ class SizeClassDelegate : public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {
       QLineEdit *lineEdit = new QLineEdit( parent );
-      QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );
+      QgsDoubleValidator *validator = new QgsDoubleValidator( 0, 1e6, 1, lineEdit );
       lineEdit->setValidator( validator );
       return lineEdit;
     }
