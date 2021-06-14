@@ -4979,7 +4979,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 }
 
 
-static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariant result;
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
@@ -4991,6 +4991,8 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
     req.setFilterFid( fid );
     req.setTimeout( 10000 );
     req.setRequestMayBeNested( true );
+    if ( context )
+      req.setFeedback( context->feedback() );
     QgsFeatureIterator fIt = vl->getFeatures( req );
 
     QgsFeature fet;
@@ -5034,6 +5036,8 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   req.setLimit( 1 );
   req.setTimeout( 10000 );
   req.setRequestMayBeNested( true );
+  if ( context )
+    req.setFeedback( context->feedback() );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -6069,6 +6073,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsFeatureRequest request;
   request.setTimeout( 10000 );
   request.setRequestMayBeNested( true );
+  if ( context )
+    request.setFeedback( context->feedback() );
 
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -6282,6 +6288,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsFeature feat2;
   QgsFeatureRequest request2;
   request2.setLimit( limit );
+  if ( context )
+    request2.setFeedback( context->feedback() );
   QgsFeatureIterator fi = targetLayer->getFeatures( request2 );
   while ( fi.nextFeature( feat2 ) )
   {
