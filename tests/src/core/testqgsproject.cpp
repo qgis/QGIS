@@ -54,6 +54,7 @@ class TestQgsProject : public QObject
     void projectSaveUser();
     void testCrsExpressions();
     void testCrsValidAfterReadingProjectFile();
+    void testDefaultRelativePaths();
 };
 
 void TestQgsProject::init()
@@ -697,6 +698,25 @@ void TestQgsProject::testCrsExpressions()
   QgsExpression e9( QStringLiteral( "@project_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
+}
+
+void TestQgsProject::testDefaultRelativePaths()
+{
+  QgsSettings s;
+  bool bk_defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool();
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true );
+  QgsProject p1;
+  bool p1PathsAbsolute = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), false );
+  QgsProject p2;
+  bool p2PathsAbsolute = p2.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), bk_defaultRelativePaths );
+
+  QCOMPARE( p1PathsAbsolute, false );
+  QCOMPARE( p2PathsAbsolute, true );
 }
 
 QGSTEST_MAIN( TestQgsProject )

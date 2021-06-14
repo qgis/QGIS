@@ -844,8 +844,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), true );
   writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 2 );
 
-  QSettings s;
-  bool defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
+  bool defaultRelativePaths = mSettings.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), !defaultRelativePaths );
 
   //copy default units to project
