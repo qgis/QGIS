@@ -340,7 +340,7 @@ void QgsFeatureRequest::setFeedback( QgsFeedback *feedback )
   mFeedback = feedback;
 }
 
-QgsFeedback *QgsFeatureRequest::feedback()
+QgsFeedback *QgsFeatureRequest::feedback() const
 {
   return mFeedback;
 }
