@@ -392,6 +392,8 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
     context.setVectorSimplifyMethod( vectorMethod );
   }
 
+  featureRequest.setFeedback( mInterruptionChecker.get() );
+
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
   // Attach an interruption checker so that iterators that have potentially
   // slow fetchFeature() implementations, such as in the WFS provider, can

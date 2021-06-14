@@ -714,6 +714,29 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
+    /**
+     * Attach a \a feedback object that can be queried regularly by the iterator to check
+     * if it should be canceled.
+     *
+     * Ownership of \a feedback is NOT transferred, and the caller must take care that it exists
+     * for the lifetime of the feature request and feature iterators.
+     *
+     * \see feedback()
+     *
+     * \since QGIS 3.20
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the feedback object that can be queried regularly by the iterator to check
+     * if it should be canceled, if set.
+     *
+     * \see setFeedback()
+     *
+     * \since QGIS 3.20
+     */
+    QgsFeedback *feedback() const;
+
   protected:
     FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
@@ -733,6 +756,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateTransformContext mTransformContext;
     int mTimeout = -1;
     int mRequestMayBeNested = false;
+    QgsFeedback *mFeedback = nullptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

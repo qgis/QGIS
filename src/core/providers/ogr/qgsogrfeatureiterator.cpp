@@ -83,9 +83,13 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   else
   {
     //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-    mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource, mSource->mShareSameDatasetAmongLayers ), mRequest.timeout(), mRequest.requestMayBeNested() );
+    mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource, mSource->mShareSameDatasetAmongLayers ),
+            mRequest.timeout(),
+            mRequest.requestMayBeNested(),
+            mRequest.feedback() );
     if ( !mConn || !mConn->ds )
     {
+      iteratorClosed();
       return;
     }
 
