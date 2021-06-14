@@ -97,6 +97,7 @@ bool QgsVectorLayerFeatureCounter::run()
       if ( isCanceled() )
       {
         mRenderer->stopRender( renderContext );
+        mExpressionContext.setFeedback( nullptr );
         mFeedback.reset();
         return false;
       }
