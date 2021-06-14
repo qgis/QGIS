@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 
@@ -86,7 +86,7 @@ void TestQgsMapToolCircleM::cleanupTestCase()
 
 void TestQgsMapToolCircleM::testCircleFrom2Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -105,12 +105,12 @@ void TestQgsMapToolCircleM::testCircleFrom2Points()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleM::testCircleFrom2PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -132,12 +132,12 @@ void TestQgsMapToolCircleM::testCircleFrom2PointsWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleM::testCircleFrom3Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -157,12 +157,12 @@ void TestQgsMapToolCircleM::testCircleFrom3Points()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleM::testCircleFrom3PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -184,12 +184,12 @@ void TestQgsMapToolCircleM::testCircleFrom3PointsWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleM::testCircleFromCenterPoint()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -208,12 +208,12 @@ void TestQgsMapToolCircleM::testCircleFromCenterPoint()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleM::testCircleFromCenterPointWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -235,7 +235,7 @@ void TestQgsMapToolCircleM::testCircleFromCenterPointWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCircleM )

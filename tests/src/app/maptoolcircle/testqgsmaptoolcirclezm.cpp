@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 
@@ -86,8 +86,8 @@ void TestQgsMapToolCircleZM::cleanupTestCase()
 
 void TestQgsMapToolCircleZM::testCircleFrom2Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -106,14 +106,14 @@ void TestQgsMapToolCircleZM::testCircleFrom2Points()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleZM::testCircleFrom2PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 333 );
   mLayer->startEditing();
 
   QgsMapToolCircle2Points mapTool( mParentTool, mCanvas );
@@ -135,14 +135,14 @@ void TestQgsMapToolCircleZM::testCircleFrom2PointsWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleZM::testCircleFrom3Points()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -162,14 +162,14 @@ void TestQgsMapToolCircleZM::testCircleFrom3Points()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleZM::testCircleFrom3PointsWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 111 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 111 );
   mLayer->startEditing();
 
   QgsMapToolCircle3Points mapTool( mParentTool, mCanvas );
@@ -191,14 +191,14 @@ void TestQgsMapToolCircleZM::testCircleFrom3PointsWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleZM::testCircleFromCenterPoint()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -217,14 +217,14 @@ void TestQgsMapToolCircleZM::testCircleFromCenterPoint()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 void TestQgsMapToolCircleZM::testCircleFromCenterPointWithDeletedVertex()
 {
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 222 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 444 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 222 );
   mLayer->startEditing();
 
   QgsMapToolCircleCenterPoint mapTool( mParentTool, mCanvas );
@@ -246,8 +246,8 @@ void TestQgsMapToolCircleZM::testCircleFromCenterPointWithDeletedVertex()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mLayer->rollBack();
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
-  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_m_value" ), 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 0 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue.setValue( 0 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolCircleZM )

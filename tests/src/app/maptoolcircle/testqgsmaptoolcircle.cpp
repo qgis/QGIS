@@ -18,7 +18,7 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
 
