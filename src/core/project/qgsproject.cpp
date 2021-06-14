@@ -843,7 +843,10 @@ void QgsProject::clear()
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
   writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), true );
   writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 2 );
-  writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+
+  QSettings s;
+  bool defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
+  writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), !defaultRelativePaths );
 
   //copy default units to project
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
