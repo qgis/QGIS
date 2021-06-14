@@ -685,13 +685,13 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
     subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context ? context->feedback() : nullptr );
 
     context->setCachedValue( cacheKey, result );
   }
   else
   {
-    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok );
+    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok, nullptr, context ? context->feedback() : nullptr );
   }
   if ( !ok )
   {
@@ -807,7 +807,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
 
   QgsExpressionContext subContext( *context );
-  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
   if ( !ok )
   {
@@ -931,7 +931,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
   subContext.appendScope( subScope );
-  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
   if ( !ok )
   {

@@ -49,7 +49,7 @@ void QgsAggregateCalculator::setFidsFilter( const QgsFeatureIds &fids )
 }
 
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate,
-    const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok ) const
+    const QString &fieldOrExpression, QgsExpressionContext *context, bool *ok, QgsFeedback *feedback ) const
 {
   if ( ok )
     *ok = false;
@@ -98,6 +98,9 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
     request.setFilterExpression( mFilterExpression );
   if ( context )
     request.setExpressionContext( *context );
+
+  request.setFeedback( feedback ? feedback : ( context ? context->feedback() : nullptr ) );
+
   //determine result type
   QVariant::Type resultType = QVariant::Double;
   if ( attrNum == -1 )

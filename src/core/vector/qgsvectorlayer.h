@@ -2272,6 +2272,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context expression context for expressions and filters
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \param fids list of fids to filter, otherwise will use all fids
+     * \param feedback optional feedback argument for early cancellation (since QGIS 3.22)
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -2280,7 +2281,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr,
-                        QgsFeatureIds *fids = nullptr ) const;
+                        QgsFeatureIds *fids = nullptr,
+                        QgsFeedback *feedback = nullptr ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
