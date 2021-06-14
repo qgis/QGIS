@@ -859,7 +859,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
     double distance = 0;
     double azimuth1 = 0;
     double azimuth2 = 0;
-    geod_inverse( mGeod.get(), pp1.y(), pp1.x(), pp2.x(), pp2.y(), &distance, &azimuth1, &azimuth2 );
+    geod_inverse( mGeod.get(), pp1.y(), pp1.x(), pp2.y(), pp2.x(), &distance, &azimuth1, &azimuth2 );
 
     bearing = DEG2RAD( azimuth1 );
   }
