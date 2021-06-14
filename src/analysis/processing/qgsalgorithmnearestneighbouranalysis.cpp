@@ -117,7 +117,7 @@ QVariantMap QgsNearestNeighbourAnalysisAlgorithm::processAlgorithm( const QVaria
     feedback->setProgress( i * step );
   }
 
-  int count = source->featureCount() > 0 ? source->featureCount() : 1;
+  long long count = source->featureCount() > 0 ? source->featureCount() : 1;
   double observedDistance = sumDist / count;
   double expectedDistance = 0.5 / std::sqrt( count / area );
   double nnIndex = observedDistance / expectedDistance;

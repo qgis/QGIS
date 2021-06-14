@@ -647,10 +647,10 @@ void QgsRuleBasedRendererWidget::countFeatures()
   req.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mLayer->fields() );
   QgsFeatureIterator fit = mLayer->getFeatures( req );
 
-  int nFeatures = mLayer->featureCount();
-  QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, nFeatures );
+  long long nFeatures = mLayer->featureCount();
+  QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, 100 );
   p.setWindowModality( Qt::WindowModal );
-  int featuresCounted = 0;
+  long long featuresCounted = 0;
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
@@ -680,7 +680,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
       {
         p.setMaximum( 0 );
       }
-      p.setValue( featuresCounted );
+      p.setValue( static_cast< double >( featuresCounted ) / nFeatures * 100.0 );
       if ( p.wasCanceled() )
       {
         return;

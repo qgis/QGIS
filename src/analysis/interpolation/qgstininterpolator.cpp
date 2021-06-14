@@ -92,8 +92,8 @@ void QgsTinInterpolator::initialize()
   }
 
   //get number of features if we use a progress bar
-  int nFeatures = 0;
-  int nProcessedFeatures = 0;
+  long long nFeatures = 0;
+  long long nProcessedFeatures = 0;
   if ( mFeedback )
   {
     for ( const LayerData &layer :  std::as_const( mLayerData ) )
