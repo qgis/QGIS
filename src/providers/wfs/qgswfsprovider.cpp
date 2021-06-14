@@ -837,7 +837,7 @@ QgsWkbTypes::Type QgsWFSProvider::wkbType() const
   return mShared->mWKBType;
 }
 
-long QgsWFSProvider::featureCount() const
+long long QgsWFSProvider::featureCount() const
 {
   return mShared->getFeatureCount();
 }

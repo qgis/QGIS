@@ -387,8 +387,8 @@ Qgis::VectorExportResult QgsVectorLayerExporter::exportLayer( QgsVectorLayer *la
   if ( !ct.isValid() )
     shallTransform = false;
 
-  long n = 0;
-  long approxTotal = onlySelected ? layer->selectedFeatureCount() : layer->featureCount();
+  long long n = 0;
+  long long approxTotal = onlySelected ? layer->selectedFeatureCount() : layer->featureCount();
 
   if ( errorMessage )
   {

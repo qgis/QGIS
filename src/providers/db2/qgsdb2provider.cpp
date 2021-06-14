@@ -521,7 +521,7 @@ QgsWkbTypes::Type QgsDb2Provider::wkbType() const
   return mWkbType;
 }
 
-long QgsDb2Provider::featureCount() const
+long long QgsDb2Provider::featureCount() const
 {
   // Return the count that we get from the subset.
   if ( !mSqlWhereClause.isEmpty() )

@@ -103,7 +103,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     size_t layerCount() const;
 
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsRectangle extent() const override;
     void updateExtents() override;
     QgsFields fields() const override;
@@ -308,7 +308,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QgsRectangle mLayerExtent;
 
     //! Number of features in the layer
-    long mNumberFeatures = 0;
+    long long mNumberFeatures = 0;
 
     //! this Geometry is supported by an R*Tree spatial index
     bool mSpatialIndexRTree = false;

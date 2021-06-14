@@ -1052,7 +1052,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
     virtual bool readSld( const QDomNode &node, QString &errorMessage ) ${SIP_FINAL};
 
 
-    long featureCount( const QString &legendKey ) const;
+    long long featureCount( const QString &legendKey ) const;
 %Docstring
 Number of features rendered with specified legend key. Features must be first
 calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
@@ -1792,7 +1792,7 @@ Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLa
 Returns the list of attributes which make up the layer's primary keys.
 %End
 
-    virtual long featureCount() const ${SIP_FINAL};
+    virtual long long featureCount() const ${SIP_FINAL};
 
 %Docstring
 Returns feature count including changes which have not yet been committed

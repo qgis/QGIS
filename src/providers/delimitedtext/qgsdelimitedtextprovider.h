@@ -90,7 +90,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
     QgsFields fields() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     bool createSpatialIndex() override;
@@ -195,7 +195,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
     int mGeomType;
 
-    mutable long mNumberFeatures;
+    mutable long long mNumberFeatures;
     int mSkipLines;
     QString mDecimalPoint;
     bool mXyDms = false;

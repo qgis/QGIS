@@ -367,14 +367,14 @@ QgsWkbTypes::Type QgsMemoryProvider::wkbType() const
   return mWkbType;
 }
 
-long QgsMemoryProvider::featureCount() const
+long long QgsMemoryProvider::featureCount() const
 {
   if ( mSubsetString.isEmpty() )
     return mFeatures.count();
 
   // subset string set, no alternative but testing each feature
   QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setNoAttributes() ) );
-  int count = 0;
+  long long count = 0;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {

@@ -54,13 +54,13 @@ class QgsWFSDataSourceURI
     QString version() const;
 
     //! Returns user defined limit of features to download. 0=no limitation
-    int maxNumFeatures() const;
+    long long maxNumFeatures() const;
 
     //! Sets user defined limit of features to download
-    void setMaxNumFeatures( int maxNumFeatures );
+    void setMaxNumFeatures( long long maxNumFeatures );
 
     //! Returns user defined limit page size. 0=server udefault
-    int pageSize() const;
+    long long pageSize() const;
 
     //! Returns whether paging is enabled.
     bool pagingEnabled() const;

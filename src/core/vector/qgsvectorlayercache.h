@@ -292,7 +292,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    long featureCount() const;
+    long long featureCount() const;
 
   protected:
 

@@ -428,7 +428,7 @@ QgsWkbTypes::Type QgsGrassProvider::wkbType() const
   return mQgisType;
 }
 
-long QgsGrassProvider::featureCount() const
+long long QgsGrassProvider::featureCount() const
 {
   return mNumberFeatures;
 }

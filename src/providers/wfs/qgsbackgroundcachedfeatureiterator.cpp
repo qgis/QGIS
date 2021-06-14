@@ -91,7 +91,7 @@ void QgsFeatureDownloaderImpl::emitFeatureReceived( QVector<QgsFeatureUniqueIdPa
   emit mDownloader->featureReceived( features );
 }
 
-void QgsFeatureDownloaderImpl::emitFeatureReceived( int featureCount )
+void QgsFeatureDownloaderImpl::emitFeatureReceived( long long featureCount )
 {
   emit mDownloader->featureReceived( featureCount );
 }
@@ -203,7 +203,7 @@ void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
 // -------------------------
 
 
-void QgsFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
+void QgsFeatureDownloader::run( bool serializeFeatures, long long maxFeatures )
 {
   Q_ASSERT( mImpl );
   mImpl->run( serializeFeatures, maxFeatures );

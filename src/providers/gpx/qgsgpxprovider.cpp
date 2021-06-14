@@ -156,7 +156,7 @@ QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 /**
  * Returns the feature type
  */
-long QgsGPXProvider::featureCount() const
+long long QgsGPXProvider::featureCount() const
 {
   if ( mFeatureType == WaypointType )
     return data->getNumberOfWaypoints();

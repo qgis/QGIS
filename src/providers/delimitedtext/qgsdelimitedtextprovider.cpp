@@ -1224,7 +1224,7 @@ QgsWkbTypes::Type QgsDelimitedTextProvider::wkbType() const
   return mWkbType;
 }
 
-long QgsDelimitedTextProvider::featureCount() const
+long long QgsDelimitedTextProvider::featureCount() const
 {
   if ( mRescanRequired )
     const_cast<QgsDelimitedTextProvider *>( this )->rescanFile();

@@ -92,7 +92,7 @@ class QgsFeatureDownloaderImpl
      *                    the one defined in the URI. Typically by the QgsWFSProvider,
      *                    when it cannot guess the geometry type.
      */
-    virtual void run( bool serializeFeatures, int maxFeatures ) = 0;
+    virtual void run( bool serializeFeatures, long long maxFeatures ) = 0;
 
     //! To interrupt the download. Must be thread-safe
     void stop();
@@ -104,7 +104,7 @@ class QgsFeatureDownloaderImpl
     void emitFeatureReceived( QVector<QgsFeatureUniqueIdPair> features );
 
     // To be used when new features have been received
-    void emitFeatureReceived( int featureCount );
+    void emitFeatureReceived( long long featureCount );
 
     // To be used when the download is finished (successful or not)
     void emitEndOfDownload( bool success );
@@ -250,7 +250,7 @@ class QgsFeatureDownloader: public QObject
      *                    the one defined in the URI. Typically by the QgsWFSProvider,
      *                    when it cannot guess the geometry type.
      */
-    void run( bool serializeFeatures, int maxFeatures );
+    void run( bool serializeFeatures, long long maxFeatures );
 
     //! To interrupt the download.
     void stop();
@@ -260,7 +260,7 @@ class QgsFeatureDownloader: public QObject
     void featureReceived( QVector<QgsFeatureUniqueIdPair> );
 
     //! Emitted when new features have been received
-    void featureReceived( int featureCount );
+    void featureReceived( long long featureCount );
 
     //! Emitted when the download is finished (successful or not)
     void endOfDownload( bool success );

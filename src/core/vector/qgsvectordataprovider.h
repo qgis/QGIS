@@ -153,9 +153,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Number of features in the layer
-     * \returns long containing number of features
+     * \returns number of features
      */
-    long featureCount() const override = 0;
+    long long featureCount() const override = 0;
 
     /**
      * Returns TRUE if the layer does not contain any feature.
