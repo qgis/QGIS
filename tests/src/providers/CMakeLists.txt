@@ -76,6 +76,10 @@ SET_TESTS_PROPERTIES(qgis_postgresconntest PROPERTIES LABELS "POSTGRES")
 if (NOT FORCE_STATIC_PROVIDERS)
   ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
   ADD_QGIS_TEST(virtualrasterprovidertest testqgsvirtualrasterprovider.cpp)
+  target_link_libraries (qgis_virtualrasterprovidertest
+    qgis_core
+    qgis_analysis
+  )
 endif()
 
 if (WITH_EPT)

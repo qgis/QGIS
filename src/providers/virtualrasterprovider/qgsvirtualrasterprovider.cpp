@@ -10,6 +10,7 @@
 
 //for hardcoded data
 #include <qgsproject.h>
+#include "qgsrasterprojector.h"
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
@@ -81,7 +82,8 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 //works for displaying a black square
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-   /*
+
+    /*
    //this part was only to show a black square
    //QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
@@ -103,21 +105,26 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
    //hardcoded data
    QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
-   QgsProject::instance()->addMapLayers(
-               QList<QgsMapLayer *>() << r);
+   //QgsProject::instance()->addMapLayers(
+    //           QList<QgsMapLayer *>() << r);
+   QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
 
    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
-   /*
-   int lwidth = 373;
-   int lheight = 350;
-   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, lwidth, lheight );
-   */
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, width, height );
+
    float * outputData = ( float * )( tblock->bits() );
 
 
    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
    QVector<QgsRasterCalculatorEntry> mRasterEntries;
+
+   QgsRasterCalculatorEntry entry;
+   entry.raster = r;
+   entry.bandNumber = 1;
+   //entry.ref = QStringLiteral( "dem@1" );
+   //QgsDebugMsg(entry.raster->name()+" e' il nome del raster caricato");
+   mRasterEntries<<entry;
+
    //from rastercalculator.cpp processCalculation
    QString mFormulaString = "\"dem@1\" + 200";
    QString mLastError = "last error";
@@ -125,7 +132,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
 
-//checks
+   //CHECKS
    if ( !calcNode )
    {
      //error
@@ -148,7 +155,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
          QgsDebugMsg("BandError = 6, Invalid band number for input");
        }
      }
-  //end checks
+   //END CHECKS
 
 
 
@@ -160,15 +167,36 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    {
        std::unique_ptr< QgsRasterBlock > block;
        //block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
-       block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+
+       if ( it->raster->crs() != mOutputCrs )
+       {
+           QgsRasterProjector proj;
+           proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->transformContext() );
+           proj.setInput( it->raster->dataProvider() );
+           proj.setPrecision( QgsRasterProjector::Exact );
+
+           QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
+           QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
+           block.reset( proj.block( it->bandNumber, extent, width, height, rasterBlockFeedback ) );
+           if ( rasterBlockFeedback->isCanceled() )
+           {
+               qDeleteAll( inputBlocks );
+               QgsDebugMsg("Canceled = 3, User canceled calculation");
+           }
+       }
+       else
+       {
+           block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+       }
+
        inputBlocks.insert( it->ref, block.release() );
    }
 
 
    QgsRasterMatrix resultMatrix;
 
-   for ( int i = 0; i < mHeight; ++i )
-   //for ( int i = 0; i < height; ++i )
+   //for ( int i = 0; i < mHeight; ++i )
+   for ( int i = 0; i < height; ++i )
    {
        if ( feedback )
        {
@@ -179,20 +207,22 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
        {
          break;
        }
+
        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
        {
+           QgsDebugMsg("SEI ARRIVATO A LINEA 212");
            bool resultIsNumber = resultMatrix.isNumber();
-           float *calcData = new float[mWidth];
-           //float *calcData = new float[width];
+           //float *calcData = new float[mWidth];
+           float *calcData = new float[width];
 
-           for ( int j = 0; j < mWidth; ++j )
-           //for ( int j = 0; j < width; ++j )
+           //for ( int j = 0; j < mWidth; ++j )
+           for ( int j = 0; j < width; ++j )
            {
                calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
                //tblock->setValue(i,j,calcData[j]);
                resultMatrix.takeData();
-               outputData[ i*mWidth + j ]=calcData[j];
-               //outputData[ i*width + j ]=calcData[j]*0;
+               //outputData[ i*mWidth + j ]=calcData[j];
+               outputData[ i*width + j ]=calcData[j]*0;
            }
            //write scanline to the dataset ( replace GDALRasterIO)
 
@@ -202,6 +232,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
        {
          qDeleteAll( inputBlocks );
          inputBlocks.clear();
+         QgsDebugMsg("calcNode was not run in a correct way");
 
        }
 

@@ -32,6 +32,9 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include <qgsrectangle.h>
+#include "qgsproject.h"
+#include "qgsrastercalculator.h"
+#include "qgsrastercalcnode.h"
 
 /**
 * \ingroup UnitTests
@@ -50,10 +53,11 @@ class TestQgsVirtualRasterProvider : public QObject
     void cleanup() {}// will be called after every testfunction.
 
     void validLayer();
-
+    void testv();
 private:
     QString mTestDataDir;
     QString mReport;
+    QgsRasterLayer *mdemRasterLayer = nullptr;
 
 };
 
@@ -66,6 +70,14 @@ void TestQgsVirtualRasterProvider::initTestCase()
 
     mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
     mReport = QStringLiteral( "<h1>Virtual Raster Provider Tests</h1>\n" );
+
+    QString demFileName = mTestDataDir + "raster/dem.tif";
+    QFileInfo demRasterFileInfo( demFileName );
+    mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
+                                          demRasterFileInfo.completeBaseName() );
+
+    QgsProject::instance()->addMapLayers(
+      QList<QgsMapLayer *>() << mdemRasterLayer );
 }
 
 void TestQgsVirtualRasterProvider::validLayer()
@@ -96,5 +108,25 @@ void TestQgsVirtualRasterProvider::cleanupTestCase()
   }
 }
 
+void TestQgsVirtualRasterProvider::testv()
+{
+    if (mdemRasterLayer->extent().xMaximum()< 45.8117014376000000)
+    {
+        QgsDebugMsg("ok from the test");
+    }
+
+    QgsRasterCalculatorEntry entry1;
+    entry1.bandNumber = 1;
+    entry1.raster = mdemRasterLayer;
+    entry1.ref = QStringLiteral( "dem@1" );
+
+    QVector<QgsRasterCalculatorEntry> entries;
+    entries << entry1;
+
+    //QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+    QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
+    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+
+}
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"
