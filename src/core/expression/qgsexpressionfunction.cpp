@@ -676,7 +676,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy );
     }
 
-    if ( context && context->hasCachedValue( cacheKey ) )
+    if ( context->hasCachedValue( cacheKey ) )
     {
       return context->cachedValue( cacheKey );
     }
@@ -685,13 +685,13 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
     subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context ? context->feedback() : nullptr );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
     context->setCachedValue( cacheKey, result );
   }
   else
   {
-    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok, nullptr, context ? context->feedback() : nullptr );
+    result = vl->aggregate( aggregate, subExpression, parameters, nullptr, &ok );
   }
   if ( !ok )
   {
