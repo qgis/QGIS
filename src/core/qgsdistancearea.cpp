@@ -867,6 +867,10 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
   {
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
+    // Note: the prototype of std::atan2 is (y,x), to return the angle of
+    // vector (x,y) from the horizontal axis in counter-clock-wise orientation.
+    // But a bearing is expressed in clock-wise order from the vertical axis, so
+    // M_PI / 2 - std::atan2( dy, dx ) == std::atan2( dx, dy )
     bearing = std::atan2( dx, dy );
   }
 
