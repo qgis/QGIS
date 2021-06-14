@@ -271,14 +271,6 @@ if(WITH_CORE)
     set(HAVE_EPT TRUE)
   endif()
 
-  #BUILD WITH QtMobility by default on android only. Other platform can force it
-  if (ANDROID)
-      set (DEFAULT_WITH_QTMOBILITY TRUE)
-  else()
-      set (DEFAULT_WITH_QTMOBILITY FALSE)
-  endif()
-  set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
-
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -506,10 +498,6 @@ if(WITH_CORE)
 
   if(WITH_QTWEBKIT)
     set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
-  endif()
-
-  if (WITH_QTMOBILITY)
-    find_package(QtMobility 1.1.0)
   endif()
 
   # search for QScintilla2 (C++ lib)

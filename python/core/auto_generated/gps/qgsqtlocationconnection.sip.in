@@ -11,10 +11,6 @@
 
 
 
-%Feature MOBILITY_LOCATION
-
-%If (MOBILITY_LOCATION)
-
 class QgsQtLocationConnection: QgsGpsConnection
 {
 %Docstring(signature="appended")
@@ -44,8 +40,6 @@ Parse available data source content
 %End
 
 
-%If (!ANDROID)
-
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
 %Docstring
 Called when the number of satellites in view is updated.
@@ -64,11 +58,7 @@ Called when the number of satellites in use is updated.
    not available in Python bindings on android
 %End
 
-%End
-
 };
-
-%End // MOBILITY_LOCATION
 
 /************************************************************************
  * This file has been generated automatically from                      *

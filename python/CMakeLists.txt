@@ -121,10 +121,6 @@ else()
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} ARM)
 endif()
 
-if(NOT QT_MOBILITY_LOCATION_FOUND)
-  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
-endif()
-
 # SIP 4.19.7+ can:
 # * prepend auto-generated Python signature to existing Docstrings
 # * document template based classes

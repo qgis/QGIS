@@ -97,6 +97,7 @@ done:
 
 %Import QtPrintSupport/QtPrintSupportmod.sip
 %Import QtWidgets/QtWidgetsmod.sip
+%Import QtPositioning/QtPositioningmod.sip
 
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
