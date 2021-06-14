@@ -1292,8 +1292,8 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     header << datagroup.metadata.name();
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
-  int featCount = featureSource->featureCount();
-  int featCounter = 0;
+  long long featCount = featureSource->featureCount();
+  long long featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
