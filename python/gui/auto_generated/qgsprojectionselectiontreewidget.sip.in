@@ -147,9 +147,12 @@ by the given Coordinate Reference Systems.
    This function's behavior is undefined if it is called after the widget is shown.
 %End
 
-    void pushProjectionToFront();
+ void pushProjectionToFront() /Deprecated/;
 %Docstring
 Marks the current selected projection for push to front of recent projections list.
+
+.. deprecated::
+   Has no effect since QGIS 3.20
 %End
 
   signals:

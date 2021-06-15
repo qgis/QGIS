@@ -1072,9 +1072,6 @@ void QgsProjectProperties::apply()
     {
       QgsDebugMsgLevel( QStringLiteral( "CRS set to no projection!" ), 4 );
     }
-
-    // mark selected projection for push to front
-    projectionSelector->pushProjectionToFront();
   }
 
   mMetadataWidget->acceptMetadata();
