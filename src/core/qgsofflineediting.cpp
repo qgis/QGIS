@@ -851,7 +851,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     {
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
     }
-    int featureCount = 1;
+    long long featureCount = 1;
 
     QList<QgsFeatureId> remoteFeatureIds;
     while ( fit.nextFeature( f ) )

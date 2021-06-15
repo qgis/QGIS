@@ -1298,7 +1298,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
   {
-    int fid = feat.id();
+    QgsFeatureId fid = feat.id();
     QgsGeometry line = feat.geometry();
     try
     {
@@ -1359,7 +1359,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 
     if ( feedback )
     {
-      feedback->setProgress( 100 * featCounter / featCount );
+      feedback->setProgress( 100.0 * featCounter / featCount );
       if ( feedback->isCanceled() )
         return QVariantMap();
     }
@@ -1609,13 +1609,13 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
 
   textStream << header.join( ',' ) << QStringLiteral( "\n" );
 
-  int featCount = featureSource->featureCount();
-  int featCounter = 0;
+  long long featCount = featureSource->featureCount();
+  long long featCounter = 0;
   QgsFeatureIterator featIt = featureSource->getFeatures();
   QgsFeature feat;
   while ( featIt.nextFeature( feat ) )
   {
-    int fid = feat.id();
+    QgsFeatureId fid = feat.id();
     QgsGeometry geom = feat.geometry();
     try
     {
@@ -1709,7 +1709,7 @@ QVariantMap QgsMeshExportTimeSeries::processAlgorithm( const QVariantMap &parame
     featCounter++;
     if ( feedback )
     {
-      feedback->setProgress( 100 * featCounter / featCount );
+      feedback->setProgress( 100.0 * featCounter / featCount );
       if ( feedback->isCanceled() )
         return QVariantMap();
     }
