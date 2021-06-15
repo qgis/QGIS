@@ -247,7 +247,7 @@ void QgsQueryBuilder::test()
 
   if ( mLayer->setSubsetString( mTxtSql->text() ) )
   {
-    const long featureCount { mLayer->featureCount() };
+    const long long featureCount { mLayer->featureCount() };
     // Check for errors
     if ( featureCount < 0 )
     {
@@ -259,7 +259,7 @@ void QgsQueryBuilder::test()
     {
       QMessageBox::information( this,
                                 tr( "Query Result" ),
-                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
+                                tr( "The where clause returned %1 row(s).", "returned test rows" ). arg( featureCount ) );
     }
   }
   else if ( mLayer->dataProvider()->hasErrors() )

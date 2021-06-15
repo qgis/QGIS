@@ -492,14 +492,18 @@ class CORE_EXPORT QgsFeatureRequest
      * \see limit()
      * \since QGIS 2.14
      */
-    QgsFeatureRequest &setLimit( long limit );
+    QgsFeatureRequest &setLimit( long long limit );
 
     /**
      * Returns the maximum number of features to request, or -1 if no limit set.
      * \see setLimit
      * \since QGIS 2.14
      */
-    long limit() const { return mLimit; }
+#ifndef SIP_RUN
+    long long limit() const { return mLimit; }
+#else
+    long long limit() const;
+#endif
 
     //! Sets flags that affect how features will be fetched
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
@@ -720,7 +724,7 @@ class CORE_EXPORT QgsFeatureRequest
     Flags mFlags = Flags();
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
-    long mLimit = -1;
+    long long mLimit = -1;
     OrderBy mOrderBy;
     InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
