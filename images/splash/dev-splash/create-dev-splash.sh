@@ -28,7 +28,7 @@ else
   # touch avatars.dat
   for p in 1 2; do
     echo "downloading avatars page $p"
-    curl -u username:"$token" -H "Accept: application/vnd.github.v3+json" \
+    curl -H "Accept: application/vnd.github.v3+json" \
       "https://api.github.com/repos/qgis/QGIS/contributors?page=${p}&per_page=$((number_of_avatars/2))" \
       | jq -r "sort_by(.contributions) | reverse | .[] | \"\(.login) \(.avatar_url)\""  >>  avatars.dat
   done
@@ -69,7 +69,7 @@ done
 
 # create QGIS block
 echo "create QGIS block"
-convert -background "${grey}" -density 1200 -resize 400x400 ../../icons/qgis_icon.svg mosaic/mosaic071.png
+convert -background "${grey}" -density 1200 -resize 320x320 -gravity Center -extent 400x400 ../../icons/qgis_icon.svg mosaic/mosaic071.png
 
 # create dev block
 echo "create dev block"
