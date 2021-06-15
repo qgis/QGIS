@@ -95,13 +95,13 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * \param mode progress mode
      * \param maximum total number of entities to process in the current operation
      */
-    void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
+    void progressModeSet( QgsOfflineEditing::ProgressMode mode, long long maximum );
 
     /**
      * Emitted with the progress of the current mode
      * \param progress current index of processed entities
      */
-    void progressUpdated( int progress );
+    void progressUpdated( long long progress );
 
     //! Emitted when the processing of all layers has finished
     void progressStopped();

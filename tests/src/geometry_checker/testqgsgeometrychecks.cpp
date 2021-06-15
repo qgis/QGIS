@@ -1065,7 +1065,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   // Test fixes
   QgsFeature f;
 
-  int nextId = testContext.second[errs1[0]->layerId()]->layer()->featureCount();
+  QgsFeatureId nextId = testContext.second[errs1[0]->layerId()]->layer()->featureCount();
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed,
   {
