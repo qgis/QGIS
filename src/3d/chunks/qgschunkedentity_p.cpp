@@ -247,10 +247,10 @@ int QgsChunkedEntity::pendingJobsCount() const
 
 struct ResidencyRequest
 {
-  QgsChunkNode *node;
-  float dist;
-  int level;
-
+  QgsChunkNode *node = nullptr;
+  float dist = 0.0;
+  int level = -1;
+  ResidencyRequest() = default;
   ResidencyRequest(
     QgsChunkNode *n,
     float d,
