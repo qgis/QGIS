@@ -64,7 +64,6 @@ class OtbUtils:
     @staticmethod
     def settingNames():
         return [
-            OtbUtils.ACTIVATE,
             OtbUtils.FOLDER,
             OtbUtils.SRTM_FOLDER,
             OtbUtils.GEOID_FILE,
