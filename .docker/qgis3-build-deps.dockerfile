@@ -64,6 +64,7 @@ RUN  apt-get update \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
     python3-pyqt5.qtwebkit \
+    python3-pyqt5.qtpositioning \
     python3-sip \
     python3-termcolor \
     python3-yaml \
