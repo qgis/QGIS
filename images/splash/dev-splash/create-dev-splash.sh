@@ -7,9 +7,12 @@ else
 fi
 
 # = 12x9-2*9(QGIS blocks)
-total_images=90
-images_per_block=9
-blocks=$((total_images/images_per_block))
+tile_side=3
+avatars_per_tile=$((tile_side*tile_side))
+mosaic_width_tiles=6
+mosaic_height_tiles=3
+number_of_tiles=$((mosaic_width_tiles*mosaic_height_tiles-2))
+number_of_avatars=$((number_of_tiles*avatars_per_tile))
 
 font=Source-Sans-Pro-Bold
 grey="#303030"
@@ -21,14 +24,17 @@ green="#5d9933"
 if [[ "${keep_avatars}" == "true" ]]; then
   echo "skipping avatars"
 else
-  echo "downloading avatars"
-  curl  -H "Accept: application/vnd.github.v3+json" \
-    https://api.github.com/repos/qgis/QGIS/contributors?per_page=${total_images} \
-    | jq -r "sort_by(.contributions) | reverse | .[] | \"\(.login) \(.avatar_url)\"" \
-    >  avatars.dat
+  rm -f avatars.dat || true
+  # touch avatars.dat
+  for p in 1 2; do
+    echo "downloading avatars page $p"
+    curl -u username:"$token" -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/qgis/QGIS/contributors?page=${p}&per_page=$((number_of_avatars/2))" \
+      | jq -r "sort_by(.contributions) | reverse | .[] | \"\(.login) \(.avatar_url)\""  >>  avatars.dat
+  done
 
-  for (( p=0; p<blocks; p++ )); do
-    odir=avatars_${p}
+  for (( t=0; t<number_of_tiles; t++ )); do
+    odir=avatars_${t}
     mkdir -p ${odir}
     rm -f ${odir}/*.png
   done
@@ -38,8 +44,8 @@ else
     login=$(echo "${line}" | cut -d ' ' -f1)
     url=$(echo "${line}" | cut -d ' ' -f2)
 
-    p=$(((i - i%images_per_block)/images_per_block))
-    odir=avatars_${p}
+    t=$(((i - i%avatars_per_tile)/avatars_per_tile))
+    odir=avatars_${t}
     output=${odir}/${i}.png
 
     if [[ -f alternate-avatars/${login}.png ]]; then
@@ -56,14 +62,14 @@ fi
 echo "create tiles"
 mkdir -p mosaic
 rm -f mosaic/*.png
-for (( p=0; p<blocks; p++ )); do
-  echo "tile $p"
-  montage -background '#2e2e2eff' -geometry 200x200+2+2 -tile 3x3 avatars_${p}/*.png mosaic/mosaic$(printf "%02d" ${p})0.png
+for (( t=0; t<number_of_tiles; t++ )); do
+  echo "tile $t"
+  montage -background '#2e2e2eff' -geometry 200x200+2+2 -tile 3x3 avatars_${t}/*.png mosaic/mosaic$(printf "%02d" ${t})0.png
 done
 
 # create QGIS block
 echo "create QGIS block"
-convert -background "${grey}" -density 1200 -resize 500x500 ../../icons/qgis_icon.svg mosaic/mosaic041.png
+convert -background "${grey}" -density 1200 -resize 400x400 ../../icons/qgis_icon.svg mosaic/mosaic071.png
 
 # create dev block
 echo "create dev block"
@@ -73,7 +79,11 @@ convert -size 400x400 xc:${green} \
   -fill "${grey}" \
   -pointsize 200 \
   -annotate 0 "dev" \
-  mosaic/mosaic042.png
+  mosaic/mosaic072.png
 
 echo "compute mosaic"
-montage -background "${grey}" -geometry 200x200 -tile 4x3 mosaic/*.png ../splash.png
+tile_size=400
+montage -background "${grey}" -geometry ${tile_size}x${tile_size} -tile ${mosaic_width_tiles}x${mosaic_height_tiles} mosaic/*.png mosaic.png
+mosaic_width=$((tile_size*mosaic_width_tiles))
+mosaic_height=$((tile_size*mosaic_height_tiles+tile_size/tile_side))
+convert mosaic.png -resize ${mosaic_width}x${mosaic_height} -background "${grey}" -gravity North -extent ${mosaic_width}x${mosaic_height} ../splash.png

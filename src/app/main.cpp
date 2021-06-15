@@ -25,7 +25,7 @@
 #include <QFontDatabase>
 #include <QPixmap>
 #include <QLocale>
-#include <QSplashScreen>
+#include <QScreen>
 #include <QString>
 #include <QStringList>
 #include <QStyle>
