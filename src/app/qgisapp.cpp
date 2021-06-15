@@ -14787,10 +14787,10 @@ void QgisApp::activateDeactivateMultipleLayersRelatedActions()
   // these actions are enabled whenever ANY selected layer is spatial
   const bool hasSpatial = selectedLayersHaveSpatial();
   mActionZoomToLayers->setEnabled( hasSpatial );
-  mActionPanToSelected->setEnabled( hasSpatial );
 
   // this action is enabled whenever ANY selected layer has a selection
   const bool hasSelection = selectedLayersHaveSelection();
+  mActionPanToSelected->setEnabled( hasSelection );
   mActionZoomToSelected->setEnabled( hasSelection );
 }
 
@@ -14876,6 +14876,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
     mActionRegularPolygonCenterCorner->setEnabled( false );
+    mMenuEditGeometry->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
@@ -14908,6 +14909,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSplitFeatures->setEnabled( false );
     mActionSplitParts->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
+    mMenuEditAttributes->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionMultiEditAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
@@ -14931,7 +14933,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionDecreaseContrast->setEnabled( false );
     mActionIncreaseGamma->setEnabled( false );
     mActionDecreaseGamma->setEnabled( false );
+    mActionPanToSelected->setEnabled( false );
     mActionZoomActualSize->setEnabled( false );
+    mActionZoomToSelected->setEnabled( false );
     mActionZoomToLayers->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
 
@@ -14944,6 +14948,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
+  mActionPanToSelected->setEnabled( true );
+  mActionZoomToSelected->setEnabled( true );
   mActionZoomToLayers->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
 
@@ -15024,6 +15030,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mUndoDock->widget()->setEnabled( canSupportEditing && isEditable );
         mActionUndo->setEnabled( canSupportEditing );
         mActionRedo->setEnabled( canSupportEditing );
+        mMenuEditGeometry->setEnabled( canSupportEditing && isEditable );
 
         //start editing/stop editing
         if ( canSupportEditing )
@@ -15071,12 +15078,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         if ( isEditable && canChangeAttributes )
         {
           mActionMergeFeatures->setEnabled( layerHasSelection && canDeleteFeatures && canAddFeatures );
+          mMenuEditAttributes->setEnabled( layerHasSelection );
           mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
           mActionMultiEditAttributes->setEnabled( layerHasSelection );
         }
         else
         {
           mActionMergeFeatures->setEnabled( false );
+          mMenuEditAttributes->setEnabled( false );
           mActionMergeFeatureAttributes->setEnabled( false );
           mActionMultiEditAttributes->setEnabled( false );
         }
@@ -15277,6 +15286,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRegularPolygon2Points->setEnabled( false );
       mActionRegularPolygonCenterPoint->setEnabled( false );
       mActionRegularPolygonCenterCorner->setEnabled( false );
+      mMenuEditAttributes->setEnabled( false );
+      mMenuEditGeometry->setEnabled( false );
       mActionReverseLine->setEnabled( false );
       mActionTrimExtendFeature->setEnabled( false );
       mActionDeleteSelected->setEnabled( false );
@@ -16705,7 +16716,7 @@ void QgisApp::eraseAuthenticationDatabase()
     }
   }
 
-  // TODO: Check is Browser panel is also still loading?
+  // TODO: Check if Browser panel is also still loading?
   //       It has auto-connections in parallel (if tree item is expanded), though
   //       such connections with possible master password requests *should* be ignored
   //       when there is an authentication db erase scheduled.
