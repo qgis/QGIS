@@ -944,7 +944,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   if ( !layer )
     return false;
 
-  QgsRasterDataProvider *dprovider = layer->dataProvider()->clone();
+  std::unique_ptr< QgsRasterDataProvider > dprovider( layer->dataProvider()->clone() );
   if ( !dprovider )
     return false;
 
