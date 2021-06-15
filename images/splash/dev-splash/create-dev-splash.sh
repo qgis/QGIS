@@ -56,7 +56,7 @@ fi
 echo "create tiles"
 mkdir -p mosaic
 rm -f mosaic/*.png
-for (( p=0; p<${blocks}; p++ )); do
+for (( p=0; p<blocks; p++ )); do
   echo "tile $p"
   montage -background '#2e2e2eff' -geometry 200x200+2+2 -tile 3x3 avatars_${p}/*.png mosaic/mosaic$(printf "%02d" ${p})0.png
 done
