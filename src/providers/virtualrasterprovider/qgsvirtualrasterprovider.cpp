@@ -11,6 +11,7 @@
 //for hardcoded data
 #include <qgsproject.h>
 #include "qgsrasterprojector.h"
+#include <QFileInfo>
 
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
@@ -103,36 +104,51 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
    */
 
-   //hardcoded data
-   QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
-   //QgsProject::instance()->addMapLayers(
+
+    //HARDCODED DATA--------------------------------------------------------------------------------------------
+   //QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
+    //QgsProject::instance()->addMapLayers(
     //           QList<QgsMapLayer *>() << r);
    QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
 
-   //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, width, height );
-
-   float * outputData = ( float * )( tblock->bits() );
+   // /*
+   QgsRasterLayer *mdemRasterLayer = nullptr;
+   QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
+   QFileInfo demRasterFileInfo( demFileName );
+   mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
+                                             demRasterFileInfo.completeBaseName() );
+    //QgsProject::instance()->addMapLayers(
+    //  QList<QgsMapLayer *>() << mdemRasterLayer );
+   // */
 
 
    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
    QVector<QgsRasterCalculatorEntry> mRasterEntries;
-
    QgsRasterCalculatorEntry entry;
-   entry.raster = r;
+   //entry.raster = r;
+   entry.raster = mdemRasterLayer;
    entry.bandNumber = 1;
-   //entry.ref = QStringLiteral( "dem@1" );
-   //QgsDebugMsg(entry.raster->name()+" e' il nome del raster caricato");
+   entry.ref = QStringLiteral( "dem@1" );
    mRasterEntries<<entry;
 
+
+   //END HARDCODED DATA--------------------------------------------------------------------------------------------
+
+   //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, width, height );
+   float * outputData = ( float * )( tblock->bits() );
+
+
+
    //from rastercalculator.cpp processCalculation
+   //HARDCODED formula and error
    QString mFormulaString = "\"dem@1\" + 200";
    QString mLastError = "last error";
    mLastError.clear();
    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
 
-   //CHECKS
+   //CHECKS--------------------------------------------------------------------------------------------
    if ( !calcNode )
    {
      //error
@@ -153,9 +169,11 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
        {
          mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
          QgsDebugMsg("BandError = 6, Invalid band number for input");
+
        }
      }
-   //END CHECKS
+   //END CHECKS--------------------------------------------------------------------------------------------
+
 
 
 
@@ -183,10 +201,12 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
                qDeleteAll( inputBlocks );
                QgsDebugMsg("Canceled = 3, User canceled calculation");
            }
+
        }
        else
        {
            block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+
        }
 
        inputBlocks.insert( it->ref, block.release() );
@@ -210,7 +230,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
        {
-           QgsDebugMsg("SEI ARRIVATO A LINEA 212");
+           QgsDebugMsg("WELCOME TO LINE 212");
            bool resultIsNumber = resultMatrix.isNumber();
            //float *calcData = new float[mWidth];
            float *calcData = new float[width];
@@ -237,6 +257,10 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
        }
 
    }
+
+
+
+
 
    Q_ASSERT( tblock );
    return tblock.release();

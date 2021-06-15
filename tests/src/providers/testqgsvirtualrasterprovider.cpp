@@ -110,11 +110,11 @@ void TestQgsVirtualRasterProvider::cleanupTestCase()
 
 void TestQgsVirtualRasterProvider::testv()
 {
-    if (mdemRasterLayer->extent().xMaximum()< 45.8117014376000000)
+    if ( mdemRasterLayer->extent().xMaximum()== 45.8117014376000000 )
     {
-        QgsDebugMsg("ok from the test");
+        QgsDebugMsg("testv is starting");
     }
-
+/*
     QgsRasterCalculatorEntry entry1;
     entry1.bandNumber = 1;
     entry1.raster = mdemRasterLayer;
@@ -126,6 +126,11 @@ void TestQgsVirtualRasterProvider::testv()
     //QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
     QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
     QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+*/
+
+    QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
+    QgsDebugMsg("NAME of LAYER: "+r->name());
+    delete r;
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
