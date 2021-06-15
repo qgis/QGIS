@@ -46,6 +46,10 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   mTimer->setSingleShot( true );
   mTimer->setInterval( 100 );
   connect( mTimer, &QTimer::timeout, this, &QgsLayerTreeOpacityWidget::updateOpacityFromSlider );
+  connect( mLayer, &QgsMapLayer::destroyed, this, [ = ]()
+  {
+    mTimer->stop();
+  } );
 
   connect( mSlider, &QAbstractSlider::valueChanged, this, &QgsLayerTreeOpacityWidget::sliderValueChanged );
 
