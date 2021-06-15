@@ -170,6 +170,8 @@ returns pointer to the tool's map canvas
 %Docstring
 Emit map tool changed with the old tool
 
+.. seealso:: :py:func:`setToolName`
+
 .. versionadded:: 2.3
 %End
 
@@ -303,6 +305,15 @@ Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 Transforms a ``point`` from map coordinates to screen coordinates.
+%End
+
+    void setToolName( const QString &name );
+%Docstring
+Sets the tool's ``name``.
+
+.. seealso:: :py:func:`toolName`
+
+.. versionadded:: 3.20
 %End
 
 
