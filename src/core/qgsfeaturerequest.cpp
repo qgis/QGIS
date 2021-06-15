@@ -170,7 +170,7 @@ QgsFeatureRequest &QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::Order
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setLimit( long limit )
+QgsFeatureRequest &QgsFeatureRequest::setLimit( long long limit )
 {
   mLimit = limit;
   return *this;
