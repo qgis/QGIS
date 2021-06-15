@@ -877,7 +877,7 @@ namespace QgsWms
     painter.reset( layersRendering( mapSettings, *image ) );
 
     // rendering step for annotations
-    annotationsRendering( painter.get() );
+    annotationsRendering( painter.get(), mapSettings );
 
     // painting is terminated
     painter->end();
@@ -3281,7 +3281,7 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::annotationsRendering( QPainter *painter ) const
+  void QgsRenderer::annotationsRendering( QPainter *painter, const QgsMapSettings &mapSettings ) const
   {
     const QgsAnnotationManager *annotationManager = mProject->annotationManager();
     const QList< QgsAnnotation * > annotations = annotationManager->annotations();
@@ -3293,7 +3293,39 @@ namespace QgsWms
       if ( !annotation || !annotation->isVisible() )
         continue;
 
+      //consider item position
+      double offsetX = 0;
+      double offsetY = 0;
+      if ( annotation->hasFixedMapPosition() )
+      {
+        QgsPointXY mapPos = annotation->mapPosition();
+        if ( mapSettings.destinationCrs() != annotation->mapPositionCrs() )
+        {
+          QgsCoordinateTransform coordTransform( annotation->mapPositionCrs(), mapSettings.destinationCrs(), mapSettings.transformContext() );
+          try
+          {
+            mapPos = coordTransform.transform( mapPos );
+          }
+          catch ( const QgsCsException &e )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Error transforming coordinates of annotation item: %1" ).arg( e.what() ) );
+          }
+        }
+        const QgsPointXY devicePos = mapSettings.mapToPixel().transform( mapPos );
+        offsetX = devicePos.x();
+        offsetY = devicePos.y();
+      }
+      else
+      {
+        const QPointF relativePos = annotation->relativePosition();
+        offsetX = mapSettings.outputSize().width() * relativePos.x();
+        offsetY = mapSettings.outputSize().height() * relativePos.y();
+      }
+
+      painter->save();
+      painter->translate( offsetX, offsetY );
       annotation->render( renderContext );
+      painter->restore();
     }
   }
 
