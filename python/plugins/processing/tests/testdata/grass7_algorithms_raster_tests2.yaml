@@ -839,9 +839,6 @@ tests:
       method: 0
       quantile: ''
       size: 3
-      weight:
-        name: ''
-        type: file
     results:
       output:
         hash: 7e78e8b556c9a39e07b2bf8edbd45c17fbd1897de974c52bc97009a8
