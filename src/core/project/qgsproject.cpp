@@ -3341,12 +3341,12 @@ bool QgsProject::zip( const QString &filename )
   const QFileInfo info( qgsFile );
   const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
 
-  bool asOk = true;
+  bool auxiliaryStorageSavedOk = true;
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
     const QString err = mAuxiliaryStorage->errorString();
-    setError( tr( "Unable to save auxiliary storage file ('%1'). The project is still saved but last changes on auxiliary data are lost. It is recommended to reload the project." ).arg( err ) );
-    asOk = false;
+    setError( tr( "Unable to save auxiliary storage file ('%1'). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project." ).arg( err ) );
+    auxiliaryStorageSavedOk = false;
 
     // fixes the current archive and keep the previous version of qgd
     if ( !mArchive->exists() )
@@ -3355,11 +3355,11 @@ bool QgsProject::zip( const QString &filename )
       mArchive->unzip( mFile.fileName() );
       mArchive->clearProjectFile();
 
-      const QString asFile = mArchive->auxiliaryStorageFile();
-      if ( ! asFile.isEmpty() )
+      const QString auxiliaryStorageFile = mArchive->auxiliaryStorageFile();
+      if ( ! auxiliaryStorageFile.isEmpty() )
       {
-        archive->addFile( asFile );
-        mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( asFile, false ) );
+        archive->addFile( auxiliaryStorageFile );
+        mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( auxiliaryStorageFile, false ) );
       }
     }
   }
@@ -3384,7 +3384,7 @@ bool QgsProject::zip( const QString &filename )
     zipOk = false;
   }
 
-  return asOk && zipOk;
+  return auxiliaryStorageSavedOk && zipOk;
 }
 
 bool QgsProject::isZipped() const
