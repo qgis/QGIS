@@ -176,6 +176,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Emit map tool changed with the old tool
+     * \see setToolName()
      * \since QGIS 2.3
      */
     QString toolName() { return mToolName; }
@@ -283,6 +284,14 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Transforms a \a point from map coordinates to screen coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
+
+    /**
+     * Sets the tool's \a name.
+     *
+     * \see toolName()
+     * \since QGIS 3.20
+     */
+    void setToolName( const QString &name );
 
     //! The pointer to the map canvas
     QgsMapCanvas *mCanvas = nullptr;
