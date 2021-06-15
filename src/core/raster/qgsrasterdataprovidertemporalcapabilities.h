@@ -163,7 +163,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see requestedTemporalRange()
     */
-    void setRequestedTemporalRange( const QgsDateTimeRange &range );
+    void setRequestedTemporalRange( const QgsDateTimeRange &range ) SIP_SKIP;
 
   private:
 
