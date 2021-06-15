@@ -451,7 +451,7 @@ void QgsOWSSourceSelect::populateCrs()
 
     if ( it == mSelectedLayersCRSs.constEnd() )
     {
-      if ( mSelectedLayersCRSs.find( QgsProject::instance()->crs().authid() ) != mSelectedLayersCRSs.end() )
+      if ( mSelectedLayersCRSs.constFind( QgsProject::instance()->crs().authid() ) != mSelectedLayersCRSs.constEnd() )
       {
         mSelectedCRS = QgsProject::instance()->crs().authid();
       }
