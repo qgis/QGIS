@@ -27,7 +27,7 @@ else
     | jq -r "sort_by(.contributions) | reverse | .[] | \"\(.login) \(.avatar_url)\"" \
     >  avatars.dat
 
-  for (( p=0; p<${blocks}; p++ )); do
+  for (( p=0; p<blocks; p++ )); do
     odir=avatars_${p}
     mkdir -p ${odir}
     rm -f ${odir}/*.png
