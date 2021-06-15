@@ -51,7 +51,6 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         with QgsRuntimeProfiler.profile('OTB Provider'):
             group = self.name()
             ProcessingConfig.settingIcons[group] = self.icon()
-            ProcessingConfig.addSetting(Setting(group, OtbUtils.ACTIVATE, self.tr('Activate'), True))
             ProcessingConfig.addSetting(Setting(group, OtbUtils.FOLDER,
                                                 self.tr("OTB folder"),
                                                 OtbUtils.otbFolder(),
@@ -94,12 +93,6 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         for setting in OtbUtils.settingNames():
             ProcessingConfig.removeSetting(setting)
 
-    def isActive(self):
-        return ProcessingConfig.getSetting(OtbUtils.ACTIVATE)
-
-    def setActive(self, active):
-        ProcessingConfig.setSettingValue(OtbUtils.ACTIVATE, active)
-
     def createAlgsList(self):
         algs = []
         try:
@@ -126,7 +119,13 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return algs
 
     def loadAlgorithms(self):
-        if not self.canBeActivated():
+        folder = OtbUtils.otbFolder()
+        if folder and os.path.exists(folder):
+            if not os.path.isfile(self.algsFile(folder)):
+                QgsMessageLog.logMessage("Problem with OTB installation: cannot find '{}'".format(self.algsFile(folder)), "Processing", Qgis.Critical)
+                return
+        else:
+            QgsMessageLog.logMessage("Problem with OTB installation: OTB folder is not set.", "Processing", Qgis.Critical)
             return
 
         version_file = os.path.join(OtbUtils.otbFolder(), 'share', 'doc', 'otb', 'VERSION')
@@ -147,17 +146,6 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
         self.algs = []
 
-    def canBeActivated(self):
-        if not self.isActive():
-            return False
-        folder = OtbUtils.otbFolder()
-        if folder and os.path.exists(folder):
-            if os.path.isfile(self.algsFile(folder)):
-                return True
-            utils.iface.messageBar().pushWarning("OTB", "Cannot find '{}'. OTB provider will be disabled".format(self.algsFile(folder)))
-        self.setActive(False)
-        return False
-
     def validateLoggerLevel(self, v):
         allowed_values = ['DEBUG', 'INFO', 'WARNING', 'CRITICAL', 'FATAL']
         if v in allowed_values:
@@ -166,16 +154,12 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             raise ValueError(self.tr("'{}' is not valid. Possible values are '{}'".format(v, ', '.join(allowed_values))))
 
     def validateAppFolders(self, v):
-        if not self.isActive():
-            return
         if not v:
-            self.setActive(False)
             raise ValueError(self.tr('Cannot activate OTB provider'))
 
         folder = OtbUtils.otbFolder()
         otb_app_dirs = self.appDirs(v)
         if len(otb_app_dirs) < 1:
-            self.setActive(False)
             raise ValueError(self.tr("'{}' does not exist. OTB provider will be disabled".format(v)))
 
         # isValid is True if there is at least one valid otb application is given path
@@ -199,29 +183,20 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
                     QgsMessageLog.logMessage(self.tr(commands), self.tr('Processing'), Qgis.Critical)
                     OtbUtils.executeOtb(commands, feedback=None)
 
-        if isValid:
-            # if check needed for testsing
-            if utils.iface is not None:
-                utils.iface.messageBar().pushInfo("OTB", "OTB provider is activated from '{}'.".format(folder))
-        else:
-            self.setActive(False)
-            raise ValueError(self.tr("No OTB algorithms found in '{}'. OTB will be disabled".format(','.join(otb_app_dirs))))
+        if not isValid:
+            raise ValueError(self.tr("Problem with OTB installation: no algorithms found in '{}'".format(','.join(otb_app_dirs))))
 
     def normalize_path(self, p):
         # https://stackoverflow.com/a/20713238/1003090
         return os.path.normpath(os.sep.join(re.split(r'\\|/', p)))
 
     def validateOtbFolder(self, v):
-        if not self.isActive():
-            return
         if not v or not os.path.exists(v):
-            self.setActive(False)
-            raise ValueError(self.tr("'{}' does not exist. OTB provider will be disabled".format(v)))
+            raise ValueError(self.tr("Problem with OTB installation: '{}' does not exist.".format(v)))
         path = self.normalize_path(v)
         app_launcher_path = OtbUtils.getExecutableInPath(path, 'otbApplicationLauncherCommandLine')
         if not os.path.exists(app_launcher_path):
-            self.setActive(False)
-            raise ValueError(self.tr("Cannot find '{}'. OTB will be disabled".format(app_launcher_path)))
+            raise ValueError(self.tr("Problem with OTB installation: cannot find '{}'.".format(app_launcher_path)))
 
     def algsFile(self, d):
         return os.path.join(self.descrFolder(d), 'algs.txt')

@@ -39,9 +39,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class OtbUtils:
-    # Checkbox to enable/disable otb provider (bool).
-    ACTIVATE = "OTB_ACTIVATE"
-
     # Path to otb installation folder (string, directory).
     FOLDER = "OTB_FOLDER"
 
