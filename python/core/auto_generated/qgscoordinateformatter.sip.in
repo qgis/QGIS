@@ -89,6 +89,15 @@ Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`
 of decimal places to include).
 %End
 
+    static QChar separator( );
+%Docstring
+Returns the charachter used as X/Y separator, this is a `,` on locales that do not use
+`,` as decimal separator, it is a space otherwise.
+
+.. seealso:: :py:func:`splitPair`
+\from QGIS 3.22
+%End
+
 };
 
 QFlags<QgsCoordinateFormatter::FormatFlag> operator|(QgsCoordinateFormatter::FormatFlag f1, QFlags<QgsCoordinateFormatter::FormatFlag> f2);

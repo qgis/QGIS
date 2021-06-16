@@ -105,6 +105,14 @@ class CORE_EXPORT QgsCoordinateFormatter
      */
     static QString asPair( double x, double y, int precision = 12 );
 
+    /**
+     * Returns the charachter used as X/Y separator, this is a `,` on locales that do not use
+     * `,` as decimal separator, it is a space otherwise.
+     * \see splitPair( )
+     * \from QGIS 3.22
+     */
+    static QChar separator( );
+
   private:
 
     static QString formatAsPair( double val, int precision );
