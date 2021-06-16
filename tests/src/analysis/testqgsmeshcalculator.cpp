@@ -395,7 +395,10 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
   formulas.append( QStringLiteral( " max_aggr ( \"VertexScalarDataset\")  + 2" ) );
   formulas.append( QStringLiteral( " max_aggr ( \"VertexScalarDataset\")  + \"virtual_0\"" ) );
   formulas.append( QStringLiteral( " \"virtual_0\" + max_aggr ( \"VertexScalarDataset\")  + 1" ) );
-  QVector<int> sizes{10, 10, 2, 1, 1, 10, 10};
+  formulas.append( QStringLiteral( "if ( \"FaceScalarDataset\" = \"VertexScalarDataset\" , 0 , 1 )" ) ); //temporal one, must have several datasets
+  formulas.append( QStringLiteral( "if ( 2 = 1 , 0 , 1 )" ) ); //dtatic one, must have one dataset
+  formulas.append( QStringLiteral( "if ( 2 = 1 , \"FaceScalarDataset\" , 1 )" ) ); //temporal one, must have several datasets
+  QVector<int> sizes{10, 10, 2, 1, 1, 10, 10, 2, 1, 2};
 
   std::vector<std::unique_ptr<QgsMeshVirtualDatasetGroup>> virtualDatasetGroups( formulas.count() );
 
@@ -407,7 +410,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
     mpMeshLayer->addDatasets( virtualDatasetGroups[i].release() );
   }
 
-  QCOMPARE( 24, mpMeshLayer->datasetGroupCount() );
+  QCOMPARE( 27, mpMeshLayer->datasetGroupCount() );
 
   QgsMeshDatasetGroupTreeItem *rootItem = mpMeshLayer->datasetGroupTreeRootItem();
 
