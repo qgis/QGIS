@@ -138,6 +138,7 @@ bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QV
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
   setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
+  invalidateMapImages();
 }
 
 
