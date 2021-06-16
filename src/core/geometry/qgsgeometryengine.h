@@ -28,7 +28,41 @@ class QgsAbstractGeometry;
 /**
  * \ingroup core
  * \class QgsGeometryEngine
- * \brief Contains geometry relation and modification algorithms.
+ * \brief A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
+ * geometry libraries such as GEOS.
+ *
+ * QgsGeometryEngine objects provide a mechanism for optimized evaluation of geometric algorithms, including spatial relationships
+ * between geometries and operations such as buffers or clipping.
+ *
+ * QgsGeometryEngine objects are not created directly, but are instead created by calling QgsGeometry::createGeometryEngine().
+ *
+ * Many methods available in the QgsGeometryEngine class can benefit from pre-preparing geometries. For instance, whenever
+ * a large number of spatial relationships will be tested (such as calling intersects(), within(), etc) then the
+ * geometry should first be prepared by calling prepareGeometry() before performing the tests.
+ *
+ * ### Example
+ *
+ * \code{.py}
+ *   # polygon_geometry contains a complex polygon, with many vertices
+ *   polygon_geometry = QgsGeometry.fromWkt('Polygon((...))')
+ *
+ *   # create a QgsGeometryEngine representation of the polygon
+ *   polygon_geometry_engine = QgsGeometry.createGeometryEngine(polygon_geometry.constGet())
+ *
+ *   # since we'll be performing many intersects tests, we can speed up these tests considerably
+ *   # by first "preparing" the geometry engine
+ *   polygon_geometry_engine.prepareGeometry()
+ *
+ *   # now we are ready to quickly test intersection against many other objects
+ *   for feature in my_layer.getFeatures():
+ *       feature_geometry = feature.geometry()
+ *       # test whether the feature's geometry intersects our original complex polygon
+ *       if polygon_geometry_engine.intersects(feature_geometry.constGet()):
+ *           print('feature intersects the polygon!')
+ * \endcode
+ *
+ * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
+ *
  * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryEngine

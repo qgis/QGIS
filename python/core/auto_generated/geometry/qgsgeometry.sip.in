@@ -1081,6 +1081,13 @@ and can be slow for complex geometries.
 The GEOS library is used to perform the intersection test. Geometries which are not
 valid may return incorrect results.
 
+.. note::
+
+   For performance critical code, or when testing for intersection against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.intersects` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
+
 .. seealso:: :py:func:`boundingBoxIntersects`
 %End
 
@@ -1115,12 +1122,26 @@ Returns ``True`` if the geometry contains the point ``p``.
 %Docstring
 Returns ``True`` if the geometry completely contains another ``geometry``.
 
+.. note::
+
+   For performance critical code, or when testing for contains against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.contains` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
+
 .. versionadded:: 1.5
 %End
 
     bool disjoint( const QgsGeometry &geometry ) const;
 %Docstring
 Returns ``True`` if the geometry is disjoint of another ``geometry``.
+
+.. note::
+
+   For performance critical code, or when testing for disjoint against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.disjoint` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
 
 .. versionadded:: 1.5
 %End
@@ -1129,12 +1150,26 @@ Returns ``True`` if the geometry is disjoint of another ``geometry``.
 %Docstring
 Returns ``True`` if the geometry touches another ``geometry``.
 
+.. note::
+
+   For performance critical code, or when testing for touches against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.touches` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
+
 .. versionadded:: 1.5
 %End
 
     bool overlaps( const QgsGeometry &geometry ) const;
 %Docstring
 Returns ``True`` if the geometry overlaps another ``geometry``.
+
+.. note::
+
+   For performance critical code, or when testing for overlaps against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.overlaps` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
 
 .. versionadded:: 1.5
 %End
@@ -1143,13 +1178,26 @@ Returns ``True`` if the geometry overlaps another ``geometry``.
 %Docstring
 Returns ``True`` if the geometry is completely within another ``geometry``.
 
+.. note::
+
+   For performance critical code, or when testing for within against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.within` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
+
 .. versionadded:: 1.5
 %End
-
 
     bool crosses( const QgsGeometry &geometry ) const;
 %Docstring
 Returns ``True`` if the geometry crosses another ``geometry``.
+
+.. note::
+
+   For performance critical code, or when testing for crosses against many different
+   geometries, consider using :py:class:`QgsGeometryEngine` instead. This approach can be many orders of magnitude
+   faster than calling :py:func:`~QgsGeometry.crosses` directly. See :py:func:`~QgsGeometry.createGeometryEngine` for details on how to use the
+   :py:class:`QgsGeometryEngine` class.
 
 .. versionadded:: 1.5
 %End
@@ -2496,7 +2544,42 @@ geometry will retain the same dimensionality as the input geometry.
 
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) /Factory/;
 %Docstring
-Creates and returns a new geometry engine
+Creates and returns a new geometry engine representing the specified ``geometry``.
+
+A geometry engine is a low-level representation of a :py:class:`QgsAbstractGeometry` object, optimised for use with external
+geometry libraries such as GEOS.
+
+:py:class:`QgsGeometryEngine` objects provide a mechanism for optimized evaluation of geometric algorithms, including spatial relationships
+between geometries and operations such as buffers or clipping. :py:class:`QgsGeometryEngine` is recommended for use in any
+performance critical code instead of directly using the equivalent QgsGeometry methods such as :py:func:`QgsGeometry.intersects()`.
+
+Many methods available in the :py:class:`QgsGeometryEngine` class can benefit from pre-preparing geometries. For instance, whenever
+a large number of spatial relationships will be tested (such as calling :py:func:`~QgsGeometry.intersects`, :py:func:`~QgsGeometry.within`, etc) then the
+geometry should first be prepared by calling :py:func:`~QgsGeometry.prepareGeometry` before performing the tests.
+
+Example
+-------
+
+.. code-block:: python
+
+       # polygon_geometry contains a complex polygon, with many vertices
+       polygon_geometry = QgsGeometry.fromWkt('Polygon((...))')
+
+       # create a QgsGeometryEngine representation of the polygon
+       polygon_geometry_engine = QgsGeometry.createGeometryEngine(polygon_geometry.constGet())
+
+       # since we'll be performing many intersects tests, we can speed up these tests considerably
+       # by first "preparing" the geometry engine
+       polygon_geometry_engine.prepareGeometry()
+
+       # now we are ready to quickly test intersection against many other objects
+       for feature in my_layer.getFeatures():
+           feature_geometry = feature.geometry()
+           # test whether the feature's geometry intersects our original complex polygon
+           if polygon_geometry_engine.intersects(feature_geometry.constGet()):
+               print('feature intersects the polygon!')
+
+:py:class:`QgsGeometryEngine` operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
 %End
 
     static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );

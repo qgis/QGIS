@@ -1114,6 +1114,11 @@ class CORE_EXPORT QgsGeometry
      * The GEOS library is used to perform the intersection test. Geometries which are not
      * valid may return incorrect results.
      *
+     * \note For performance critical code, or when testing for intersection against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling intersects() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \see boundingBoxIntersects()
      */
     bool intersects( const QgsGeometry &geometry ) const;
@@ -1147,37 +1152,72 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns TRUE if the geometry completely contains another \a geometry.
+     *
+     * \note For performance critical code, or when testing for contains against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling contains() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is disjoint of another \a geometry.
+     *
+     * \note For performance critical code, or when testing for disjoint against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling disjoint() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry touches another \a geometry.
+     *
+     * \note For performance critical code, or when testing for touches against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling touches() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry overlaps another \a geometry.
+     *
+     * \note For performance critical code, or when testing for overlaps against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling overlaps() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is completely within another \a geometry.
+     *
+     * \note For performance critical code, or when testing for within against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling within() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
-
     /**
      * Returns TRUE if the geometry crosses another \a geometry.
+     *
+     * \note For performance critical code, or when testing for crosses against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling crosses() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
@@ -2626,7 +2666,41 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine
+     * Creates and returns a new geometry engine representing the specified \a geometry.
+     *
+     * A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
+     * geometry libraries such as GEOS.
+     *
+     * QgsGeometryEngine objects provide a mechanism for optimized evaluation of geometric algorithms, including spatial relationships
+     * between geometries and operations such as buffers or clipping. QgsGeometryEngine is recommended for use in any
+     * performance critical code instead of directly using the equivalent QgsGeometry methods such as QgsGeometry::intersects().
+     *
+     * Many methods available in the QgsGeometryEngine class can benefit from pre-preparing geometries. For instance, whenever
+     * a large number of spatial relationships will be tested (such as calling intersects(), within(), etc) then the
+     * geometry should first be prepared by calling prepareGeometry() before performing the tests.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # polygon_geometry contains a complex polygon, with many vertices
+     *   polygon_geometry = QgsGeometry.fromWkt('Polygon((...))')
+     *
+     *   # create a QgsGeometryEngine representation of the polygon
+     *   polygon_geometry_engine = QgsGeometry.createGeometryEngine(polygon_geometry.constGet())
+     *
+     *   # since we'll be performing many intersects tests, we can speed up these tests considerably
+     *   # by first "preparing" the geometry engine
+     *   polygon_geometry_engine.prepareGeometry()
+     *
+     *   # now we are ready to quickly test intersection against many other objects
+     *   for feature in my_layer.getFeatures():
+     *       feature_geometry = feature.geometry()
+     *       # test whether the feature's geometry intersects our original complex polygon
+     *       if polygon_geometry_engine.intersects(feature_geometry.constGet()):
+     *           print('feature intersects the polygon!')
+     * \endcode
+     *
+     * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
 
