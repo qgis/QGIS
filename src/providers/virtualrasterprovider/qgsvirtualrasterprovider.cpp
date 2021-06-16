@@ -112,21 +112,23 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
 
    // /*
-   QgsRasterLayer *mdemRasterLayer = nullptr;
+   //QgsRasterLayer *mdemRasterLayer = nullptr;
    QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
    QFileInfo demRasterFileInfo( demFileName );
-   mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
-                                             demRasterFileInfo.completeBaseName() );
+   //mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),demRasterFileInfo.completeBaseName() );
     //QgsProject::instance()->addMapLayers(
     //  QList<QgsMapLayer *>() << mdemRasterLayer );
    // */
-
+   std::unique_ptr< QgsRasterLayer > mdemRasterLayer = std::make_unique< QgsRasterLayer >(
+         demRasterFileInfo.filePath(),
+         demRasterFileInfo.completeBaseName()
+       );
 
    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
    QVector<QgsRasterCalculatorEntry> mRasterEntries;
    QgsRasterCalculatorEntry entry;
    //entry.raster = r;
-   entry.raster = mdemRasterLayer;
+   entry.raster = mdemRasterLayer.get();
    entry.bandNumber = 1;
    entry.ref = QStringLiteral( "dem@1" );
    mRasterEntries<<entry;
@@ -146,7 +148,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    QString mLastError = "last error";
    mLastError.clear();
    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-
+   bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
 
    //CHECKS--------------------------------------------------------------------------------------------
    if ( !calcNode )
