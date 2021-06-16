@@ -25,12 +25,22 @@ import AlgorithmsTestBase
 
 import nose2
 import shutil
+import os
+import tempfile
 
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback
+)
 from qgis.testing import (
     start_app,
     unittest
 )
 from processing.algs.grass7.Grass7Utils import Grass7Utils
+
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -41,6 +51,9 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+
+        cls.temp_dir = tempfile.mkdtemp()
+        cls.cleanup_paths.append(cls.temp_dir)
 
         assert Grass7Utils.installedVersion()
 
@@ -53,6 +66,34 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
     def test_definition_file(self):
         return 'grass7_algorithms_raster_tests2.yaml'
+
+    def testNeighbors(self):
+        context = QgsProcessingContext()
+        input_raster = os.path.join(testDataPath, 'custom', 'grass7', 'float_raster.tif')
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:r.neighbors')
+        self.assertIsNotNone(alg)
+
+        temp_file = os.path.join(self.temp_dir, 'grass_output.tif')
+
+        # Test an even integer for neighborhood size
+        parameters = {'input': input_raster,
+                      'selection': None,
+                      'method': 0,
+                      'size': 4,
+                      'gauss': None,
+                      'quantile': '',
+                      '-c': False,
+                      '-a': False,
+                      'weight': '',
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_REGION_CELLSIZE_PARAMETER': 0,
+                      'GRASS_RASTER_FORMAT_OPT': '',
+                      'GRASS_RASTER_FORMAT_META': ''}
+
+        ok, msg = alg.checkParameterValues(parameters, context)
+        self.assertFalse(ok)
 
 
 if __name__ == '__main__':
