@@ -137,8 +137,8 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    //END HARDCODED DATA--------------------------------------------------------------------------------------------
 
    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
-   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, width, height );
-   float * outputData = ( float * )( tblock->bits() );
+   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
+   double * outputData = ( double * )( tblock->bits() );
 
 
 
@@ -148,7 +148,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    QString mLastError = "last error";
    mLastError.clear();
    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-   bool requiresMatrix = ! calcNode->findNodes( QgsRasterCalcNode::Type::tMatrix ).isEmpty();
 
    //CHECKS--------------------------------------------------------------------------------------------
    if ( !calcNode )
@@ -215,7 +214,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
    }
 
 
-   QgsRasterMatrix resultMatrix;
+   QgsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
 
    //for ( int i = 0; i < mHeight; ++i )
    for ( int i = 0; i < height; ++i )
@@ -233,6 +232,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
        {
            QgsDebugMsg("WELCOME TO LINE 212");
+           /*
            bool resultIsNumber = resultMatrix.isNumber();
            //float *calcData = new float[mWidth];
            float *calcData = new float[width];
@@ -249,6 +249,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
            //write scanline to the dataset ( replace GDALRasterIO)
 
            delete[] calcData;
+           */
        }
        else
        {
@@ -262,7 +263,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
 
-
+   resultMatrix.takeData();
 
    Q_ASSERT( tblock );
    return tblock.release();
