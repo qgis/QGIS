@@ -91,10 +91,8 @@ of decimal places to include).
 
     static QChar separator( );
 %Docstring
-Returns the charachter used as X/Y separator, this is a `,` on locales that do not use
+Returns the character used as X/Y separator, this is a `,` on locales that do not use
 `,` as decimal separator, it is a space otherwise.
-
-.. seealso:: :py:func:`splitPair`
 \from QGIS 3.22
 %End
 
