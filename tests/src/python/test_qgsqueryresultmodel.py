@@ -104,7 +104,6 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
 
         self.model = QgsQueryResultModel(res)
-        self.tester = QAbstractItemModelTester(self.model, QAbstractItemModelTester.FailureReportingMode.Warning)
 
         self.running = True
 
