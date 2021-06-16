@@ -38,7 +38,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
-  refreshSymbol();
+  refreshSymbol( false );
 
   connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [ = ]
   {
@@ -120,7 +120,7 @@ void QgsLayoutItemShape::setShapeType( QgsLayoutItemShape::Shape type )
   emit clipPathChanged();
 }
 
-void QgsLayoutItemShape::refreshSymbol()
+void QgsLayoutItemShape::refreshSymbol( bool redraw )
 {
   if ( auto *lLayout = layout() )
   {
@@ -130,7 +130,9 @@ void QgsLayoutItemShape::refreshSymbol()
 
   updateBoundingRect();
 
-  update();
+  if ( redraw )
+    update();
+
   emit frameChanged();
 }
 
@@ -151,7 +153,7 @@ void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
     return;
 
   mShapeStyleSymbol.reset( symbol->clone() );
-  refreshSymbol();
+  refreshSymbol( true );
 }
 
 void QgsLayoutItemShape::setCornerRadius( QgsLayoutMeasurement radius )
@@ -279,6 +281,7 @@ bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, 
   if ( !shapeStyleSymbolElem.isNull() )
   {
     mShapeStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
+    refreshSymbol( false );
   }
 
   return true;
