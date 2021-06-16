@@ -108,7 +108,7 @@ class CORE_EXPORT QgsCoordinateFormatter
     /**
      * Returns the character used as X/Y separator, this is a `,` on locales that do not use
      * `,` as decimal separator, it is a space otherwise.
-     * \from QGIS 3.20
+     * \since QGIS 3.20
      */
     static QChar separator( );
 
