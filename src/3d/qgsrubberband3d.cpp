@@ -15,6 +15,7 @@
 
 #include "qgsrubberband3d.h"
 
+#include "qgscameracontroller.h"
 #include "qgslinevertexdata_p.h"
 #include "qgsabstractmaterialsettings.h"
 #include "qgslinematerial_p.h"
@@ -33,7 +34,7 @@
 /// @cond PRIVATE
 
 
-QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, Qt3DCore::QEntity *parentEntity )
+QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsCameraController *cameraController, Qt3DCore::QEntity *parentEntity )
 {
   mMapSettings = &map;
 
@@ -57,7 +58,12 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, Qt3DCore::QEntity *pare
   mLineMaterial = new QgsLineMaterial;
   mLineMaterial->setLineWidth( 3 );
   mLineMaterial->setLineColor( Qt::red );
-  mLineMaterial->setViewportSize( QSize( 200, 200 ) ); // TODO: based on viewport size!
+
+  QObject::connect( cameraController, &QgsCameraController::viewportChanged, mLineMaterial, [this, cameraController]
+  {
+    mLineMaterial->setViewportSize( cameraController->viewport().size() );
+  } );
+  mLineMaterial->setViewportSize( cameraController->viewport().size() );
 
   mEntity->addComponent( mLineMaterial );
 }
