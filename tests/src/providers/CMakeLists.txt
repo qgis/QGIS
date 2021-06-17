@@ -45,7 +45,7 @@ endmacro (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+ADD_QGIS_TEST(provider_wcstest testqgswcsprovider.cpp)
 # Temporarily set to old version until server is reconfigured
 #set(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
 set(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
@@ -56,25 +56,25 @@ set_target_properties(qgis_wcsprovidertest PROPERTIES
 
 ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
-target_link_libraries(qgis_wmscapabilitiestest wmsprovider_a qgis_core)
+target_link_libraries(qgis_wmscapabilitiestest provider_wms_a qgis_core)
 
 ADD_QGIS_TEST(wmsccapabilitiestest
               testqgswmsccapabilities.cpp)
-target_link_libraries(qgis_wmsccapabilitiestest wmsprovider_a qgis_core)
+target_link_libraries(qgis_wmsccapabilitiestest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(wmsprovidertest
+ADD_QGIS_TEST(provider_wmstest
               testqgswmsprovider.cpp)
-target_link_libraries(qgis_wmsprovidertest wmsprovider_a qgis_core)
+target_link_libraries(qgis_wmsprovidertest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
-target_link_libraries(qgis_postgresprovidertest postgresprovider_a qgis_core)
+ADD_QGIS_TEST(provider_postgrestest testqgspostgresprovider.cpp)
+target_link_libraries(qgis_postgresprovidertest provider_postgres_a qgis_core)
 
 ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
-target_link_libraries(qgis_postgresconntest postgresprovider_a qgis_core)
+target_link_libraries(qgis_postgresconntest provider_postgres_a qgis_core)
 SET_TESTS_PROPERTIES(qgis_postgresconntest PROPERTIES LABELS "POSTGRES")
 
 if (NOT FORCE_STATIC_PROVIDERS)
-  ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
+  ADD_QGIS_TEST(provider_mdaltest testqgsmdalprovider.cpp)
 endif()
 
 if (WITH_EPT)
@@ -87,8 +87,8 @@ if (WITH_PDAL)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/providers/pdal
   )
-  ADD_QGIS_TEST(pdalprovidertest testqgspdalprovider.cpp)
-  target_link_libraries(qgis_pdalprovidertest pdalprovider_a qgis_core)
+  ADD_QGIS_TEST(provider_pdaltest testqgspdalprovider.cpp)
+  target_link_libraries(qgis_pdalprovidertest provider_pdal_a qgis_core)
 endif()
 
 #############################################################

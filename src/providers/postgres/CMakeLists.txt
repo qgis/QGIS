@@ -62,12 +62,12 @@ if (WITH_GUI)
 endif()
 
 # static library
-add_library (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS})
+add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
 # require c++17
-target_compile_features(postgresprovider_a PRIVATE cxx_std_17)
+target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
 
-target_link_libraries (postgresprovider_a
+target_link_libraries (provider_postgres_a
   qgis_core
   ${POSTGRES_LIBRARY}
   ${Qt5Xml_LIBRARIES}
@@ -81,14 +81,14 @@ target_link_libraries (postgresprovider_a
 if (WITH_GUI)
   QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
 
-  add_library(postgresprovider_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
+  add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
 
   # require c++17
-  target_compile_features(postgresprovider_gui_a PRIVATE cxx_std_17)
+  target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_17)
 
-  target_link_libraries(postgresprovider_gui_a
+  target_link_libraries(provider_postgres_gui_a
     qgis_gui
-    postgresprovider_a
+    provider_postgres_a
     ${POSTGRES_LIBRARY}
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -99,7 +99,7 @@ if (WITH_GUI)
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
   )
-  add_dependencies(postgresprovider_gui_a ui)
+  add_dependencies(provider_postgres_gui_a ui)
 endif()
 
 #################################################################
@@ -143,21 +143,21 @@ endif()
 
 if (FORCE_STATIC_PROVIDERS)
   # for (external) mobile apps to be able to pick up provider for linking
-  install (TARGETS postgresprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+  install (TARGETS provider_postgres_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   install (TARGETS postgresrasterprovider_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   if (WITH_GUI)
-    install (TARGETS postgresprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+    install (TARGETS provider_postgres_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   endif()
 else()
   # dynamically loaded module
-  add_library(postgresprovider MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
+  add_library(provider_postgres MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(postgresrasterprovider MODULE ${PGRASTER_SRCS} ${PG_HDRS})
 
   # require c++17
-  target_compile_features(postgresprovider PRIVATE cxx_std_17)
+  target_compile_features(provider_postgres PRIVATE cxx_std_17)
   target_compile_features(postgresrasterprovider PRIVATE cxx_std_17)
 
-  target_link_libraries(postgresprovider
+  target_link_libraries(provider_postgres
     ${POSTGRES_LIBRARY}
     qgis_core
   )
@@ -168,17 +168,17 @@ else()
   )
 
   if (WITH_GUI)
-    target_link_libraries (postgresprovider
+    target_link_libraries (provider_postgres
       qgis_gui
     )
-    add_dependencies(postgresprovider ui)
+    add_dependencies(provider_postgres ui)
   endif()
 
 
   # clang-tidy
   if(CLANG_TIDY_EXE)
     set_target_properties(
-      postgresprovider PROPERTIES
+      provider_postgres PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
     )
     set_target_properties(
@@ -187,7 +187,7 @@ else()
     )
   endif()
 
-  install(TARGETS postgresprovider
+  install(TARGETS provider_postgres
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

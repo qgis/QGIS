@@ -1497,8 +1497,8 @@ target_link_libraries(qgis_gui
 
 if (FORCE_STATIC_PROVIDERS)
   target_link_libraries(qgis_gui
-    wmsprovider_gui_a
-    postgresprovider_gui_a
+    provider_wms_gui_a
+    provider_postgres_gui_a
   )
 endif()
 

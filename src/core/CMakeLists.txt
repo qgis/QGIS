@@ -2025,8 +2025,8 @@ if (FORCE_STATIC_PROVIDERS)
   )
 
   target_link_libraries(qgis_core
-    wmsprovider_a
-    postgresprovider_a
+    provider_wms_a
+    provider_postgres_a
   )
 endif()
 
