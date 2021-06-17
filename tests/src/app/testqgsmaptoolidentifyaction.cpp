@@ -576,7 +576,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
 {
   //create a temporary layer
   QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
-  std::unique_ptr< QgsRasterLayer> tempLayer( new QgsRasterLayer( raster ) );
+  std::unique_ptr< QgsRasterLayer> tempLayer = std::make_unique< QgsRasterLayer >( raster );
   QVERIFY( tempLayer->isValid() );
 
   // activate temporal properties
@@ -591,7 +591,7 @@ void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
   // invalid temporal range on canvas
   canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
                             QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
-  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( "" ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( ) );
 
   // valid temporal range on canvas
   canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
