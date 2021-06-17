@@ -277,8 +277,12 @@ void QgsMeshDataset3dGeometry::prepareData()
   datacount = scalarDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.scalarData = QgsMeshLayerUtils::datasetValues( layer, scalarDatasetIndex, 0, datacount );
 
-  if ( data.verticalData.count() != mTriangulaMesh.vertices().count()  ||
-       data.verticalData.count() != mTriangulaMesh.vertices().count() )
+  if ( ( verticalDataOnVertices && ( data.verticalData.count() != mTriangulaMesh.vertices().count() ) )  ||
+       ( scalarDataOnVertices && ( data.scalarData.count() != mTriangulaMesh.vertices().count() ) ) )
+    return;
+
+  if ( ( !verticalDataOnVertices && ( data.verticalData.count() != nativeMesh.faces.count() ) )  ||
+       ( !scalarDataOnVertices && ( data.scalarData.count() != nativeMesh.faces.count() ) ) )
     return;
 
   data.activeFaceFlagValues = layer->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
