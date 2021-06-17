@@ -824,3 +824,22 @@ tests:
       output:
         hash: caa4870e0f0f1a42583cd562c26f0ad6b7795116961c7f6053f1ccde
         type: rasterhash
+
+  - algorithm: grass7:r.neighbors
+    name: GRASS7 r.neighbors
+    params:
+      -a: false
+      -c: false
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      input:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      method: 0
+      quantile: ''
+      size: 3
+    results:
+      output:
+        hash: 7e78e8b556c9a39e07b2bf8edbd45c17fbd1897de974c52bc97009a8
+        type: rasterhash

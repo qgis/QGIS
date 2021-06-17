@@ -25,7 +25,6 @@
 * r.mfilter
 * r.mfilter.fp
 * r.mode
-* r.neighbors
 * r.null
 * r.out.gridatb
 * r.out.ppm
