@@ -21,33 +21,33 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library(geonodeprovider MODULE ${GEONODE_SRCS})
+add_library(provider_geonode MODULE ${GEONODE_SRCS})
 
 # require c++17
-target_compile_features(geonodeprovider PRIVATE cxx_std_17)
+target_compile_features(provider_geonode PRIVATE cxx_std_17)
 
-target_link_libraries(geonodeprovider
+target_link_libraries(provider_geonode
   qgis_core
 )
 
 if (WITH_GUI)
-  target_link_libraries (geonodeprovider
+  target_link_libraries (provider_geonode
     qgis_gui
   )
-  add_dependencies(geonodeprovider ui)
+  add_dependencies(provider_geonode ui)
 endif()
 
-target_compile_definitions(geonodeprovider PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(provider_geonode PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(
-    geonodeprovider PROPERTIES
+    provider_geonode PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 endif()
 
-install (TARGETS geonodeprovider
+install (TARGETS provider_geonode
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

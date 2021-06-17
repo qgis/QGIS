@@ -173,58 +173,58 @@ include_directories (
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
+add_library (provider_mdal MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
 
 # require c++17
-target_compile_features(mdalprovider PRIVATE cxx_std_17)
+target_compile_features(provider_mdal PRIVATE cxx_std_17)
 
-target_link_libraries (mdalprovider
+target_link_libraries (provider_mdal
   qgis_core
   ${MDAL_LIBRARY}
 )
 
 if (WITH_INTERNAL_MDAL)
-  target_link_libraries(mdalprovider ${CMAKE_DL_LIBS})
+  target_link_libraries(provider_mdal ${CMAKE_DL_LIBS})
 endif()
 
 if (WITH_GUI)
-  target_link_libraries (mdalprovider
+  target_link_libraries (provider_mdal
     qgis_gui
   )
-  add_dependencies(mdalprovider ui)
+  add_dependencies(provider_mdal ui)
 endif()
 
 if (HDF5_FOUND)
-  target_include_directories(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
-  target_link_libraries(mdalprovider ${HDF5_C_LIBRARIES} )
-  target_compile_definitions(mdalprovider PRIVATE ${HDF5_DEFINITIONS})
+  target_include_directories(provider_mdal PRIVATE ${HDF5_INCLUDE_DIRS})
+  target_link_libraries(provider_mdal ${HDF5_C_LIBRARIES} )
+  target_compile_definitions(provider_mdal PRIVATE ${HDF5_DEFINITIONS})
 endif()
 
 if (GDAL_FOUND)
-  target_include_directories(mdalprovider PRIVATE ${GDAL_INCLUDE_DIR})
-  target_link_libraries(mdalprovider ${GDAL_LIBRARY} )
+  target_include_directories(provider_mdal PRIVATE ${GDAL_INCLUDE_DIR})
+  target_link_libraries(provider_mdal ${GDAL_LIBRARY} )
 endif()
 
 if (NETCDF_FOUND)
-  target_include_directories(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
-  target_link_libraries(mdalprovider ${NETCDF_LIBRARY} )
+  target_include_directories(provider_mdal PRIVATE ${NETCDF_INCLUDE_DIR})
+  target_link_libraries(provider_mdal ${NETCDF_LIBRARY} )
 endif()
 
 if (LIBXML2_FOUND)
-  target_include_directories(mdalprovider PRIVATE ${LIBXML2_INCLUDE_DIR})
-  target_link_libraries(mdalprovider ${LIBXML2_LIBRARIES} )
-  target_compile_definitions(mdalprovider PRIVATE ${LIBXML2_DEFINITIONS})
+  target_include_directories(provider_mdal PRIVATE ${LIBXML2_INCLUDE_DIR})
+  target_link_libraries(provider_mdal ${LIBXML2_LIBRARIES} )
+  target_compile_definitions(provider_mdal PRIVATE ${LIBXML2_DEFINITIONS})
 endif()
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(
-    mdalprovider PROPERTIES
+    provider_mdal PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 endif()
 
-install(TARGETS mdalprovider
+install(TARGETS provider_mdal
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
