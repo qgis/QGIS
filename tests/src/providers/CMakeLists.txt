@@ -45,7 +45,7 @@ endmacro (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(provider_wcstest testqgswcsprovider.cpp)
+ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
 # Temporarily set to old version until server is reconfigured
 #set(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
 set(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
@@ -54,19 +54,16 @@ set_target_properties(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
 
-ADD_QGIS_TEST(wmscapabilitiestest
-              testqgswmscapabilities.cpp)
+ADD_QGIS_TEST(wmscapabilitiestest testqgswmscapabilities.cpp)
 target_link_libraries(qgis_wmscapabilitiestest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(wmsccapabilitiestest
-              testqgswmsccapabilities.cpp)
+ADD_QGIS_TEST(wmsccapabilitiestest testqgswmsccapabilities.cpp)
 target_link_libraries(qgis_wmsccapabilitiestest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(provider_wmstest
-              testqgswmsprovider.cpp)
+ADD_QGIS_TEST(wmsprovidertest testqgswmsprovider.cpp)
 target_link_libraries(qgis_wmsprovidertest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(provider_postgrestest testqgspostgresprovider.cpp)
+ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
 target_link_libraries(qgis_postgresprovidertest provider_postgres_a qgis_core)
 
 ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
@@ -74,7 +71,7 @@ target_link_libraries(qgis_postgresconntest provider_postgres_a qgis_core)
 SET_TESTS_PROPERTIES(qgis_postgresconntest PROPERTIES LABELS "POSTGRES")
 
 if (NOT FORCE_STATIC_PROVIDERS)
-  ADD_QGIS_TEST(provider_mdaltest testqgsmdalprovider.cpp)
+  ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
 endif()
 
 if (WITH_EPT)
@@ -87,7 +84,7 @@ if (WITH_PDAL)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/providers/pdal
   )
-  ADD_QGIS_TEST(provider_pdaltest testqgspdalprovider.cpp)
+  ADD_QGIS_TEST(pdalprovidertest testqgspdalprovider.cpp)
   target_link_libraries(qgis_pdalprovidertest provider_pdal_a qgis_core)
 endif()
 

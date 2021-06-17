@@ -79,7 +79,7 @@ endif()
 endmacro (ADD_QGIS_GRASS_TEST)
 
 macro (ADD_QGIS_GRASS_TESTS version)
-  ADD_QGIS_GRASS_TEST(${version} provider_grasstest ../testqgsgrassprovider.cpp)
+  ADD_QGIS_GRASS_TEST(${version} grassprovidertest ../testqgsgrassprovider.cpp)
   if(MSVC)
     # 4611 setjmp
     set_source_files_properties(../testqgsgrassprovider.cpp PROPERTIES COMPILE_FLAGS "-wd4611")
