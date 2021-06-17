@@ -302,14 +302,14 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/authmethod_pkipaths.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/postgresrasterprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/provider_postgresraster.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/virtuallayerprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/provider_arcgisfeatureserver.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/authmethod_oauth2.dll" ^
