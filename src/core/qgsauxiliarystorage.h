@@ -413,10 +413,10 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static spatialite_database_unique_ptr createDB( const QString &filename );
     static spatialite_database_unique_ptr openDB( const QString &filename );
     static bool tableExists( const QString &table, sqlite3 *handler );
-    static bool createTable( const QString &type, const QString &table, sqlite3 *handler );
+    static bool createTable( const QString &type, const QString &table, sqlite3 *handler, QString &errorMsg );
 
     static bool exec( const QString &sql, sqlite3 *handler );
-    static void debugMsg( const QString &sql, sqlite3 *handler );
+    static QString debugMsg( const QString &sql, sqlite3 *handler );
 
     static QgsDataSourceUri parseOgrUri( const QgsDataSourceUri &uri );
 
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString mFileName; // original filename
     QString mTmpFileName; // temporary filename used in copy mode
     bool mCopy = false;
-    QString mErrorString;
+    mutable QString mErrorString;
 };
 
 #endif

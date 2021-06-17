@@ -26,6 +26,7 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsPalLayerSettings,
                        QgsSymbolLayer,
                        QgsVectorLayerSimpleLabeling,
+                       QgsField,
                        NULL)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, writeShape
@@ -476,6 +477,27 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         # Auxiliary storage is NOT empty so .qgd file should be saved now
         qgd = newpath + '.qgd'
         self.assertTrue(os.path.exists(qgd))
+
+    def testInvalidPrimaryKey(self):
+        # create layer
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
+
+        # add a field with an invalid typename
+        field = QgsField(name="invalid_pk", type=QVariant.Int, typeName="xsd:int")
+        vl.startEditing()
+        vl.addAttribute(field)
+        vl.commitChanges()
+
+        # create auxiliary storage based on the invalid field
+        s = QgsAuxiliaryStorage()
+        pkf = vl.fields().field(vl.fields().indexOf('invalid_pk'))
+        al = s.createAuxiliaryLayer(pkf, vl)
+
+        self.assertEqual(al, None)
+        self.assertTrue("CREATE TABLE IF NOT EXISTS" in s.errorString())
 
 
 if __name__ == '__main__':
