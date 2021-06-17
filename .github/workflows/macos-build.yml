@@ -29,8 +29,8 @@ on:
     - 'CMakeLists.txt'
 
 env:
-  QT_VERSION: 5.14.2
-  QGIS_DEPS_VERSION: 0.7.0
+  QT_VERSION: 5.15.2
+  QGIS_DEPS_VERSION: 0.8.0
   CCACHE_DIR: /Users/runner/work/ccache
   BUILD_DIR: /Users/runner/work/QGIS/build-QGIS
   # apparently we cannot cache /opt directory as it fails to restore
