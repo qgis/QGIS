@@ -291,16 +291,16 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/bin/qgis_native.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis_process.exe" ^
 	"apps/%PACKAGENAME%/doc/" ^
-	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/authmethod_basic.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/esritokenauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/authmethod_esritoken.dll" ^
 	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/authmethod_identcert.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
 	"apps/%PACKAGENAME%/plugins/pkcs12authmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/pkipathsauthmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/authmethod_pkipaths.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
@@ -312,7 +312,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
+	"apps/%PACKAGENAME%/plugins/authmethod_oauth2.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^

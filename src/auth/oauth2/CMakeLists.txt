@@ -101,7 +101,7 @@ set(_library_suffix_MODULE "")
 set(_library_suffix_STATIC "_static")
 
 foreach(_library_type MODULE STATIC)
-  set(_library_name "oauth2authmethod${_library_suffix_${_library_type}}")
+  set(_library_name "authmethod_oauth2${_library_suffix_${_library_type}}")
 
   add_library(${_library_name} ${_library_type} ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_UIS_H} ${AUTH_OAUTH2_RCCS})
 
