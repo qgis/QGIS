@@ -37,6 +37,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 #include <QTimer>
 
@@ -58,6 +59,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void areaCalculation(); //test calculation of derived area attribute
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
+    void identifyRasterTemporal();
     void identifyMesh(); // test identification for mesh layer
     void identifyVectorTile();  // test identification for vector tile layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
@@ -520,7 +522,12 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
-  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+
+  QgsIdentifyContext identifyContext;
+  if ( canvas->mapSettings().isTemporal() )
+    identifyContext.setTemporalRange( canvas->temporalRange() );
+
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
   if ( result.length() != 1 )
     return QString();
   return result[0].mAttributes[QStringLiteral( "Band 1" )];
@@ -563,6 +570,33 @@ TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer,
     identifyContext.setTemporalRange( canvas->temporalRange() );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer, QgsMapToolIdentify::DefaultQgsSetting, identifyContext );
   return result;
+}
+
+void TestQgsMapToolIdentifyAction::identifyRasterTemporal()
+{
+  //create a temporary layer
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/test.asc";
+  std::unique_ptr< QgsRasterLayer> tempLayer = std::make_unique< QgsRasterLayer >( raster );
+  QVERIFY( tempLayer->isValid() );
+
+  // activate temporal properties
+  tempLayer->temporalProperties()->setIsActive( true );
+
+  QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
+                           QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
+  qobject_cast< QgsRasterLayerTemporalProperties * >( tempLayer->temporalProperties() )->setFixedTemporalRange( range );
+
+  canvas->setExtent( QgsRectangle( 0, 0, 7, 1 ) );
+
+  // invalid temporal range on canvas
+  canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
+                            QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( ) );
+
+  // valid temporal range on canvas
+  canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ),
+                            QDateTime( QDate( 2050, 01, 01 ), QTime( 1, 0, 0 ), Qt::UTC ) ) );
+  QCOMPARE( testIdentifyRaster( tempLayer.get(), 0.5, 0.5 ), QString( "-999.9" ) );
 }
 
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
