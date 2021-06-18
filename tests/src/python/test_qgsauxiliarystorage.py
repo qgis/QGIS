@@ -594,11 +594,11 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         self.assertTrue(p.write(qgz))
         self.assertTrue(os.path.exists(qgz))
 
-        # Check the content of the archive: auxiliary database doesn't exist
-        # because it's empty
+        # Check the content of the archive: auxiliary database exist
+        # because it's not empty
         archive = QgsProjectArchive()
         archive.unzip(qgz)
-        self.assertTrue(archive.auxiliaryStorageFile())
+        self.assertNotEqual(archive.auxiliaryStorageFile(), '')
 
 
 if __name__ == '__main__':
