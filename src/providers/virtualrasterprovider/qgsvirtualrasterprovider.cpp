@@ -83,20 +83,22 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 //works for displaying a black square
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
+
+
     //HARDCODED DATA--------------------------------------------------------------------------------------------
     //QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
      //QgsProject::instance()->addMapLayers(
      //           QList<QgsMapLayer *>() << r);
     QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
 
-    // /*
+    //
     //QgsRasterLayer *mdemRasterLayer = nullptr;
     QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
     QFileInfo demRasterFileInfo( demFileName );
     //mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),demRasterFileInfo.completeBaseName() );
      //QgsProject::instance()->addMapLayers(
      //  QList<QgsMapLayer *>() << mdemRasterLayer );
-    // */
+    //
     std::unique_ptr< QgsRasterLayer > mdemRasterLayer = std::make_unique< QgsRasterLayer >(
           demRasterFileInfo.filePath(),
           demRasterFileInfo.completeBaseName()
@@ -195,7 +197,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
     //QgsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
-    QgsRasterMatrix resultMatrix(width, height, outputData,  -FLT_MAX);
+    QgsRasterMatrix resultMatrix(width, height, nullptr,  -FLT_MAX);
 
     //for ( int i = 0; i < mHeight; ++i )
     for ( int i = 0; i < height; ++i )
@@ -213,24 +215,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
         if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
         {
             QgsDebugMsg("WELCOME No OF THE LOOP:");
-            /*
-            bool resultIsNumber = resultMatrix.isNumber();
-            //float *calcData = new float[mWidth];
-            float *calcData = new float[width];
-
-            //for ( int j = 0; j < mWidth; ++j )
-            for ( int j = 0; j < width; ++j )
-            {
-                calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
-                //tblock->setValue(i,j,calcData[j]);
-                resultMatrix.takeData();
-                //outputData[ i*mWidth + j ]=calcData[j];
-                outputData[ i*width + j ]=calcData[j]*0;
-            }
-            //write scanline to the dataset ( replace GDALRasterIO)
-
-            delete[] calcData;
-            */
         }
         else
         {
@@ -243,12 +227,34 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
 
+    //--------------------------------------------------------------------------------------------------------------------------
+    //---double * outputData = ( double * )( tblock->bits() );
+    //---gsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
+
+    //tblock->setData(resultMatrix.takeData());
+    //outputData = resultMatrix.takeData();
+
+    //memcpy( resultMatrix, tblock->bits(), width*height );
+
+
+    //--------------------------------------------------------------------------------------------------------------------------
     resultMatrix.takeData();
 
 
+/*
+    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
 
+    for ( int i = 0; i < width * height; ++i )
+    {
+        //QgsDebugMsg("inside for loop");
+        outputData[i] = 42;
+
+    }
+*/
     Q_ASSERT( tblock );
     return tblock.release();
+    //return tblock;
 }
 
 
