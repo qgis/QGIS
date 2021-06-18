@@ -118,7 +118,7 @@ void QgsVectorLayerFeatureCounter::cancel()
   QgsTask::cancel();
 }
 
-QHash<QString, long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
+QHash<QString, long long> QgsVectorLayerFeatureCounter::symbolFeatureCountMap() const
 {
   return mSymbolFeatureCountMap;
 }
