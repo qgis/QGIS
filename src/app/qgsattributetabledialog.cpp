@@ -239,7 +239,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   {
     for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
     {
-      if ( relation.isValid() )
+      if ( relation.isValid() && it.value()->layers().contains( { mLayer, relation.referencingLayer() } ) )
       {
         mReferencingLayers.push_back( relation.referencingLayer() );
         connect( relation.referencingLayer(), &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
