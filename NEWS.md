@@ -1,5 +1,87 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.20 'Odense'?
+
+This release has following new features:
+
+- General: Additional options for opening attribute tables
+- General: Set size for all columns in attribute table
+- General: Export/import of authentication configurations made easy
+- Temporal: Temporal navigation steps
+- Temporal: Improved WMS-T settings
+- Temporal: Horizontal mouse wheel temporal navigation
+- Map Tools: Nominatim Geocoder Integration
+- User Interface: Processing history dialog improvements
+- User Interface: Map layer icons in the expression builder dialog
+- User Interface: SVG browser filtering
+- Symbology: Interpolated line symbol layer type for vector layers
+- Symbology: Trim the simple line symbol
+- Symbology: New "Embedded styling" renderer with OGR feature styles support
+- Symbology: New shapes and cap styles for ellipse markers
+- Symbology: Set cap styles for simple markers
+- Symbology: Allow pen cap style to be set for ellipse marker symbol layers
+- Symbology: Polygon rings @geometry_ring_num variable
+- Labelling: Fill symbols for label background shields
+- Labelling: Blending mode settings for label callouts
+- Labelling: Anchor line labels by entire line
+- Labelling: Balloon callout corner radius
+- Labelling: Balloon (speech bubble) callouts
+- Labelling: Curved line callout style
+- Labelling: Highlight pinned callout start or end points
+- Labelling: Auto-creation of callout auxiliary fields
+- Labelling: Callout snapping
+- Labelling: Toggle label layers shortcut
+- Labelling: Data defined callout start and end points
+- Labelling: Allow callouts to be interactively moved using the Move Label tool
+- Point Clouds: Support for remote datasets (EPT)
+- Print Layouts: "Convert to Static Text" option
+- Print Layouts: Improvement to XYZ layers previewed in map items
+- Expressions: length3D Function
+- Expressions: Extended array expression functions
+- Expressions: MIME Type expression function
+- Digitising: Select attributes from the largest geometry when merging
+- Digitising: Streaming digitizing mode
+- Digitising: New "Line Endpoints" snapping option
+- Digitising: Select vertices by polygon
+- Data Management: Layer tree warning icon for layers with CRS inaccuracies
+- Data Management: Basic support for dynamic CRS coordinate epoch
+- Data Management: Projection information improvements
+- Data Management: Datum ensemble CRS warnings
+- Data Management: Persist layer metadata in vector file exports
+- Data Management: Layer notes
+- Data Management: Automatically load .shp.xml metadata
+- Data Management: Automatically translate layer data from ESRI Filegeodatabases to QGIS layer metadata
+- Data Management: Read field domains from datasets
+- Data Management: Allow loading GPKG layers with GEOMETRY type
+- Data Management: Offline editing support for string list and number list field types
+- Forms and Widgets: Per-field usage of last values for newly created features
+- Forms and Widgets: JSON View widget
+- Layer Legend: Vector "label" legend entries
+- Processing: Add option to save layer metadata to Package Layers algorithm
+- Processing: Raster Layer Properties Algorithm
+- Processing: Improved rasterize operation with 3D support
+- Processing: Save selected option for Package Layers Algorithm
+- Processing: Log levels for processing context
+- Processing: Geometry snapper rework offers major speed boost
+- Processing: Add a last_value function to the aggregate algorithm
+- Application and Project Options: Add global option to disable monitoring of directories
+- Application and Project Options: APIs for export and import of XML authentication  configurations
+- Browser: Custom icon colors for folders in browser
+- Browser: OWS Group removed from the QGIS Browser
+- Data Providers: Add support for integer, real and integer64 list data types in OGR
+- Data Providers: Extend vector layer read capabilities to other layer types
+- QGIS Server: External layer opacity
+- QGIS Server: Configurable Service URL
+- Notable Fixes: Bug fixes by Even Rouault
+- Notable Fixes: Bug fixes by Alessandro Pasotti
+- Notable Fixes: Bug fixes by Paul Blottiere
+- Notable Fixes: Bug fixes by Denis Rouzaud
+- Notable Fixes: Bug fixes by Loïc Bartoletti
+- Notable Fixes: Bug fixes by Julien Cabieces
+- Notable Fixes: Bug fixes by Peter Petrik
+-
+
+
 # What's new in Version 3.18 'Zürich'?
 
 This release has following new features:
