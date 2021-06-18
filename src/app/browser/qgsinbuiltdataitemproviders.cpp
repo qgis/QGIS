@@ -1063,11 +1063,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
 
     // SQL dialog
-    if ( item->databaseConnection() )
+    if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn )
     {
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
 
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
+      if ( conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
       {
 
         QAction *sqlAction = new QAction( QObject::tr( "Run SQL command…" ), menu );
