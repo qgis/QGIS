@@ -59,6 +59,6 @@ endmacro (ADD_QGIS_TEST)
 
 if(WITH_OAUTH2_PLUGIN)
   ADD_QGIS_TEST(authoauthmethodtest testqgsauthoauth2method.cpp)
-  add_dependencies(qgis_authoauthmethodtest oauth2authmethod_static)
-  target_link_libraries(qgis_authoauthmethodtest oauth2authmethod_static)
+  add_dependencies(qgis_authoauthmethodtest authmethod_oauth2_static)
+  target_link_libraries(qgis_authoauthmethodtest authmethod_oauth2_static)
 endif()

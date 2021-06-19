@@ -54,23 +54,20 @@ set_target_properties(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
 
-ADD_QGIS_TEST(wmscapabilitiestest
-              testqgswmscapabilities.cpp)
-target_link_libraries(qgis_wmscapabilitiestest wmsprovider_a qgis_core)
+ADD_QGIS_TEST(wmscapabilitiestest testqgswmscapabilities.cpp)
+target_link_libraries(qgis_wmscapabilitiestest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(wmsccapabilitiestest
-              testqgswmsccapabilities.cpp)
-target_link_libraries(qgis_wmsccapabilitiestest wmsprovider_a qgis_core)
+ADD_QGIS_TEST(wmsccapabilitiestest testqgswmsccapabilities.cpp)
+target_link_libraries(qgis_wmsccapabilitiestest provider_wms_a qgis_core)
 
-ADD_QGIS_TEST(wmsprovidertest
-              testqgswmsprovider.cpp)
-target_link_libraries(qgis_wmsprovidertest wmsprovider_a qgis_core)
+ADD_QGIS_TEST(wmsprovidertest testqgswmsprovider.cpp)
+target_link_libraries(qgis_wmsprovidertest provider_wms_a qgis_core)
 
 ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
-target_link_libraries(qgis_postgresprovidertest postgresprovider_a qgis_core)
+target_link_libraries(qgis_postgresprovidertest provider_postgres_a qgis_core)
 
 ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
-target_link_libraries(qgis_postgresconntest postgresprovider_a qgis_core)
+target_link_libraries(qgis_postgresconntest provider_postgres_a qgis_core)
 SET_TESTS_PROPERTIES(qgis_postgresconntest PROPERTIES LABELS "POSTGRES")
 
 if (NOT FORCE_STATIC_PROVIDERS)
@@ -88,7 +85,7 @@ if (WITH_PDAL)
     ${CMAKE_SOURCE_DIR}/src/providers/pdal
   )
   ADD_QGIS_TEST(pdalprovidertest testqgspdalprovider.cpp)
-  target_link_libraries(qgis_pdalprovidertest pdalprovider_a qgis_core)
+  target_link_libraries(qgis_pdalprovidertest provider_pdal_a qgis_core)
 endif()
 
 #############################################################

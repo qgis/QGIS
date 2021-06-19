@@ -202,7 +202,7 @@ void QgsProviderRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif defined(ANDROID)
-  mLibraryDirectory.setNameFilters( QStringList( "*provider*.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*provider_*.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif

@@ -1,6 +1,6 @@
 usr/lib/qgis/plugins/libgeometrycheckerplugin.so
 usr/lib/qgis/plugins/libgpsimporterplugin.so
-usr/lib/qgis/plugins/liboauth2authmethod.so
+usr/lib/qgis/plugins/libauthmethod_oauth2.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/share/applications/

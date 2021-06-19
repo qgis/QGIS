@@ -27,35 +27,35 @@ if (WITH_GUI)
   )
 endif()
 
-add_library (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS})
-add_library(arcgisfeatureserverprovider MODULE ${AFS_SRCS})
+add_library (provider_arcgisfeatureserver_a STATIC ${AFS_SRCS})
+add_library(provider_arcgisfeatureserver MODULE ${AFS_SRCS})
 
 # require c++17
-target_compile_features(arcgisfeatureserverprovider_a PRIVATE cxx_std_17)
-target_compile_features(arcgisfeatureserverprovider PRIVATE cxx_std_17)
+target_compile_features(provider_arcgisfeatureserver_a PRIVATE cxx_std_17)
+target_compile_features(provider_arcgisfeatureserver PRIVATE cxx_std_17)
 
-target_link_libraries(arcgisfeatureserverprovider
+target_link_libraries(provider_arcgisfeatureserver
   qgis_core
   ${QCA_LIBRARY}
 )
 
-target_link_libraries (arcgisfeatureserverprovider_a
+target_link_libraries (provider_arcgisfeatureserver_a
   qgis_core
   ${QCA_LIBRARY}
 )
 
 if (WITH_GUI)
-  target_link_libraries(arcgisfeatureserverprovider
+  target_link_libraries(provider_arcgisfeatureserver
     qgis_gui
   )
-  target_link_libraries(arcgisfeatureserverprovider_a
+  target_link_libraries(provider_arcgisfeatureserver_a
     qgis_gui
   )
-  add_dependencies(arcgisfeatureserverprovider ui)
-  add_dependencies(arcgisfeatureserverprovider_a ui)
+  add_dependencies(provider_arcgisfeatureserver ui)
+  add_dependencies(provider_arcgisfeatureserver_a ui)
 endif()
 
-install (TARGETS arcgisfeatureserverprovider
+install (TARGETS provider_arcgisfeatureserver
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

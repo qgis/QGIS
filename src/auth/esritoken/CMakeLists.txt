@@ -20,28 +20,28 @@ if (WITH_GUI)
   QT5_WRAP_UI(AUTH_ESRITOKEN_UIS_H ${AUTH_ESRITOKEN_UIS})
 endif()
 
-add_library(esritokenauthmethod MODULE ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
+add_library(authmethod_esritoken MODULE ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
 
-target_include_directories(esritokenauthmethod PUBLIC
+target_include_directories(authmethod_esritoken PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/core
 )
 
 # require c++17
-target_compile_features(esritokenauthmethod PRIVATE cxx_std_17)
+target_compile_features(authmethod_esritoken PRIVATE cxx_std_17)
 
-target_link_libraries(esritokenauthmethod qgis_core)
+target_link_libraries(authmethod_esritoken qgis_core)
 
 if (WITH_GUI)
-  target_include_directories(esritokenauthmethod PUBLIC
+  target_include_directories(authmethod_esritoken PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/gui
     ${CMAKE_CURRENT_BINARY_DIR}
   )
-  target_link_libraries(esritokenauthmethod qgis_gui)
+  target_link_libraries(authmethod_esritoken qgis_gui)
 endif()
 
-target_compile_definitions(esritokenauthmethod PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(authmethod_esritoken PRIVATE "-DQT_NO_FOREACH")
 
-install(TARGETS esritokenauthmethod
+install(TARGETS authmethod_esritoken
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
 )

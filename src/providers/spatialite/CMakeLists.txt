@@ -39,27 +39,27 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library (spatialiteprovider MODULE ${SPATIALITE_SRCS})
+add_library (provider_spatialite MODULE ${SPATIALITE_SRCS})
 
 # require c++17
-target_compile_features(spatialiteprovider PRIVATE cxx_std_17)
+target_compile_features(provider_spatialite PRIVATE cxx_std_17)
 
-target_link_libraries(spatialiteprovider
+target_link_libraries(provider_spatialite
   qgis_core
   ${SPATIALITE_LIBRARY}
 )
 
 if (WITH_GUI)
-  target_link_libraries (spatialiteprovider
+  target_link_libraries (provider_spatialite
     qgis_gui
   )
-  add_dependencies(spatialiteprovider ui)
+  add_dependencies(provider_spatialite ui)
 endif()
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(
-    spatialiteprovider PROPERTIES
+    provider_spatialite PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 endif()
@@ -67,6 +67,6 @@ endif()
 ########################################################
 # Install
 
-install(TARGETS spatialiteprovider
+install(TARGETS provider_spatialite
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
