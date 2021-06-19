@@ -11,7 +11,7 @@ usr/lib/qgis/plugins/libgpxprovider.so
 usr/lib/qgis/plugins/libauthmethod_identcert.so
 usr/lib/qgis/plugins/libmdalprovider.so
 usr/lib/qgis/plugins/libmssqlprovider.so
-usr/lib/qgis/plugins/libpkcs12authmethod.so
+usr/lib/qgis/plugins/libauthmethod_pkcs12.so
 usr/lib/qgis/plugins/libauthmethod_pkipaths.so
 usr/lib/qgis/plugins/libpostgresprovider.so
 usr/lib/qgis/plugins/libpostgresrasterprovider.so
