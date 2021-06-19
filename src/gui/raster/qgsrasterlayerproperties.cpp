@@ -337,6 +337,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
     toggleColorizeControls( hueSaturationFilter->colorizeOn() );
     sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+    mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
   //blend mode
@@ -773,6 +774,7 @@ void QgsRasterLayerProperties::sync()
     btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
     toggleColorizeControls( hueSaturationFilter->colorizeOn() );
     sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+    mInvertColorsCheck->setChecked( hueSaturationFilter->invertColors() );
   }
 
   /*
@@ -1044,6 +1046,7 @@ void QgsRasterLayerProperties::apply()
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+    hueSaturationFilter->setInvertColors( mInvertColorsCheck->isChecked() );
   }
 
   //set the blend mode for the layer

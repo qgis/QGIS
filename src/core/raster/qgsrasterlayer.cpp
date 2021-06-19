@@ -1629,6 +1629,11 @@ bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
         rasterSymbolizerElem.appendChild( vendorOptionElem );
       };
 
+      if ( hueSaturationFilter()->invertColors() )
+      {
+        vendorOptionWriter( QStringLiteral( "invertColors" ), QString::number( 1 ) );
+      }
+
       // add greyScale rendering mode if set
       if ( hueSaturationFilter()->grayscaleMode() != QgsHueSaturationFilter::GrayscaleOff )
       {
