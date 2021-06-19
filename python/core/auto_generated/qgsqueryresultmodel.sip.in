@@ -18,7 +18,7 @@ class QgsQueryResultModel : QAbstractTableModel
 %Docstring(signature="appended")
 The :py:class:`QgsQueryResultModel` class is a model for :py:class:`QgsAbstractDatabaseProviderConnection`.QueryResult
 
-.. versionadded:: 3.20
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -47,6 +47,13 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
     QStringList columns() const;
 %Docstring
 Returns the column names
+%End
+
+    QgsAbstractDatabaseProviderConnection::QueryResult queryResult() const;
+%Docstring
+Returns the query result
+
+.. versionadded:: 3.22
 %End
 
   public slots:

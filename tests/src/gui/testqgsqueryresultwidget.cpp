@@ -137,7 +137,7 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
 {
   auto w = std::make_unique<QgsQueryResultWidget>( nullptr, makeConn() );
   bool exited = false;
-  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
+  connect( w->mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
   QVERIFY( w->mSqlEditor->extraKeywords().contains( QStringLiteral( "qgis_test" ) ) );
@@ -150,7 +150,7 @@ void TestQgsQueryResultWidget::testCodeEditorApis()
   {
     QTest::mousePress( w->mStopButton, Qt::MouseButton::LeftButton );
   } );
-  connect( w->mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
+  connect( w->mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchingFinished, w.get(), [ & ] { exited = true; } );
   while ( ! exited )
     QgsApplication::processEvents();
 

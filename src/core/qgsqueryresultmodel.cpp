@@ -28,6 +28,10 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   connect( mWorker.get(), &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
   connect( mWorker.get(), &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
   mWorkerThread.start();
+  if ( mQueryResult.rowCount() > 0 )
+  {
+    mRows.reserve( mQueryResult.rowCount() );
+  }
 }
 
 void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
@@ -43,6 +47,11 @@ void QgsQueryResultModel::cancel()
   {
     mWorker->stopFetching();
   }
+}
+
+QgsAbstractDatabaseProviderConnection::QueryResult QgsQueryResultModel::queryResult() const
+{
+  return mQueryResult;
 }
 
 QStringList QgsQueryResultModel::columns() const

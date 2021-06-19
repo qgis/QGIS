@@ -20,7 +20,6 @@
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 
-
 QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabaseProviderConnection *connection )
   : QWidget( parent )
 {
@@ -30,6 +29,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   // mSqlEditor->setLineNumbersVisible( true );
 
   mQueryResultsTableView->hide();
+  mQueryResultsTableView->setItemDelegate( new QgsQueryResultItemDelegate( mQueryResultsTableView ) );
   mProgressBar->hide();
 
   connect( mExecuteButton, &QPushButton::pressed, this, &QgsQueryResultWidget::executeQuery );
@@ -164,7 +164,8 @@ void QgsQueryResultWidget::executeQuery()
 
 void QgsQueryResultWidget::updateButtons()
 {
-  mFilterToolButton->setEnabled( false );
+  mFilterLineEdit->setEnabled( mFirstRowFetched );
+  mFilterToolButton->setEnabled( mFirstRowFetched );
   mExecuteButton->setEnabled( ! mSqlEditor->text().isEmpty() );
   mLoadAsNewLayerGroupBox->setVisible( mConnection && mConnection->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::SqlLayers ) );
   mLoadAsNewLayerGroupBox->setEnabled(
@@ -179,6 +180,7 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   Q_ASSERT( mModel );
 
   mFilterToolButton->setEnabled( true );
+  mFilterLineEdit->setEnabled( true );
   mPkColumnsComboBox->clear();
   mGeometryColumnComboBox->clear();
   const bool hasPkInformation { ! mSqlVectorLayerOptions.primaryKeyColumns.isEmpty() };
@@ -239,8 +241,7 @@ void QgsQueryResultWidget::startFetching()
     }
     else
     {
-      QgsAbstractDatabaseProviderConnection::QueryResult result { mQueryResultWatcher.result() };
-      mModel = std::make_unique<QgsQueryResultModel>( result );
+      mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );
       connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
       {
         mModel->cancel();
@@ -256,7 +257,7 @@ void QgsQueryResultWidget::startFetching()
           mQueryResultsTableView->show();
           updateButtons();
           updateSqlLayerColumns( );
-          mActualRowCount = result.rowCount();
+          mActualRowCount = mModel->queryResult().rowCount();
           if ( mActualRowCount != -1 )
           {
             mProgressBar->setRange( 0, mActualRowCount );
@@ -362,16 +363,11 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
     mSqlErrorText->setExtraKeywords( keywords );
 
     // Add dynamic keywords in a separate thread
-    mApiFetcher = new QgsConnectionsApiFetcher( connection );
+    mApiFetcher = std::make_unique<QgsConnectionsApiFetcher>( connection );
     mApiFetcher->moveToThread( &mApiFetcherWorkerThread );
-    connect( &mApiFetcherWorkerThread, &QThread::started, mApiFetcher, &QgsConnectionsApiFetcher::fetchTokens );
-    connect( &mApiFetcherWorkerThread, &QThread::finished, mApiFetcher, [ = ]
-    {
-      mApiFetcher->deleteLater();
-      mApiFetcher = nullptr;
-    } );
-    connect( mApiFetcher, &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
-    connect( mApiFetcher, &QgsConnectionsApiFetcher::fetchingFinished, &mApiFetcherWorkerThread, [ =  ]
+    connect( &mApiFetcherWorkerThread, &QThread::started, mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchTokens );
+    connect( mApiFetcher.get(), &QgsConnectionsApiFetcher::tokensReady, this, &QgsQueryResultWidget::tokensReady );
+    connect( mApiFetcher.get(), &QgsConnectionsApiFetcher::fetchingFinished, &mApiFetcherWorkerThread, [ = ]
     {
       mApiFetcherWorkerThread.quit();
       mApiFetcherWorkerThread.wait();
@@ -464,3 +460,23 @@ void QgsConnectionsApiFetcher::stopFetching()
 }
 
 ///@endcond private
+
+QgsQueryResultItemDelegate::QgsQueryResultItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+}
+
+QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
+{
+  Q_UNUSED( locale )
+  // TODO: use https://github.com/qgis/QGIS/pull/43705/files#diff-03e9f0d1977751f918b16f080b6595ff4f2183944e8aa6ac602d345325d8bcd5R440
+  //       when merged
+  QString result { QStyledItemDelegate::displayText( value, QLocale() ) };
+  // Show no more than 255 characters
+  if ( result.length() > 255 )
+  {
+    result.truncate( 255 );
+    result.append( QStringLiteral( "…" ) );
+  }
+  return result;
+}

@@ -392,6 +392,8 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
     return row;
   }
 
+  row.reserve( result->PQnfields() );
+
   for ( int colIdx = 0; colIdx < result->PQnfields(); colIdx++ )
   {
     if ( mResolveTypes )

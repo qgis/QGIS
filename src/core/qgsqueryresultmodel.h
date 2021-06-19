@@ -75,7 +75,7 @@ class QgsQueryResultFetcher: public QObject
  * \brief The QgsQueryResultModel class is a model for QgsAbstractDatabaseProviderConnection::QueryResult
  *
  * \ingroup core
- * \since QGIS 3.20
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 {
@@ -99,6 +99,12 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 
     //! Returns the column names
     QStringList columns() const;
+
+    /**
+     * Returns the query result
+     * \since QGIS 3.22
+     */
+    QgsAbstractDatabaseProviderConnection::QueryResult queryResult() const;
 
   public slots:
 

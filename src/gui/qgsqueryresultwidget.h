@@ -26,10 +26,26 @@
 #include <QWidget>
 #include <QThread>
 #include <QtConcurrent>
+#include <QStyledItemDelegate>
 
 ///@cond private
 
 #ifndef SIP_RUN
+
+/**
+ * The QgsQueryResultItemDelegate class shows results truncated to 255 characters and using current locale
+ */
+class GUI_EXPORT QgsQueryResultItemDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+    // QStyledItemDelegate interface
+  public:
+
+    explicit QgsQueryResultItemDelegate( QObject *parent = nullptr );
+
+    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+};
 
 /**
  * The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
@@ -149,7 +165,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
-    QgsConnectionsApiFetcher *mApiFetcher = nullptr;
+    std::unique_ptr<QgsConnectionsApiFetcher> mApiFetcher;
     QThread mApiFetcherWorkerThread;
     bool mWasCanceled = false;
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
