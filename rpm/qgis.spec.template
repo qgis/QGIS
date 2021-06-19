@@ -127,7 +127,7 @@ BuildRequires:  qt5-qt3d-devel
 
 # In F30+ qt5-qtbase-devel has been split
 # in qt5-qtbase-devel and qt5-qtbase-private-devel
-# qt5-qtbase-private-devel is needed by 
+# qt5-qtbase-private-devel is needed by
 # external/qspatialite/qsql_spatialite.cpp:49:10
 %if 0%{?fedora} >= 30
 BuildRequires:  qt5-qtbase-private-devel
@@ -316,13 +316,13 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
 %exclude %{_libdir}/%{name}/server/
 %exclude %{_libdir}/%{name}/grass/
-%exclude %{_prefix}/lib/liboauth2authmethod_static.a
+%exclude %{_prefix}/lib/libauthmethod_oauth2_static.a
 
 %files devel
 %{_datadir}/%{name}/FindQGIS.cmake
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}*.so
-%{_prefix}/lib/liboauth2authmethod_static.a
+%{_prefix}/lib/lib_authmethod_oauth2_static.a
 %{?_qt5_plugindir}/designer/libqgis_customwidgets.so*
 
 %files grass
