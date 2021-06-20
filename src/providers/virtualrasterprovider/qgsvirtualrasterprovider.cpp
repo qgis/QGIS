@@ -86,19 +86,9 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
     //HARDCODED DATA--------------------------------------------------------------------------------------------
-    //QgsRasterLayer *r =  new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","gdal");
-     //QgsProject::instance()->addMapLayers(
-     //           QList<QgsMapLayer *>() << r);
     QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
-
-    //
-    //QgsRasterLayer *mdemRasterLayer = nullptr;
     QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
     QFileInfo demRasterFileInfo( demFileName );
-    //mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),demRasterFileInfo.completeBaseName() );
-     //QgsProject::instance()->addMapLayers(
-     //  QList<QgsMapLayer *>() << mdemRasterLayer );
-    //
     std::unique_ptr< QgsRasterLayer > mdemRasterLayer = std::make_unique< QgsRasterLayer >(
           demRasterFileInfo.filePath(),
           demRasterFileInfo.completeBaseName()
@@ -107,19 +97,13 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
     QgsRasterCalculatorEntry entry;
-    //entry.raster = r;
     entry.raster = mdemRasterLayer.get();
     entry.bandNumber = 1;
     entry.ref = QStringLiteral( "dem@1" );
     mRasterEntries<<entry;
-
-
     //END HARDCODED DATA--------------------------------------------------------------------------------------------
 
-    //std::unique_ptr< QgsRasterBlock > block = std::make_unique< QgsRasterBlock >( dataType( bandNo ), width, height );
     std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
-    //QgsRasterBlock *tblock = new QgsRasterBlock( Qgis::DataType::Float64, width, height );
-
     double * outputData = ( double * )( tblock->bits() );
 
 
@@ -197,9 +181,9 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
     //QgsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
-    QgsRasterMatrix resultMatrix(width, height, nullptr,  -FLT_MAX);
+    QgsRasterMatrix resultMatrix(width, height, outputData,  -FLT_MAX);
 
-    //for ( int i = 0; i < mHeight; ++i )
+
     for ( int i = 0; i < height; ++i )
     {
         if ( feedback )
@@ -231,10 +215,9 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     //---double * outputData = ( double * )( tblock->bits() );
     //---gsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
 
-    //tblock->setData(resultMatrix.takeData());
-    //outputData = resultMatrix.takeData();
 
-    //memcpy( resultMatrix, tblock->bits(), width*height );
+
+    //memcpy( tblock->bits(), (char *) resultMatrix.takeData() , width*height*sizeof(double) );
 
 
     //--------------------------------------------------------------------------------------------------------------------------
