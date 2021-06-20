@@ -22,9 +22,10 @@ __date__ = 'June 2021'
 __copyright__ = '(C) 2021, Alexander Bruy'
 
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsRuntimeProfiler
 
-from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+with QgsRuntimeProfiler.profile('Import GRASS Provider'):
+    from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 
 
 class GrassProviderPlugin:
@@ -32,8 +33,11 @@ class GrassProviderPlugin:
     def __init__(self):
         self.provider = Grass7AlgorithmProvider()
 
-    def initGui(self):
+    def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def initGui(self):
+        self.initProcessing()
 
     def unload(self):
         QgsApplication.processingRegistry().removeProvider(self.provider)

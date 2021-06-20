@@ -22,9 +22,10 @@ __date__ = 'June 2021'
 __copyright__ = '(C) 2021, Alexander Bruy'
 
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsRuntimeProfiler
 
-from otbprovider.OtbAlgorithmProvider import OtbAlgorithmProvider
+with QgsRuntimeProfiler.profile('Import OTB Provider'):
+    from otbprovider.OtbAlgorithmProvider import OtbAlgorithmProvider
 
 
 class OtbProviderPlugin:
@@ -32,8 +33,11 @@ class OtbProviderPlugin:
     def __init__(self):
         self.provider = OtbAlgorithmProvider()
 
-    def initGui(self):
+    def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def initGui(self):
+        self.initProcessing()
 
     def unload(self):
         QgsApplication.processingRegistry().removeProvider(self.provider)

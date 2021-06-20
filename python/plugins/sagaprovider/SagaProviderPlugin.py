@@ -22,9 +22,10 @@ __date__ = 'May 2021'
 __copyright__ = '(C) 2021, Alexander Bruy'
 
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsRuntimeProfiler
 
-from sagaprovider.SagaAlgorithmProvider import SagaAlgorithmProvider
+with QgsRuntimeProfiler.profile('Import SAGA Provider'):
+    from sagaprovider.SagaAlgorithmProvider import SagaAlgorithmProvider
 
 
 class SagaProviderPlugin:
@@ -32,8 +33,11 @@ class SagaProviderPlugin:
     def __init__(self):
         self.provider = SagaAlgorithmProvider()
 
-    def initGui(self):
+    def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def initGui(self):
+        self.initProcessing()
 
     def unload(self):
         QgsApplication.processingRegistry().removeProvider(self.provider)
