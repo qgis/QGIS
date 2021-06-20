@@ -130,7 +130,7 @@ class Grass7Utils:
                         if line.startswith("7."):
                             Grass7Utils.version = line
                             return Grass7Utils.version
-            except:
+            except Exception:
                 pass
 
         return None
@@ -398,7 +398,7 @@ class Grass7Utils:
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
                         feedback.setProgress(int(line[len('GRASS_INFO_PERCENT') + 2:]))
-                    except:
+                    except Exception:
                         pass
                 else:
                     if 'r.out' in line or 'v.out' in line:
@@ -449,7 +449,7 @@ class Grass7Utils:
                         try:
                             feedback.setProgress(int(
                                 line[len('GRASS_INFO_PERCENT') + 2:]))
-                        except:
+                        except Exception:
                             pass
                     if any(l in line for l in ['WARNING', 'ERROR']):
                         loglines.append(line.strip())

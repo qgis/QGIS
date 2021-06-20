@@ -158,7 +158,7 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
         if default is not None:
             try:
                 self.default = int(default)
-            except:
+            except Exception:
                 self.default = 0
             self.value = self.default
 

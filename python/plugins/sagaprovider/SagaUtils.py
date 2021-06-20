@@ -153,7 +153,7 @@ def getInstalledVersion(runSaga=False):
                 return None
             except IOError:
                 retries += 1
-            except:
+            except Exception:
                 return None
 
     return _installedVersion
@@ -186,14 +186,14 @@ def executeSaga(feedback):
                     s = ''.join(x for x in line if x.isdigit())
                     try:
                         feedback.setProgress(int(s))
-                    except:
+                    except Exception:
                         pass
                 else:
                     line = line.strip()
                     if line not in ['/', '-', '\\', '|']:
                         loglines.append(line)
                         feedback.pushConsoleInfo(line)
-        except:
+        except Exception:
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
