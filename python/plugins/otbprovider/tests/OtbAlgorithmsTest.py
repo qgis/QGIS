@@ -45,10 +45,10 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
-from processing.algs.otb.OtbAlgorithm import OtbAlgorithm
-from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider
-from processing.algs.otb.OtbUtils import OtbUtils
-from processing.algs.otb.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWidgetWrapper
+from otbprovider.OtbAlgorithm import OtbAlgorithm
+from otbprovider.OtbAlgorithmProvider import OtbAlgorithmProvider
+from otbprovider.OtbUtils import OtbUtils
+from otbprovider.OtbChoiceWidget import OtbParameterChoice, OtbChoiceWidgetWrapper
 import AlgorithmsTestBase
 
 import processing
@@ -226,7 +226,8 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
-        ProcessingConfig.setSettingValue("OTB_ACTIVATE", True)
+        cls.provider = OtbAlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(cls.provider)
         ProcessingConfig.setSettingValue(OtbUtils.FOLDER, OTB_INSTALL_DIR)
         ProcessingConfig.setSettingValue(OtbUtils.APP_FOLDER, os.path.join(OTB_INSTALL_DIR, 'lib', 'otb', 'applications'))
         ProcessingConfig.readSettings()
@@ -241,6 +242,7 @@ class TestOtbAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     def tearDownClass(cls):
         from processing.core.Processing import Processing
         Processing.deinitialize()
+        QgsApplication.processingRegistry().removeProvider(cls.provider)
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 

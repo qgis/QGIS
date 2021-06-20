@@ -152,7 +152,7 @@ class OtbParameterChoice(QgsProcessingParameterDefinition):
 
         self.setMetadata({
             'widget_wrapper': {
-                'class': 'processing.algs.otb.OtbChoiceWidget.OtbChoiceWidgetWrapper'}})
+                'class': 'otbprovider.OtbChoiceWidget.OtbChoiceWidgetWrapper'}})
         self.options = options
 
         if default is not None:
