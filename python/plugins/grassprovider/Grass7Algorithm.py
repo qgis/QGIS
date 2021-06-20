@@ -75,7 +75,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 from processing.core.parameters import getParameterFromString
 
-from .Grass7Utils import Grass7Utils
+from grassprovider.Grass7Utils import Grass7Utils
 
 from processing.tools.system import isWindows, getTempFilename
 
@@ -141,7 +141,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         name = self.name().replace('.', '_')
         try:
             self.module = importlib.import_module(
-                'processing.algs.grass7.ext.{}'.format(name))
+                'grassprovider.ext.{}'.format(name))
         except ImportError:
             self.module = None
 
@@ -445,9 +445,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             outName = out.name()
             if outName in parameters:
                 if outName in self.fileOutputs:
-                    print('ADD', outName)
-                    print('VAL', parameters[outName])
-                    print('VAL 2', self.fileOutputs[outName])
                     outputs[outName] = self.fileOutputs[outName]
                 else:
                     outputs[outName] = parameters[outName]

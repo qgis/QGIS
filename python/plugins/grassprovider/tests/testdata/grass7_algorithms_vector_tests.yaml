@@ -1,8 +1,7 @@
-# See ../README.md for a description of the file format
+# v.* modules
 
 tests:
 
-# v.* modules
   - algorithm: grass7:v.buffer
     name: Buffer vectors
     params:
@@ -27,7 +26,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/buffer_lines.shp
+        name: expected/buffer_lines.shp
         type: vector
         compare:
           geometry:
@@ -45,7 +44,7 @@ tests:
       GRASS_VECTOR_LCO: ''
       column_prefix: s
       map:
-        name: custom/zonal_stats.shp
+        name: zonal_stats.shp
         type: vector
       method:
       - 0
@@ -67,7 +66,7 @@ tests:
         type: raster
     results:
       output:
-        name: expected/grass7/v_rast_stats2.gml
+        name: expected/v_rast_stats2.gml
         type: vector
 
   - algorithm: grass7:v.voronoi
@@ -89,7 +88,7 @@ tests:
       thin: -1.0
     results:
       output:
-        name: expected/grass7/v_voronoi.shp
+        name: expected/v_voronoi.shp
         type: vector
 
   - algorithm: grass7:v.what.rast
@@ -104,7 +103,7 @@ tests:
       GRASS_VECTOR_LCO: ''
       column: val
       map:
-        name: custom/grass7/sample_points.shp
+        name: sample_points.shp
         type: vector
       raster:
         name: dem.tif
@@ -113,7 +112,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/v_what_rast.shp
+        name: expected/v_what_rast.shp
         type: vector
 
   - algorithm: grass7:v.vect.stats
@@ -125,12 +124,12 @@ tests:
       GRASS_VECTOR_DSCO: ''
       GRASS_VECTOR_LCO: ''
       areas:
-        name: custom/zonal_stats.shp
+        name: zonal_stats.shp
         type: vector
       count_column: count
       method: 0
       points:
-        name: custom/grass7/sample_points.shp
+        name: sample_points.shp
         type: vector
       points_column: val
       stats_column: stat
@@ -138,7 +137,7 @@ tests:
       - 0
     results:
       output:
-        name: expected/grass7/v_vect_stats.shp
+        name: expected/v_vect_stats.shp
         type: vector
 
   - algorithm: grass7:v.net
@@ -162,7 +161,7 @@ tests:
       threshold: 50.0
     results:
       output:
-        name: expected/grass7/v_net_nodes.gml
+        name: expected/v_net_nodes.gml
         type: vector
         compare:
           fields:
@@ -179,16 +178,16 @@ tests:
       GRASS_VECTOR_LCO: ''
       cats: 1-10000
       input:
-        name: custom/grass7/network.shp
+        name: network.shp
         type: vector
       points:
-        name: custom/grass7/network_points.shp
+        name: network_points.shp
         type: vector
       threshold: 50.0
       where: ''
     results:
       output:
-        name: expected/grass7/v_net_allpairs.shp
+        name: expected/v_net_allpairs.shp
         type: vector
 
   - algorithm: grass7:v.net.centrality
@@ -215,7 +214,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/v_net_centrality.shp
+        name: expected/v_net_centrality.shp
         type: vector
         compare:
           ignore_crs_check: true
@@ -235,7 +234,7 @@ tests:
       - 0
       - 1
       flayer:
-        name: custom/grass7/point_start.gml|layername=point_start
+        name: point_start.gml|layername=point_start
         type: vector
       from_cats: ''
       from_where: ''
@@ -244,7 +243,7 @@ tests:
         type: vector
       threshold: 50.0
       tlayer:
-        name: custom/grass7/point_end.gml|layername=point_end
+        name: point_end.gml|layername=point_end
         type: vector
       to_cats: ''
       to_type:
@@ -252,7 +251,7 @@ tests:
       to_where: ''
     results:
       output:
-        name: expected/grass7/v_net_distance.shp
+        name: expected/v_net_distance.shp
         type: vector
 
   - algorithm: grass7:v.net.salesman
@@ -269,18 +268,18 @@ tests:
       - 1
       center_cats: 1-100000
       input:
-        name: custom/grass7/network.shp
+        name: network.shp
         type: vector
       points:
-        name: custom/grass7/network_points.shp
+        name: network_points.shp
         type: vector
       threshold: 50.0
     results:
       output:
-        name: expected/grass7/v_net_salesman.shp
+        name: expected/v_net_salesman.shp
         type: vector
       sequence:
-        name: expected/grass7/v_net_salesman_seq.csv
+        name: expected/v_net_salesman_seq.csv
         type: file
 
   - algorithm: grass7:v.net.steiner
@@ -296,17 +295,17 @@ tests:
       - 0
       - 1
       input:
-        name: custom/grass7/network.shp
+        name: network.shp
         type: vector
       npoints: -1
       points:
-        name: custom/grass7/network_points.shp
+        name: network_points.shp
         type: vector
       terminal_cats: 1-100000
       threshold: 50.0
     results:
       output:
-        name: expected/grass7/v_net_steiner.shp
+        name: expected/v_net_steiner.shp
         type: vector
 
   - algorithm: grass7:v.surf.bspline
@@ -354,7 +353,7 @@ tests:
       cats: ''
       distance: 10.0
       input:
-        name: custom/pol.gpkg|layername=pol3
+        name: pol.gpkg|layername=pol3
         type: vector
       scale: 1.0
       tolerance: 0.01
@@ -365,7 +364,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/buffer_polys_layer3.shp
+        name: expected/buffer_polys_layer3.shp
         type: vector
         compare:
           ignore_crs_check: true
@@ -385,7 +384,7 @@ tests:
       cats: ''
       distance: 10.0
       input:
-        name: custom/pol.gpkg|layername=pol2
+        name: pol.gpkg|layername=pol2
         type: vector
       scale: 1.0
       tolerance: 0.01
@@ -396,7 +395,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/buffer_polys_layer2.shp
+        name: expected/buffer_polys_layer2.shp
         type: vector
         compare:
           ignore_crs_check: true
@@ -428,7 +427,7 @@ tests:
       where: ''
     results:
       output:
-        name: expected/grass7/buffer_points_field.shp
+        name: expected/buffer_points_field.shp
         type: vector
         compare:
           fields:
@@ -455,7 +454,7 @@ tests:
       zscale: 1.0
     results:
       cvdev:
-        name: expected/grass7/v_surf_cvdev.shp
+        name: expected/v_surf_cvdev.shp
         type: vector
         compare:
           fields:
@@ -490,7 +489,7 @@ tests:
         hash: 98016f6edabbb205fc75f48b3c48528ced79ec95cffd769398db46b7
         type: rasterhash
       deviations:
-        name: expected/grass7/v_surf_rst_deviations.shp
+        name: expected/v_surf_rst_deviations.shp
         type: vector
         compare:
           fields:
@@ -504,7 +503,7 @@ tests:
         hash: 3f6836ee9fcf5523380be97b1753f49ede33058583979cad5c47c316
         type: rasterhash
       overwin:
-        name: expected/grass7/v_surf_rst_overlap.shp
+        name: expected/v_surf_rst_overlap.shp
         type: vector
         compare:
           fields:
@@ -519,7 +518,7 @@ tests:
         hash: b9201776ec61df5c197f335ab60f878cc394394cfa40272728283459
         type: rasterhash
       treeseg:
-        name: expected/grass7/v_surf_rst_quadtree.shp
+        name: expected/v_surf_rst_quadtree.shp
         type: vector
         compare:
           fields:
@@ -538,7 +537,7 @@ tests:
       units: 2
     results:
       html:
-        name: expected/grass7/v_report.html
+        name: expected/v_report.html
         type: regex
         rules:
           - 'cat|fid|id|id2|x|y|z'

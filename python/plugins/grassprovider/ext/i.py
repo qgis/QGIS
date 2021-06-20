@@ -23,7 +23,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
 from processing.tools.system import (isWindows, getTempFilename)
-from processing.algs.grass7.Grass7Utils import Grass7Utils
+from grassprovider.Grass7Utils import Grass7Utils
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsMessageLog

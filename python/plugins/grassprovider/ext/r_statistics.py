@@ -22,7 +22,7 @@ __date__ = 'September 2017'
 __copyright__ = '(C) 2017, Médéric Ribreux'
 
 from qgis.core import QgsProcessingParameterString
-from processing.algs.grass7.Grass7Utils import Grass7Utils
+from grassprovider.Grass7Utils import Grass7Utils
 
 
 def processCommand(alg, parameters, context, feedback):

@@ -26,11 +26,13 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 
+from qgis.core import QgsApplication
 from qgis.testing import (
     start_app,
     unittest
 )
-from processing.algs.grass7.Grass7Utils import Grass7Utils
+from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from grassprovider.Grass7Utils import Grass7Utils
 
 
 class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -40,6 +42,8 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
+        cls.provider = Grass7AlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
 
         assert Grass7Utils.installedVersion()
@@ -47,6 +51,7 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
     @classmethod
     def tearDownClass(cls):
         from processing.core.Processing import Processing
+        QgsApplication.processingRegistry().removeProvider(cls.provider)
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)

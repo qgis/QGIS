@@ -42,7 +42,8 @@ from qgis.testing import (
     start_app,
     unittest
 )
-from processing.algs.grass7.Grass7Utils import Grass7Utils
+from grassprovider.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from grassprovider.Grass7Utils import Grass7Utils
 
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
@@ -55,6 +56,8 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
+        cls.provider = Grass7AlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
 
         cls.temp_dir = tempfile.mkdtemp()
@@ -65,6 +68,7 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
     @classmethod
     def tearDownClass(cls):
         from processing.core.Processing import Processing
+        QgsApplication.processingRegistry().removeProvider(cls.provider)
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
@@ -273,32 +277,32 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         self.assertEqual(get_command(alg), 'v.external input="testdata/lines_z.shp" output="###" --overwrite -o')
 
         # GPKG source
-        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        source = os.path.join(testDataPath, 'pol.gpkg')
         vl = QgsVectorLayer(source + '|layername=pol2')
         self.assertTrue(vl.isValid())
         alg.loadVectorLayer('test_layer', vl, external=False)
-        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" layer="pol2" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o')
         # try with external -- should work for Geopackage (although grass itself tends to crash here!)
         alg.loadVectorLayer('test_layer', vl, external=True)
-        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" layer="pol2" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o')
 
         # different layer
-        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        source = os.path.join(testDataPath, 'pol.gpkg')
         vl = QgsVectorLayer(source + '|layername=pol3')
         self.assertTrue(vl.isValid())
         alg.loadVectorLayer('test_layer', vl, external=False)
-        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" layer="pol3" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o')
         alg.loadVectorLayer('test_layer', vl, external=True)
-        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" layer="pol3" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o')
 
         # GPKG no layer: you get what you get and you don't get upset
-        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        source = os.path.join(testDataPath, 'pol.gpkg')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
         alg.loadVectorLayer('test_layer', vl, external=False)
-        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" output="###" --overwrite -o')
         alg.loadVectorLayer('test_layer', vl, external=True)
-        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" output="###" --overwrite -o')
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" output="###" --overwrite -o')
 
 
 if __name__ == '__main__':

@@ -21,7 +21,7 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
-from processing.algs.grass7.Grass7Utils import Grass7Utils
+from grassprovider.Grass7Utils import Grass7Utils
 
 
 def processInputs(alg, parameters, context, feedback):

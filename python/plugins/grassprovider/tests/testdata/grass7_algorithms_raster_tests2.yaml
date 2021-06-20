@@ -1,4 +1,4 @@
-# See ../README.md for a description of the file format
+# r.* modules
 
 tests:
 
@@ -10,7 +10,7 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       max_cost: 0
       memory: 300
@@ -30,13 +30,13 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       max_cost: 0
       memory: 300
       null_cost: 0
       start_raster:
-        name: custom/grass7/raster_1class.tif
+        name: raster_1class.tif
         type: raster
     results:
       output:
@@ -53,13 +53,13 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       start_points:
-        name: custom/grass7/points.shp
+        name: points.shp
         type: vector
       stop_points:
-        name: custom/grass7/points2.shp
+        name: points2.shp
         type: vector
     results:
       output:
@@ -73,16 +73,16 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       map:
         params:
-        - name: custom/grass7/raster_6class.tif
+        - name: raster_6class.tif
           type: raster
-        - name: custom/grass7/raster_5class.tif
+        - name: raster_5class.tif
           type: raster
-        - name: custom/grass7/raster_4class.tif
+        - name: raster_4class.tif
           type: raster
         type: multi
     results:
       html:
-        name: expected/grass7/r_covar.html
+        name: expected/r_covar.html
         type: regex
         rules:
           - '1.000000 0.018635 -0.000101'
@@ -97,11 +97,11 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       input:
         params:
-        - name: custom/grass7/raster_6class.tif
+        - name: raster_6class.tif
           type: raster
-        - name: custom/grass7/raster_5class.tif
+        - name: raster_5class.tif
           type: raster
-        - name: custom/grass7/raster_4class.tif
+        - name: raster_4class.tif
           type: raster
         type: multi
     results:
@@ -118,13 +118,13 @@ tests:
       -r: false
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       map:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       nsteps: 255
       null_value: '0'
     results:
       html:
-        name: expected/grass7/r_describe.html
+        name: expected/r_describe.html
         type: regex
         rules:
           - '0 1-6'
@@ -136,7 +136,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       format: '0'
       input:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
     results:
       areas:
@@ -160,7 +160,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       edge: 4
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       method: '0'
       npmin: 20
@@ -183,7 +183,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       bound: 1609
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       skip: 7
     results:
@@ -204,11 +204,11 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       aspect:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       bound: 1609
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       skip: 7
     results:
@@ -226,13 +226,13 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       hue:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       intensity:
-        name: custom/grass7/raster_4class.tif
+        name: raster_4class.tif
         type: raster
       saturation:
-        name: custom/grass7/raster_5class.tif
+        name: raster_5class.tif
         type: raster
     results:
       blue:
@@ -261,15 +261,15 @@ tests:
       -w: false
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       classification:
-        name: custom/grass7/raster_1class.tif
+        name: raster_1class.tif
         type: raster
       reference:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       title: ACCURACY ASSESSMENT
     results:
       output:
-        name: expected/grass7/r.kappa.txt
+        name: expected/r.kappa.txt
         type: regex
         rules:
           - '44		297		14.814815'
@@ -282,7 +282,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       coordinates: 350854,6688401
       elevation:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       water_level: 30.0
     results:
@@ -297,10 +297,10 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       seed:
-        name: custom/grass7/raster_1class.tif
+        name: raster_1class.tif
         type: raster
       water_level: 10000.0
     results:
@@ -315,7 +315,7 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       input:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
     results:
       output:
@@ -323,6 +323,7 @@ tests:
         - 418f93ebf06c0b5ae3c7a126513fe4384a3aaa6f8fb570f3d39e2877
         - d447a4dfb85ed7f4d819e68b32eb1303bd2040ca72077892d3e3cec7
         - 7596586771ae5836b141a05e109569c14290906f8215ecd6677e8769
+        - 0e0a32123986032c00557ccf8a3b5a5ec26bff6987c353e02a2631fa
         type: rasterhash
 
   - algorithm: grass7:r.info
@@ -334,11 +335,11 @@ tests:
       -r: false
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       map:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
     results:
       html:
-        name: expected/grass7/r_info.html
+        name: expected/r_info.html
         type: regex
         rules:
           - '| N: 6693700 S: 6682800 Res: 100 |'
@@ -349,17 +350,17 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       path:
-        name: custom/grass7/weighted.csv
+        name: weighted.csv
         type: file
     results:
       output_txt:
-        name: expected/grass7/r.li.cwed.ascii.txt
+        name: expected/r.li.cwed.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.dominance.ascii
@@ -367,15 +368,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.dominance.ascii.txt
+        name: expected/r.li.dominance.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.edgedensity.ascii
@@ -384,16 +385,16 @@ tests:
       -b: false
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       patch_type: '3'
     results:
       output_txt:
-        name: expected/grass7/r.li.edgedensity.ascii.txt
+        name: expected/r.li.edgedensity.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.mpa.ascii
@@ -401,15 +402,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.mpa.ascii.txt
+        name: expected/r.li.mpa.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.mps.ascii
@@ -417,15 +418,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.mps.ascii.txt
+        name: expected/r.li.mps.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.padcv.ascii
@@ -433,15 +434,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.padcv.ascii.txt
+        name: expected/r.li.padcv.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.padrange.ascii
@@ -449,15 +450,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.padrange.ascii.txt
+        name: expected/r.li.padrange.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.padsd.ascii
@@ -465,15 +466,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.padsd.ascii.txt
+        name: expected/r.li.padsd.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.patchdensity.ascii
@@ -481,15 +482,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.patchdensity.ascii.txt
+        name: expected/r.li.patchdensity.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.patchnum.ascii
@@ -497,15 +498,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.patchnum.ascii.txt
+        name: expected/r.li.patchnum.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.pielou.ascii
@@ -513,15 +514,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.pielou.ascii.txt
+        name: expected/r.li.pielou.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.renyi.ascii
@@ -530,15 +531,15 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       alpha: '3'
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.renyi.ascii.txt
+        name: expected/r.li.renyi.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.richness.ascii
@@ -546,15 +547,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.richness.ascii.txt
+        name: expected/r.li.richness.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.shannon.ascii
@@ -562,15 +563,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.shannon.ascii.txt
+        name: expected/r.li.shannon.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.shape.ascii
@@ -578,15 +579,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.shape.ascii.txt
+        name: expected/r.li.shape.ascii.txt
         type: file
 
   - algorithm: grass7:r.li.simpson.ascii
@@ -594,15 +595,15 @@ tests:
     params:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       config:
-        name: custom/grass7/rliconfig
+        name: rliconfig
         type: file
       config_txt: ''
       input:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
     results:
       output_txt:
-        name: expected/grass7/r.li.simpson.ascii.txt
+        name: expected/r.li.simpson.ascii.txt
         type: file
 
   - algorithm: grass7:r.watershed
@@ -617,7 +618,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       convergence: 5
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       max_slope_length: 50
       memory: 300
@@ -639,6 +640,7 @@ tests:
         hash:
         - 69b5b31ac93a25f01b85e4f7867e5b8720183732d29d50c24204a7b9
         - 3d8f405232e958d8b9c75f2c5a63badee178ee7910d7b1ccef78ea9e
+        - 8f36d3966acbf0c82402dfa858ae3cbbc991a34643668220a194f7b6
         type: rasterhash
       slope_steepness:
         hash: cafb759a5701e78928a43d87e58e552f9186358b1de40c375047f81e
@@ -651,6 +653,7 @@ tests:
         - 6b213bddf1223f392c01ab26e84485c01d652dfcae40aecd186f3295
         - e58737ab4169e79243dd7e50dc87555a2180a7e5f6ba00fe18b10fff
         - 48a718679318750a35eff0c76fb506753bf4897c7b18a4df23397f9c
+        - 22689b6affb5ceeaceaddd388444c5cc912a8be0a6355fa986af092d
         type: rasterhash
 
   - algorithm: grass7:r.stream.extract
@@ -661,7 +664,7 @@ tests:
       GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
       d8cut: 0
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       mexp: 0
       stream_length: 0
@@ -684,7 +687,7 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       dist: 0.0
       elevation:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       flat: 1.0
       search: 3
@@ -734,12 +737,12 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       line: 2077686.512558,5744286.456837,45,1500
       map:
-        name: custom/dem_crs.tif
+        name: dem_crs.tif
         type: raster
       null_value: '*'
     results:
       html:
-        name: expected/grass7/r_transect.html
+        name: expected/r_transect.html
         type: regex
         rules:
           - '556.586901 205.821854'
@@ -752,13 +755,13 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       cats: 1,3
       map:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       separator: pipe
       values: ''
     results:
       html:
-        name: expected/grass7/r_category_out.html
+        name: expected/r_category_out.html
         type: regex
         rules:
           - '1|'
@@ -773,16 +776,16 @@ tests:
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       map:
         params:
-        - name: custom/grass7/raster_1class.tif
+        - name: raster_1class.tif
           type: raster
-        - name: custom/grass7/raster_4class.tif
+        - name: raster_4class.tif
           type: raster
         type: multi
       separator: pipe
       sort: 0
     results:
       html:
-        name: expected/grass7/r_distance.html
+        name: expected/r_distance.html
         type: regex
         rules:
           - '1|1|0|344550|6693650|344550|6693650'
@@ -802,7 +805,7 @@ tests:
       sourcescale: 1.0
     results:
       html:
-        name: expected/grass7/r_tileset.html
+        name: expected/r_tileset.html
         type: regex
         rules:
           - '1.0|0.0|1.0|1.0|1|2'
@@ -834,7 +837,7 @@ tests:
       GRASS_RASTER_FORMAT_OPT: ''
       GRASS_REGION_CELLSIZE_PARAMETER: 0.0
       input:
-        name: custom/grass7/float_raster.tif
+        name: float_raster.tif
         type: raster
       method: 0
       quantile: ''

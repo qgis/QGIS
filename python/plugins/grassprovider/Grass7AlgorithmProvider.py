@@ -31,8 +31,8 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
-from .Grass7Utils import Grass7Utils
-from .Grass7Algorithm import Grass7Algorithm
+from grassprovider.Grass7Utils import Grass7Utils
+from grassprovider.Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
 
 
