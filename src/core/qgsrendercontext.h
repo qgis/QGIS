@@ -386,7 +386,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
 
     /**
-     * Returns the symbology reference \a scale.
+     * Returns the symbology reference scale.
      *
      * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
      * A value of -1 indicates that symbology scaling by reference scale is disabled.

@@ -245,6 +245,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
   }
 
   QgsRenderContext &context = *renderContext();
+  context.setSymbologyReferenceScale( renderer->referenceScale() );
 
   QgsScopedQPainterState painterState( context.painter() );
 

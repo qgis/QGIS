@@ -435,6 +435,38 @@ class CORE_EXPORT QgsFeatureRenderer
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
     /**
+     * Returns the symbology reference scale.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * A value of -1 indicates that symbology scaling by reference scale is disabled.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see setReferenceScale()
+     * \since QGIS 3.22
+     */
+    double referenceScale() const { return mReferenceScale; }
+
+    /**
+     * Sets the symbology reference \a scale.
+     *
+     * This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * Set to -1 to disable symbology scaling by reference scale.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if \a scale is set to 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see referenceScale()
+     * \since QGIS 3.22
+     */
+    void setReferenceScale( double scale ) { mReferenceScale = scale; }
+
+    /**
      * Gets the order in which features shall be processed by this renderer.
      * \note this property has no effect if orderByEnabled() is FALSE
      * \see orderByEnabled()
@@ -552,6 +584,8 @@ class CORE_EXPORT QgsFeatureRenderer
     QgsPaintEffect *mPaintEffect = nullptr;
 
     bool mForceRaster = false;
+
+    double mReferenceScale = -1.0;
 
     /**
      * \note this function is used to convert old sizeScale expressions to symbol
