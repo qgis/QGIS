@@ -59,6 +59,7 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) co
   destRenderer->setUsingSymbolLevels( mUsingSymbolLevels );
   destRenderer->mOrderBy = mOrderBy;
   destRenderer->mOrderByEnabled = mOrderByEnabled;
+  destRenderer->mReferenceScale = mReferenceScale;
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
@@ -171,6 +172,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsRea
   {
     r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
     r->setForceRasterRender( element.attribute( QStringLiteral( "forceraster" ), QStringLiteral( "0" ) ).toInt() );
+    r->setReferenceScale( element.attribute( QStringLiteral( "referencescale" ), QStringLiteral( "-1" ) ).toDouble() );
 
     //restore layer effect
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
@@ -202,6 +204,7 @@ void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rende
 {
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "referencescale" ), mReferenceScale );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
