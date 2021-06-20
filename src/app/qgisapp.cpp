@@ -3700,8 +3700,8 @@ void QgisApp::createToolBars()
       break;
   }
   vertexToolButton->setDefaultAction( defActionVertexTool );
-  QAction *ActionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
-  ActionVertexTool->setObjectName( QStringLiteral( "ActionVertexTool" ) );
+  QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
+  actionVertexTool->setObjectName( QStringLiteral( "ActionVertexTool" ) );
   connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   bt = new QToolButton();
