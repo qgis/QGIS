@@ -235,6 +235,11 @@ class CORE_EXPORT QgsOgrProviderUtils
     //! Conerts a string to an OGR WKB geometry type
     static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
+    //! Gets single flatten geometry type
+    static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
+
+    static QString ogrWkbGeometryTypeName( OGRwkbGeometryType type );
+
     static QString analyzeURI( QString const &uri,
                                bool &isSubLayer,
                                int &layerIndex,

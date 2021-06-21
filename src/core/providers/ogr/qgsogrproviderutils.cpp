@@ -1897,6 +1897,131 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
   return wkbUnknown;
 }
 
+OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbSingleFlatten( OGRwkbGeometryType type )
+{
+  type = wkbFlatten( type );
+  switch ( type )
+  {
+    case wkbMultiPoint:
+      return wkbPoint;
+    case wkbMultiLineString:
+      return wkbLineString;
+    case wkbMultiPolygon:
+      return wkbPolygon;
+    case wkbMultiCurve:
+      return wkbCompoundCurve;
+    case wkbMultiSurface:
+      return wkbCurvePolygon;
+    default:
+      return type;
+  }
+}
+
+QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
+{
+  QString geom;
+
+  // GDAL 2.1 can return M/ZM geometries
+  if ( wkbHasM( type ) )
+  {
+    geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
+    if ( wkbHasZ( type ) )
+      geom += QLatin1Char( 'Z' );
+    if ( wkbHasM( type ) )
+      geom += QLatin1Char( 'M' );
+    return geom;
+  }
+
+  switch ( static_cast<unsigned>( type ) )
+  {
+    case wkbUnknown:
+      geom = QStringLiteral( "Unknown" );
+      break;
+    case wkbPoint:
+      geom = QStringLiteral( "Point" );
+      break;
+    case wkbLineString:
+      geom = QStringLiteral( "LineString" );
+      break;
+    case wkbPolygon:
+      geom = QStringLiteral( "Polygon" );
+      break;
+    case wkbMultiPoint:
+      geom = QStringLiteral( "MultiPoint" );
+      break;
+    case wkbMultiLineString:
+      geom = QStringLiteral( "MultiLineString" );
+      break;
+    case wkbMultiPolygon:
+      geom = QStringLiteral( "MultiPolygon" );
+      break;
+    case wkbGeometryCollection:
+      geom = QStringLiteral( "GeometryCollection" );
+      break;
+    case wkbCircularString:
+      geom = QStringLiteral( "CircularString" );
+      break;
+    case wkbCompoundCurve:
+      geom = QStringLiteral( "CompoundCurve" );
+      break;
+    case wkbCurvePolygon:
+      geom = QStringLiteral( "CurvePolygon" );
+      break;
+    case wkbMultiCurve:
+      geom = QStringLiteral( "MultiCurve" );
+      break;
+    case wkbMultiSurface:
+      geom = QStringLiteral( "MultiSurface" );
+      break;
+    case wkbCircularStringZ:
+      geom = QStringLiteral( "CircularStringZ" );
+      break;
+    case wkbCompoundCurveZ:
+      geom = QStringLiteral( "CompoundCurveZ" );
+      break;
+    case wkbCurvePolygonZ:
+      geom = QStringLiteral( "CurvePolygonZ" );
+      break;
+    case wkbMultiCurveZ:
+      geom = QStringLiteral( "MultiCurveZ" );
+      break;
+    case wkbMultiSurfaceZ:
+      geom = QStringLiteral( "MultiSurfaceZ" );
+      break;
+    case wkbNone:
+      geom = QStringLiteral( "None" );
+      break;
+    case static_cast<unsigned>( wkbUnknown ) | static_cast<unsigned>( wkb25DBit ):
+      geom = QStringLiteral( "Unknown25D" );
+      break;
+    case static_cast<unsigned>( wkbPoint25D ):
+      geom = QStringLiteral( "Point25D" );
+      break;
+    case static_cast<unsigned>( wkbLineString25D ):
+      geom = QStringLiteral( "LineString25D" );
+      break;
+    case static_cast<unsigned>( wkbPolygon25D ):
+      geom = QStringLiteral( "Polygon25D" );
+      break;
+    case static_cast<unsigned>( wkbMultiPoint25D ):
+      geom = QStringLiteral( "MultiPoint25D" );
+      break;
+    case static_cast<unsigned>( wkbMultiLineString25D ):
+      geom = QStringLiteral( "MultiLineString25D" );
+      break;
+    case static_cast<unsigned>( wkbMultiPolygon25D ):
+      geom = QStringLiteral( "MultiPolygon25D" );
+      break;
+    case static_cast<unsigned>( wkbGeometryCollection25D ):
+      geom = QStringLiteral( "GeometryCollection25D" );
+      break;
+    default:
+      // Do not use ':', as it will mess with the separator used by QgsSublayersDialog::populateLayers()
+      geom = QStringLiteral( "Unknown WKB (%1)" ).arg( type );
+  }
+  return geom;
+}
+
 QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 {
   QString uri( dsName );
