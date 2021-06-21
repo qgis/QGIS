@@ -24,8 +24,6 @@
 #include "qgsoracletablemodel.h"
 #include "qgssettings.h"
 #include "qgsoracleconnpool.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
 
 #include <QSqlError>
 

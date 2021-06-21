@@ -87,11 +87,8 @@ void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const Q
   settings.setValue( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ), connName );
 }
 
-void QgsOgrDbConnection::deleteConnection( const QString &connName, const QString &settingsKey )
+void QgsOgrDbConnection::deleteConnection( const QString &connName )
 {
-  QgsSettings settings;
-  settings.remove( QStringLiteral( "%1/%2" ).arg( connectionsPath( settingsKey ), connName ) );
-
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
   providerMetadata->deleteConnection( connName );
 }
