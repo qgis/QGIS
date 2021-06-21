@@ -259,7 +259,10 @@ create a renderer from XML element
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
-store renderer info to XML element
+Stores renderer properties to an XML element.
+
+Subclasses which override this method should call :py:func:`~QgsFeatureRenderer.saveRendererData` as part of their
+implementation in order to store all common base class properties in the returned DOM element.
 %End
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
@@ -542,6 +545,16 @@ Currently clones
 - Paint Effect
 
 :param destRenderer: destination renderer for copied effect
+%End
+
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Saves generic renderer data into the specified ``element``.
+
+This method should be called in a subclass' :py:func:`~QgsFeatureRenderer.save` implementation in order
+to store all common base class properties in the DOM ``element``.
+
+.. versionadded:: 3.22
 %End
 
 

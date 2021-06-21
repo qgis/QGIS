@@ -192,7 +192,16 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   Q_UNUSED( context )
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+
+  saveRendererData( doc, rendererElem, context );
+
+  return rendererElem;
+}
+
+void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rendererElem, const QgsReadWriteContext & )
+{
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -204,7 +213,6 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     rendererElem.appendChild( orderBy );
   }
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  return rendererElem;
 }
 
 QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )

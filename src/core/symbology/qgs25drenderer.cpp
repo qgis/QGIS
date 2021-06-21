@@ -122,6 +122,8 @@ QDomElement Qgs25DRenderer::save( QDomDocument &doc, const QgsReadWriteContext &
 
   QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc, context );
 
+  saveRendererData( doc, rendererElem, context );
+
   rendererElem.appendChild( symbolElem );
 
   return rendererElem;
