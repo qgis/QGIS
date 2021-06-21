@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgscoordinateformatter.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
@@ -748,13 +749,13 @@ QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) co
 QString QgsMapToolIdentify::formatXCoordinate( const QgsPointXY &canvasPoint ) const
 {
   QString coordinate = formatCoordinate( canvasPoint );
-  return coordinate.split( ',' ).at( 0 );
+  return coordinate.split( QgsCoordinateFormatter::separator() ).at( 0 );
 }
 
 QString QgsMapToolIdentify::formatYCoordinate( const QgsPointXY &canvasPoint ) const
 {
   QString coordinate = formatCoordinate( canvasPoint );
-  return coordinate.split( ',' ).at( 1 );
+  return coordinate.split( QgsCoordinateFormatter::separator() ).at( 1 );
 }
 
 QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint )
