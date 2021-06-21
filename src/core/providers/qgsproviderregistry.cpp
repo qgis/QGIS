@@ -32,6 +32,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
+#include "qgsprovidersublayerdetails.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
 #include "providers/ogr/qgsogrprovidermetadata.h"
@@ -893,4 +894,16 @@ bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
       return true;
   }
   return false;
+}
+
+QList<QgsProviderSublayerDetails> QgsProviderRegistry::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
+{
+  QList<QgsProviderSublayerDetails> res;
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    res.append( it->second->querySublayers( uri, flags ) );
+    if ( feedback && feedback->isCanceled() )
+      break;
+  }
+  return res;
 }

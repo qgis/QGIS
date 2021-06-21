@@ -358,6 +358,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( UnplacedLabelVisibility )
 
     /**
+     * Flags which control how data providers will scan for sublayers in a dataset.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerQueryFlag : int
+    {
+      FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
+      ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
+      CountFeatures = 1 << 2, //!< Count features in vector sublayers
+    };
+    Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
+    Q_ENUM( SublayerQueryFlag )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -474,7 +488,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

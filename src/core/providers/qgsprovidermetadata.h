@@ -43,6 +43,8 @@ class QgsRasterDataProvider;
 class QgsMeshDataProvider;
 class QgsAbstractDatabaseProviderConnection;
 class QgsLayerMetadata;
+class QgsProviderSublayerDetails;
+class QgsFeedback;
 
 struct QgsMesh;
 
@@ -323,6 +325,22 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.18
      */
     virtual bool uriIsBlocklisted( const QString &uri ) const;
+
+    /**
+     * Queries the specified \a uri and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
+     *
+     * The optional \a flags argument can be used to control the behavior of the query.
+     *
+     * The optional \a feedback argument can be used to provide cancellation support for long-running queries.
+     *
+     * \note Providers which implement this method should return always return a list of sublayer details for any valid, even if the \a uri
+     * only relates to a single layer. Returning a non-empty list indicates that the provider is able to load at least one layer using the \a uri,
+     * and is used to collate a combined layer of all providers which support the URI (e.g. in the case that a URI may be readable by multiple
+     * different providers).
+     *
+     * \since QGIS 3.20
+    */
+    virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
