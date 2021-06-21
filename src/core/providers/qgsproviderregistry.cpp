@@ -34,6 +34,7 @@
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
+#include "providers/ogr/qgsogrprovidermetadata.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 

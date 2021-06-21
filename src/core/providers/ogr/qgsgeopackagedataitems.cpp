@@ -37,6 +37,7 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsgeopackageprojectstorage.h"
 #include "qgsgeopackageproviderconnection.h"
+#include "qgsprovidermetadata.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {

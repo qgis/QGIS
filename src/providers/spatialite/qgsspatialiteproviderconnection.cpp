@@ -22,7 +22,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
+
 #include <QRegularExpression>
+#include <QTextCodec>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
