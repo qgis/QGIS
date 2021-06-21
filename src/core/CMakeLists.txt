@@ -2014,7 +2014,7 @@ if (HAVE_PDAL)
   )
 endif()
 
-if (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
   include_directories(
     ${CMAKE_SOURCE_DIR}/src/providers/wms
     ${CMAKE_SOURCE_DIR}/src/providers/postgres

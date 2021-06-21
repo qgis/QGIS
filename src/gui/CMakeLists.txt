@@ -1495,7 +1495,7 @@ target_link_libraries(qgis_gui
   ${Qt5QuickWidgets_LIBRARIES}
 )
 
-if (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
     provider_postgres_gui_a

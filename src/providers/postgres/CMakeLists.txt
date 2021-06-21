@@ -70,12 +70,6 @@ target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
 target_link_libraries (provider_postgres_a
   qgis_core
   ${POSTGRES_LIBRARY}
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5Concurrent_LIBRARIES}
 )
 
 if (WITH_GUI)
@@ -90,14 +84,6 @@ if (WITH_GUI)
     qgis_gui
     provider_postgres_a
     ${POSTGRES_LIBRARY}
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
   )
   add_dependencies(provider_postgres_gui_a ui)
 endif()
@@ -141,7 +127,7 @@ endif()
 
 #################################################################
 
-if (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_postgres_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   install (TARGETS provider_postgresraster_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
