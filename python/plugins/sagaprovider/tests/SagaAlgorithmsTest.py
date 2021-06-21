@@ -39,7 +39,8 @@ from qgis.core import (QgsProcessingParameterNumber,
                        QgsProcessingFeatureSourceDefinition)
 from qgis.testing import start_app, unittest
 
-from processing.algs.saga.SagaParameters import Parameters, SagaImageOutputParam
+from sagaprovider.SagaAlgorithmProvider import SagaAlgorithmProvider
+from sagaprovider.SagaParameters import Parameters, SagaImageOutputParam
 import AlgorithmsTestBase
 
 
@@ -50,6 +51,8 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         start_app()
         from processing.core.Processing import Processing
         Processing.initialize()
+        cls.provider = SagaAlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(cls.provider)
         cls.cleanup_paths = []
 
         cls.temp_dir = tempfile.mkdtemp()
@@ -58,6 +61,7 @@ class TestSagaAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def tearDownClass(cls):
         from processing.core.Processing import Processing
+        QgsApplication.processingRegistry().removeProvider(cls.provider)
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)

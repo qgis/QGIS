@@ -5,13 +5,6 @@ PLUGIN_INSTALL(processing tests ${PY_FILES})
 PLUGIN_INSTALL(processing tests/testdata ${TEST_DATA_FILES})
 
 if(ENABLE_TESTS)
-
-  # enable SAGA tests
-  set (ENABLE_SAGA_TESTS FALSE CACHE BOOL "Enable Saga tests")
-  if ( ENABLE_SAGA_TESTS )
-    add_definitions(-DENABLE_SAGA_TESTS)
-  endif()
-
   include(UsePythonTest)
   ADD_PYTHON_TEST(ProcessingGeneralTest ProcessingGeneralTest.py)
   ADD_PYTHON_TEST(ProcessingGuiTest GuiTest.py)
@@ -29,7 +22,4 @@ if(ENABLE_TESTS)
   ADD_PYTHON_TEST(ProcessingGdalAlgorithmsVectorTest GdalAlgorithmsVectorTest.py)
   ADD_PYTHON_TEST(ProcessingCheckValidityAlgorithmTest CheckValidityAlgorithm.py)
   ADD_PYTHON_TEST(ProcessingScriptUtilsTest ScriptUtilsTest.py)
-if(ENABLE_SAGA_TESTS)
-  ADD_PYTHON_TEST(ProcessingSagaAlgorithmsTest SagaAlgorithmsTest.py)
-endif()
 endif()

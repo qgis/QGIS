@@ -1,5 +1,3 @@
-# See ../README.md for a description of the file format
-
 tests:
 
   - algorithm: saga:invertgrid
@@ -28,7 +26,7 @@ tests:
         type: vector
     results:
       BUFFER:
-        name: expected/saga/buffer_polys.shp
+        name: expected/buffer_polys.shp
         type: vector
 
   - algorithm: saga:addrastervaluestopoints
@@ -41,17 +39,16 @@ tests:
         type: multi
       RESAMPLING: 0
       SHAPES:
-        name: custom/points_over.shp
+        name: points_over.shp
         type: vector
     results:
       RESULT:
-        name: expected/saga/add_grid_to_points.shp
+        name: expected/add_grid_to_points.shp
         type: vector
         compare:
           fields:
             demtif:
               precision: -1
-
 
   - algorithm: saga:addrastervaluestofeatures
     name: Add raster values to shapes
@@ -63,11 +60,11 @@ tests:
         type: multi
       RESAMPLING: 0
       SHAPES:
-        name: custom/lines_over.shp
+        name: lines_over.shp
         type: vector
     results:
       RESULT:
-        name: expected/saga/add_grid_to_shapes.shp
+        name: expected/add_grid_to_shapes.shp
         type: vector
         compare:
           fields:
@@ -88,7 +85,7 @@ tests:
       SRCINFO: true
     results:
       MERGED:
-        name: expected/saga/merge_vector_layers.shp
+        name: expected/merge_vector_layers.shp
         type: vector
 
 # Broken on some SAGA versions
@@ -275,15 +272,15 @@ tests:
     name: Polygon update
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_update.shp
+        name: expected/polygon_update.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -291,15 +288,15 @@ tests:
     name: Polygon union
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_union.shp
+        name: expected/polygon_union.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -307,15 +304,15 @@ tests:
     name: Polygon identity
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_identity.shp
+        name: expected/polygon_identity.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -323,15 +320,15 @@ tests:
     name: Polygon difference
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_difference.shp
+        name: expected/polygon_difference.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -340,15 +337,15 @@ tests:
     name: Polygon symmetrical difference
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_symmetrical_difference.shp
+        name: expected/polygon_symmetrical_difference.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -356,26 +353,26 @@ tests:
     name: Polygon intersect
     params:
       A:
-        name: custom/overlay1_a.geojson
+        name: overlay1_a.geojson
         type: vector
       B:
-        name: custom/overlay1_b.geojson
+        name: overlay1_b.geojson
         type: vector
       SPLIT: true
     results:
       RESULT:
-        name: expected/saga/polygon_intersect.shp
+        name: expected/polygon_intersect.shp
         type: vector
 
   - algorithm: saga:polygonselfintersection  #spellok
     name: Polygon self intersection
     params:
       POLYGONS:
-        name: custom/overlay2_b.geojson
+        name: overlay2_b.geojson
         type: vector
     results:
       INTERSECT:
-        name: expected/saga/polygon_self_intersection.shp
+        name: expected/polygon_self_intersection.shp
         type: vector
         compare:
           geometry:
@@ -390,12 +387,12 @@ tests:
       DIST_LINE: 0.001
       DIST_PROFILE: 0.002
       LINES:
-        name: custom/lines_over.shp
+        name: lines_over.shp
         type: vector
       NUM_PROFILE: 10
     results:
       PROFILES:
-        name: expected/saga/cross_profiles.shp
+        name: expected/cross_profiles.shp
         type: vector
         compare: false # too much variation between saga versions
 
@@ -411,10 +408,10 @@ tests:
         type: vector
     results:
       MOVES:
-        name: expected/saga/snap_points_to_lines_moves.shp
+        name: expected/snap_points_to_lines_moves.shp
         type: vector
       OUTPUT:
-        name: expected/saga/snap_points_to_lines_result.shp
+        name: expected/snap_points_to_lines_result.shp
         type: vector
 
   - algorithm: saga:snappointstopoints
@@ -429,10 +426,10 @@ tests:
         type: vector
     results:
       MOVES:
-        name: expected/saga/snap_points_to_points_moves.shp
+        name: expected/snap_points_to_points_moves.shp
         type: vector
       OUTPUT:
-        name: expected/saga/snap_points_to_points_result.shp
+        name: expected/snap_points_to_points_result.shp
         type: vector
 
   - algorithm: saga:interpolatecubicspline
@@ -472,7 +469,7 @@ tests:
         - 11a19537feab53c2da39ad30829384d43988520221f9f528b8f51a98
         type: rasterhash
       SEEDS:
-        name: expected/saga/watershed_segmentation_seeds.shp
+        name: expected/watershed_segmentation_seeds.shp
         type: vector
         compare: false # results are not stable across different SAGA versions
       SEGMENTS:
@@ -524,11 +521,11 @@ tests:
       ID_POINTS: fid
       MAX_DIST: 0.0
       POINTS:
-        name: custom/points.shp
+        name: points.shp
         type: vector
     results:
       DISTANCES:
-        name: expected/saga/point_distances.dbf
+        name: expected/point_distances.dbf
         type: vector
 
   - algorithm: saga:patching
@@ -538,7 +535,7 @@ tests:
         name: dem.tif
         type: raster
       ORIGINAL:
-        name: custom/dem_gaps.tif
+        name: dem_gaps.tif
         type: raster
       RESAMPLING: 0
     results:
@@ -548,12 +545,11 @@ tests:
         - 7e78dbfe516c25ba76f2443b2670dab8943376f76dacec9669254535
         type: rasterhash
 
-
   - algorithm: saga:rgbcomposite
     name: RGB Composite
     params:
       B_GRID:
-        name: custom/grass7/raster_6class.tif
+        name: raster_6class.tif
         type: raster
       B_METHOD: 1
       B_PERCTL_MAX: 6
@@ -562,7 +558,7 @@ tests:
       B_RANGE_MIN: 0
       B_STDDEV: 2.0
       G_GRID:
-        name: custom/grass7/raster_4class.tif
+        name: raster_4class.tif
         type: raster
       G_METHOD: 1
       G_PERCTL_MAX: 99
@@ -571,7 +567,7 @@ tests:
       G_RANGE_MIN: 0
       G_STDDEV: 2.0
       R_GRID:
-        name: custom/grass7/raster_1class.tif
+        name: raster_1class.tif
         type: raster
       R_METHOD: 1
       R_PERCTL_MAX: 99
@@ -590,11 +586,11 @@ tests:
     name: Zonal grid statistics
     params:
       ZONES:
-        name: custom/dem_boolean.tif
+        name: dem_boolean.tif
         type: raster
     results:
       OUTTAB:
-        name: expected/saga/zonal_grid_stats.dbf
+        name: expected/zonal_grid_stats.dbf
         type: vector
         compare: false # results are not stable across different SAGA versions
 
@@ -752,7 +748,7 @@ tests:
       NU: 0.5
       PROBABILITY: false
       ROI:
-        name: custom/saga/training_areas.shp
+        name: training_areas.shp
         type: vector
       ROI_ID: class
       SCALING: 2
@@ -776,7 +772,7 @@ tests:
       INTERCEPT: true
       METHOD: 3
       POINTS:
-        name: custom/saga/points_regression.shp
+        name: points_regression.shp
         type: vector
       PREDICTORS:
         params:
@@ -788,7 +784,7 @@ tests:
       RESIDUAL_COR: 0
     results:
       INFO_COEFF:
-        name: expected/saga/multiple_regression_points_grids_coef.dbf
+        name: expected/multiple_regression_points_grids_coef.dbf
         type: vector
         compare:
           fields:
@@ -809,7 +805,7 @@ tests:
             REGCOEFF:
               precision: 2
       INFO_MODEL:
-        name: expected/saga/multiple_regression_points_grids_model.dbf
+        name: expected/multiple_regression_points_grids_model.dbf
         type: vector
         compare:
           fields:
@@ -818,7 +814,7 @@ tests:
             REGCOEFF:
               precision: 1
       INFO_STEPS:
-        name: expected/saga/multiple_regression_points_grids_steps.dbf
+        name: expected/multiple_regression_points_grids_steps.dbf
         type: vector
         compare:
           fields:
@@ -859,7 +855,7 @@ tests:
         - 3fcb41308d0c0620b93698aba6a5934d62db3c798cffb034b5675b33
         type: rasterhash
       RESIDUALS:
-        name: expected/saga/multiple_regression_points_grids_res.shp
+        name: expected/multiple_regression_points_grids_res.shp
         type: vector
         compare:
           fields:
