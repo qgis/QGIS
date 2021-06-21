@@ -421,6 +421,8 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
     // provider will require the correct layer scope for expression preparation - at this stage, the existing expression context
     // only contains generic scopes
     QgsExpressionContextScopePopper popper( context.expressionContext(), provider->layerExpressionContextScope() ? new QgsExpressionContextScope( *provider->layerExpressionContextScope() ) : new QgsExpressionContextScope() );
+
+    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, provider->layerReferenceScale() );
     provider->startRender( context );
   }
 
@@ -444,6 +446,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
+
+    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
+
     if ( lf->symbol() )
     {
       symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
@@ -468,6 +473,8 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 
     context.expressionContext().setFeature( lf->feature() );
     context.expressionContext().setFields( lf->feature().fields() );
+
+    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
     if ( lf->symbol() )
     {
       symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
@@ -495,6 +502,8 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
 
       context.expressionContext().setFeature( lf->feature() );
       context.expressionContext().setFields( lf->feature().fields() );
+
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
       if ( lf->symbol() )
       {
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
@@ -626,6 +635,8 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
   {
     mLayerExpressionContextScope.reset( vl->createExpressionContextScope() );
+    if ( const QgsFeatureRenderer *renderer = vl->renderer() )
+      mLayerReferenceScale = renderer->referenceScale();
   }
 }
 
