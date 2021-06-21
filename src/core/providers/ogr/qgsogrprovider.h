@@ -135,9 +135,6 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Returns OGR geometry type
     static OGRwkbGeometryType getOgrGeomType( const QString &driverName, OGRLayerH ogrLayer );
 
-    //! Gets single flatten geometry type
-    static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
-
     QString layerName() const { return mLayerName; }
 
     QString filePath() const { return mFilePath; }
@@ -186,7 +183,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
-    QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+
     static QString createIndexName( QString tableName, QString field );
 
     //! Starts a transaction if possible and return true in that case
