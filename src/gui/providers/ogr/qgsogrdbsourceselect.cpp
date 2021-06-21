@@ -247,7 +247,7 @@ void QgsOgrDbSourceSelect::btnDelete_clicked()
   if ( result != QMessageBox::Yes )
     return;
 
-  QgsOgrDbConnection::deleteConnection( subKey, ogrDriverName() );
+  QgsOgrDbConnection::deleteConnection( subKey );
   populateConnectionList();
   emit connectionsChanged();
 }

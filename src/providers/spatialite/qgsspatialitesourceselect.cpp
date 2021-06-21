@@ -312,9 +312,6 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   // Persist last used SpatiaLite dir
   settings.setValue( QStringLiteral( "UI/lastSpatiaLiteDir" ), myPath );
   // inserting this SQLite DB path
-  settings.setValue( baseKey + "selected", savedName );
-  settings.setValue( baseKey + savedName + "/sqlitepath", myFI.canonicalFilePath() );
-
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
   QgsSpatiaLiteProviderConnection *providerConnection =  static_cast<QgsSpatiaLiteProviderConnection *>( providerMetadata->createConnection( savedName ) );
   providerMetadata->saveConnection( providerConnection, savedName );
@@ -378,7 +375,8 @@ void QgsSpatiaLiteSourceSelect::btnDelete_clicked()
   if ( result != QMessageBox::Yes )
     return;
 
-  QgsSpatiaLiteConnection::deleteConnection( subKey );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) );
+  providerMetadata->deleteConnection( subKey );
 
   populateConnectionList();
   emit connectionsChanged();

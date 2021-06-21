@@ -216,7 +216,7 @@ void QgsGeoPackageCollectionItem::addConnection()
 
 void QgsGeoPackageCollectionItem::deleteConnection()
 {
-  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
+  QgsOgrDbConnection::deleteConnection( name() );
   mParent->refreshConnections( QStringLiteral( "GPKG" ) );
 }
 
