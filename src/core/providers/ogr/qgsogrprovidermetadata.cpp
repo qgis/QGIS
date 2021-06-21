@@ -32,6 +32,7 @@ email                : nyall dot dawson at gmail dot com
 #include <QFile>
 #include <QDir>
 #include <QMessageBox>
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
