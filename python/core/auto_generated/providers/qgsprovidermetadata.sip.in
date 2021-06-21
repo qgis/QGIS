@@ -282,7 +282,7 @@ The optional ``feedback`` argument can be used to provide cancellation support f
    and is used to collate a combined layer of all providers which support the URI (e.g. in the case that a URI may be readable by multiple
    different providers).
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     virtual QgsDataProvider *createProvider( const QString &uri,

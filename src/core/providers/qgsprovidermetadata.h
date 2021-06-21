@@ -338,7 +338,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * and is used to collate a combined layer of all providers which support the URI (e.g. in the case that a URI may be readable by multiple
      * different providers).
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.22
     */
     virtual QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 

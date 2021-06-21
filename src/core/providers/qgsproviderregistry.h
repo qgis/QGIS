@@ -554,7 +554,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * The optional \a feedback argument can be used to provide cancellation support for long-running queries.
      *
-     * \since QGIS 3.20
+     * \since QGIS 3.22
     */
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 
