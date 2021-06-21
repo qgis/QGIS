@@ -66,7 +66,7 @@ foreach(_library_type MODULE STATIC)
 endforeach()
 
 # only install module, static library is for testing only
-install(TARGETS ${_library_name}
+install(TARGETS wms
     RUNTIME DESTINATION ${QGIS_SERVER_MODULE_DIR}
     LIBRARY DESTINATION ${QGIS_SERVER_MODULE_DIR}
 )
