@@ -87,9 +87,10 @@ void TestQgsVirtualRasterProvider::validLayer()
   std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >(
         mTestDataDir + QStringLiteral( "raster/dem.tif" ),
         QStringLiteral( "layer" ),
-        QStringLiteral( "virtualraster" ),
+        QStringLiteral( "virtualrasterprovider" ),
         options
       );
+
   QVERIFY( layer->isValid() );
 
 }
@@ -128,9 +129,36 @@ void TestQgsVirtualRasterProvider::testv()
     QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
 */
 
+    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+    QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "virtualrasterprovider" ), demFileName, QgsDataProvider::ProviderOptions() );
+    QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+    QVERIFY( rp );
+    QVERIFY( rp->isValid() );
+    if ( rp )
+      {
+        std::unique_ptr<QgsRasterBlock> block( rp->block( 1, extent, 373, 350 ) );
+
+        qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
+        qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
+        qDebug() << "VALUE BLOCK " << block->value(400,400);
+
+        QVERIFY( block );
+        QCOMPARE( block->width(),  373 );
+        QCOMPARE( block->height(), 350 );
+
+        QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
+
+      }
+    delete provider;
+
+/*
     QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
     QgsDebugMsg("NAME of LAYER: "+r->name());
+
+
     delete r;
+*/
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

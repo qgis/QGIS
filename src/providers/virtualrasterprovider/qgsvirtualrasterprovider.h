@@ -7,7 +7,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprovidermetadata.h"
-
+#include "qgsrastercalculator.h"
 
 class QgsVirtualRasterProvider : public QgsRasterDataProvider
 {
@@ -55,6 +55,8 @@ public:
 
     static QString providerKey();
 
+    QString formulaString();
+
 
 private:
 
@@ -64,22 +66,9 @@ private:
 
     QgsCoordinateReferenceSystem mCrs;
     //Needs extent and pixel size/nr of row and columns (Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows)
-    //QgsRectangle mExtent;
-    //int mWidth= 0;
-    //int mHeight= 0;
-
-    //another hardcoded ex.
-    QgsRectangle mExtent = QgsRectangle(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-    int mWidth= 373;
-    int mHeight= 350;
-
-
-/*
-    //rect to show also added hardcoded layer (only for this case)
-    QgsRectangle mExtent = QgsRectangle(1,2,3,4);
-    int mWidth = mExtent.width();
-    int mHeight = mExtent.height();
-*/
+    QgsRectangle mExtent;
+    int mWidth= 0;
+    int mHeight= 0;
 
     int mBandCount = 1;
     int mXBlockSize = 0;
@@ -89,6 +78,10 @@ private:
     std::vector<Qgis::DataType> mDataTypes;
     //! Data size in bytes for each band
     std::vector<int> mDataSizes;
+
+    //from qgsrastercalc
+    QString mFormulaString;
+    QVector<QgsRasterCalculatorEntry> mRasterEntries;
 
 };
 
