@@ -1,7 +1,7 @@
 usr/lib/qgis/crssync
 usr/lib/qgis/untwine
 usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
-usr/lib/qgis/plugins/libarcgismapserverprovider.so
+usr/lib/qgis/plugins/libprovider_arcgismapserver.so
 usr/lib/qgis/plugins/libauthmethod_basic.so
 usr/lib/qgis/plugins/libdb2provider.so
 usr/lib/qgis/plugins/libdelimitedtextprovider.so

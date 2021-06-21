@@ -65,16 +65,16 @@ set (AMS_SRCS
   qgsamsprovider.cpp
 )
 
-add_library(arcgismapserverprovider MODULE ${AMS_SRCS})
+add_library(provider_arcgismapserver MODULE ${AMS_SRCS})
 
 # require c++17
-target_compile_features(arcgismapserverprovider PRIVATE cxx_std_17)
+target_compile_features(provider_arcgismapserver PRIVATE cxx_std_17)
 
-target_link_libraries(arcgismapserverprovider
+target_link_libraries(provider_arcgismapserver
   qgis_core
   ${QCA_LIBRARY}
 )
 
-install (TARGETS arcgismapserverprovider
+install (TARGETS provider_arcgismapserver
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

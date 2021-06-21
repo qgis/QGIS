@@ -308,7 +308,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/provider_arcgismapserver.dll" ^
 	"apps/%PACKAGENAME%/plugins/provider_arcgisfeatureserver.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/hanaprovider.dll" ^
