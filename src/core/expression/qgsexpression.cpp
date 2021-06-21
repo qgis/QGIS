@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
 #include "qgsexpression_p.h"
 
 #include <QRegularExpression>
@@ -1085,43 +1086,15 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     listStr += QLatin1Char( ']' );
     return listStr;
   }
-  else if ( value.type() == QVariant::Int || value.type() == QVariant::UInt || value.type() == QVariant::LongLong || value.type() == QVariant::ULongLong )
+  else if ( value.type() == QVariant::Int ||
+            value.type() == QVariant::UInt ||
+            value.type() == QVariant::LongLong ||
+            value.type() == QVariant::ULongLong ||
+            value.type() == QVariant::Double ||
+            // Qt madness with QMetaType::Float :/
+            value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
   {
-    bool ok;
-    QString res;
-
-    if ( value.type() == QVariant::ULongLong )
-    {
-      res = QLocale().toString( value.toULongLong( &ok ) );
-    }
-    else
-    {
-      res = QLocale().toString( value.toLongLong( &ok ) );
-    }
-
-    if ( ok )
-    {
-      return res;
-    }
-    else
-    {
-      return value.toString();
-    }
-  }
-  // Qt madness with QMetaType::Float :/
-  else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
-  {
-    bool ok;
-    const QString res { QLocale().toString( value.toDouble( &ok ), 'f', 6 ) };
-
-    if ( ok )
-    {
-      return res;
-    }
-    else
-    {
-      return value.toString();
-    }
+    return QgsExpressionUtils::toLocalizedString( value );
   }
   else
   {
