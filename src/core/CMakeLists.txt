@@ -2024,15 +2024,6 @@ if (FORCE_STATIC_LIBS)
     provider_wms_a
     provider_postgres_a
   )
-
-  if (WITH_AUTH)
-    include_directories(
-      ${CMAKE_SOURCE_DIR}/src/auth/basic/core
-    )
-    target_link_libraries(qgis_core
-      authmethod_basic_a
-    )
-  endif()
 endif()
 
 if (MSVC)
