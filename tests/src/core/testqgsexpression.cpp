@@ -3976,8 +3976,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12,345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_long ), QStringLiteral( "12,345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_ulong ), QStringLiteral( "12,345" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12,345.000977" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12,345.001000" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12,345.0009765625" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12,345.001" ) );
 
       QLocale().setDefault( QLocale::Italian );
 
@@ -3985,8 +3985,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( t_uint ), QStringLiteral( "12.345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_long ), QStringLiteral( "12.345" ) );
       QCOMPARE( QgsExpression::formatPreviewString( t_ulong ), QStringLiteral( "12.345" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12.345,000977" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12.345,001000" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_float ), QStringLiteral( "12.345,0009765625" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( t_double ), QStringLiteral( "12.345,001" ) );
 
       QLocale().setDefault( QLocale::English );
 
