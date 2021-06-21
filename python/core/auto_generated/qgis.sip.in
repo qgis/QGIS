@@ -242,6 +242,15 @@ The development version
       NeverShow,
     };
 
+    enum class SublayerQueryFlag
+    {
+      FastScan,
+      ResolveGeometryType,
+      CountFeatures,
+    };
+    typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -315,6 +324,7 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
+QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
 
 
 
