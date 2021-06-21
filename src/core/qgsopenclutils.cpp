@@ -48,7 +48,7 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
     QgsMessageLog::logMessage( QObject::tr( "Found OpenCL platform %1: %2" )
                                .arg( QString::fromStdString( platver ),
                                      QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
-                               LOGMESSAGE_TAG );
+                               LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
     if ( platver.find( "OpenCL " ) != std::string::npos )
     {
       std::vector<cl::Device> _devices;
@@ -62,14 +62,16 @@ const std::vector<cl::Device> QgsOpenClUtils::devices()
         QgsMessageLog::logMessage( QObject::tr( "Error %1 on platform %3 searching for OpenCL device: %2" )
                                    .arg( errorText( e.err() ),
                                          QString::fromStdString( e.what() ),
-                                         QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), LOGMESSAGE_TAG );
+                                         QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ),
+                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
       }
       if ( _devices.size() > 0 )
       {
         for ( unsigned long i = 0; i < _devices.size(); i++ )
         {
           QgsMessageLog::logMessage( QObject::tr( "Found OpenCL device: %1" )
-                                     .arg( deviceId( _devices[i] ) ), LOGMESSAGE_TAG );
+                                     .arg( deviceId( _devices[i] ) ),
+                                     LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
           existingDevices.push_back( _devices[i] );
         }
       }
@@ -104,7 +106,9 @@ void QgsOpenClUtils::init()
       TCHAR pszFileName[1024];
       if ( GetModuleFileName( hModule, pszFileName, 1024 ) < 1024 )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Found OpenCL library filename %1" ).arg( pszFileName ), LOGMESSAGE_TAG );
+        QgsMessageLog::logMessage( QObject::tr( "Found OpenCL library filename %1" )
+                                   .arg( pszFileName ),
+                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
 
         DWORD dwUseless;
         DWORD dwLen = GetFileVersionInfoSize( pszFileName, &dwUseless );
@@ -122,7 +126,8 @@ void QgsOpenClUtils::init()
                                            .arg( lpFFI->dwProductVersionMS >> 16 )
                                            .arg( lpFFI->dwProductVersionMS & 0xffff )
                                            .arg( lpFFI->dwProductVersionLS >> 16 )
-                                           .arg( lpFFI->dwProductVersionLS & 0xffff ), LOGMESSAGE_TAG );
+                                           .arg( lpFFI->dwProductVersionLS & 0xffff ),
+                                           LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
               }
 
               struct LANGANDCODEPAGE
@@ -162,7 +167,10 @@ void QgsOpenClUtils::init()
 
                   if ( r && lpBuffer && lpBuffer != INVALID_HANDLE_VALUE && dwUseless < 1023 )
                   {
-                    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL version info %1: %2" ).arg( d ).arg( QString::fromLocal8Bit( lpBuffer ) ), LOGMESSAGE_TAG );
+                    QgsMessageLog::logMessage( QObject::tr( "Found OpenCL version info %1: %2" )
+                                               .arg( d )
+                                               .arg( QString::fromLocal8Bit( lpBuffer ) ),
+                                               LOGMESSAGE_TAG, Qgis::MessageLevel::Info );
                   }
                 }
               }
@@ -174,12 +182,12 @@ void QgsOpenClUtils::init()
       }
       else
       {
-        QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ) );
+        QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), Qgis::MessageLevel::Warning );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ) );
+      QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), Qgis::MessageLevel::Warning );
     }
 #endif
 
