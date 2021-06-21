@@ -39,6 +39,7 @@
 #include "qgsogrdbconnection.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsmessagebar.h"
+#include "qgsprovidermetadata.h"
 
 void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu,
     const QList<QgsDataItem *> &,

@@ -231,6 +231,8 @@ set(QGIS_CORE_SRCS
   providers/meshmemory/qgsmeshmemorydataprovider.cpp
 
   providers/ogr/qgsogrprovider.cpp
+  providers/ogr/qgsogrprovidermetadata.cpp
+  providers/ogr/qgsogrproviderutils.cpp
   providers/ogr/qgsogrdataitems.cpp
   providers/ogr/qgsogrfeatureiterator.cpp
   providers/ogr/qgsogrconnpool.cpp
@@ -1495,6 +1497,8 @@ set(QGIS_CORE_HDRS
   providers/ogr/qgsogrdataitems.h
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
+  providers/ogr/qgsogrprovidermetadata.h
+  providers/ogr/qgsogrproviderutils.h
   providers/ogr/qgsogrtransaction.h
 
   raster/qgsbilinearrasterresampler.h

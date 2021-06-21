@@ -21,6 +21,9 @@
 #include "qgsproviderregistry.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
+
+#include <QTextCodec>
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
