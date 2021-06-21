@@ -94,9 +94,7 @@ endif(NOT MSVC)
 
 if (IOS)
     set (DEFAULT_FORCE_STATIC_LIBS TRUE)
-    set (DEFAULT_FORCE_STATIC_LIBS TRUE)
 else()
-    set (DEFAULT_FORCE_STATIC_LIBS FALSE)
     set (DEFAULT_FORCE_STATIC_LIBS FALSE)
 endif()
 
@@ -108,6 +106,7 @@ if (FORCE_STATIC_LIBS)
   set (HAVE_STATIC_PROVIDERS TRUE)
 else()
   set (LIBRARY_TYPE SHARED)
+  unset(HAVE_STATIC_PROVIDERS)
 endif()
 
 # in generated makefiles use relative paths so the project dir is moveable
