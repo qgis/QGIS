@@ -34,6 +34,9 @@
 #include "qgslabelingresults.h"
 #include "qgscallout.h"
 #include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsLabelingEngine : public QObject
 {
@@ -96,6 +99,8 @@ class TestQgsLabelingEngine : public QObject
     void testLineAnchorHorizontalConstraints();
     void testLineAnchorClipping();
     void testShowAllLabelsWhenALabelHasNoCandidates();
+    void testSymbologyScalingFactor();
+    void testSymbologyScalingFactor2();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -3729,6 +3734,133 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "show_all_labels_when_no_candidates" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testSymbologyScalingFactor()
+{
+  // test rendering labels with a layer with a reference scale set (with callout)
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( vl->isValid() );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+
+  vl->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 7;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+
+  format.buffer().setEnabled( true );
+  format.buffer().setSize( 3 );
+  format.buffer().setColor( QColor( 200, 255, 200 ) );
+
+  settings.setFormat( format );
+
+  QgsBalloonCallout *callout = new QgsBalloonCallout();
+  callout->setEnabled( true );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
+    { "outline-width", "1"}
+  } ) ) );
+  callout->setMargins( QgsMargins( 2, 2, 2, 2 ) );
+
+  settings.setCallout( callout );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale_not_set" ), img, 20 ) );
+
+  // with reference scale set
+  vl->renderer()->setReferenceScale( mapSettings.scale() * 2 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale_set" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testSymbologyScalingFactor2()
+{
+  // test rendering labels with a layer with a reference scale set (with label background)
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( TEST_DATA_DIR ) + "/points.shp", QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( vl->isValid() );
+  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  marker->setColor( QColor( 255, 0, 0 ) );
+  marker->setSize( 3 );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+
+  vl->setRenderer( new QgsSingleSymbolRenderer( marker ) );
+
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Class" );
+  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.dist = 7;
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+
+  format.buffer().setEnabled( true );
+  format.buffer().setSize( 3 );
+  format.buffer().setColor( QColor( 200, 255, 200 ) );
+
+  format.background().setEnabled( true );
+  format.background().setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
+    { "outline-width", "1"}
+  } ) ) );
+  format.background().setSize( QSizeF( 2, 3 ) );
+
+  settings.setFormat( format );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale2_not_set" ), img, 20 ) );
+
+  // with reference scale set
+  vl->renderer()->setReferenceScale( mapSettings.scale() * 2 );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale2_set" ), img, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

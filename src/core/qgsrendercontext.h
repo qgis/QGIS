@@ -1218,6 +1218,59 @@ class QgsScopedQPainterState
     QPainter *mPainter = nullptr;
 };
 
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for temporary override of the symbologyReferenceScale property of a QgsRenderContext.
+ *
+ * Temporarily changes the symbologyReferenceScale, before returning it to the original value on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.22
+ */
+class QgsScopedRenderContextReferenceScaleOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextReferenceScaleOverride.
+     *
+     * Temporarily sets the render \a context symbologyReferenceScale to \a scale for the lifetime of this object.
+     */
+    QgsScopedRenderContextReferenceScaleOverride( QgsRenderContext &context, double scale )
+      : mContext( &context )
+      , mOriginalScale( context.symbologyReferenceScale() )
+    {
+      mContext->setSymbologyReferenceScale( scale );
+    }
+
+    /**
+     * Move constructor.
+     */
+    QgsScopedRenderContextReferenceScaleOverride( QgsScopedRenderContextReferenceScaleOverride &&o ) noexcept
+      : mContext( o.mContext )
+      , mOriginalScale( o.mOriginalScale )
+    {
+      o.mContext = nullptr;
+    }
+
+    /**
+     * Returns the render context back to the original reference scale.
+     */
+    ~QgsScopedRenderContextReferenceScaleOverride()
+    {
+      if ( mContext )
+        mContext->setSymbologyReferenceScale( mOriginalScale );
+    }
+
+  private:
+
+    QgsRenderContext *mContext = nullptr;
+    double mOriginalScale = 0;
+};
+
+
 #endif
 
 #endif

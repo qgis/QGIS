@@ -163,6 +163,13 @@ class CORE_EXPORT QgsAbstractLabelProvider
      */
     QgsExpressionContextScope *layerExpressionContextScope() const;
 
+    /**
+     * Returns the symbology reference scale of the layer associated with this provider.
+     *
+     * \since QGIS 3.22
+     */
+    double layerReferenceScale() const { return mLayerReferenceScale; }
+
   protected:
     //! Associated labeling engine
     const QgsLabelingEngine *mEngine = nullptr;
@@ -189,6 +196,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
   private:
 
     std::unique_ptr< QgsExpressionContextScope > mLayerExpressionContextScope;
+    double mLayerReferenceScale = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )

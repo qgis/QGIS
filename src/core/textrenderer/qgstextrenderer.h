@@ -320,7 +320,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
-                              const QgsTextFormat &format );
+                              const QgsTextFormat &format,
+                              DrawMode mode );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
@@ -334,7 +335,8 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawMask( QgsRenderContext &context,
                           const Component &component,
-                          const QgsTextFormat &format );
+                          const QgsTextFormat &format,
+                          DrawMode mode );
 
     static void drawText( QgsRenderContext &context,
                           const Component &component,
