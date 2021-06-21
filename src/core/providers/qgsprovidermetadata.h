@@ -333,7 +333,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * The optional \a feedback argument can be used to provide cancellation support for long-running queries.
      *
-     * \note Providers which implement this method should return always return a list of sublayer details for any valid, even if the \a uri
+     * \note Providers which implement this method should always return a list of sublayer details for any valid, even if the \a uri
      * only relates to a single layer. Returning a non-empty list indicates that the provider is able to load at least one layer using the \a uri,
      * and is used to collate a combined layer of all providers which support the URI (e.g. in the case that a URI may be readable by multiple
      * different providers).
