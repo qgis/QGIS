@@ -294,7 +294,12 @@ class CORE_EXPORT QgsFeatureRenderer
     //! create a renderer from XML element
     static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    //! store renderer info to XML element
+    /**
+     * Stores renderer properties to an XML element.
+     *
+     * Subclasses which override this method should call saveRendererData() as part of their
+     * implementation in order to store all common base class properties in the returned DOM element.
+     */
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
@@ -524,6 +529,16 @@ class CORE_EXPORT QgsFeatureRenderer
      * \param destRenderer destination renderer for copied effect
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
+    /**
+     * Saves generic renderer data into the specified \a element.
+     *
+     * This method should be called in a subclass' save() implementation in order
+     * to store all common base class properties in the DOM \a element.
+     *
+     * \since QGIS 3.22
+     */
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
 
     QString mType;
 
