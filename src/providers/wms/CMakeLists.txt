@@ -48,13 +48,34 @@ if (WITH_GUI)
   add_dependencies(provider_wms_gui_a ui)
 endif()
 
+target_link_libraries(provider_wms_a
+  qgis_core
+  ${Qt5Xml_LIBRARIES}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
+)
 target_compile_definitions(provider_wms_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
+  target_link_libraries(provider_wms_gui_a
+    qgis_gui
+    provider_wms_a
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
+    ${Qt5Gui_LIBRARIES}
+    ${Qt5Widgets_LIBRARIES}
+  )
   target_compile_definitions(provider_wms_gui_a PRIVATE "-DQT_NO_FOREACH")
 endif()
 
-if (FORCE_STATIC_LIBS)
+if (FORCE_STATIC_PROVIDERS)
   # for (external) mobile apps to be able to pick up provider for linking
   install (TARGETS provider_wms_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   if (WITH_GUI)
