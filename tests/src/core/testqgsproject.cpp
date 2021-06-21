@@ -708,15 +708,14 @@ void TestQgsProject::testDefaultRelativePaths()
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true );
   QgsProject p1;
   bool p1PathsAbsolute = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
-
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), false );
-  QgsProject p2;
-  bool p2PathsAbsolute = p2.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  p1.clear();
+  bool p1PathsAbsolute_2 = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), bk_defaultRelativePaths );
 
   QCOMPARE( p1PathsAbsolute, false );
-  QCOMPARE( p2PathsAbsolute, true );
+  QCOMPARE( p1PathsAbsolute_2, true );
 }
 
 QGSTEST_MAIN( TestQgsProject )
