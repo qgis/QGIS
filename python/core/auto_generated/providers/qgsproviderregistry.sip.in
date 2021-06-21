@@ -522,7 +522,7 @@ The optional ``flags`` argument can be used to control the behavior of the query
 
 The optional ``feedback`` argument can be used to provide cancellation support for long-running queries.
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     QString fileVectorFilters() const;
