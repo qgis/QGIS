@@ -40,14 +40,11 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h
 )
 
-
 include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
 )
 
-
-
-add_library(virtuallayerprovider MODULE
+add_library(provider_virtuallayer MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}
   ${QGIS_VLAYER_PROVIDER_HDRS}
   ${vlayer_provider_UI_H}
@@ -55,9 +52,9 @@ add_library(virtuallayerprovider MODULE
 )
 
 # require c++17
-target_compile_features(virtuallayerprovider PRIVATE cxx_std_17)
+target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)
 
-target_link_libraries( virtuallayerprovider
+target_link_libraries(provider_virtuallayer
   qgis_core
   ${Qt5Core_LIBRARIES}
   ${Qt5Gui_LIBRARIES}
@@ -67,13 +64,13 @@ target_link_libraries( virtuallayerprovider
 )
 
 if (WITH_GUI)
-  target_link_libraries (virtuallayerprovider
+  target_link_libraries (provider_virtuallayer
     qgis_gui
   )
-  add_dependencies(virtuallayerprovider ui)
+  add_dependencies(provider_virtuallayer ui)
 endif()
 
-install(TARGETS virtuallayerprovider
+install(TARGETS provider_virtuallayer
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
   )
