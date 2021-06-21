@@ -109,7 +109,7 @@ the hierarchy of a dataset which organises layers in schemas or in an internal f
 .. seealso:: :py:func:`path`
 %End
 
-    long long featureCount() const { return mFeatureCount; }
+    long long featureCount() const;
 %Docstring
 Returns the layer's feature count, or Qgis.FeatureCountState.UnknownCount/Qgis.FeatureCountState.Uncounted if no feature count is applicable or available.
 

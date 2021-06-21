@@ -90,7 +90,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderLevel
     {
-      explicit RenderLevel( int z ): zIndex( z ) {}
+      explicit RenderLevel( int z )
+        : zIndex( z )
+      {}
+
       ~RenderLevel() { qDeleteAll( jobs ); }
       int zIndex;
 
