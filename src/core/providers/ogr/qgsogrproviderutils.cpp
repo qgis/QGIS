@@ -28,6 +28,8 @@ email                : nyall dot dawson at gmail dot com
 #include <QFile>
 #include <QFileInfo>
 #include <QTextCodec>
+#include <QStorageInfo>
+#include <QRegularExpression>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

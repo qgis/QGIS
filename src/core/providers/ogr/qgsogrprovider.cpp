@@ -54,6 +54,7 @@ email                : sherman at mrcc.com
 #include <QTextCodec>
 #include <QFile>
 #include <QFileInfo>
+#include <QRegularExpression>
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "ogr" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "OGR data provider" )
