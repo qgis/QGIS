@@ -7301,6 +7301,7 @@ bool QgisApp::fileSave()
     QMessageBox::critical( this,
                            tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error() );
+    mProjectLastModified = QgsProject::instance()->lastModified();
     return false;
   }
 
@@ -7363,7 +7364,6 @@ void QgisApp::fileSaveAs()
     mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath();
-    mProjectLastModified = fullPath.lastModified();
   }
   else
   {
@@ -7373,6 +7373,7 @@ void QgisApp::fileSaveAs()
                            QMessageBox::Ok,
                            Qt::NoButton );
   }
+  mProjectLastModified = fullPath.lastModified();
 } // QgisApp::fileSaveAs
 
 void QgisApp::dxfExport()

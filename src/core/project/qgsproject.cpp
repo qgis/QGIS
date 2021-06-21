@@ -3341,25 +3341,50 @@ bool QgsProject::zip( const QString &filename )
   const QFileInfo info( qgsFile );
   const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
 
+  bool auxiliaryStorageSavedOk = true;
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
     const QString err = mAuxiliaryStorage->errorString();
-    setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
-    return false;
+    setError( tr( "Unable to save auxiliary storage file ('%1'). The project has been saved but the latest changes to auxiliary data cannot be recovered. It is recommended to reload the project." ).arg( err ) );
+    auxiliaryStorageSavedOk = false;
+
+    // fixes the current archive and keep the previous version of qgd
+    if ( !mArchive->exists() )
+    {
+      mArchive.reset( new QgsProjectArchive() );
+      mArchive->unzip( mFile.fileName() );
+      mArchive->clearProjectFile();
+
+      const QString auxiliaryStorageFile = mArchive->auxiliaryStorageFile();
+      if ( ! auxiliaryStorageFile.isEmpty() )
+      {
+        archive->addFile( auxiliaryStorageFile );
+        mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( auxiliaryStorageFile, false ) );
+      }
+    }
+  }
+  else
+  {
+    // in this case, an empty filename means that the auxiliary database is
+    // empty, so we don't want to save it
+    if ( QFile::exists( asFileName ) )
+    {
+      archive->addFile( asFileName );
+    }
   }
 
   // create the archive
   archive->addFile( qgsFile.fileName() );
-  archive->addFile( asFileName );
 
   // zip
+  bool zipOk = true;
   if ( !archive->zip( filename ) )
   {
     setError( tr( "Unable to perform zip" ) );
-    return false;
+    zipOk = false;
   }
 
-  return true;
+  return auxiliaryStorageSavedOk && zipOk;
 }
 
 bool QgsProject::isZipped() const
@@ -3540,7 +3565,7 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
     }
   }
 
-  if ( !mAuxiliaryStorage->exists( *this ) && filename.isEmpty() && empty )
+  if ( !mAuxiliaryStorage->exists( *this ) && empty )
   {
     return true; // it's not an error
   }
