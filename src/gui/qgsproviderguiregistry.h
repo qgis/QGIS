@@ -120,7 +120,7 @@ class GUI_EXPORT QgsProviderGuiRegistry
 
     /**
      * Loads the dynamic plugins on the given path
-     * When QGIS is compiled with FORCE_STATIC_PROVIDERS,
+     * When QGIS is compiled with FORCE_STATIC_LIBS,
      * the function is no-op
      */
     void loadDynamicProviders( const QString &pluginPath );

@@ -94,25 +94,20 @@ endif(NOT MSVC)
 
 if (IOS)
     set (DEFAULT_FORCE_STATIC_LIBS TRUE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
+    set (DEFAULT_FORCE_STATIC_LIBS TRUE)
 else()
     set (DEFAULT_FORCE_STATIC_LIBS FALSE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
+    set (DEFAULT_FORCE_STATIC_LIBS FALSE)
 endif()
 
 set (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
 mark_as_advanced(FORCE_STATIC_LIBS)
 if (FORCE_STATIC_LIBS)
   set (LIBRARY_TYPE STATIC)
-else()
-  set (LIBRARY_TYPE SHARED)
-endif()
-
-set (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
-mark_as_advanced(FORCE_STATIC_PROVIDERS)
-if (FORCE_STATIC_PROVIDERS)
   # following variable is used in qgsconfig.h
   set (HAVE_STATIC_PROVIDERS TRUE)
+else()
+  set (LIBRARY_TYPE SHARED)
 endif()
 
 # in generated makefiles use relative paths so the project dir is moveable

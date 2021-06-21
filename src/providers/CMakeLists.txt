@@ -8,7 +8,7 @@ if (POSTGRES_FOUND)
   add_subdirectory(postgres)
 endif()
 
-if (NOT FORCE_STATIC_PROVIDERS)
+if (NOT FORCE_STATIC_LIBS)
   add_subdirectory(arcgisrest)
   add_subdirectory(delimitedtext)
   add_subdirectory(geonode)

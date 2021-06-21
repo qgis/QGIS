@@ -28,16 +28,30 @@
 #include "qgsmessagelog.h"
 #include "qgsauthmethodmetadata.h"
 
+#ifdef HAVE_STATIC_PROVIDERS
+#include "qgsauthbasicmethod.h"
+#endif
+
 
 // typedefs for auth method plugin functions of interest
 typedef QString methodkey_t();
 typedef QString description_t();
 typedef bool    isauthmethod_t();
 
+static QgsAuthMethodRegistry *sInstance = nullptr;
+
 
 QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPath )
 {
-  static QgsAuthMethodRegistry *sInstance( new QgsAuthMethodRegistry( pluginPath ) );
+  if ( !sInstance )
+  {
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsAuthMethodRegistry( pluginPath );
+    }
+  }
   return sInstance;
 }
 
@@ -57,6 +71,16 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
+  init();
+}
+
+void QgsAuthMethodRegistry::init()
+{
+  mAuthMethods[ QgsAuthBasicMethod::key() ] = new QgsAuthBasicMethod();
+
+#ifdef HAVE_STATIC_PROVIDERS
+
+#else
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "authmethod_*.dll" ) );
 #else
@@ -137,8 +161,8 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 
     // add this auth method to the method map
     mAuthMethods[pKey()] = new QgsAuthMethodMetadata( pKey(), pDesc(), myLib.fileName() );
-
-  }
+#endif
+}
 }
 
 // typedef for the unload auth method function

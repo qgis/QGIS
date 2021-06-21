@@ -112,8 +112,11 @@ class CORE_EXPORT QgsAuthMethodRegistry
     typedef std::map<QString, QgsAuthMethodMetadata *> AuthMethods;
 
   private:
+
     //! Ctor private since instance() creates it
     QgsAuthMethodRegistry( const QString &pluginPath );
+
+    void init();
 
     //! Associative container of auth method metadata handles
     AuthMethods mAuthMethods;

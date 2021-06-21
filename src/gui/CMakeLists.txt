@@ -1378,7 +1378,7 @@ endif()
 #############################################################
 # qgis_gui library
 
-add_library(qgis_gui SHARED
+add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
 
@@ -1495,7 +1495,7 @@ target_link_libraries(qgis_gui
   ${Qt5QuickWidgets_LIBRARIES}
 )
 
-if (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
   target_link_libraries(qgis_gui
     provider_wms_gui_a
     provider_postgres_gui_a
