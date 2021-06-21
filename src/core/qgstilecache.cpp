@@ -34,6 +34,7 @@ void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 bool QgsTileCache::tile( const QUrl &url, QImage &image )
 {
   QNetworkRequest req( url );
+  //Preprocessing might alter the url, so we need to make sure we store/retrieve the url after preprocessing
   QgsNetworkAccessManager::instance()->preprocessRequest( &req );
   QUrl adjUrl = req.url();
 

@@ -1128,6 +1128,7 @@ void TestQgsNetworkAccessManager::testCookieManagement()
   thread2.start();
   evLoop.exec();
   QVERIFY( thread2.getResult() );
+};
 
 void TestQgsNetworkAccessManager::testRequestPreprocessor()
 {
@@ -1137,7 +1138,7 @@ void TestQgsNetworkAccessManager::testRequestPreprocessor()
   QString userAgent = request.header( QNetworkRequest::UserAgentHeader ).toString();
   QCOMPARE( userAgent, "QGIS" );
   QgsNetworkAccessManager::instance()->removeRequestPreprocessor( processorId );
-}
+};
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
 #include "testqgsnetworkaccessmanager.moc"
