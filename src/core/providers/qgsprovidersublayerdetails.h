@@ -32,7 +32,7 @@
  * This class encapsulates the properties of a single sublayer available from a dataset,
  * according to a specific data provider.
  *
- * \note It is possible that multiple data providers may be able to utilise the same underlying
+ * \note It is possible that multiple data providers may be able to utilize the same underlying
  * sub layer in a single dataset, yet will interpret this layer differently. For instance, a layer
  * in a GeoPDF document can be interpreted as either a vector layer by the OGR data provider or a raster
  * layer by the GDAL provider. The providerKey() property can be used to determine the data provider
@@ -121,7 +121,9 @@ class CORE_EXPORT QgsProviderSublayerDetails
     void setPath( const QStringList &path ) { mPath = path; }
 
     /**
-     * Returns the layer's feature count, or Qgis::FeatureCountState::UnknownCount/Qgis::FeatureCountState::Uncounted if no feature count is applicable or available.
+     * Returns the layer's feature count.
+     *
+     * Will return Qgis::FeatureCountState::UnknownCount or Qgis::FeatureCountState::Uncounted if no feature count is applicable or available.
      *
      * \see setFeatureCount()
      */
