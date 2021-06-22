@@ -257,7 +257,7 @@ class CORE_EXPORT QgsOgrProviderUtils
         bool updateMode,
         const QString &dsName );
 
-    static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri );
+    static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, QgsFeedback *feedback = nullptr );
 
 };
 

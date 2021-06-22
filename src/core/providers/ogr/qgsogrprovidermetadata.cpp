@@ -1029,7 +1029,7 @@ bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   return false;
 }
 
-QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
   QStringList skippedLayerNames;
 
@@ -1050,7 +1050,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   if ( layerCount == 1 )
   {
-    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri );
+    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, feedback );
   }
   else
   {
@@ -1061,6 +1061,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     // the FileGDB driver
     for ( unsigned int i = 0; i < layerCount; i++ )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       QString errCause;
       QgsOgrLayerUniquePtr layer;
 
@@ -1078,7 +1081,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
           continue;
       }
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri );
+      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, feedback );
     }
     return res;
   }

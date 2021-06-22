@@ -2292,7 +2292,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, QgsFeedback *feedback )
 {
   QString layerName = QString::fromUtf8( layer->name() );
 
@@ -2367,6 +2367,9 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
         fCount[gType] = fCount.value( gType ) + 1;
       }
+
+      if ( feedback && feedback->isCanceled() )
+        break;
     }
     layer->ResetReading();
     // it may happen that there are no features in the layer, in that case add unknown type
@@ -2412,6 +2415,9 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
     for ( ; countIt != fCount.constEnd(); ++countIt )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       QgsProviderSublayerDetails details;
       details.setLayerNumber( i );
       details.setName( layerName );
