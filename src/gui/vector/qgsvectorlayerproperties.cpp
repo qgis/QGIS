@@ -540,6 +540,14 @@ void QgsVectorLayerProperties::syncToLayer()
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( mCanvas );
 
+  mUseReferenceScaleGroupBox->setChecked( mLayer->renderer() && mLayer->renderer()->referenceScale() > 0 );
+  mReferenceScaleWidget->setShowCurrentScaleButton( true );
+  mReferenceScaleWidget->setMapCanvas( mCanvas );
+  if ( mUseReferenceScaleGroupBox->isChecked() )
+    mReferenceScaleWidget->setScale( mLayer->renderer()->referenceScale() );
+  else if ( mCanvas )
+    mReferenceScaleWidget->setScale( mCanvas->scale() );
+
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod &simplifyMethod = mLayer->simplifyMethod();
   mSimplifyDrawingGroupBox->setChecked( simplifyMethod.simplifyHints() != QgsVectorSimplifyMethod::NoSimplification );
@@ -805,7 +813,10 @@ void QgsVectorLayerProperties::apply()
   mLayer->setSimplifyMethod( simplifyMethod );
 
   if ( mLayer->renderer() )
+  {
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
+    mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
+  }
 
   mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
