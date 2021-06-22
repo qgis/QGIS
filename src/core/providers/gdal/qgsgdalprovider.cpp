@@ -2346,7 +2346,7 @@ QStringList QgsGdalProvider::subLayers() const
   QStringList res;
   res.reserve( mSubLayers.size() );
   for ( const QgsProviderSublayerDetails &layer : mSubLayers )
-    res << layer.name() + QgsDataProvider::sublayerSeparator() + layer.description();
+    res << layer.uri() + QgsDataProvider::sublayerSeparator() + layer.description();
   return res;
 }
 
