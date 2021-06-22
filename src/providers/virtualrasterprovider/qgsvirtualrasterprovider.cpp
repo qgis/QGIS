@@ -205,25 +205,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
 
-    //--------------------------------------------------------------------------------------------------------------------------
-    //---double * outputData = ( double * )( tblock->bits() );
-    //---gsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
-
-
-
-    //memcpy( tblock->bits(), (char *) resultMatrix.takeData() , width*height*sizeof(double) );
-
-/*
-    for (int i = 0; i < width*height; ++i)
-    {
-        //tblock->setValue(i,resultMatrix.takeData()[i]);
-        tblock->setValue(i,42);
-    }
-*/
-    //--------------------------------------------------------------------------------------------------------------------------
-
-    //resultMatrix.takeData();
-
     Q_ASSERT( tblock );
     return tblock.release();
     //return tblock;

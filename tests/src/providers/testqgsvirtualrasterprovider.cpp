@@ -141,24 +141,14 @@ void TestQgsVirtualRasterProvider::testv()
 
         qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
         qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
-        qDebug() << "VALUE BLOCK " << block->value(400,400);
 
         QVERIFY( block );
         QCOMPARE( block->width(),  373 );
         QCOMPARE( block->height(), 350 );
 
         QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
-
       }
     delete provider;
-
-/*
-    QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
-    QgsDebugMsg("NAME of LAYER: "+r->name());
-
-
-    delete r;
-*/
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
