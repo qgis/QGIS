@@ -269,7 +269,8 @@ bool QgsRasterPipe::remove( int idx )
 {
   QgsDebugMsgLevel( QStringLiteral( "remove at %1" ).arg( idx ), 4 );
 
-  if ( !checkBounds( idx ) ) return false;
+  if ( !checkBounds( idx ) )
+    return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
