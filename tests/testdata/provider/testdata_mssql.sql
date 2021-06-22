@@ -295,6 +295,8 @@ CREATE TABLE [qgis_test].[constraints]
   gid integer PRIMARY KEY,
   val int,
   name text NOT NULL,
-  description text
+  description text,
+  CONSTRAINT constraint_val UNIQUE (val)
 );
 GO
+
