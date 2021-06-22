@@ -413,6 +413,16 @@ QgsMesh *QgsTopologicalMesh::mesh() const
   return mMesh;
 }
 
+bool QgsTopologicalMesh::isVertexOnBoundary( int vertexIndex ) const
+{
+  QgsMeshVertexCirculator circulator = vertexCirculator( vertexIndex );
+
+  if ( circulator.isValid() )
+    return circulator.goBoundaryClockwise();
+
+  return false;
+}
+
 QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh )
 {
   // First check if the face is convex and put it counter clockwise

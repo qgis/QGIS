@@ -135,6 +135,9 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns a pointer to the wrapped mesh
     QgsMesh *mesh() const;
 
+    //! Returns whether the vertex is on a boundary
+    bool isVertexOnBoundary( int vertexIndex ) const;
+
     //----------- editing methods
 
     //! Returns whether the faces can be added to the mesh

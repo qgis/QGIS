@@ -210,10 +210,36 @@ int QgsMeshEditor::addPointsAsVertices( const QVector<QgsPoint> &point, double t
 QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles )
 {
   QgsMeshEditingError error;
+
+
+  QList<int> verticesIndexes = verticesToRemoveIndexes;
+
+  if ( fillHoles )
+  {
+    // if boundary, removing vertex do not fill hole (while is not supported)
+    // so if all vertices are boundary, change the flag to false, if some not boundary vertices, remove the boundary from the list
+    QList<int> boundary;
+    for ( const int vertexIndex : verticesToRemoveIndexes )
+    {
+      if ( mTopologicalMesh.isVertexOnBoundary( vertexIndex ) )
+        boundary.append( vertexIndex );
+      else
+        break;
+    }
+    if ( boundary.count() == verticesIndexes.count() )
+      fillHoles = false;
+    else
+    {
+      for ( const int vertexIndex : boundary )
+        verticesIndexes.removeOne( vertexIndex );
+    }
+  }
+
+
   if ( !fillHoles )
   {
     QSet<int> concernedNativeFaces;
-    for ( const int vi : verticesToRemoveIndexes )
+    for ( const int vi : std::as_const( verticesIndexes ) )
       concernedNativeFaces.unite( mTopologicalMesh.facesAroundVertex( vi ).toSet() );
 
     error = mTopologicalMesh.canFacesBeRemoved( concernedNativeFaces.values() );
@@ -221,7 +247,7 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
       return error;
   }
 
-  mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVertices( this, verticesToRemoveIndexes, fillHoles ) );
+  mUndoStack->push( new QgsMeshLayerUndoCommandRemoveVertices( this, verticesIndexes, fillHoles ) );
 
   return error;
 }

@@ -918,7 +918,11 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   QVERIFY( editor->removeVertices( {7}, true ) == QgsMeshEditingError() );
 
-  QVERIFY( editor->removeVertices( {5}, false ) == QgsMeshEditingError() );
+  QVERIFY( editor->removeVertices( {4}, false ).errorType != QgsMeshEditingError::NoError ); // leads to a topological error
+
+  QVERIFY( editor->removeVertices( {4}, true ).errorType != QgsMeshEditingError::NoError ); // filling after removing boundary not supported, so not fill and leads to a topological error
+
+  QVERIFY( editor->removeVertices( {5}, true ) == QgsMeshEditingError() );
 
   meshLayerQuadFlower->stopFrameEditing( transform );
 
