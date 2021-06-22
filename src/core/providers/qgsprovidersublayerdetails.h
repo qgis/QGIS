@@ -96,7 +96,9 @@ class CORE_EXPORT QgsProviderSublayerDetails
       /**
        * Constructor for LayerOptions with \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+        : transformContext( transformContext )
+      {}
 
       QgsCoordinateTransformContext transformContext;
     };
