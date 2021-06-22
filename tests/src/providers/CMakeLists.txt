@@ -61,8 +61,8 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
         testqgswcspublicservers.cpp
   )
 
-  add_executable(test_provdider_wcs ${WCSTEST_SRCS} )
-  target_compile_features(test_provdider_wcs PRIVATE cxx_std_17)
+  add_executable(test_provider_wcs ${WCSTEST_SRCS} )
+  target_compile_features(test_provider_wcs PRIVATE cxx_std_17)
 
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
@@ -70,7 +70,7 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
   )
 
-  target_link_libraries(test_provdider_wcs
+  target_link_libraries(test_provider_wcs
     ${Qt5Core_LIBRARIES}
     ${Qt5Network_LIBRARIES}
     ${Qt5Svg_LIBRARIES}
@@ -79,7 +79,7 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     qgis_core
   )
 
-  install (TARGETS test_provdider_wcs
+  install (TARGETS test_provider_wcs
     BUNDLE DESTINATION ${QGIS_BIN_DIR}
     RUNTIME DESTINATION ${QGIS_BIN_DIR}
   )
