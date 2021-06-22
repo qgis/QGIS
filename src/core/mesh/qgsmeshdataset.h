@@ -33,7 +33,7 @@
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;
 class QgsRectangle;
-class QgsMesh;
+struct QgsMesh;
 
 /**
  * \ingroup core
