@@ -62,7 +62,6 @@ class QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshR
 
   private slots:
     void minMaxChanged();
-    void minMaxEdited();
     void recalculateMinMaxButtonClicked();
     void onEdgeStrokeWidthMethodChanged();
 

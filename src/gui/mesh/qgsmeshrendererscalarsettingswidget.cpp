@@ -51,8 +51,6 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
   connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
   connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
-  connect( mScalarMinSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
-  connect( mScalarMaxSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
   connect( mScalarEdgeStrokeWidthVariableRadioButton, &QRadioButton::toggled, this, &QgsMeshRendererScalarSettingsWidget::onEdgeStrokeWidthMethodChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
@@ -165,13 +163,6 @@ double QgsMeshRendererScalarSettingsWidget::spinBoxValue( const QgsDoubleSpinBox
 }
 
 void QgsMeshRendererScalarSettingsWidget::minMaxChanged()
-{
-  const double min = spinBoxValue( mScalarMinSpinBox );
-  const double max = spinBoxValue( mScalarMaxSpinBox );
-  mScalarColorRampShaderWidget->setMinimumMaximum( min, max );
-}
-
-void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
 {
   const double min = spinBoxValue( mScalarMinSpinBox );
   const double max = spinBoxValue( mScalarMaxSpinBox );
