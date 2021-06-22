@@ -11,15 +11,19 @@ __date__ = '16/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
+import os
 
 from qgis.core import (
     QgsProviderRegistry,
     QgsMapLayerType,
     QgsWkbTypes,
     QgsProviderSublayerDetails,
-    Qgis
+    Qgis,
+    QgsCoordinateTransformContext,
+    QgsVectorLayer
 )
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # to find the srs.db
@@ -64,6 +68,22 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
 
         d.setLayerNumber(13)
         self.assertEqual(d.layerNumber(), 13)
+
+    def test_to_layer(self):
+        """
+        Test converting sub layer details to a layer
+        """
+        details = QgsProviderSublayerDetails()
+        details.setUri(os.path.join(unitTestDataPath(), 'lines.shp'))
+        details.setName('my sub layer')
+        details.setType(QgsMapLayerType.VectorLayer)
+        details.setProviderKey('ogr')
+
+        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
+        ml = details.toLayer(options)
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsVectorLayer)
+        self.assertEqual(ml.name(), 'my sub layer')
 
 
 if __name__ == '__main__':

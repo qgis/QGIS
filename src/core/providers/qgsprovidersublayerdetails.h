@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgswkbtypes.h"
+#include "qgscoordinatetransformcontext.h"
 
 #include <QString>
 #include <QStringList>
@@ -85,6 +86,27 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * \see uri()
      */
     void setUri( const QString &uri ) { mUri = uri; }
+
+    /**
+     * Setting options for loading layers.
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions with \a transformContext.
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+
+      QgsCoordinateTransformContext transformContext;
+    };
+
+    /**
+     * Creates a new QgsMapLayer object associated with the sublayer.
+     *
+     * Caller takes ownership of the returned layer.
+     */
+    QgsMapLayer *toLayer( const LayerOptions &options ) const SIP_FACTORY;
 
     /**
      * Returns the layer's name.
