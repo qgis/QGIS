@@ -3744,7 +3744,7 @@ QgsRectangle QgsPostgresProvider::extent() const
     {
       sql = QStringLiteral( "SELECT %1(%2%3) FROM %4%5" )
             .arg( connectionRO()->majorVersion() < 2 ? "extent" : "st_extent",
-                  quotedIdentifier( mGeometryColumn ),
+                  quotedIdentifier( mBoundingBoxColumn ),
                   mSpatialColType == SctPcPatch ? "::geometry" : "",
                   mQuery,
                   filterWhereClause() );
