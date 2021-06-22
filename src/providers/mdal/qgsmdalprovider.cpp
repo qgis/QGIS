@@ -23,7 +23,9 @@
 #include "qgsapplication.h"
 #include "qgsmdaldataitems.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsprovidersublayerdetails.h"
 
+#include <QFileInfo>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
@@ -996,6 +998,56 @@ QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
+}
+
+QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  if ( uri.isEmpty() )
+    return {};
+
+  // get suffix, removing .gz if present
+  const QFileInfo info( uri );
+  // allow only normal files
+  if ( !info.isFile() )
+    return {};
+
+  const QString suffix = info.suffix().toLower();
+
+  static QStringList sExtensions;
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    QStringList meshExtensions;
+    QStringList datasetsExtensions;
+    QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
+    Q_UNUSED( datasetsExtensions )
+  } );
+
+  // Filter files by extension
+  if ( !sExtensions.contains( suffix ) )
+    return {};
+
+  const QStringList meshNames = QString( MDAL_MeshNames( uri.toUtf8() ) ).split( QStringLiteral( ";;" ) );
+
+  QList<QgsProviderSublayerDetails> res;
+  res.reserve( meshNames.size() );
+  int layerIndex = 0;
+  for ( const QString &layerUri : meshNames )
+  {
+    QgsProviderSublayerDetails details;
+    details.setUri( layerUri );
+    details.setProviderKey( QStringLiteral( "mdal" ) );
+    details.setType( QgsMapLayerType::MeshLayer );
+    details.setLayerNumber( layerIndex );
+
+    // strip the driver name and path from the MDAL uri to get the layer name
+    details.setName( layerUri.mid( layerUri.indexOf( uri ) + uri.length() + 2 ) );
+
+    res << details;
+
+    layerIndex++;
+  }
+  return res;
 }
 
 QString QgsMdalProviderMetadata::filters( FilterType type )
