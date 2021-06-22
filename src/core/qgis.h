@@ -780,41 +780,7 @@ namespace qgis
 
       This method is named qt_urlRecodeByteArray in Qt's internals
   */
-  QString fromEncodedComponent_helper( const QByteArray &ba )
-  {
-    if ( ba.isNull() )
-      return QString();
-    // scan ba for anything above or equal to 0x80
-    // control points below 0x20 are fine in QString
-    const char *in = ba.constData();
-    const char *const end = ba.constEnd();
-    if ( qt_is_ascii( in, end ) )
-    {
-      // no non-ASCII found, we're safe to convert to QString
-      return QString::fromLatin1( ba, ba.size() );
-    }
-    // we found something that we need to encode
-    QByteArray intermediate = ba;
-    intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
-    uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
-    for ( ; in < end; ++in )
-    {
-      if ( *in & 0x80 )
-      {
-        // encode
-        *out++ = '%';
-        *out++ = encodeNibble( uchar( *in ) >> 4 );
-        *out++ = encodeNibble( uchar( *in ) & 0xf );
-      }
-      else
-      {
-        // keep
-        *out++ = uchar( *in );
-      }
-    }
-    // now it's safe to call fromLatin1
-    return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
-  }
+  QString fromEncodedComponent_helper( const QByteArray &ba );
 }
 ///@endcond
 #endif
