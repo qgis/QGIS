@@ -871,6 +871,7 @@ set(QGIS_CORE_HDRS
 
   ../plugins/qgisplugin.h
 
+  fromencodedcomponenthelper.h
   qgis.h
   qgis_sip.h
   qgsabstractcontentcache.h
@@ -1674,7 +1675,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
-  fromencodedcomponenthelper.h
 
   editform/qgseditformconfig_p.h
   proj/qgscoordinatereferencesystem_p.h
