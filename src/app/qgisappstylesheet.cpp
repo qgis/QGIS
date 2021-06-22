@@ -152,6 +152,23 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                                     "    padding-right: 0px;"
                                     "}" ).arg( frameMargin );
 
+    style += QStringLiteral( "QTreeView#mOptionsTreeView {"
+                             "    background-color: rgba(69, 69, 69, 0);"
+                             "    outline: 0;"
+                             "}"
+                             "QFrame#mOptionsListFrame {"
+                             "    background-color: rgba(69, 69, 69, 220);"
+                             "}"
+                             "QTreeView#mOptionsTreeView::item {"
+                             "    color: white;"
+                             "    padding: %1px;"
+                             "}"
+                             "QTreeView#mOptionsTreeView::item::selected {"
+                             "    color: black;"
+                             "    background-color:palette(Window);"
+                             "    padding-right: 0px;"
+                             "}" ).arg( frameMargin );
+
     QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )
     {

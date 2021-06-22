@@ -35,10 +35,12 @@ class QPainter;
 class QStackedWidget;
 class QStyleOptionViewItem;
 class QSplitter;
+class QStandardItem;
+class QTreeView;
+class QStandardItemModel;
 
 class QgsFilterLineEdit;
 class QgsOptionsDialogHighlightWidget;
-
 
 /**
  * \ingroup gui
@@ -177,21 +179,36 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void registerTextSearchWidgets();
 
+    /**
+     * Creates a new QStandardItem with the specified name, tooltip and icon.
+     *
+     * \since QGIS 3.22
+     */
+    QStandardItem *createItem( const QString &name, const QString &tooltip, const QString &icon ) SIP_SKIP;
+
     QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
 
     QString mOptsKey;
-    bool mInit;
+    bool mInit = false;
     QListWidget *mOptListWidget = nullptr;
+    QTreeView *mOptTreeView = nullptr;
+    QStandardItemModel *mOptTreeModel = nullptr;
     QStackedWidget *mOptStackedWidget = nullptr;
     QSplitter *mOptSplitter = nullptr;
     QDialogButtonBox *mOptButtonBox = nullptr;
     QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
-    bool mIconOnly;
+    bool mIconOnly = false;
     // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while dialog is open
     QPointer<QgsSettings> mSettings;
-    bool mDelSettings;
+    bool mDelSettings = false;
+
+  private:
+
+    void setListToItemAtIndex( int index );
+    QModelIndex pageNumberToTreeViewIndex( int page );
+    int viewIndexToPageNumber( const QModelIndex &index );
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H

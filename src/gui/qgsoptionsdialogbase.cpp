@@ -27,6 +27,10 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTimer>
+#include <QStandardItem>
+#include <QTreeView>
+#include <QHeaderView>
+#include <functional>
 
 #include "qgsfilterlineedit.h"
 #include "qgsmessagebaritem.h"
@@ -34,14 +38,12 @@
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgsguiutils.h"
+#include "qgsapplication.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
   , mOptsKey( settingsKey )
-  , mInit( false )
-  , mIconOnly( false )
   , mSettings( settings )
-  , mDelSettings( false )
 {
 }
 
@@ -90,6 +92,12 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget *>( QStringLiteral( "mOptionsListWidget" ) );
+  mOptTreeView = findChild<QTreeView *>( QStringLiteral( "mOptionsTreeView" ) );
+  if ( mOptTreeView )
+  {
+    mOptTreeModel = qobject_cast< QStandardItemModel * >( mOptTreeView->model() );
+  }
+
   QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
   mOptStackedWidget = findChild<QStackedWidget *>( QStringLiteral( "mOptionsStackedWidget" ) );
   mOptSplitter = findChild<QSplitter *>( QStringLiteral( "mOptionsSplitter" ) );
@@ -97,17 +105,28 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   QFrame *buttonBoxFrame = findChild<QFrame *>( QStringLiteral( "mButtonBoxFrame" ) );
   mSearchLineEdit = findChild<QgsFilterLineEdit *>( QStringLiteral( "mSearchLineEdit" ) );
 
-  if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
+  if ( ( !mOptListWidget && !mOptTreeView ) || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
     return;
   }
 
-  int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
-  // buffer size to match displayed icon size in toolbars, and expected geometry restore
-  // newWidth (above) may need adjusted if you adjust iconBuffer here
-  const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
-  mOptListWidget->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
-  mOptListWidget->setFrameStyle( QFrame::NoFrame );
+  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  int iconSize = 16;
+  if ( mOptListWidget )
+  {
+    int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
+    // buffer size to match displayed icon size in toolbars, and expected geometry restore
+    // newWidth (above) may need adjusted if you adjust iconBuffer here
+    const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
+    iconSize = size + iconBuffer;
+  }
+  else if ( mOptTreeView )
+  {
+    iconSize = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 16 ).toInt() );
+    mOptTreeView->header()->setVisible( false );
+  }
+  optView->setIconSize( QSize( iconSize, iconSize ) );
+  optView->setFrameStyle( QFrame::NoFrame );
 
   const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
   optionsFrame->layout()->setContentsMargins( 0, frameMargin, frameMargin, frameMargin );
@@ -134,6 +153,24 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   connect( mOptSplitter, &QSplitter::splitterMoved, this, &QgsOptionsDialogBase::updateOptionsListVerticalTabs );
   connect( mOptStackedWidget, &QStackedWidget::currentChanged, this, &QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged );
   connect( mOptStackedWidget, &QStackedWidget::widgetRemoved, this, &QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved );
+
+  if ( mOptTreeView )
+  {
+    // sync selection in tree view with current stacked widget index
+    connect( mOptTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, mOptStackedWidget, [ = ]( const QItemSelection &, const QItemSelection & )
+    {
+      const QModelIndexList selected = mOptTreeView->selectionModel()->selectedIndexes();
+      if ( selected.isEmpty() )
+        return;
+
+      const QModelIndex index = selected.at( 0 );
+
+      if ( !mOptTreeModel || !mOptTreeModel->itemFromIndex( index )->isSelectable() )
+        return;
+
+      mOptStackedWidget->setCurrentIndex( viewIndexToPageNumber( index ) );
+    } );
+  }
 
   if ( mSearchLineEdit )
   {
@@ -179,14 +216,18 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
-  mOptListWidget->setMaximumWidth(
-    mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  if ( optView )
+  {
+    optView->setMaximumWidth(
+      mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+    // get rid of annoying outer focus rect on Mac
+    optView->setAttribute( Qt::WA_MacShowFocusRect, false );
+  }
+
   mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
 
   restoreLastPage();
-
-  // get rid of annoying outer focus rect on Mac
-  mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
   // brute force approach to try to standardize page margins!
   for ( int i = 0; i < mOptStackedWidget->count(); ++i )
@@ -217,11 +258,84 @@ void QgsOptionsDialogBase::restoreLastPage()
     }
   }
 
-  if ( mOptStackedWidget->count() != 0 && mOptListWidget->count() != 0 )
+  if ( mOptStackedWidget->count() == 0 )
+    return;
+
+  mOptStackedWidget->setCurrentIndex( curIndx );
+  setListToItemAtIndex( curIndx );
+}
+
+void QgsOptionsDialogBase::setListToItemAtIndex( int index )
+{
+  if ( mOptListWidget && mOptListWidget->count() > index )
   {
-    mOptStackedWidget->setCurrentIndex( curIndx );
-    mOptListWidget->setCurrentRow( curIndx );
+    mOptListWidget->setCurrentRow( index );
   }
+  else if ( mOptTreeView && mOptTreeModel )
+  {
+    mOptTreeView->setCurrentIndex( pageNumberToTreeViewIndex( index ) );
+  }
+}
+
+QModelIndex QgsOptionsDialogBase::pageNumberToTreeViewIndex( int page )
+{
+  if ( !mOptTreeModel )
+    return QModelIndex();
+
+  int pagesRemaining = page;
+  std::function<QModelIndex( const QModelIndex & )> traversePages;
+
+  // traverse through the model, counting all selectable items until we hit the desired page number
+  traversePages = [&]( const QModelIndex & parent ) -> QModelIndex
+  {
+    for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
+    {
+      const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
+      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() && pagesRemaining == 0 )
+        return currentIndex;
+
+      const QModelIndex res = traversePages( currentIndex );
+      if ( res.isValid() )
+        return res;
+
+      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() )
+        pagesRemaining--;
+    }
+    return QModelIndex();
+  };
+
+  return traversePages( QModelIndex() );
+}
+
+int QgsOptionsDialogBase::viewIndexToPageNumber( const QModelIndex &index )
+{
+  if ( !mOptTreeModel )
+    return 0;
+
+  int page = 0;
+
+  std::function<int( const QModelIndex & )> traverseModel;
+
+  // traverse through the model, counting all which correspond to pages till we hit the desired index
+  traverseModel = [&]( const QModelIndex & parent ) -> int
+  {
+    for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
+    {
+      const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
+      if ( currentIndex == index )
+        return page;
+
+      const int res = traverseModel( currentIndex );
+      if ( res >= 0 )
+        return res;
+
+      if ( mOptTreeModel->itemFromIndex( currentIndex )->isSelectable() )
+        page++;
+    }
+    return -1;
+  };
+
+  return traverseModel( QModelIndex() );
 }
 
 void QgsOptionsDialogBase::resizeAlltabs( int index )
@@ -270,7 +384,17 @@ void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip
   item->setText( title );
   item->setToolTip( tooltip );
 
-  mOptListWidget->addItem( item );
+  if ( mOptListWidget )
+  {
+    mOptListWidget->addItem( item );
+  }
+  else if ( mOptTreeModel )
+  {
+    QStandardItem *item = new QStandardItem( icon, title );
+    item->setToolTip( tooltip );
+    mOptTreeModel->appendRow( item );
+  }
+
   mOptStackedWidget->addWidget( widget );
 }
 
@@ -289,7 +413,17 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
       item->setText( title );
       item->setToolTip( tooltip );
 
-      mOptListWidget->insertItem( idx, item );
+      if ( mOptListWidget )
+      {
+        mOptListWidget->insertItem( idx, item );
+      }
+      else if ( mOptTreeModel )
+      {
+        QStandardItem *item = new QStandardItem( icon, title );
+        item->setToolTip( tooltip );
+        mOptTreeModel->insertRow( idx, item );
+      }
+
       mOptStackedWidget->insertWidget( idx, widget );
       return;
     }
@@ -312,21 +446,28 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     mOptStackedWidget->show();
   if ( mOptButtonBox && mOptButtonBox->isHidden() )
     mOptButtonBox->show();
+
   // hide all page if text has to be search, show them all otherwise
-  for ( int r = 0; r < mOptListWidget->count(); ++r )
+  if ( mOptListWidget )
   {
-    mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
+    for ( int r = 0; r < mOptListWidget->count(); ++r )
+    {
+      mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
+    }
   }
 
   for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
   {
     if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
     {
-      mOptListWidget->setRowHidden( rsw.second, false );
+      if ( mOptListWidget )
+      {
+        mOptListWidget->setRowHidden( rsw.second, false );
+      }
     }
   }
 
-  if ( mOptListWidget->isRowHidden( mOptStackedWidget->currentIndex() ) )
+  if ( mOptListWidget && mOptListWidget->isRowHidden( mOptStackedWidget->currentIndex() ) )
   {
     for ( int r = 0; r < mOptListWidget->count(); ++r )
     {
@@ -385,16 +526,30 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   }
 }
 
+QStandardItem *QgsOptionsDialogBase::createItem( const QString &name, const QString &tooltip, const QString &icon )
+{
+  QStandardItem *res = new QStandardItem( QgsApplication::getThemeIcon( icon ), name );
+  res->setToolTip( tooltip );
+  return res;
+}
+
 void QgsOptionsDialogBase::showEvent( QShowEvent *e )
 {
   if ( mInit )
   {
     updateOptionsListVerticalTabs();
-    optionsStackedWidget_CurrentChanged( mOptListWidget->currentRow() );
+    if ( mOptListWidget )
+    {
+      optionsStackedWidget_CurrentChanged( mOptListWidget->currentRow() );
+    }
+    else if ( mOptTreeView )
+    {
+      optionsStackedWidget_CurrentChanged( viewIndexToPageNumber( mOptTreeView->currentIndex() ) );
+    }
   }
   else
   {
-    QTimer::singleShot( 0, this, SLOT( warnAboutMissingObjects() ) );
+    QTimer::singleShot( 0, this, &QgsOptionsDialogBase::warnAboutMissingObjects );
   }
 
   if ( mSearchLineEdit )
@@ -408,20 +563,21 @@ void QgsOptionsDialogBase::showEvent( QShowEvent *e )
 void QgsOptionsDialogBase::paintEvent( QPaintEvent *e )
 {
   if ( mInit )
-    QTimer::singleShot( 0, this, SLOT( updateOptionsListVerticalTabs() ) );
+    QTimer::singleShot( 0, this, &QgsOptionsDialogBase::updateOptionsListVerticalTabs );
 
   QDialog::paintEvent( e );
 }
 
 void QgsOptionsDialogBase::updateWindowTitle()
 {
-  QListWidgetItem *curitem = mOptListWidget->currentItem();
-  if ( curitem )
+  const QString itemText = mOptListWidget && mOptListWidget->currentItem() ? mOptListWidget->currentItem()->text()
+                           : mOptTreeView && mOptTreeView->currentIndex().isValid() ? mOptTreeView->currentIndex().data( Qt::DisplayRole ).toString() : QString();
+  if ( !itemText.isEmpty() )
   {
     setWindowTitle( QStringLiteral( "%1 %2 %3" )
                     .arg( mDialogTitle )
                     .arg( QChar( 0x2014 ) ) // em-dash unicode
-                    .arg( curitem->text() ) );
+                    .arg( itemText ) );
   }
   else
   {
@@ -434,42 +590,58 @@ void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
   if ( !mInit )
     return;
 
-  if ( mOptListWidget->maximumWidth() != 16777215 )
-    mOptListWidget->setMaximumWidth( 16777215 );
-  // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
-  // TODO: mOptListWidget has fixed 32px wide icons for now, allow user-defined
-  // Note: called on splitter resize and dialog paint event, so only update when necessary
-  int iconWidth = mOptListWidget->iconSize().width();
-  int snapToIconWidth = iconWidth + 32;
-
-  QList<int> splitSizes = mOptSplitter->sizes();
-  mIconOnly = ( splitSizes.at( 0 ) <= snapToIconWidth );
-
-  // iconBuffer (above) may need adjusted if you adjust iconWidth here
-  int newWidth = mOptListWidget->verticalScrollBar()->isVisible() ? iconWidth + 22 : iconWidth + 9;
-  bool diffWidth = mOptListWidget->minimumWidth() != newWidth;
-
-  if ( diffWidth )
-    mOptListWidget->setMinimumWidth( newWidth );
-
-  if ( mIconOnly && ( diffWidth || mOptListWidget->width() != newWidth ) )
+  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  if ( optView )
   {
-    splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
-    splitSizes[0] = newWidth;
-    mOptSplitter->setSizes( splitSizes );
-  }
+    if ( optView->maximumWidth() != 16777215 )
+      optView->setMaximumWidth( 16777215 );
+    // auto-resize splitter for vert scrollbar without covering icons in icon-only mode
+    // TODO: mOptListWidget has fixed 32px wide icons for now, allow user-defined
+    // Note: called on splitter resize and dialog paint event, so only update when necessary
+    int iconWidth = optView->iconSize().width();
+    int snapToIconWidth = iconWidth + 32;
 
-  if ( mOptListWidget->wordWrap() && mIconOnly )
-    mOptListWidget->setWordWrap( false );
-  if ( !mOptListWidget->wordWrap() && !mIconOnly )
-    mOptListWidget->setWordWrap( true );
+    QList<int> splitSizes = mOptSplitter->sizes();
+    mIconOnly = ( splitSizes.at( 0 ) <= snapToIconWidth );
+
+    // iconBuffer (above) may need adjusted if you adjust iconWidth here
+    int newWidth = optView->verticalScrollBar()->isVisible() ? iconWidth + 22 : iconWidth + 9;
+    bool diffWidth = optView->minimumWidth() != newWidth;
+
+    if ( diffWidth )
+      optView->setMinimumWidth( newWidth );
+
+    if ( mIconOnly && ( diffWidth || optView->width() != newWidth ) )
+    {
+      splitSizes[1] = splitSizes.at( 1 ) - ( splitSizes.at( 0 ) - newWidth );
+      splitSizes[0] = newWidth;
+      mOptSplitter->setSizes( splitSizes );
+    }
+
+    if ( mOptListWidget )
+    {
+      if ( mOptListWidget->wordWrap() && mIconOnly )
+        mOptListWidget->setWordWrap( false );
+      if ( !mOptListWidget->wordWrap() && !mIconOnly )
+        mOptListWidget->setWordWrap( true );
+    }
+  }
 }
 
 void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int index )
 {
-  mOptListWidget->blockSignals( true );
-  mOptListWidget->setCurrentRow( index );
-  mOptListWidget->blockSignals( false );
+  if ( mOptListWidget )
+  {
+    mOptListWidget->blockSignals( true );
+    mOptListWidget->setCurrentRow( index );
+    mOptListWidget->blockSignals( false );
+  }
+  else if ( mOptTreeView )
+  {
+    mOptTreeView->blockSignals( true );
+    mOptTreeView->setCurrentIndex( pageNumberToTreeViewIndex( index ) );
+    mOptTreeView->blockSignals( false );
+  }
 
   updateWindowTitle();
 }
@@ -477,7 +649,14 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int index )
 void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
 {
   // will need to take item first, if widgets are set for item in future
-  delete mOptListWidget->item( index );
+  if ( mOptListWidget )
+  {
+    delete mOptListWidget->item( index );
+  }
+  else if ( mOptTreeModel )
+  {
+    mOptTreeModel->removeRow( index );
+  }
 
   QList<QPair< QgsOptionsDialogHighlightWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
   while ( it != mRegisteredSearchWidgets.end() )

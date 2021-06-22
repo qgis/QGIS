@@ -13,7 +13,6 @@
 
 
 
-
 class QgsOptionsDialogBase : QDialog
 {
 %Docstring(signature="appended")
@@ -166,6 +165,8 @@ it is automatically called if a line edit has "mSearchLineEdit" as object name.
 
 .. versionadded:: 3.0
 %End
+
+
 
 
 };

@@ -306,6 +306,7 @@ void QgsAppScreenShots::takeGlobalOptions()
   dlg->setMinimumHeight( 600 );
   dlg->show();
   QCoreApplication::processEvents();
+#if 0
   for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
   {
     dlg->mOptionsListWidget->setCurrentRow( row );
@@ -327,7 +328,7 @@ void QgsAppScreenShots::takeGlobalOptions()
   QCoreApplication::processEvents();
   QCoreApplication::processEvents(); // seems a second call is needed, the tabble might not be fully displayed otherwise
   takeScreenshot( QStringLiteral( "advanced_with_settings_shown" ), folder, dlg );
-
+#endif
   // exit properly
   dlg->close();
   dlg->deleteLater();
