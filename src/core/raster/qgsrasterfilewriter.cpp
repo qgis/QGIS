@@ -25,6 +25,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
 #include "qgsreadwritelocker.h"
+#include "qgsrasterpipe.h"
 
 #include <QCoreApplication>
 #include <QProgressDialog>

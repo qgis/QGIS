@@ -23,7 +23,8 @@
 #include "qgsrasterfilewriter.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrasterinterface.h"
-#include "qgsrasterpipe.h"
+
+class QgsRasterPipe;
 
 /**
  * \class QgsRasterFileWriterTask
@@ -67,6 +68,8 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
                              const QgsCoordinateReferenceSystem &crs,
                              const QgsCoordinateTransformContext &transformContext
                            );
+
+    ~QgsRasterFileWriterTask() override;
 
     void cancel() override;
 
