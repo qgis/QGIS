@@ -428,6 +428,8 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   // not a raster
   res = gdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
   QVERIFY( res.empty() );
+  res = gdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
+  QVERIFY( res.empty() );
 
   // single layer raster
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -463,6 +465,8 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 2 );
 
   // netcdf file
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
@@ -483,6 +487,9 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
+
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 8 );
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )
