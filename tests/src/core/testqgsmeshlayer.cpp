@@ -1608,6 +1608,11 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
 
+  // make sure result is valid to load layer from
+  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsMeshLayer > ml( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
   // mesh with two layers
   res = mdalMetadata->querySublayers( mDataDir + "/manzese_1d2d_small_map.nc" );
   QCOMPARE( res.count(), 2 );
@@ -1616,11 +1621,16 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 1 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "mesh2d" ) );
   QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::MeshLayer );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
 }
 
 void TestQgsMeshLayer::test_temporal()
