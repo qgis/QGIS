@@ -790,6 +790,7 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
 class QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
+    //! Constructor with a \a name and linked to \a mesh
     QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh );
 
     void initialize() override;

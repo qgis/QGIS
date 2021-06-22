@@ -26,7 +26,11 @@
 #include "qgstopologicalmesh.h"
 
 /**
- *  \brief Class that represents an error during mesh editing
+ * \ingroup core
+ *
+ * \brief Class that represents an error during mesh editing
+ *
+ * \since QGIS 3.22
  */
 class CORE_EXPORT QgsMeshEditingError
 {
@@ -57,7 +61,11 @@ class CORE_EXPORT QgsMeshEditingError
 };
 
 /**
- *  \brief Class that makes edit operation on a mesh
+ * \ingroup core
+ *
+ * \brief Class that makes edit operation on a mesh
+ *
+ * \since QGIS 3.22
  */
 class CORE_EXPORT QgsMeshEditor : public QObject
 {
@@ -111,9 +119,11 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
 
+    //! Stops editing
     void stopEditing();
 
   signals:
+    //! Emitted when the mesh is edited
     void meshEdited();
 
   private:
@@ -151,6 +161,13 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
 #ifndef SIP_RUN
 
+/**
+ * \ingroup core
+ *
+ * \brief Base class for undo/redo command for mesh editing
+ *
+ * \since QGIS 3.22
+ */
 class QgsMeshLayerUndoCommandMeshEdit : public QUndoCommand
 {
   public:
@@ -166,6 +183,13 @@ class QgsMeshLayerUndoCommandMeshEdit : public QUndoCommand
     QList<QgsMeshEditor::Edit> mEdits;
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for adding vertices in mesh
+ *
+ * \since QGIS 3.22
+ */
 class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
@@ -178,6 +202,13 @@ class QgsMeshLayerUndoCommandAddVertices : public QgsMeshLayerUndoCommandMeshEdi
     QVector<QgsMeshVertex> mVertices;
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for removing vertices in mesh
+ *
+ * \since QGIS 3.22
+ */
 class QgsMeshLayerUndoCommandRemoveVertices : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
@@ -190,6 +221,13 @@ class QgsMeshLayerUndoCommandRemoveVertices : public QgsMeshLayerUndoCommandMesh
     bool mFillHole = false;
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for adding faces in mesh
+ *
+ * \since QGIS 3.22
+ */
 class QgsMeshLayerUndoCommandAddFaces : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:
@@ -202,6 +240,13 @@ class QgsMeshLayerUndoCommandAddFaces : public QgsMeshLayerUndoCommandMeshEdit
     QgsTopologicalMesh::TopologicalFaces mFaces;
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for removing faces in mesh
+ *
+ * \since QGIS 3.22
+ */
 class QgsMeshLayerUndoCommandRemoveFaces : public QgsMeshLayerUndoCommandMeshEdit
 {
   public:

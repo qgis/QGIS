@@ -24,7 +24,9 @@ class QgsMeshEditingError;
 class QgsMeshVertexCirculator;
 
 /**
- *  \brief Class that wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements
+ * \ingroup core
+ *
+ * \brief Class that wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements
  *
  *  A topological face need to:
  *
@@ -39,7 +41,9 @@ class CORE_EXPORT QgsTopologicalMesh
     using FaceNeighbors = QVector<int>;
 
     /**
-     *  Class that contains independent faces an topological information about this faces
+     * \ingroup core
+     *
+     * \brief Class that contains independent faces an topological information about this faces
      */
     class TopologicalFaces
     {
@@ -61,7 +65,13 @@ class CORE_EXPORT QgsTopologicalMesh
         friend class QgsMeshVertexCirculator;
     };
 
-    //! Class that contains topological differences between two states of a topological mesh, only accessible from the QgsTopologicalMesh class
+
+    /**
+     * \ingroup core
+     *
+     * \brief Class that contains topological differences between two states of a topological mesh, only accessible from the QgsTopologicalMesh class
+     *
+     */
     class Changes
     {
       public:
@@ -198,7 +208,12 @@ class CORE_EXPORT QgsTopologicalMesh
 
 };
 
-//! Convenient class that turn around a vertex an provide face index
+/**
+ * \ingroup core
+ *
+ * \brief  Convenient class that turn around a vertex and provide information about faces and vertices
+ *
+ */
 class QgsMeshVertexCirculator
 {
   public:

@@ -228,7 +228,9 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      */
     bool contains( const QgsMesh::ElementType &type ) const;
 
-    /*!
+    /**
+     * \ingroup core
+     *
      * \brief The Changes class is used to make changes of the triangular and to keep traces of this changes
      *        If a Changes instance is applied (see QgsTriangularMesh::applyChanges()),
      *        these changes can be reversed (see QgsTriangularMesh::reverseChanges()) as long as other changes are not applied
