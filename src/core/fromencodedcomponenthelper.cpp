@@ -15,6 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
+#include "fromencodedcomponenthelper.h"
+
+#include <QString>
+
 /*!
     \a ba contains an 8-bit form of the component and it might be
     percent-encoded already. We can't use QString::fromUtf8 because it might

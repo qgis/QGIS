@@ -68,4 +68,4 @@ static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
     This method is named qt_urlRecodeByteArray in Qt's internals
 */
 QString fromEncodedComponent_helper( const QByteArray &ba );
-}
+
