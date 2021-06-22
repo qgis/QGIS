@@ -235,6 +235,9 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
 {
   const bool isMainRenderer = renderer == mRenderer;
 
+  QgsRenderContext &context = *renderContext();
+  context.setSymbologyReferenceScale( renderer->referenceScale() );
+
   if ( renderer->type() == QLatin1String( "nullSymbol" ) )
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
@@ -243,9 +246,6 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer )
          ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
       return true;
   }
-
-  QgsRenderContext &context = *renderContext();
-  context.setSymbologyReferenceScale( renderer->referenceScale() );
 
   QgsScopedQPainterState painterState( context.painter() );
 
