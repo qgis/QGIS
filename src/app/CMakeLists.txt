@@ -464,7 +464,7 @@ endif()
 
 #############
 if (ANDROID)
-  add_library(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS})
+  add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
 
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
@@ -477,7 +477,7 @@ endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
-add_library(qgis_app SHARED ${QGIS_APP_SRCS})
+add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
 
 # require c++17
 target_compile_features(qgis_app PRIVATE cxx_std_17)
