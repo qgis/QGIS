@@ -75,6 +75,24 @@ Sets the layer's ``uri``.
 .. seealso:: :py:func:`uri`
 %End
 
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext );
+%Docstring
+Constructor for LayerOptions with ``transformContext``.
+%End
+
+      QgsCoordinateTransformContext transformContext;
+    };
+
+    QgsMapLayer *toLayer( const LayerOptions &options ) const /Factory/;
+%Docstring
+Creates a new :py:class:`QgsMapLayer` object associated with the sublayer.
+
+Caller takes ownership of the returned layer.
+%End
+
     QString name() const;
 %Docstring
 Returns the layer's name.
