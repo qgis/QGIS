@@ -2567,10 +2567,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       {
         setMinimumScale( minScale );
       }
-    }
 
-    if ( categories.testFlag( Rendering ) )
-    {
       QDomElement e = node.toElement();
 
       // get the simplification drawing settings
@@ -2579,6 +2576,9 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
       mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
       mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
+
+      if ( mRenderer )
+        mRenderer->setReferenceScale( e.attribute( QStringLiteral( "symbologyReferenceScale" ), QStringLiteral( "-1" ) ).toDouble() );
     }
 
     //diagram renderer and diagram layer settings
@@ -2926,6 +2926,8 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
       mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
       mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
+
+      mapLayerNode.setAttribute( QStringLiteral( "symbologyReferenceScale" ), mRenderer ? mRenderer->referenceScale() : -1 );
     }
 
     if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
