@@ -338,3 +338,43 @@ Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublaye
 Qgis.SublayerQueryFlag.__doc__ = 'Flags which control how data providers will scan for sublayers in a dataset.\n\n.. versionadded:: 3.22\n\n' + '* ``FastScan``: ' + Qgis.SublayerQueryFlag.FastScan.__doc__ + '\n' + '* ``ResolveGeometryType``: ' + Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ + '\n' + '* ``CountFeatures``: ' + Qgis.SublayerQueryFlag.CountFeatures.__doc__
 # --
 Qgis.SublayerQueryFlag.baseClass = Qgis
+QgsRasterPipe.Role = Qgis.RasterPipeInterfaceRole
+# monkey patching scoped based enum
+QgsRasterPipe.UnknownRole = Qgis.RasterPipeInterfaceRole.Unknown
+QgsRasterPipe.UnknownRole.is_monkey_patched = True
+QgsRasterPipe.UnknownRole.__doc__ = "Unknown role"
+QgsRasterPipe.ProviderRole = Qgis.RasterPipeInterfaceRole.Provider
+QgsRasterPipe.ProviderRole.is_monkey_patched = True
+QgsRasterPipe.ProviderRole.__doc__ = "Data provider role"
+QgsRasterPipe.RendererRole = Qgis.RasterPipeInterfaceRole.Renderer
+QgsRasterPipe.RendererRole.is_monkey_patched = True
+QgsRasterPipe.RendererRole.__doc__ = "Raster renderer role"
+QgsRasterPipe.BrightnessRole = Qgis.RasterPipeInterfaceRole.Brightness
+QgsRasterPipe.BrightnessRole.is_monkey_patched = True
+QgsRasterPipe.BrightnessRole.__doc__ = "Brightness filter role"
+QgsRasterPipe.ResamplerRole = Qgis.RasterPipeInterfaceRole.Resampler
+QgsRasterPipe.ResamplerRole.is_monkey_patched = True
+QgsRasterPipe.ResamplerRole.__doc__ = "Resampler role"
+QgsRasterPipe.ProjectorRole = Qgis.RasterPipeInterfaceRole.Projector
+QgsRasterPipe.ProjectorRole.is_monkey_patched = True
+QgsRasterPipe.ProjectorRole.__doc__ = "Projector role"
+QgsRasterPipe.NullerRole = Qgis.RasterPipeInterfaceRole.Nuller
+QgsRasterPipe.NullerRole.is_monkey_patched = True
+QgsRasterPipe.NullerRole.__doc__ = "Raster nuller role"
+QgsRasterPipe.HueSaturationRole = Qgis.RasterPipeInterfaceRole.HueSaturation
+QgsRasterPipe.HueSaturationRole.is_monkey_patched = True
+QgsRasterPipe.HueSaturationRole.__doc__ = "Hue/saturation filter role"
+Qgis.RasterPipeInterfaceRole.__doc__ = 'Raster pipe interface roles.\n\n.. versionadded:: 3.22\n\n' + '* ``UnknownRole``: ' + Qgis.RasterPipeInterfaceRole.Unknown.__doc__ + '\n' + '* ``ProviderRole``: ' + Qgis.RasterPipeInterfaceRole.Provider.__doc__ + '\n' + '* ``RendererRole``: ' + Qgis.RasterPipeInterfaceRole.Renderer.__doc__ + '\n' + '* ``BrightnessRole``: ' + Qgis.RasterPipeInterfaceRole.Brightness.__doc__ + '\n' + '* ``ResamplerRole``: ' + Qgis.RasterPipeInterfaceRole.Resampler.__doc__ + '\n' + '* ``ProjectorRole``: ' + Qgis.RasterPipeInterfaceRole.Projector.__doc__ + '\n' + '* ``NullerRole``: ' + Qgis.RasterPipeInterfaceRole.Nuller.__doc__ + '\n' + '* ``HueSaturationRole``: ' + Qgis.RasterPipeInterfaceRole.HueSaturation.__doc__
+# --
+Qgis.RasterPipeInterfaceRole.baseClass = Qgis
+QgsRasterPipe.ResamplingStage = Qgis.RasterResamplingStage
+# monkey patching scoped based enum
+QgsRasterPipe.ResampleFilter = Qgis.RasterResamplingStage.ResampleFilter
+QgsRasterPipe.ResampleFilter.is_monkey_patched = True
+QgsRasterPipe.ResampleFilter.__doc__ = ""
+QgsRasterPipe.Provider = Qgis.RasterResamplingStage.Provider
+QgsRasterPipe.Provider.is_monkey_patched = True
+QgsRasterPipe.Provider.__doc__ = ""
+Qgis.RasterResamplingStage.__doc__ = 'Stage at which raster resampling occurs.\n\n.. versionadded:: 3.22\n\n' + '* ``ResampleFilter``: ' + Qgis.RasterResamplingStage.ResampleFilter.__doc__ + '\n' + '* ``Provider``: ' + Qgis.RasterResamplingStage.Provider.__doc__
+# --
+Qgis.RasterResamplingStage.baseClass = Qgis

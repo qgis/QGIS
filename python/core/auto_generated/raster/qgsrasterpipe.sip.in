@@ -22,18 +22,6 @@ Contains a pipeline of raster interfaces for sequential raster processing.
 %End
   public:
 
-    enum Role
-    {
-      UnknownRole,
-      ProviderRole,
-      RendererRole,
-      BrightnessRole,
-      ResamplerRole,
-      ProjectorRole,
-      NullerRole,
-      HueSaturationRole,
-    };
-
     QgsRasterPipe();
 %Docstring
 Constructor for an empty QgsRasterPipe.
@@ -175,15 +163,7 @@ Returns the projector interface, or ``None`` if no projector is present in the p
 Returns the raster nuller interface, or ``None`` if no raster nuller is present in the pipe.
 %End
 
-    enum class ResamplingStage
-    {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
-    };
-
-    void setResamplingStage( ResamplingStage stage );
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
 %Docstring
 Sets which stage of the pipe should apply resampling.
 
@@ -195,7 +175,7 @@ ProviderHintCanPerformProviderResampling in :py:func:`~QgsRasterPipe.providerCap
 .. versionadded:: 3.16
 %End
 
-    ResamplingStage resamplingStage() const;
+    Qgis::RasterResamplingStage resamplingStage() const;
 %Docstring
 Returns which stage of the pipe should apply resampling
 

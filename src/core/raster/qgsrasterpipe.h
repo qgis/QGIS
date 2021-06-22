@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -46,19 +47,6 @@ class QgsRasterDataProvider;
 class CORE_EXPORT QgsRasterPipe
 {
   public:
-
-    //! Roles of known interfaces
-    enum Role
-    {
-      UnknownRole = 0, //!< Unknown role
-      ProviderRole = 1, //!< Data provider role
-      RendererRole = 2, //!< Raster renderer role
-      BrightnessRole = 3, //!< Brightness filter role
-      ResamplerRole = 4, //!< Resampler role
-      ProjectorRole = 5, //!< Projector role
-      NullerRole = 6, //!< Raster nuller role
-      HueSaturationRole = 7, //!< Hue/saturation filter role
-    };
 
     /**
      * Constructor for an empty QgsRasterPipe.
@@ -207,18 +195,6 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller *nuller() const;
 
     /**
-     * Stage at which resampling occurs.
-     * \since QGIS 3.16
-     */
-    enum class ResamplingStage
-    {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
-    };
-
-    /**
      * Sets which stage of the pipe should apply resampling.
      *
      * Provider resampling is only supported if provider sets
@@ -227,7 +203,7 @@ class CORE_EXPORT QgsRasterPipe
      * \see resamplingStage()
      * \since QGIS 3.16
      */
-    void setResamplingStage( ResamplingStage stage );
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
 
     /**
      * Returns which stage of the pipe should apply resampling
@@ -235,7 +211,7 @@ class CORE_EXPORT QgsRasterPipe
      * \see setResamplingStage()
      * \since QGIS 3.16
      */
-    ResamplingStage resamplingStage() const { return mResamplingStage; }
+    Qgis::RasterResamplingStage resamplingStage() const { return mResamplingStage; }
 
   private:
 #ifdef SIP_RUN
@@ -243,12 +219,12 @@ class CORE_EXPORT QgsRasterPipe
 #endif
 
     //! Gets known parent type_info of interface parent
-    Role interfaceRole( QgsRasterInterface *iface ) const;
+    Qgis::RasterPipeInterfaceRole interfaceRole( QgsRasterInterface *iface ) const;
 
     // Interfaces in pipe, the first is always provider
     QVector<QgsRasterInterface *> mInterfaces;
 
-    QMap<Role, int> mRoleMap;
+    QMap<Qgis::RasterPipeInterfaceRole, int> mRoleMap;
 
     // Set role in mRoleMap
     void setRole( QgsRasterInterface *interface, int idx );
@@ -260,7 +236,7 @@ class CORE_EXPORT QgsRasterPipe
     bool checkBounds( int idx ) const;
 
     //! Gets known interface by role
-    QgsRasterInterface *interface( Role role ) const;
+    QgsRasterInterface *interface( Qgis::RasterPipeInterfaceRole role ) const;
 
     /**
      * \brief Try to connect interfaces in pipe and to the provider at beginning.
@@ -268,7 +244,7 @@ class CORE_EXPORT QgsRasterPipe
     */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 
-    ResamplingStage mResamplingStage = ResamplingStage::ResampleFilter;
+    Qgis::RasterResamplingStage mResamplingStage = Qgis::RasterResamplingStage::ResampleFilter;
 };
 
 #endif
