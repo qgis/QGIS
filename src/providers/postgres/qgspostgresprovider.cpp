@@ -630,10 +630,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       delim = QStringLiteral( "," );
     }
 
-    QString whereInString; // ("id_int1","id_str2") IN ( VALUES (130,E'\\0'''),(130,E'\\1'''),(130,E'\\2''') ... )
-    QString whereOrString; // "id_int1" = 139 AND "id_str2" IS NULL OR "id_int1" IS NULL AND "id_str2" = E'\\4''' ...
     QStringList whereInList;
-    QStringList whereOrList;
     for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
     {
       const QVariantList pkVals = sharedData->lookupKey( featureId );
@@ -658,27 +655,14 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         }
         if ( isNotNull )
           whereInList << whereValues;
-        else
-          whereOrList << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
     }
 
-    whereInString = whereInList.isEmpty() ? QString() :
-                    whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
-                    whereInList.join( QStringLiteral( "),(" ) )
-                    .prepend( QStringLiteral( "( %1(" ).arg( canUseVALUES ? QStringLiteral( "VALUES " ) : QString() ) )
-                    .append( QStringLiteral( ") )" ) );
-
-    if ( whereOrList.isEmpty() )
-      return whereInString;
-    else
-      whereOrString = whereOrList.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
-
-    if ( whereInList.isEmpty() )
-      return whereOrString;
-
-    return QStringLiteral( "(%1) OR (%2)" ).arg( whereInString, whereOrString );
-
+    return whereInList.isEmpty() ? QString() :
+           whereKeys.prepend( QLatin1Char( '(' ) ).append( QStringLiteral( ") IN " ) ) +
+           whereInList.join( QStringLiteral( "),(" ) )
+           .prepend( QStringLiteral( "( %1(" ).arg( canUseVALUES ? QStringLiteral( "VALUES " ) : QString() ) )
+           .append( QStringLiteral( ") )" ) );
   };
 
   switch ( pkType )
@@ -763,7 +747,43 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         }
 
         if ( canUseIN )
-          return lookupComboKeyWhereClause( canUseVALUES, withCastPkTypeName );
+        {
+          QString whereInString; // ("id_int1","id_str2") IN ( VALUES (130,E'\\0'''),(130,E'\\1'''),(130,E'\\2''') ... )
+          whereInString = lookupComboKeyWhereClause( canUseVALUES, withCastPkTypeName );
+
+          QString whereOrString; // "id_int1" = 139 AND "id_str2" IS NULL OR "id_int1" IS NULL AND "id_str2" = E'\\4''' ...
+          QStringList whereOrList;
+          for ( const QgsFeatureId featureId : std::as_const( featureIds ) )
+          {
+            const QVariantList pkVals = sharedData->lookupKey( featureId );
+            if ( !pkVals.isEmpty() )
+            {
+              Q_ASSERT( pkVals.size() == pkAttrs.size() );
+
+              bool isNotNull = true;
+              for ( int i = 0; i < pkAttrs.size(); i++ )
+              {
+                if ( pkVals[i].isNull() )
+                {
+                  isNotNull = false;
+                  break;
+                }
+              }
+              if ( !isNotNull )
+                whereOrList << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
+            }
+          }
+          whereOrString = whereOrList.isEmpty() ? QString() : whereOrList.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+
+          if ( whereOrString.isEmpty() )
+            return whereInString;
+
+          if ( whereInString.isEmpty() )
+            return whereOrString;
+
+          return QStringLiteral( "(%1) OR (%2)" ).arg( whereInString, whereOrString );
+
+        }
       }
 
       [[fallthrough]];
