@@ -19,7 +19,7 @@
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
-#include "qgis.h"
+#include "fromencodedcomponenthelper.h"
 
 #include <QMessageBox>
 #include <QUrl>
@@ -370,7 +370,7 @@ QUrl QgsNewHttpConnection::urlTrimmed() const
 
   if ( url.path( QUrl::FullyEncoded ).isEmpty() )
   {
-    url.setPath( qgis::fromEncodedComponent_helper( "/" ) );
+    url.setPath( fromEncodedComponent_helper( "/" ) );
   }
   return url;
 }

@@ -267,6 +267,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  fromencodedcomponenthelper.cpp
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
@@ -1673,6 +1674,7 @@ set(QGIS_CORE_PRIVATE_HDRS
   qgsproperty_p.h
   qgsrelation_p.h
   qgsspatialindexkdbush_p.h
+  fromencodedcomponenthelper.h
 
   editform/qgseditformconfig_p.h
   proj/qgscoordinatereferencesystem_p.h

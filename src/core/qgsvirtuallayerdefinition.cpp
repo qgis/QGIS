@@ -22,6 +22,8 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerdefinition.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "fromencodedcomponenthelper.h"
+
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )
@@ -189,8 +191,8 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     else
       // if you can find a way to port this away from fromEncodedComponent_helper without breaking existing projects,
       // please do so... this is GROSS!
-      urlQuery.addQueryItem( qgis::fromEncodedComponent_helper( "layer" ),
-                             qgis::fromEncodedComponent_helper( QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
+      urlQuery.addQueryItem( fromEncodedComponent_helper( "layer" ),
+                             fromEncodedComponent_helper( QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
                                  .arg( l.provider(),
                                        QString( QUrl::toPercentEncoding( l.name() ) ),
                                        l.encoding(),
