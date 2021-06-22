@@ -120,6 +120,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
 
 QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  Q_UNUSED( renderer )
-  return new QgsNullSymbolRenderer();
+  std::unique_ptr< QgsNullSymbolRenderer > res = std::make_unique< QgsNullSymbolRenderer >();
+  renderer->copyRendererData( res.get() );
+  return res.release();
 }

@@ -527,6 +527,17 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Clones generic renderer data to another renderer.
+     * Currently clones
+     *
+     * - Order By
+     * - Paint Effect
+     *
+     * \param destRenderer destination renderer for copied effect
+     */
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -550,17 +561,6 @@ class CORE_EXPORT QgsFeatureRenderer
      * coordinates
      */
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
-
-    /**
-     * Clones generic renderer data to another renderer.
-     * Currently clones
-     *
-     * - Order By
-     * - Paint Effect
-     *
-     * \param destRenderer destination renderer for copied effect
-     */
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
     /**
      * Saves generic renderer data into the specified \a element.

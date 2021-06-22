@@ -555,11 +555,15 @@ QgsMergedFeatureRenderer *QgsMergedFeatureRenderer::convertFromRenderer( const Q
        renderer->type() == QLatin1String( "graduatedSymbol" ) ||
        renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
-    return new QgsMergedFeatureRenderer( renderer->clone() );
+    std::unique_ptr< QgsMergedFeatureRenderer > res = std::make_unique< QgsMergedFeatureRenderer >( renderer->clone() );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   else if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    return new QgsMergedFeatureRenderer( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    std::unique_ptr< QgsMergedFeatureRenderer > res = std::make_unique< QgsMergedFeatureRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   return nullptr;
 }

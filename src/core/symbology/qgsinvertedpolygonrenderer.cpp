@@ -109,11 +109,15 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( con
             renderer->type() == QLatin1String( "graduatedSymbol" ) ||
             renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
-    return new QgsInvertedPolygonRenderer( renderer->clone() );
+    std::unique_ptr< QgsInvertedPolygonRenderer > res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->clone() );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   else if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
   {
-    return new QgsInvertedPolygonRenderer( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    std::unique_ptr< QgsInvertedPolygonRenderer > res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
   return nullptr;
 }
