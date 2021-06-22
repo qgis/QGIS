@@ -17,9 +17,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsmaplayerfactory.h"
 
-QgsProviderSublayerDetails::LayerOptions::LayerOptions( const QgsCoordinateTransformContext &transformContext )
-  : transformContext( transformContext )
-{}
+
 
 QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) const
 {
