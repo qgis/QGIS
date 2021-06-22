@@ -68,6 +68,8 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   if ( !mRenderer )
   {
     mRenderer = std::make_unique< QgsPointClusterRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   blockAllSignals( true );

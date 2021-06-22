@@ -64,6 +64,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   if ( ! mRenderer )
   {
     mRenderer.reset( new QgsInvertedPolygonRenderer() );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
   mMergePolygonsCheckBox->blockSignals( true );
   mMergePolygonsCheckBox->setCheckState( mRenderer->preprocessingEnabled() ? Qt::Checked : Qt::Unchecked );
