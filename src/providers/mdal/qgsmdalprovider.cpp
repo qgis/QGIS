@@ -26,6 +26,7 @@
 #include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
+#include <mutex>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
