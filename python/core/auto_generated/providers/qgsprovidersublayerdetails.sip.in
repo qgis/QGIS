@@ -61,6 +61,20 @@ Sets the layer ``type``.
 .. seealso:: :py:func:`type`
 %End
 
+    QString uri() const;
+%Docstring
+Returns the layer's URI.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+    void setUri( const QString &uri );
+%Docstring
+Sets the layer's ``uri``.
+
+.. seealso:: :py:func:`uri`
+%End
+
     QString name() const;
 %Docstring
 Returns the layer's name.

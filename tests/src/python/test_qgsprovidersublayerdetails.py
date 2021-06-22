@@ -39,6 +39,9 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setType(QgsMapLayerType.MeshLayer)
         self.assertEqual(d.type(), QgsMapLayerType.MeshLayer)
 
+        d.setUri('some uri')
+        self.assertEqual(d.uri(), 'some uri')
+
         d.setName('name')
         self.assertEqual(d.name(), 'name')
 
