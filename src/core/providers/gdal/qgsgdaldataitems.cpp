@@ -27,6 +27,7 @@
 #include "qgsvectortiledataitems.h"
 #include "qgsproviderregistry.h"
 #include "symbology/qgsstyle.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
 #include <mutex>
@@ -39,15 +40,15 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri,
-                                    QStringList *sublayers )
+                                    const QList<QgsProviderSublayerDetails> &sublayers )
   : QgsLayerItem( parent, name, path, uri, Qgis::BrowserLayerType::Raster, QStringLiteral( "gdal" ) )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
   // if there are sublayers, set populated=false so item can be populated on demand
-  if ( sublayers && !sublayers->isEmpty() )
+  if ( !sublayers.isEmpty() )
   {
-    mSublayers = *sublayers;
+    mSublayers = sublayers;
     // We have sublayers: we are able to create children!
     mCapabilities |= Qgis::BrowserItemCapability::Fertile;
     setState( Qgis::BrowserItemState::NotPopulated );
@@ -81,18 +82,12 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
-    QgsDataItem *childItem = nullptr;
     QgsDebugMsgLevel( QStringLiteral( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
-    for ( int i = 0; i < mSublayers.count(); i++ )
+    for ( const QgsProviderSublayerDetails &layer : std::as_const( mSublayers ) )
     {
-      const QStringList parts = mSublayers[i].split( QgsDataProvider::sublayerSeparator() );
-      const QString path = parts[0];
-      const QString desc = parts[1];
-      childItem = new QgsGdalLayerItem( this, desc, path, path );
-      if ( childItem )
-      {
-        children.append( childItem );
-      }
+      const QString path = layer.name();
+      const QString desc = layer.description();
+      children.append( new QgsGdalLayerItem( this, desc, path, path, {} ) );
     }
   }
 
@@ -328,11 +323,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       }
     }
     // add the item
-    QStringList sublayers;
     QgsDebugMsgLevel( QStringLiteral( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
-    QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
-    if ( item )
-      return item;
+    return new QgsGdalLayerItem( parentItem, name, path, path, {} );
   }
 
   // test that file is valid with GDAL
@@ -358,15 +350,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     return nullptr;
   }
 
-  QStringList sublayers = QgsGdalProvider::subLayers( hDS.get() );
+  const QList< QgsProviderSublayerDetails > sublayers = QgsGdalProvider::sublayerDetails( hDS.get(), path );
   hDS.reset();
 
   QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 
-  QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path,
-      &sublayers );
-
-  return item;
+  return new QgsGdalLayerItem( parentItem, name, path, path, sublayers );
 }
 
 ///@endcond

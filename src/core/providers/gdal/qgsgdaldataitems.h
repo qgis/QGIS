@@ -25,25 +25,28 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+class QgsProviderSublayerDetails;
+
 Q_NOWARN_DEPRECATED_PUSH  // setCrs is deprecated
 class CORE_EXPORT QgsGdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 
-  private:
-
-    QStringList mSublayers;
-
   public:
     QgsGdalLayerItem( QgsDataItem *parent,
                       const QString &name, const QString &path, const QString &uri,
-                      QStringList *mSublayers = nullptr );
+                      const QList<QgsProviderSublayerDetails> &sublayers );
 
     bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
     QString layerName() const override;
+
+  private:
+
+    QList< QgsProviderSublayerDetails > mSublayers;
+
 };
 Q_NOWARN_DEPRECATED_POP
 
