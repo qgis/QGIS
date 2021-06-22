@@ -43,6 +43,16 @@ Converts a map layer ``type`` to a string value.
 .. seealso:: :py:func:`typeFromString`
 %End
 
+    static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type,
+                                     const QString &provider = QString(), const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() ) /Factory/;
+%Docstring
+Creates a map layer, given a ``uri``, ``name``, layer ``type`` and ``provider`` name.
+
+Caller takes ownership of the returned layer.
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************

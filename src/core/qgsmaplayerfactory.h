@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgscoordinatetransformcontext.h"
 
 #include <QString>
 
@@ -51,6 +52,16 @@ class CORE_EXPORT QgsMapLayerFactory
      * \see typeFromString()
      */
     static QString typeToString( QgsMapLayerType type );
+
+    /**
+     * Creates a map layer, given a \a uri, \a name, layer \a type and \a provider name.
+     *
+     * Caller takes ownership of the returned layer.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type,
+                                     const QString &provider = QString(), const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() ) SIP_FACTORY;
 
 };
 
