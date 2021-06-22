@@ -28,9 +28,9 @@ Class that represents an error during mesh editing
       InvalidVertex
     };
 
-    QgsMeshEditingError();
+    QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 );
 %Docstring
-Contructor of the default error, that is NoError
+Constructor of the default error, that is NoError
 %End
 
     QgsMeshEditingError( MeshEditingErrorType type, int elementIndex );
@@ -59,7 +59,7 @@ Class that makes edit operation on a mesh
 
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 %Docstring
-Contructor with a specified layer ``meshLayer``
+Constructor with a specified layer ``meshLayer``
 %End
 
 
@@ -95,7 +95,7 @@ The method returns the number of vertices effectivly added.
 Removes vertices with indexes in the list ``verticesToRemoveIndexes`` in the mesh
 if ``fillHoles`` is set to ``True``, this operation will fill holes created in the mesh, if not remove the surrounding faces
 
-If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is cancelled
+If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
 %End
 
     void stopEditing();

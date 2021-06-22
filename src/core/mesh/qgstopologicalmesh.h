@@ -27,9 +27,10 @@ class QgsMeshVertexCirculator;
  *  \brief Class that wraps a QgsMesh to ensure the consistency of the mesh during editing and help to access to elements from other elements
  *
  *  A topological face need to:
- *  - be convex
- *  - counter clock wise
- *  - not share an unique vertex with another face
+ *
+ * - be convex
+ * - counter clock wise
+ * - not share an unique vertex with another face
  */
 class CORE_EXPORT QgsTopologicalMesh
 {
@@ -38,7 +39,7 @@ class CORE_EXPORT QgsTopologicalMesh
     using FaceNeighbors = QVector<int>;
 
     /**
-     *  Class that contains independant faces an topological information about this faces
+     *  Class that contains independent faces an topological information about this faces
      */
     class TopologicalFaces
     {
@@ -101,7 +102,7 @@ class CORE_EXPORT QgsTopologicalMesh
 
     /**
      * Creates a topologicaly consistent mesh with \a mesh, this static method modifies \a mesh to be topological consistent
-     * and return a topological mesh instance thats contains and handeles this mesh (do not take ownership).
+     * and return a topological mesh instance that contains and handeles this mesh (do not take ownership).
      */
     static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, QgsMeshEditingError &error );
 
@@ -113,7 +114,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns the indexes of neighbor faces of the face with index \a faceIndex
     QList<int> neighborsOfFace( int faceIndex ) const;
 
-    //! Returns the indexes of faces that are arround the vertex with index \a vertexIndex
+    //! Returns the indexes of faces that are around the vertex with index \a vertexIndex
     QList<int> facesAroundVertex( int vertexIndex ) const;
 
     //! Returns a pointer to the wrapped mesh
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsTopologicalMesh
 
 };
 
-//! Convenient class that turn arround a vertex an provide face index
+//! Convenient class that turn around a vertex an provide face index
 class QgsMeshVertexCirculator
 {
   public:
@@ -211,10 +212,10 @@ class QgsMeshVertexCirculator
     //! Constructor with \a topologicFaces, \a vertexIndex and the index \a faceIndex of the face containing the vertex
     QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int vertexIndex );
 
-    //! Turns counter clockwise arround the vertex and returns the new current face, -1 if the circulator pass a boundary or circulator is invalid
+    //! Turns counter clockwise around the vertex and returns the new current face, -1 if the circulator pass a boundary or circulator is invalid
     int turnCounterClockwise() const;
 
-    //! Turns counter clockwise arround the vertex and returns the new current face, -1 if the circulator pass a boundary or circulator is invalid
+    //! Turns counter clockwise around the vertex and returns the new current face, -1 if the circulator pass a boundary or circulator is invalid
     int turnClockwise() const;
 
     //! Returns the current face index, -1 if the circulator has passed a boundary or circulator is invalid
@@ -223,10 +224,10 @@ class QgsMeshVertexCirculator
     //! Returns the current face, empty face if  the circulator pass a boundary or circulator is invalid
     QgsMeshFace currentFace() const;
 
-    //! Sets the circulator on the boundary face turning clockwise, return false is there isn't boudary face
+    //! Sets the circulator on the boundary face turning clockwise, return false is there isn't boundary face
     bool goBoundaryClockwise() const;
 
-    //! Sets the circulator on the boundary face turning counter clockwise, return false is there isn't boudary face
+    //! Sets the circulator on the boundary face turning counter clockwise, return false is there isn't boundary face
     bool goBoundaryCounterClockwise() const;
 
     //! Returns the opposite vertex of the current face and on the edge on the side turning clockwise

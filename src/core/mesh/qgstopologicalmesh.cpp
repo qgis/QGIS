@@ -238,11 +238,11 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
     int oppositeVertexForMeshFace = meshCirculator.oppositeVertexCounterClockWise();
 
     const QgsMeshFace &newFaceBoundary = newFacesCirculator.currentFace();
-    int boundaryPositonInNewFace = vertexPositionInFace( boundary, newFaceBoundary );
+    int boundaryPositionInNewFace = vertexPositionInFace( boundary, newFaceBoundary );
 
     if ( oppositeVertexForMeshFace != oppositeVertexForNewFace )
     {
-      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositonInNewFace] = -1 ;
+      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = -1 ;
     }
     else
     {
@@ -257,7 +257,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
         changes.addedFaceIndexInMesh( newFacesCirculator.currentFaceIndex() )
       } ) );
 
-      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositonInNewFace] = meshCirculator.currentFaceIndex();
+      changes.mFacesNeighborhoodToAdd[newFacesCirculator.currentFaceIndex()][boundaryPositionInNewFace] = meshCirculator.currentFaceIndex();
     }
   }
 
@@ -456,7 +456,7 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
     double vy = v2.y() - v1.y();
 
     double crossProduct = ux * vy - uy * vx; //if cross product>0, we have two edges clockwise
-    if ( direction != 0 && crossProduct * direction < 0 )   // We have a convex face or a (partialy) flat face
+    if ( direction != 0 && crossProduct * direction < 0 )   // We have a convex face or a (partially) flat face
       return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, -1 );
     else if ( crossProduct == 0 )
       return QgsMeshEditingError( QgsMeshEditingError::FlatFace, -1 );
@@ -752,7 +752,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
 QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMesh::TopologicalFaces &topologicFaces ) const
 {
   QList<int> boundaryToCheck = topologicFaces.mBoundaries;
-  // go throught the boundary to check if there is a unique shared vertex
+  // go through the boundary to check if there is a unique shared vertex
 
   while ( !boundaryToCheck.isEmpty() )
   {
@@ -930,7 +930,7 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
         {
           if ( boundaryVertices.contains( v1 ) )
           {
-            error = QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, v1 ); // if a vertices is more than one time in the boudary, that means faces share only one vertices
+            error = QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, v1 ); // if a vertices is more than one time in the boundary, that means faces share only one vertices
             return ret;
           }
         }

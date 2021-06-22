@@ -42,7 +42,7 @@ class CORE_EXPORT QgsMeshEditingError
       InvalidVertex
     };
 
-    //! Contructor of the default error, that is NoError
+    //! Constructor of the default error, that is NoError
     QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 ) {}
 
     //! Constructor with eht error \a type and the index of the element \a elementIndex
@@ -64,10 +64,10 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     Q_OBJECT
   public:
 
-    //! Contructor with a specified layer \a meshLayer
+    //! Constructor with a specified layer \a meshLayer
     QgsMeshEditor( QgsMeshLayer *meshLayer );
 
-    //! Constructoe with a specific mesh \a nativeMesh and an associatd triangular mesh \triangularMesh
+    //! Constructoe with a specific mesh \a nativeMesh and an associatd triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *  Removes vertices with indexes in the list \a verticesToRemoveIndexes in the mesh
      *  if \a fillHoles is set to TRUE, this operation will fill holes created in the mesh, if not remove the surrounding faces
      *
-     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is cancelled
+     *  If removing these vertices leads to a topological errors, the method will return the corresponding error and the operatio is canceled
      */
     QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
 

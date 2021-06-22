@@ -241,7 +241,8 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
         //! Default constructor, no changes
         Changes() = default;
-        //! Contructor of the triangular changes from \a topological changes
+
+        //! Constructor of the triangular changes from \a topological changes
         Changes( const QgsTopologicalMesh::Changes &topologicalChanges );
 
       private:

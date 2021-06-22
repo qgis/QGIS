@@ -462,7 +462,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   // here we test if the creation of the topologic mesh fails if there are some forbitten faces :
   // concave face,
   // unorder vertex index in the face
-  // completly or partially flat face
+  // completely or partially flat face
   // faces sharing only one vertex
 
   QgsMesh badMesh;
