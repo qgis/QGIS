@@ -1342,7 +1342,7 @@ QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::c
   else
   {
     bool ok;
-    defaultValue = QgsDoubleValidator::toDouble( mMinLineEdit->text(), &ok );
+    defaultValue = QString::number( QgsDoubleValidator::toDouble( mMinLineEdit->text(), &ok ) );
     if ( ! ok )
     {
       defaultValue = QStringLiteral( "None" );
