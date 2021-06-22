@@ -30,35 +30,9 @@ inline char toHexUpper( uint value ) noexcept
   return "0123456789ABCDEF"[value & 0xF];
 }
 
-static inline ushort encodeNibble( ushort c )
+inline ushort encodeNibble( ushort c )
 {
   return ushort( toHexUpper( c ) );
-}
-
-static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
-{
-  while ( ptr + 4 <= end )
-  {
-    quint32 data = qFromUnaligned<quint32>( ptr );
-    if ( data &= 0x80808080U )
-    {
-#if Q_BYTE_ORDER == Q_BIG_ENDIAN
-      uint idx = qCountLeadingZeroBits( data );
-#else
-      uint idx = qCountTrailingZeroBits( data );
-#endif
-      ptr += idx / 8;
-      return false;
-    }
-    ptr += 4;
-  }
-  while ( ptr != end )
-  {
-    if ( quint8( *ptr ) & 0x80 )
-      return false;
-    ++ptr;
-  }
-  return true;
 }
 
 /*!
