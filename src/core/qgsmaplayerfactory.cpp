@@ -16,6 +16,12 @@
  ***************************************************************************/
 
 #include "qgsmaplayerfactory.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsannotationlayer.h"
 
 QgsMapLayerType QgsMapLayerFactory::typeFromString( const QString &string, bool &ok )
 {
@@ -59,4 +65,48 @@ QString QgsMapLayerFactory::typeToString( QgsMapLayerType type )
       return QStringLiteral( "point-cloud" );
   }
   return QString();
+}
+
+QgsMapLayer *QgsMapLayerFactory::createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const QString &provider, const QgsCoordinateTransformContext &transformContext )
+{
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer::LayerOptions options;
+      options.transformContext = transformContext;
+      return new QgsVectorLayer( uri, name, provider, options );
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    {
+      QgsRasterLayer::LayerOptions options;
+      options.transformContext = transformContext;
+      return new QgsRasterLayer( uri, name, provider, options );
+    }
+
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsMeshLayer::LayerOptions options;
+      options.transformContext = transformContext;
+      return new QgsMeshLayer( uri, name, provider, options );
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+      return new QgsVectorTileLayer( uri, name );
+
+    case QgsMapLayerType::AnnotationLayer:
+      return new QgsAnnotationLayer( name, QgsAnnotationLayer::LayerOptions( transformContext ) );
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      QgsPointCloudLayer::LayerOptions options;
+      options.transformContext = transformContext;
+      return new QgsPointCloudLayer( uri, name, provider, options );
+    }
+
+    case QgsMapLayerType::PluginLayer:
+      break;
+  }
+  return nullptr;
 }

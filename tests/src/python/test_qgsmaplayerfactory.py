@@ -12,8 +12,21 @@ __copyright__ = 'Copyright 2021, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMapLayerFactory, QgsMapLayerType
+import os
+
+from qgis.core import (
+    QgsMapLayerFactory,
+    QgsMapLayerType,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsMeshLayer,
+    QgsPointCloudLayer,
+    QgsAnnotationLayer,
+    QgsVectorTileLayer,
+    QgsDataSourceUri
+)
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
 
@@ -61,6 +74,47 @@ class TestQgsMapLayerFactory(unittest.TestCase):
         self.assertEqual(
             QgsMapLayerFactory.typeFromString(QgsMapLayerFactory.typeToString(QgsMapLayerType.AnnotationLayer))[0],
             QgsMapLayerType.AnnotationLayer)
+
+    def testCreateLayer(self):
+        # create vector
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'lines', QgsMapLayerType.VectorLayer, 'ogr')
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsVectorLayer)
+        self.assertEqual(ml.name(), 'lines')
+
+        # create raster
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'landsat.tif'), 'rl', QgsMapLayerType.RasterLayer, 'gdal')
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsRasterLayer)
+        self.assertEqual(ml.name(), 'rl')
+
+        # create mesh
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'mesh', 'lines.2dm'), 'ml', QgsMapLayerType.MeshLayer, 'mdal')
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsMeshLayer)
+        self.assertEqual(ml.name(), 'ml')
+
+        # create point cloud
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'rgb', 'ept.json'), 'pcl', QgsMapLayerType.PointCloudLayer, 'ept')
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsPointCloudLayer)
+        self.assertEqual(ml.name(), 'pcl')
+
+        # annotation layer
+        ml = QgsMapLayerFactory.createLayer('', 'al', QgsMapLayerType.AnnotationLayer)
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsAnnotationLayer)
+        self.assertEqual(ml.name(), 'al')
+
+        # vector tile layer
+        ds = QgsDataSourceUri()
+        ds.setParam("type", "xyz")
+        ds.setParam("url", "file://{}/{{z}}-{{x}}-{{y}}.pbf".format(os.path.join(unitTestDataPath(), 'vector_tile')))
+        ds.setParam("zmax", "1")
+        ml = QgsMapLayerFactory.createLayer(ds.encodedUri().data().decode(), 'vtl', QgsMapLayerType.VectorTileLayer)
+        self.assertTrue(ml.isValid())
+        self.assertIsInstance(ml, QgsVectorTileLayer)
+        self.assertEqual(ml.name(), 'vtl')
 
 
 if __name__ == '__main__':
