@@ -459,6 +459,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   if ( !mRenderer )
   {
     mRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   // setup user interface

@@ -69,6 +69,8 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     mRenderer = std::make_unique< QgsRuleBasedRenderer >( symbol );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   setupUi( this );

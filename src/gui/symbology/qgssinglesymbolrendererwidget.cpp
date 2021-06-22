@@ -49,6 +49,9 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
 
     if ( symbol )
       mRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol );
+
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   // load symbol from it

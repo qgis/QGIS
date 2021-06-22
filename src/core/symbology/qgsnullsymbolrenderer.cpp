@@ -91,6 +91,7 @@ QString QgsNullSymbolRenderer::dump() const
 QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
 {
   QgsNullSymbolRenderer *r = new QgsNullSymbolRenderer();
+  copyRendererData( r );
   return r;
 }
 
