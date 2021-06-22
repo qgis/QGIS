@@ -761,6 +761,8 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 };
 
 /**
+ * \ingroup core
+ *
  * \brief Class that represents a dataset with elevation value of the vertices of a existing mesh that can be edited
  *
  * \since QGIS 3.22
@@ -782,6 +784,8 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
 };
 
 /**
+ * \ingroup core
+ *
  * \brief Class that represents a dataset group with elevation value of the vertices of a existing mesh that can be edited
  *        This dataset group contains only one dataset.
  *

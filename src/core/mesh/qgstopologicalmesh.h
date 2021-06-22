@@ -33,6 +33,8 @@ class QgsMeshVertexCirculator;
  * - be convex
  * - counter clock wise
  * - not share an unique vertex with another face
+ *
+ * \since QGIS 3.22
  */
 class CORE_EXPORT QgsTopologicalMesh
 {
@@ -44,6 +46,8 @@ class CORE_EXPORT QgsTopologicalMesh
      * \ingroup core
      *
      * \brief Class that contains independent faces an topological information about this faces
+     *
+     * \since QGIS 3.22
      */
     class TopologicalFaces
     {
@@ -71,6 +75,7 @@ class CORE_EXPORT QgsTopologicalMesh
      *
      * \brief Class that contains topological differences between two states of a topological mesh, only accessible from the QgsTopologicalMesh class
      *
+     * \since QGIS 3.22
      */
     class Changes
     {
@@ -213,6 +218,7 @@ class CORE_EXPORT QgsTopologicalMesh
  *
  * \brief  Convenient class that turn around a vertex and provide information about faces and vertices
  *
+ * \since QGIS 3.22
  */
 class QgsMeshVertexCirculator
 {
