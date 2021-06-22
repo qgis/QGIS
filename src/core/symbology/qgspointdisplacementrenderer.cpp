@@ -476,6 +476,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else if ( renderer->type() == QLatin1String( "pointCluster" ) )
@@ -489,6 +490,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
     pointRenderer->setToleranceMapUnitScale( clusterRenderer->toleranceMapUnitScale() );
     if ( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol() )
       pointRenderer->setCenterSymbol( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol()->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else

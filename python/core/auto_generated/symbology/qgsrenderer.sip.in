@@ -540,6 +540,17 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+%Docstring
+Clones generic renderer data to another renderer.
+Currently clones
+
+- Order By
+- Paint Effect
+
+:param destRenderer: destination renderer for copied effect
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -568,17 +579,6 @@ render editing vertex marker for a polygon
 %Docstring
 Creates a point in screen coordinates from a wkb string in map
 coordinates
-%End
-
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
-%Docstring
-Clones generic renderer data to another renderer.
-Currently clones
-
-- Order By
-- Paint Effect
-
-:param destRenderer: destination renderer for copied effect
 %End
 
     void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );

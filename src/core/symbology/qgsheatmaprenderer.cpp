@@ -383,7 +383,9 @@ QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
   else
   {
-    return new QgsHeatmapRenderer();
+    std::unique_ptr< QgsHeatmapRenderer > res = std::make_unique< QgsHeatmapRenderer >();
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
 }
 

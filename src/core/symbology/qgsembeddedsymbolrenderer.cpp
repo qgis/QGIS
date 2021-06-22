@@ -125,6 +125,7 @@ QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const
   else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
   {
     std::unique_ptr< QgsEmbeddedSymbolRenderer > symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
+    renderer->copyRendererData( symbolRenderer.get() );
     return symbolRenderer.release();
   }
   else
