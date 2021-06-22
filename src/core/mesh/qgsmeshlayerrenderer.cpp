@@ -193,7 +193,6 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                  method
                                );
       }
-
     }
 
     const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );

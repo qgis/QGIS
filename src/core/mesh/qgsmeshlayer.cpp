@@ -39,6 +39,7 @@
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
 #include "qgslayermetadataformatter.h"
+#include "qgsmesheditor.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -684,6 +685,12 @@ void QgsMeshLayer::onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes )
   emit rendererChanged();
 }
 
+void QgsMeshLayer::onMeshEdited()
+{
+  mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  triggerRepaint();
+}
+
 QgsMeshDatasetGroupTreeItem *QgsMeshLayer::datasetGroupTreeRootItem() const
 {
   return mDatasetGroupStore->datasetGroupTreeItem();
@@ -861,6 +868,75 @@ QgsInterval QgsMeshLayer::datasetRelativeTime( const QgsMeshDatasetIndex &index 
 qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index )
 {
   return mDatasetGroupStore->datasetRelativeTime( index );
+}
+
+bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
+{
+  if ( mMeshEditor )
+  {
+    //TODO : sends a message to the log
+    return false;
+  }
+
+  updateTriangularMesh( transform );
+
+  mMeshEditor = new QgsMeshEditor( this );
+
+  QgsMeshEditingError error = mMeshEditor->initialize();
+
+  if ( error.errorType != QgsMeshEditingError::NoError )
+  {
+    mMeshEditor->deleteLater();
+    mMeshEditor = nullptr;
+    //TODO : sends the error to the log
+    return false;
+  }
+
+  mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+  mDatasetGroupStore->addDatasetGroup( new QgsMeshVerticesElevationDatasetGroup( tr( "vertices elevation" ), mNativeMesh.get() ) );
+  resetDatasetGroupTreeItem();
+
+  connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
+
+  return true;
+}
+
+void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
+{
+  if ( !mMeshEditor )
+    return;
+
+  mMeshEditor->stopEditing();
+  mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
+}
+
+QgsMeshEditor *QgsMeshLayer::meshEditor()
+{
+  return mMeshEditor;
+}
+
+int QgsMeshLayer::meshVerticesCount() const
+{
+  if ( mMeshEditor )
+    return mNativeMesh->vertexCount();
+  else
+    return mDataProvider->vertexCount();
+}
+
+int QgsMeshLayer::meshFacesCount() const
+{
+  if ( mMeshEditor )
+    return mNativeMesh->faceCount();
+  else
+    return mDataProvider->faceCount();
+}
+
+int QgsMeshLayer::meshEdgeCount() const
+{
+  if ( mMeshEditor )
+    return mNativeMesh->edgeCount();
+  else
+    return mDataProvider->edgeCount();
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()
@@ -1274,7 +1350,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
 
 void QgsMeshLayer::reload()
 {
-  if ( mDataProvider && mDataProvider->isValid() )
+  if ( !mMeshEditor && mDataProvider && mDataProvider->isValid() )
   {
     mDataProvider->reloadData();
 

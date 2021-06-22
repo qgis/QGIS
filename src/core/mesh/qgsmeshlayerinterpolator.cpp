@@ -115,6 +115,9 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
     const QgsMeshFace &face = mTriangularMesh.triangles()[triangleIndex];
 
+    if ( face.isEmpty() )
+      continue;
+
     const int v1 = face[0], v2 = face[1], v3 = face[2];
     const QgsPointXY &p1 = vertices[v1], &p2 = vertices[v2], &p3 = vertices[v3];
 

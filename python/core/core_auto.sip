@@ -411,6 +411,7 @@
 %Include auto_generated/maprenderer/qgsmaprenderersequentialjob.sip
 %Include auto_generated/maprenderer/qgsmaprenderertask.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
+%Include auto_generated/mesh/qgsmesheditor.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip

@@ -16155,6 +16155,13 @@ void QgisApp::updateUndoActions()
       canUndo = vlayer->undoStack()->canUndo();
       canRedo = vlayer->undoStack()->canRedo();
     }
+
+    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
+    if ( meshLayer && meshLayer->meshEditor() )
+    {
+      canUndo = meshLayer->undoStack()->canUndo();
+      canRedo = meshLayer->undoStack()->canRedo();
+    }
   }
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );
