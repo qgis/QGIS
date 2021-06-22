@@ -11,7 +11,10 @@
 class QgsMeshEditingError
 {
 %Docstring(signature="appended")
+
 Class that represents an error during mesh editing
+
+.. versionadded:: 3.22
 %End
 
 %TypeHeaderCode
@@ -49,7 +52,10 @@ Constructor with eht error ``type`` and the index of the element ``elementIndex`
 class QgsMeshEditor : QObject
 {
 %Docstring(signature="appended")
+
 Class that makes edit operation on a mesh
+
+.. versionadded:: 3.22
 %End
 
 %TypeHeaderCode
@@ -99,9 +105,15 @@ If removing these vertices leads to a topological errors, the method will return
 %End
 
     void stopEditing();
+%Docstring
+Stops editing
+%End
 
   signals:
     void meshEdited();
+%Docstring
+Emitted when the mesh is edited
+%End
 
 };
 
