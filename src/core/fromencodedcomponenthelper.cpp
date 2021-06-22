@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #include "fromencodedcomponenthelper.h"
 
 #include <QString>
