@@ -18,6 +18,8 @@
 #ifndef QGIS_H
 #define QGIS_H
 
+
+#include <QtEndian>
 #include <QMetaEnum>
 #include <cfloat>
 #include <memory>
@@ -727,6 +729,91 @@ namespace qgis
 #else
     return QList<T>( set.begin(), set.end() );
 #endif
+  }
+
+// Mega ewwww. all this is taken from Qt's QUrl::addEncodedQueryItem compatibility helper.
+// (I can't see any way to port the below code to NOT require this without breaking
+// existing projects.)
+
+  inline char toHexUpper( uint value ) noexcept
+  {
+    return "0123456789ABCDEF"[value & 0xF];
+  }
+
+  static inline ushort encodeNibble( ushort c )
+  {
+    return ushort( toHexUpper( c ) );
+  }
+
+  static bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
+  {
+    while ( ptr + 4 <= end )
+    {
+      quint32 data = qFromUnaligned<quint32>( ptr );
+      if ( data &= 0x80808080U )
+      {
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+        uint idx = qCountLeadingZeroBits( data );
+#else
+        uint idx = qCountTrailingZeroBits( data );
+#endif
+        ptr += idx / 8;
+        return false;
+      }
+      ptr += 4;
+    }
+    while ( ptr != end )
+    {
+      if ( quint8( *ptr ) & 0x80 )
+        return false;
+      ++ptr;
+    }
+    return true;
+  }
+
+  /*!
+      \a ba contains an 8-bit form of the component and it might be
+      percent-encoded already. We can't use QString::fromUtf8 because it might
+      contain non-UTF8 sequences. We can't use QByteArray::toPercentEncoding
+      because it might already contain percent-encoded sequences. We can't use
+      qt_urlRecode because it needs UTF-16 input.
+
+      This method is named qt_urlRecodeByteArray in Qt's internals
+  */
+  QString fromEncodedComponent_helper( const QByteArray &ba )
+  {
+    if ( ba.isNull() )
+      return QString();
+    // scan ba for anything above or equal to 0x80
+    // control points below 0x20 are fine in QString
+    const char *in = ba.constData();
+    const char *const end = ba.constEnd();
+    if ( qt_is_ascii( in, end ) )
+    {
+      // no non-ASCII found, we're safe to convert to QString
+      return QString::fromLatin1( ba, ba.size() );
+    }
+    // we found something that we need to encode
+    QByteArray intermediate = ba;
+    intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
+    uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
+    for ( ; in < end; ++in )
+    {
+      if ( *in & 0x80 )
+      {
+        // encode
+        *out++ = '%';
+        *out++ = encodeNibble( uchar( *in ) >> 4 );
+        *out++ = encodeNibble( uchar( *in ) & 0xf );
+      }
+      else
+      {
+        // keep
+        *out++ = uchar( *in );
+      }
+    }
+    // now it's safe to call fromLatin1
+    return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
   }
 }
 ///@endcond
