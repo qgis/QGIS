@@ -73,6 +73,20 @@ class CORE_EXPORT QgsProviderSublayerDetails
     void setType( QgsMapLayerType type ) { mType = type; }
 
     /**
+     * Returns the layer's URI.
+     *
+     * \see setUri()
+     */
+    QString uri() const { return mUri; }
+
+    /**
+     * Sets the layer's \a uri.
+     *
+     * \see uri()
+     */
+    void setUri( const QString &uri ) { mUri = uri; }
+
+    /**
      * Returns the layer's name.
      *
      * \see setName()
@@ -196,6 +210,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
 
     QString mProviderKey;
     QgsMapLayerType mType = QgsMapLayerType::VectorLayer;
+    QString mUri;
     int mLayerNumber = 0;
     QString mName;
     QString mDescription;
