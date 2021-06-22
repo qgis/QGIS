@@ -64,7 +64,7 @@ class ProcessingLog:
     def getLogEntries():
         entries = []
 
-        with open(ProcessingLog.logFilename()) as f:
+        with open(ProcessingLog.logFilename(), encoding='utf-8') as f:
             lines = f.readlines()
         for line in lines:
             line = line.strip('\n').strip()
