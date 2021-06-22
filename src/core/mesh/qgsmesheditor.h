@@ -47,10 +47,10 @@ class CORE_EXPORT QgsMeshEditingError
     };
 
     //! Constructor of the default error, that is NoError
-    QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 ) {}
+    QgsMeshEditingError();
 
     //! Constructor with eht error \a type and the index of the element \a elementIndex
-    QgsMeshEditingError( MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}
+    QgsMeshEditingError( MeshEditingErrorType type, int elementIndex );
 
     MeshEditingErrorType errorType;
 

@@ -351,3 +351,7 @@ void QgsMeshLayerUndoCommandRemoveFaces::redo()
       mMeshEditor->applyEdit( edit );
   }
 }
+
+QgsMeshEditingError::QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 ) {}
+
+QgsMeshEditingError::QgsMeshEditingError( QgsMeshEditingError::MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}

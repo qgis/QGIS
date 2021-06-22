@@ -31,7 +31,7 @@ Class that represents an error during mesh editing
       InvalidVertex
     };
 
-    QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 );
+    QgsMeshEditingError();
 %Docstring
 Constructor of the default error, that is NoError
 %End
