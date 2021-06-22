@@ -129,6 +129,7 @@ void TestQgsVirtualRasterProvider::testv()
     QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
 */
 
+
     QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
     QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "virtualrasterprovider" ), demFileName, QgsDataProvider::ProviderOptions() );
@@ -149,6 +150,7 @@ void TestQgsVirtualRasterProvider::testv()
         QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
       }
     delete provider;
+
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

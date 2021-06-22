@@ -190,7 +190,8 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
             for (int j = 0; j < width; ++j)
             {
-                tblock->setValue(i,j,resultMatrix.data()[j]);
+                //tblock->setValue(i,j,resultMatrix.data()[j]);
+                outputData [ i * width + j ]= resultMatrix.data()[j];
             }
 
         }
