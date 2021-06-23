@@ -168,9 +168,10 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     }
 
 
-    //QgsRasterMatrix resultMatrix(width, height, outputData,  tblock->noDataValue());
-    //QgsRasterMatrix resultMatrix(width, 1, nullptr,  -FLT_MAX);
+
     QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
+    //QgsRasterMatrix resultMatrix;
+    //resultMatrix.setNodataValue( -FLT_MAX );
 
     for ( int i = 0; i < height; ++i )
     {
@@ -184,7 +185,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
           break;
         }
 
-        //QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
         if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
         {
 

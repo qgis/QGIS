@@ -66,9 +66,9 @@ private:
 
     QgsCoordinateReferenceSystem mCrs;
     //Needs extent and pixel size/nr of row and columns (Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows)
-    QgsRectangle mExtent;
-    int mWidth= 0;
-    int mHeight= 0;
+    QgsRectangle mExtent = QgsRectangle(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+    int mWidth= 373;
+    int mHeight= 350;
 
     int mBandCount = 1;
     int mXBlockSize = 0;

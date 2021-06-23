@@ -54,6 +54,8 @@ class TestQgsVirtualRasterProvider : public QObject
 
     void validLayer();
     void testv();
+    void testRaster();
+
 private:
     QString mTestDataDir;
     QString mReport;
@@ -151,6 +153,20 @@ void TestQgsVirtualRasterProvider::testv()
       }
     delete provider;
 
+
+}
+
+void TestQgsVirtualRasterProvider::testRaster()
+{
+
+    QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
+    QgsDebugMsg("NAME of LAYER: "+r->name());
+
+    double sampledValue= r->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
+
+    qDebug() <<"VALUE IS "<< sampledValue;
+
+    delete r;
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
