@@ -1784,7 +1784,7 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
         mPrimaryKeyType = PktFidMap; // Map by default
         if ( mPrimaryKeyAttrs.size() == 1 )
         {
-          QgsField fld = mAttributeFields.at( 0 );
+          QgsField fld = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) );
           mPrimaryKeyType = pkType( fld );
         }
       }
