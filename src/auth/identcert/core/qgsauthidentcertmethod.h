@@ -22,6 +22,7 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsAuthIdentCertMethod : public QgsAuthMethod
@@ -61,6 +62,17 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
+};
+
+
+class QgsAuthIdentCertMethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthIdentCertMethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthIdentCertMethod::AUTH_METHOD_KEY, QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthIdentCertMethod *createAuthMethod() const override {return new QgsAuthIdentCertMethod;}
+    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H

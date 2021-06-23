@@ -330,42 +330,10 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
 // Plugin externals
 //////////////////////////////////////////////
 
-/**
- * Required class factory to return a pointer to a newly created object
- */
-QGISEXTERN QgsAuthPkiPathsMethod *classFactory()
-{
-  return new QgsAuthPkiPathsMethod();
-}
 
-/**
- * Required key function (used to map the plugin to a data store type)
- */
-QGISEXTERN QString authMethodKey()
+#ifndef HAVE_STATIC_PROVIDERS
+QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
 {
-  return AUTH_METHOD_KEY;
+  return new QgsAuthPkiPathsMethodMetadata();
 }
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return AUTH_METHOD_DESCRIPTION;
-}
-
-/**
- * Required isAuthMethod function. Used to determine if this shared library
- * is an authentication method plugin
- */
-QGISEXTERN bool isAuthMethod()
-{
-  return true;
-}
-
-/**
- * Required cleanup function
- */
-QGISEXTERN void cleanupAuthMethod() // pass QgsAuthMethod *method, then delete method  ?
-{
-}
+#endif

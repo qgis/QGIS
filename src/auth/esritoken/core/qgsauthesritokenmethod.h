@@ -22,6 +22,7 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsAuthEsriTokenMethod : public QgsAuthMethod
@@ -55,6 +56,17 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
 
+};
+
+
+class QgsAuthEsriTokenMethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthEsriTokenMethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthEsriTokenMethod::AUTH_METHOD_KEY, QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthEsriTokenMethod *createAuthMethod() const override {return new QgsAuthEsriTokenMethod;}
+    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHESRITOKENMETHOD_H

@@ -23,6 +23,7 @@
 #include <QMutex>
 
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsO2;
@@ -114,6 +115,17 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 #else
     QRecursiveMutex mNetworkRequestMutex;
 #endif
+};
+
+
+class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthOAuth2MethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthOAuth2Method *createAuthMethod() const override {return new QgsAuthOAuth2Method;}
+    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHOAUTH2METHOD_H
