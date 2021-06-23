@@ -182,12 +182,12 @@ void QgsOpenClUtils::init()
       }
       else
       {
-        QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "No module handle to OpenCL library" ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
     }
 #endif
 
