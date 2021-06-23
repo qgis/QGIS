@@ -71,7 +71,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
 
 #ifdef HAVE_GUI
-    virtual QWidget *editWidget( QWidget *parent ) const {Q_UNUSED( parent ) return nullptr;}
+    virtual QWidget *editWidget( QWidget *parent ) const;
 #endif
 
     /**

@@ -42,7 +42,7 @@ Increment this if method is significantly updated, allow updater code to be writ
 %End
 
 
-    virtual QWidget *editWidget( QWidget *parent )const {Q_UNUSED( parent ) return 0;}
+    virtual QWidget *editWidget( QWidget *parent ) const;
 
     QgsAuthMethod::Expansions supportedExpansions() const;
 %Docstring
