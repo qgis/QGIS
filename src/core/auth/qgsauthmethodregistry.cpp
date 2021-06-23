@@ -57,6 +57,28 @@ QgsAuthMethodRegistry *QgsAuthMethodRegistry::instance( const QString &pluginPat
   return sInstance;
 }
 
+/**
+ * Convenience function for finding any existing auth methods that match "authMethodKey"
+ *
+ * Necessary because [] map operator will create a QgsProviderMetadata
+ * instance.  Also you cannot use the map [] operator in const members for that
+ * very reason.  So there needs to be a convenient way to find an auth method
+ * without accidentally adding a null meta data item to the metadata map.
+*/
+static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData,
+    QString const &authMethodKey )
+{
+  QgsAuthMethodRegistry::AuthMethods::const_iterator i =
+    metaData.find( authMethodKey );
+
+  if ( i != metaData.end() )
+  {
+    return i->second;
+  }
+
+  return nullptr;
+}
+
 QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
 {
   // At startup, examine the libs in the qgis/lib dir and store those that
@@ -197,29 +219,6 @@ void QgsAuthMethodRegistry::clean()
 }
 
 
-/**
- * Convenience function for finding any existing auth methods that match "authMethodKey"
- *
- * Necessary because [] map operator will create a QgsProviderMetadata
- * instance.  Also you cannot use the map [] operator in const members for that
- * very reason.  So there needs to be a convenient way to find an auth method
- * without accidentally adding a null meta data item to the metadata map.
-*/
-static QgsAuthMethodMetadata *findMetadata_( QgsAuthMethodRegistry::AuthMethods const &metaData,
-    QString const &authMethodKey )
-{
-  QgsAuthMethodRegistry::AuthMethods::const_iterator i =
-    metaData.find( authMethodKey );
-
-  if ( i != metaData.end() )
-  {
-    return i->second;
-  }
-
-  return nullptr;
-} // findMetadata_
-
-
 QString QgsAuthMethodRegistry::library( const QString &authMethodKey ) const
 {
   QgsAuthMethodMetadata *md = findMetadata_( mAuthMethods, authMethodKey );
@@ -309,50 +308,6 @@ QgsAuthMethod *QgsAuthMethodRegistry::createAuthMethod( const QString &authMetho
 
   return metadata->createAuthMethod();
 }
-
-//typedef QWidget *editFactoryFunction_t( QWidget *parent );
-
-//QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
-//{
-//  editFactoryFunction_t *editFactory =
-//    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ) ) ) );
-
-//  if ( !editFactory )
-//    return nullptr;
-
-//  return editFactory( parent );
-//}
-
-//QFunctionPointer QgsAuthMethodRegistry::function( QString const &authMethodKey,
-//    QString const &functionName )
-//{
-//  QLibrary myLib( library( authMethodKey ) );
-
-//  QgsDebugMsgLevel( "Library name is " + myLib.fileName(), 2 );
-
-//  if ( myLib.load() )
-//  {
-//    return myLib.resolve( functionName.toLatin1().data() );
-//  }
-//  else
-//  {
-//    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
-//    return nullptr;
-//  }
-//}
-
-//std::unique_ptr<QLibrary> QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
-//{
-//  std::unique_ptr< QLibrary > myLib( new QLibrary( library( authMethodKey ) ) );
-
-//  QgsDebugMsgLevel( "Library name is " + myLib->fileName(), 2 );
-
-//  if ( myLib->load() )
-//    return myLib;
-
-//  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
-//  return nullptr;
-//}
 
 QStringList QgsAuthMethodRegistry::authMethodList() const
 {
