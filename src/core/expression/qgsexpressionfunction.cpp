@@ -5479,11 +5479,11 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   QString cacheValueKey;
   if ( values.size() == 2 && values.at( 1 ).canConvert<QVariantMap>() )
   {
-    QVariantMap map= values.at( 1 ).toMap();
+    QVariantMap map = values.at( 1 ).toMap();
 
     QMap <QString, QVariant>::const_iterator i = map.constBegin();
     QString filterString;
-    for (  ; i != map.constEnd(); ++i )
+    for ( ; i != map.constEnd(); ++i )
     {
       if ( !filterString.isEmpty() )
       {
@@ -5492,8 +5492,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
       filterString.append( QStringLiteral( "( %1 = %2 )" ).arg( QgsExpression::quotedColumnRef( i.key() ),
                            QgsExpression::quotedString( i.value().toString() ) ) );
     }
-    cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(),
-                                                              filterString );
+    cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(), filterString );
     if ( context && context->hasCachedValue( cacheValueKey ) )
     {
       return context->cachedValue( cacheValueKey );
