@@ -126,7 +126,6 @@ if (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
     ${CMAKE_BINARY_DIR}/src/auth/oauth2
   )
-
   target_link_libraries (authmethod_oauth2_a qgis_gui)
 endif()
 
@@ -138,6 +137,11 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_oauth2 MODULE ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_UIS_H})
+
+  target_include_directories(authmethod_oauth2 PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
+    ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
+  )
 
   # require c++17
   target_compile_features(authmethod_oauth2 PRIVATE cxx_std_17)
@@ -156,6 +160,10 @@ else()
   endif()
 
   if (WITH_GUI)
+    target_include_directories(authmethod_oauth2 PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
+      ${CMAKE_BINARY_DIR}/src/auth/oauth2
+    )
     target_link_libraries (authmethod_oauth2 qgis_gui)
     add_dependencies(authmethod_oauth2 ui)
   endif()

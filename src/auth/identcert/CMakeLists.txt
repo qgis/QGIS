@@ -35,7 +35,6 @@ if (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/auth/identcert/gui
     ${CMAKE_BINARY_DIR}/src/auth/identcert
   )
-
   target_link_libraries (authmethod_identcert_a qgis_gui)
 endif()
 
@@ -56,6 +55,10 @@ else()
   target_link_libraries(authmethod_identcert qgis_core)
 
   if (WITH_GUI)
+    target_include_directories(authmethod_identcert PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/identcert/gui
+      ${CMAKE_BINARY_DIR}/src/auth/identcert
+    )
     target_link_libraries (authmethod_identcert qgis_gui)
     add_dependencies(authmethod_identcert ui)
   endif()

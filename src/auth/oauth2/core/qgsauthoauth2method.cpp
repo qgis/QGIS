@@ -660,6 +660,6 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
 {
-  return new QgsAuthOAuth2cMethodMetadata();
+  return new QgsAuthOAuth2MethodMetadata();
 }
 #endif

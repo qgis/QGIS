@@ -35,7 +35,6 @@ if (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
     ${CMAKE_BINARY_DIR}/src/auth/esritoken
   )
-
   target_link_libraries (authmethod_esritoken_a qgis_gui)
 endif()
 
@@ -54,6 +53,10 @@ else()
   target_link_libraries(authmethod_esritoken qgis_core)
 
   if (WITH_GUI)
+    target_include_directories(authmethod_esritoken PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
+      ${CMAKE_BINARY_DIR}/src/auth/esritoken
+    )
     target_link_libraries (authmethod_esritoken qgis_gui)
     add_dependencies(authmethod_esritoken ui)
   endif()

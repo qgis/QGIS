@@ -34,7 +34,6 @@ if (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/auth/pkipaths/gui
     ${CMAKE_BINARY_DIR}/src/auth/pkipaths
   )
-
   target_link_libraries (authmethod_pkipaths_a qgis_gui)
 endif()
 
@@ -55,6 +54,10 @@ else()
   target_link_libraries(authmethod_pkipaths qgis_core)
 
   if (WITH_GUI)
+    target_include_directories(authmethod_pkipaths PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/pkipaths/gui
+      ${CMAKE_BINARY_DIR}/src/auth/pkipaths
+    )
     target_link_libraries (authmethod_pkipaths qgis_gui)
     add_dependencies(authmethod_pkipaths ui)
   endif()

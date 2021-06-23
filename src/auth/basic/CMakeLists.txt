@@ -56,6 +56,10 @@ else()
   target_link_libraries(authmethod_basic qgis_core)
 
   if (WITH_GUI)
+    target_include_directories(authmethod_basic PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/basic/gui
+      ${CMAKE_BINARY_DIR}/src/auth/basic
+    )
     target_link_libraries (authmethod_basic qgis_gui)
     add_dependencies(authmethod_basic ui)
   endif()
