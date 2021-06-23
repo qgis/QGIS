@@ -275,6 +275,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
 
+    QgsWebView *mMetadataViewer = nullptr;
+
     friend class QgsAppScreenShots;
 };
 #endif
