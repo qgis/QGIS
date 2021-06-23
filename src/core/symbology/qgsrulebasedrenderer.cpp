@@ -1221,8 +1221,9 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
       value = QString::number( cat.value().toDouble(), 'f', 4 );
     else
       value = QgsExpression::quotedString( cat.value().toString() );
-    QString filter = QStringLiteral( "%1 = %2" ).arg( attr, value );
-    QString label = filter;
+    const QString filter = QStringLiteral( "%1 = %2" ).arg( attr, value );
+    const QString label = !cat.label().isEmpty() ? cat.label() :
+                          cat.value().isValid() ? value : QString();
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
@@ -1254,7 +1255,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
                      QString::number( rng.lowerValue(), 'f', 4 ),
                      QString::number( rng.upperValue(), 'f', 4 ) );
     firstRange = false;
-    QString label =  rng.label().isEmpty() ? filter : rng.label();
+    QString label = rng.label().isEmpty() ? filter : rng.label();
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
