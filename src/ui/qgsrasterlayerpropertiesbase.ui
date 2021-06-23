@@ -270,9 +270,6 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
-           <item>
-            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
-           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Source">
@@ -2265,12 +2262,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsWebView</class>
-   <extends>QWidget</extends>
-   <header>qgswebview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
