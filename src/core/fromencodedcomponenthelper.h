@@ -17,6 +17,7 @@
 
 #define SIP_NO_FILE
 
+#include "qgis_core.h"
 
 #include <QtEndian>
 
@@ -44,5 +45,5 @@ inline ushort encodeNibble( ushort c )
 
     This method is named qt_urlRecodeByteArray in Qt's internals
 */
-QString fromEncodedComponent_helper( const QByteArray &ba );
+CORE_EXPORT QString fromEncodedComponent_helper( const QByteArray &ba );
 
