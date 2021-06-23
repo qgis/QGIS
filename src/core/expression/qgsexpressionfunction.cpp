@@ -5490,7 +5490,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
         filterString.append( " AND " );
       }
       filterString.append( QStringLiteral( "( %1 = %2 )" ).arg( QgsExpression::quotedColumnRef( i.key() ),
-                           QgsExpression::quotedString( i.value()->toString() ) ) );
+                           QgsExpression::quotedString( i.value().toString() ) ) );
     }
     cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(),
                                                               filterString );
