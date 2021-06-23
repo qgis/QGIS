@@ -5475,25 +5475,51 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   {
     return QVariant();
   }
-
-  QString attribute = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  int attributeId = featureSource->fields().lookupField( attribute );
-  if ( attributeId == -1 )
-  {
-    return QVariant();
-  }
-
-  const QVariant &attVal = values.at( 2 );
-
-  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( featureSource->id(), QString::number( attributeId ), attVal.toString() );
-  if ( context && context->hasCachedValue( cacheValueKey ) )
-  {
-    return context->cachedValue( cacheValueKey );
-  }
-
   QgsFeatureRequest req;
-  req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
-                           QgsExpression::quotedString( attVal.toString() ) ) );
+  QString cacheValueKey;
+  if ( values.size() == 2 && values.at( 1 ).canConvert<QVariantMap>() )
+  {
+    QVariantMap map= values.at( 1 ).toMap();
+
+    QMap <QString, QVariant>::const_iterator i = map.constBegin();
+    QString filterString;
+    for (  ; i != map.constEnd(); ++i )
+    {
+      if ( !filterString.isEmpty() )
+      {
+        filterString.append( " AND " );
+      }
+      filterString.append( QStringLiteral( "( %1 = %2 )" ).arg( QgsExpression::quotedColumnRef( i.key() ),
+                           QgsExpression::quotedString( i.value()->toString() ) ) );
+    }
+    cacheValueKey = QStringLiteral( "getfeature:%1:%2" ).arg( featureSource->id(),
+                                                              filterString );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      return context->cachedValue( cacheValueKey );
+    }
+    req.setFilterExpression( filterString );
+  }
+  else
+  {
+    QString attribute = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+    int attributeId = featureSource->fields().lookupField( attribute );
+    if ( attributeId == -1 )
+    {
+      return QVariant();
+    }
+
+    const QVariant &attVal = values.at( 2 );
+
+    cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( featureSource->id(), QString::number( attributeId ), attVal.toString() );
+    if ( context && context->hasCachedValue( cacheValueKey ) )
+    {
+      return context->cachedValue( cacheValueKey );
+    }
+
+    req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
+                             QgsExpression::quotedString( attVal.toString() ) ) );
+  }
   req.setLimit( 1 );
   req.setTimeout( 10000 );
   req.setRequestMayBeNested( true );
