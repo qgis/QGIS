@@ -1,0 +1,12 @@
+version: '3'
+services:
+
+  qgis-deps:
+    tty: true
+    image: qgis/qgis3-build-deps-bin-only:${DOCKER_TAG}
+    volumes:
+      - ${GH_WORKSPACE}:/root/QGIS
+    # links:
+    #  - mssql
+    env_file:
+      - docker-variables.env
