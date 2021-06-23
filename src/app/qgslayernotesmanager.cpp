@@ -18,6 +18,7 @@
 #include "qgsmaplayer.h"
 #include "qgsrichtexteditor.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
 #include <QDialogButtonBox>
 #include <QPushButton>
 
@@ -30,6 +31,7 @@ void QgsLayerNotesManager::editLayerNotes( QgsMapLayer *layer, QWidget *parent )
   if ( editor->exec() )
   {
     QgsLayerNotesUtils::setLayerNotes( layer, editor->notes() );
+    QgsProject::instance()->setDirty( true );
   }
 }
 

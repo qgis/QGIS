@@ -689,7 +689,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                                       tr( "Remove Layer Notes" ),
                                       tr( "Are you sure you want to remove all notes for the layer “%1”?" ).arg( layer->name() ),
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+          {
             QgsLayerNotesUtils::removeNotes( layer );
+            QgsProject::instance()->setDirty( true );
+          }
         } );
         menu->addAction( notes );
       }
