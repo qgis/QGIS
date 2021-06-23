@@ -154,6 +154,18 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
 void QgsPythonUtilsImpl::init()
 {
+  PyStatus status;
+  PyPreConfig preconfig;
+  PyPreConfig_InitPythonConfig( &preconfig );
+
+  preconfig.utf8_mode = 1;
+
+  status = Py_PreInitialize( &preconfig );
+  if ( PyStatus_Exception( status ) )
+  {
+    Py_ExitStatusException( status );
+  }
+
   // initialize python
   Py_Initialize();
   // initialize threading AND acquire GIL
