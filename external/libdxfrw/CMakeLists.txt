@@ -3,6 +3,10 @@ include_directories(SYSTEM
     ${Qt5Core_INCLUDE_DIRS}
 )
 
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+   add_definitions("-Wno-shorten-64-to-32")
+endif()
+
 add_library(libdxfrw STATIC
     drw_classes.cpp
     drw_entities.cpp
