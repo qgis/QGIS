@@ -1082,6 +1082,7 @@ set(QGIS_CORE_HDRS
   qgstransactiongroup.h
   qgstranslationcontext.h
   qgsunittypes.h
+  qgsuserprofile.h
   qgsuserprofilemanager.h
   qgsvector.h
   qgsvector3d.h
@@ -1373,6 +1374,22 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshcalculator.h
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
+
+  pal/costcalculator.h
+  pal/feature.h
+  pal/geomfunction.h
+  pal/internalexception.h
+  pal/labelposition.h
+  pal/layer.h
+  pal/palexception.h
+  pal/pal.h
+  pal/palrtree.h
+  pal/palstat.h
+  pal/pointset.h
+  pal/priorityqueue.h
+  pal/problem.h
+  pal/util.h
+  ${PROJECT_SOURCE_DIR}/external/rtree/include/RTree.h
 
   pointcloud/qgspointcloudattribute.h
   pointcloud/qgspointcloudattributebyramprenderer.h
