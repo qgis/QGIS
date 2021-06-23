@@ -45,10 +45,18 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 
   public slots:
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Sync the widget state to the layer set for the widget.
      */
     void syncToLayer();
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Apply any changes on the widget to the set layer.

@@ -54,7 +54,14 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     //! Constructor for QgsAttributeTableView
     QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * \brief setFeatureSelectionManager

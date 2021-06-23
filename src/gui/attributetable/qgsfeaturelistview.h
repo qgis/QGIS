@@ -62,12 +62,20 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     QgsVectorLayerCache *layerCache();
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Set the QgsFeatureListModel which is used to retrieve information
      *
      * \param featureListModel  The model to use
      */
     virtual void setModel( QgsFeatureListModel *featureListModel );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Gets the featureListModel used by this view

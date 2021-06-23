@@ -51,8 +51,15 @@ class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     //! Applies the settings made in the dialog
     void apply() override;
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
   private slots:
     void onActiveScalarGroupChanged( int groupIndex );
