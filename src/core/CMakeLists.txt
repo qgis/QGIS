@@ -267,6 +267,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextrendererutils.cpp
   textrenderer/qgstextshadowsettings.cpp
 
+  fromencodedcomponenthelper.cpp
   qgis.cpp
   qgsabstractcontentcache.cpp
   qgsabstractgeopdfexporter.cpp
@@ -870,6 +871,7 @@ set(QGIS_CORE_HDRS
 
   ../plugins/qgisplugin.h
 
+  fromencodedcomponenthelper.h
   qgis.h
   qgis_sip.h
   qgsabstractcontentcache.h

@@ -18,6 +18,7 @@
 #ifndef QGIS_H
 #define QGIS_H
 
+
 #include <QMetaEnum>
 #include <cfloat>
 #include <memory>
