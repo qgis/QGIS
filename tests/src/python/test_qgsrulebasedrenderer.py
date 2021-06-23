@@ -201,12 +201,16 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         # First, try with a field based category (id)
         cats = []
         cats.append(QgsRendererCategory(1, QgsMarkerSymbol(), "id 1"))
-        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), "id 2"))
+        cats.append(QgsRendererCategory(2, QgsMarkerSymbol(), ''))
+        cats.append(QgsRendererCategory(None, QgsMarkerSymbol(), ''))
         c = QgsCategorizedSymbolRenderer("id", cats)
 
         QgsRuleBasedRenderer.refineRuleCategories(self.r2, c)
         self.assertEqual(self.r2.children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(self.r2.children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(self.r2.children()[0].label(), 'id 1')
+        self.assertEqual(self.r2.children()[1].label(), '2')
+        self.assertEqual(self.r2.children()[2].label(), '')
 
         # Next try with an expression based category
         cats = []
@@ -217,6 +221,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsRuleBasedRenderer.refineRuleCategories(self.r1, c)
         self.assertEqual(self.r1.children()[0].filterExpression(), 'id + 1 = 1')
         self.assertEqual(self.r1.children()[1].filterExpression(), 'id + 1 = 2')
+        self.assertEqual(self.r1.children()[0].label(), 'result 1')
+        self.assertEqual(self.r1.children()[1].label(), 'result 2')
 
         # Last try with an expression which is just a quoted field name
         cats = []
@@ -227,6 +233,8 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsRuleBasedRenderer.refineRuleCategories(self.r3, c)
         self.assertEqual(self.r3.children()[0].filterExpression(), '"id" = 1')
         self.assertEqual(self.r3.children()[1].filterExpression(), '"id" = 2')
+        self.assertEqual(self.r3.children()[0].label(), 'result 1')
+        self.assertEqual(self.r3.children()[1].label(), 'result 2')
 
     def testRefineWithRanges(self):
         # Test refining rule with ranges (refs #10815)
