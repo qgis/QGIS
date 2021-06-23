@@ -364,10 +364,20 @@ bool QgsRasterPipe::checkBounds( int idx ) const
 void QgsRasterPipe::setResamplingStage( Qgis::RasterResamplingStage stage )
 {
   mResamplingStage = stage;
-  setOn( ResamplerRole, stage == ResamplingStage::ResampleFilter );
-  QgsRasterDataProvider *l_provider = provider();
-  if ( l_provider )
+
+  int resamplerIndex = 0;
+  for ( QgsRasterInterface *interface : std::as_const( mInterfaces ) )
   {
-    l_provider->enableProviderResampling( stage == ResamplingStage::Provider );
+    if ( interfaceRole( interface ) == Qgis::RasterPipeInterfaceRole::Resampler )
+    {
+      setOn( resamplerIndex, stage == Qgis::RasterResamplingStage::ResampleFilter );
+      break;
+    }
+    resamplerIndex ++;
+  }
+
+  if ( QgsRasterDataProvider *l_provider = provider() )
+  {
+    l_provider->enableProviderResampling( stage == Qgis::RasterResamplingStage::Provider );
   }
 }
