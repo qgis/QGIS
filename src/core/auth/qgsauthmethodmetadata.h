@@ -46,9 +46,9 @@ class CORE_EXPORT QgsAuthMethodMetadata
 
     /**
      * Construct an authentication method metadata container
-     * \param _key Textual key of the library plugin
-     * \param _description Description of the library plugin
-     * \param _library File name of library plugin (empty if the provider is not loaded from a library)
+     * \param key Textual key of the library plugin
+     * \param description Description of the library plugin
+     * \param library File name of library plugin (empty if the provider is not loaded from a library)
 
      */
     QgsAuthMethodMetadata( const QString &key, const QString &description, const QString &library = QString() )
