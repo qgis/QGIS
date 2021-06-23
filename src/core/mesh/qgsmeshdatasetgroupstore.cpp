@@ -595,7 +595,7 @@ void QgsMeshDatasetGroupStore::createDatasetGroupTreeItems( const QList<int> &in
 
 int QgsMeshExtraDatasetStore::addDatasetGroup( QgsMeshDatasetGroup *datasetGroup )
 {
-  int groupIndex = mGroups.size();
+  int groupIndex = static_cast<int>( mGroups.size() );
   mGroups.push_back( std::unique_ptr<QgsMeshDatasetGroup>( datasetGroup ) );
 
   if ( datasetGroup->datasetCount() > 1 )
@@ -605,7 +605,7 @@ int QgsMeshExtraDatasetStore::addDatasetGroup( QgsMeshDatasetGroup *datasetGroup
       mTemporalCapabilities->addDatasetTime( groupIndex, datasetGroup->datasetMetadata( i ).time() );
   }
 
-  return mGroups.size() - 1;
+  return static_cast<int>( mGroups.size() - 1 );
 }
 
 void QgsMeshExtraDatasetStore::removeDatasetGroup( int index )
@@ -656,7 +656,7 @@ QStringList QgsMeshExtraDatasetStore::extraDatasets() const
 
 int QgsMeshExtraDatasetStore::datasetGroupCount() const
 {
-  return mGroups.size();
+  return static_cast<int>( mGroups.size() );
 }
 
 int QgsMeshExtraDatasetStore::datasetCount( int groupIndex ) const
@@ -798,7 +798,7 @@ void QgsMeshExtraDatasetStore::updateTemporalCapabilities()
     const QgsMeshDatasetGroup *group = mGroups[g].get();
     hasTemporal |= group->datasetCount() > 1;
     for ( int i = 0; i < group->datasetCount(); ++i )
-      mTemporalCapabilities->addDatasetTime( g, group->datasetMetadata( i ).time() );
+      mTemporalCapabilities->addDatasetTime( static_cast<int>( g ), group->datasetMetadata( i ).time() );
   }
 
   mTemporalCapabilities->setHasTemporalCapabilities( hasTemporal );

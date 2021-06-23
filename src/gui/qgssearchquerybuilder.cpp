@@ -197,7 +197,7 @@ void QgsSearchQueryBuilder::btnTest_clicked()
   if ( count == -1 )
     return;
 
-  QMessageBox::information( this, tr( "Test Query" ), tr( "Found %n matching feature(s).", "test result", count ) );
+  QMessageBox::information( this, tr( "Test Query" ), tr( "Found %1 matching feature(s).", "test result" ).arg( count ) );
 }
 
 // This method tests the number of records that would be returned

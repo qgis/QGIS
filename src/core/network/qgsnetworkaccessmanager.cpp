@@ -790,7 +790,7 @@ void QgsNetworkAccessManager::syncCookies( const QList<QNetworkCookie> &cookies 
 
 int QgsNetworkAccessManager::timeout()
 {
-  return settingsNetworkTimeout.value();
+  return static_cast<int>( settingsNetworkTimeout.value() );
 }
 
 void QgsNetworkAccessManager::setTimeout( const int time )

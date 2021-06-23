@@ -139,13 +139,13 @@ class QgsFeatureDownloaderImpl
 
     QTimer *mTimer = nullptr;
 
-    void createProgressDialog( int numberMatched );
+    void createProgressDialog( long long numberMatched );
 
     void setStopFlag();
     void hideProgressDialog();
 
     void endOfRun( bool serializeFeatures,
-                   bool success, int totalDownloadedFeatureCount,
+                   bool success, long long totalDownloadedFeatureCount,
                    bool truncatedResponse, bool interrupted,
                    const QString &errorMessage );
 

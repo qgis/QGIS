@@ -24,6 +24,8 @@
 
 #include <QElapsedTimer>
 
+#include <algorithm>
+
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
   , mLayer( layer )
@@ -93,7 +95,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
   if ( mFullCache )
   {
     // Add a little more than necessary...
-    setCacheSize( mLayer->featureCount() + 100 );
+    setCacheSize( static_cast<int>( std::min( static_cast<long long>( std::numeric_limits<int>::max() ), mLayer->featureCount() + 100 ) ) );
 
     // Initialize the cache...
     QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
@@ -293,7 +295,7 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
   {
     if ( cacheSize() <= mLayer->featureCount() )
     {
-      setCacheSize( mLayer->featureCount() + 100 );
+      setCacheSize( static_cast<int>( std::min( static_cast<long long>( std::numeric_limits<int>::max() ), mLayer->featureCount() + 100 ) ) );
     }
 
     QgsFeature feat;

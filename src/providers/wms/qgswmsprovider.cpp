@@ -896,7 +896,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
         requestsFinal << r;
       }
     }
-    int t0 = t.elapsed();
+    const auto t0 = t.elapsed();
 
 
     // draw other res tiles if preview
@@ -942,7 +942,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       }
     }
 
-    int t1 = t.elapsed() - t0;
+    const auto t1 = t.elapsed() - t0;
 
     // draw composite in this resolution
     const auto constTileImages = tileImages;
@@ -957,7 +957,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     }
     p.end();
 
-    int t2 = t.elapsed() - t1;
+    const auto t2 = t.elapsed() - t1;
     Q_UNUSED( t2 ) // only used in debug build
 
     if ( feedback && feedback->isPreviewOnly() )

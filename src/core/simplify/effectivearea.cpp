@@ -83,7 +83,7 @@ static int cmpfunc( const void *a, const void *b )
    * That way we get the same ordering on different machines and platforms
    */
   if ( v1 == v2 )
-    return ( *( areanode ** )a ) - ( *( areanode ** )b );
+    return ( *( areanode ** )a ) > ( *( areanode ** )b ) ? 1 : -1;
   else
     return ( v1 > v2 ) ? 1 : -1;
 }
@@ -228,7 +228,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   while ( go_on )
   {
     // Get a reference to the point with the currently smallest effective area
-    current = minheap_pop( &tree, ea->initial_arealist ) - ea->initial_arealist;
+    current = static_cast<int>( minheap_pop( &tree, ea->initial_arealist ) - ea->initial_arealist );
 
     // We have found the smallest area. That is the resulting effective area for the "current" point
     if ( i < npoints - avoid_collaps )

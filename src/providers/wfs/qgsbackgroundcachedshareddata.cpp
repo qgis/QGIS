@@ -430,12 +430,13 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     for ( QgsFeatureId id : constIntersectingRequests )
     {
       Q_ASSERT( id >= 0 && id < mRegions.size() ); // by construction, but doesn't hurt to be checked
+      const int idInt = static_cast<int>( id );
 
       // If the requested bbox is inside an already cached rect that didn't
       // hit the download limit, then we can reuse the cached features without
       // issuing a new request.
-      if ( mRegions[id].geometry().boundingBox().contains( rect ) &&
-           !mRegions[id].attributes().value( 0 ).toBool() )
+      if ( mRegions[idInt].geometry().boundingBox().contains( rect ) &&
+           !mRegions[idInt].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Cached features already cover this area of interest" ), 4 );
         newDownloadNeeded = false;
@@ -445,8 +446,8 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
       // On the other hand, if the requested bbox is inside an already cached rect,
       // that hit the download limit, our larger bbox will hit it too, so no need
       // to re-issue a new request either.
-      if ( rect.contains( mRegions[id].geometry().boundingBox() ) &&
-           mRegions[id].attributes().value( 0 ).toBool() )
+      if ( rect.contains( mRegions[idInt].geometry().boundingBox() ) &&
+           mRegions[idInt].attributes().value( 0 ).toBool() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Current request is larger than a smaller request that hit the download limit, so no server download needed." ), 4 );
         newDownloadNeeded = false;

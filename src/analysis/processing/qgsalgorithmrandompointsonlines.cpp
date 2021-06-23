@@ -211,7 +211,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   QgsSpatialIndex index;
 
   int totNPoints = 0;
-  int missedPoints = 0;
   int missedLines = 0;
   int emptyOrNullGeom = 0;
 
@@ -365,7 +364,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     featureCount++;
     feedback->setProgress( baseFeatureProgress );
   } // while features
-  missedPoints = desiredNumberOfPoints - totNPoints;
+  const auto missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
                                    " %1\nNumber of missed points: %2\nFeatures with missing points: "
                                    " %3\nFeatures with empty or missing geometries: %4"

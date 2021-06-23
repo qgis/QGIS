@@ -539,13 +539,13 @@ bool QgsTracer::initGraph()
       renderer->stopRender( *ctx.get() );
     }
   }
-  int timeExtract = t1.elapsed();
+  const qint64 timeExtract = t1.elapsed();
 
   // resolve intersections
 
   t2.start();
 
-  int timeNodingCall = 0;
+  qint64 timeNodingCall = 0;
 
 #if 0
   // without noding - if data are known to be noded beforehand
@@ -575,13 +575,13 @@ bool QgsTracer::initGraph()
   }
 #endif
 
-  int timeNoding = t2.elapsed();
+  qint64 timeNoding = t2.elapsed();
 
   t3.start();
 
   mGraph.reset( makeGraph( mpl ) );
 
-  int timeMake = t3.elapsed();
+  qint64 timeMake = t3.elapsed();
 
   Q_UNUSED( timeExtract )
   Q_UNUSED( timeNoding )
@@ -745,7 +745,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   t.start();
   int v1 = pointInGraph( *mGraph, p1 );
   int v2 = pointInGraph( *mGraph, p2 );
-  int tPrep = t.elapsed();
+  qint64 tPrep = t.elapsed();
 
   if ( v1 == -1 )
   {
@@ -761,7 +761,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   QElapsedTimer t2;
   t2.start();
   QgsPolylineXY points = shortestPath( *mGraph, v1, v2 );
-  int tPath = t2.elapsed();
+  qint64 tPath = t2.elapsed();
 
   Q_UNUSED( tPrep )
   Q_UNUSED( tPath )

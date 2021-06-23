@@ -206,7 +206,6 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
   int indexPoints = 0;
 
   int totNPoints = 0;
-  int missedPoints = 0;
   int missedPolygons = 0;
   int emptyOrNullGeom = 0;
 
@@ -377,7 +376,7 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
     featureCount++;
     feedback->setProgress( baseFeatureProgress );
   } // while features
-  missedPoints = desiredNumberOfPoints - totNPoints;
+  const auto missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
                                    "%1\nNumber of missed points: "
                                    "%2\nPolygons with missing points: "

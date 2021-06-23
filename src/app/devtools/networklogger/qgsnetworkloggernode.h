@@ -118,7 +118,7 @@ class QgsNetworkLoggerGroup : public QgsNetworkLoggerNode
      */
     void clear();
 
-    int childCount() const override final { return mChildren.size(); }
+    int childCount() const override final { return static_cast<int>( mChildren.size() ); }
     QVariant data( int role = Qt::DisplayRole ) const override;
     QVariant toVariant() const override;
 

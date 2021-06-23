@@ -536,7 +536,7 @@ class QgsPostgresUtils
 
     static qint32 fid_to_int32pk( qint64 x )
     {
-      return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
+      return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? static_cast<qint32>( x ) : -static_cast<qint32>( INT32PK_OFFSET - x );
     }
 
     //! Replaces invalid XML chars with UTF-8[<char_code>]

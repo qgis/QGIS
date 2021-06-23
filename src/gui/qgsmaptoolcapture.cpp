@@ -368,7 +368,7 @@ void QgsMapToolCapture::setStreamDigitizingEnabled( bool enable )
   mStartNewCurve = true;
   if ( enable )
   {
-    mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value();
+    mStreamingToleranceInPixels = QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.valueAsInt();
   }
 }
 

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     /**
      * Returns the number of child nodes owned by this node.
      */
-    int childCount() const { return mChildren.size(); }
+    int childCount() const { return static_cast<int>( mChildren.size() ); }
 
     /**
      * Adds a \a child node to this node.

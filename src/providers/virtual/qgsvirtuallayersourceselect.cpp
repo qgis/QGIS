@@ -134,7 +134,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     QgsCoordinateReferenceSystem crs( def.geometrySrid() );
     Q_NOWARN_DEPRECATED_POP
     mCRS->setText( crs.authid() );
-    mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
+    mGeometryType->setCurrentIndex( static_cast<int>( def.geometryWkbType() ) - 1 );
     mGeometryField->setText( def.geometryField() );
   }
 

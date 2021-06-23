@@ -109,8 +109,9 @@ void QgsDxfExport::writeGroup( int code, int i )
 
 void QgsDxfExport::writeGroup( int code, long long i )
 {
+  //TODO add check on i range, or implement a writeLongLong()
   writeGroupCode( code );
-  writeInt( i );
+  writeInt( static_cast<int>( i ) );
 }
 
 void QgsDxfExport::writeGroup( int code, double d )

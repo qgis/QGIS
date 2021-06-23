@@ -270,7 +270,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       if ( calcNode->calculate( _rasterData, resultMatrix, 0 ) )
       {
         std::copy( resultMatrix.data(), resultMatrix.data() + mNumOutputColumns, castedResult.begin() );
-        if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
+        if ( GDALRasterIO( outputRasterBand, GF_Write, 0, static_cast<int>( row ), mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
           QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
         }

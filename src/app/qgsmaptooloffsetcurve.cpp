@@ -620,7 +620,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
 
   QgsGeometry offsetGeom;
   QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
-  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
+  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.valueAsInt();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
   QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 
@@ -671,7 +671,7 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
 
   QgsGeometry::JoinStyle joinStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
-  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value();
+  int quadSegments = QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.valueAsInt();
   double miterLimit = QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value();
   QgsGeometry::EndCapStyle capStyle = QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle.value();
 

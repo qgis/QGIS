@@ -4585,7 +4585,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomSeed ) )
   {
     context.expressionContext().setOriginalValueVariable( static_cast< unsigned long long >( seed ) );
-    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.expressionContext(), seed );
+    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.expressionContext(), static_cast<int>( seed ) );
   }
 
   QVector< QgsPointXY > randomPoints = geom.randomPointsInPolygon( count, seed );

@@ -190,10 +190,10 @@ void QgsMapToolLabel::createRubberBands()
           // instead, just use the boundary of the polygon for the rubber band
           geom = QgsGeometry( geom.constGet()->boundary() );
         }
-        int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value();
-        int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value();
-        int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value();
-        int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value();
+        int r = QgsSettingsRegistryCore::settingsDigitizingLineColorRed.valueAsInt();
+        int g = QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.valueAsInt();
+        int b = QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.valueAsInt();
+        int a = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.valueAsInt();
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom.type() );
         mFeatureRubberBand->setColor( QColor( r, g, b, a ) );
         mFeatureRubberBand->setToGeometry( geom, vlayer );

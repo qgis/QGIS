@@ -445,6 +445,6 @@ void QgsO2::refreshSynchronous()
 
 void QgsO2::computeExpirationDelay()
 {
-  const int lExpires = expires();
-  mExpirationDelay = lExpires > 0 ? lExpires - static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
+  const long long lExpires = expires();
+  mExpirationDelay = lExpires > 0 ? static_cast<int>( lExpires - QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
 }

@@ -280,7 +280,7 @@ class QgsDelimitedTextFile : public QObject
      * Returns the line number of the start of the last record read
      *  \returns linenumber  The line number of the start of the record
      */
-    int recordId()
+    long long recordId()
     {
       return mRecordLineNumber;
     }
@@ -426,9 +426,9 @@ class QgsDelimitedTextFile : public QObject
 
     // Information extracted from file
     QStringList mFieldNames;
-    long mLineNumber = -1;
-    long mRecordLineNumber = -1;
-    long mRecordNumber = -1;
+    long long mLineNumber = -1;
+    long long mRecordLineNumber = -1;
+    long long mRecordNumber = -1;
     QString mBuffer;
     int mPosInBuffer = 0;
     int mMaxBufferSize = 0;

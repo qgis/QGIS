@@ -2608,7 +2608,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
           if ( mPrimaryKeyType == PktInt )
           {
-            features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+            features->setId( PKINT2FID( static_cast<qint32>( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) ) );
           }
           else
           {

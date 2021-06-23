@@ -266,7 +266,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
     if ( mChangedFeaturesRequest.limit() > 0 )
     {
-      int providerLimit = mProviderRequest.limit();
+      long long providerLimit = mProviderRequest.limit();
 
       // features may be deleted in buffer, so increase limit sent to provider
       providerLimit += mSource->mDeletedFeatureIds.size();

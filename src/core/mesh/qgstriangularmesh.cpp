@@ -536,7 +536,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
                     maxNumberOfIndexes );
 
 
-    returnIndexes.resize( size );
+    returnIndexes.resize( static_cast<int>( size ) );
 
     if ( size == 0 || int( size ) >= indexes.size() )
     {
@@ -551,7 +551,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     for ( int i = 0; i < newMesh.faces.size(); ++i )
     {
       QgsMeshFace f( 3 );
-      for ( size_t j = 0; j < 3 ; ++j )
+      for ( int j = 0; j < 3 ; ++j )
         f[j] = returnIndexes.at( i * 3 + j ) ;
       newMesh.faces[i ] = f;
     }
@@ -569,7 +569,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
       QgsMeshFace triangle = simplifiedMesh->triangles().at( i );
       double x = 0;
       double y = 0;
-      for ( size_t j = 0; j < 3 ; ++j )
+      for ( int j = 0; j < 3 ; ++j )
       {
         x += mTriangularMesh.vertex( triangle[j] ).x();
         y += mTriangularMesh.vertex( triangle[j] ).y();

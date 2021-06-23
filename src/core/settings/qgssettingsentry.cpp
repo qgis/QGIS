@@ -509,6 +509,11 @@ qlonglong QgsSettingsEntryInteger::value( const QString &dynamicKeyPart, bool us
   return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toLongLong();
 }
 
+int QgsSettingsEntryInteger::valueAsInt( const QString &dynamicKeyPart, bool useDefaultValueOverride, qlonglong defaultValueOverride ) const
+{
+  return valueAsVariant( dynamicKeyPart, useDefaultValueOverride, defaultValueOverride ).toInt();
+}
+
 qlonglong QgsSettingsEntryInteger::value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, qlonglong defaultValueOverride ) const
 {
   return valueAsVariant( dynamicKeyPartList, useDefaultValueOverride, defaultValueOverride ).toLongLong();
@@ -517,6 +522,11 @@ qlonglong QgsSettingsEntryInteger::value( const QStringList &dynamicKeyPartList,
 qlonglong QgsSettingsEntryInteger::defaultValue() const
 {
   return defaultValueAsVariant().toLongLong();
+}
+
+int QgsSettingsEntryInteger::defaultValueAsInt() const
+{
+  return defaultValueAsVariant().toInt();
 }
 
 QgsSettingsEntryBase::SettingsType QgsSettingsEntryInteger::settingsType() const

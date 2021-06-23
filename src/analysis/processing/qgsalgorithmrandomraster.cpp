@@ -136,7 +136,7 @@ QVariantMap QgsRandomRasterAlgorithmBase::processAlgorithm( const QVariantMap &p
         std::vector<qint32> int32Row( cols );
         for ( int col = 0; col < cols; col++ )
         {
-          int32Row[col] = generateRandomLongValue( mersenneTwister );
+          int32Row[col] = static_cast<qint32>( generateRandomLongValue( mersenneTwister ) );
         }
         block.setData( QByteArray( reinterpret_cast<const char *>( int32Row.data() ), QgsRasterBlock::typeSize( Qgis::DataType::Int32 ) * cols ) );
         break;

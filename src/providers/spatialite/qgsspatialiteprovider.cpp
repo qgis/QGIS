@@ -4721,7 +4721,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     {
       // some unexpected error occurred during preparation
       const char *err = sqlite3_errmsg( sqliteHandle( ) );
-      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( static_cast<int>( strlen( err ) ) + 1 ) );
       strcpy( errMsg, err );
       handleError( sql, errMsg, savepointId );
       return false;
@@ -4752,7 +4752,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
       {
         // some unexpected error occurred during binding
         const char *err = sqlite3_errmsg( sqliteHandle( ) );
-        errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+        errMsg = static_cast<char *>( sqlite3_malloc( static_cast<int>( strlen( err ) ) + 1 ) );
         strcpy( errMsg, err );
         handleError( sql, errMsg, savepointId );
         sqlite3_finalize( stmt );
@@ -4766,7 +4766,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     {
       // some unexpected error occurred during execution of update query
       const char *err = sqlite3_errmsg( sqliteHandle( ) );
-      errMsg = static_cast<char *>( sqlite3_malloc( strlen( err ) + 1 ) );
+      errMsg = static_cast<char *>( sqlite3_malloc( static_cast<int>( strlen( err ) ) + 1 ) );
       strcpy( errMsg, err );
       handleError( sql, errMsg, savepointId );
       return false;

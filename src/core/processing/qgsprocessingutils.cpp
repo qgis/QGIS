@@ -1211,7 +1211,7 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 
 QString QgsProcessingUtils::defaultVectorExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputVectorLayerExt.value();
+  const int setting = static_cast<int>( QgsProcessing::settingsDefaultOutputVectorLayerExt.value() );
   if ( setting == -1 )
     return QStringLiteral( "gpkg" );
   return QgsVectorFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "gpkg" ) );
@@ -1219,7 +1219,7 @@ QString QgsProcessingUtils::defaultVectorExtension()
 
 QString QgsProcessingUtils::defaultRasterExtension()
 {
-  const int setting = QgsProcessing::settingsDefaultOutputRasterLayerExt.value();
+  const int setting = static_cast<int>( QgsProcessing::settingsDefaultOutputRasterLayerExt.value() );
   if ( setting == -1 )
     return QStringLiteral( "tif" );
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );

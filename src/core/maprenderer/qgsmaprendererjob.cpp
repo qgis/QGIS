@@ -473,7 +473,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       }
     }
 
-    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
+    job.renderingTime = static_cast<int>( layerTime.elapsed() ); // include job preparation time in layer rendering time
   }
 
   return layerJobs;

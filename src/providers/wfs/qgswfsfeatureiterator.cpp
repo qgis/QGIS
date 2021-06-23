@@ -378,7 +378,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
   QgsSettings s;
   const int maxRetry = s.value( QStringLiteral( "qgis/defaultTileMaxRetry" ), "3" ).toInt();
   int retryIter = 0;
-  int lastValidTotalDownloadedFeatureCount = 0;
+  long long lastValidTotalDownloadedFeatureCount = 0;
   int pagingIter = 1;
   QString gmlIdFirstFeatureFirstIter;
   bool disablePaging = false;

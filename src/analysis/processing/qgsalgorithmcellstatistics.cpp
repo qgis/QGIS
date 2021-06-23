@@ -299,7 +299,7 @@ void QgsCellStatisticsAlgorithm::processRasterStack( QgsProcessingFeedback *feed
         double result = 0;
         bool noDataInStack = false;
         std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
-        int cellValueStackSize = cellValues.size();
+        int cellValueStackSize = static_cast<int>( cellValues.size() );
 
         if ( noDataInStack && !mIgnoreNoData )
         {
@@ -476,7 +476,7 @@ void QgsCellStatisticsPercentileAlgorithm::processRasterStack( QgsProcessingFeed
         double result = 0;
         bool noDataInStack = false;
         std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
-        int cellValueStackSize = cellValues.size();
+        int cellValueStackSize = static_cast<int>( cellValues.size() );
 
         if ( noDataInStack && !mIgnoreNoData )
         {
@@ -614,7 +614,7 @@ void QgsCellStatisticsPercentRankFromValueAlgorithm::processRasterStack( QgsProc
         double result = 0;
         bool noDataInStack = false;
         std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
-        int cellValueStackSize = cellValues.size();
+        int cellValueStackSize = static_cast<int>( cellValues.size() );
 
         if ( noDataInStack && !mIgnoreNoData )
         {
@@ -762,7 +762,7 @@ void QgsCellStatisticsPercentRankFromRasterAlgorithm::processRasterStack( QgsPro
         double result = 0;
         bool noDataInStack = false;
         std::vector<double> cellValues = QgsRasterAnalysisUtils::getCellValuesFromBlockStack( inputBlocks, row, col, noDataInStack );
-        int cellValueStackSize = cellValues.size();
+        int cellValueStackSize = static_cast<int>( cellValues.size() );
 
         if ( noDataInStack && !mIgnoreNoData && !percentRankValueIsNoData )
         {

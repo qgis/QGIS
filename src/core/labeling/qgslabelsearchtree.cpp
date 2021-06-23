@@ -45,7 +45,7 @@ void QgsLabelSearchTree::label( const QgsPointXY &point, QList<QgsLabelPosition 
 QList<QgsLabelPosition> QgsLabelSearchTree::allLabels() const
 {
   QList<QgsLabelPosition> res;
-  res.reserve( mOwnedPositions.size() );
+  res.reserve( static_cast<int>( mOwnedPositions.size() ) );
   for ( const std::unique_ptr< QgsLabelPosition > &pos : mOwnedPositions )
   {
     res.append( * pos );

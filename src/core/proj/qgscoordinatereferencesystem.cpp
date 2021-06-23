@@ -2339,9 +2339,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     }
     if ( statement.step() == SQLITE_ROW )
     {
-      int major = statement.columnAsInt64( 0 );
-      int minor = statement.columnAsInt64( 1 );
-      int patch = statement.columnAsInt64( 2 );
+      qint64 major = statement.columnAsInt64( 0 );
+      qint64 minor = statement.columnAsInt64( 1 );
+      qint64 patch = statement.columnAsInt64( 2 );
       if ( major == PROJ_VERSION_MAJOR && minor == PROJ_VERSION_MINOR && patch == PROJ_VERSION_PATCH )
         // yay, nothing to do!
         return 0;

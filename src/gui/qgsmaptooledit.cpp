@@ -46,23 +46,23 @@ double QgsMapToolEdit::defaultMValue() const
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
-  return QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() );
+  return QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.valueAsInt() );
 }
 
 int QgsMapToolEdit::digitizingStrokeWidth()
 {
-  return QgsSettingsRegistryCore::settingsDigitizingLineWidth.value();
+  return QgsSettingsRegistryCore::settingsDigitizingLineWidth.valueAsInt();
 }
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.value(),
-                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.value() );
+  return QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.valueAsInt(),
+                 QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.valueAsInt() );
 }
 
 
@@ -145,9 +145,9 @@ QgsMapToolEdit::TopologicalResult QgsMapToolEdit::addTopologicalPoints( const QV
 QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
   QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
-  QColor color( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value() );
+  QColor color( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.valueAsInt(),
+                QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.valueAsInt(),
+                QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.valueAsInt() );
   double myAlpha = QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() / 255.0;
   if ( alternativeBand )
   {

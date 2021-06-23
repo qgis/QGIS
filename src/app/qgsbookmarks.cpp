@@ -124,7 +124,7 @@ void QgsBookmarks::deleteClicked()
 
   // make sure the user really wants to delete these bookmarks
   if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
-       tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
+       tr( "Are you sure you want to delete %1 bookmark(s)?", "number of rows" ).arg( rows.size() ),
        QMessageBox::Yes | QMessageBox::No ) )
     return;
 

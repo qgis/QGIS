@@ -101,7 +101,7 @@ void QgsScaleComboBox::showPopup()
     delta = std::labs( currScale - nextScale );
     if ( delta < min )
     {
-      min = delta;
+      min = static_cast<int>( delta );
       idx = i;
     }
   }

@@ -24,7 +24,7 @@ namespace epf
 
 FileProcessor::FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& grid,
         Writer *writer, ProgressWriter& progress) :
-    m_fi(fi), m_cellMgr(pointSize, writer), m_grid(grid), m_progress(progress)
+    m_fi(fi), m_cellMgr(static_cast<int>(pointSize), writer), m_grid(grid), m_progress(progress)
 {}
 
 void FileProcessor::run()

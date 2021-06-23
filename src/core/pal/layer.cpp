@@ -487,7 +487,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         for ( std::size_t i = 0; i < part.size(); ++i )
         {
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
-          GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
+          GEOSCoordSeq_setXY_r( geosctxt, cooSeq, static_cast<unsigned int>( i ), part[i].x, part[i].y );
 #else
           GEOSCoordSeq_setX_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].x );
           GEOSCoordSeq_setY_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].y );

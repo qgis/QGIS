@@ -70,7 +70,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   , mInTransaction( false )
   , mSplineSegs( 8 )
   , mBlockHandle( -1 )
-  , mCrs( crs.srsid() )
+  , mCrs( static_cast<int>( crs.srsid() ) )
   , mCrsH( nullptr )
   , mUseCurves( true )
   , mEntities( 0 )

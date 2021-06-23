@@ -387,12 +387,12 @@ QgsGpsData *QgsGpsData::getData( const QString &fileName )
     XML_SetUserData( p, &handler );
     XML_SetElementHandler( p, QgsGPXHandler::start, QgsGPXHandler::end );
     XML_SetCharacterDataHandler( p, QgsGPXHandler::chars );
-    long int bufsize = 10 * 1024 * 1024;
+    constexpr int bufsize = 10 * 1024 * 1024;
     char *buffer = new char[bufsize];
     int atEnd = 0;
     while ( !file.atEnd() )
     {
-      long int readBytes = file.read( buffer, bufsize );
+      int readBytes = static_cast<int>( file.read( buffer, bufsize ) );
       if ( file.atEnd() )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )

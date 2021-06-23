@@ -18,6 +18,8 @@
 #include "qgsalgorithmpolygonize.h"
 #include "qgsgeometrycollection.h"
 
+#include <limits>
+
 ///@cond PRIVATE
 
 QString QgsPolygonizeAlgorithm::name() const
@@ -89,7 +91,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   QgsFeature f;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QVector<QgsGeometry> linesList;
-  linesList.reserve( source->featureCount() );
+  linesList.reserve( static_cast<int>( std::min( static_cast<long long>( std::numeric_limits<int>::max() ), source->featureCount() ) ) );
   while ( features.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )

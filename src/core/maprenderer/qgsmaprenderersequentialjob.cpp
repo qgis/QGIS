@@ -145,7 +145,7 @@ void QgsMapRendererSequentialJob::internalFinished()
   mInternalJob->deleteLater();
   mInternalJob = nullptr;
 
-  mRenderingTime = mRenderingStart.elapsed();
+  mRenderingTime = static_cast<int>( mRenderingStart.elapsed() );
 
   emit finished();
 }

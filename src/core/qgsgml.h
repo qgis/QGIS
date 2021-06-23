@@ -404,10 +404,12 @@ class CORE_EXPORT QgsGml : public QObject
     QgsCoordinateReferenceSystem crs() const;
 
   signals:
-    void dataReadProgress( int progress );
-    void totalStepsUpdate( int totalSteps );
+    //! Data read progress
+    void dataReadProgress( qint64 progress );
+    //! Number of total steps
+    void totalStepsUpdate( qint64 totalSteps );
     //! Also emit signal with progress and totalSteps together (this is better for the status message)
-    void dataProgressAndSteps( int progress, int totalSteps );
+    void dataProgressAndSteps( qint64 progress, qint64 totalSteps );
 
   private slots:
 

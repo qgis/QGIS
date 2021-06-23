@@ -85,7 +85,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
   int number = parameterAsInt( parameters, QStringLiteral( "NUMBER" ), context );
 
-  long count = source->featureCount();
+  long long count = source->featureCount();
 
   if ( method == 0 )
   {
@@ -105,7 +105,7 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
   // initialize random engine
   std::random_device randomDevice;
   std::mt19937 mersenneTwister( randomDevice() );
-  std::uniform_int_distribution<int> fidsDistribution( 0, count );
+  std::uniform_int_distribution<int> fidsDistribution( 0, static_cast<int>( count ) );
 
   QVector< QgsFeatureId > fids( number );
   std::generate( fids.begin(), fids.end(), bind( fidsDistribution, mersenneTwister ) );

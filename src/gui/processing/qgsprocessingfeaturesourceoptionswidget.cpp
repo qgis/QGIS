@@ -17,6 +17,8 @@
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgis.h"
 
+#include <limits>
+
 ///@cond NOT_STABLE
 
 QgsProcessingFeatureSourceOptionsWidget::QgsProcessingFeatureSourceOptionsWidget( QWidget *parent )
@@ -44,9 +46,9 @@ void QgsProcessingFeatureSourceOptionsWidget::setGeometryCheckMethod( bool isOve
     mComboInvalidFeatureFiltering->setCurrentIndex( mComboInvalidFeatureFiltering->findData( check ) );
 }
 
-void QgsProcessingFeatureSourceOptionsWidget::setFeatureLimit( int limit )
+void QgsProcessingFeatureSourceOptionsWidget::setFeatureLimit( long long limit )
 {
-  mFeatureLimitSpinBox->setValue( limit );
+  mFeatureLimitSpinBox->setValue( static_cast<int>( std::min( static_cast<long long>( std::numeric_limits<int>::max() ), limit ) ) );
 }
 
 QgsFeatureRequest::InvalidGeometryCheck QgsProcessingFeatureSourceOptionsWidget::geometryCheckMethod() const

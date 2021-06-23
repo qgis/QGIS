@@ -283,7 +283,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       if ( indexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
-        long num = attrs.at( i ).toInt( &numIsOK );
+        int num = attrs.at( i ).toInt( &numIsOK );
         if ( numIsOK )
           rte.number = num;
       }
@@ -331,7 +331,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       if ( indexToAttr.at( i ) == NumAttr )
       {
         bool numIsOK;
-        long num = attrs.at( i ).toInt( &numIsOK );
+        int num = attrs.at( i ).toInt( &numIsOK );
         if ( numIsOK )
           trk.number = num;
       }

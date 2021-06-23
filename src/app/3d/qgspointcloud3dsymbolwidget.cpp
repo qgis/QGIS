@@ -622,7 +622,7 @@ double QgsPointCloud3DSymbolWidget::pointBudget() const
   return mPointBudgetSpinBox->value();
 }
 
-void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
+void QgsPointCloud3DSymbolWidget::setPointCloudSize( long long size )
 {
   mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );
 }

@@ -686,6 +686,16 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
     qlonglong value( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
 
     /**
+     * Get settings value as int type.
+     *
+     * The \a dynamicKeyPart argument specifies the dynamic part of the settings key.
+     * The \a useDefaultValueOverride argument specifies if defaultValueOverride should be used.
+     * The \a defaultValueOverride argument if valid is used instead of the normal default value.
+     * \since QGIS 3.22
+     */
+    int valueAsInt( const QString &dynamicKeyPart = QString(), bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const SIP_SKIP;
+
+    /**
      * Get settings value.
      *
      * The \a dynamicKeyParts argument specifies the list of dynamic parts of the settings key.
@@ -698,6 +708,12 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBase
      * Get settings default value.
      */
     qlonglong defaultValue() const;
+
+    /**
+     * Get settings default value as integer.
+     * \since QGIS 3.22
+     */
+    int defaultValueAsInt() const SIP_SKIP;
 
     //! \copydoc QgsSettingsEntryBase::settingsType
     virtual SettingsType settingsType() const override;

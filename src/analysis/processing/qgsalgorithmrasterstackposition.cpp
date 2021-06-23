@@ -242,12 +242,12 @@ QgsRasterStackLowestPositionAlgorithm *QgsRasterStackLowestPositionAlgorithm::cr
 
 int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::unique_ptr<QgsRasterBlock> > &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
-  int lowestPosition = 0;
+  size_t lowestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
-  int currentPosition = 0;
-  int noDataCount = 0;
+  size_t inputBlocksCount = inputBlocks.size();
+  size_t currentPosition = 0;
+  size_t noDataCount = 0;
   double firstValue = mNoDataValue;
   bool firstValueIsNoData = true;
 
@@ -301,7 +301,7 @@ int QgsRasterStackLowestPositionAlgorithm::findPosition( std::vector< std::uniqu
     }
   }
   //the ArcGIS implementation uses 1 for first position value instead of 0 as in standard c++
-  return ++lowestPosition; //therefore ++
+  return static_cast<int>( ++lowestPosition ); //therefore ++
 }
 
 //
@@ -345,12 +345,12 @@ QgsRasterStackHighestPositionAlgorithm *QgsRasterStackHighestPositionAlgorithm::
 
 int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::unique_ptr< QgsRasterBlock> > &inputBlocks, int &row, int &col, bool &noDataInRasterBlockStack )
 {
-  int highestPosition = 0;
+  size_t highestPosition = 0;
 
   //auxiliary variables
-  int inputBlocksCount = inputBlocks.size();
-  int currentPosition = 0;
-  int noDataCount = 0;
+  size_t inputBlocksCount = inputBlocks.size();
+  size_t currentPosition = 0;
+  size_t noDataCount = 0;
   double firstValue = mNoDataValue;
   bool firstValueIsNoData = true;
 
@@ -405,7 +405,7 @@ int QgsRasterStackHighestPositionAlgorithm::findPosition( std::vector< std::uniq
     }
   }
   //the ArcGIS implementation uses 1 for first position value instead of 0 as in standard c++
-  return ++highestPosition; //therefore ++
+  return static_cast<int>( ++highestPosition ); //therefore ++
 }
 
 ///@endcond

@@ -108,27 +108,28 @@ static void assignAnchors( QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, d
     {
       if ( pointb == point )
         continue;
+      const int ipointb = static_cast<int>( pointb );
 
-      double dx = pnts[pointb].x - pnts[point].x;
-      double dy = pnts[pointb].y - pnts[point].y;
+      double dx = pnts[ipointb].x - pnts[point].x;
+      double dy = pnts[ipointb].y - pnts[point].y;
       double dist2 = dx * dx + dy * dy;
       if ( dist2 > thresh2 )
         continue;   // outside threshold
 
-      if ( pnts[pointb].anchor == -1 )
+      if ( pnts[ipointb].anchor == -1 )
       {
         // doesn't have an anchor yet
-        pnts[pointb].anchor = point;
+        pnts[ipointb].anchor = point;
         ntosnap++;
       }
-      else if ( pnts[pointb].anchor >= 0 )
+      else if ( pnts[ipointb].anchor >= 0 )
       {
         // check distance to previously assigned anchor
-        double dx2 = pnts[pnts[pointb].anchor].x - pnts[pointb].x;
-        double dy2 = pnts[pnts[pointb].anchor].y - pnts[pointb].y;
+        double dx2 = pnts[pnts[ipointb].anchor].x - pnts[ipointb].x;
+        double dy2 = pnts[pnts[ipointb].anchor].y - pnts[ipointb].y;
         double dist2_a = dx2 * dx2 + dy2 * dy2;
         if ( dist2 < dist2_a )
-          pnts[pointb].anchor = point;   // replace old anchor
+          pnts[ipointb].anchor = point;   // replace old anchor
       }
     }
   }
@@ -141,7 +142,7 @@ static bool snapPoint( QgsPoint *pt, QgsSpatialIndex &index, QVector<AnchorPoint
   QList<QgsFeatureId> fids = index.intersects( QgsRectangle( pt->x(), pt->y(), pt->x(), pt->y() ) );
   Q_ASSERT( fids.count() == 1 );
 
-  int spoint = fids[0];
+  int spoint = static_cast<int>( fids[0] );
   int anchor = pnts[spoint].anchor;
 
   if ( anchor >= 0 )
@@ -175,7 +176,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
     QList<QgsFeatureId> fids = index.intersects( rect );
     Q_ASSERT( fids.count() == 1 );
 
-    int spoint = fids.first();
+    int spoint = static_cast<int>( fids.first() );
     int anchor = pnts[spoint].anchor;
     if ( anchor >= 0 )
     {
@@ -218,7 +219,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
     // Snap to anchor in threshold different from end points
     for ( QgsFeatureId fid : fids )
     {
-      int spoint = fid;
+      const int spoint = static_cast<int>( fid );
 
       if ( spoint == anchors[v] || spoint == anchors[v + 1] )
         continue; // end point

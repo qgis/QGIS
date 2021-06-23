@@ -49,7 +49,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount.value() );
+  setMaxFeatureCount( static_cast<int>( QgsSettingsRegistryCore::settingsDigitizingTracingMaxFeatureCount.value() ) );
 }
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()

@@ -4364,7 +4364,7 @@ void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer
 
   mLayer = static_cast<QgsRandomMarkerFillSymbolLayer *>( layer );
   whileBlocking( mPointCountSpinBox )->setValue( mLayer->pointCount() );
-  whileBlocking( mSeedSpinBox )->setValue( mLayer->seed() );
+  whileBlocking( mSeedSpinBox )->setValue( static_cast<int>( mLayer->seed() ) );
   whileBlocking( mClipPointsCheckBox )->setChecked( mLayer->clipPoints() );
 
   bool showDensityBasedCountWidgets = false;

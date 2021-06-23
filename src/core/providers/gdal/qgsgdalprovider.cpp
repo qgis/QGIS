@@ -65,6 +65,8 @@
 #include <cpl_conv.h>
 #include <cpl_string.h>
 
+#include <algorithm>
+
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")
 
@@ -889,7 +891,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       if ( GDALRasterIO( gdalBand, GF_Read, 0, srcTop, 1, srcHeight,
                          static_cast<char *>( data ) + tgtTopOri * bufferWidthPix * dataSize,
                          1, tgtBottomOri - tgtTopOri + 1, type,
-                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+                         static_cast<int>( dataSize ),
+                         static_cast<int>( dataSize * bufferWidthPix ) ) != CE_None )
       {
         return false;
       }
@@ -900,7 +903,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       if ( GDALRasterIO( gdalBand, GF_Read, srcLeft, 0, srcWidth, 1,
                          static_cast<char *>( data ) + tgtLeftOri * dataSize,
                          tgtRightOri - tgtLeftOri + 1, 1, type,
-                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+                         static_cast<int>( dataSize ),
+                         static_cast<int>( dataSize * bufferWidthPix ) ) != CE_None )
       {
         return false;
       }
@@ -911,7 +915,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       if ( GDALRasterIO( gdalBand, GF_Read, xSize() - 1, srcTop, 1, srcHeight,
                          static_cast<char *>( data ) + ( tgtTopOri * bufferWidthPix + tgtRightOri ) * dataSize,
                          1, tgtBottomOri - tgtTopOri + 1, type,
-                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+                         static_cast<int>( dataSize ),
+                         static_cast<int>( dataSize * bufferWidthPix ) ) != CE_None )
       {
         return false;
       }
@@ -922,7 +927,8 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       if ( GDALRasterIO( gdalBand, GF_Read, srcLeft, ySize() - 1, srcWidth, 1,
                          static_cast<char *>( data ) + ( tgtBottomOri * bufferWidthPix + tgtLeftOri ) * dataSize,
                          tgtRightOri - tgtLeftOri + 1, 1, type,
-                         dataSize, dataSize * bufferWidthPix ) != CE_None )
+                         static_cast<int>( dataSize ),
+                         static_cast<int>( dataSize * bufferWidthPix ) ) != CE_None )
       {
         return false;
       }
@@ -1925,7 +1931,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
 
   for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
   {
-    myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
+    myHistogram.histogramVector.push_back( static_cast<int>( std::min( static_cast<GUIntBig>( std::numeric_limits<int>::max() ), myHistogramArray[myBin] ) ) );
     myHistogram.nonNullCount += myHistogramArray[myBin];
   }
 

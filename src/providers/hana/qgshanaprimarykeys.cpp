@@ -36,7 +36,7 @@ namespace
 
   static qint32 fid_to_int32pk( qint64 x )
   {
-    return x <= ( ( INT32PK_OFFSET ) / 2 ) ? x : -( INT32PK_OFFSET - x );
+    return x <= ( ( INT32PK_OFFSET ) / 2 ) ? static_cast<qint32>( x ) : - static_cast<qint32>( INT32PK_OFFSET - x );
   }
 
   QStringList parseUriKey( const QString &key )

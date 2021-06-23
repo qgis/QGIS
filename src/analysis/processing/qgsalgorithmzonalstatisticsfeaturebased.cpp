@@ -81,7 +81,7 @@ void QgsZonalStatisticsFeatureBasedAlgorithm::initParameters( const QVariantMap 
 {
   Q_UNUSED( configuration )
   QStringList statChoices;
-  statChoices.reserve( STATS.size() );
+  statChoices.reserve( static_cast<int>( STATS.size() ) );
   for ( QgsZonalStatistics::Statistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );

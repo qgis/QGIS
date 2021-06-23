@@ -136,7 +136,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     n++;
 
-    idToObj[ feat.id() ] = clusterFeatures.size();
+    idToObj[ feat.id() ] = static_cast<int>( clusterFeatures.size() );
     clusterFeatures.emplace_back( Feature( point ) );
   }
 
@@ -365,14 +365,14 @@ void QgsKMeansClusteringAlgorithm::findNearest( std::vector<QgsKMeansClusteringA
 
 void QgsKMeansClusteringAlgorithm::updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, const int k )
 {
-  uint n = points.size();
+  size_t n = points.size();
   std::fill( weights.begin(), weights.end(), 0 );
   for ( int i = 0; i < k; i++ )
   {
     centers[i].setX( 0.0 );
     centers[i].setY( 0.0 );
   }
-  for ( uint i = 0; i < n; i++ )
+  for ( size_t i = 0; i < n; i++ )
   {
     int cluster = points[i].cluster;
     centers[cluster] += QgsVector( points[i].point.x(),

@@ -302,8 +302,8 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
 
   double b;
 
-  int holeS = -1;  // hole start and end points
-  int holeE = -1;
+  std::size_t holeS = 0;  // hole start and end points
+  std::size_t holeE = 0;
 
   int retainedPt = -1;
 

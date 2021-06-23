@@ -62,7 +62,7 @@ int QgsNetworkLoggerGroup::indexOf( QgsNetworkLoggerNode *child ) const
     return p.get() == child;
   } );
   if ( it != mChildren.end() )
-    return std::distance( mChildren.begin(), it );
+    return static_cast<int>( std::distance( mChildren.begin(), it ) );
   return -1;
 }
 

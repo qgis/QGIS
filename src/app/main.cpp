@@ -321,9 +321,9 @@ void qgisCrash( int signal )
 
     char exename[512];
 #if defined(__FreeBSD__)
-    int len = readlink( "/proc/curproc/file", exename, sizeof( exename ) - 1 );
+    const auto len = readlink( "/proc/curproc/file", exename, sizeof( exename ) - 1 );
 #else
-    int len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
+    const auto len = readlink( "/proc/self/exe", exename, sizeof( exename ) - 1 );
 #endif
     if ( len < 0 )
     {
@@ -540,7 +540,7 @@ int main( int argc, char *argv[] )
 #endif
 
   // initialize random number seed
-  qsrand( time( nullptr ) );
+  qsrand( static_cast<uint>( time( nullptr ) ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup

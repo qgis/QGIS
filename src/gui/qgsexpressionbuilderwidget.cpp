@@ -1051,7 +1051,7 @@ void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::Keyb
   if ( state & Qt::ControlModifier )
   {
     int position = txtExpressionString->positionFromLineIndex( line, index );
-    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, static_cast<long int>( position ) );
+    const int fncIndex = static_cast<int>( txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, static_cast<long int>( position ) ) );
     QgsExpressionFunction *func = QgsExpression::Functions()[fncIndex];
     QString help = getFunctionHelp( func );
     txtHelpText->setText( help );

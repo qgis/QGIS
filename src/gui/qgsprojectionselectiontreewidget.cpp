@@ -387,7 +387,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
   const QString srsIdString = getSelectedExpression( QStringLiteral( "srs_id" ) );
   if ( !srsIdString.isEmpty() )
   {
-    int srid = srsIdString.toLong();
+    int srid = srsIdString.toInt();
     if ( srid >= USER_CRS_START_ID )
       return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
     else

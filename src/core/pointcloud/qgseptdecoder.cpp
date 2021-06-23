@@ -137,7 +137,7 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   const int count = dataUncompressed.size() / pointRecordSize;
   QByteArray data;
-  data.resize( requestedPointRecordSize * count );
+  data.resize( static_cast<int>( requestedPointRecordSize * count ) );
   char *destinationBuffer = data.data();
   const char *s = dataUncompressed.data();
 
@@ -241,7 +241,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   Q_ASSERT( outBuf.pos < outBuf.size );
 
   ZSTD_freeDStream( strm );
-  dataUncompressed.resize( outBuf.pos );
+  dataUncompressed.resize( static_cast<int>( outBuf.pos ) );
   return dataUncompressed;
 }
 
@@ -293,7 +293,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   QByteArray data;
-  data.resize( requestedPointRecordSize * count );
+  data.resize( static_cast<int>( requestedPointRecordSize * count ) );
   char *dataBuffer = data.data();
 
   const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
@@ -474,7 +474,7 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t ), 2 );
 #endif
   QgsPointCloudBlock *block = new QgsPointCloudBlock(
-    count,
+    static_cast<int>( count ),
     requestedAttributes,
     data, scale, offset
   );

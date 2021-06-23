@@ -46,8 +46,8 @@ void QgsFileDownloaderDialog::onError( const QStringList &errors )
 
 void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  setMaximum( bytesTotal );
-  setValue( bytesReceived );
+  setMaximum( static_cast<int>( bytesTotal ) );
+  setValue( static_cast<int>( bytesReceived ) );
   setLabelText( tr( "Downloading %1 of %2 %3." ).arg( QgsFileUtils::representFileSize( bytesReceived ), QgsFileUtils::representFileSize( bytesTotal ), mOutputFileName ) );
 }
 

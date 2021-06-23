@@ -2285,12 +2285,12 @@ class Parser {
 
       // previous conditional jump jumps here
       if (if_data.prev_cond_jump != std::numeric_limits<unsigned int>::max()) {
-        tmpl.bytecodes[if_data.prev_cond_jump].args = tmpl.bytecodes.size();
+        tmpl.bytecodes[if_data.prev_cond_jump].args = static_cast<uint32_t>(tmpl.bytecodes.size());
       }
 
       // update all previous unconditional jumps to here
       for (unsigned int i: if_data.uncond_jumps) {
-        tmpl.bytecodes[i].args = tmpl.bytecodes.size();
+        tmpl.bytecodes[i].args = static_cast<uint32_t>(tmpl.bytecodes.size());
       }
 
       // pop if stack
@@ -2303,11 +2303,11 @@ class Parser {
 
       // end previous block with unconditional jump to endif; destination will be
       // filled in by endif
-      if_data.uncond_jumps.push_back(tmpl.bytecodes.size());
+      if_data.uncond_jumps.push_back(static_cast<uint32_t>(tmpl.bytecodes.size()));
       tmpl.bytecodes.emplace_back(Bytecode::Op::Jump);
 
       // previous conditional jump jumps here
-      tmpl.bytecodes[if_data.prev_cond_jump].args = tmpl.bytecodes.size();
+      tmpl.bytecodes[if_data.prev_cond_jump].args = static_cast<uint32_t>(tmpl.bytecodes.size());
       if_data.prev_cond_jump = std::numeric_limits<unsigned int>::max();
 
       // chained else if
@@ -2318,7 +2318,7 @@ class Parser {
         if (!parse_expression(tmpl)) return false;
 
         // update "previous jump"
-        if_data.prev_cond_jump = tmpl.bytecodes.size();
+        if_data.prev_cond_jump = static_cast<uint32_t>(tmpl.bytecodes.size());
 
         // conditional jump; destination will be filled in by else or endif
         tmpl.bytecodes.emplace_back(Bytecode::Op::ConditionalJump);
@@ -2349,7 +2349,7 @@ class Parser {
 
       if (!parse_expression(tmpl)) return false;
 
-      m_loop_stack.push_back(tmpl.bytecodes.size());
+      m_loop_stack.push_back(static_cast<uint32_t>(tmpl.bytecodes.size()));
 
       tmpl.bytecodes.emplace_back(Bytecode::Op::StartLoop);
       if (!key_token.text.empty()) {
@@ -2363,7 +2363,7 @@ class Parser {
       }
 
       // update loop with EndLoop index (for empty case)
-      tmpl.bytecodes[m_loop_stack.back()].args = tmpl.bytecodes.size();
+      tmpl.bytecodes[m_loop_stack.back()].args = static_cast<uint32_t>(tmpl.bytecodes.size());
 
       tmpl.bytecodes.emplace_back(Bytecode::Op::EndLoop);
       tmpl.bytecodes.back().args = m_loop_stack.back() + 1;  // loop body
@@ -2827,9 +2827,9 @@ class Renderer {
 
           int result;
           if (val.is_string()) {
-            result = val.get_ref<const std::string&>().length();
+            result = static_cast<int>(val.get_ref<const std::string&>().length());
           } else {
-            result = val.size();
+            result = static_cast<int>(val.size());
           }
 
           pop_args(bc);

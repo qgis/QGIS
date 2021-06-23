@@ -89,7 +89,7 @@ void Epf::run(const Options& options, ProgressWriter& progress)
         {
             di.dim = layout->findDim(di.name);
             di.type = layout->dimType(di.dim);
-            di.offset = layout->dimOffset(di.dim);
+            di.offset = static_cast<int>(layout->dimOffset(di.dim));
         }
     }
 
@@ -108,7 +108,7 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     // Add the files to the processing pool
     for (const FileInfo& fi : fileInfos)
     {
-        int pointSize = layout->pointSize();
+        int pointSize = static_cast<int>(layout->pointSize());
         m_pool.add([&fi, &progress, pointSize, this]()
         {
             FileProcessor fp(fi, pointSize, m_grid, m_writer.get(), progress);
@@ -137,8 +137,8 @@ void Epf::run(const Options& options, ProgressWriter& progress)
     for (auto& t : totals)
     {
         VoxelKey key = t.first;
-        int numPoints = t.second;
-        int pointSize = layout->pointSize();
+        int numPoints = static_cast<int>(t.second);
+        int pointSize = static_cast<int>(layout->pointSize());
         std::string tempDir = options.tempDir;
         m_pool.add([&progress, key, numPoints, pointSize, tempDir, this]()
         {
@@ -166,7 +166,7 @@ void Epf::fillMetadata(const pdal::PointLayoutPtr layout)
         FileDimInfo di;
         di.name = layout->dimName(id);
         di.type = layout->dimType(id);
-        di.offset = layout->dimOffset(id);
+        di.offset = static_cast<int>(layout->dimOffset(id));
         m_b.pointSize += pdal::Dimension::size(di.type);
         m_b.dimInfo.push_back(di);
     }

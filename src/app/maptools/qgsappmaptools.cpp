@@ -90,7 +90,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   mStreamToleranceSpinBox->setWrapping( false );
   mStreamToleranceSpinBox->setSingleStep( 1 );
   mStreamToleranceSpinBox->setClearValue( 2 );
-  mStreamToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.value() );
+  mStreamToleranceSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingStreamTolerance.valueAsInt() );
 
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );

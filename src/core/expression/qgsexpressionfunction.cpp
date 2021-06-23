@@ -399,18 +399,18 @@ static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext 
 
   if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
-    quint32 seed;
+    uint_fast64_t seed;
     if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
     {
       // if seed can be converted to int, we use as is
-      seed = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+      seed = static_cast<uint_fast64_t>( QgsExpressionUtils::getIntValue( values.at( 2 ), parent ) );
     }
     else
     {
       // if not, we hash string representation to int
       QString seedStr = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
       std::hash<std::string> hasher;
-      seed = hasher( seedStr.toStdString() );
+      seed = static_cast<uint_fast64_t>( hasher( seedStr.toStdString() ) );
     }
     generator.seed( seed );
   }
@@ -431,7 +431,7 @@ static QVariant fcnRnd( const QVariantList &values, const QgsExpressionContext *
 
   if ( !QgsExpressionUtils::isNull( values.at( 2 ) ) )
   {
-    quint32 seed;
+    uint_fast64_t seed;
     if ( QgsExpressionUtils::isIntSafe( values.at( 2 ) ) )
     {
       // if seed can be converted to int, we use as is
@@ -1168,9 +1168,9 @@ static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnMakeDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const int year = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  const int month = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  const int day = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  const int year = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
+  const int month = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const int day = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
 
   const QDate date( year, month, day );
   if ( !date.isValid() )
@@ -1183,8 +1183,8 @@ static QVariant fcnMakeDate( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnMakeTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const int hours = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  const int minutes = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  const int hours = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
+  const int minutes = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
   const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
 
   const QTime time( hours, minutes, std::floor( seconds ), ( seconds - std::floor( seconds ) ) * 1000 );
@@ -1198,11 +1198,11 @@ static QVariant fcnMakeTime( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnMakeDateTime( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  const int year = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-  const int month = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  const int day = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
-  const int hours = QgsExpressionUtils::getIntValue( values.at( 3 ), parent );
-  const int minutes = QgsExpressionUtils::getIntValue( values.at( 4 ), parent );
+  const int year = QgsExpressionUtils::getNativeIntValue( values.at( 0 ), parent );
+  const int month = QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent );
+  const int day = QgsExpressionUtils::getNativeIntValue( values.at( 2 ), parent );
+  const int hours = QgsExpressionUtils::getNativeIntValue( values.at( 3 ), parent );
+  const int minutes = QgsExpressionUtils::getNativeIntValue( values.at( 4 ), parent );
   const double seconds = QgsExpressionUtils::getDoubleValue( values.at( 5 ), parent );
 
   const QDate date( year, month, day );
@@ -6208,7 +6208,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QList<QgsFeatureId> fidsList;
     if ( isNearestFunc )
     {
-      fidsList = spatialIndex.nearestNeighbor( geometry, sameLayers ? limit + 1 : limit, max_distance );
+      fidsList = spatialIndex.nearestNeighbor( geometry, static_cast<int>( sameLayers ? limit + 1 : limit ), max_distance );
     }
     else
     {

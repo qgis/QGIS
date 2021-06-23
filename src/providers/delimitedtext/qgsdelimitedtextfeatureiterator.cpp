@@ -207,12 +207,12 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         if ( mNextId < mFeatureIds.size() )
         {
-          fid = mFeatureIds.at( mNextId );
+          fid = mFeatureIds.at( static_cast<int>( mNextId ) );
         }
       }
       else if ( mNextId < mSource->mSubsetIndex.size() )
       {
-        fid = mSource->mSubsetIndex.at( mNextId );
+        fid = mSource->mSubsetIndex.at( static_cast<int>( mNextId ) );
       }
       if ( fid < 0 ) break;
       mNextId++;

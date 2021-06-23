@@ -689,7 +689,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
       }
     }
   }
-  p.setValue( nFeatures );
+  p.setValue( 100.0 );
 
   mRenderer->stopRender( renderContext );
 

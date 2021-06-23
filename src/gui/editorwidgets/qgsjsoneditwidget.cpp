@@ -198,9 +198,9 @@ void QgsJsonEditWidget::codeEditorJsonIndicatorClicked( int line, int index, Qt:
     return;
 
   int position = mCodeEditorJson->positionFromLineIndex( line, index );
-  int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
+  int clickableLinkListIndex = static_cast<int>( mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
                                SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                               position );
+                               position ) );
   if ( clickableLinkListIndex <= 0 )
     return;
 
@@ -212,9 +212,9 @@ void QgsJsonEditWidget::codeEditorJsonDwellStart( int position, int x, int y )
   Q_UNUSED( x )
   Q_UNUSED( y )
 
-  int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
+  int clickableLinkListIndex = static_cast<int>( mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
                                SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                               position );
+                               position ) );
   if ( clickableLinkListIndex <= 0 )
     return;
 

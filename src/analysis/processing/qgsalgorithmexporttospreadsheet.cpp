@@ -202,7 +202,7 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
 #endif
   bool errored = false;
 
-  QgsProcessingMultiStepFeedback multiStepFeedback( mLayers.size(), feedback );
+  QgsProcessingMultiStepFeedback multiStepFeedback( static_cast<int>( mLayers.size() ), feedback );
 
   QStringList outputLayers;
   int i = 0;

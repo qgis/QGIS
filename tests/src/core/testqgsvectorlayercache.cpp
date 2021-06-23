@@ -256,7 +256,7 @@ void TestVectorLayerCache::testFullCache()
 void TestVectorLayerCache::testFullCacheThroughRequest()
 {
   // make sure cache is sufficient size for all features
-  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->featureCount() * 2 );
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->featureCount() * 2 ) );
   QVERIFY( !cache.hasFullCache() );
 
   // now request all features from cache
@@ -399,7 +399,7 @@ void TestVectorLayerCache::testCacheGeom()
 
 void TestVectorLayerCache::testFullCacheWithRect()
 {
-  QgsVectorLayerCache cache( mPointsLayer, mPointsLayer->dataProvider()->featureCount() );
+  QgsVectorLayerCache cache( mPointsLayer, static_cast<int>( mPointsLayer->dataProvider()->featureCount() ) );
   // cache geometry
   cache.setCacheGeometry( true );
   QVERIFY( ! cache.hasFullCache() );

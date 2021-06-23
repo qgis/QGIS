@@ -245,7 +245,7 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
   if ( !mPrepared ) // can't access from other thread
-    mRenderingTime = mRenderingStart.elapsed();
+    mRenderingTime = static_cast<int>( mRenderingStart.elapsed() );
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER futureFinished" ), 5 );
 
   if ( !mPrepared )
@@ -353,7 +353,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       }
 
       mLabelJob.complete = true;
-      mLabelJob.renderingTime = labelTime.elapsed();
+      mLabelJob.renderingTime = static_cast<int>( labelTime.elapsed() );
       mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
     }
   }

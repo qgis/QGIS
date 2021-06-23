@@ -100,7 +100,7 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
     if ( mAllRanges.empty() )
       return QgsDateTimeRange();
 
-    return frame < mAllRanges.size() ? mAllRanges.at( frame ) : mAllRanges.constLast();
+    return frame < mAllRanges.size() ? mAllRanges.at( static_cast<int>( frame ) ) : mAllRanges.constLast();
   }
   else
   {

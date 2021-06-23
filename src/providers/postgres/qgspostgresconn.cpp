@@ -1579,8 +1579,8 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
 
     case 6:
     {
-      quint64 block  = *( quint32 * ) p;
-      quint64 offset = *( quint16 * )( p + sizeof( quint32 ) );
+      quint32 block  = *( quint32 * ) p;
+      quint32 offset = *( quint16 * )( p + sizeof( quint32 ) );
 
       if ( mSwapEndian )
       {
@@ -1588,7 +1588,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
         offset = ntohs( offset );
       }
 
-      oid = ( block << 16 ) + offset;
+      oid = ( static_cast<quint64>( block ) << 16 ) + offset;
     }
     break;
 
@@ -1621,7 +1621,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
     case 4:
       oid = *( quint32 * )p;
       if ( mSwapEndian )
-        oid = ntohl( oid );
+        oid = ntohl( static_cast<quint32>( oid ) );
       /* cast to signed 32bit
        * See https://github.com/qgis/QGIS/issues/22258 */
       oid = ( qint32 )oid;

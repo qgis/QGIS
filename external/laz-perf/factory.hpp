@@ -2,7 +2,7 @@
 ===============================================================================
 
   FILE:  factory.hpp
-  
+
   CONTENTS:
     Factory to create dynamic compressors and decompressors
 
@@ -10,9 +10,9 @@
 
     martin.isenburg@rapidlasso.com  -  http://rapidlasso.com
     uday.karan@gmail.com - Hobu, Inc.
-  
+
   COPYRIGHT:
-  
+
     (c) 2007-2014, martin isenburg, rapidlasso - tools to catch reality
     (c) 2014, Uday Verma, Hobu, Inc.
 
@@ -22,9 +22,9 @@
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  
+
   CHANGE HISTORY:
-  
+
 ===============================================================================
 */
 
@@ -84,7 +84,7 @@ namespace laszip {
 
             static const record_item eb(size_t count)
             {
-                return record_item(BYTE, count, 2);
+                return record_item(BYTE, static_cast<int>(count), 2);
             }
 		};
 

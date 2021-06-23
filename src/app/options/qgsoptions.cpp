@@ -360,7 +360,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( QgsNetworkAccessManager::timeout() );
-  mNetworkTimeoutSpinBox->setClearValue( QgsNetworkAccessManager::settingsNetworkTimeout.defaultValue() );
+  mNetworkTimeoutSpinBox->setClearValue( QgsNetworkAccessManager::settingsNetworkTimeout.defaultValueAsInt() );
   leUserAgent->setText( mSettings->value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString() );
 
   // WMS capabilities expiry time
@@ -1072,19 +1072,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 
   //set elements in digitizing tab
-  mLineWidthSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingLineWidth.value() );
-  mLineColorToolButton->setColor( QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.value() ) );
+  mLineWidthSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingLineWidth.valueAsInt() );
+  mLineColorToolButton->setColor( QColor( QgsSettingsRegistryCore::settingsDigitizingLineColorRed.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingLineColorGreen.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingLineColorBlue.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingLineColorAlpha.valueAsInt() ) );
   mLineColorToolButton->setAllowOpacity( true );
   mLineColorToolButton->setContext( QStringLiteral( "gui" ) );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
-  mFillColorToolButton->setColor( QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.value(),
-                                          QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.value() ) );
+  mFillColorToolButton->setColor( QColor( QgsSettingsRegistryCore::settingsDigitizingFillColorRed.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingFillColorGreen.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingFillColorBlue.valueAsInt(),
+                                          QgsSettingsRegistryCore::settingsDigitizingFillColorAlpha.valueAsInt() ) );
   mFillColorToolButton->setAllowOpacity( true );
   mFillColorToolButton->setContext( QStringLiteral( "gui" ) );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
@@ -1179,7 +1179,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   chkReuseLastValues->setChecked( QgsSettingsRegistryCore::settingsDigitizingReuseLastValues.value() );
   chkDisableAttributeValuesDlg->setChecked( QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog.value() );
-  mValidateGeometries->setCurrentIndex( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.value() );
+  mValidateGeometries->setCurrentIndex( QgsSettingsRegistryCore::settingsDigitizingValidateGeometries.valueAsInt() );
 
   mSnappingMainDialogComboBox->clear();
   mSnappingMainDialogComboBox->addItem( tr( "Dialog" ), "dialog" );
@@ -1191,8 +1191,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
   QgsGeometry::JoinStyle joinStyleSetting = QgsSettingsRegistryCore::settingsDigitizingOffsetJoinStyle.value();
   mOffsetJoinStyleComboBox->setCurrentIndex( mOffsetJoinStyleComboBox->findData( joinStyleSetting ) );
-  mOffsetQuadSegSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() );
-  mOffsetQuadSegSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.defaultValue() );
+  mOffsetQuadSegSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.valueAsInt() );
+  mOffsetQuadSegSpinBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.defaultValueAsInt() );
   mCurveOffsetMiterLimitComboBox->setValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.value() );
   mCurveOffsetMiterLimitComboBox->setClearValue( QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit.defaultValue() );
 

@@ -94,7 +94,7 @@ QgsFeatureList QgsExplodeAlgorithm::processFeature( const QgsFeature &f, QgsProc
     const std::vector<QgsGeometry> parts = extractAsParts( f.geometry() );
     QgsFeature outputFeature;
     QgsFeatureList features;
-    features.reserve( parts.size() );
+    features.reserve( static_cast<int>( parts.size() ) );
     for ( const QgsGeometry &part : parts )
     {
       outputFeature.setAttributes( f.attributes() );

@@ -128,8 +128,8 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 
   if ( block )
     block->reset( mInput->block( bandNumber, blockRect, nCols, nRows, mFeedback ) );
-  topLeftCol = pInfo.currentCol;
-  topLeftRow = pInfo.currentRow;
+  topLeftCol = static_cast<int>( pInfo.currentCol );
+  topLeftRow = static_cast<int>( pInfo.currentRow );
 
   pInfo.currentCol += nCols;
   if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow + nRows == pInfo.nRows ) //end of raster

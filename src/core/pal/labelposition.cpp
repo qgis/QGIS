@@ -436,7 +436,7 @@ void LabelPosition::createMultiPartGeosGeom() const
     geomarr[i ] = GEOSGeom_clone_r( geosctxt, geometries[i] );
   }
 
-  mMultipartGeos = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomarr, partCount );
+  mMultipartGeos = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomarr, static_cast<unsigned int>( partCount ) );
   delete [] geomarr;
 }
 

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
      *
      * \see featureLimit()
      */
-    void setFeatureLimit( int limit );
+    void setFeatureLimit( long long limit );
 
     /**
      * Returns the selected geometry check method. Also check isOverridingInvalidGeometryCheck() to verify

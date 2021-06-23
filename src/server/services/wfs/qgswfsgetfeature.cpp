@@ -72,13 +72,13 @@ namespace QgsWfs
     QDomElement createFeatureGML3( const QgsFeature &feature, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes );
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
-                        QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *serverSettings );
+                        QgsWfsParameters::Format format, long long numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *serverSettings );
 
     void startGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
                           QgsWfsParameters::Format format, int prec, QgsCoordinateReferenceSystem &crs,
                           QgsRectangle *rect, const QStringList &typeNames, const QgsServerSettings *settings );
 
-    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx,
+    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, long long featIdx,
                         const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes = QgsAttributeList() );
 
     void endGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format );
@@ -191,8 +191,8 @@ namespace QgsWfs
 #endif
 
     // features counters
-    long sentFeatures = 0;
-    long iteratedFeatures = 0;
+    long long sentFeatures = 0;
+    long long iteratedFeatures = 0;
     // sent features
     QgsFeature feature;
     qIt = aRequest.queries.begin();
@@ -1013,7 +1013,7 @@ namespace QgsWfs
 
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
-                        int numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings )
+                        long long numberOfFeatures, const QStringList &typeNames, const QgsServerSettings *settings )
     {
       QDateTime now = QDateTime::currentDateTime();
       QString fcString;
@@ -1220,7 +1220,7 @@ namespace QgsWfs
       }
     }
 
-    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, int featIdx,
+    void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, const QgsFeature &feature, long long featIdx,
                         const createFeatureParams &params, const QgsProject *project, const QgsAttributeList &pkAttributes )
     {
       if ( !feature.isValid() )

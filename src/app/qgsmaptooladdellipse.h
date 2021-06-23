@@ -40,7 +40,7 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolAddAbstract
     QgsEllipse mEllipse;
 
     //! convenient method to return the number of segments
-    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.value() * 12; }
+    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg.valueAsInt() * 12; }
 };
 
 #endif // QGSMAPTOOLADDELLIPSE_H

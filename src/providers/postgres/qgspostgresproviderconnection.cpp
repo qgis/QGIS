@@ -402,7 +402,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
     if ( mResolveTypes )
     {
       const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
-      QVariant val = result->PQgetvalue( mRowIndex, colIdx );
+      QVariant val = result->PQgetvalue( static_cast<int>( mRowIndex ), colIdx );
       // Special case for bools: 'f' and 't'
       if ( vType == QVariant::Bool )
       {
@@ -420,7 +420,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
     }
     else
     {
-      row.push_back( result->PQgetvalue( mRowIndex, colIdx ) );
+      row.push_back( result->PQgetvalue( static_cast<int>( mRowIndex ), colIdx ) );
     }
   }
   ++mRowIndex;

@@ -305,7 +305,7 @@ void QgsMapRendererParallelJob::renderingFinished()
 
     mStatus = Idle;
 
-    mRenderingTime = mRenderingStart.elapsed();
+    mRenderingTime = static_cast<int>( mRenderingStart.elapsed() );
 
     emit finished();
   }
@@ -331,7 +331,7 @@ void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 
   mStatus = Idle;
 
-  mRenderingTime = mRenderingStart.elapsed();
+  mRenderingTime = static_cast<int>( mRenderingStart.elapsed() );
 
   emit finished();
 }
@@ -429,7 +429,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
 
     painter.end();
 
-    job.renderingTime = labelTime.elapsed();
+    job.renderingTime = static_cast<int>( labelTime.elapsed() );
     job.complete = true;
     job.participatingLayers = _qgis_listRawToQPointer( self->mLabelingEngineV2->participatingLayers() );
     if ( job.img )

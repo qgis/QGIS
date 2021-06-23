@@ -151,7 +151,8 @@ Gets byte array representing a value.
 :return: byte array representing the value
 %End
 
-    double value( int row, int column ) const /HoldGIL/;
+
+    double value( qgssize row, qgssize column ) const /HoldGIL/;
 %Docstring
 Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
@@ -162,6 +163,8 @@ returned value is undefined.
 :return: value
 
 .. seealso:: :py:func:`valueAndNoData`
+
+.. versionadded:: 3.22
 %End
 
 
@@ -254,7 +257,8 @@ Set value on index (indexed line by line)
 :return: ``True`` on success
 %End
 
-    bool setColor( int row, int column, QRgb color ) /HoldGIL/;
+
+    bool setColor( qgssize row, qgssize column, QRgb color ) /HoldGIL/;
 %Docstring
 Set color on position
 
@@ -263,6 +267,8 @@ Set color on position
 :param color: the color to be set, QRgb value
 
 :return: ``True`` on success
+
+.. versionadded:: 3.22
 %End
 
     bool setColor( qgssize index, QRgb color ) /HoldGIL/;

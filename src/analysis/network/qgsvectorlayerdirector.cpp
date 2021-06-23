@@ -124,7 +124,7 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
 
     void visitData( const IData &d ) override
     {
-      mPoints.append( d.getIdentifier() );
+      mPoints.append( static_cast<int>( d.getIdentifier() ) );
     }
 
     void visitData( std::vector<const IData *> &v ) override
@@ -139,11 +139,11 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
 std::unique_ptr< SpatialIndex::ISpatialIndex > createVertexSpatialIndex( SpatialIndex::IStorageManager &storageManager )
 {
   // R-Tree parameters
-  double fillFactor = 0.7;
-  unsigned long indexCapacity = 10;
-  unsigned long leafCapacity = 10;
-  unsigned long dimension = 2;
-  RTree::RTreeVariant variant = RTree::RV_RSTAR;
+  constexpr double fillFactor = 0.7;
+  constexpr uint32_t indexCapacity = 10;
+  constexpr uint32_t leafCapacity = 10;
+  constexpr uint32_t dimension = 2;
+  constexpr RTree::RTreeVariant variant = RTree::RV_RSTAR;
 
   // create R-tree
   SpatialIndex::id_type indexId;

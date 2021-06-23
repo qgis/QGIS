@@ -38,7 +38,7 @@ public:
     void run();
 
 private:
-    using Index = std::deque<int>;
+    using Index = std::deque<size_t>;
     using IndexIter = Index::const_iterator;
 
     void sample(Index& accepted, Index& rejected);

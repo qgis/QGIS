@@ -31,14 +31,14 @@ public:
     std::string filename() const
         { return m_filename; }
 
-    int numPoints() const
+    size_t numPoints() const
         { return m_numPoints; }
 
     // When sampling we give a single set of indices to the points in the various
     // input files. m_start is the starting index of the points in this file.
-    void setStart(int start)
+    void setStart(size_t start)
         { m_start = start; }
-    int start() const
+    size_t start() const
         { return m_start; }
 
     char *address() const
@@ -51,8 +51,8 @@ public:
 
 private:
     std::string m_filename;
-    int m_numPoints;
-    int m_start;
+    size_t m_numPoints;
+    size_t m_start;
     MapContext m_ctx;
 };
 using FileInfoList = std::list<FileInfo>;

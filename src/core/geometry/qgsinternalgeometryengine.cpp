@@ -128,7 +128,7 @@ std::pair<bool, std::array<Direction, 4>> getEdgeDirections( const QgsPolygon *g
 
 bool matchesOrientation( std::array<Direction, 4> dirs, std::array<Direction, 4> oriented )
 {
-  int idx = std::find( oriented.begin(), oriented.end(), dirs[0] ) - oriented.begin();
+  size_t idx = std::find( oriented.begin(), oriented.end(), dirs[0] ) - oriented.begin();
   for ( int i = 1; i < 4; ++i )
   {
     if ( dirs[i] != oriented[( idx + i ) % 4] )
@@ -1071,7 +1071,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   }
 
   QVector<QgsGeometry> bufferedLines;
-  bufferedLines.reserve( linesToProcess.size() );
+  bufferedLines.reserve( static_cast<int>( linesToProcess.size() ) );
 
   for ( std::unique_ptr< QgsLineString > &line : linesToProcess )
   {

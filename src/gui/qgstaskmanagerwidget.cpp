@@ -413,7 +413,7 @@ QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
 
     formattedTime = tr( "Estimated time remaining: %1" ).arg( formattedTime );
 
-    QTime estimatedEnd = QTime::currentTime().addMSecs( msRemain );
+    QTime estimatedEnd = QTime::currentTime().addMSecs( static_cast<int>( msRemain ) );
     formattedTime += tr( " (%1)" ).arg( QLocale::system().toString( estimatedEnd, QLocale::ShortFormat ) );
   }
   else

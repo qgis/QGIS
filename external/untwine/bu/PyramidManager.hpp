@@ -42,7 +42,7 @@ public:
     void setProgress(ProgressWriter *progress);
     void queue(const OctantInfo& o);
     void run();
-    void logOctant(const VoxelKey& k, int cnt, const IndexedStats& istats);
+    void logOctant(const VoxelKey& k, size_t cnt, const IndexedStats& istats);
     uint64_t totalPoints() const
         { return m_totalPoints; }
     Stats *stats(const std::string& name);

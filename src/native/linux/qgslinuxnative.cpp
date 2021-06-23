@@ -221,7 +221,7 @@ QDBusArgument &operator<<( QDBusArgument &arg, const QImage &image )
   int channels = i.isGrayscale() ? 1 : ( i.hasAlphaChannel() ? 4 : 3 );
   arg << i.depth() / channels;
   arg << channels;
-  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.sizeInBytes() );
+  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), static_cast<int>( i.sizeInBytes() ) );
   arg.endStructure();
   return arg;
 }

@@ -91,7 +91,7 @@ class CORE_EXPORT QgsRenderChecker
      *
      * \note this only records time for actual render part.
      */
-    int elapsedTime() { return mElapsedTime; }
+    int elapsedTime() { return static_cast<int>( mElapsedTime ); }
     void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
 
     /**
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsRenderChecker
   protected:
     QString mReport;
     unsigned int mMatchTarget = 0;
-    int mElapsedTime = 0;
+    qint64 mElapsedTime = 0;
     QString mRenderedImageFile;
     QString mExpectedImageFile;
 

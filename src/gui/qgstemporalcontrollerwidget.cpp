@@ -294,8 +294,8 @@ void QgsTemporalControllerWidget::updateTemporalExtent()
   QgsDateTimeRange temporalExtent = QgsDateTimeRange( start, end,
                                     true, !isTimeInstant && mNavigationObject->navigationMode() == QgsTemporalNavigationObject::FixedRange ? false : true );
   mNavigationObject->setTemporalExtents( temporalExtent );
-  mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
-  mSlider->setValue( mNavigationObject->currentFrameNumber() );
+  mSlider->setRange( 0, static_cast<int>( mNavigationObject->totalFrameCount() - 1 ) );
+  mSlider->setValue( static_cast<int>( mNavigationObject->currentFrameNumber() ) );
 }
 
 void QgsTemporalControllerWidget::updateFrameDuration()
@@ -313,10 +313,10 @@ void QgsTemporalControllerWidget::updateFrameDuration()
     mNavigationObject->setFrameDuration(
       QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
                    QgsProject::instance()->timeSettings()->timeStepUnit() ) );
-    mSlider->setValue( mNavigationObject->currentFrameNumber() );
+    mSlider->setValue( static_cast<int>( mNavigationObject->currentFrameNumber() ) );
   }
-  mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
-  mSlider->setValue( mNavigationObject->currentFrameNumber() );
+  mSlider->setRange( 0, static_cast<int>( mNavigationObject->totalFrameCount() - 1 ) );
+  mSlider->setValue( static_cast<int>( mNavigationObject->currentFrameNumber() ) );
 
   if ( unit == QgsUnitTypes::TemporalIrregularStep )
   {
@@ -500,7 +500,7 @@ void QgsTemporalControllerWidget::onProjectCleared()
 
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 {
-  whileBlocking( mSlider )->setValue( mNavigationObject->currentFrameNumber() );
+  whileBlocking( mSlider )->setValue( static_cast<int>( mNavigationObject->currentFrameNumber() ) );
   updateRangeLabel( range );
 }
 

@@ -2,7 +2,7 @@
 ===============================================================================
 
   FILE:  util.hpp
-  
+
   CONTENTS:
     Utility classes
 
@@ -10,9 +10,9 @@
 
     martin.isenburg@rapidlasso.com  -  http://rapidlasso.com
     uday.karan@gmail.com - Hobu, Inc.
-  
+
   COPYRIGHT:
-  
+
     (c) 2007-2014, martin isenburg, rapidlasso - tools to catch reality
     (c) 2014, Uday Verma, Hobu, Inc.
 
@@ -22,9 +22,9 @@
 
     This software is distributed WITHOUT ANY WARRANTY and without even the
     implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  
+
   CHANGE HISTORY:
-  
+
 ===============================================================================
 */
 
@@ -39,7 +39,7 @@ namespace laszip {
 	namespace utils {
 #define ALIGN 64
 
-		static inline void *aligned_malloc(int size) {
+		static inline void *aligned_malloc(size_t size) {
 			void *mem = malloc(size+ALIGN+sizeof(void*));
 			void **ptr = (void**)(( ((uintptr_t)mem)+ALIGN+sizeof(void*) ) & ~(uintptr_t)(ALIGN-1) );
 			ptr[-1] = mem;
@@ -147,7 +147,7 @@ namespace laszip {
 		// counts n, or mix up the position of r and n. we therefore
 		// "complete" the table to also map those "undesired" r & n
 		// combinations to different contexts
-		const unsigned char number_return_map[8][8] = 
+		const unsigned char number_return_map[8][8] =
 		{
 		  { 15, 14, 13, 12, 11, 10,  9,  8 },
 		  { 14,  0,  1,  3,  6, 10, 10,  9 },
@@ -175,7 +175,7 @@ namespace laszip {
 		// counts n, or mix up the position of r and n. we therefore
 		// "complete" the table to also map those "undesired" r & n
 		// combinations to different contexts
-		const unsigned char number_return_level[8][8] = 
+		const unsigned char number_return_level[8][8] =
 		{
 		  {  0,  1,  2,  3,  4,  5,  6,  7 },
 		  {  1,  0,  1,  2,  3,  4,  5,  6 },

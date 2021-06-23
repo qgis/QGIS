@@ -570,6 +570,7 @@ The ``useDefaultValueOverride`` argument specifies if defaultValueOverride shoul
 The ``defaultValueOverride`` argument if valid is used instead of the normal default value.
 %End
 
+
     qlonglong value( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride = false, qlonglong defaultValueOverride = 0 ) const;
 %Docstring
 Get settings value.
@@ -583,6 +584,7 @@ The ``defaultValueOverride`` argument if valid is used instead of the normal def
 %Docstring
 Get settings default value.
 %End
+
 
     virtual SettingsType settingsType() const;
 %Docstring

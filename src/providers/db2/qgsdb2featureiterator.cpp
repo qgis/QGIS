@@ -77,7 +77,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     mStatement += mSource->mFidColName;
     mFidCol = mSource->mFields.indexFromName( mSource->mFidColName );
-    mAttributesToFetch.append( mFidCol );
+    mAttributesToFetch.append( static_cast<int>( mFidCol ) );
     delim = QStringLiteral( "," );
   }
 

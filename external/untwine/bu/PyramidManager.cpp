@@ -134,7 +134,7 @@ OctantInfo PyramidManager::removeComplete(const VoxelKey& k)
 }
 
 
-void PyramidManager::logOctant(const VoxelKey& k, int cnt, const IndexedStats& istats)
+void PyramidManager::logOctant(const VoxelKey& k, size_t cnt, const IndexedStats& istats)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 

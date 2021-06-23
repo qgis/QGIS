@@ -127,7 +127,7 @@ void QgsFeatureDownloaderImpl::hideProgressDialog()
 }
 
 // Called from GUI thread
-void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
+void QgsFeatureDownloaderImpl::createProgressDialog( long long numberMatched )
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
@@ -158,7 +158,7 @@ void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
     return;
 
   mProgressDialog = new QgsFeatureDownloaderProgressDialog( QObject::tr( "Loading features for layer %1" ).arg( mSharedBase->layerName() ),
-      QObject::tr( "Abort" ), 0, numberMatched, mMainWindow );
+      QObject::tr( "Abort" ), 0, static_cast<int>( numberMatched ), mMainWindow );
   mProgressDialog->setWindowTitle( QObject::tr( "QGIS" ) );
   mProgressDialog->setValue( 0 );
   if ( mProgressDialogShowImmediately )
@@ -166,7 +166,7 @@ void QgsFeatureDownloaderImpl::createProgressDialog( int numberMatched )
 }
 
 void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
-    bool success, int totalDownloadedFeatureCount,
+    bool success, long long totalDownloadedFeatureCount,
     bool truncatedResponse, bool interrupted,
     const QString &errorMessage )
 {

@@ -1447,7 +1447,7 @@ bool QgsPostgresRasterProvider::initFieldsAndTemporal( )
           {
             for ( qlonglong row = 0; row < result.PQntuples(); ++row )
             {
-              const QDateTime date = QDateTime::fromString( result.PQgetvalue( row, 0 ), Qt::DateFormat::ISODate );
+              const QDateTime date = QDateTime::fromString( result.PQgetvalue( static_cast<int>( row ), 0 ), Qt::DateFormat::ISODate );
               allRanges.push_back( QgsDateTimeRange( date, date ) );
             }
             temporalCapabilities()->setAllAvailableTemporalRanges( allRanges );

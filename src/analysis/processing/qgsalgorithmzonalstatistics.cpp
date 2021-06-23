@@ -80,7 +80,7 @@ QgsZonalStatisticsAlgorithm *QgsZonalStatisticsAlgorithm::createInstance() const
 void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList statChoices;
-  statChoices.reserve( STATS.size() );
+  statChoices.reserve( static_cast<int>( STATS.size() ) );
   for ( QgsZonalStatistics::Statistic stat : STATS )
   {
     statChoices << QgsZonalStatistics::displayName( stat );

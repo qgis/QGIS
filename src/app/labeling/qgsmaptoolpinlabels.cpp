@@ -369,7 +369,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
   bool preserveRot = currentLabelPreserveRotation();
 
   // edit attribute table
-  int fid = labelpos.featureId;
+  QgsFeatureId fid = labelpos.featureId;
 
   bool writeFailed = false;
   QString labelText = currentLabelText( 24 );
@@ -470,7 +470,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
 
   // edit attribute table
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  int fid = mCurrentLabel.pos.featureId;
+  QgsFeatureId fid = mCurrentLabel.pos.featureId;
 
   bool writeFailed = false;
   QString labelText = currentLabelText( 24 );

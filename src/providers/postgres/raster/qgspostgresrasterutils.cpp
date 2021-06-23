@@ -159,7 +159,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
         QByteArray ba;
         for ( qlonglong rowOffset = ( numRows - 1 ) * rowSize; rowOffset >= 0; rowOffset -= rowSize )
         {
-          ba.append( oldBa.mid( rowOffset, rowSize ) );
+          ba.append( oldBa.mid( static_cast<int>( rowOffset ), rowSize ) );
         }
         result[ QStringLiteral( "band%1" ).arg( bandCnt )] = ba;
       }

@@ -269,7 +269,7 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) co
 
 int QgsMeshLayer::triangularMeshLevelOfDetailCount() const SIP_SKIP
 {
-  return mTriangularMeshes.size();
+  return static_cast<int>( mTriangularMeshes.size() );
 }
 
 QgsTriangularMesh *QgsMeshLayer::triangularMeshByLodIndex( int lodIndex ) const SIP_SKIP

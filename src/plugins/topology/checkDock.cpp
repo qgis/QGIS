@@ -348,7 +348,7 @@ void checkDock::runTests( ValidateType type )
     if ( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer2Str ) )
       layer2 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer2Str );
 
-    QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
+    QProgressDialog progress( testName, tr( "Abort" ), 0, static_cast<int>( layer1->featureCount() ), this );
     progress.setWindowModality( Qt::WindowModal );
 
     connect( &progress, &QProgressDialog::canceled, mTest, &topolTest::setTestCanceled );

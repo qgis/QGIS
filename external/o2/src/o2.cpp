@@ -380,12 +380,12 @@ QByteArray O2::buildRequestBody(const QMap<QString, QString> &parameters) {
     return body;
 }
 
-int O2::expires() {
+long long O2::expires() {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
-    return store_->value(key).toInt();
+    return store_->value(key).toLongLong();
 }
 
-void O2::setExpires(int v) {
+void O2::setExpires(long long v) {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
     store_->setValue(key, QString::number(v));
 }

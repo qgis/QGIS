@@ -113,19 +113,19 @@ class CORE_EXPORT QgsWkbPtr
      * \brief size
      * \note not available in Python bindings
      */
-    inline int size() const { return mEnd - mStart; } SIP_SKIP
+    inline int size() const { return static_cast<int>( mEnd - mStart ); } SIP_SKIP
 
     /**
      * \brief remaining
      * \note not available in Python bindings
      */
-    inline int remaining() const { return mEnd - mP; } SIP_SKIP
+    inline int remaining() const { return static_cast<int>( mEnd - mP ); } SIP_SKIP
 
     /**
      * \brief writtenSize
      * \note not available in Python bindings
      */
-    inline int writtenSize() const { return mP - mStart; } SIP_SKIP
+    inline int writtenSize() const { return static_cast<int>( mP - mStart ); } SIP_SKIP
 };
 
 /**
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsConstWkbPtr
      * \brief remaining
      * \note not available in Python bindings
      */
-    inline int remaining() const { return mEnd - mP; } SIP_SKIP
+    inline int remaining() const { return static_cast<int>( mEnd - mP ); } SIP_SKIP
 
   private:
     template<typename T> void endian_swap( T &value ) const SIP_SKIP

@@ -1106,11 +1106,11 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   // R-Tree parameters
-  double fillFactor = 0.7;
-  unsigned long indexCapacity = 10;
-  unsigned long leafCapacity = 10;
-  unsigned long dimension = 2;
-  RTree::RTreeVariant variant = RTree::RV_RSTAR;
+  constexpr double fillFactor = 0.7;
+  constexpr uint32_t indexCapacity = 10;
+  constexpr uint32_t leafCapacity = 10;
+  constexpr uint32_t dimension = 2;
+  constexpr RTree::RTreeVariant variant = RTree::RV_RSTAR;
   SpatialIndex::id_type indexId;
 
   if ( dataList.isEmpty() )

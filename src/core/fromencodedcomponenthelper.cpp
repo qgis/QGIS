@@ -69,7 +69,7 @@ QString fromEncodedComponent_helper( const QByteArray &ba )
   }
   // we found something that we need to encode
   QByteArray intermediate = ba;
-  intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
+  intermediate.resize( static_cast<int>( ba.size() * 3 - ( in - ba.constData() ) ) );
   uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
   for ( ; in < end; ++in )
   {
@@ -87,7 +87,7 @@ QString fromEncodedComponent_helper( const QByteArray &ba )
     }
   }
   // now it's safe to call fromLatin1
-  return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
+  return QString::fromLatin1( intermediate, static_cast<int>( out - reinterpret_cast<uchar *>( intermediate.data() ) ) );
 }
 
 

@@ -46,7 +46,7 @@ bool QgsNetworkContentFetcherTask::run()
   {
     if ( !isCanceled() && bytesTotal > 0 )
     {
-      int progress = ( bytesReceived * 100 ) / bytesTotal;
+      int progress = static_cast<int>( ( bytesReceived * 100 ) / bytesTotal );
       // don't emit 100% progress reports until completely fetched - otherwise we get
       // intermediate 100% reports from redirects
       if ( progress < 100 )

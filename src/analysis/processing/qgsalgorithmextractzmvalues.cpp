@@ -68,7 +68,7 @@ QgsProcessingFeatureSource::Flag QgsExtractZMValuesAlgorithmBase::sourceFlags() 
 void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )
 {
   QStringList statChoices;
-  statChoices.reserve( STATS.size() );
+  statChoices.reserve( static_cast<int>( STATS.size() ) );
   for ( QgsStatisticalSummary::Statistic stat : STATS )
   {
     statChoices << QgsStatisticalSummary::displayName( stat );

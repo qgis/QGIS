@@ -310,7 +310,7 @@ struct VTableCursor
     QgsGeometry g = mCurrentFeature.geometry();
     if ( ! g.isNull() )
     {
-      qgsGeometryToSpatialiteBlob( g, mVtab->crs(), blob, blob_len );
+      qgsGeometryToSpatialiteBlob( g, static_cast<int>( mVtab->crs() ), blob, blob_len );
     }
     return qMakePair( blob, blob_len );
   }

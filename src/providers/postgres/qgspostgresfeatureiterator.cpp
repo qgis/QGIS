@@ -819,7 +819,7 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       // NOTE: this needs be done _after_ the setAttribute call
       // above as we want the attribute value to be 1:1 with
       // database value
-      fid = QgsPostgresUtils::int32pk_to_fid( fid );
+      fid = QgsPostgresUtils::int32pk_to_fid( static_cast<qint32>( fid ) );
       break;
 
     case PktUint64:

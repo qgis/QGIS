@@ -297,7 +297,7 @@ std::size_t FeaturePart::createCandidateCenteredOverPoint( double x, double y, s
   double labelH = getLabelHeight( angle );
 
   double cost = 0.00005;
-  int id = lPos.size();
+  int id = static_cast<int>( lPos.size() );
 
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
@@ -326,7 +326,7 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
   double labelH = getLabelHeight( angle );
 
   double cost = 0.0001;
-  int id = lPos.size();
+  int id = static_cast<int>( lPos.size() );
 
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
@@ -581,7 +581,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
   int icost = 0;
   int inc = 2;
-  int id = lPos.size();
+  int id = static_cast<int>( lPos.size() );
 
   double candidateAngleIncrement = 2 * M_PI / maxNumberCandidates; /* angle bw 2 pos */
 

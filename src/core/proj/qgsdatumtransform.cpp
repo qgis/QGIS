@@ -174,7 +174,7 @@ QString QgsDatumTransform::datumTransformToProj( int datumTransform )
   if ( statement.step() == SQLITE_ROW )
   {
     //coord_op_methode_code
-    int methodCode = statement.columnAsInt64( 0 );
+    long long methodCode = statement.columnAsInt64( 0 );
     if ( methodCode == 9615 ) //ntv2
     {
       transformString = "+nadgrids=" + statement.columnAsText( 1 );
@@ -225,7 +225,7 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
   {
     QString transformString;
     //coord_op_methode_code
-    int methodCode = statement.columnAsInt64( 0 );
+    long long methodCode = statement.columnAsInt64( 0 );
     if ( methodCode == 9615 ) //ntv2
     {
       transformString = "+nadgrids=" + statement.columnAsText( 1 );
@@ -252,7 +252,7 @@ int QgsDatumTransform::projStringToDatumTransformId( const QString &string )
 
     if ( transformString.compare( string, Qt::CaseInsensitive ) == 0 )
     {
-      return statement.columnAsInt64( 8 );
+      return static_cast<int>( statement.columnAsInt64( 8 ) );
     }
   }
 
@@ -286,9 +286,9 @@ QgsDatumTransform::TransformInfo QgsDatumTransform::datumTransformInfo( int datu
   }
 
   info.datumTransformId = datumTransform;
-  info.epsgCode = statement.columnAsInt64( 0 );
-  srcCrsId = statement.columnAsInt64( 1 );
-  destCrsId = statement.columnAsInt64( 2 );
+  info.epsgCode = static_cast<int>( statement.columnAsInt64( 0 ) );
+  srcCrsId = static_cast<int>( statement.columnAsInt64( 1 ) );
+  destCrsId = static_cast<int>( statement.columnAsInt64( 2 ) );
   info.remarks = statement.columnAsText( 3 );
   info.scope = statement.columnAsText( 4 );
   info.preferred = statement.columnAsInt64( 5 ) != 0;

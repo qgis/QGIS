@@ -192,9 +192,23 @@ class CORE_EXPORT QgsRasterBlock
      * \returns value
      * \see valueAndNoData()
     */
-    double value( int row, int column ) const SIP_HOLDGIL
+    double value( int row, int column ) const SIP_SKIP
     {
       return value( static_cast< qgssize >( row ) * mWidth + column );
+    }
+
+    /**
+     * Read a single value if type of block is numeric. If type is color,
+     * returned value is undefined.
+     * \param row row index
+     * \param column column index
+     * \returns value
+     * \see valueAndNoData()
+     * \since QGIS 3.22
+    */
+    double value( qgssize row, qgssize column ) const SIP_HOLDGIL
+    {
+      return value( row * mWidth + column );
     }
 
     /**
@@ -378,9 +392,22 @@ class CORE_EXPORT QgsRasterBlock
      *  \param color the color to be set, QRgb value
      *  \returns TRUE on success
     */
-    bool setColor( int row, int column, QRgb color ) SIP_HOLDGIL
+    bool setColor( int row, int column, QRgb color ) SIP_SKIP
     {
       return setColor( static_cast< qgssize >( row ) * mWidth + column, color );
+    }
+
+    /**
+     * \brief Set color on position
+     *  \param row row index
+     *  \param column column index
+     *  \param color the color to be set, QRgb value
+     *  \returns TRUE on success
+     *  \since QGIS 3.22
+    */
+    bool setColor( qgssize row, qgssize column, QRgb color ) SIP_HOLDGIL
+    {
+      return setColor( row * mWidth + column, color );
     }
 
     /**

@@ -111,7 +111,7 @@ void TestQgsNewsFeedParser::testFetch()
   entries.clear();
 
   // after a fetch, the current timestamp should be saved to avoid refetching these
-  uint after = QgsNewsFeedParser::settingsFeedLastFetchTime.value( feedKey );
+  qlonglong after = QgsNewsFeedParser::settingsFeedLastFetchTime.value( feedKey );
   QVERIFY( after >= beforeTime );
 
   // reset to a standard known last time

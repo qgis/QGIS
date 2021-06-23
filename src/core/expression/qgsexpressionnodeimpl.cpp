@@ -1834,7 +1834,7 @@ QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const 
         pos += list.length();
       }
 
-      return list.at( pos );
+      return list.at( static_cast<int>( pos ) );
     }
 
     default:
