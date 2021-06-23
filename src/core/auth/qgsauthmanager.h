@@ -235,7 +235,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param authMethodKey Authentication method key
      * \since QGIS 3.22
      */
-    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey );
+    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) SIP_SKIP;
 
     /**
      * Gets available authentication methods mapped to their key
