@@ -80,13 +80,13 @@ void QgsAuthMethodRegistry::init()
 {
 #ifdef HAVE_STATIC_PROVIDERS
   mAuthMethods[ QgsAuthBasicMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
-  mAuthMethods[ QgsAuthEsriTokenMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
-  mAuthMethods[ QgsAuthIdentCertMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
+  mAuthMethods[ QgsAuthEsriTokenMethod::AUTH_METHOD_KEY] = new QgsAuthEsriTokenMethodMetadata();
+  mAuthMethods[ QgsAuthIdentCertMethod::AUTH_METHOD_KEY] = new QgsAuthIdentCertMethodMetadata();
 #ifdef HAVE_OAUTH2_PLUGIN
-  mAuthMethods[ QgsAuthOAuth2Method::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
+  mAuthMethods[ QgsAuthOAuth2Method::AUTH_METHOD_KEY] = new QgsAuthOAuth2MethodMetadata();
 #endif
-  mAuthMethods[ QgsAuthPkiPathsMethod::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
-  mAuthMethods[ QgsAuthPkcs12Method::AUTH_METHOD_KEY] = new QgsAuthBasicMethodMetadata();
+  mAuthMethods[ QgsAuthPkiPathsMethod::AUTH_METHOD_KEY] = new QgsAuthPkiPathsMethodMetadata();
+  mAuthMethods[ QgsAuthPkcs12Method::AUTH_METHOD_KEY] = new QgsAuthPkcs12MethodMetadata();
 #else
   typedef QgsAuthMethodMetadata *factory_function( );
 
