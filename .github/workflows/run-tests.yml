@@ -249,7 +249,7 @@ jobs:
       matrix:
         # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14)
         ubuntu-base: [20.04]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA]
+        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, ORACLE, HANA, SQLSERVER]
       fail-fast: false
       
     services:
@@ -334,8 +334,9 @@ jobs:
           TEST_BATCH: ${{matrix.test-batch}}
           QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
-          DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
-                     || ( [[ ${TEST_BATCH} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
+          DOCKERFILE=$( ( [[ ${TEST_BATCH} == "ORACLE"    ]] && echo "docker-compose-testing-oracle.yml" ) \
+                     || ( [[ ${TEST_BATCH} == "POSTGRES"  ]] && echo "docker-compose-testing-postgres.yml" ) \
+                     || ( [[ ${TEST_BATCH} == "SQLSERVER" ]] && echo "docker-compose-testing-sqlserver.yml" ) \
                      || echo "docker-compose-testing.yml" )
           [[ ${TEST_BATCH} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
