@@ -205,6 +205,7 @@ Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept
    QGIS 3.10
 %End
 
+
  virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) /Deprecated/;
 %Docstring
 Attempts to process the mime data dropped on this item. Subclasses must override this and :py:func:`~QgsDataItem.acceptDrop` if they

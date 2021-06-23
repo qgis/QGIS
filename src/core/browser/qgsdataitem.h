@@ -217,6 +217,11 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
@@ -226,6 +231,9 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) SIP_DEPRECATED { return false; }
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Called when a user double clicks on the item. Subclasses should return TRUE

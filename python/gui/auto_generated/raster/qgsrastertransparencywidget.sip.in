@@ -29,6 +29,7 @@ Widget to control a layers transparency and related options
 
   public slots:
 
+
     void syncToLayer();
 %Docstring
 Sync the widget state to the layer set for the widget.

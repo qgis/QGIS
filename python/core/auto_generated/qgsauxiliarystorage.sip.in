@@ -61,6 +61,7 @@ Constructor
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
 %Docstring
 Returns a new instance equivalent to this one. The underlying table
