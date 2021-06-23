@@ -54,6 +54,7 @@ namespace QCA
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
+class QgsAuthMethodMetadata;
 class QTimer;
 
 
@@ -230,11 +231,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /**
+     * Gets authentication method metadata via its key
+     * \param authMethodKey Authentication method key
+     * \since QGIS 3.22
+     */
+    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey );
+
+    /**
      * Gets available authentication methods mapped to their key
      * \param dataprovider Provider key filter, returning only methods that support a particular provider
      * \note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
+
+#ifdef HAVE_GUI
 
     /**
      * Gets authentication method edit widget via its key
@@ -242,6 +252,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
+#endif
 
     /**
      * Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags

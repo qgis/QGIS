@@ -27,6 +27,7 @@
 #include "qgsauthconfigedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -109,11 +110,12 @@ void QgsAuthConfigSelect::loadConfig()
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
     QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod *authmethod = QgsApplication::authManager()->configAuthMethod( mAuthCfg );
+    QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
-    if ( authmethod )
+    const QgsAuthMethodMetadata *meta = QgsApplication::authManager()->authMethodMetadata( authMethodKey );
+    if ( meta )
     {
-      methoddesc = authmethod->description();
+      methoddesc = meta->description();
     }
     cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
                                      "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );

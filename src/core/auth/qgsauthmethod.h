@@ -29,6 +29,8 @@
 #include <QRecursiveMutex>
 #endif
 
+#include "qgsconfig.h"
+
 
 #include "qgis_core.h"
 
@@ -64,17 +66,13 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
-    //! A non-translated short name representing the auth method
-    virtual QString key() const = 0;
-
-    //! A non-translated short description representing the auth method for use in debug output and About dialog
-    virtual QString description() const = 0;
-
-    //! Translatable display version of the 'description()'
-    virtual QString displayDescription() const = 0;
-
     //! Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
     int version() const { return mVersion; }
+
+
+#ifdef HAVE_GUI
+    virtual QWidget *editWidget( QWidget *parent ) const {Q_UNUSED( parent ) return nullptr;}
+#endif
 
     /**
      * Flags that represent the update points (where authentication configurations are expanded)

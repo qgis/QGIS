@@ -217,6 +217,16 @@ Gets authentication method from the config/provider cache via its key
 :param authMethodKey: Authentication method key
 %End
 
+    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey );
+%Docstring
+Gets authentication method metadata via its key
+
+:param authMethodKey: Authentication method key
+
+.. versionadded:: 3.22
+%End
+
+
 
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 %Docstring
