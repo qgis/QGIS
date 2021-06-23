@@ -71,6 +71,11 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
 
 #ifdef HAVE_GUI
+
+    /**
+     * Constructs the configuration for the authentication method
+     * \since QGIS 3.22
+     */
     virtual QWidget *editWidget( QWidget *parent ) const;
 #endif
 
