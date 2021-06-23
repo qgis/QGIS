@@ -377,7 +377,8 @@ void TestQgsAuthManager::testAuthMethods()
     QString configid( config.id() );
 
     // correct method, loaded from core auth method plugin registry, should be returned
-    const QgsAuthMethodMetadata *meta = authm->authMethodMetadata( configid );
+    const QString key = authm->configAuthMethodKey( configid );
+    const QgsAuthMethodMetadata *meta = authm->authMethodMetadata( key );
     QVERIFY( meta );
     QCOMPARE( meta->key(), config.method() );
   }
