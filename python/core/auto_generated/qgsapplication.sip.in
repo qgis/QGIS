@@ -922,6 +922,13 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
+%Docstring
+Returns registry of available external storage implementations.
+
+.. versionadded:: 3.20
+%End
+
     static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
 %Docstring
 Returns the registry of data repositories

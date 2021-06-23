@@ -41,6 +41,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsexternalstorageregistry.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrendererregistry.h"
 #include "qgspointcloudrendererregistry.h"
@@ -2427,6 +2428,11 @@ QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
   return members()->mProjectStorageRegistry;
 }
 
+QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
+{
+  return members()->mExternalStorageRegistry;
+}
+
 QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
 {
   return members()->mLocalizedDataPathRegistry;
@@ -2567,6 +2573,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup project storage registry" ) );
     mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup external storage registry" ) );
+    mExternalStorageRegistry = new QgsExternalStorageRegistry();
     profiler->end();
   }
   {

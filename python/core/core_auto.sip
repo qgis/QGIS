@@ -255,6 +255,8 @@
 %Include auto_generated/editform/qgsattributeeditorrelation.sip
 %Include auto_generated/editform/qgsattributeeditorhtmlelement.sip
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
+%Include auto_generated/externalstorage/qgsexternalstorage.sip
+%Include auto_generated/externalstorage/qgsexternalstorageregistry.sip
 %Include auto_generated/effects/qgsblureffect.sip
 %Include auto_generated/effects/qgscoloreffect.sip
 %Include auto_generated/effects/qgseffectstack.sip

@@ -1,0 +1,189 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/externalstorage/qgsexternalstorage.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsExternalStorage
+{
+%Docstring(signature="appended")
+Abstract interface for external storage - to be implemented by various backends
+and registered in :py:class:`QgsExternalStorageRegistry`.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual ~QgsExternalStorage();
+
+    virtual QString type() const = 0;
+%Docstring
+Unique identifier of the external storage type.
+%End
+
+    virtual QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const = 0 /Factory/;
+%Docstring
+Store file ``filePath`` to the ``url`` for this project external storage.
+Storing process is run in background.
+Returns a :py:class:`QgsExternalStorageStoredContent` to follow the status of the stored resource.
+
+After using this method, user should check if the returned content is not already finished
+(storing could be instantaneous, if file has already been stored for instance) and then wait
+for :py:func:`QgsExternalStorageStoredContent.stored()`, :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or
+:py:func:`QgsExternalStorageStoredContent.canceled()` signals.
+
+It's possible to give ``authcfg`` authentification configuration id in case its needed.
+
+Caller takes ownership of the returned symbol.
+%End
+
+    virtual QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authcfg = QString() ) const = 0 /Factory/;
+%Docstring
+Fetch file from ``url`` for this project external storage.
+Fetching process is run in background.
+Returns a :py:class:`QgsExternalStorageFetchedContent` to follow the status of the fetched resource.
+
+After using this method, user should check if the returned content is not already finished
+(fetching could be instantaneous, if file has already been fetched and cached for instance)
+and then wait for :py:func:`QgsExternalStorageStoredContent.fetched()`, :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or
+:py:func:`QgsExternalStorageStoredContent.canceled()` signals.
+
+It's possible to give ``authcfg`` authentification configuration id in case its needed.
+%End
+};
+
+class QgsExternalStorageOperation : QObject
+{
+%Docstring(signature="appended")
+Base class for QgsExternalStorage stored and fetched content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    enum ContentStatus
+    {
+      NotStarted,
+      OnGoing,
+      Finished,
+      Failed,
+      Canceled,
+    };
+
+    ContentStatus status() const;
+%Docstring
+Returns status of operation
+%End
+
+    const QString &errorString() const;
+%Docstring
+Returns error textual description if an error occured and :py:func:`~QgsExternalStorageOperation.status` returns Failed
+%End
+
+  public slots:
+
+    virtual void cancel();
+%Docstring
+Cancel the operation
+%End
+  signals:
+
+    void errorOccurred( const QString &errorString );
+%Docstring
+The signal is emitted when an error occurred. ``errorString`` is a textual description of the error
+%End
+
+    void progressChanged( double progress );
+%Docstring
+The signal is emitted whenever the operation estimated progression value ``progress`` has changed.
+``progress`` value is between 0 and 100.
+%End
+
+    void canceled();
+%Docstring
+The signal is emitted when the operation has been canceled
+%End
+
+  protected:
+
+    void reportError( const QString &errorMsg );
+%Docstring
+Update content according to given ``errorMsg`` error message
+Inherited classes should call this method whenever they meet an error.
+%End
+
+};
+
+class QgsExternalStorageFetchedContent : QgsExternalStorageOperation
+{
+%Docstring(signature="appended")
+Class for :py:class:`QgsExternalStorage` fetched content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual QString filePath() const = 0;
+%Docstring
+Return fetched resource file path
+%End
+
+  signals:
+
+    void fetched();
+%Docstring
+The signal is emitted when the resource has successfully been fetched
+%End
+};
+
+class QgsExternalStorageStoredContent : QgsExternalStorageOperation
+{
+%Docstring(signature="appended")
+Class for :py:class:`QgsExternalStorage` stored content
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsexternalstorage.h"
+%End
+  public:
+
+    virtual QString url() const = 0;
+%Docstring
+Return stored resource URL
+%End
+
+  signals:
+
+    void stored();
+%Docstring
+The signal is emitted when the resource has successfully been stored
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/externalstorage/qgsexternalstorage.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
