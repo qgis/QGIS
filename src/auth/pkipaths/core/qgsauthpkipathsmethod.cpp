@@ -32,8 +32,8 @@
 #include "qgsapplication.h"
 
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI paths authentication" );
+const QString QgsAuthPkiPathsMethod::AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
+const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION = tr( "PKI paths authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -57,20 +57,16 @@ QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthPkiPathsMethod::key() const
+QString QgsAuthPkiPathsMethod::key()
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthPkiPathsMethod::description() const
+QString QgsAuthPkiPathsMethod::description()
 {
   return AUTH_METHOD_DESCRIPTION;
 }
 
-QString QgsAuthPkiPathsMethod::displayDescription() const
-{
-  return tr( "PKI paths authentication" );
-}
 
 bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )

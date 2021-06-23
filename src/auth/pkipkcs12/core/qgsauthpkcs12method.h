@@ -29,15 +29,17 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+
     explicit QgsAuthPkcs12Method();
     ~QgsAuthPkcs12Method() override;
 
     // QgsAuthMethod interface
-    QString key() const override;
+    static  QString key();
 
-    QString description() const override;
-
-    QString displayDescription() const override;
+    static   QString description();
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() ) override;

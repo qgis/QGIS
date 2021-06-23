@@ -31,8 +31,8 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = tr( "Identity certificate authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -56,19 +56,14 @@ QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthIdentCertMethod::key() const
+QString QgsAuthIdentCertMethod::key()
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthIdentCertMethod::description() const
+QString QgsAuthIdentCertMethod::description()
 {
   return AUTH_METHOD_DESCRIPTION;
-}
-
-QString QgsAuthIdentCertMethod::displayDescription() const
-{
-  return tr( "PKI stored identity certificate" );
 }
 
 bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

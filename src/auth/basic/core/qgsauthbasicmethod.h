@@ -22,21 +22,25 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
+class QWidget;
 
 class QgsAuthBasicMethod : public QgsAuthMethod
 {
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+
     explicit QgsAuthBasicMethod();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    static QString key();
 
-    QString description() const override;
-
-    QString displayDescription() const override;
+    static QString description();
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() ) override;
@@ -52,6 +56,10 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   private:
     QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
 
@@ -62,7 +70,19 @@ class QgsAuthBasicMethod : public QgsAuthMethod
     QString escapeUserPass( const QString &val, QChar delim = '\'' ) const;
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
-
 };
+
+class QgsAuthBasicMethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthBasicMethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthBasicMethod::AUTH_METHOD_KEY, QgsAuthBasicMethod::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthBasicMethod *createAuthMethod() const override {return new QgsAuthBasicMethod;}
+    //QStringList supportedDataProviders() const override;
+};
+
+
+
 
 #endif // QGSAUTHBASICMETHOD_H

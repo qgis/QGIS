@@ -37,17 +37,18 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+
     explicit QgsAuthOAuth2Method();
     ~QgsAuthOAuth2Method() override;
 
     //! OAuth2 method key
-    QString key() const override;
+    static QString key();
 
     //! OAuth2 method description
-    QString description() const override;
-
-    //! Human readable description
-    QString displayDescription() const override;
+    static QString description();
 
     //! Update network \a request with given \a authcfg and optional \a dataprovider
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

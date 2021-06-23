@@ -40,8 +40,8 @@
 #include <QInputDialog>
 #endif
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = tr( "OAuth2 authentication" );
 
 QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
   QMap<QString, QgsO2 * >();
@@ -89,19 +89,14 @@ QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
   }
 }
 
-QString QgsAuthOAuth2Method::key() const
+QString QgsAuthOAuth2Method::key()
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthOAuth2Method::description() const
+QString QgsAuthOAuth2Method::description()
 {
   return AUTH_METHOD_DESCRIPTION;
-}
-
-QString QgsAuthOAuth2Method::displayDescription() const
-{
-  return tr( "OAuth2 authentication" );
 }
 
 bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

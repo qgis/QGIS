@@ -138,6 +138,11 @@ if(WITH_CORE)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
+  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
+  if(WITH_OAUTH2_PLUGIN)
+    set(HAVE_OAUTH2_PLUGIN TRUE)
+  endif()
+
   set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
 
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
