@@ -1073,6 +1073,9 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == QLatin1String( "geometry" ) ||
                 fieldTypeName == QLatin1String( "geography" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
+                fieldTypeName == QLatin1String( "cidr" ) ||
+                fieldTypeName == QLatin1String( "macaddr" ) ||
+                fieldTypeName == QLatin1String( "macaddr8" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
                 fieldTypeName == QLatin1String( "ltree" ) ||
                 fieldTypeName == QLatin1String( "uuid" ) ||
