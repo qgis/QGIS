@@ -2040,11 +2040,6 @@ if (HAVE_PDAL)
 endif()
 
 if (FORCE_STATIC_LIBS)
-  include_directories(
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/postgres
-  )
-
   target_link_libraries(qgis_core
     provider_wms_a
     provider_postgres_a

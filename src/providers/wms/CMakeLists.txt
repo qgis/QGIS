@@ -25,21 +25,24 @@ endif()
 # static library
 add_library(provider_wms_a STATIC ${WMS_SRCS})
 
+target_include_directories(provider_wms_a PUBLIC
+  ${CMAKE_SOURCE_DIR}/src/providers/wms
+)
+
 # require c++17
 target_compile_features(provider_wms_a PRIVATE cxx_std_17)
 
 if (WITH_GUI)
-  include_directories (
-    ${CMAKE_BINARY_DIR}/src/providers/wms
-    ${CMAKE_SOURCE_DIR}/src/providers/wms
-    ${CMAKE_BINARY_DIR}/src/ui
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
   QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
 
   add_library(provider_wms_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_UIS_H})
+
+  target_include_directories (provider_wms_gui_a PUBLIC
+    ${CMAKE_BINARY_DIR}/src/providers/wms
+    #${CMAKE_BINARY_DIR}/src/ui
+    #${CMAKE_CURRENT_SOURCE_DIR}
+    #${CMAKE_CURRENT_BINARY_DIR}
+  )
 
   # require c++17
   target_compile_features(provider_wms_gui_a PRIVATE cxx_std_17)
@@ -50,12 +53,6 @@ endif()
 
 target_link_libraries(provider_wms_a
   qgis_core
-  ${Qt5Xml_LIBRARIES}
-  ${Qt5Core_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-  ${Qt5Network_LIBRARIES}
-  ${Qt5Sql_LIBRARIES}
-  ${Qt5Concurrent_LIBRARIES}
 )
 target_compile_definitions(provider_wms_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -63,14 +60,6 @@ if (WITH_GUI)
   target_link_libraries(provider_wms_gui_a
     qgis_gui
     provider_wms_a
-    ${Qt5Xml_LIBRARIES}
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
-    ${Qt5Network_LIBRARIES}
-    ${Qt5Sql_LIBRARIES}
-    ${Qt5Concurrent_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
   )
   target_compile_definitions(provider_wms_gui_a PRIVATE "-DQT_NO_FOREACH")
 endif()
