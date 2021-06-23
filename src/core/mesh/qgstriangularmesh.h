@@ -252,7 +252,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
         QVector<QgsMeshVertex> mAddedVertices;
         //QList<int> mRemovedVertices;
 
-        QVector<QgsMeshFace> mNativefacesToAdd;
+        QVector<QgsMeshFace> mNativeFacesToAdd;
         QList<int> mNativeFaceIndexesToRemove;
         QVector<QgsMeshFace> mNativeFacesToRemove;
 
@@ -262,21 +262,21 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
         friend class QgsTriangularMesh;
     };
 
-    /*!
+    /**
      * Applies the changes on the triangular mesh (see Changes)
      *
      * \since QGIS 3.22
      */
     void applyChanges( const Changes &changes );
 
-    /*!
+    /**
      * Reverses the changes on the triangular mesh (see Changes)
      *
      * \since QGIS 3.22
      */
     void reverseChanges( const Changes &changes );
 
-    /*!
+    /**
      * Transforms the \a vertex from native coordinates system to triangular mesh coordinates system.
      * Returns empty vertex if the transform fails.
      *
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      */
     QgsMeshVertex nativeToTriangularCoordinates( const QgsMeshVertex &vertex ) const;
 
-    /*!
+    /**
      * Transforms the \a vertex from triangular mesh coordinates system to native coordinates system.
      * Returns empty vertex if the transform fails.
      *

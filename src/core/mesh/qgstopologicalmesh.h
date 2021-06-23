@@ -162,13 +162,13 @@ class CORE_EXPORT QgsTopologicalMesh
     Changes removeFaces( const QList<int> facesIndexes );
 
     /**
-     *  Add a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
+     *  Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addVertexInface( int faceIndex, const QgsMeshVertex &vertex );
 
     /**
-     *  Add a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
+     *  Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
      *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addFreeVertex( const QgsMeshVertex &vertex );
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Reverses the changes
     void reverseChanges( const Changes &changes );
 
-    //! Check the topology of the face and set it counter clock wise if necessary
+    //! Checks the topology of the face and sets it counter clock wise if necessary
     static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     //! Reindexes faces and vertices, after this operation, topological can't be edited anymore

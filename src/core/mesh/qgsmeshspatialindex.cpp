@@ -391,7 +391,6 @@ void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
 
   QMutexLocker locker( &d->mMutex );
 
-  // TODO: handle possible exceptions correctly
   try
   {
     d->mRTree->insertData( 0, nullptr, r, faceIndex );

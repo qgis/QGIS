@@ -40,6 +40,7 @@
 #include "qgsmesh3daveraging.h"
 #include "qgslayermetadataformatter.h"
 #include "qgsmesheditor.h"
+#include "qgsmessagelog.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -874,7 +875,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
   if ( mMeshEditor )
   {
-    //TODO : sends a message to the log
+    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" already in editing mode" ).arg( name() ) );
     return false;
   }
 
@@ -888,7 +889,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   {
     mMeshEditor->deleteLater();
     mMeshEditor = nullptr;
-    //TODO : sends the error to the log
+    QgsMessageLog::logMessage( QObject::tr( "Unable to start editing of mesh layer \"%1\"." ).arg( name() ), QString(), Qgis::MessageLevel::Critical );
     return false;
   }
 

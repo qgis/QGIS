@@ -712,13 +712,13 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
     addVertex( vertex );
 
   // add faces
-  if ( !changes.mNativefacesToAdd.isEmpty() )
+  if ( !changes.mNativeFacesToAdd.isEmpty() )
   {
     changes.mTrianglesAddedStartIndex = mTriangularMesh.faceCount();
     int firstNewNativeFacesIndex = mNativeMeshFaceCentroids.count();
-    for ( int i = 0; i < changes.mNativefacesToAdd.count(); ++i )
+    for ( int i = 0; i < changes.mNativeFacesToAdd.count(); ++i )
     {
-      const QgsMeshFace &nativeFace = changes.mNativefacesToAdd.at( i );
+      const QgsMeshFace &nativeFace = changes.mNativeFacesToAdd.at( i );
       triangulate( nativeFace, firstNewNativeFacesIndex + i );
       mNativeMeshFaceCentroids.append( calculateCentroid( nativeFace ) );
     }
@@ -747,12 +747,12 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
 void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &changes )
 {
   //reverse added faces and added vertices
-  if ( !changes.mNativefacesToAdd.isEmpty() )
+  if ( !changes.mNativeFacesToAdd.isEmpty() )
   {
     for ( int i = changes.mTrianglesAddedStartIndex; i < mTriangularMesh.faceCount(); ++i )
       mSpatialFaceIndex.removeFace( i, mTriangularMesh );
 
-    int initialNativeFacesCount = mNativeMeshFaceCentroids.count() - changes.mNativefacesToAdd.count();
+    int initialNativeFacesCount = mNativeMeshFaceCentroids.count() - changes.mNativeFacesToAdd.count();
 
     mTriangularMesh.faces.resize( changes.mTrianglesAddedStartIndex );
     mTrianglesToNativeFaces.resize( changes.mTrianglesAddedStartIndex );
@@ -787,7 +787,7 @@ void QgsTriangularMesh::reverseChanges( const QgsTriangularMesh::Changes &change
 QgsTriangularMesh::Changes::Changes( const QgsTopologicalMesh::Changes &topologicalChanges )
 {
   mAddedVertices = topologicalChanges.addedVertices();
-  mNativefacesToAdd = topologicalChanges.addedFaces();
+  mNativeFacesToAdd = topologicalChanges.addedFaces();
   mNativeFacesToRemove = topologicalChanges.removedFaces();
   mNativeFaceIndexesToRemove = topologicalChanges.removedFaceIndexes();
 }
