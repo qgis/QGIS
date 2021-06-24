@@ -59,7 +59,7 @@ jobs:
 
       - name: Run build
         run: |
-          docker run -v $(pwd):/usr/src/qgis ${DOCKER_IMAGE} -v /home/runner/QGIS/.ccache:/root/.ccache /usr/src/qgis/.ci/ogc/build.sh
+          docker run -v $(pwd):/usr/src/qgis -v /home/runner/QGIS/.ccache:/root/.ccache ${DOCKER_IMAGE} /usr/src/qgis/.ci/ogc/build.sh
         env:
           DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
