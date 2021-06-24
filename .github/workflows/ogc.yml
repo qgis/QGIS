@@ -36,13 +36,50 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Setup build dependencies
-        run: |
-          docker build -t qgis_server_deps -f .ci/ogc/Dockerfile .ci/ogc/
+      - name: Prepare build cache for pull request
+        uses: pat-s/always-upload-cache@v2.1.5
+        if: github.event_name == 'pull_request'
+        with:
+          path: /home/runner/QGIS/.ccache
+          key: build-ccache-ogc-${{ github.actor }}-${{ github.head_ref }}-${{ github.sha }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            build-ccache-ogc-${{ github.actor }}-${{ github.head_ref }}-
+            build-ccache-ogc-refs/heads/${{ github.base_ref }}-
+            build-ccache-ogc-refs/heads/master-
+
+      - name: Prepare build cache for branch/tag
+        # use a fork of actions/cache@v2 to upload cache even when the build or test failed
+        uses: pat-s/always-upload-cache@v2.1.5
+        if: github.event_name != 'pull_request'
+        with:
+          path: /home/runner/QGIS/.ccache
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: build-ccache-ogc-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            build-ccache-ogc-${{ github.ref }}-
+            build-ccache-ogc-refs/heads/master-
+
+      - name: Build Docker Container with Build Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis-deps-ogc
+          dockerfile: .ci/ogc/Dockerfile
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+          context: .ci/ogc/
 
       - name: Run build
         run: |
-          docker run -v $(pwd):/usr/src/qgis qgis_server_deps /usr/src/qgis/.ci/ogc/build.sh
+          docker run -v $(pwd):/usr/src/qgis ${DOCKER_IMAGE} -v /home/runner/QGIS/.ccache:/root/.ccache /usr/src/qgis/.ci/ogc/build.sh
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
 
       - name: Install pyogctest
         run: |
