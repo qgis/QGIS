@@ -39,9 +39,6 @@ if (WITH_GUI)
 
   target_include_directories (provider_wms_gui_a PUBLIC
     ${CMAKE_BINARY_DIR}/src/providers/wms
-    #${CMAKE_BINARY_DIR}/src/ui
-    #${CMAKE_CURRENT_SOURCE_DIR}
-    #${CMAKE_CURRENT_BINARY_DIR}
   )
 
   # require c++17
