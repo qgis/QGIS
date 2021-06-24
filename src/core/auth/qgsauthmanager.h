@@ -245,6 +245,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
 
 #ifdef HAVE_GUI
+    SIP_IF_FEATURE( HAVE_GUI )
 
     /**
      * Gets authentication method edit widget via its key
@@ -252,6 +253,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
+    SIP_END
 #endif
 
     /**
