@@ -262,6 +262,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     switch ( temporalProperties->mode() )
     {
       case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
         break;
 
       case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
