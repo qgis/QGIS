@@ -97,3 +97,5 @@ jobs:
         run: |
           docker-compose -f .ci/ogc/docker-compose.yml up -d
           source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s wms130 -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
