@@ -606,7 +606,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 
   if ( mOgrLayer && ( mIsSubLayer || layerCount() == 1 ) )
   {
-    QgsOgrProviderUtils::addSubLayerDetailsToSubLayerList( mLayerIndex, mOgrLayer, withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
+    QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
   }
   else
   {
@@ -629,7 +629,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
       if ( !layer )
         continue;
 
-      QgsOgrProviderUtils::addSubLayerDetailsToSubLayerList( i, layer.get(), withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
+      QgsOgrProviderUtils::querySubLayerList( i, layer.get(), withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );

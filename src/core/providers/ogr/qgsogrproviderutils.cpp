@@ -2292,7 +2292,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-void QgsOgrProviderUtils::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList )
+void QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList )
 {
   QString layerName = QString::fromUtf8( layer->name() );
 
