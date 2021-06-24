@@ -2603,7 +2603,7 @@ border-radius: 2px;</string>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
+   <header>qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
