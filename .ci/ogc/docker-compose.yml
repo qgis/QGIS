@@ -15,8 +15,8 @@ services:
       - qgis-server
 
   qgis-server:
-    image: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
-    container_name: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+    image: qgis_server_deps
+    container_name: qgis_server_deps
     volumes:
       - ./../../:/usr/src/qgis/
       - ./../../data:/data
