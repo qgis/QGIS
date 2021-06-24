@@ -27,6 +27,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsprojectstorageregistry.h"
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -1026,6 +1027,61 @@ bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
     return true;
 
   return false;
+}
+
+QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback * ) const
+{
+  QStringList skippedLayerNames;
+
+  QStringList options { QStringLiteral( "@LIST_ALL_TABLES=YES" ) };
+
+  QString errCause;
+  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( uri, false, options, 0, errCause, true );
+  if ( !firstLayer )
+    return {};
+
+  const QString driverName = firstLayer->driverName();
+  if ( driverName == QLatin1String( "SQLite" ) )
+  {
+    skippedLayerNames = QgsSqliteUtils::systemTables();
+  }
+
+  const unsigned int layerCount = firstLayer->GetLayerCount();
+
+  if ( layerCount == 1 )
+  {
+    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri );
+  }
+  else
+  {
+    QList<QgsProviderSublayerDetails> res;
+    // In case there is no free opened dataset in the cache, keep the first
+    // layer alive while we iterate over the other layers, so that we can
+    // reuse the same dataset. Can help in a particular with a FileGDB with
+    // the FileGDB driver
+    for ( unsigned int i = 0; i < layerCount; i++ )
+    {
+      QString errCause;
+      QgsOgrLayerUniquePtr layer;
+
+      if ( i != 0 )
+      {
+        layer = QgsOgrProviderUtils::getLayer( firstLayer->datasetName(),
+                                               false,
+                                               firstLayer->options(),
+                                               i,
+                                               errCause,
+                                               // do not check timestamp beyond the first
+                                               // layer
+                                               firstLayer == nullptr );
+        if ( !layer )
+          continue;
+      }
+
+      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri );
+    }
+    return res;
+  }
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
