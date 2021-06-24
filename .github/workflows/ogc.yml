@@ -83,6 +83,7 @@ jobs:
 
       - name: Install pyogctest
         run: |
+          sudo apt-get update
           sudo apt-get install python3-virtualenv virtualenv git
           git clone https://github.com/pblottiere/pyogctest
           cd pyogctest && git checkout 1.0.4 && cd -
