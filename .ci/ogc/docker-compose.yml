@@ -16,7 +16,7 @@ services:
 
   qgis-server:
     image: docker.pkg.github.com/nicogodet/qgis/qgis-deps-ogc
-    container_name: qgis/qgis-deps-ogc
+    container_name: qgis-deps-ogc
     volumes:
       - ./../../:/usr/src/qgis/
       - ./../../data:/data
