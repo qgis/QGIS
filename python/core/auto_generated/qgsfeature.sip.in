@@ -180,11 +180,17 @@ Sets the feature ``id`` for this feature.
 %Docstring
 Returns the feature's attributes.
 
+Alternatively, in Python it is possible to directly iterate over a feature in order to retrieve
+its attributes:
+
+.. code-block:: python
+
+       feature = QgsFeature()
+       feature.setAttributes([11, 'string value', 55.5])
+       for attr in feature:
+           print(attr)
+
 .. seealso:: :py:func:`setAttributes`
-
-.. note::
-
-   Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
 
 .. versionadded:: 2.9
 %End
@@ -225,14 +231,24 @@ Sets an attribute's value by field index.
 
 If the attribute was successfully set then the feature will be automatically marked as valid (see :py:func:`~QgsFeature.isValid`).
 
+Alternatively, in Python it is possible to directly set a field's value via the field's index:
+
+.. code-block:: python
+
+       fields = QgsFields()
+       fields.append(QgsField('my_id', QVariant.Int))
+       fields.append(QgsField('name', QVariant.String))
+       feature = QgsFeature(fields)
+
+       # set the "name" field value
+       feature[1] = "my name"
+       # set the "my_id" field value
+       feature[0] = 55
+
 :param field: the index of the field to set
 :param attr: the value of the attribute
 
 :raises KeyError: if the field index does not exist
-
-.. note::
-
-   Alternatively in Python: @code feature[field] = attr @endcode
 
 .. seealso:: :py:func:`setAttributes`
 %End
@@ -297,15 +313,29 @@ Resizes the attributes attached to this feature by appending the specified ``cou
 
     void deleteAttribute( int field );
 %Docstring
-Deletes an attribute and its value.
+Clear's an attribute's value by its index.
 
 :param field: the index of the field
 
+Alternatively, in Python it is possible to directly `del` an attribute via its index:
+
+.. code-block:: python
+
+       feature = QgsFeature()
+       feature.setAttributes([11, 'my feature', 55.5])
+
+       # will print [11, 'my feature', 55.5]
+       print(feature.attributes())
+
+       # clear the second attribute
+       del feature[1]
+
+       # will now print [11, NONE]
+       print(feature.attributes())
+
+
+
 :raises KeyError: if the field is not found
-
-.. note::
-
-   Alternatively in Python: @code del feature[field] @endcode
 
 .. seealso:: :py:func:`setAttribute`
 %End
@@ -452,14 +482,24 @@ Field map must be associated using :py:func:`~QgsFeature.setFields` before this 
 
 Calling this method will automatically set the feature as valid (see :py:func:`~QgsFeature.isValid`).
 
+Alternatively, in Python it is possible to directly set a field's value via the field's name:
+
+.. code-block:: python
+
+       fields = QgsFields()
+       fields.append(QgsField('my_id', QVariant.Int))
+       fields.append(QgsField('name', QVariant.String))
+       feature = QgsFeature(fields)
+
+       # set the "name" field value
+       feature['name'] = "my name"
+       # set the "my_id" field value
+       feature['my_id'] = 55
+
 :param name: The name of the field to set
 :param value: The value to set
 
 :raises KeyError: if the attribute name could not be converted to an index
-
-.. note::
-
-   Alternatively in Python: @code feature[name] = attr @endcode
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -486,17 +526,33 @@ Calling this method will automatically set the feature as valid (see :py:func:`~
 
     bool deleteAttribute( const QString &name );
 %Docstring
-Removes an attribute value by field ``name``.
+Clear's an attribute's value by its field ``name``.
 
-Field map must be associated using setFields()before this method can be used.
+Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
 
-:param name: The name of the field to delete
+Alternatively, in Python it is possible to directly `del` an attribute via its name:
+
+.. code-block:: python
+
+       fields = QgsFields()
+       fields.append(QgsField('my_id', QVariant.Int))
+       fields.append(QgsField('name', QVariant.String))
+
+       feature = QgsFeature(fields)
+       feature.setAttributes([11, 'my feature'])
+
+       # will print [11, 'my feature']
+       print(feature.attributes())
+
+       # clear the 'name' attribute
+       del feature['name']
+
+       # will now print [11, NULL]
+       print(feature.attributes())
+
+:param name: The name of the field to clear
 
 :raises KeyError: if attribute name could not be converted to index
-
-.. note::
-
-   Alternatively in Python: @code del feature[name] @endcode
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -522,15 +578,26 @@ Lookup attribute value by attribute ``name``.
 
 Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
 
+Alternatively, in Python it is possible to directly retrieve a field's value via the field's name:
+
+.. code-block:: python
+
+       fields = QgsFields()
+       fields.append(QgsField('my_id', QVariant.Int))
+       fields.append(QgsField('name', QVariant.String))
+       feature = QgsFeature(fields)
+       feature.setAttributes([11, 'my feature'])
+
+       # print the "name" field value
+       print(feature['name'])
+       # print the "my_id" field value
+       print(feature['my_id'])
+
 :param name: The name of the attribute to get
 
 :return: The value of the attribute
 
 :raises KeyError: if the field is not found
-
-.. note::
-
-   Alternatively in Python: @code feature[name] @endcode
 
 .. seealso:: :py:func:`setFields`
 %End
@@ -553,17 +620,27 @@ Field map must be associated using :py:func:`~QgsFeature.setFields` before this 
 %Docstring
 Lookup attribute value from its index.
 
-Field map must be associated using :py:func:`~QgsFeature.setFields` before this method can be used.
+Alternatively, in Python it is possible to directly retrieve a field's value via its index:
+
+.. code-block:: python
+
+       feature = QgsFeature()
+       feature.setAttributes([11, 'my feature', 55.5])
+
+       # will print 11
+       print(feature[0])
+
+       # will print 'my feature'
+       print(feature[1])
+
+       # will print 55.5
+       print(feature[2])
 
 :param fieldIdx: The index of the attribute to get
 
 :return: The value of the attribute
 
 :raises KeyError: if the field is not found
-
-.. note::
-
-   Alternatively in Python: @code feature[fieldIdx] @endcode
 
 .. seealso:: :py:func:`setFields`
 %End
