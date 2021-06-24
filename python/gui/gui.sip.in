@@ -3,6 +3,7 @@
 
 ${DEFAULTDOCSTRINGSIGNATURE}
 
+%Feature HAVE_GUI
 %Feature HAVE_QSCI_SIP
 
 %Import core/core.sip

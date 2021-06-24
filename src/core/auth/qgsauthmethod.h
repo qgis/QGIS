@@ -30,9 +30,8 @@
 #endif
 
 #include "qgsconfig.h"
-
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsAuthMethodConfig;
 
@@ -76,7 +75,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * Constructs the configuration for the authentication method
      * \since QGIS 3.22
      */
-    virtual QWidget *editWidget( QWidget *parent ) const;
+    virtual QWidget *editWidget( QWidget *parent ) const SIP_WHEN_FEATURE( HAVE_GUI );
 #endif
 
     /**

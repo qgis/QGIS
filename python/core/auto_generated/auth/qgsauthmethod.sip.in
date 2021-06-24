@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsAuthMethod : QObject
 {
 %Docstring(signature="appended")
@@ -43,7 +41,9 @@ Increment this if method is significantly updated, allow updater code to be writ
 
 
 
+%If (HAVE_GUI)
     virtual QWidget *editWidget( QWidget *parent ) const;
+%End
 %Docstring
 Constructs the configuration for the authentication method
 
