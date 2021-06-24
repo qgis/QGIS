@@ -73,7 +73,6 @@ jobs:
           push_git_tag: true
           push_image_and_stages: on:push
           pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
-          context: .ci/ogc/
 
       - name: Run build
         run: |
