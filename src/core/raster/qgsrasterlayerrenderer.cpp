@@ -254,6 +254,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
   }
 
+  mPipe->evaluateDataDefinedProperties( rendererContext.expressionContext() );
+
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
   if ( temporalProperties->isActive() && renderContext()->isTemporal() )
   {

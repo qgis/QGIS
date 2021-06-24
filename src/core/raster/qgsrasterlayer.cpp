@@ -168,6 +168,7 @@ QgsRasterLayer *QgsRasterLayer::clone() const
     if ( mPipe->at( i ) )
       layer->pipe()->set( mPipe->at( i )->clone() );
   }
+  layer->pipe()->setDataDefinedProperties( mPipe->dataDefinedProperties() );
 
   return layer;
 }
@@ -1979,6 +1980,10 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
   }
 
+  QDomElement elemDataDefinedProperties = layer_node.firstChildElement( QStringLiteral( "pipe-data-defined-properties" ) );
+  if ( !elemDataDefinedProperties.isNull() )
+    mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+
   readCustomProperties( layer_node );
 
   return true;
@@ -2180,6 +2185,10 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
     if ( !interface ) continue;
     interface->writeXml( document, pipeElement );
   }
+
+  QDomElement elemDataDefinedProperties = document.createElement( QStringLiteral( "pipe-data-defined-properties" ) );
+  mPipe->dataDefinedProperties().writeXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
+  layer_node.appendChild( elemDataDefinedProperties );
 
   QDomElement resamplingStageElement = document.createElement( QStringLiteral( "resamplingStage" ) );
   QDomText resamplingStageText = document.createTextNode( resamplingStage() == Qgis::RasterResamplingStage::Provider ? QStringLiteral( "provider" ) : QStringLiteral( "resamplingFilter" ) );

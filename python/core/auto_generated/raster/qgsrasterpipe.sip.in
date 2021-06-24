@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRasterPipe
 {
 %Docstring(signature="appended")
@@ -21,6 +22,11 @@ Contains a pipeline of raster interfaces for sequential raster processing.
 #include "qgsrasterpipe.h"
 %End
   public:
+
+    enum Property
+    {
+      RendererOpacity,
+    };
 
     QgsRasterPipe();
 %Docstring
@@ -182,6 +188,44 @@ Returns which stage of the pipe should apply resampling
 .. seealso:: :py:func:`setResamplingStage`
 
 .. versionadded:: 3.16
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the pipe's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.22
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the pipe's property ``collection``, used for data defined overrides.
+
+Any existing properties will be discarded.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.22
+%End
+
+    void evaluateDataDefinedProperties( QgsExpressionContext &context );
+%Docstring
+Evalutes any data defined properties set on the pipe, applying their results
+to the corresponding interfaces in place.
+
+.. versionadded:: 3.22
+%End
+
+    static QgsPropertiesDefinition propertyDefinitions();
+%Docstring
+Returns the definitions for data defined properties available for use in raster pipes.
+
+.. versionadded:: 3.22
 %End
 
   private:

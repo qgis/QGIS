@@ -21,6 +21,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
+#include "qgspropertycollection.h"
+
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -47,6 +49,15 @@ class QgsRasterDataProvider;
 class CORE_EXPORT QgsRasterPipe
 {
   public:
+
+    /**
+     * Data definable properties.
+     * \since QGIS 3.22
+     */
+    enum Property
+    {
+      RendererOpacity, //!< Raster renderer global opacity
+    };
 
     /**
      * Constructor for an empty QgsRasterPipe.
@@ -213,6 +224,48 @@ class CORE_EXPORT QgsRasterPipe
      */
     Qgis::RasterResamplingStage resamplingStage() const { return mResamplingStage; }
 
+    /**
+     * Returns a reference to the pipe's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.22
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the pipe's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+    /**
+     * Sets the pipe's property \a collection, used for data defined overrides.
+     *
+     * Any existing properties will be discarded.
+     *
+     * \see dataDefinedProperties()
+     * \see Property
+     * \since QGIS 3.22
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Evalutes any data defined properties set on the pipe, applying their results
+     * to the corresponding interfaces in place.
+     *
+     * \since QGIS 3.22
+     */
+    void evaluateDataDefinedProperties( QgsExpressionContext &context );
+
+    /**
+     * Returns the definitions for data defined properties available for use in raster pipes.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsPropertiesDefinition propertyDefinitions();
+
   private:
 #ifdef SIP_RUN
     QgsRasterPipe( const QgsRasterPipe &pipe );
@@ -245,6 +298,14 @@ class CORE_EXPORT QgsRasterPipe
     bool connect( QVector<QgsRasterInterface *> interfaces );
 
     Qgis::RasterResamplingStage mResamplingStage = Qgis::RasterResamplingStage::ResampleFilter;
+
+    //! Property collection for data defined raster pipe settings
+    QgsPropertyCollection mDataDefinedProperties;
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
+    static void initPropertyDefinitions();
 };
 
 #endif
