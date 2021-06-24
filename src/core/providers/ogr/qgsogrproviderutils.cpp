@@ -21,7 +21,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsmessagelog.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsauthmanager.h"
-#include "qgsogrprovider.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -2292,7 +2292,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-void QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri )
 {
   QString layerName = QString::fromUtf8( layer->name() );
 
@@ -2301,14 +2301,13 @@ void QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, bool wit
   {
     // Ignore layer_styles (coming from QGIS styling support) and
     // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
-    return;
+    return {};
   }
   // Get first column name,
   // TODO: add support for multiple
   QString geometryColumnName;
   OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval =
-    driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) || driverName == QLatin1String( "PGeo" );
+  const bool slowGeomTypeRetrieval = driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) || driverName == QLatin1String( "PGeo" );
   if ( !slowGeomTypeRetrieval )
   {
     QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
@@ -2328,22 +2327,27 @@ void QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, bool wit
 
   QgsDebugMsgLevel( QStringLiteral( "id = %1 name = %2 layerGeomType = %3 longDescription = %4" ).arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ), 2 );
 
+
+  QVariantMap parts = QgsOgrProviderMetadata().decodeUri( baseUri );
+  parts.insert( QStringLiteral( "layerName" ), layerName );
+
   if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
   {
-    long long layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
+    const long long layerFeatureCount = flags & Qgis::SublayerQueryFlag::CountFeatures ? layer->GetApproxFeatureCount() : static_cast< long >( Qgis::FeatureCountState::Uncounted );
 
-    QString geom = QgsOgrProviderUtils::ogrWkbGeometryTypeName( layerGeomType );
+    QgsProviderSublayerDetails details;
+    details.setLayerNumber( i );
+    details.setName( layerName );
+    details.setFeatureCount( layerFeatureCount );
+    details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( layerGeomType ) );
+    details.setGeometryColumnName( geometryColumnName );
+    details.setDescription( longDescription );
+    details.setProviderKey( QStringLiteral( "ogr" ) );
 
-    // For feature count, -1 indicates an unknown count state
-    QStringList parts = QStringList()
-                        << QString::number( i )
-                        << layerName
-                        << QString::number( layerFeatureCount )
-                        << geom
-                        << geometryColumnName
-                        << longDescription;
+    const QString uri = QgsOgrProviderMetadata().encodeUri( parts );
+    details.setUri( uri );
 
-    sublayerList << parts.join( QgsOgrProvider::sublayerSeparator() );
+    return { details };
   }
   else
   {
@@ -2401,24 +2405,32 @@ void QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, bool wit
       fCount.remove( wkbCircularString );
     }
 
+    QList< QgsProviderSublayerDetails > res;
+    res.reserve( fCount.size() );
+
     bool bIs25D = wkbHasZ( layerGeomType );
     QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
     for ( ; countIt != fCount.constEnd(); ++countIt )
     {
-      QString geom = QgsOgrProviderUtils::ogrWkbGeometryTypeName( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
+      QgsProviderSublayerDetails details;
+      details.setLayerNumber( i );
+      details.setName( layerName );
+      details.setFeatureCount( fCount.value( countIt.key() ) );
+      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+      details.setGeometryColumnName( geometryColumnName );
+      details.setDescription( longDescription );
+      details.setProviderKey( QStringLiteral( "ogr" ) );
 
-      QStringList parts = QStringList()
-                          << QString::number( i )
-                          << layerName
-                          << QString::number( fCount.value( countIt.key() ) )
-                          << geom
-                          << geometryColumnName
-                          << longDescription;
+      if ( fCount.size() > 1 )
+        parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( countIt.key() ) );
+      else
+        parts.remove( QStringLiteral( "geometryType" ) );
 
-      QString sl = parts.join( QgsOgrProvider::sublayerSeparator() );
-      QgsDebugMsgLevel( "sub layer: " + sl, 2 );
-      sublayerList << sl;
+      details.setUri( QgsOgrProviderMetadata().encodeUri( parts ) );
+
+      res << details;
     }
+    return res;
   }
 }
 
