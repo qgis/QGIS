@@ -229,8 +229,18 @@ class CORE_EXPORT QgsFeature
 
     /**
      * Returns the feature's attributes.
-     * \see setAttributes
-     * \note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+     *
+     * Alternatively, in Python it is possible to directly iterate over a feature in order to retrieve
+     * its attributes:
+     *
+     * \code{.py}
+     *   feature = QgsFeature()
+     *   feature.setAttributes([11, 'string value', 55.5])
+     *   for attr in feature:
+     *       print(attr)
+     * \endcode
+     *
+     * \see setAttributes()
      * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
@@ -279,10 +289,23 @@ class CORE_EXPORT QgsFeature
      *
      * If the attribute was successfully set then the feature will be automatically marked as valid (see isValid()).
      *
+     * Alternatively, in Python it is possible to directly set a field's value via the field's index:
+     *
+     * \code{.py}
+     *   fields = QgsFields()
+     *   fields.append(QgsField('my_id', QVariant.Int))
+     *   fields.append(QgsField('name', QVariant.String))
+     *   feature = QgsFeature(fields)
+     *
+     *   # set the "name" field value
+     *   feature[1] = "my name"
+     *   # set the "my_id" field value
+     *   feature[0] = 55
+     * \endcode
+     *
      * \param field the index of the field to set
      * \param attr the value of the attribute
      * \throws KeyError if the field index does not exist
-     * \note Alternatively in Python: @code feature[field] = attr @endcode
      * \see setAttributes()
      */
     bool setAttribute( int field, const QVariant &attr / GetWrapper / );
@@ -345,7 +368,7 @@ class CORE_EXPORT QgsFeature
 #ifndef SIP_RUN
 
     /**
-     * Deletes an attribute and its value.
+     * Clear's an attribute's value by its index.
      *
      * \param field the index of the field
      *
@@ -355,12 +378,27 @@ class CORE_EXPORT QgsFeature
 #else
 
     /**
-     * Deletes an attribute and its value.
+     * Clear's an attribute's value by its index.
      *
      * \param field the index of the field
      *
+     * Alternatively, in Python it is possible to directly `del` an attribute via its index:
+     *
+     * \code{.py}
+     *   feature = QgsFeature()
+     *   feature.setAttributes([11, 'my feature', 55.5])
+     *
+     *   # will print [11, 'my feature', 55.5]
+     *   print(feature.attributes())
+     *
+     *   # clear the second attribute
+     *   del feature[1]
+     *
+     *   # will now print [11, NONE]
+     *   print(feature.attributes())
+     * \endcode
+     *
      * \throws KeyError if the field is not found
-     * \note Alternatively in Python: @code del feature[field] @endcode
      * \see setAttribute()
      */
     void deleteAttribute( int field );
@@ -510,10 +548,23 @@ class CORE_EXPORT QgsFeature
      *
      * Calling this method will automatically set the feature as valid (see isValid()).
      *
+     * Alternatively, in Python it is possible to directly set a field's value via the field's name:
+     *
+     * \code{.py}
+     *   fields = QgsFields()
+     *   fields.append(QgsField('my_id', QVariant.Int))
+     *   fields.append(QgsField('name', QVariant.String))
+     *   feature = QgsFeature(fields)
+     *
+     *   # set the "name" field value
+     *   feature['name'] = "my name"
+     *   # set the "my_id" field value
+     *   feature['my_id'] = 55
+     * \endcode
+     *
      * \param name The name of the field to set
      * \param value The value to set
      *  \throws KeyError if the attribute name could not be converted to an index
-     *  \note Alternatively in Python: @code feature[name] = attr @endcode
      * \see setFields()
      */
     void setAttribute( const QString &name, const QVariant &value / GetWrapper / );
@@ -541,11 +592,11 @@ class CORE_EXPORT QgsFeature
 #ifndef SIP_RUN
 
     /**
-     * Removes an attribute value by field \a name.
+     * Clear's an attribute's value by its field \a name.
      *
-     * Field map must be associated using setFields()before this method can be used.
+     * Field map must be associated using setFields() before this method can be used.
      *
-     * \param name The name of the field to delete
+     * \param name The name of the field to clear
      * \returns FALSE if attribute name could not be converted to index
      * \see setFields()
      */
@@ -553,13 +604,32 @@ class CORE_EXPORT QgsFeature
 #else
 
     /**
-     * Removes an attribute value by field \a name.
+     * Clear's an attribute's value by its field \a name.
      *
-     * Field map must be associated using setFields()before this method can be used.
+     * Field map must be associated using setFields() before this method can be used.
      *
-     * \param name The name of the field to delete
+     * Alternatively, in Python it is possible to directly `del` an attribute via its name:
+     *
+     * \code{.py}
+     *   fields = QgsFields()
+     *   fields.append(QgsField('my_id', QVariant.Int))
+     *   fields.append(QgsField('name', QVariant.String))
+     *
+     *   feature = QgsFeature(fields)
+     *   feature.setAttributes([11, 'my feature'])
+     *
+     *   # will print [11, 'my feature']
+     *   print(feature.attributes())
+     *
+     *   # clear the 'name' attribute
+     *   del feature['name']
+     *
+     *   # will now print [11, NULL]
+     *   print(feature.attributes())
+     * \endcode
+     *
+     * \param name The name of the field to clear
      * \throws KeyError if attribute name could not be converted to index
-     * \note Alternatively in Python: @code del feature[name] @endcode
      * \see setFields()
      */
     bool deleteAttribute( const QString &name );
@@ -598,10 +668,24 @@ class CORE_EXPORT QgsFeature
      *
      * Field map must be associated using setFields() before this method can be used.
      *
+     * Alternatively, in Python it is possible to directly retrieve a field's value via the field's name:
+     *
+     * \code{.py}
+     *   fields = QgsFields()
+     *   fields.append(QgsField('my_id', QVariant.Int))
+     *   fields.append(QgsField('name', QVariant.String))
+     *   feature = QgsFeature(fields)
+     *   feature.setAttributes([11, 'my feature'])
+     *
+     *   # print the "name" field value
+     *   print(feature['name'])
+     *   # print the "my_id" field value
+     *   print(feature['my_id'])
+     * \endcode
+     *
      * \param name The name of the attribute to get
      * \returns The value of the attribute
      * \throws KeyError if the field is not found
-     * \note Alternatively in Python: @code feature[name] @endcode
      * \see setFields
      */
     SIP_PYOBJECT attribute( const QString &name ) const;
@@ -625,8 +709,6 @@ class CORE_EXPORT QgsFeature
     /**
      * Lookup attribute value from its index.
      *
-     * Field map must be associated using setFields() before this method can be used.
-     *
      * \param fieldIdx The index of the attribute to get
      * \returns The value of the attribute, or an invalid/null variant if no such name exists
      * \see setFields()
@@ -637,12 +719,25 @@ class CORE_EXPORT QgsFeature
     /**
      * Lookup attribute value from its index.
      *
-     * Field map must be associated using setFields() before this method can be used.
+     * Alternatively, in Python it is possible to directly retrieve a field's value via its index:
+     *
+     * \code{.py}
+     *   feature = QgsFeature()
+     *   feature.setAttributes([11, 'my feature', 55.5])
+     *
+     *   # will print 11
+     *   print(feature[0])
+     *
+     *   # will print 'my feature'
+     *   print(feature[1])
+     *
+     *   # will print 55.5
+     *   print(feature[2])
+     * \endcode
      *
      * \param fieldIdx The index of the attribute to get
      * \returns The value of the attribute
      * \throws KeyError if the field is not found
-     * \note Alternatively in Python: @code feature[fieldIdx] @endcode
      * \see setFields()
      */
     SIP_PYOBJECT attribute( int fieldIdx ) const;
