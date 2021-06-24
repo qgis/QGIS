@@ -29,6 +29,12 @@ class QgsFeatureSource;
 class QgsGeometry;
 class QgsFeedback;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsinterpolator.h"
+% End
+#endif
+
 /**
  * Interpolation data for an individual source vertex.
  * \since QGIS 3.0

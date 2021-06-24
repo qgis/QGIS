@@ -885,7 +885,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
   QgsMeshEditingError error = mMeshEditor->initialize();
 
-  if ( error.errorType != QgsMeshEditingError::NoError )
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
   {
     mMeshEditor->deleteLater();
     mMeshEditor = nullptr;

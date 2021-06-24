@@ -770,7 +770,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 class QgsMeshVerticesElevationDataset: public QgsMeshDataset
 {
   public:
-    //! Consructor
+    //! Constructor
     QgsMeshVerticesElevationDataset( QgsMesh *mesh );
 
     QgsMeshDatasetValue datasetValue( int valueIndex ) const override;

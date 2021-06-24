@@ -25,15 +25,15 @@
 #include <QSet>
 
 
-QgsMeshEditor::QgsMeshEditor( QgsMeshLayer *meshLayer ):
-  QObject( meshLayer )
+QgsMeshEditor::QgsMeshEditor( QgsMeshLayer *meshLayer )
+  : QObject( meshLayer )
   , mMesh( meshLayer ? meshLayer->nativeMesh() : nullptr )
   , mTriangularMesh( meshLayer ? meshLayer->triangularMeshByLodIndex( 0 ) : nullptr )
   , mUndoStack( meshLayer ? meshLayer->undoStack() : nullptr )
 {}
 
-QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent ):
-  QObject( parent )
+QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent )
+  : QObject( parent )
   , mMesh( nativeMesh )
   , mTriangularMesh( triangularMesh )
 {
@@ -111,7 +111,7 @@ void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const 
 QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove )
 {
   QgsMeshEditingError error = mTopologicalMesh.canFacesBeRemoved( facesToRemove );
-  if ( error.errorType != QgsMeshEditingError::NoError )
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
   mUndoStack->push( new QgsMeshLayerUndoCommandRemoveFaces( this, facesToRemove ) );
@@ -128,7 +128,7 @@ QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &fa
   for ( QgsMeshFace &face : treatedFaces )
   {
     error = mTopologicalMesh.counterClockWiseFaces( face, mMesh );
-    if ( error.errorType != QgsMeshEditingError::NoError )
+    if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       break;
   }
 
@@ -140,14 +140,14 @@ QgsMeshEditingError QgsMeshEditor::addFaces( const QVector<QVector<int> > &faces
   QgsMeshEditingError error;
   QVector<QgsMeshFace> facesToAdd = prepareFaces( faces, error );
 
-  if ( error.errorType != QgsMeshEditingError::NoError )
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
   QgsTopologicalMesh::TopologicalFaces topologicalFaces = mTopologicalMesh.createNewTopologicalFaces( facesToAdd, error );
 
   error = mTopologicalMesh.canFacesBeAdded( topologicalFaces );
 
-  if ( error.errorType != QgsMeshEditingError::NoError )
+  if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     return error;
 
   mUndoStack->push( new QgsMeshLayerUndoCommandAddFaces( this, topologicalFaces ) );
@@ -243,7 +243,7 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
       concernedNativeFaces.unite( mTopologicalMesh.facesAroundVertex( vi ).toSet() );
 
     error = mTopologicalMesh.canFacesBeRemoved( concernedNativeFaces.values() );
-    if ( error.errorType != QgsMeshEditingError::NoError )
+    if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       return error;
   }
 
@@ -259,8 +259,8 @@ void QgsMeshEditor::stopEditing()
 
 
 
-QgsMeshLayerUndoCommandMeshEdit::QgsMeshLayerUndoCommandMeshEdit( QgsMeshEditor *meshEditor ):
-  mMeshEditor( meshEditor )
+QgsMeshLayerUndoCommandMeshEdit::QgsMeshLayerUndoCommandMeshEdit( QgsMeshEditor *meshEditor )
+  : mMeshEditor( meshEditor )
 {
 }
 
@@ -282,8 +282,8 @@ void QgsMeshLayerUndoCommandMeshEdit::redo()
     mMeshEditor->applyEdit( edit );
 }
 
-QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices ):
-  QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+QgsMeshLayerUndoCommandAddVertices::QgsMeshLayerUndoCommandAddVertices( QgsMeshEditor *meshEditor, const QVector<QgsMeshVertex> &vertices )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertices( vertices )
 {}
 
@@ -309,8 +309,8 @@ void QgsMeshLayerUndoCommandAddVertices::redo()
   }
 }
 
-QgsMeshLayerUndoCommandRemoveVertices::QgsMeshLayerUndoCommandRemoveVertices( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, bool fillHole ):
-  QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+QgsMeshLayerUndoCommandRemoveVertices::QgsMeshLayerUndoCommandRemoveVertices( QgsMeshEditor *meshEditor, const QList<int> &verticesToRemoveIndexes, bool fillHole )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesToRemoveIndexes( verticesToRemoveIndexes )
   , mFillHole( fillHole )
 {}
@@ -334,8 +334,8 @@ void QgsMeshLayerUndoCommandRemoveVertices::redo()
   }
 }
 
-QgsMeshLayerUndoCommandAddFaces::QgsMeshLayerUndoCommandAddFaces( QgsMeshEditor *meshEditor, QgsTopologicalMesh::TopologicalFaces &faces ):
-  QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+QgsMeshLayerUndoCommandAddFaces::QgsMeshLayerUndoCommandAddFaces( QgsMeshEditor *meshEditor, QgsTopologicalMesh::TopologicalFaces &faces )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mFaces( faces )
 {}
 
@@ -356,8 +356,8 @@ void QgsMeshLayerUndoCommandAddFaces::redo()
   }
 }
 
-QgsMeshLayerUndoCommandRemoveFaces::QgsMeshLayerUndoCommandRemoveFaces( QgsMeshEditor *meshEditor, const QList<int> &facesToRemoveIndexes ):
-  QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+QgsMeshLayerUndoCommandRemoveFaces::QgsMeshLayerUndoCommandRemoveFaces( QgsMeshEditor *meshEditor, const QList<int> &facesToRemoveIndexes )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mfacesToRemoveIndexes( facesToRemoveIndexes )
 {}
 
@@ -378,6 +378,6 @@ void QgsMeshLayerUndoCommandRemoveFaces::redo()
   }
 }
 
-QgsMeshEditingError::QgsMeshEditingError(): errorType( NoError ), elementIndex( -1 ) {}
+QgsMeshEditingError::QgsMeshEditingError(): errorType( Qgis::MeshEditingErrorType::NoError ), elementIndex( -1 ) {}
 
-QgsMeshEditingError::QgsMeshEditingError( QgsMeshEditingError::MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}
+QgsMeshEditingError::QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}

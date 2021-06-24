@@ -33,8 +33,8 @@ static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceI
   return vertexPositionInFace( vertexIndex, mesh.face( faceIndex ) );
 }
 
-QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex ):
-  mFaces( topologicalMesh.mMesh->faces )
+QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex )
+  : mFaces( topologicalMesh.mMesh->faces )
   , mFacesNeighborhood( topologicalMesh.mFacesNeighborhood )
   ,  mVertexIndex( vertexIndex )
 {
@@ -52,8 +52,8 @@ QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topo
     mLastValidFace = mCurrentFace;
 }
 
-QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int faceIndex, int vertexIndex ):
-  mFaces( topologicalFaces.mFaces )
+QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int faceIndex, int vertexIndex )
+  : mFaces( topologicalFaces.mFaces )
   , mFacesNeighborhood( topologicalFaces.mFacesNeighborhood )
   , mVertexIndex( vertexIndex )
 {
@@ -64,7 +64,8 @@ QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::Topo
   mLastValidFace = mCurrentFace;
 }
 
-QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int vertexIndex ): mFaces( topologicalFaces.mFaces )
+QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh::TopologicalFaces &topologicalFaces, int vertexIndex )
+  : mFaces( topologicalFaces.mFaces )
   , mFacesNeighborhood( topologicalFaces.mFacesNeighborhood )
   , mVertexIndex( vertexIndex )
 {
@@ -429,7 +430,7 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
   // If the index are not well ordered (edges intersect), invalid face --> return false
   int faceSize = face.count();
   if ( faceSize < 3 )
-    return QgsMeshEditingError( QgsMeshEditingError::FlatFace, -1 );
+    return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
 
   int direction = 0;
   for ( int i = 0; i < faceSize; ++i )
@@ -439,26 +440,26 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
     int iv2 = face[( i + 2 ) % faceSize];
 
     if ( iv0 < 0 || iv0 >= mesh->vertexCount() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv0 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
 
     if ( iv1 < 0 || iv1 >= mesh->vertexCount() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv1 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv1 );
 
     if ( iv2 < 0 || iv2 >= mesh->vertexCount() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv2 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
 
     const QgsMeshVertex &v0 = mesh->vertices.at( iv0 ) ;
     const QgsMeshVertex &v1 = mesh->vertices.at( iv1 ) ;
     const QgsMeshVertex &v2 = mesh->vertices.at( iv2 ) ;
 
     if ( v0.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv0 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
 
     if ( v1.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv1 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv1 );
 
     if ( v2.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, iv2 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
 
     double ux = v0.x() - v1.x();
     double uy = v0.y() - v1.y();
@@ -467,9 +468,9 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
 
     double crossProduct = ux * vy - uy * vx; //if cross product>0, we have two edges clockwise
     if ( direction != 0 && crossProduct * direction < 0 )   // We have a convex face or a (partially) flat face
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, -1 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, -1 );
     else if ( crossProduct == 0 )
-      return QgsMeshEditingError( QgsMeshEditingError::FlatFace, -1 );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
     else if ( direction == 0 && crossProduct != 0 )
       direction = crossProduct / std::fabs( crossProduct );
   }
@@ -484,7 +485,7 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
     }
   }
 
-  return QgsMeshEditingError( QgsMeshEditingError::NoError, -1 );
+  return QgsMeshEditingError( Qgis::MeshEditingErrorType::NoError, -1 );
 }
 
 void QgsTopologicalMesh::reindex()
@@ -683,7 +684,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
 
       QgsMeshEditingError error;
       QgsTopologicalMesh::TopologicalFaces topologicalFaces = createNewTopologicalFaces( newFaces, error );
-      if ( error.errorType != QgsMeshEditingError::NoError )
+      if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
         throw std::exception();
       int newFaceIndexStartIndex = mMesh->faceCount();
       QgsTopologicalMesh::Changes addChanges;
@@ -778,21 +779,21 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
 
     if ( !newFacescirculator.isValid() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
 
     //search for face boundary on clockwise side of new faces
     if ( !newFacescirculator.goBoundaryClockwise() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
     const QgsMeshFace &newFaceBoundaryCW = newFacescirculator.currentFace();
     if ( newFaceBoundaryCW.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
 
     //search for face boundary on COUNTER clockwise side of existing faces
     if ( !meshCirculator.goBoundaryCounterClockwise() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, boundary );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
     const QgsMeshFace &existingFaceBoundaryCCW = meshCirculator.currentFace();
     if ( existingFaceBoundaryCCW.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, boundary );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
 
     if ( facesCanBeJoinedWithCommonIndex( newFaceBoundaryCW, existingFaceBoundaryCCW, boundary ) )
     {
@@ -806,17 +807,17 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
 
     //search for face boundary on COUNTER clockwise side of new faces
     if ( !newFacescirculator.goBoundaryCounterClockwise() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
     const QgsMeshFace &newFaceBoundaryCCW = newFacescirculator.currentFace();
     if ( newFaceBoundaryCCW.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidFace, faceIndex );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, faceIndex );
 
     //search for face boundary on clockwise side of existing faces
     if ( !meshCirculator.goBoundaryClockwise() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, boundary );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
     const QgsMeshFace &existingFaceBoundaryCW = meshCirculator.currentFace();
     if ( existingFaceBoundaryCW.isEmpty() )
-      return QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, boundary );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, boundary );
 
     if ( facesCanBeJoinedWithCommonIndex( newFaceBoundaryCCW, existingFaceBoundaryCW, boundary ) )
     {
@@ -827,7 +828,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     }
 
     //if we are here, face share only one vertices
-    return QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, boundary );
+    return QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, boundary );
   }
 
   return QgsMeshEditingError();
@@ -846,20 +847,20 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, Qgs
   QgsTopologicalMesh topologicMesh;
   topologicMesh.mMesh = mesh;
   topologicMesh.mVertexToface = QVector<int>( mesh->vertexCount(), -1 );
-  error.errorType = QgsMeshEditingError::NoError;
+  error.errorType = Qgis::MeshEditingErrorType::NoError;
 
   for ( int i = 0; i < mesh->faceCount(); ++i )
   {
     error = counterClockWiseFaces( mesh->faces[i], mesh );
-    if ( error.errorType != QgsMeshEditingError::NoError )
+    if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     {
-      if ( error.errorType == QgsMeshEditingError::InvalidFace || error.errorType == QgsMeshEditingError::FlatFace )
+      if ( error.errorType == Qgis::MeshEditingErrorType::InvalidFace || error.errorType == Qgis::MeshEditingErrorType::FlatFace )
         error.elementIndex = i;
       break;
     }
   }
 
-  if ( error.errorType == QgsMeshEditingError::NoError )
+  if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
   {
     TopologicalFaces subMesh = topologicMesh.createTopologicalFaces( mesh->faces, error, false, true );
     topologicMesh.mFacesNeighborhood = subMesh.mFacesNeighborhood;
@@ -940,7 +941,7 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
         {
           if ( boundaryVertices.contains( v1 ) )
           {
-            error = QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, v1 ); // if a vertices is more than one time in the boundary, that means faces share only one vertices
+            error = QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, v1 ); // if a vertices is more than one time in the boundary, that means faces share only one vertices
             return ret;
           }
         }

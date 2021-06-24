@@ -148,7 +148,7 @@ void TestQgsMeshEditor::createTopologicMesh()
 
   QgsMeshEditingError error;
   QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, error );
-  QVERIFY( error.errorType == QgsMeshEditingError::NoError );
+  QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   // Check if face are counter clock wise
   QVERIFY( !QgsMesh::compareFaces( nativeMesh.face( 0 ), QgsMeshFace( {0, 1, 2, 3} ) ) );
@@ -174,7 +174,7 @@ void TestQgsMeshEditor::editTopologicMesh()
 {
   QgsMeshEditingError error;
   QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, error );
-  QVERIFY( error.errorType == QgsMeshEditingError::NoError );
+  QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
   QCOMPARE( topologicMesh.mesh()->vertexCount(), 6 );
@@ -203,7 +203,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   faces = {{5, 7, 6}};
   topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
   QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) ==
-           QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, 5 ) );
+           QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, 5 ) );
 
   faces = {{5, 7, 6, 4}};
   topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
@@ -236,7 +236,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   };
 
   topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ).errorType ==  QgsMeshEditingError::UniqueSharedVertex );
+  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ).errorType ==  Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faces =
   {
@@ -355,10 +355,10 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   QList<int> faceToRemove;
   faceToRemove = {2, 3};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == QgsMeshEditingError::UniqueSharedVertex );
+  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 1, 2, 3};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == QgsMeshEditingError::UniqueSharedVertex );
+  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 9};
   QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
@@ -370,7 +370,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {0, 1, 2, 3, 4, 5};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == QgsMeshEditingError::UniqueSharedVertex );
+  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {9, 0, 1, 2, 3, 4, 5};
   QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
@@ -475,7 +475,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.faces.append( QgsMeshFace( {0, 1, 2, 3} ) );
   QgsMeshEditingError error;
   QgsTopologicalMesh topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, 0 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, 0 ) );
 
   //Invalid vertex (index out of range)
   badMesh.clear();
@@ -485,7 +485,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.vertices.append( QgsMeshVertex( 1.0, 0.0, 0.0 ) );
   badMesh.faces.append( QgsMeshFace( {0, 1, 2, 5} ) );
   topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::InvalidVertex, 5 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, 5 ) );
 
 
   // concave face
@@ -496,7 +496,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.vertices.append( QgsMeshVertex( 1.0, 0.0, 0.0 ) );
   badMesh.faces.append( QgsMeshFace( {0, 1, 2, 3} ) ); //concave face
   topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::InvalidFace, 0 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, 0 ) );
 
   // bad ordering of vertex index in face
   badMesh.clear();
@@ -506,7 +506,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.vertices.append( QgsMeshVertex( 1.0, 0.0, 0.0 ) );
   badMesh.faces.append( QgsMeshFace( {0, 2, 1, 3} ) ); //bad ordering of faces
   topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::InvalidFace, 0 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, 0 ) );
 
   // Flat face
   badMesh.clear();
@@ -516,7 +516,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.vertices.append( QgsMeshVertex( 1.0, 0.0, 0.0 ) );
   badMesh.faces.append( QgsMeshFace( {0, 2, 1, 3} ) ); //bad ordering of faces
   topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::FlatFace, 0 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, 0 ) );
 
   // Sharing only one vertex
   badMesh.clear();
@@ -532,7 +532,7 @@ void TestQgsMeshEditor::badTopologicMesh()
   badMesh.faces.append( QgsMeshFace( {3, 4, 2} ) ); //counter clock wise face
   badMesh.faces.append( QgsMeshFace( {4, 5, 6} ) ); // isolated face linked by ony one vertices
   topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &badMesh, error );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, 4 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, 4 ) );
 }
 
 void TestQgsMeshEditor::meshEditorSimpleEdition()
@@ -561,12 +561,12 @@ void TestQgsMeshEditor::meshEditorSimpleEdition()
     QCOMPARE( meshEditor.mTopologicalMesh.facesAroundVertex( i ), QList<int>() );
 
   // add bad face
-  QVERIFY( meshEditor.addFaces( {{0, 1, 3, 2}} ).errorType == QgsMeshEditingError::InvalidFace ); //unordered vertex index
-  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 100}} ).errorType == QgsMeshEditingError::InvalidVertex ); //out of range vertex index
-  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 4}} ).errorType == QgsMeshEditingError::InvalidVertex ); // empty vertex
+  QVERIFY( meshEditor.addFaces( {{0, 1, 3, 2}} ).errorType == Qgis::MeshEditingErrorType::InvalidFace ); //unordered vertex index
+  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 100}} ).errorType == Qgis::MeshEditingErrorType::InvalidVertex ); //out of range vertex index
+  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 4}} ).errorType == Qgis::MeshEditingErrorType::InvalidVertex ); // empty vertex
 
 // add good face
-  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 3}} ).errorType == QgsMeshEditingError::NoError );
+  QVERIFY( meshEditor.addFaces( {{0, 1, 2, 3}} ).errorType == Qgis::MeshEditingErrorType::NoError );
 
   QCOMPARE( triangularMesh.vertices().count(), 4 );
   QCOMPARE( triangularMesh.faceCentroids().count(), 1 );
@@ -637,7 +637,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   // try to add a face that shares only one vertex
   QgsMeshEditingError error = editor->addFaces( {{2, 5, 6}} );
-  QVERIFY( error == QgsMeshEditingError( QgsMeshEditingError::UniqueSharedVertex, 2 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, 2 ) );
   QCOMPARE( meshLayerQuadTriangle->meshVerticesCount(), 7 );
   QCOMPARE( meshLayerQuadTriangle->meshFacesCount(), 2 );
 
@@ -873,7 +873,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1200, 2500, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 984.879, 2436.712 ), 1e-2 ) );
 
-  QVERIFY( editor->addFace( {6, 1, 11, 10, 12} ).errorType == QgsMeshEditingError::InvalidFace ); //concave face
+  QVERIFY( editor->addFace( {6, 1, 11, 10, 12} ).errorType == Qgis::MeshEditingErrorType::InvalidFace ); //concave face
 
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1600, 1750, 0 ), 10 );
   QVERIFY( centroid.isEmpty() );
@@ -918,9 +918,9 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   QVERIFY( editor->removeVertices( {7}, true ) == QgsMeshEditingError() );
 
-  QVERIFY( editor->removeVertices( {4}, false ).errorType != QgsMeshEditingError::NoError ); // leads to a topological error
+  QVERIFY( editor->removeVertices( {4}, false ).errorType != Qgis::MeshEditingErrorType::NoError ); // leads to a topological error
 
-  QVERIFY( editor->removeVertices( {4}, true ).errorType != QgsMeshEditingError::NoError ); // filling after removing boundary not supported, so not fill and leads to a topological error
+  QVERIFY( editor->removeVertices( {4}, true ).errorType != Qgis::MeshEditingErrorType::NoError ); // filling after removing boundary not supported, so not fill and leads to a topological error
 
   QVERIFY( editor->removeVertices( {5}, true ) == QgsMeshEditingError() );
 

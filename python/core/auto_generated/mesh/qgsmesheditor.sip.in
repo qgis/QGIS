@@ -22,26 +22,17 @@ Class that represents an error during mesh editing
 %End
   public:
 
-    enum MeshEditingErrorType
-    {
-      NoError,
-      InvalidFace,
-      FlatFace,
-      UniqueSharedVertex,
-      InvalidVertex
-    };
-
     QgsMeshEditingError();
 %Docstring
 Constructor of the default error, that is NoError
 %End
 
-    QgsMeshEditingError( MeshEditingErrorType type, int elementIndex );
+    QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
 %Docstring
 Constructor with eht error ``type`` and the index of the element ``elementIndex``
 %End
 
-    MeshEditingErrorType errorType;
+    Qgis::MeshEditingErrorType errorType;
 
     int elementIndex;
 

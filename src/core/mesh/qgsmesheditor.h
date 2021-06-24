@@ -20,6 +20,7 @@
 #include <QUndoCommand>
 #include <QPointer>
 
+#include "qgis.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshdataprovider.h"
 #include "qgstriangularmesh.h"
@@ -36,23 +37,13 @@ class CORE_EXPORT QgsMeshEditingError
 {
   public:
 
-    //! Type of the error
-    enum MeshEditingErrorType
-    {
-      NoError,
-      InvalidFace,
-      FlatFace,
-      UniqueSharedVertex,
-      InvalidVertex
-    };
-
     //! Constructor of the default error, that is NoError
     QgsMeshEditingError();
 
     //! Constructor with eht error \a type and the index of the element \a elementIndex
-    QgsMeshEditingError( MeshEditingErrorType type, int elementIndex );
+    QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex );
 
-    MeshEditingErrorType errorType;
+    Qgis::MeshEditingErrorType errorType;
 
     int elementIndex;
 

@@ -901,13 +901,13 @@ int QgsMeshMemoryDataset::valuesCount() const
   return values.count();
 }
 
-QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType ):
-  QgsMeshDatasetGroup( name, dataType )
+QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType )
+  : QgsMeshDatasetGroup( name, dataType )
 {
 }
 
-QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &name ):
-  QgsMeshDatasetGroup( name )
+QgsMeshMemoryDatasetGroup::QgsMeshMemoryDatasetGroup( const QString &name )
+  : QgsMeshDatasetGroup( name )
 {
 }
 
@@ -1011,7 +1011,8 @@ bool QgsMeshDatasetGroup::checkValueCountPerDataset( int count ) const
   return true;
 }
 
-QgsMeshDatasetGroup::QgsMeshDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType ): mName( name ), mDataType( dataType ) {}
+QgsMeshDatasetGroup::QgsMeshDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType )
+  : mName( name ), mDataType( dataType ) {}
 
 QgsMeshDatasetGroup::~QgsMeshDatasetGroup() = default;
 
@@ -1074,8 +1075,8 @@ void QgsMeshDatasetGroup::setIsScalar( bool isScalar )
 }
 
 
-QgsMeshVerticesElevationDataset::QgsMeshVerticesElevationDataset( QgsMesh *mesh ):
-  mMesh( mesh )
+QgsMeshVerticesElevationDataset::QgsMeshVerticesElevationDataset( QgsMesh *mesh )
+  : mMesh( mesh )
 {}
 
 QgsMeshDatasetValue QgsMeshVerticesElevationDataset::datasetValue( int valueIndex ) const
@@ -1132,8 +1133,8 @@ int QgsMeshVerticesElevationDataset::valuesCount() const
   return 0;
 }
 
-QgsMeshVerticesElevationDatasetGroup::QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh ):
-  mDataset( new QgsMeshVerticesElevationDataset( mesh ) )
+QgsMeshVerticesElevationDatasetGroup::QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh )
+  : mDataset( new QgsMeshVerticesElevationDataset( mesh ) )
 {
   mName = name ;
   initialize();
