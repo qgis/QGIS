@@ -40,14 +40,14 @@ Increment this if method is significantly updated, allow updater code to be writ
 %End
 
 
-
 %If (HAVE_GUI)
+
     virtual QWidget *editWidget( QWidget *parent ) const;
-%End
 %Docstring
 Constructs the configuration for the authentication method
 
 .. versionadded:: 3.22
+%End
 %End
 
     QgsAuthMethod::Expansions supportedExpansions() const;

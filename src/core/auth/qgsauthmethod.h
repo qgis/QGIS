@@ -70,12 +70,14 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
 
 #ifdef HAVE_GUI
+    SIP_IF_FEATURE( HAVE_GUI )
 
     /**
      * Constructs the configuration for the authentication method
      * \since QGIS 3.22
      */
-    virtual QWidget *editWidget( QWidget *parent ) const SIP_WHEN_FEATURE( HAVE_GUI );
+    virtual QWidget *editWidget( QWidget *parent ) const;
+    SIP_END
 #endif
 
     /**
