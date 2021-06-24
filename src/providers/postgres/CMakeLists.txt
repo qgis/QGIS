@@ -94,6 +94,7 @@ target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
 
 target_link_libraries (provider_postgresraster_a
     qgis_core
+    provider_postgres_a
 )
 
 if (WITH_GUI)
