@@ -52,7 +52,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           image_name: qgis-deps-ogc
-          dockerfile: .ci/ogc/Dockerfile
+          context: .ci/ogc
+          dockerfile: Dockerfile
           push_git_tag: true
           push_image_and_stages: on:push
           pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
