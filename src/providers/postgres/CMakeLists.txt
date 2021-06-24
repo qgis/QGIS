@@ -40,6 +40,10 @@ set(PG_HDRS
 # static library
 add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
+target_include_directories(provider_postgres_a SYSTEM PRIVATE
+  ${POSTGRES_INCLUDE_DIR}
+)
+
 target_include_directories(provider_postgres_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
 )
