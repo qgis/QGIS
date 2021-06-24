@@ -29,6 +29,8 @@
 #include "qgsrasterprojector.h"
 #include "qgsrasternuller.h"
 
+#include <mutex>
+
 QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 {
   for ( int i = 0; i < pipe.size(); i++ )
@@ -49,6 +51,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
     }
   }
   setResamplingStage( pipe.resamplingStage() );
+  mDataDefinedProperties = pipe.mDataDefinedProperties;
 }
 
 QgsRasterPipe::~QgsRasterPipe()
@@ -380,4 +383,47 @@ void QgsRasterPipe::setResamplingStage( Qgis::RasterResamplingStage stage )
   {
     l_provider->enableProviderResampling( stage == Qgis::RasterResamplingStage::Provider );
   }
+}
+
+void QgsRasterPipe::evaluateDataDefinedProperties( QgsExpressionContext &context )
+{
+  if ( !mDataDefinedProperties.hasActiveProperties() )
+    return;
+
+  if ( mDataDefinedProperties.isActive( RendererOpacity ) )
+  {
+    if ( QgsRasterRenderer *r = renderer() )
+    {
+      const double prevOpacity = r->opacity();
+      context.setOriginalValueVariable( prevOpacity * 100 );
+      bool ok = false;
+      const double opacity = mDataDefinedProperties.valueAsDouble( RendererOpacity, context, prevOpacity, &ok ) / 100;
+      if ( ok )
+      {
+        r->setOpacity( opacity );
+      }
+    }
+  }
+}
+
+QgsPropertiesDefinition QgsRasterPipe::sPropertyDefinitions;
+
+void QgsRasterPipe::initPropertyDefinitions()
+{
+  const QString origin = QStringLiteral( "raster" );
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { QgsRasterPipe::RendererOpacity, QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+  };
+}
+
+QgsPropertiesDefinition QgsRasterPipe::propertyDefinitions()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    initPropertyDefinitions();
+  } );
+  return sPropertyDefinitions;
 }
