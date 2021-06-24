@@ -67,6 +67,7 @@
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -224,6 +225,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     return;
   }
+
+  mContext << QgsExpressionContextUtils::globalScope()
+           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+           << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mMapCanvas )
+    mContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+  mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
 
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
@@ -446,6 +454,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 #endif
 
+  initializeDataDefinedButton( mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
+
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
   // update based on lyr's current state
@@ -514,6 +524,11 @@ void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
       mTemporalWidget->addWidget( page );
       break;
   }
+}
+
+QgsExpressionContext QgsRasterLayerProperties::createExpressionContext() const
+{
+  return mContext;
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
@@ -903,6 +918,9 @@ void QgsRasterLayerProperties::sync()
 
   mTemporalWidget->syncToLayer();
 
+  mPropertyCollection = mRasterLayer->pipe()->dataDefinedProperties();
+  updateDataDefinedButtons();
+
   for ( QgsMapLayerConfigWidget *page : std::as_const( mLayerPropertiesPages ) )
   {
     page->syncToLayer( mRasterLayer );
@@ -1121,6 +1139,8 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
+
+  mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );
@@ -1580,6 +1600,43 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
     //set the metadata contents (which can be expensive)
     updateInformationContent();
   }
+}
+
+void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
+{
+  button->blockSignals( true );
+  button->init( key, mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterLayerProperties::updateProperty );
+  button->registerExpressionContextGenerator( this );
+  button->blockSignals( false );
+}
+
+void QgsRasterLayerProperties::updateDataDefinedButtons()
+{
+  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
+  {
+    updateDataDefinedButton( button );
+  }
+}
+
+void QgsRasterLayerProperties::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+}
+
+void QgsRasterLayerProperties::updateProperty()
+{
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
 }
 
 void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
