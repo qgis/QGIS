@@ -20,6 +20,10 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
+#ifdef HAVE_GUI
+#include "qgsauthesritokenedit.h"
+#endif
+
 #include <QNetworkProxy>
 #include <QMutexLocker>
 #include <QUuid>
@@ -127,6 +131,13 @@ void QgsAuthEsriTokenMethod::removeMethodConfig( const QString &authcfg )
     QgsDebugMsg( QStringLiteral( "Removed token config for authcfg: %1" ).arg( authcfg ) );
   }
 }
+
+#ifdef HAVE_GUI
+QWidget *QgsAuthEsriTokenMethod::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthEsriTokenEdit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals

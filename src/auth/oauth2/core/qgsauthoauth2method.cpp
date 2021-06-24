@@ -26,6 +26,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#ifdef HAVE_GUI
+#include "qgsauthoauth2edit.h"
+#endif
 
 #include <algorithm>
 
@@ -651,6 +654,12 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
   }
 }
 
+#ifdef HAVE_GUI
+QWidget *QgsAuthOAuth2Method::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthOAuth2Edit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals

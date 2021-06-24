@@ -92,6 +92,10 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     //! Triggered when auth code needs to be manually entered by the user
     void onAuthCode();
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   signals:
 
     //! Emitted when authcode was manually set by the user

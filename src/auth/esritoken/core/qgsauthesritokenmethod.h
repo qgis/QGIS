@@ -47,6 +47,10 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
     void clearCachedConfig( const QString &authcfg ) override;
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   private:
     QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
 

@@ -16,6 +16,14 @@
 
 #include "qgsauthidentcertmethod.h"
 
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#ifdef HAVE_GUI
+#include "qgsauthidentcertedit.h"
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QUuid>
@@ -26,10 +34,6 @@
 #endif
 #include <QMutexLocker>
 
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
 
 const QString QgsAuthIdentCertMethod::AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
 const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = tr( "Identity certificate authentication" );
@@ -289,6 +293,12 @@ void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
   }
 }
 
+#ifdef HAVE_GUI
+QWidget *QgsAuthIdentCertMethod::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthIdentCertEdit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals

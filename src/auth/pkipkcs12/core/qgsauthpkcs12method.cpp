@@ -30,7 +30,9 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-
+#ifdef HAVE_GUI
+#include "qgsauthpkcs12edit.h"
+#endif
 
 const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
 const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = tr( "PKI PKCS#12 authentication" );
@@ -344,6 +346,13 @@ void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
     QgsDebugMsg( QStringLiteral( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );
   }
 }
+
+#ifdef HAVE_GUI
+QWidget *QgsAuthPkcs12Method::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthPkcs12Edit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals

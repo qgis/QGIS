@@ -16,6 +16,14 @@
 
 #include "qgsauthpkipathsmethod.h"
 
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#ifdef HAVE_GUI
+#include "qgsauthpkipathsedit.h"
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QUuid>
@@ -25,12 +33,6 @@
 #include <QSslError>
 #endif
 #include <QMutexLocker>
-
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-
 
 const QString QgsAuthPkiPathsMethod::AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
 const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION = tr( "PKI paths authentication" );
@@ -325,6 +327,12 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
   }
 }
 
+#ifdef HAVE_GUI
+QWidget *QgsAuthPkiPathsMethod::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthPkiPathsEdit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals

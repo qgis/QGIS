@@ -52,6 +52,10 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   private:
 
     QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
