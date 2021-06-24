@@ -255,6 +255,9 @@ class CORE_EXPORT QgsOgrProviderUtils
     static bool canDriverShareSameDatasetAmongLayers( const QString &driverName,
         bool updateMode,
         const QString &dsName );
+
+    static void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList );
+
 };
 
 
