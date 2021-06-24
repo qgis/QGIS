@@ -26,8 +26,6 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
 
   mCopyTask = new QgsCopyFileTask( filePath, url );
 
-  QgsApplication::instance()->taskManager()->addTask( mCopyTask );
-
   connect( mCopyTask, &QgsTask::taskCompleted, this, [ = ]
   {
     mUrl = mCopyTask->destination();
@@ -46,6 +44,8 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
   } );
 
   mStatus = Qgis::ContentStatus::OnGoing;
+
+  QgsApplication::instance()->taskManager()->addTask( mCopyTask );
 }
 
 void QgsSimpleCopyExternalStorageStoredContent::cancel()
