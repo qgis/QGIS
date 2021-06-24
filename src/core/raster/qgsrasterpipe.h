@@ -252,7 +252,7 @@ class CORE_EXPORT QgsRasterPipe
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
-     * Evalutes any data defined properties set on the pipe, applying their results
+     * Evaluates any data defined properties set on the pipe, applying their results
      * to the corresponding interfaces in place.
      *
      * \since QGIS 3.22
