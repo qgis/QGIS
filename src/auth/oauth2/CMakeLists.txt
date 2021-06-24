@@ -159,6 +159,10 @@ else()
     endif()
   endif()
 
+  if(WIN32)
+     add_definitions(-DO2_DLL_EXPORT)
+   endif()
+
   if (WITH_GUI)
     target_include_directories(authmethod_oauth2 PRIVATE
       ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
