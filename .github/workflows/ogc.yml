@@ -79,7 +79,7 @@ jobs:
         run: |
           docker run -v $(pwd):/usr/src/qgis -v /home/runner/QGIS/.ccache:/root/.ccache ${DOCKER_IMAGE} /usr/src/qgis/.ci/ogc/build.sh
         env:
-          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+          DOCKER_IMAGE: qgis_server_deps
 
       - name: Install pyogctest
         run: |
