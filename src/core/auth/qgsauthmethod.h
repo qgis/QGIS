@@ -29,8 +29,9 @@
 #include <QRecursiveMutex>
 #endif
 
-
+#include "qgsconfig.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsAuthMethodConfig;
 
@@ -75,6 +76,18 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     //! Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
     int version() const { return mVersion; }
+
+
+#ifdef HAVE_GUI
+    SIP_IF_FEATURE( HAVE_GUI )
+
+    /**
+     * Constructs the configuration for the authentication method
+     * \since QGIS 3.22
+     */
+    virtual QWidget *editWidget( QWidget *parent ) const;
+    SIP_END
+#endif
 
     /**
      * Flags that represent the update points (where authentication configurations are expanded)

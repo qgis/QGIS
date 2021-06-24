@@ -10,7 +10,6 @@
 
 
 
-
 class QgsAuthMethod : QObject
 {
 %Docstring(signature="appended")
@@ -53,6 +52,17 @@ Translatable display version of the ':py:func:`~QgsAuthMethod.description`'
     int version() const;
 %Docstring
 Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg
+%End
+
+
+%If (HAVE_GUI)
+
+    virtual QWidget *editWidget( QWidget *parent ) const;
+%Docstring
+Constructs the configuration for the authentication method
+
+.. versionadded:: 3.22
+%End
 %End
 
     QgsAuthMethod::Expansions supportedExpansions() const;

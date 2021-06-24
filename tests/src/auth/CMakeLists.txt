@@ -24,7 +24,7 @@ endif()
 #############################################################
 # Tests:
 
-set(LINKEDLIBRARIES qgis_core authmethod_oauth2_static)
+set(LINKEDLIBRARIES qgis_core authmethod_oauth2_a)
 if(WITH_GUI)
   set(LINKEDLIBRARIES ${LINKEDLIBRARIES} qgis_gui)
 endif()

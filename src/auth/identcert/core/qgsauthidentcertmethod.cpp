@@ -16,6 +16,14 @@
 
 #include "qgsauthidentcertmethod.h"
 
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#ifdef HAVE_GUI
+#include "qgsauthidentcertedit.h"
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QUuid>
@@ -26,13 +34,10 @@
 #endif
 #include <QMutexLocker>
 
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Identity certificate authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -68,7 +73,7 @@ QString QgsAuthIdentCertMethod::description() const
 
 QString QgsAuthIdentCertMethod::displayDescription() const
 {
-  return tr( "PKI stored identity certificate" );
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
@@ -294,47 +299,21 @@ void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
   }
 }
 
+#ifdef HAVE_GUI
+QWidget *QgsAuthIdentCertMethod::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthIdentCertEdit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals
 //////////////////////////////////////////////
 
-/**
- * Required class factory to return a pointer to a newly created object
- */
-QGISEXTERN QgsAuthIdentCertMethod *classFactory()
-{
-  return new QgsAuthIdentCertMethod();
-}
 
-/**
- * Required key function (used to map the plugin to a data store type)
- */
-QGISEXTERN QString authMethodKey()
+#ifndef HAVE_STATIC_PROVIDERS
+QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
 {
-  return AUTH_METHOD_KEY;
+  return new QgsAuthIdentCertMethodMetadata();
 }
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return AUTH_METHOD_DESCRIPTION;
-}
-
-/**
- * Required isAuthMethod function. Used to determine if this shared library
- * is an authentication method plugin
- */
-QGISEXTERN bool isAuthMethod()
-{
-  return true;
-}
-
-/**
- * Required cleanup function
- */
-QGISEXTERN void cleanupAuthMethod() // pass QgsAuthMethod *method, then delete method  ?
-{
-}
+#endif

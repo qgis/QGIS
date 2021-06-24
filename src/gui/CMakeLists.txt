@@ -1496,6 +1496,11 @@ target_link_libraries(qgis_gui
 )
 
 if (FORCE_STATIC_LIBS)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/src/providers/wms
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres
+  )
+
   target_link_libraries(qgis_gui
     provider_wms_gui_a
     provider_postgres_gui_a

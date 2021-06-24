@@ -22,6 +22,7 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsAuthIdentCertMethod : public QgsAuthMethod
@@ -29,6 +30,11 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+    static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
+
     explicit QgsAuthIdentCertMethod();
     ~QgsAuthIdentCertMethod() override;
 
@@ -49,6 +55,10 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   private:
 
     QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
@@ -59,6 +69,17 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
+};
+
+
+class QgsAuthIdentCertMethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthIdentCertMethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthIdentCertMethod::AUTH_METHOD_KEY, QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthIdentCertMethod *createAuthMethod() const override {return new QgsAuthIdentCertMethod;}
+    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H

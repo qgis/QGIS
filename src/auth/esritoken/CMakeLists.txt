@@ -10,7 +10,6 @@ set(AUTH_ESRITOKEN_UIS_H "")
 
 if (WITH_GUI)
   set(AUTH_ESRITOKEN_SRCS ${AUTH_ESRITOKEN_SRCS}
-    gui/qgsauthesritokenmethodgui.cpp
     gui/qgsauthesritokenedit.cpp
   )
   set(AUTH_ESRITOKEN_HDRS ${AUTH_ESRITOKEN_HDRS}
@@ -20,28 +19,52 @@ if (WITH_GUI)
   QT5_WRAP_UI(AUTH_ESRITOKEN_UIS_H ${AUTH_ESRITOKEN_UIS})
 endif()
 
-add_library(authmethod_esritoken MODULE ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
 
-target_include_directories(authmethod_esritoken PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR}/core
-)
+# static library
+add_library(authmethod_esritoken_a STATIC ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
+
+target_include_directories(authmethod_esritoken_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/esritoken/core)
 
 # require c++17
-target_compile_features(authmethod_esritoken PRIVATE cxx_std_17)
+target_compile_features(authmethod_esritoken_a PRIVATE cxx_std_17)
 
-target_link_libraries(authmethod_esritoken qgis_core)
+target_link_libraries(authmethod_esritoken_a qgis_core)
 
 if (WITH_GUI)
-  target_include_directories(authmethod_esritoken PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui
-    ${CMAKE_CURRENT_BINARY_DIR}
+  target_include_directories(authmethod_esritoken_a PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
+    ${CMAKE_BINARY_DIR}/src/auth/esritoken
   )
-  target_link_libraries(authmethod_esritoken qgis_gui)
+  target_link_libraries (authmethod_esritoken_a qgis_gui)
 endif()
 
-target_compile_definitions(authmethod_esritoken PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(authmethod_esritoken_a PRIVATE "-DQT_NO_FOREACH")
 
-install(TARGETS authmethod_esritoken
-  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
-)
+if (FORCE_STATIC_LIBS)
+  # for (external) mobile apps to be able to pick up provider for linking
+  install (TARGETS authmethod_esritoken_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
+else()
+  # dynamically loaded module
+  add_library(authmethod_esritoken MODULE ${AUTH_ESRITOKEN_SRCS} ${AUTH_ESRITOKEN_HDRS} ${AUTH_ESRITOKEN_UIS_H})
+
+  # require c++17
+  target_compile_features(authmethod_esritoken PRIVATE cxx_std_17)
+
+  target_link_libraries(authmethod_esritoken qgis_core)
+
+  if (WITH_GUI)
+    target_include_directories(authmethod_esritoken PRIVATE
+      ${CMAKE_SOURCE_DIR}/src/auth/esritoken/gui
+      ${CMAKE_BINARY_DIR}/src/auth/esritoken
+    )
+    target_link_libraries (authmethod_esritoken qgis_gui)
+    add_dependencies(authmethod_esritoken ui)
+  endif()
+
+  target_compile_definitions(authmethod_esritoken PRIVATE "-DQT_NO_FOREACH")
+
+  install (TARGETS authmethod_esritoken
+    RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+    LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
+  )
+endif()

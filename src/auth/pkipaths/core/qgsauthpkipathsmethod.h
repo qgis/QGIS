@@ -22,6 +22,7 @@
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsAuthPkiPathsMethod : public QgsAuthMethod
@@ -29,6 +30,11 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+    static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
+
     explicit QgsAuthPkiPathsMethod();
     ~QgsAuthPkiPathsMethod() override;
 
@@ -49,6 +55,10 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   private:
 
     QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
@@ -60,5 +70,17 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
 };
+
+
+class QgsAuthPkiPathsMethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthPkiPathsMethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthPkiPathsMethod::AUTH_METHOD_KEY, QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthPkiPathsMethod *createAuthMethod() const override {return new QgsAuthPkiPathsMethod;}
+    //QStringList supportedDataProviders() const override;
+};
+
 
 #endif // QGSAUTHPKIPATHSMETHOD_H
