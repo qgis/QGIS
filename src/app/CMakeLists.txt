@@ -378,33 +378,13 @@ set(TEST_RCCS ../../tests/testdata/testdata.qrc)
 if (WIN32)
   set (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${TEST_RCCS})
   set (QGIS_APPMAIN_SRCS mainwin.cpp)
-
-  if (MSVC)
-    set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
-  else()
-    # Icon for windows MINGW
-    # Note: can't include .rc directly to source files
-    # as it's ignored when used MinGW
-
-    if (NOT WINDRES)
-      find_program(WINDRES windres)
-      if (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
-        message(FATAL_ERROR "windres not found - aborting")
-      endif()
-    endif()
-
-    if (WINDRES)
-        #############################################################
-        # application icon
-        # resource compilation for MinGW
-        add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-          COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
-          -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-        set(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
-    else()
-        # MXE
-    endif()
+  if (NOT MSVC)
+    enable_language(RC)
+    set(CMAKE_RC_COMPILER_INIT ${CMAKE_GENERATOR_RC})
+    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff -i <SOURCE> -o <OBJECT>")
+    set(QGIS_RC_LIBS -mwindows)
   endif()
+  set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -527,6 +507,7 @@ target_link_libraries(qgis_app
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
+  ${QGIS_RC_LIBS}
   qgis_core
   qgis_gui
   qgis_analysis
