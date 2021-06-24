@@ -32,7 +32,7 @@ class CORE_EXPORT QgsPathResolver
 {
   public:
     //! Initialize path resolver with a base filename. Null filename means no conversion between relative/absolute path
-    explicit QgsPathResolver( const QString &baseFileName = QString() );
+    explicit QgsPathResolver( const QString &baseFileName = QString(), const QString &attachmentDir = QString() );
 
     /**
      * Prepare a filename to save it to the project file.
@@ -284,6 +284,8 @@ class CORE_EXPORT QgsPathResolver
   private:
     //! path to a file that is the base for relative path resolution
     QString mBaseFileName;
+    //! path where attached files are stored
+    QString mAttachmentDir;
 };
 
 #endif // QGSPATHRESOLVER_H

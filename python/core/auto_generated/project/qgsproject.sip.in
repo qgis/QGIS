@@ -1246,7 +1246,38 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+    QString createAttachedFile( const QString &nameTemplate );
+%Docstring
+Attaches a file to the project
 
+:param nameTemplate: Any filename template, used as a basename for attachment file, i.e. "myfile.ext"
+
+:return: The path to the file where the contents can be written to.
+
+.. versionadded:: 3.22
+%End
+
+    QStringList attachedFiles() const;
+%Docstring
+Returns a map of all attached files with identifier and real paths.
+
+.. seealso:: :py:func:`createAttachedFile`
+
+.. versionadded:: 3.22
+%End
+
+    bool removeAttachedFile( const QString &path );
+%Docstring
+Removes the attached file
+
+:param path: Path to the attached file
+
+:return: Whether removal succeeded.
+
+.. seealso:: :py:func:`createAttachedFile`
+
+.. versionadded:: 3.22
+%End
 
     const QgsProjectMetadata &metadata() const;
 %Docstring
@@ -1810,7 +1841,6 @@ Emitted when setDirty(true) is called.
 
 .. versionadded:: 3.20
 %End
-
 
  void mapScalesChanged() /Deprecated/;
 %Docstring

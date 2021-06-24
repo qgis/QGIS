@@ -1056,7 +1056,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, mSnappingUtils, &QgsSnappingUtils::setConfig );
-  connect( QgsProject::instance(), &QgsProject::collectAttachedFiles, this, &QgisApp::generateProjectAttachedFiles );
 
   endProfile();
 
@@ -16010,16 +16009,6 @@ void QgisApp::onTransactionGroupsChanged()
 void QgisApp::onSnappingConfigChanged()
 {
   mSnappingUtils->setConfig( QgsProject::instance()->snappingConfig() );
-}
-
-void QgisApp::generateProjectAttachedFiles( QgsStringMap &files )
-{
-  QTemporaryFile *previewImage = new QTemporaryFile( QStringLiteral( "preview-XXXXXXXXXXX.png" ) );
-  previewImage->open();
-  previewImage->close();
-  createPreviewImage( previewImage->fileName() );
-  files.insert( QStringLiteral( "preview.png" ), previewImage->fileName() );
-  previewImage->deleteLater();
 }
 
 void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )

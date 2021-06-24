@@ -375,7 +375,7 @@ QgsProject::QgsProject( QObject *parent )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
-  , mArchive( new QgsProjectArchive() )
+  , mArchive( new QgsArchive() )
   , mAuxiliaryStorage( new QgsAuxiliaryStorage() )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
@@ -829,7 +829,7 @@ void QgsProject::clear()
   mLabelingEngineSettings->clear();
 
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
-  mArchive->clear();
+  mArchive.reset( new QgsArchive() );
 
   emit labelingEngineSettingsChanged();
 
@@ -1294,6 +1294,16 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
     else
     {
       mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+      QFileInfo finfo( mFile.fileName() );
+      QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+      if ( QFile( attachmentsZip ).exists() )
+      {
+        std::unique_ptr<QgsArchive> archive( new QgsArchive() );
+        if ( archive->unzip( attachmentsZip ) )
+        {
+          mArchive = std::move( archive );
+        }
+      }
       returnValue = readProjectFile( mFile.fileName(), flags );
     }
 
@@ -1391,8 +1401,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   profile.switchTask( tr( "Creating auxiliary storage" ) );
   QString fileName = mFile.fileName();
   std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
+  std::unique_ptr<QgsArchive> archive = std::move( mArchive );
   clear();
   mAuxiliaryStorage = std::move( aStorage );
+  mArchive = std::move( archive );
   mFile.setFileName( fileName );
   mCachedHomePath.clear();
   mProjectScope.reset();
@@ -2160,15 +2172,31 @@ bool QgsProject::write()
     // saved
     const bool asOk = saveAuxiliaryStorage();
     const bool writeOk = writeProjectFile( mFile.fileName() );
-
-    // errors raised during writing project file are more important
-    if ( !asOk && writeOk )
+    bool attachmentsOk = true;
+    if ( !mArchive->files().isEmpty() )
     {
-      const QString err = mAuxiliaryStorage->errorString();
-      setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
+      QFileInfo finfo( mFile.fileName() );
+      QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+      attachmentsOk = mArchive->zip( attachmentsZip );
     }
 
-    return asOk && writeOk;
+    // errors raised during writing project file are more important
+    if ( ( !asOk || !attachmentsOk ) && writeOk )
+    {
+      QStringList errorMessage;
+      if ( !asOk )
+      {
+        const QString err = mAuxiliaryStorage->errorString();
+        errorMessage.append( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
+      }
+      if ( !attachmentsOk )
+      {
+        errorMessage.append( tr( "Unable to save attachments archive" ) );
+      }
+      setError( errorMessage.join( "\n" ) );
+    }
+
+    return asOk && writeOk && attachmentsOk;
   }
 }
 
@@ -2727,7 +2755,7 @@ QgsPathResolver QgsProject::pathResolver() const
       filePath = fileName();
     }
   }
-  return QgsPathResolver( filePath );
+  return QgsPathResolver( filePath, mArchive->dir() );
 }
 
 QString QgsProject::readPath( const QString &src ) const
@@ -3289,12 +3317,15 @@ bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
     return false;
   }
 
+  // Keep the archive
+  mArchive = std::move( archive );
+
   // load auxiliary storage
-  if ( !archive->auxiliaryStorageFile().isEmpty() )
+  if ( !static_cast<QgsProjectArchive *>( mArchive.get() )->auxiliaryStorageFile().isEmpty() )
   {
     // database file is already a copy as it's been unzipped. So we don't open
     // auxiliary storage in copy mode in this case
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( archive->auxiliaryStorageFile(), false ) );
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( static_cast<QgsProjectArchive *>( mArchive.get() )->auxiliaryStorageFile(), false ) );
   }
   else
   {
@@ -3302,15 +3333,14 @@ bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
   }
 
   // read the project file
-  if ( ! readProjectFile( archive->projectFile(), flags ) )
+  if ( ! readProjectFile( static_cast<QgsProjectArchive *>( mArchive.get() )->projectFile(), flags ) )
   {
     setError( tr( "Cannot read unzipped qgs project file" ) );
     return false;
   }
 
-  // keep the archive and remove the temporary .qgs file
-  mArchive = std::move( archive );
-  mArchive->clearProjectFile();
+  // Remove the temporary .qgs file
+  static_cast<QgsProjectArchive *>( mArchive.get() )->clearProjectFile();
 
   return true;
 }
@@ -3341,7 +3371,8 @@ bool QgsProject::zip( const QString &filename )
 
   // save auxiliary storage
   const QFileInfo info( qgsFile );
-  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
+  QString asExt = QStringLiteral( ".%1" ).arg( QgsAuxiliaryStorage::extension() );
+  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + asExt;
 
   bool auxiliaryStorageSavedOk = true;
   if ( ! saveAuxiliaryStorage( asFileName ) )
@@ -3355,9 +3386,9 @@ bool QgsProject::zip( const QString &filename )
     {
       mArchive.reset( new QgsProjectArchive() );
       mArchive->unzip( mFile.fileName() );
-      mArchive->clearProjectFile();
+      static_cast<QgsProjectArchive *>( mArchive.get() )->clearProjectFile();
 
-      const QString auxiliaryStorageFile = mArchive->auxiliaryStorageFile();
+      const QString auxiliaryStorageFile = static_cast<QgsProjectArchive *>( mArchive.get() )->auxiliaryStorageFile();
       if ( ! auxiliaryStorageFile.isEmpty() )
       {
         archive->addFile( auxiliaryStorageFile );
@@ -3377,6 +3408,16 @@ bool QgsProject::zip( const QString &filename )
 
   // create the archive
   archive->addFile( qgsFile.fileName() );
+
+  // Add all other files
+  const QStringList &files = mArchive->files();
+  for ( const QString &file : files )
+  {
+    if ( !file.endsWith( ".qgs", Qt::CaseInsensitive ) && !file.endsWith( asExt, Qt::CaseInsensitive ) )
+    {
+      archive->addFile( file );
+    }
+  }
 
   // zip
   bool zipOk = true;
@@ -3601,6 +3642,36 @@ const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
 QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
 {
   return mAuxiliaryStorage.get();
+}
+
+QString QgsProject::createAttachedFile( const QString &nameTemplate )
+{
+  QString fileName = nameTemplate;
+  QDir archiveDir( mArchive->dir() );
+  QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
+  tmpFile.setAutoRemove( false );
+  tmpFile.open();
+  mArchive->addFile( tmpFile.fileName() );
+  return tmpFile.fileName();
+}
+
+QStringList QgsProject::attachedFiles() const
+{
+  QStringList attachments;
+  QString baseName = QFileInfo( fileName() ).baseName();
+  for ( const QString &file : mArchive->files() )
+  {
+    if ( QFileInfo( file ).baseName() != baseName )
+    {
+      attachments.append( file );
+    }
+  }
+  return attachments;
+}
+
+bool QgsProject::removeAttachedFile( const QString &path )
+{
+  return mArchive->removeFile( path );
 }
 
 const QgsProjectMetadata &QgsProject::metadata() const

@@ -21,7 +21,7 @@ Resolves relative paths into absolute paths and vice versa. Used for writing
 #include "qgspathresolver.h"
 %End
   public:
-    explicit QgsPathResolver( const QString &baseFileName = QString() );
+    explicit QgsPathResolver( const QString &baseFileName = QString(), const QString &attachmentDir = QString() );
 %Docstring
 Initialize path resolver with a base filename. Null filename means no conversion between relative/absolute path
 %End
