@@ -566,6 +566,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             QgsRasterTransparencyWidget *transwidget = new QgsRasterTransparencyWidget( rlayer, mMapCanvas, mWidgetStack );
             transwidget->setDockMode( true );
+
+            QgsSymbolWidgetContext context;
+            context.setMapCanvas( mMapCanvas );
+            context.setMessageBar( mMessageBar );
+            transwidget->setContext( context );
+
             connect( transwidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( transwidget );
             break;
