@@ -122,6 +122,9 @@ else()
   add_library(provider_postgres MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(provider_postgresraster MODULE ${PGRASTER_SRCS} ${PG_HDRS})
 
+  target_include_directories(provider_postgres SYSTEM PRIVATE
+    ${POSTGRES_INCLUDE_DIR}
+  )
   target_include_directories(provider_postgresraster SYSTEM PRIVATE
     ${POSTGRES_INCLUDE_DIR}
   )
