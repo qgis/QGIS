@@ -190,7 +190,7 @@ QModelIndex QgsNetworkLogger::indexOfParentLayerTreeNode( QgsNetworkLoggerNode *
   return createIndex( row, 0, parentNode );
 }
 
-void QgsNetworkLogger::removeRows( const QList<int> &rows )
+void QgsNetworkLogger::removeRequestRows( const QList<int> &rows )
 {
   QList< int > res = rows;
   std::sort( res.begin(), res.end(), std::greater< int >() );
