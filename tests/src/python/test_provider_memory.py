@@ -238,7 +238,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
             assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
 
-    def testClone(self):
+    def testCloneFeatures(self):
         """
         Test that cloning a memory layer also clones features
         """
@@ -262,6 +262,25 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue([f for f in features if f['f1'] == 5])
         self.assertTrue([f for f in features if f['f1'] == 3])
         self.assertTrue([f for f in features if f['f1'] == 1])
+
+    def testCloneId(self):
+        """Test that a cloned layer has a single new id and
+        the same fields as the source layer"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326',
+            'test', 'memory')
+        self.assertTrue(vl.isValid)
+        dp = vl.dataProvider()
+        self.assertTrue(dp.addAttributes([QgsField("name", QVariant.String),
+                                          QgsField("age", QVariant.Int),
+                                          QgsField("size", QVariant.Double)]))
+        vl2 = vl.clone()
+        self.assertTrue(
+            'memory?geometry=Point&crs=EPSG:4326&field=name:string(0,0)&field=age:integer(0,0)&field=size:double(0,0)' in vl2.publicSource())
+        self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
+        self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
+        self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
 
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")
@@ -784,25 +803,6 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
-    def testClone(self):
-        """Test that a cloned layer has a single new id and
-        the same fields as the source layer"""
-
-        vl = QgsVectorLayer(
-            'Point?crs=epsg:4326',
-            'test', 'memory')
-        self.assertTrue(vl.isValid)
-        dp = vl.dataProvider()
-        self.assertTrue(dp.addAttributes([QgsField("name", QVariant.String),
-                                          QgsField("age", QVariant.Int),
-                                          QgsField("size", QVariant.Double)]))
-        vl2 = vl.clone()
-        self.assertTrue(
-            'memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
-        self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
-        self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
-        self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
-
     def testTypeValidation(self):
         """Test that incompatible types in attributes raise errors"""
 
@@ -914,6 +914,21 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(dp.changeAttributeValues({1: {0: 'A string'}}))
         f = vl.getFeature(1)
         self.assertEqual(f.attribute('int'), 123)
+
+    def testAddAttributes(self):
+        """Test that fields with empty/invalid typenames are updated to native type names"""
+
+        vl = QgsVectorLayer("Point", "temporary_points", "memory")
+        pr = vl.dataProvider()
+
+        # add fields
+        pr.addAttributes([QgsField("name", QVariant.String),
+                          QgsField("age", QVariant.Int, "invalidInteger"),
+                          QgsField("size", QVariant.Double)])
+
+        self.assertEqual(pr.fields()[0].typeName(), "string")
+        self.assertEqual(pr.fields()[1].typeName(), "integer")
+        self.assertEqual(pr.fields()[2].typeName(), "double")
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
