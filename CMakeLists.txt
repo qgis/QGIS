@@ -311,25 +311,8 @@ if(WITH_CORE)
     set (USING_NINJA TRUE)
   endif()
 
-  #############################################################
-  # check if lexer and parser are not missing
-  # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
-
-  include(Flex)
-
-  FIND_FLEX()
-
-  if (NOT FLEX_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Flex")
-  endif()
-
-  include(Bison)
-
-  FIND_BISON()
-
-  if (NOT BISON_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Bison")
-  endif()
+  find_package(FLEX 2.6 REQUIRED)
+  find_package(BISON REQUIRED)
 
   #############################################################
   # search for dependencies
