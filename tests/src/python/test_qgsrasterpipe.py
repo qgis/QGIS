@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 
-From build dir, run: ctest -R PyQgsRasterPipe\$ -V
+From build dir, run: ctest -R PyQgsRasterPipe -V
 
 """
 

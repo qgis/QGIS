@@ -215,7 +215,7 @@ Any existing properties will be discarded.
 
     void evaluateDataDefinedProperties( QgsExpressionContext &context );
 %Docstring
-Evalutes any data defined properties set on the pipe, applying their results
+Evaluates any data defined properties set on the pipe, applying their results
 to the corresponding interfaces in place.
 
 .. versionadded:: 3.22
