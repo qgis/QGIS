@@ -984,6 +984,8 @@ public slots:
 
   void removePointClouddLayer(QgsPointCloudLayer*  layer);
 
+  void ZoomPointCloudLayerIn3D();
+
   //! starts/stops editing mode of the current layer
   void toggleEditing();
 
@@ -2454,7 +2456,7 @@ public:
   /// socket previously in use is deleted.
   void startIpcServer(const QString &socketName);
   void addPointCloudFile(const QString &DataSource);
-  QgsPointCloudLayer*  addPointCloudFromVectorArray(std::vector<std::array<float, 3>> pointcloud, std::array<float, 3> offset);
+  QgsPointCloudLayer*  addPointCloudFromVectorArray(std::vector<std::array<double, 3>> pointcloud, std::array<double, 3> offset);
 
 public slots:
   void handleMessage(QByteArray message);

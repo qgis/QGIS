@@ -17,46 +17,46 @@
 class CurveFitter_EXPORT polynomial3CurveFitter3
 {
 public:
-    polynomial3CurveFitter3(int sanweijie,int erweijie, bool usespecial = false, float coff_error = 0.85);
+    polynomial3CurveFitter3(int sanweijie,int erweijie, bool usespecial = false, double coff_error = 0.85);
     ~polynomial3CurveFitter3();
     bool CreateXYPolyline();
-    void ReceivePointDataXYZ(std::array<float, 3>& point);
+    void ReceivePointDataXYZ(std::array<double, 3>& point);
 
 private:
 
     void LoadDataTest();
     bool CreateXYZPolyline();
-    std::vector<std::array<float, 3>> mSamplesXYZ;
-    std::vector<std::array<float, 3>> mSamplesXYError;
-    std::vector<std::array<float, 2>> mSamplesXY;
+    std::vector<std::array<double, 3>> mSamplesXYZ;
+    std::vector<std::array<double, 3>> mSamplesXYError;
+    std::vector<std::array<double, 2>> mSamplesXY;
 
-    std::vector<std::array<float, 3>> mInterprateXYZ; // 内插结果
+    std::vector<std::array<double, 3>> mInterprateXYZ; // 内插结果
 
     int mDegree, mNumControls; 
-    std::shared_ptr<gte::ApprQuery<float, std::array<float, 3>>> mPolynomialsXYZ;
-    std::shared_ptr<gte::ApprPolynomial2<float>> mPolynomialsXY;
+    std::shared_ptr<gte::ApprQuery<double, std::array<double, 3>>> mPolynomialsXYZ;
+    std::shared_ptr<gte::ApprPolynomial2<double>> mPolynomialsXY;
 
-    std::shared_ptr<gte::ApprPolynomial3<float>> mPolynomialsXYError;
+    std::shared_ptr<gte::ApprPolynomial3<double>> mPolynomialsXYError;
 
 
-    float mAvrError, mRmsError, minterval;
+    double mAvrError, mRmsError, minterval;
     int mTargetPts;
     std::string mMessage;
-    std::array <float,3> Center;
-    std::array<float, 2> mXDomain, mYDomain, mZDomain;
-    float min_z;
+    std::array <double,3> Center;
+    std::array<double, 2> mXDomain, mYDomain, mZDomain;
+    double min_z;
     bool mUseSpecial;
     bool EveluateErrorFromXY();
 
 public:
   bool BeginReceiveData();
   bool EndReceiveData();
-  std::array<float, 3> EveluateFromX2YZ(float X);
-  std::array<float, 3> GetOffset();
-  float EveluateFromX2Y( float X);
+  std::array<double, 3> EveluateFromX2YZ(double X);
+  std::array<double, 3> GetOffset();
+  double EveluateFromX2Y(double X);
   bool TransformSamples2Center();
   int GenerateXYZSeries();
-  int SetInterVal(float interval);
-  std::vector<std::array<float, 3>>&  GetGeneratedPoints();
-  float m_coff_error ;
+  int SetInterVal(double interval);
+  std::vector<std::array<double, 3>>&  GetGeneratedPoints();
+  double m_coff_error ;
 };

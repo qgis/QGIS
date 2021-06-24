@@ -105,6 +105,9 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void zoomToSelection( QgsMapCanvas *canvas );
     void zoomToGroup( QgsMapCanvas *canvas );
 
+Q_SIGNALS:
+  void ZoomToLayerHappend();
+
   public slots:
     void showInOverview();
     void addGroup();

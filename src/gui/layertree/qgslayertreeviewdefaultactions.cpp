@@ -94,6 +94,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
+
   return a;
 }
 
@@ -290,6 +291,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   QList<QgsMapLayer *> layers;
   layers << layer;
   zoomToLayers( canvas, layers );
+  emit ZoomToLayerHappend();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )

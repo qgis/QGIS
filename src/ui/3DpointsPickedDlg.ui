@@ -46,46 +46,10 @@
        <string>多项式参数</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="5" column="1">
-        <widget class="QSpinBox" name="spinBox">
-         <property name="minimumSize">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-         <property name="value">
-          <number>2</number>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="7">
-        <widget class="QSpinBox" name="spinBox_2">
-         <property name="value">
-          <number>2</number>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="4">
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="2" colspan="2">
-        <widget class="QDoubleSpinBox" name="gaizhengshu">
-         <property name="singleStep">
-          <double>0.010000000000000</double>
-         </property>
-         <property name="value">
-          <double>1.000000000000000</double>
+       <item row="2" column="7">
+        <widget class="QPushButton" name="pushButton_queren">
+         <property name="text">
+          <string>接受</string>
          </property>
         </widget>
        </item>
@@ -96,8 +60,8 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <spacer name="horizontalSpacer_4">
+       <item row="3" column="9">
+        <spacer name="horizontalSpacer_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -109,30 +73,37 @@
          </property>
         </spacer>
        </item>
-       <item row="5" column="8">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+       <item row="3" column="1" colspan="5">
+        <widget class="QLineEdit" name="cunchulujing"/>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>改正系数</string>
+       <item row="5" column="6" colspan="2">
+        <widget class="QSpinBox" name="spinBox_2">
+         <property name="value">
+          <number>2</number>
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
-        <widget class="QCheckBox" name="checkBox_MapToOne">
+       <item row="5" column="5">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>归一化</string>
+          <string>二维阶次</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>保存路径</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" colspan="2">
+        <widget class="QDoubleSpinBox" name="gaizhengshu">
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -149,25 +120,15 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
+       <item row="5" column="2">
+        <widget class="QCheckBox" name="checkBox_MapToOne">
          <property name="text">
-          <string>保存路径</string>
+          <string>归一化</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="5">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>二维阶次</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="5">
-        <widget class="QLineEdit" name="cunchulujing"/>
-       </item>
-       <item row="3" column="8">
-        <spacer name="horizontalSpacer_6">
+       <item row="5" column="9">
+        <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -179,71 +140,120 @@
          </property>
         </spacer>
        </item>
+       <item row="3" column="7">
+        <widget class="QPushButton" name="pushButton_clear_saved">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;清理已确认的点所占的内存，下次保存将不包含这些点。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>清除已接受</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="QToolButton" name="niheToolButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>拟合</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QSpinBox" name="spinBox">
+         <property name="minimumSize">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+         <property name="value">
+          <number>2</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>改正系数</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="6">
+        <widget class="QPushButton" name="pushButton_save">
+         <property name="text">
+          <string>保存已接受</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="6">
+        <widget class="QPushButton" name="pushButton_Generate">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>生成点</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="8">
+        <widget class="QPushButton" name="pushButtonbujieshou">
+         <property name="text">
+          <string>不接受</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="8">
+        <widget class="QToolButton" name="resetToolButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>重置表</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QToolButton" name="niheToolButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>拟合</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="resetToolButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>重置</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_Generate">
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>生成点</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_queren">
-        <property name="text">
-         <string>接受</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonbujieshou">
-        <property name="text">
-         <string>不接受</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_save">
-        <property name="text">
-         <string>保存已确认</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">

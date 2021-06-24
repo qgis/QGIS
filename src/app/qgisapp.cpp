@@ -4874,6 +4874,9 @@ void QgisApp::initLayerTreeView()
   actionAddGroup->setToolTip(tr("Add Group"));
   connect(actionAddGroup, &QAction::triggered, mLayerTreeView->defaultActions(), &QgsLayerTreeViewDefaultActions::addGroup);
 
+  // 在三维窗口缩放到点云 
+  connect(mLayerTreeView->defaultActions(), &QgsLayerTreeViewDefaultActions::ZoomToLayerHappend, this, &QgisApp::ZoomPointCloudLayerIn3D);
+
   // visibility groups tool button
   QToolButton *btnVisibilityPresets = new QToolButton;
   btnVisibilityPresets->setAutoRaise(true);
@@ -11755,6 +11758,30 @@ void QgisApp::removePointClouddLayer( QgsPointCloudLayer*  layer)
 
 }
 
+void QgisApp:: ZoomPointCloudLayerIn3D()
+{
+  // look for layers recursively so we catch also those that are within selected groups
+  QgsMapLayer * layer =mLayerTreeView->currentLayer();
+  if (layer->type() == QgsMapLayerType::PointCloudLayer)
+  {
+    QString layername = layer->name();
+    QString layerdatasource = layer->source();
+    if (layerdatasource.isEmpty())
+    {
+      // centerOnGeometry();
+      int row = m_geometries->findMatchingRow(layername);
+      m_pointView->centerOnGeometry(m_geometries->get()[row]);
+    }
+    else
+    {
+      // centerOnGeometry();
+      int row = m_geometries->findMatchingRow(layerdatasource);
+      m_pointView->centerOnGeometry(m_geometries->get()[row]);
+    }
+  }
+
+}
+
 void QgisApp::removeLayer()
 {
   if (!mLayerTreeView)
@@ -18418,7 +18445,7 @@ void QgisApp::addPointCloudFiles()
   m_currPointCloudFileDir = QFileInfo(files[0]).dir();
   m_currPointCloudFileDir.makeAbsolute();
 }
-QgsPointCloudLayer* QgisApp::addPointCloudFromVectorArray(std::vector<std::array<float, 3>> pointcloud,  std::array<float, 3> offset)
+QgsPointCloudLayer* QgisApp::addPointCloudFromVectorArray(std::vector<std::array<double, 3>> pointcloud,  std::array<double, 3> offset)
 {
   bool isloaded = false;
 

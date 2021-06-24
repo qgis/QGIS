@@ -214,6 +214,8 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
         return;
       } 
 			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();+
+
+
 			 red = color[(*it) * 3] / 100;
 			 green = color[(*it) * 3 + 1] / 100;
 			blue = color[(*it) * 3 + 2] / 100;

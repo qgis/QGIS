@@ -119,8 +119,8 @@ private:
   bool _CheckBox_MapToOne = false;
 
   std::vector<std::array<double, 3>> global_jiamidian;
-  std::vector<std::array<float, 3>> temp_jiamidian;
-  std::array<float, 3> offset;
+  std::vector<std::array<double, 3>> temp_jiamidian;
+  std::array<double, 3> offset;
   QgsPointCloudLayer* current_layer =nullptr;
 
 public slots:
@@ -133,6 +133,7 @@ public slots:
   void onGenerateData();
 
   void OnAcceptTemp_jiamidian();
+  void OnClearGlobal_jiamidian();
 
   void OnpushButtonbujieshou();
 

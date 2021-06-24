@@ -9,12 +9,12 @@
 #include <Graphics/VertexColorEffect.h>
 #include <random>
 using namespace gte;
-void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float, 3>> &cloud)
+void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<double, 3>> &cloud)
 {
     std::ifstream file(file_path.c_str()); //c_str()：生成一个const char*指针，指向以空字符终止的数组。
     std::string line;
 
-    float nx, ny, nz;
+    double nx, ny, nz;
     while (getline(file, line))
     {
         std::stringstream ss(line);
@@ -24,13 +24,13 @@ void CreateXYZFromTxt(const std::string &file_path, std::vector<std::array<float
         nx -= 272.845;
         ny -= 498.125;
         nz -= 24.815;
-        std::array<float, 3> point = {nx, ny, nz};
+        std::array<double, 3> point = {nx, ny, nz};
         cloud.push_back(point);
     }
     file.close();
 }
 
-polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , bool usespecial, float coff_error)
+polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , bool usespecial, double coff_error)
     : mDegree(2),
     mPolynomialsXYZ(nullptr),
     mPolynomialsXY(nullptr),
@@ -47,23 +47,23 @@ polynomial3CurveFitter3::polynomial3CurveFitter3(int sanweijie, int erweijie , b
 
     if (usespecial)
     {
-      mPolynomialsXYZ = (std::make_shared<ApprPolynomialSpecial3<float>>(degrees, degrees));
+      mPolynomialsXYZ = (std::make_shared<ApprPolynomialSpecial3<double>>(degrees, degrees));
     }
     else
     {
-     mPolynomialsXYZ =  std::make_shared<ApprPolynomial3<float>>(sanweijie, sanweijie);
+     mPolynomialsXYZ =  std::make_shared<ApprPolynomial3<double>>(sanweijie, sanweijie);
     }
 
-    mPolynomialsXY = std::make_unique<ApprPolynomial2<float>>(erweijie);
+    mPolynomialsXY = std::make_unique<ApprPolynomial2<double>>(erweijie);
 
-    mPolynomialsXYError = std::make_unique<ApprPolynomial3<float>>(2,2);
+    mPolynomialsXYError = std::make_unique<ApprPolynomial3<double>>(2,2);
 
 
-    mXDomain[0] = std::numeric_limits<float>::max();
+    mXDomain[0] = std::numeric_limits<double>::max();
     mXDomain[1] = -mXDomain[0];
-    mYDomain[0] = std::numeric_limits<float>::max();
+    mYDomain[0] = std::numeric_limits<double>::max();
     mYDomain[1] = -mYDomain[0];
-    mZDomain[0] = std::numeric_limits<float>::max();
+    mZDomain[0] = std::numeric_limits<double>::max();
     mZDomain[1] = -mZDomain[0];
     //LoadDataTest();
 }
@@ -87,7 +87,7 @@ bool polynomial3CurveFitter3::CreateXYZPolyline()
     if (isfit)
     {
     #ifdef DEBUG
-      //  std::vector<float> parameters = mPolynomialsXYZ->GetParameters();
+      //  std::vector<double> parameters = mPolynomialsXYZ->GetParameters();
           for (size_t i = 0; i < parameters.size(); i++)
           {
             std::cout << parameters.at(i) << std::endl;
@@ -107,7 +107,7 @@ bool polynomial3CurveFitter3::CreateXYPolyline()
   bool isfit = mPolynomialsXY->Fit(mSamplesXY);
   if (isfit)
   {
-    std::vector<float> parameters = mPolynomialsXY->GetParameters();
+    std::vector<double> parameters = mPolynomialsXY->GetParameters();
 #ifdef DEBUG
     for (size_t i = 0; i < parameters.size(); i++)
     {
@@ -123,12 +123,12 @@ bool polynomial3CurveFitter3::CreateXYPolyline()
 }
 
 
-void polynomial3CurveFitter3::ReceivePointDataXYZ(std::array<float, 3> &point )
+void polynomial3CurveFitter3::ReceivePointDataXYZ(std::array<double, 3> &point )
 {
   mSamplesXYZ.push_back(point);
-  float x = point[0];
-  float y = point[1];
-  float z = point[2];
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
   if (z<min_z)
   {
     min_z = z;
@@ -152,11 +152,11 @@ bool polynomial3CurveFitter3::BeginReceiveData()
   Center = { FLT_MAX ,FLT_MAX ,FLT_MAX };
   if (mNumControls == 0)
   {
-    mXDomain[0] = std::numeric_limits<float>::max();
+    mXDomain[0] = std::numeric_limits<double>::max();
     mXDomain[1] = -mXDomain[0];
-    mYDomain[0] = std::numeric_limits<float>::max();
+    mYDomain[0] = std::numeric_limits<double>::max();
     mYDomain[1] = -mYDomain[0];
-    mZDomain[0] = std::numeric_limits<float>::max();
+    mZDomain[0] = std::numeric_limits<double>::max();
     mZDomain[1] = -mZDomain[0];
     return true;
   }
@@ -190,17 +190,17 @@ bool polynomial3CurveFitter3::EndReceiveData()
 }
 
 // 调用之前应该  确保已经对X进行去中心处理 
-std::array<float, 3> polynomial3CurveFitter3::EveluateFromX2YZ(float X)
+std::array<double, 3> polynomial3CurveFitter3::EveluateFromX2YZ(double X)
 {
-  float Y = EveluateFromX2Y(X);  // Y 也是去中心的
-  float Z = -999;
+  double Y = EveluateFromX2Y(X);  // Y 也是去中心的
+  double Z = -999;
   Z =mPolynomialsXYZ->Evaluate(X, Y);
-  float z_error = mPolynomialsXYError->Evaluate(X, Y);
-  std::array<float, 3> point = { X, Y, Z- z_error* m_coff_error };
+  double z_error = mPolynomialsXYError->Evaluate(X, Y);
+  std::array<double, 3> point = { X, Y, Z- z_error* m_coff_error };
   return point;
 }
 
-std::array<float, 3> polynomial3CurveFitter3::GetOffset()
+std::array<double, 3> polynomial3CurveFitter3::GetOffset()
 {
   return  Center;
 }
@@ -208,12 +208,11 @@ std::array<float, 3> polynomial3CurveFitter3::GetOffset()
 bool polynomial3CurveFitter3::EveluateErrorFromXY()
 {
   mSamplesXYError.clear();
-  for (std::array<float, 3> point :   mSamplesXYZ)
+  for (std::array<double, 3> point :   mSamplesXYZ)
   {
-   // todo::  误差拟合
-   float errorZ = mPolynomialsXYZ->Error(point);
+   double errorZ = mPolynomialsXYZ->Error(point);
 
-   std::array<float, 3> pointError = { point[0],point[1],errorZ };
+   std::array<double, 3> pointError = { point[0],point[1],errorZ };
 
    mSamplesXYError.push_back(pointError);
   }
@@ -230,21 +229,21 @@ bool polynomial3CurveFitter3::EveluateErrorFromXY()
 }
 
 
-float polynomial3CurveFitter3::EveluateFromX2Y(float X)
+double polynomial3CurveFitter3::EveluateFromX2Y(double X)
 {
-  float Y = mPolynomialsXY->Evaluate(X);
+  double Y = mPolynomialsXY->Evaluate(X);
   return Y;
 }
 
 // 同时生成了2d：mSamplesXY
 bool polynomial3CurveFitter3::TransformSamples2Center()
 {
-  for (std::array<float, 3>& var : mSamplesXYZ)
+  for (std::array<double, 3>& var : mSamplesXYZ)
   {
     var[0] -= Center[0];
     var[1] -= Center[1];
     var[2] -= Center[2];
-    std::array<float, 2> xy = { var[0], var[1] };
+    std::array<double, 2> xy = { var[0], var[1] };
     mSamplesXY.push_back(xy);
   }
   if (mSamplesXY.size() == mSamplesXYZ.size())
@@ -266,11 +265,11 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
 
   for (size_t i = 0; i < mTargetPts; i++)
   {
-    float percent = float((i+0.0001) / mTargetPts);
+    double percent = double((i+0.0001) / mTargetPts);
     if (percent >= 0.0001 && percent<=0.99999)
     {
-      float x = mXDomain[0] - Center[0] + minterval * i;
-      std::array<float, 3> pt = EveluateFromX2YZ(x);
+      double x = mXDomain[0] - Center[0] + minterval * i;
+      std::array<double, 3> pt = EveluateFromX2YZ(x);
       mInterprateXYZ.push_back(pt);
     }
   }
@@ -280,17 +279,17 @@ int polynomial3CurveFitter3::GenerateXYZSeries()
 
 //输入： 插值间隔
 //输出： 插值点数
-int polynomial3CurveFitter3::SetInterVal(float interval)
+int polynomial3CurveFitter3::SetInterVal(double interval)
 {
   minterval = interval;
-  float delata = mXDomain[1] - mXDomain[0];
+  double delata = mXDomain[1] - mXDomain[0];
   int numpts =int(delata / minterval);
   mTargetPts = numpts;
   return numpts;
 }
 
 
-std::vector<std::array<float, 3>>&  polynomial3CurveFitter3::GetGeneratedPoints()
+std::vector<std::array<double, 3>>&  polynomial3CurveFitter3::GetGeneratedPoints()
 {
   // TODO: 在此处添加实现代码.
   if (mInterprateXYZ.size()>0)

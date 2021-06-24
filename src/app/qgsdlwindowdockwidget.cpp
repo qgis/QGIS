@@ -390,7 +390,7 @@ void QgsDLWindowDockWidget::OnInterpretPolygonChanged()
 
     std::vector<ModelItem> previus_models =dltable->getModelData();
 
-    std::vector< V3f> points;
+    std::vector< V3d> points;
 
     if (!(dltable == nullptr))
     {
@@ -404,7 +404,7 @@ void QgsDLWindowDockWidget::OnInterpretPolygonChanged()
         }
        // models.insert(models.end(), current_models.begin(), current_models.end());
         //models.push_back(current_models);
-        for (V3f pt : points)
+        for (V3d pt : points)
         {
           ModelItem model;
           model.XYZ = pt;
@@ -417,13 +417,13 @@ void QgsDLWindowDockWidget::OnInterpretPolygonChanged()
   }
   else if (m_rule == QString("polygon"))
   {
-    std::vector< V3f> points;
+    std::vector< V3d> points;
     if (!(dltable == nullptr))
     {
       if (mMapCanvas->GetPointsInPolygon(points));
       {
         std::vector<ModelItem> models;
-        for (V3f pt : points)
+        for (V3d pt : points)
         {
           ModelItem model;
           model.XYZ = pt;
@@ -457,7 +457,7 @@ QgsPcdpickeddlgWindowDockWidget:: QgsPcdpickeddlgWindowDockWidget(const QString 
   connect(pushButton_queren, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnAcceptTemp_jiamidian);
   connect(pushButton_save, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnPushButton_save);
   connect(pushButtonbujieshou, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnpushButtonbujieshou);
-  
+  connect(pushButton_clear_saved, &QToolButton::clicked, this, &QgsPcdpickeddlgWindowDockWidget::OnClearGlobal_jiamidian);
 };
 
 void QgsPcdpickeddlgWindowDockWidget::setModel(QAbstractItemModel *model)
@@ -532,7 +532,7 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
     }
     for (ModelItem var : pointsdata)
     {
-      std::array<float, 3> point = { var.XYZ.x,  var.XYZ.y , var.XYZ.z };
+      std::array<double, 3> point = { var.XYZ.x,  var.XYZ.y , var.XYZ.z };
       Fiter_Ptr->ReceivePointDataXYZ(point);
     }
     bool endok = Fiter_Ptr->EndReceiveData();
@@ -542,7 +542,7 @@ void QgsPcdpickeddlgWindowDockWidget::OnNiheButtonClicked()
       return;
     }
 
-    int numpts = Fiter_Ptr->SetInterVal(0.05);
+    int numpts = Fiter_Ptr->SetInterVal(0.02);
     if (numpts)
     {
       this->pushButton_Generate->setEnabled(true);
@@ -602,7 +602,7 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
   {
     offset = Fiter_Ptr->GetOffset();
     std::array<double, 3> pt_d;
-    for (std::array<float, 3> pt : temp_jiamidian)
+    for (std::array<double, 3> pt : temp_jiamidian)
     {
       pt_d[0]=  double(pt[0]) + offset[0];
       pt_d[1] = double(pt[1]) + offset[1];
@@ -620,6 +620,16 @@ void QgsPcdpickeddlgWindowDockWidget:: OnAcceptTemp_jiamidian()
 
   QgisApp::instance()->removePointClouddLayer(current_layer);
   current_layer = nullptr;
+}
+
+void QgsPcdpickeddlgWindowDockWidget::OnClearGlobal_jiamidian()
+{
+  if (global_jiamidian.size() > 0)
+  {
+    OnPushButton_save();
+    global_jiamidian.clear();
+  }
+
 }
 
 void QgsPcdpickeddlgWindowDockWidget::OnpushButtonbujieshou()
