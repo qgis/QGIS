@@ -33,7 +33,8 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsdoublevalidator.h"
-
+#include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -69,6 +70,47 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   {
     pbnAddValuesFromDisplay->setEnabled( false );
   }
+
+  initializeDataDefinedButton( mOpacityDDBtn, QgsRasterPipe::RendererOpacity );
+}
+
+void QgsRasterTransparencyWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  mContext = context;
+}
+
+QgsExpressionContext QgsRasterTransparencyWidget::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr );
+
+  if ( QgsMapCanvas *canvas = mContext.mapCanvas() )
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( canvas->mapSettings() )
+               << new QgsExpressionContextScope( canvas->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( canvas->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( mRasterLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
+
+  // additional scopes
+  const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
+  for ( const QgsExpressionContextScope &scope : constAdditionalExpressionContextScopes )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
+  return expContext;
 }
 
 void QgsRasterTransparencyWidget::syncToLayer()
@@ -127,6 +169,9 @@ void QgsRasterTransparencyWidget::syncToLayer()
   {
     leNoDataValue->setText( QString() );
   }
+
+  mPropertyCollection = mRasterLayer->pipe()->dataDefinedProperties();
+  updateDataDefinedButtons();
 
   populateTransparencyTable( mRasterLayer->renderer() );
 }
@@ -462,6 +507,46 @@ void QgsRasterTransparencyWidget::apply()
     //set global transparency
     rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
+
+  mRasterLayer->pipe()->setDataDefinedProperties( mPropertyCollection );
+}
+
+void QgsRasterTransparencyWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
+{
+  button->blockSignals( true );
+  button->init( key, mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterTransparencyWidget::updateProperty );
+  button->registerExpressionContextGenerator( this );
+  button->blockSignals( false );
+}
+
+void QgsRasterTransparencyWidget::updateDataDefinedButtons()
+{
+  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
+  {
+    updateDataDefinedButton( button );
+  }
+}
+
+void QgsRasterTransparencyWidget::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+}
+
+void QgsRasterTransparencyWidget::updateProperty()
+{
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
+  emit widgetChanged();
 }
 
 void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
