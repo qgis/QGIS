@@ -369,6 +369,15 @@ The development version
       Track,
     };
 
+    enum class ContentStatus
+    {
+      NotStarted,
+      OnGoing,
+      Finished,
+      Failed,
+      Canceled,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

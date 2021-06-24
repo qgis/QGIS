@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 #include <QObject>
 #include <QString>
@@ -83,26 +84,16 @@ class CORE_EXPORT QgsExternalStorage
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsExternalStorageOperation : public QObject
+class CORE_EXPORT QgsExternalStorageContent : public QObject
 {
     Q_OBJECT
 
   public:
 
-    //! Status of fetched content
-    enum ContentStatus
-    {
-      NotStarted, //!< Operation has not started yet
-      OnGoing, //!< Operation in progress
-      Finished, //!< Operation is finished and successful
-      Failed, //!< Operation has failed
-      Canceled, //!< Operation has been canceled
-    };
-
     /**
-     * Returns status of operation
+     * Returns content status
      */
-    ContentStatus status() const;
+    Qgis::ContentStatus status() const;
 
     /**
      * Returns error textual description if an error occured and status() returns Failed
@@ -112,7 +103,7 @@ class CORE_EXPORT QgsExternalStorageOperation : public QObject
   public slots:
 
     /**
-     * Cancel the operation
+     * Cancel content fetching/storing
      */
     virtual void cancel() {};
 
@@ -124,13 +115,13 @@ class CORE_EXPORT QgsExternalStorageOperation : public QObject
     void errorOccurred( const QString &errorString );
 
     /**
-     * The signal is emitted whenever the operation estimated progression value \a progress has changed.
+     * The signal is emitted whenever content fetching/storing estimated progression value \a progress has changed.
      * \a progress value is between 0 and 100.
      */
     void progressChanged( double progress );
 
     /**
-     * The signal is emitted when the operation has been canceled
+     * The signal is emitted when content fetching/storing has been canceled
      */
     void canceled();
 
@@ -142,7 +133,7 @@ class CORE_EXPORT QgsExternalStorageOperation : public QObject
      */
     void reportError( const QString &errorMsg );
 
-    ContentStatus mStatus = NotStarted;
+    Qgis::ContentStatus mStatus = Qgis::ContentStatus::NotStarted;
     QString mErrorString;
 };
 
@@ -152,7 +143,7 @@ class CORE_EXPORT QgsExternalStorageOperation : public QObject
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageOperation
+class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageContent
 {
     Q_OBJECT
 
@@ -177,7 +168,7 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageOp
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageOperation
+class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageContent
 {
     Q_OBJECT
 

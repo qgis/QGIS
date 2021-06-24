@@ -62,7 +62,7 @@ It's possible to give ``authcfg`` authentification configuration id in case its 
 %End
 };
 
-class QgsExternalStorageOperation : QObject
+class QgsExternalStorageContent : QObject
 {
 %Docstring(signature="appended")
 Base class for QgsExternalStorage stored and fetched content
@@ -75,30 +75,21 @@ Base class for QgsExternalStorage stored and fetched content
 %End
   public:
 
-    enum ContentStatus
-    {
-      NotStarted,
-      OnGoing,
-      Finished,
-      Failed,
-      Canceled,
-    };
-
-    ContentStatus status() const;
+    Qgis::ContentStatus status() const;
 %Docstring
-Returns status of operation
+Returns content status
 %End
 
     const QString &errorString() const;
 %Docstring
-Returns error textual description if an error occured and :py:func:`~QgsExternalStorageOperation.status` returns Failed
+Returns error textual description if an error occured and :py:func:`~QgsExternalStorageContent.status` returns Failed
 %End
 
   public slots:
 
     virtual void cancel();
 %Docstring
-Cancel the operation
+Cancel content fetching/storing
 %End
   signals:
 
@@ -109,13 +100,13 @@ The signal is emitted when an error occurred. ``errorString`` is a textual descr
 
     void progressChanged( double progress );
 %Docstring
-The signal is emitted whenever the operation estimated progression value ``progress`` has changed.
+The signal is emitted whenever content fetching/storing estimated progression value ``progress`` has changed.
 ``progress`` value is between 0 and 100.
 %End
 
     void canceled();
 %Docstring
-The signal is emitted when the operation has been canceled
+The signal is emitted when content fetching/storing has been canceled
 %End
 
   protected:
@@ -128,7 +119,7 @@ Inherited classes should call this method whenever they meet an error.
 
 };
 
-class QgsExternalStorageFetchedContent : QgsExternalStorageOperation
+class QgsExternalStorageFetchedContent : QgsExternalStorageContent
 {
 %Docstring(signature="appended")
 Class for :py:class:`QgsExternalStorage` fetched content
@@ -154,7 +145,7 @@ The signal is emitted when the resource has successfully been fetched
 %End
 };
 
-class QgsExternalStorageStoredContent : QgsExternalStorageOperation
+class QgsExternalStorageStoredContent : QgsExternalStorageContent
 {
 %Docstring(signature="appended")
 Class for :py:class:`QgsExternalStorage` stored content

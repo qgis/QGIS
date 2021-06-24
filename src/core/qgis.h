@@ -533,6 +533,20 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VertexMarkerType )
 
+    /*
+     * Status for fetched or stored content
+     * \since QGIS 3.22
+     */
+    enum class ContentStatus : int
+    {
+      NotStarted, //!< Content fetching/storing has not started yet
+      OnGoing, //!< Content fetching/storing is in progress
+      Finished, //!< Content fetching/storing is finished and successful
+      Failed, //!< Content fetching/storing has failed
+      Canceled, //!< Content fetching/storing has been canceled
+    };
+    Q_ENUM( ContentStatus )
+
     /**
      * Babel GPS format capabilities.
      *

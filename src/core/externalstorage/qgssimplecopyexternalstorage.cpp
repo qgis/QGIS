@@ -31,7 +31,7 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
   connect( mCopyTask, &QgsTask::taskCompleted, this, [ = ]
   {
     mUrl = mCopyTask->destination();
-    mStatus = Finished;
+    mStatus = Qgis::ContentStatus::Finished;
     emit stored();
   } );
 
@@ -45,7 +45,7 @@ QgsSimpleCopyExternalStorageStoredContent::QgsSimpleCopyExternalStorageStoredCon
     emit progressChanged( progress );
   } );
 
-  mStatus = OnGoing;
+  mStatus = Qgis::ContentStatus::OnGoing;
 }
 
 void QgsSimpleCopyExternalStorageStoredContent::cancel()
@@ -56,7 +56,7 @@ void QgsSimpleCopyExternalStorageStoredContent::cancel()
   disconnect( mCopyTask, &QgsTask::taskTerminated, nullptr, nullptr );
   connect( mCopyTask, &QgsTask::taskTerminated, this, [ = ]
   {
-    mStatus = Canceled;
+    mStatus = Qgis::ContentStatus::Canceled;
     emit canceled();
   } );
 
@@ -77,7 +77,7 @@ QgsSimpleCopyExternalStorageFetchedContent::QgsSimpleCopyExternalStorageFetchedC
   }
   else
   {
-    mStatus = Finished;
+    mStatus = Qgis::ContentStatus::Finished;
     mFilePath = filePath;
   }
 }

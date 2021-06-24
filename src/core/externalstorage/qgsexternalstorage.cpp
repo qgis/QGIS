@@ -15,19 +15,19 @@
 
 #include "qgsexternalstorage.h"
 
-void QgsExternalStorageOperation::reportError( const QString &errorMsg )
+void QgsExternalStorageContent::reportError( const QString &errorMsg )
 {
-  mStatus = Failed;
+  mStatus = Qgis::ContentStatus::Failed;
   mErrorString = errorMsg;
   emit errorOccurred( mErrorString );
 }
 
-QgsExternalStorageOperation::ContentStatus QgsExternalStorageOperation::status() const
+Qgis::ContentStatus QgsExternalStorageContent::status() const
 {
   return mStatus;
 }
 
-const QString &QgsExternalStorageOperation::errorString() const
+const QString &QgsExternalStorageContent::errorString() const
 {
   return mErrorString;
 };
