@@ -25,6 +25,7 @@ email                : sherman at mrcc.com
 
 class QgsOgrLayer;
 class QgsOgrTransaction;
+class QgsProviderSublayerDetails;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -198,7 +199,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
-    QStringList _subLayers( bool withFeatureCount ) const;
+    QList< QgsProviderSublayerDetails > _subLayers( Qgis::SublayerQueryFlags flags ) const;
 
     QgsFields mAttributeFields;
 
@@ -277,7 +278,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     mutable long long mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
 
-    mutable QStringList mSubLayerList;
+    mutable QList<QgsProviderSublayerDetails> mSubLayerList;
 
     //! Converts \a value from json QVariant to QString
     QString jsonStringValue( const QVariant &value ) const;

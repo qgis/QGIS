@@ -34,6 +34,7 @@ email                : sherman at mrcc.com
 #include "qgssymbol.h"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgszipitem.h"
+#include "qgsprovidersublayerdetails.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -575,10 +576,32 @@ uint QgsOgrProvider::subLayerCount() const
   return count;
 }
 
+QStringList subLayerDetailsToStringList( const QList< QgsProviderSublayerDetails > &layers )
+{
+  QStringList res;
+  res.reserve( layers.size() );
+
+  for ( const QgsProviderSublayerDetails &layer : layers )
+  {
+    const OGRwkbGeometryType ogrGeomType = QgsOgrProviderUtils::ogrTypeFromQgisType( layer.wkbType() );
+
+    const QStringList parts { QString::number( layer.layerNumber() ),
+                              layer.name(),
+                              QString::number( layer.featureCount() ),
+                              QgsOgrProviderUtils::ogrWkbGeometryTypeName( ogrGeomType ),
+                              layer.geometryColumnName(),
+                              layer.description() };
+    res << parts.join( QgsDataProvider::sublayerSeparator() );
+  }
+  return res;
+}
+
 QStringList QgsOgrProvider::subLayers() const
 {
   const bool withFeatureCount = ( mReadFlags & QgsDataProvider::SkipFeatureCount ) == 0;
-  return _subLayers( withFeatureCount );
+  return subLayerDetailsToStringList( _subLayers( withFeatureCount
+                                      ? ( Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::ResolveGeometryType )
+                                      : Qgis::SublayerQueryFlag::ResolveGeometryType ) );
 }
 
 QgsLayerMetadata QgsOgrProvider::layerMetadata() const
@@ -588,17 +611,17 @@ QgsLayerMetadata QgsOgrProvider::layerMetadata() const
 
 QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
 {
-  return _subLayers( false );
+  return subLayerDetailsToStringList( _subLayers( Qgis::SublayerQueryFlag::ResolveGeometryType ) );
 }
 
-QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
+QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQueryFlags flags ) const
 {
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
   if ( !mValid )
   {
-    return QStringList();
+    return {};
   }
 
   if ( !mSubLayerList.isEmpty() )
@@ -606,7 +629,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 
   if ( mOgrLayer && ( mIsSubLayer || layerCount() == 1 ) )
   {
-    QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
+    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, mIsSubLayer, dataSourceUri() );
   }
   else
   {
@@ -629,7 +652,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
       if ( !layer )
         continue;
 
-      QgsOgrProviderUtils::querySubLayerList( i, layer.get(), withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
+      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, mIsSubLayer, dataSourceUri() );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );
