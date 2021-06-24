@@ -256,7 +256,7 @@ class CORE_EXPORT QgsOgrProviderUtils
         bool updateMode,
         const QString &dsName );
 
-    static void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList );
+    static void querySubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount, const QString &driverName, bool isSubLayer, QStringList &sublayerList );
 
 };
 
