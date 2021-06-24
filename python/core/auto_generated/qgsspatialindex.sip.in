@@ -199,7 +199,7 @@ Returns the stored geometry for the indexed feature with matching ``id``.
 
 Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
 
-:raises `KeyError` if no geometry with the specified feature id exists in the index.
+:raises KeyError: if no geometry with the specified feature id exists in the index.
 
 .. versionadded:: 3.6
 %End

@@ -577,7 +577,7 @@ In case of error -1 will be returned.
 
 This method requires a QGIS build based on GEOS 3.7 or later.
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.6 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.6 or earlier.
 
 .. seealso:: :py:func:`frechetDistanceDensify`
 
@@ -603,7 +603,7 @@ distance returned approach the true Fréchet distance for the geometries.
 
 This method requires a QGIS build based on GEOS 3.7 or later.
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.6 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.6 or earlier.
 
 .. seealso:: :py:func:`frechetDistance`
 
@@ -1474,7 +1474,7 @@ This method requires QGIS builds based on GEOS 3.9 or later.
 
    the ``tolerance`` value must be a value greater than 0, or the algorithm may never converge on a solution
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.8 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.8 or earlier.
 
 
 .. versionadded:: 3.20
@@ -1491,7 +1491,7 @@ can be moved through, with a single rotation.
 
 This method requires a QGIS build based on GEOS 3.6 or later.
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.5 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
 
 .. versionadded:: 3.20
 %End
@@ -1514,7 +1514,7 @@ If an error occurs while calculating the clearance NaN will be returned.
 
 This method requires a QGIS build based on GEOS 3.6 or later.
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.5 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
 
 .. versionadded:: 3.20
 %End
@@ -1527,7 +1527,7 @@ If the geometry has no minimum clearance, an empty LineString will be returned.
 
 This method requires a QGIS build based on GEOS 3.6 or later.
 
-:raises `QgsNotSupportedException` on QGIS builds based on GEOS 3.5 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
 
 .. versionadded:: 3.20
 %End
@@ -1755,9 +1755,9 @@ is 0, then a completely random sequence of points will be generated.
 
 This method works only with (multi)polygon geometry types.
 
-:raises `TypeError` if the geometry is not a polygon type
+:raises TypeError: if the geometry is not a polygon type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 
 .. versionadded:: 3.10
 %End
@@ -1886,9 +1886,9 @@ Any z or m values present in the geometry will be discarded.
 
 This method works only with single-point geometry types.
 
-:raises `TypeError` if the geometry is not a single-point type
+:raises TypeError: if the geometry is not a single-point type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
@@ -1918,9 +1918,9 @@ Any z or m values present in the geometry will be discarded. If the geometry is 
 
 This method works only with single-line (or single-curve).
 
-:raises `TypeError` if the geometry is not a single-line type
+:raises TypeError: if the geometry is not a single-line type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
@@ -1951,9 +1951,9 @@ Any z or m values present in the geometry will be discarded. If the geometry is 
 
 This method works only with single-polygon (or single-curve polygon) geometry types.
 
-:raises `TypeError` if the geometry is not a single-polygon type
+:raises TypeError: if the geometry is not a single-polygon type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
@@ -1983,9 +1983,9 @@ Any z or m values present in the geometry will be discarded.
 
 This method works only with multi-point geometry types.
 
-:raises `TypeError` if the geometry is not a multi-point type
+:raises TypeError: if the geometry is not a multi-point type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
@@ -2016,9 +2016,9 @@ Any z or m values present in the geometry will be discarded. If the geometry is 
 
 This method works only with multi-linestring (or multi-curve) geometry types.
 
-:raises `TypeError` if the geometry is not a multi-linestring type
+:raises TypeError: if the geometry is not a multi-linestring type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();
@@ -2049,9 +2049,9 @@ Any z or m values present in the geometry will be discarded. If the geometry is 
 
 This method works only with multi-polygon (or multi-curve polygon) geometry types.
 
-:raises `TypeError` if the geometry is not a multi-polygon type
+:raises TypeError: if the geometry is not a multi-polygon type
 
-:raises `ValueError` if the geometry is null
+:raises ValueError: if the geometry is null
 %End
 %MethodCode
     const QgsWkbTypes::Type type = sipCpp->wkbType();

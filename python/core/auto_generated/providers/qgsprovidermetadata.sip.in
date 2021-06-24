@@ -455,7 +455,7 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
          - errorMessage: descriptive string of error if encountered
 
 
-:raises `QgsNotSupportedException` if the provider does not support saving layer metadata for the
+:raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
 
 
@@ -485,7 +485,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
 :param cached: if ``False`` connections will be re-read from the settings
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.10
 %End
@@ -499,7 +499,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
 :param cached: if ``False`` connections will be re-read from the settings
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.10
 %End
@@ -513,7 +513,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 :param name: the connection name
 :param cached: if ``False`` connections will be re-read from the settings
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.10
 %End
@@ -526,7 +526,7 @@ the newly created connection is not automatically stored in the settings, call
 :py:func:`~QgsProviderMetadata.saveConnection` to save it.
 Ownership is transferred to the caller.
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. seealso:: :py:func:`saveConnection`
 
@@ -538,7 +538,7 @@ Ownership is transferred to the caller.
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. seealso:: :py:func:`findConnection`
 %End
@@ -548,7 +548,7 @@ Ownership is transferred to the caller.
 Removes the connection with the given ``name`` from the settings.
 Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.10
 %End
@@ -560,7 +560,7 @@ Stores the connection in the settings
 :param connection: the connection to be stored in the settings
 :param name: the name under which the connection will be stored
 
-:raises `QgsProviderConnectionException` 
+:raises QgsProviderConnectionException: 
 
 .. versionadded:: 3.10
 %End

@@ -387,7 +387,7 @@ sub processDoxygenLine {
         $PREV_INDENT = $INDENT;
         $INDENT = '';
         $COMMENT_LAST_LINE_NOTE_WARNING = 1;
-        return "\n:raises `$1` $2\n";
+        return "\n:raises $1: $2\n";
     }
 
     if ( $line !~ m/^\s*$/ ){
