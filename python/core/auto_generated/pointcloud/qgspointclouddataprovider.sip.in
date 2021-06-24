@@ -178,7 +178,7 @@ This method will not perform any statistical calculations, rather it will return
 statistics which are included in the data source's metadata. Not all data sources include this information
 in the metadata, and even for sources with statistical metadata only some ``statistic`` values may be available.
 
-:raises `ValueError` if no matching precalculated statistic is available for the attribute.
+:raises ValueError: if no matching precalculated statistic is available for the attribute.
 %End
 %MethodCode
     {
@@ -216,7 +216,7 @@ This method will not perform any statistical calculations, rather it will return
 statistics which are included in the data source's metadata. Not all data sources include this information
 in the metadata, and even for sources with statistical metadata only some ``statistic`` values may be available.
 
-:raises `ValueError` if no matching precalculated statistic is available for the attribute.
+:raises ValueError: if no matching precalculated statistic is available for the attribute.
 %End
 %MethodCode
     {

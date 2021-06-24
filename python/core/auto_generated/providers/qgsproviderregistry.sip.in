@@ -245,7 +245,7 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
          - errorMessage: descriptive string of error if encountered
 
 
-:raises `QgsNotSupportedException` if the provider does not support saving layer metadata for the
+:raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
 
 

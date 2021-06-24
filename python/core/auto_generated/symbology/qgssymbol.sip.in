@@ -91,7 +91,7 @@ Returns the list of symbol layers contained in the symbol.
 %Docstring
 Returns the symbol layer at the specified index.
 
-:raises `IndexError` if no layer with the specified index exists.
+:raises IndexError: if no layer with the specified index exists.
 
 .. seealso:: :py:func:`symbolLayers`
 
@@ -147,7 +147,7 @@ Returns the symbol layer at the specified ``index``.
 Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
 corresponds to the last layer in the symbol.
 
-:raises `IndexError` if no layer with the specified ``index`` exists.
+:raises IndexError: if no layer with the specified ``index`` exists.
 
 .. versionadded:: 3.10
 %End
@@ -175,7 +175,7 @@ Deletes the layer at the specified ``index``.
 Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
 corresponds to the last layer in the symbol.
 
-:raises `IndexError` if no layer at the specified ``index`` exists
+:raises IndexError: if no layer at the specified ``index`` exists
 
 .. versionadded:: 3.10
 %End
