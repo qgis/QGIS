@@ -150,6 +150,7 @@ class TestQgsNetworkAccessManager : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testRequestPreprocessor();
     void testProxyExcludeList();
     void fetchEmptyUrl(); //test fetching blank url
     void fetchBadUrl(); //test fetching bad url
@@ -1127,8 +1128,17 @@ void TestQgsNetworkAccessManager::testCookieManagement()
   thread2.start();
   evLoop.exec();
   QVERIFY( thread2.getResult() );
+};
 
-}
+void TestQgsNetworkAccessManager::testRequestPreprocessor()
+{
+  QString processorId = QgsNetworkAccessManager::instance()->setRequestPreprocessor( []( QNetworkRequest * request ) { request->setHeader( QNetworkRequest::UserAgentHeader, QStringLiteral( "QGIS" ) );} );
+  QNetworkRequest request;
+  QgsNetworkAccessManager::instance()->preprocessRequest( &request );
+  QString userAgent = request.header( QNetworkRequest::UserAgentHeader ).toString();
+  QCOMPARE( userAgent, "QGIS" );
+  QgsNetworkAccessManager::instance()->removeRequestPreprocessor( processorId );
+};
 
 QGSTEST_MAIN( TestQgsNetworkAccessManager )
 #include "testqgsnetworkaccessmanager.moc"
