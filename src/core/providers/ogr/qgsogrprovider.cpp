@@ -562,136 +562,6 @@ QString QgsOgrProvider::subsetString() const
   return mSubsetString;
 }
 
-void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount ) const
-{
-  QString layerName = QString::fromUtf8( layer->name() );
-
-  if ( !mIsSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
-                         layerName == QLatin1String( "qgis_projects" ) ) )
-  {
-    // Ignore layer_styles (coming from QGIS styling support) and
-    // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
-    return;
-  }
-  // Get first column name,
-  // TODO: add support for multiple
-  QString geometryColumnName;
-  OGRwkbGeometryType layerGeomType = wkbUnknown;
-  const bool slowGeomTypeRetrieval =
-    mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) || mGDALDriverName == QLatin1String( "PGeo" );
-  if ( !slowGeomTypeRetrieval )
-  {
-    QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
-    if ( fdef.GetGeomFieldCount() )
-    {
-      OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
-      geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
-    }
-    layerGeomType = fdef.GetGeomType();
-  }
-
-  QString longDescription;
-  if ( mGDALDriverName == QLatin1String( "OAPIF" ) || mGDALDriverName == QLatin1String( "WFS3" ) )
-  {
-    longDescription = layer->GetMetadataItem( QStringLiteral( "TITLE" ) );
-  }
-
-  QgsDebugMsgLevel( QStringLiteral( "id = %1 name = %2 layerGeomType = %3 longDescription = %4" ).arg( i ).arg( layerName ).arg( layerGeomType ). arg( longDescription ), 2 );
-
-  if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
-  {
-    long long layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
-
-    QString geom = QgsOgrProviderUtils::ogrWkbGeometryTypeName( layerGeomType );
-
-    // For feature count, -1 indicates an unknown count state
-    QStringList parts = QStringList()
-                        << QString::number( i )
-                        << layerName
-                        << QString::number( layerFeatureCount )
-                        << geom
-                        << geometryColumnName
-                        << longDescription;
-
-    mSubLayerList << parts.join( sublayerSeparator() );
-  }
-  else
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Unknown geometry type, count features for each geometry type" ), 2 );
-    // Add virtual sublayers for supported geometry types if layer type is unknown
-    // Count features for geometry types
-    QMap<OGRwkbGeometryType, int> fCount;
-    // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
-
-    layer->ResetReading();
-    gdal::ogr_feature_unique_ptr fet;
-    while ( fet.reset( layer->GetNextFeature() ), fet )
-    {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
-      if ( geom )
-      {
-        OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
-        fCount[gType] = fCount.value( gType ) + 1;
-      }
-    }
-    layer->ResetReading();
-    // it may happen that there are no features in the layer, in that case add unknown type
-    // to show to user that the layer exists but it is empty
-    if ( fCount.isEmpty() )
-    {
-      fCount[wkbUnknown] = 0;
-    }
-
-    // List TIN and PolyhedralSurface as Polygon
-    if ( fCount.contains( wkbTIN ) )
-    {
-      fCount[wkbPolygon] = fCount.value( wkbPolygon ) + fCount[wkbTIN];
-      fCount.remove( wkbTIN );
-    }
-    if ( fCount.contains( wkbPolyhedralSurface ) )
-    {
-      fCount[wkbPolygon] = fCount.value( wkbPolygon ) + fCount[wkbPolyhedralSurface];
-      fCount.remove( wkbPolyhedralSurface );
-    }
-    // When there are CurvePolygons, promote Polygons
-    if ( fCount.contains( wkbPolygon ) && fCount.contains( wkbCurvePolygon ) )
-    {
-      fCount[wkbCurvePolygon] += fCount.value( wkbPolygon );
-      fCount.remove( wkbPolygon );
-    }
-    // When there are CompoundCurves, promote LineStrings and CircularStrings
-    if ( fCount.contains( wkbLineString ) && fCount.contains( wkbCompoundCurve ) )
-    {
-      fCount[wkbCompoundCurve] += fCount.value( wkbLineString );
-      fCount.remove( wkbLineString );
-    }
-    if ( fCount.contains( wkbCircularString ) && fCount.contains( wkbCompoundCurve ) )
-    {
-      fCount[wkbCompoundCurve] += fCount.value( wkbCircularString );
-      fCount.remove( wkbCircularString );
-    }
-
-    bool bIs25D = wkbHasZ( layerGeomType );
-    QMap<OGRwkbGeometryType, int>::const_iterator countIt = fCount.constBegin();
-    for ( ; countIt != fCount.constEnd(); ++countIt )
-    {
-      QString geom = QgsOgrProviderUtils::ogrWkbGeometryTypeName( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
-
-      QStringList parts = QStringList()
-                          << QString::number( i )
-                          << layerName
-                          << QString::number( fCount.value( countIt.key() ) )
-                          << geom
-                          << geometryColumnName
-                          << longDescription;
-
-      QString sl = parts.join( sublayerSeparator() );
-      QgsDebugMsgLevel( "sub layer: " + sl, 2 );
-      mSubLayerList << sl;
-    }
-  }
-}
-
 uint QgsOgrProvider::subLayerCount() const
 {
   uint count = layerCount();
@@ -736,7 +606,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 
   if ( mOgrLayer && ( mIsSubLayer || layerCount() == 1 ) )
   {
-    addSubLayerDetailsToSubLayerList( mLayerIndex, mOgrLayer, withFeatureCount );
+    QgsOgrProviderUtils::addSubLayerDetailsToSubLayerList( mLayerIndex, mOgrLayer, withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
   }
   else
   {
@@ -759,7 +629,7 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
       if ( !layer )
         continue;
 
-      addSubLayerDetailsToSubLayerList( i, layer.get(), withFeatureCount );
+      QgsOgrProviderUtils::addSubLayerDetailsToSubLayerList( i, layer.get(), withFeatureCount, mGDALDriverName, mIsSubLayer, mSubLayerList );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );
