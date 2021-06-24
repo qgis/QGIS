@@ -40,6 +40,7 @@ set(TESTS
  testqgsconnectionpool.cpp
  testqgscoordinatereferencesystemregistry.cpp
  testqgscoordinatetransform.cpp
+ testqgscopyfiletask.cpp
  testqgscredentials.cpp
  testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
