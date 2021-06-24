@@ -99,6 +99,7 @@ done:
 %Import QtWidgets/QtWidgetsmod.sip
 %Import QtPositioning/QtPositioningmod.sip
 
+%Feature HAVE_GUI
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
 

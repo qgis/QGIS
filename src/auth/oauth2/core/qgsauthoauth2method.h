@@ -23,6 +23,7 @@
 #include <QMutex>
 
 #include "qgsauthmethod.h"
+#include "qgsauthmethodmetadata.h"
 
 
 class QgsO2;
@@ -37,6 +38,11 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
+    static const QString AUTH_METHOD_KEY;
+    static const QString AUTH_METHOD_DESCRIPTION;
+    static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
+
     explicit QgsAuthOAuth2Method();
     ~QgsAuthOAuth2Method() override;
 
@@ -46,7 +52,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     //! OAuth2 method description
     QString description() const override;
 
-    //! Human readable description
     QString displayDescription() const override;
 
     //! Update network \a request with given \a authcfg and optional \a dataprovider
@@ -90,6 +95,10 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     //! Triggered when auth code needs to be manually entered by the user
     void onAuthCode();
 
+#ifdef HAVE_GUI
+    QWidget *editWidget( QWidget *parent )const override;
+#endif
+
   signals:
 
     //! Emitted when authcode was manually set by the user
@@ -113,6 +122,17 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 #else
     QRecursiveMutex mNetworkRequestMutex;
 #endif
+};
+
+
+class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
+{
+  public:
+    QgsAuthOAuth2MethodMetadata()
+      : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
+    {}
+    QgsAuthOAuth2Method *createAuthMethod() const override {return new QgsAuthOAuth2Method;}
+    //QStringList supportedDataProviders() const override;
 };
 
 #endif // QGSAUTHOAUTH2METHOD_H

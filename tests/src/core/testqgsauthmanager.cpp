@@ -26,6 +26,7 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsauthmethodmetadata.h"
 #include "qgsauthconfig.h"
 #include "qgssettings.h"
 
@@ -376,11 +377,10 @@ void TestQgsAuthManager::testAuthMethods()
     QString configid( config.id() );
 
     // correct method, loaded from core auth method plugin registry, should be returned
-    QgsAuthMethod *authmethod = authm->configAuthMethod( configid );
-    QVERIFY( authmethod );
-    QCOMPARE( authmethod->key(), config.method() );
-
-
+    const QString key = authm->configAuthMethodKey( configid );
+    const QgsAuthMethodMetadata *meta = authm->authMethodMetadata( key );
+    QVERIFY( meta );
+    QCOMPARE( meta->key(), config.method() );
   }
   QVERIFY( authm->removeAllAuthenticationConfigs() );
 }

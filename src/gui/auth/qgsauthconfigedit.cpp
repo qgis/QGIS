@@ -18,6 +18,7 @@
 
 #include <QPushButton>
 
+#include "qgsauthmethodmetadata.h"
 #include "qgsauthconfig.h"
 #include "qgsauthconfigidedit.h"
 #include "qgsauthmanager.h"
@@ -101,20 +102,20 @@ void QgsAuthConfigEdit::populateAuthMethods()
   QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys( mDataProvider );
 
   // sort by auth method description attribute, then populate
-  QMap<QString, QgsAuthMethod *> descmap;
+  QMap<QString, const QgsAuthMethodMetadata *> descmap;
   const auto constAuthMethodKeys = authMethodKeys;
   for ( const QString &authMethodKey : constAuthMethodKeys )
   {
-    QgsAuthMethod *authmethod = QgsApplication::authManager()->authMethod( authMethodKey );
-    if ( !authmethod )
+    const QgsAuthMethodMetadata *meta = QgsApplication::authManager()->authMethodMetadata( authMethodKey );
+    if ( !meta )
     {
       QgsDebugMsg( QStringLiteral( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
       continue;
     }
-    descmap.insert( authmethod->displayDescription(), authmethod );
+    descmap.insert( meta->description(), meta );
   }
 
-  QMap<QString, QgsAuthMethod *>::iterator it = descmap.begin();
+  QMap<QString, const QgsAuthMethodMetadata *>::iterator it = descmap.begin();
   for ( it = descmap.begin(); it != descmap.end(); ++it )
   {
     QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit *>(

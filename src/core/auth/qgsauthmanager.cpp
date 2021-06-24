@@ -842,7 +842,7 @@ bool QgsAuthManager::registerCoreAuthMethods()
   const QStringList methods = QgsAuthMethodRegistry::instance()->authMethodList();
   for ( const auto &authMethodKey : methods )
   {
-    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ).release() );
+    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->createAuthMethod( authMethodKey ) );
   }
 
   return !mAuthMethods.isEmpty();
@@ -1036,6 +1036,18 @@ QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
   return mAuthMethods.value( authMethodKey );
 }
 
+const QgsAuthMethodMetadata *QgsAuthManager::authMethodMetadata( const QString &authMethodKey )
+{
+  if ( !mAuthMethods.contains( authMethodKey ) )
+  {
+    QgsDebugMsg( QStringLiteral( "No auth method registered for auth method key: %1" ).arg( authMethodKey ) );
+    return nullptr;
+  }
+
+  return QgsAuthMethodRegistry::instance()->authMethodMetadata( authMethodKey );
+}
+
+
 QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
 {
   if ( dataprovider.isEmpty() )
@@ -1058,10 +1070,16 @@ QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
   return filteredmap;
 }
 
+#ifdef HAVE_GUI
 QWidget *QgsAuthManager::authMethodEditWidget( const QString &authMethodKey, QWidget *parent )
 {
-  return QgsAuthMethodRegistry::instance()->editWidget( authMethodKey, parent );
+  QgsAuthMethod *method = authMethod( authMethodKey );
+  if ( method )
+    return method->editWidget( parent );
+  else
+    return nullptr;
 }
+#endif
 
 QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString &authcfg )
 {

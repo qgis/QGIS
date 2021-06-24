@@ -26,6 +26,9 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#ifdef HAVE_GUI
+#include "qgsauthoauth2edit.h"
+#endif
 
 #include <algorithm>
 
@@ -40,8 +43,9 @@
 #include <QInputDialog>
 #endif
 
-static const QString AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
-static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "OAuth2 authentication" );
 
 QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
   QMap<QString, QgsO2 * >();
@@ -101,7 +105,7 @@ QString QgsAuthOAuth2Method::description() const
 
 QString QgsAuthOAuth2Method::displayDescription() const
 {
-  return tr( "OAuth2 authentication" );
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
@@ -656,47 +660,21 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
   }
 }
 
+#ifdef HAVE_GUI
+QWidget *QgsAuthOAuth2Method::editWidget( QWidget *parent ) const
+{
+  return new QgsAuthOAuth2Edit( parent );
+}
+#endif
 
 //////////////////////////////////////////////
 // Plugin externals
 //////////////////////////////////////////////
 
-/**
- * Required class factory to return a pointer to a newly created object
- */
-QGISEXTERN QgsAuthOAuth2Method *classFactory()
-{
-  return new QgsAuthOAuth2Method();
-}
 
-/**
- * Required key function (used to map the plugin to a data store type)
- */
-QGISEXTERN QString authMethodKey()
+#ifndef HAVE_STATIC_PROVIDERS
+QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
 {
-  return AUTH_METHOD_KEY;
+  return new QgsAuthOAuth2MethodMetadata();
 }
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return AUTH_METHOD_DESCRIPTION;
-}
-
-/**
- * Required isAuthMethod function. Used to determine if this shared library
- * is an authentication method plugin
- */
-QGISEXTERN bool isAuthMethod()
-{
-  return true;
-}
-
-/**
- * Required cleanup function
- */
-QGISEXTERN void cleanupAuthMethod() // pass QgsAuthMethod *method, then delete method  ?
-{
-}
+#endif

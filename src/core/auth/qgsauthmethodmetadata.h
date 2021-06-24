@@ -22,6 +22,9 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+class QgsAuthMethod;
 
 /**
  * \ingroup core
@@ -43,11 +46,18 @@ class CORE_EXPORT QgsAuthMethodMetadata
 
     /**
      * Construct an authentication method metadata container
-     * \param _key Textual key of the library plugin
-     * \param _description Description of the library plugin
-     * \param _library File name of library plugin
+     * \param key Textual key of the library plugin
+     * \param description Description of the library plugin
+     * \param library File name of library plugin (empty if the provider is not loaded from a library)
+
      */
-    QgsAuthMethodMetadata( const QString &_key, const QString &_description, const QString &_library );
+    QgsAuthMethodMetadata( const QString &key, const QString &description, const QString &library = QString() )
+      : mKey( key )
+      , mDescription( description )
+      , mLibrary( library )
+    {}
+
+    virtual ~QgsAuthMethodMetadata() = default;
 
     /**
      * Returns the unique key associated with the method
@@ -70,16 +80,24 @@ class CORE_EXPORT QgsAuthMethodMetadata
      */
     QString library() const;
 
+    /**
+     * Class factory to return a pointer to a newly created QgsDataProvider object
+     * \since QGIS 3.22
+     */
+    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 4 = 0
+
+    //virtual QStringList supportedDataProviders() const; // TODO QGIS 4 = 0;
+
   private:
 
     /// unique key for method
-    QString key_;
+    QString mKey;
 
     /// associated terse description
-    QString description_;
+    QString mDescription;
 
     /// file path
-    QString library_;
+    QString mLibrary;
 };
 
 #endif // QGSAUTHMETHODMETADATA_H

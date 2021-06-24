@@ -218,12 +218,16 @@ Gets authentication method from the config/provider cache via its key
 %End
 
 
+
+%If (HAVE_GUI)
+
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 %Docstring
 Gets authentication method edit widget via its key
 
 :param authMethodKey: Authentication method key
 :param parent: Parent widget
+%End
 %End
 
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );

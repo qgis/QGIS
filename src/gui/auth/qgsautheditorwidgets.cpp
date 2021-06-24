@@ -28,6 +28,7 @@
 #include "qgsauthmanager.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsauthmethodmetadata.h"
 
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
@@ -71,28 +72,33 @@ void QgsAuthMethodPlugins::setupTable()
 
 void QgsAuthMethodPlugins::populateTable()
 {
-  QgsAuthMethodsMap authmethods( QgsApplication::authManager()->authMethodsMap() );
+  QStringList authMethodKeys = QgsApplication::authManager()->authMethodsKeys();
 
   int i = 0;
-  for ( QgsAuthMethodsMap::const_iterator it = authmethods.constBegin(); it != authmethods.constEnd(); ++it, i++ )
+  const auto constAuthMethodKeys = authMethodKeys;
+  for ( const QString &authMethodKey : constAuthMethodKeys )
   {
-    QgsAuthMethod *authmethod( it.value() );
-    if ( !authmethod )
+    const QgsAuthMethodMetadata *meta = QgsApplication::authManager()->authMethodMetadata( authMethodKey );
+    const QgsAuthMethod *method = QgsApplication::authManager()->authMethod( authMethodKey );
+    if ( !meta || !method )
     {
+      QgsDebugMsg( QStringLiteral( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
       continue;
     }
 
-    QTableWidgetItem *twi = new QTableWidgetItem( authmethod->key() );
+    QTableWidgetItem *twi = new QTableWidgetItem( meta->key() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 0, twi );
 
-    twi = new QTableWidgetItem( authmethod->displayDescription() );
+    twi = new QTableWidgetItem( meta->description() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 1, twi );
 
-    twi = new QTableWidgetItem( authmethod->supportedDataProviders().join( QLatin1String( ", " ) ) );
+    twi = new QTableWidgetItem( method->supportedDataProviders().join( QLatin1String( ", " ) ) );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     tblAuthPlugins->setItem( i, 2, twi );
+
+    i++;
   }
   tblAuthPlugins->sortItems( 0 );
 }
