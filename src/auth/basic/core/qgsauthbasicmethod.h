@@ -34,13 +34,16 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
+    static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
 
     explicit QgsAuthBasicMethod();
 
     // QgsAuthMethod interface
-    static QString key();
+    QString key() const override;
 
-    static QString description();
+    QString description() const override;
+
+    QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() ) override;

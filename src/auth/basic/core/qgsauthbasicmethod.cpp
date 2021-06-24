@@ -29,7 +29,8 @@
 #include <QUuid>
 
 const QString QgsAuthBasicMethod::AUTH_METHOD_KEY = QStringLiteral( "Basic" );
-const QString QgsAuthBasicMethod::AUTH_METHOD_DESCRIPTION = tr( "Basic authentication" );
+const QString QgsAuthBasicMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
+const QString QgsAuthBasicMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Basic authentication" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
 
@@ -52,14 +53,19 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
 
 }
 
-QString QgsAuthBasicMethod::key()
+QString QgsAuthBasicMethod::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthBasicMethod::description()
+QString QgsAuthBasicMethod::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthBasicMethod::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 

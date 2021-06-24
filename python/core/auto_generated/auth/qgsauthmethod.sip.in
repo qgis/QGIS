@@ -34,6 +34,21 @@ Abstract base class for authentication method plugins
     typedef QFlags<QgsAuthMethod::Expansion> Expansions;
 
 
+    virtual QString key() const = 0;
+%Docstring
+A non-translated short name representing the auth method
+%End
+
+    virtual QString description() const = 0;
+%Docstring
+A non-translated short description representing the auth method for use in debug output and About dialog
+%End
+
+    virtual QString displayDescription() const = 0;
+%Docstring
+Translatable display version of the ':py:func:`~QgsAuthMethod.description`'
+%End
+
     int version() const;
 %Docstring
 Increment this if method is significantly updated, allow updater code to be written for previously stored authcfg

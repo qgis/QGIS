@@ -35,7 +35,8 @@
 #endif
 
 const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
-const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = tr( "PKI PKCS#12 authentication" );
+const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI PKCS#12 authentication" );
+const QString QgsAuthPkcs12Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "PKI PKCS#12 authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkcs12Method::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -58,14 +59,19 @@ QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthPkcs12Method::key()
+QString QgsAuthPkcs12Method::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthPkcs12Method::description()
+QString QgsAuthPkcs12Method::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthPkcs12Method::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

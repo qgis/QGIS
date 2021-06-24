@@ -44,7 +44,8 @@
 #endif
 
 const QString QgsAuthOAuth2Method::AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
-const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = tr( "OAuth2 authentication" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
+const QString QgsAuthOAuth2Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "OAuth2 authentication" );
 
 QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
   QMap<QString, QgsO2 * >();
@@ -92,14 +93,19 @@ QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
   }
 }
 
-QString QgsAuthOAuth2Method::key()
+QString QgsAuthOAuth2Method::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthOAuth2Method::description()
+QString QgsAuthOAuth2Method::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthOAuth2Method::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

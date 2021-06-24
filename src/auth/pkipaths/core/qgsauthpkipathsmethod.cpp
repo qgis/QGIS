@@ -35,7 +35,8 @@
 #include <QMutexLocker>
 
 const QString QgsAuthPkiPathsMethod::AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
-const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION = tr( "PKI paths authentication" );
+const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI paths authentication" );
+const QString QgsAuthPkiPathsMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "PKI paths authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -59,14 +60,19 @@ QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthPkiPathsMethod::key()
+QString QgsAuthPkiPathsMethod::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthPkiPathsMethod::description()
+QString QgsAuthPkiPathsMethod::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthPkiPathsMethod::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 

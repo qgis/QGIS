@@ -29,7 +29,8 @@
 #include <QUuid>
 
 const QString QgsAuthEsriTokenMethod::AUTH_METHOD_KEY = QStringLiteral( "EsriToken" );
-const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION = tr( "ESRI token" );
+const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "ESRI token" );
+const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "ESRI token" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthEsriTokenMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
 
@@ -44,14 +45,19 @@ QgsAuthEsriTokenMethod::QgsAuthEsriTokenMethod()
 
 }
 
-QString QgsAuthEsriTokenMethod::key()
+QString QgsAuthEsriTokenMethod::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthEsriTokenMethod::description()
+QString QgsAuthEsriTokenMethod::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthEsriTokenMethod::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,

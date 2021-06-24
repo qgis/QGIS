@@ -36,7 +36,8 @@
 
 
 const QString QgsAuthIdentCertMethod::AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
-const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = tr( "Identity certificate authentication" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
+const QString QgsAuthIdentCertMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "Identity certificate authentication" );
 
 QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
@@ -60,14 +61,19 @@ QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
   sPkiConfigBundleCache.clear();
 }
 
-QString QgsAuthIdentCertMethod::key()
+QString QgsAuthIdentCertMethod::key() const
 {
   return AUTH_METHOD_KEY;
 }
 
-QString QgsAuthIdentCertMethod::description()
+QString QgsAuthIdentCertMethod::description() const
 {
   return AUTH_METHOD_DESCRIPTION;
+}
+
+QString QgsAuthIdentCertMethod::displayDescription() const
+{
+  return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
 bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
