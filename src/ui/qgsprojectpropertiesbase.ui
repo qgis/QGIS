@@ -455,12 +455,12 @@
                    <widget class="QComboBox" name="cbxAbsolutePath">
                     <item>
                      <property name="text">
-                      <string>absolute</string>
+                      <string>Absolute</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>relative</string>
+                      <string>Relative</string>
                      </property>
                     </item>
                    </widget>
