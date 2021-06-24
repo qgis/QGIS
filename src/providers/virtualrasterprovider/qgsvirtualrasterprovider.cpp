@@ -83,6 +83,8 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
     Q_UNUSED(bandNo);
+
+
     //HARDCODED DATA--------------------------------------------------------------------------------------------
     QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
     QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
@@ -190,6 +192,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
             for (int j = 0; j < width; ++j)
             {
+
                 //tblock->setValue(i,j,resultMatrix.data()[j]);
                 outputData [ i * width + j ]= resultMatrix.data()[j];
             }
@@ -205,7 +208,17 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     }
 
 
+    /*
+    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
+    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
 
+    for ( int i = 0; i < width * height; ++i )
+    {
+        //QgsDebugMsg("inside for loop");
+        outputData[i] = 42;
+
+    }
+    */
     Q_ASSERT( tblock );
     return tblock.release();
     //return tblock;

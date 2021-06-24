@@ -144,12 +144,14 @@ void TestQgsVirtualRasterProvider::testv()
 
         qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
         qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
-
+        qDebug() << "bandCount result: " << rp->bandCount();
         QVERIFY( block );
         QCOMPARE( block->width(),  373 );
         QCOMPARE( block->height(), 350 );
 
         QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
+
+        QCOMPARE( rp->bandCount(), 1 );
       }
     delete provider;
 
