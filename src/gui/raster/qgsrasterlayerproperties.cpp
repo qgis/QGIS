@@ -914,6 +914,7 @@ void QgsRasterLayerProperties::sync()
   QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
+  mPlaceholderIconCheckBox->setCheckState( mRasterLayer->usePlaceholderLegendIcon() ? Qt::Checked : Qt::Unchecked );
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
   mTemporalWidget->syncToLayer();
@@ -946,6 +947,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * Legend Tab
    */
+  mRasterLayer->setUsePlaceholderLegendIcon( mPlaceholderIconCheckBox->isChecked() );
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "apply processing symbology tab" ), 3 );

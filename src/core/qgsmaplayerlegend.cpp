@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-
+#include "qgsiconutils.h"
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
@@ -502,7 +502,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  if ( mLayer->renderer() )
+  if ( mLayer->usePlaceholderLegendIcon() )
+  {
+    nodes << new QgsSimpleLegendNode( nodeLayer, QString(), QgsIconUtils::iconRaster() );
+  }
+  else if ( mLayer->renderer() )
     nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }

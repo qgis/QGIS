@@ -2163,6 +2163,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   readStyleManager( layer_node );
 
+  mUsePlaceholderLegendIcon = layer_node.toElement().attribute( QStringLiteral( "usePlaceholderLegendIcon" ), QStringLiteral( "0" ) ).compare( QStringLiteral( "1" ) ) == 0;
+
   return res;
 }
 
@@ -2277,6 +2279,8 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   }
 
   writeStyleManager( layer_node, document );
+
+  mapLayerNode.setAttribute( QStringLiteral( "usePlaceholderLegendIcon" ), mUsePlaceholderLegendIcon );
 
   //write out the symbology
   QString errorMsg;

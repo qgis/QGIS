@@ -420,6 +420,18 @@ to be drawn outside the data extent.
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
 
+    bool usePlaceholderLegendIcon() const;
+%Docstring
+True if a placeholder legend is shown in the legend rather than all the color entries
+%End
+
+    void setUsePlaceholderLegendIcon( bool usePlaceholderIcon );
+%Docstring
+Set if a placeholder legend is shown in the legend
+
+:param usePlaceholderIcon: true if placeholder icon will be shown instead of symbology items
+%End
+
   public slots:
     void showStatusMessage( const QString &message );
 
