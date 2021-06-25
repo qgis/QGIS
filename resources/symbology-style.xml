@@ -5864,9 +5864,9 @@
           <family name="Arial"/>
           <family name="Sans Serif"/>
         </families>
+        <text-buffer bufferDraw="0" bufferSizeUnits="MM" bufferNoFill="1" bufferColor="250,250,250,255" bufferOpacity="1" bufferJoinStyle="128" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1"/>
+        <shadow shadowRadiusUnit="MM" shadowOffsetGlobal="1" shadowDraw="0" shadowOffsetUnit="MM" shadowScale="100" shadowUnder="0" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowOpacity="0.69999999999999996" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowOffsetAngle="135" shadowOffsetDist="1" shadowBlendMode="6" shadowRadius="1.5" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0"/>
       </text-style>
-      <text-buffer bufferDraw="1" bufferSizeUnits="MM" bufferNoFill="1" bufferColor="255,255,249,255" bufferOpacity="1" bufferJoinStyle="128" bufferBlendMode="0" bufferSizeMapUnitScale="3x:0,0,0,0,0,0" bufferSize="1"/>
-      <shadow shadowRadiusUnit="MM" shadowOffsetGlobal="1" shadowDraw="0" shadowOffsetUnit="MM" shadowScale="100" shadowUnder="0" shadowOffsetMapUnitScale="3x:0,0,0,0,0,0" shadowOpacity="0.69999999999999996" shadowRadiusMapUnitScale="3x:0,0,0,0,0,0" shadowOffsetAngle="135" shadowOffsetDist="1" shadowBlendMode="6" shadowRadius="1.5" shadowColor="0,0,0,255" shadowRadiusAlphaOnly="0"/>
     </textformat>
   </textformats>
   <labelsettings>
