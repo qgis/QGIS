@@ -312,7 +312,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %{_datadir}/%{name}/svg/
 %exclude %{_libdir}/libqgisgrass*.so.*
 %exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
-%exclude %{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
+%exclude %{_libdir}/%{name}/plugins/libprovider_grassraster*.so
 %exclude %{_libdir}/%{name}/plugins/libprovider_grass*.so
 %exclude %{_libdir}/%{name}/server/
 %exclude %{_libdir}/%{name}/grass/
@@ -328,7 +328,7 @@ rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 %files grass
 %{_libdir}/lib%{name}grass*.so.*
 %{_libdir}/%{name}/plugins/libgrassplugin*.so
-%{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
+%{_libdir}/%{name}/plugins/libprovider_grassraster*.so
 %{_libdir}/%{name}/plugins/libprovider_grass*.so
 %{_libdir}/%{name}/grass/
 %{_datadir}/%{name}/grass/

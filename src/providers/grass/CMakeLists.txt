@@ -182,15 +182,15 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
     set (GRASS_RASTER_PROVIDER_SRCS
       ../qgsgrassrasterprovidermodule.cpp
     )
-    add_library(grassrasterprovider${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
+    add_library(provider_grassraster${GRASS_BUILD_VERSION} MODULE ${GRASS_RASTER_PROVIDER_SRCS})
 
     # require c++17
-    target_compile_features(grassrasterprovider${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
+    target_compile_features(provider_grassraster${GRASS_BUILD_VERSION} PRIVATE cxx_std_17)
 
-    set_target_properties(grassrasterprovider${GRASS_BUILD_VERSION} PROPERTIES
+    set_target_properties(provider_grassraster${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
-    target_link_libraries(grassrasterprovider${GRASS_BUILD_VERSION}
+    target_link_libraries(provider_grassraster${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
       qgis_core
     )
@@ -298,7 +298,7 @@ macro(ADD_GRASSLIB GRASS_BUILD_VERSION)
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    install(TARGETS grassrasterprovider${GRASS_BUILD_VERSION}
+    install(TARGETS provider_grassraster${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

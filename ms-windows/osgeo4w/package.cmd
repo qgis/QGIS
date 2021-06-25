@@ -443,8 +443,8 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/grass/modules/qgis.r.in!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
 		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
-		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
-		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/provider_grass!v!.dll" ^
+		"apps/%PACKAGENAME%/plugins/provider_grassraster!v!.dll" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
