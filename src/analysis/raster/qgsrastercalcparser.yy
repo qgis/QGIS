@@ -30,15 +30,15 @@
   QgsRasterCalcNode* parseRasterCalcString(const QString& str, QString& parserErrorMsg);
 
   //! from lex.yy.c
-  extern int rasterlex();
-  extern char* rastertext;
+  extern int raster_lex();
+  extern char* raster_text;
   extern void set_raster_input_buffer(const char* buffer);
 
   //! variable where the parser error will be stored
   QString rParserErrorMsg;
 
   //! sets gParserErrorMsg
-  void rastererror(const char* msg);
+  void raster_error(const char* msg);
 
   //! temporary list for nodes without parent (if parsing fails these nodes are removed)
   QList<QgsRasterCalcNode*> gTmpNodes;
@@ -98,7 +98,7 @@ raster_exp:
   | '+' raster_exp %prec UMINUS { $$ = $2; }
   | '-' raster_exp %prec UMINUS { $$ = new QgsRasterCalcNode( QgsRasterCalcNode::opSIGN, $2, 0 ); joinTmpNodes($$, $2, 0); }
   | NUMBER { $$ = new QgsRasterCalcNode($1); addToTmpNodes($$); }
-  | RASTER_BAND_REF { $$ = new QgsRasterCalcNode(QString::fromUtf8(rastertext)); addToTmpNodes($$); }
+  | RASTER_BAND_REF { $$ = new QgsRasterCalcNode(QString::fromUtf8(raster_text)); addToTmpNodes($$); }
 ;
 
 %%
@@ -136,7 +136,7 @@ QgsRasterCalcNode* localParseRasterCalcString(const QString& str, QString& parse
   Q_ASSERT(gTmpNodes.count() == 0);
 
   set_raster_input_buffer(str.toUtf8().constData());
-  int res = rasterparse();
+  int res = raster_parse();
 
   // list should be empty when parsing was OK
   if (res == 0) // success?
@@ -154,7 +154,7 @@ QgsRasterCalcNode* localParseRasterCalcString(const QString& str, QString& parse
   }
 }
 
-void rastererror(const char* msg)
+void raster_error(const char* msg)
 {
   rParserErrorMsg = msg;
 }

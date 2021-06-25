@@ -1,8 +1,16 @@
 #############################################################
 # sources
 
+BISON_TARGET(QgsRasterCalcParser raster/qgsrastercalcparser.yy ${CMAKE_CURRENT_BINARY_DIR}/qgsrastercalcparser.cpp COMPILE_FLAGS "-p raster_")
+FLEX_TARGET(QgsRasterCalcLexer raster/qgsrastercalclexer.ll ${CMAKE_CURRENT_BINARY_DIR}/qgsrastercalclexer.cpp)
+ADD_FLEX_BISON_DEPENDENCY(QgsRasterCalcLexer QgsRasterCalcParser)
+
 set(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
+
+
+  ${FLEX_QgsRasterCalcLexer_OUTPUTS}
+  ${BISON_QgsRasterCalcParser_OUTPUTS}
 
   georeferencing/qgsgcpgeometrytransformer.cpp
   georeferencing/qgsgcptransformer.cpp
@@ -408,12 +416,10 @@ if(HAVE_GSL)
   include_directories(SYSTEM ${GSL_INCLUDE_DIR})
 endif()
 
-ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
-ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
-
 if(NOT MSVC)
   set_source_files_properties(
-    ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+    ${BISON_QgsRasterCalcParser_OUTPUTS}
+    ${FLEX_QgsRasterCalcLexer_OUTPUTS}
     PROPERTIES COMPILE_FLAGS "-w"
   )
 else()
@@ -421,8 +427,9 @@ else()
     # 4127 expression is constant
     # 4702 unreachable code
     set_source_files_properties(
-      ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
-      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
+      ${BISON_QgsRasterCalcParser_OUTPUTS}
+      ${FLEX_QgsRasterCalcLexer_OUTPUTS}
+      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702 /W0"
     )
   endif()
 endif()
