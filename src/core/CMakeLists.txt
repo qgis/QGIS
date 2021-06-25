@@ -233,6 +233,7 @@ set(QGIS_CORE_SRCS
   providers/qgsprovidermetadata.cpp
   providers/qgsproviderregistry.cpp
   providers/qgsprovidersublayerdetails.cpp
+  providers/qgsprovidersublayertask.cpp
 
   providers/arcgis/qgsarcgisportalutils.cpp
   providers/arcgis/qgsarcgisrestquery.cpp
@@ -1522,6 +1523,7 @@ set(QGIS_CORE_HDRS
   providers/qgsprovidermetadata.h
   providers/qgsproviderregistry.h
   providers/qgsprovidersublayerdetails.h
+  providers/qgsprovidersublayertask.h
 
   providers/arcgis/qgsarcgisportalutils.h
   providers/arcgis/qgsarcgisrestquery.h

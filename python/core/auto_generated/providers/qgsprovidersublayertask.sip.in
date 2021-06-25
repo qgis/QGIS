@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayertask.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProviderSublayerTask : QgsTask
+{
+%Docstring(signature="appended")
+
+A :py:class:`QgsTask` which retrieves sublayer details for a URI.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayertask.h"
+%End
+  public:
+
+    QgsProviderSublayerTask( const QString &uri );
+%Docstring
+Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
+specified ``uri``.
+%End
+
+    ~QgsProviderSublayerTask();
+
+    QList<QgsProviderSublayerDetails> results() const;
+%Docstring
+Return the sublayer details as calculated by the task.
+%End
+
+    virtual bool run();
+
+    virtual void cancel();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayertask.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
