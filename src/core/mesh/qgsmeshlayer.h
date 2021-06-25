@@ -37,6 +37,7 @@ struct QgsMesh;
 class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
+class QgsMeshEditor;
 
 /**
  * \ingroup core
@@ -719,6 +720,51 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 
+    /**
+    * Starts edition of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
+    * This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+    *
+    * \since QGIS 3.22
+    */
+    bool startFrameEditing( const QgsCoordinateTransform &transform );
+
+    /**
+    * Stops edition of the mesh, re-indexes the faces and vertices,
+    * rebuilds the triangular mesh and its spatial index with \a transform,
+    * clean the undostack
+    *
+    * \since QGIS 3.22
+    */
+    void stopFrameEditing( const QgsCoordinateTransform &transform );
+
+    /**
+    * Returns a pointer to the mesh editor own by the mesh layer
+    *
+    * \since QGIS 3.22
+    */
+    QgsMeshEditor *meshEditor();
+
+    /**
+    * Returns the vertices count of the mesh frame
+    *
+    *  \since QGIS 3.22
+    */
+    int meshVerticesCount() const;
+
+    /**
+    * Returns the faces count of the mesh frame
+    *
+    * \since QGIS 3.22
+    */
+    int meshFacesCount() const;
+
+    /**
+    * Returns the edges count of the mesh frame
+    *
+    * \since QGIS 3.22
+    */
+    int meshEdgeCount() const;
+
   public slots:
 
     /**
@@ -783,6 +829,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private slots:
     void onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes );
+    void onMeshEdited();
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
@@ -818,6 +865,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     int mStaticScalarDatasetIndex = 0;
     int mStaticVectorDatasetIndex = 0;
+
+    QgsMeshEditor *mMeshEditor = nullptr;
 
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 

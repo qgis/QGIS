@@ -31,7 +31,7 @@ static Region faceToRegion( const QgsMesh &mesh, int id )
 {
   const QgsMeshFace face = mesh.face( id );
   const QVector<QgsMeshVertex> &vertices = mesh.vertices;
-  Q_ASSERT( face.size() > 0 );
+
   double xMinimum = vertices[face[0]].x();
   double yMinimum = vertices[face[0]].y();
   double xMaximum = vertices[face[0]].x();
@@ -381,4 +381,41 @@ QList<int> QgsMeshSpatialIndex::nearestNeighbor( const QgsPointXY &point, int ne
 QgsMesh::ElementType QgsMeshSpatialIndex::elementType() const
 {
   return mElementType;
+}
+
+void QgsMeshSpatialIndex::addFace( int faceIndex, const QgsMesh &mesh )
+{
+  if ( mesh.face( faceIndex ).isEmpty() )
+    return;
+  SpatialIndex::Region r( faceToRegion( mesh, faceIndex ) );
+
+  QMutexLocker locker( &d->mMutex );
+
+  try
+  {
+    d->mRTree->insertData( 0, nullptr, r, faceIndex );
+  }
+  catch ( Tools::Exception &e )
+  {
+    Q_UNUSED( e )
+    QgsDebugMsg( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+  }
+  catch ( const std::exception &e )
+  {
+    Q_UNUSED( e )
+    QgsDebugMsg( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
+  }
+  catch ( ... )
+  {
+    QgsDebugMsg( QStringLiteral( "unknown spatial index exception caught" ) );
+  }
+}
+
+void QgsMeshSpatialIndex::removeFace( int faceIndex, const QgsMesh &mesh )
+{
+  if ( mesh.face( faceIndex ).isEmpty() )
+    return;
+  QMutexLocker locker( &d->mMutex );
+
+  d->mRTree->deleteData( faceToRegion( mesh, faceIndex ), faceIndex );
 }

@@ -404,6 +404,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterResamplingStage )
 
     /**
+     * Type of error that can occur during mesh frame editing
+     * \since QGIS 3.22
+     */
+    enum class MeshEditingErrorType : int
+    {
+      NoError, //!< No type
+      InvalidFace, //!< An error occurs due to an invalid face (for example, vertex indexes are unordered)
+      FlatFace, //!< A flat face is present
+      UniqueSharedVertex, //!< A least two faces share only one vertices
+      InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
+    };
+    Q_ENUM( MeshEditingErrorType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

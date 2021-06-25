@@ -33,6 +33,7 @@
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;
 class QgsRectangle;
+struct QgsMesh;
 
 /**
  * \ingroup core
@@ -757,6 +758,54 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
 
     //! Contains all the memory datasets
     QVector<std::shared_ptr<QgsMeshMemoryDataset>> memoryDatasets;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief Class that represents a dataset with elevation value of the vertices of a existing mesh that can be edited
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshVerticesElevationDataset: public QgsMeshDataset
+{
+  public:
+    //! Constructor
+    QgsMeshVerticesElevationDataset( QgsMesh *mesh );
+
+    QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
+    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;;
+    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;;
+    bool isActive( int ) const override {return true;};
+    QgsMeshDatasetMetadata metadata() const override;;
+    int valuesCount() const override;
+  private:
+    QgsMesh *mMesh;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief Class that represents a dataset group with elevation value of the vertices of a existing mesh that can be edited
+ *        This dataset group contains only one dataset.
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshVerticesElevationDatasetGroup : public QgsMeshDatasetGroup
+{
+  public:
+    //! Constructor with a \a name and linked to \a mesh
+    QgsMeshVerticesElevationDatasetGroup( QString name, QgsMesh *mesh );
+
+    void initialize() override;
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;;
+    int datasetCount() const override;;
+    QgsMeshDataset *dataset( int index ) const override;;
+    QgsMeshDatasetGroup::Type type() const override;
+    QDomElement writeXml( QDomDocument &, const QgsReadWriteContext & ) const override {return QDomElement();};
+
+  private:
+    std::unique_ptr<QgsMeshVerticesElevationDataset> mDataset;
 };
 
 #endif //SIP_RUN

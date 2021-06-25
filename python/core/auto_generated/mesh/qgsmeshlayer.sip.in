@@ -708,6 +708,51 @@ Returns the relative time (in milliseconds) of the dataset from the reference ti
 .. versionadded:: 3.16
 %End
 
+    bool startFrameEditing( const QgsCoordinateTransform &transform );
+%Docstring
+Starts edition of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
+This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+
+.. versionadded:: 3.22
+%End
+
+    void stopFrameEditing( const QgsCoordinateTransform &transform );
+%Docstring
+Stops edition of the mesh, re-indexes the faces and vertices,
+rebuilds the triangular mesh and its spatial index with ``transform``,
+clean the undostack
+
+.. versionadded:: 3.22
+%End
+
+    QgsMeshEditor *meshEditor();
+%Docstring
+Returns a pointer to the mesh editor own by the mesh layer
+
+.. versionadded:: 3.22
+%End
+
+    int meshVerticesCount() const;
+%Docstring
+Returns the vertices count of the mesh frame
+
+.. versionadded:: 3.22
+%End
+
+    int meshFacesCount() const;
+%Docstring
+Returns the faces count of the mesh frame
+
+.. versionadded:: 3.22
+%End
+
+    int meshEdgeCount() const;
+%Docstring
+Returns the edges count of the mesh frame
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

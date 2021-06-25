@@ -272,6 +272,15 @@ The development version
       Provider
     };
 
+    enum class MeshEditingErrorType
+    {
+      NoError,
+      InvalidFace,
+      FlatFace,
+      UniqueSharedVertex,
+      InvalidVertex,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

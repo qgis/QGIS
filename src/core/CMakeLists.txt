@@ -637,6 +637,7 @@ set(QGIS_CORE_SRCS
   raster/qgshillshaderenderer.cpp
 
   mesh/qgsmesh3daveraging.cpp
+  mesh/qgsmesheditor.cpp
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshdataprovidertemporalcapabilities.cpp
   mesh/qgsmeshdataset.cpp
@@ -657,6 +658,7 @@ set(QGIS_CORE_SRCS
   mesh/qgsmeshcalculator.cpp
   mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshvirtualdatasetgroup.cpp
+  mesh/qgstopologicalmesh.cpp
 
   pointcloud/qgspointcloudattribute.cpp
   pointcloud/qgspointcloudattributebyramprenderer.cpp
@@ -1354,6 +1356,7 @@ set(QGIS_CORE_HDRS
   maprenderer/qgsmaprenderertask.h
 
   mesh/qgsmesh3daveraging.h
+  mesh/qgsmesheditor.h
   mesh/qgsmeshdataprovider.h
   mesh/qgsmeshdataprovidertemporalcapabilities.h
   mesh/qgsmeshdataset.h
@@ -1374,6 +1377,7 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshcalculator.h
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
+  mesh/qgstopologicalmesh.h
 
   pal/costcalculator.h
   pal/feature.h

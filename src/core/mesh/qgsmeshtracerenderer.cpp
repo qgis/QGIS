@@ -71,8 +71,8 @@ QgsMeshVectorValueInterpolator &QgsMeshVectorValueInterpolator::operator=( const
 }
 
 QgsMeshVectorValueInterpolatorFromVertex::
-QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues ):
-  QgsMeshVectorValueInterpolator( triangularMesh, datasetVectorValues )
+QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh, const QgsMeshDataBlock &datasetVectorValues )
+  : QgsMeshVectorValueInterpolator( triangularMesh, datasetVectorValues )
 {
 
 }
@@ -80,8 +80,8 @@ QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMes
 QgsMeshVectorValueInterpolatorFromVertex::
 QgsMeshVectorValueInterpolatorFromVertex( const QgsTriangularMesh &triangularMesh,
     const QgsMeshDataBlock &datasetVectorValues,
-    const QgsMeshDataBlock &scalarActiveFaceFlagValues ):
-  QgsMeshVectorValueInterpolator( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues )
+    const QgsMeshDataBlock &scalarActiveFaceFlagValues )
+  : QgsMeshVectorValueInterpolator( triangularMesh, datasetVectorValues, scalarActiveFaceFlagValues )
 {
 
 }
