@@ -2294,7 +2294,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
 
 QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
-  QString layerName = QString::fromUtf8( layer->name() );
+  const QString layerName = QString::fromUtf8( layer->name() );
 
   if ( !isSubLayer && ( layerName == QLatin1String( "layer_styles" ) ||
                         layerName == QLatin1String( "qgis_projects" ) ) )
