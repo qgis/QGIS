@@ -1046,11 +1046,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     skippedLayerNames = QgsSqliteUtils::systemTables();
   }
 
-  const unsigned int layerCount = firstLayer->GetLayerCount();
+  const int layerCount = firstLayer->GetLayerCount();
 
   if ( layerCount == 1 )
   {
-    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, feedback );
+    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, true, feedback );
   }
   else
   {
@@ -1059,7 +1059,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     // layer alive while we iterate over the other layers, so that we can
     // reuse the same dataset. Can help in a particular with a FileGDB with
     // the FileGDB driver
-    for ( unsigned int i = 0; i < layerCount; i++ )
+    for ( int i = 0; i < layerCount; i++ )
     {
       if ( feedback && feedback->isCanceled() )
         break;
@@ -1081,7 +1081,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
           continue;
       }
 
-      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, feedback );
+      res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
     }
     return res;
   }
