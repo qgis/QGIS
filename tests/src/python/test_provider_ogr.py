@@ -42,7 +42,10 @@ from qgis.core import (
     QgsWkbTypes,
     QgsNetworkAccessManager,
     QgsLayerMetadata,
-    QgsNotSupportedException
+    QgsNotSupportedException,
+    QgsMapLayerType,
+    QgsProviderSublayerDetails,
+    Qgis
 )
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
@@ -1500,6 +1503,135 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(enum_setup.type(), 'ValueMap')
         self.assertTrue(enum_setup.config()['map'], [{'one': '1'}, {'2': '2'}])
         self.assertEqual(vl.editorWidgetSetup(fields.lookupField('with_enum_domain')).type(), 'ValueMap')
+
+    def test_provider_sublayer_details(self):
+        """
+        Test retrieving sublayer details from data provider metadata
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+
+        # invalid uri
+        res = metadata.querySublayers('')
+        self.assertFalse(res)
+
+        # not a vector
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'landsat.tif'))
+        self.assertFalse(res)
+
+        # single layer vector
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'lines.shp'))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "lines")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/lines.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+
+        # make sure result is valid to load layer from
+        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+
+        # geopackage with two vector layers
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_layers.gpkg"))
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_layers.gpkg|layername=points".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        self.assertEqual(res[1].layerNumber(), 1)
+        self.assertEqual(res[1].name(), "lines")
+        self.assertEqual(res[1].description(), "")
+        self.assertEqual(res[1].uri(), "{}/mixed_layers.gpkg|layername=lines".format(TEST_DATA_DIR))
+        self.assertEqual(res[1].providerKey(), "ogr")
+        self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[1].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[1].wkbType(), QgsWkbTypes.MultiLineString)
+        vl = res[1].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiLineString)
+
+        # request feature count
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_layers.gpkg"), Qgis.SublayerQueryFlag.CountFeatures)
+        self.assertEqual(len(res), 2)
+        self.assertEqual(res[0].name(), "points")
+        self.assertEqual(res[0].featureCount(), 0)
+        self.assertEqual(res[1].name(), "lines")
+        self.assertEqual(res[1].featureCount(), 6)
+
+        # layer with mixed geometry types - without resolving geometry types
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "mixed_types")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_types.TAB".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+
+        # layer with mixed geometry types - without resolving geometry types, but with feature count
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"), Qgis.SublayerQueryFlag.CountFeatures)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "mixed_types")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_types.TAB".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), 13)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+
+        # layer with mixed geometry types - resolve geometry type (for OGR provider this implies also that we count features!)
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"), Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 3)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "mixed_types")
+        self.assertEqual(res[0].description(), "")
+        self.assertEqual(res[0].uri(), "{}/mixed_types.TAB|geometrytype=Point".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].featureCount(), 4)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        self.assertEqual(res[1].layerNumber(), 0)
+        self.assertEqual(res[1].name(), "mixed_types")
+        self.assertEqual(res[1].description(), "")
+        self.assertEqual(res[1].uri(), "{}/mixed_types.TAB|geometrytype=LineString".format(TEST_DATA_DIR))
+        self.assertEqual(res[1].providerKey(), "ogr")
+        self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[1].featureCount(), 4)
+        self.assertEqual(res[1].wkbType(), QgsWkbTypes.LineString)
+        vl = res[1].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.LineString)
+
+        self.assertEqual(res[2].layerNumber(), 0)
+        self.assertEqual(res[2].name(), "mixed_types")
+        self.assertEqual(res[2].description(), "")
+        self.assertEqual(res[2].uri(), "{}/mixed_types.TAB|geometrytype=Polygon".format(TEST_DATA_DIR))
+        self.assertEqual(res[2].providerKey(), "ogr")
+        self.assertEqual(res[2].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[2].featureCount(), 3)
+        self.assertEqual(res[2].wkbType(), QgsWkbTypes.Polygon)
+        vl = res[2].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
 
 
 if __name__ == '__main__':

@@ -627,9 +627,10 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
   if ( !mSubLayerList.isEmpty() )
     return mSubLayerList;
 
-  if ( mOgrLayer && ( mIsSubLayer || layerCount() == 1 ) )
+  const size_t totalLayerCount = layerCount();
+  if ( mOgrLayer && ( mIsSubLayer || totalLayerCount == 1 ) )
   {
-    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, mIsSubLayer, dataSourceUri() );
+    mSubLayerList << QgsOgrProviderUtils::querySubLayerList( mLayerIndex, mOgrLayer, mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
   }
   else
   {
@@ -638,7 +639,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
     // reuse the same dataset. Can help in a particular with a FileGDB with
     // the FileGDB driver
     QgsOgrLayerUniquePtr firstLayer;
-    for ( unsigned int i = 0; i < layerCount() ; i++ )
+    for ( size_t i = 0; i < totalLayerCount ; i++ )
     {
       QString errCause;
       QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( mOgrOrigLayer->datasetName(),
@@ -652,7 +653,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProvider::_subLayers( Qgis::SublayerQuer
       if ( !layer )
         continue;
 
-      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, mIsSubLayer, dataSourceUri() );
+      mSubLayerList << QgsOgrProviderUtils::querySubLayerList( i, layer.get(), mGDALDriverName, flags, mIsSubLayer, dataSourceUri(), totalLayerCount == 1 );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );

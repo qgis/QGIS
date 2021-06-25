@@ -2292,7 +2292,7 @@ bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &d
          !( updateMode && dsName.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) );
 }
 
-QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, QgsFeedback *feedback )
+QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int i, QgsOgrLayer *layer, const QString &driverName, Qgis::SublayerQueryFlags flags, bool isSubLayer, const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback )
 {
   QString layerName = QString::fromUtf8( layer->name() );
 
@@ -2329,9 +2329,12 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
 
   QVariantMap parts = QgsOgrProviderMetadata().decodeUri( baseUri );
-  parts.insert( QStringLiteral( "layerName" ), layerName );
+  if ( !hasSingleLayerOnly )
+    parts.insert( QStringLiteral( "layerName" ), layerName );
+  else
+    parts.remove( QStringLiteral( "layerName" ) );
 
-  if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown )
+  if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown || !( flags & Qgis::SublayerQueryFlag::ResolveGeometryType ) )
   {
     const long long layerFeatureCount = flags & Qgis::SublayerQueryFlag::CountFeatures ? layer->GetApproxFeatureCount() : static_cast< long >( Qgis::FeatureCountState::Uncounted );
 
