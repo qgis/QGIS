@@ -180,6 +180,7 @@ class TestQgsLegendRenderer : public QObject
     void testRightAlignTextRightAlignSymbol();
 
     void testGroupHeadingSpacing();
+    void testGroupIndent();
 
     void testMapUnits();
     void testTallSymbol();
@@ -697,6 +698,56 @@ void TestQgsLegendRenderer::testGroupHeadingSpacing()
   _renderLegend( QStringLiteral( "legend_group_heading_spacing" ), &legendModel, settings );
   QVERIFY( _verifyImage( QStringLiteral( "legend_group_heading_spacing" ), mReport ) );
 
+}
+
+void TestQgsLegendRenderer::testGroupIndent()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+
+  QgsLayerTreeGroup *grp2 = mRoot->addGroup( QStringLiteral( "Subgroup" ) );
+  sym->setSize( sym->size() / 6 );
+  grp2->setCustomProperty( QStringLiteral( "legend/title-style" ), QLatin1String( "subgroup" ) );
+  for ( int i = 1; i <= 4; ++i )
+  {
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Layer %1" ).arg( i ), QStringLiteral( "memory" ) );
+    QgsProject::instance()->addMapLayer( vl );
+    vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
+    grp2->addLayer( vl );
+  }
+
+  settings.rstyle( QgsLegendStyle::Group ).setIndent( 10 );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setIndent( 5 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( QStringLiteral( "legend_group_indent" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent" ), mReport ) );
+
+  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  _renderLegend( QStringLiteral( "legend_group_indent_right_align_text" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_text" ), mReport ) );
+
+  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignLeft );
+  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignLeft );
+  settings.setSymbolAlignment( Qt::AlignRight );
+  _renderLegend( QStringLiteral( "legend_group_indent_right_align_symbol" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_symbol" ), mReport ) );
+
+  settings.rstyle( QgsLegendStyle::Group ).setAlignment( Qt::AlignRight );
+  settings.rstyle( QgsLegendStyle::Subgroup ).setAlignment( Qt::AlignRight );
+  settings.rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( Qt::AlignRight );
+  settings.setSymbolAlignment( Qt::AlignRight );
+  _renderLegend( QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ), &legendModel, settings );
+  QVERIFY( _verifyImage( QStringLiteral( "legend_group_indent_right_align_symbol_right_align_text" ), mReport ) );
 }
 
 void TestQgsLegendRenderer::testRightAlignText()

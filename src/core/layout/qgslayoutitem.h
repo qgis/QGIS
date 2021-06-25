@@ -258,6 +258,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendWmsLegendHeight, //!< Legend WMS height
       UndoLegendTitleSpaceBottom, //!< Legend title space
       UndoLegendGroupSpace, //!< Legend group spacing
+      UndoLegendGroupIndent, //!< Legend group indent
+      UndoLegendSubgroupIndent, //!< Legend subgroup indent
       UndoLegendLayerSpace, //!< Legend layer spacing
       UndoLegendSymbolSpace, //!< Legend symbol spacing
       UndoLegendIconSymbolSpace, //!< Legend icon symbol space
