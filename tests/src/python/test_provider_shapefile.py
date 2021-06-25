@@ -34,6 +34,7 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsWkbTypes,
     QgsVectorLayerExporter,
+    Qgis
 )
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
@@ -1085,7 +1086,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(provider.isValid())
         sublayers = provider.subLayers()
         self.assertTrue(len(sublayers) > 1)
-        self.assertEqual(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2], '-1')
+        self.assertEqual(int(sublayers[0].split(QgsDataProvider.sublayerSeparator())[2]), int(Qgis.FeatureCountState.Uncounted))
 
     def testLayersOnSameOGRLayerWithAndWithoutFilter(self):
         """Test fix for https://github.com/qgis/QGIS/issues/43361"""
