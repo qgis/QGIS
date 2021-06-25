@@ -829,6 +829,20 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_raster_nodata.qgz',
                                  raw=True)
 
+    def test_wrong_filter_throws(self):
+        """Test that a wrong FILTER expression throws an InvalidParameterValue exception"""
+
+        _, response_body, _ = self.wms_request(
+            'GetFeatureInfo',
+            '&layers=testlayer%20%C3%A8%C3%A9&' +
+            'INFO_FORMAT=text%2Fxml&' +
+            'width=600&height=400&srs=EPSG%3A3857&' +
+            'query_layers=testlayer%20%C3%A8%C3%A9&' +
+            'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' +
+            urllib.parse.quote(':"XXXXXXXXXNAMEXXXXXXX" = \'two\''))
+
+        self.assertEqual(response_body.decode('utf8'), '<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">\n <ServiceException code="InvalidParameterValue">Filter not valid for layer testlayer èé: check the filter syntax and the field names.</ServiceException>\n</ServiceExceptionReport>\n')
+
 
 if __name__ == '__main__':
     unittest.main()
