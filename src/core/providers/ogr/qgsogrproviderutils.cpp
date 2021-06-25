@@ -2336,7 +2336,9 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
   if ( slowGeomTypeRetrieval || wkbFlatten( layerGeomType ) != wkbUnknown || !( flags & Qgis::SublayerQueryFlag::ResolveGeometryType ) )
   {
-    const long long layerFeatureCount = flags & Qgis::SublayerQueryFlag::CountFeatures ? layer->GetApproxFeatureCount() : static_cast< long >( Qgis::FeatureCountState::Uncounted );
+    const long long layerFeatureCount = ( flags & Qgis::SublayerQueryFlag::CountFeatures )
+                                        ? layer->GetApproxFeatureCount()
+                                        : static_cast< long >( Qgis::FeatureCountState::Uncounted );
 
     QgsProviderSublayerDetails details;
     details.setLayerNumber( i );
