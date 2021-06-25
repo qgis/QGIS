@@ -419,6 +419,7 @@ endif()
 if(NOT MSVC)
   set_source_files_properties(
     ${BISON_QgsRasterCalcParser_OUTPUTS}
+    ${FLEX_QgsRasterCalcLexer_OUTPUTS}
     PROPERTIES COMPILE_FLAGS "-w"
   )
 else()
@@ -427,7 +428,8 @@ else()
     # 4702 unreachable code
     set_source_files_properties(
       ${BISON_QgsRasterCalcParser_OUTPUTS}
-      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
+      ${FLEX_QgsRasterCalcLexer_OUTPUTS}
+      PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702 /W0"
     )
   endif()
 endif()
