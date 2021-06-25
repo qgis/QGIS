@@ -1527,6 +1527,8 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/lines.shp")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(res[0].geometryColumnName(), '')
 
         # make sure result is valid to load layer from
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
@@ -1544,6 +1546,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(res[0].geometryColumnName(), 'geometry')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1556,6 +1559,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[1].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[1].wkbType(), QgsWkbTypes.MultiLineString)
+        self.assertEqual(res[1].geometryColumnName(), 'geom')
         vl = res[1].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiLineString)
@@ -1565,8 +1569,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(res), 2)
         self.assertEqual(res[0].name(), "points")
         self.assertEqual(res[0].featureCount(), 0)
+        self.assertEqual(res[0].geometryColumnName(), 'geometry')
         self.assertEqual(res[1].name(), "lines")
         self.assertEqual(res[1].featureCount(), 6)
+        self.assertEqual(res[1].geometryColumnName(), 'geom')
 
         # layer with mixed geometry types - without resolving geometry types
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"))
@@ -1579,6 +1585,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), Qgis.FeatureCountState.Uncounted)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
 
@@ -1593,6 +1600,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), 13)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
 
         # layer with mixed geometry types - resolve geometry type (for OGR provider this implies also that we count features!)
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "mixed_types.TAB"), Qgis.SublayerQueryFlag.ResolveGeometryType)
@@ -1605,6 +1613,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), 4)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(res[0].geometryColumnName(), '')
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
@@ -1617,6 +1626,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[1].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[1].featureCount(), 4)
         self.assertEqual(res[1].wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(res[1].geometryColumnName(), '')
         vl = res[1].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.LineString)
@@ -1629,6 +1639,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[2].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[2].featureCount(), 3)
         self.assertEqual(res[2].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(res[2].geometryColumnName(), '')
         vl = res[2].toLayer(options)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
