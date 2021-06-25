@@ -111,7 +111,7 @@ Returns the indent (in mm) of a group or subgroup.
 
 .. seealso:: :py:func:`indent`
 
-.. versionadded:: 3.18
+.. versionadded:: 3.22
 %End
 
     void setIndent( double indent );
@@ -120,7 +120,7 @@ Sets the indent (in mm) of a group or subgroup.
 
 .. seealso:: :py:func:`indent`
 
-.. versionadded:: 3.18
+.. versionadded:: 3.22
 %End
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
