@@ -101,16 +101,19 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Registers a property override button, setting up its initial value, connections and description.
      * \param button button to register
      * \param key corresponding data defined property key
+     * \since QGIS 3.22
      */
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key );
 
     /**
      * Updates all property override buttons to reflect the widgets's current properties.
+     * \since QGIS 3.22
      */
     void updateDataDefinedButtons();
 
     /**
      * Updates a specific property override \a button to reflect the widgets's current properties.
+     * \since QGIS 3.22
      */
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
 
