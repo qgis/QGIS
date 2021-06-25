@@ -154,7 +154,7 @@ QgsRasterCalcNode* localParseRasterCalcString(const QString& str, QString& parse
   }
 }
 
-void rastererror(const char* msg)
+void raster_error(const char* msg)
 {
   rParserErrorMsg = msg;
 }
