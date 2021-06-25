@@ -901,7 +901,7 @@ QList<QgsProviderSublayerDetails> QgsProviderRegistry::querySublayers( const QSt
   QList<QgsProviderSublayerDetails> res;
   for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
-    res.append( it->second->querySublayers( uri, flags ) );
+    res.append( it->second->querySublayers( uri, flags, feedback ) );
     if ( feedback && feedback->isCanceled() )
       break;
   }
