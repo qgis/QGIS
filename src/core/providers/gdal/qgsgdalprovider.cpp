@@ -3596,7 +3596,21 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
       if ( !sExtensions.contains( suffix ) )
       {
-        return {};
+        bool matches = false;
+        for ( const QString &wildcard : std::as_const( sWildcards ) )
+        {
+          const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern(
+                QRegularExpression::wildcardToRegularExpression( wildcard )
+              ), QRegularExpression::CaseInsensitiveOption );
+          const QRegularExpressionMatch match = rx.match( info.fileName() );
+          if ( match.hasMatch() )
+          {
+            matches = true;
+            break;
+          }
+        }
+        if ( !matches )
+          return {};
       }
     }
   }
