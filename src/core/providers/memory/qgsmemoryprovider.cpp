@@ -103,7 +103,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // boolean
-                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "boolean" ), QVariant::Bool )
 
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
