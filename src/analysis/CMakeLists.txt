@@ -418,7 +418,7 @@ endif()
 
 if(NOT MSVC)
   set_source_files_properties(
-    ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+    ${BISON_QgsRasterCalcParser_OUTPUTS}
     PROPERTIES COMPILE_FLAGS "-w"
   )
 else()
@@ -426,7 +426,7 @@ else()
     # 4127 expression is constant
     # 4702 unreachable code
     set_source_files_properties(
-      ${CMAKE_BINARY_DIR}/src/analysis/qgsrastercalcparser.cpp
+      ${BISON_QgsRasterCalcParser_OUTPUTS}
       PROPERTIES COMPILE_FLAGS "-wd4127 -wd4702"
     )
   endif()
