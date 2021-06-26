@@ -183,8 +183,8 @@ QgsPointCloudBlock *QgsDisplazPointCloudIndex::nodeData(const IndexedPointCloudN
 	//const std::size_t pointRecordSize = attributes().pointRecordSize();
 //	const std::size_t requestedPointRecordSize = request.attributes().pointRecordSize();
 
-	QgsPointCloudBlock*block;
-	return block ;
+	//QgsPointCloudBlock*block;
+	return nullptr ;
 }
 QgsCoordinateReferenceSystem QgsDisplazPointCloudIndex::crs() const
 {

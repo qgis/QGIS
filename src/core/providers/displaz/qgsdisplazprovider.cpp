@@ -96,6 +96,7 @@ void QgsDisplazProvider::filePointCloudExtensions(QStringList & filePointCloudEx
     filePointCloudExtensions.clear();
     filePointCloudExtensions.append(QString("las"));
     filePointCloudExtensions.append(QString("laz"));
+    filePointCloudExtensions.append(QString("hsp"));
    // QgsDebugMsg("PointCloud extensions list built: " + filePointCloudExtensions.join(QStringLiteral(";;")));
 }
 
@@ -230,6 +231,10 @@ QgsFeatureIterator QgsDisplazFeatureSource::getFeatures(const QgsFeatureRequest 
    {
      return 100;
    }
+   if (fi.suffix().compare(QLatin1String("hsp"), Qt::CaseInsensitive) == 0)
+   {
+     return 100;
+   }
    return 0;
  }
 
@@ -241,7 +246,8 @@ QgsFeatureIterator QgsDisplazFeatureSource::getFeatures(const QgsFeatureRequest 
      return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
    if (fi.suffix().compare(QLatin1String("laz"), Qt::CaseInsensitive) == 0)
      return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
- 
+   if (fi.suffix().compare(QLatin1String("hsp"), Qt::CaseInsensitive) == 0)
+     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
    return QList< QgsMapLayerType>();
  }
  QVariantMap  QgsDisplazProviderMetadata::decodeUri(const QString &uri) const
