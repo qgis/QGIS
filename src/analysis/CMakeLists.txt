@@ -519,6 +519,11 @@ target_link_libraries(
   ${EXIV2_LIBRARY}
   )
 
+if(Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+  target_link_libraries(qgis_analysis ${Boost_LIBRARIES})
+endif()
+
 if(HAVE_OPENCL)
     target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
 endif()

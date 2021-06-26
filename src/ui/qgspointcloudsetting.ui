@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsClassifyLasBaseTableDialog</class>
+ <widget class="QDialog" name="QgsClassifyLasBaseTableDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>922</width>
+    <height>192</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Attribute Table</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <item row="4" column="0">
+    <widget class="QToolBar" name="mToolbar">
+     <property name="iconSize">
+      <size>
+       <width>18</width>
+       <height>18</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionToggleEditing"/>
+     <addaction name="mActionSaveEdits"/>
+     <addaction name="separator"/>
+     <addaction name="m_selectiononprofile"/>
+     <addaction name="m_drawlieonprofile"/>
+     <addaction name="m_drawlieonprofile_2"/>
+     <addaction name="mActionViewInTable"/>
+     <addaction name="mActionPickPoints"/>
+     <addaction name="mActionBrush"/>
+     <addaction name="separator"/>
+     <addaction name="separator"/>
+     <addaction name="mActionDockUndock"/>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTableWidget" name="mTable">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>20</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="autoScrollMargin">
+          <number>5</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Index</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>类别</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>X</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Y</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Z</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Color</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Intensity</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Return Number</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Point Source ID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>FileNumber</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="mActionToggleEditing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle editing mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle editing mode (Ctrl+E)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="mActionSaveEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.svg</normaloff>:/images/themes/default/mActionSaveAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save edits</string>
+   </property>
+   <property name="toolTip">
+    <string>Save edits (Ctrl+S)</string>
+   </property>
+  </action>
+  <action name="mActionSinglePointPen">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/cursors/mSampler.svg</normaloff>:/images/themes/default/cursors/mSampler.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature</string>
+   </property>
+  </action>
+  <action name="mActionBrush">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+   </property>
+   <property name="text">
+    <string>刷子工具</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected features</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all (Ctrl+A)</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Invert selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection (Ctrl+R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionRemoveSelection">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect all features from the layer</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all features from the layer (Ctrl+Shift+A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionViewInTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom map to the selected rows</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom map to the selected rows (Ctrl+J)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+J</string>
+   </property>
+  </action>
+  <action name="mActionPickPoints">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
+   </property>
+   <property name="text">
+    <string>拾取点，并显示在表格中</string>
+   </property>
+   <property name="toolTip">
+    <string>拾取点，并显示在表格中</string>
+   </property>
+  </action>
+  <action name="mActionDockUndock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mDockify.svg</normaloff>:/images/themes/default/mDockify.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Dock Attribute Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Dock Attribute Table</string>
+   </property>
+  </action>
+  <action name="m_selectiononprofile">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/square.png</normaloff>:/images/cc/square.png</iconset>
+   </property>
+   <property name="text">
+    <string>在剖面图上框选点云</string>
+   </property>
+  </action>
+  <action name="m_drawlieonprofile">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/checks/MissingVertex.svg</normaloff>:/images/themes/default/checks/MissingVertex.svg</iconset>
+   </property>
+   <property name="text">
+    <string>分类上侧点</string>
+   </property>
+  </action>
+  <action name="m_drawlieonprofile_2">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/cadtools/perpendicular.svg</normaloff>:/images/themes/default/cadtools/perpendicular.svg</iconset>
+   </property>
+   <property name="text">
+    <string>分类下侧点</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -24,7 +24,6 @@
 
 QgsPointCloudAttributeByRampRenderer::QgsPointCloudAttributeByRampRenderer()
 {
-  mColorRampShader.setSourceColorRamp( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Viridis" ) ) );
 }
 
 QString QgsPointCloudAttributeByRampRenderer::type() const
@@ -178,7 +177,7 @@ void QgsPointCloudAttributeByRampRenderer::renderDisplaz(DrawCount mdrawlist, st
 		}
 	}
 
-	V3f Vertex;
+	V3d Vertex;
 	double attributeValue;
 	int red;
 	int green;
@@ -190,8 +189,10 @@ void QgsPointCloudAttributeByRampRenderer::renderDisplaz(DrawCount mdrawlist, st
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-			Vertex = m_geom->getPointByIndex(*it);
-			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();
+      if ( !m_geom->getPointByIndex(*it, Vertex))
+      {
+        return;
+      }
 			if (is_Z)
 			{
 				attributeValue = Vertex.z;
@@ -295,6 +296,10 @@ QgsColorRampShader QgsPointCloudAttributeByRampRenderer::colorRampShader() const
 void QgsPointCloudAttributeByRampRenderer::setColorRampShader( const QgsColorRampShader &shader )
 {
   mColorRampShader = shader;
+  if (mColorRampShader.isEmpty())
+  {
+    mColorRampShader.classifyColorRamp(10,0);
+  }
 }
 
 double QgsPointCloudAttributeByRampRenderer::minimum() const

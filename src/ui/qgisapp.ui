@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1482</width>
-    <height>506</height>
+    <width>1439</width>
+    <height>804</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1482</width>
-     <height>21</height>
+     <width>1439</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -219,15 +219,6 @@
     <addaction name="actionForest"/>
     <addaction name="menu_EditingTools"/>
    </widget>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>业务</string>
-    </property>
-    <addaction name="action_Forest"/>
-    <addaction name="actionLand_Cover"/>
-    <addaction name="actionCIM"/>
-    <addaction name="actionCAD"/>
-   </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mLayerMenu"/>
    <addaction name="mEditMenu"/>
@@ -235,7 +226,6 @@
    <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
    <addaction name="menuLidar"/>
-   <addaction name="menu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -274,7 +264,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionAllEdits"/>
@@ -294,9 +284,6 @@
    <addaction name="mActionPasteFeatures"/>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
-   <addaction name="mActionSelectFeatures"/>
-   <addaction name="mActionSelectFreehand"/>
-   <addaction name="mActionInvertSelection"/>
   </widget>
   <widget class="QToolBar" name="mMapNavToolBar">
    <property name="windowTitle">
@@ -312,6 +299,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="m_viewinprofile"/>
+   <addaction name="separator"/>
+   <addaction name="m_actionStartDianliXian"/>
    <addaction name="m_actionclassification"/>
    <addaction name="actionactionProfile"/>
    <addaction name="mActionDrawRect"/>
@@ -319,12 +308,12 @@
    <addaction name="mActionDrawAnyrect2D"/>
    <addaction name="separator"/>
    <addaction name="mActionMeasureDistance"/>
-   <addaction name="mActionMeasureAreaReal"/>
    <addaction name="mActionMeasureAngle"/>
-   <addaction name="m_selectiononprofile"/>
+   <addaction name="mActionMeasureAreaReal"/>
    <addaction name="separator"/>
    <addaction name="mActionDraw"/>
    <addaction name="mActionIdentify"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
@@ -459,6 +448,41 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="mPcdEditToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="m_selectiononprofile"/>
+   <addaction name="mActionClassifyByRect"/>
+   <addaction name="mActionClassifyByPologon"/>
+   <addaction name="mActionInvertSelection"/>
+   <addaction name="mActionPickPoints"/>
+   <addaction name="mActionBrush"/>
+   <addaction name="mActionSinglePointPen"/>
+   <addaction name="settargetclass"/>
+   <addaction name="setbeforclass"/>
+   <addaction name="showshaderparameter"/>
+  </widget>
+  <widget class="QToolBar" name="m_DianLIToolBar">
+   <property name="windowTitle">
+    <string>dianliToolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="action_tiqudianlixian"/>
+   <addaction name="action_chongjiandianlixian"/>
+   <addaction name="action_xiubudianlixian"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -2886,7 +2910,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/svg/displaz.svg</normaloff>:/images/svg/displaz.svg</iconset>
    </property>
    <property name="text">
-    <string>openPointCloudFile </string>
+    <string>open point cloud</string>
    </property>
    <property name="toolTip">
     <string>open point cloud</string>
@@ -3252,6 +3276,9 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
   </action>
   <action name="m_selectiononprofile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/cc/square.png</normaloff>:/images/cc/square.png</iconset>
@@ -3539,6 +3566,138 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   <action name="mActionAddPointCloudLayer">
    <property name="text">
     <string>Add Point Cloud Layer...</string>
+   </property>
+  </action>
+  <action name="settargetclass">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/classification_methods/mClassificationStandardDeviation.svg</normaloff>:/images/themes/default/classification_methods/mClassificationStandardDeviation.svg</iconset>
+   </property>
+   <property name="text">
+    <string>打开类型选择</string>
+   </property>
+   <property name="toolTip">
+    <string>打开类型选择</string>
+   </property>
+  </action>
+  <action name="setbeforclass">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/classification_methods/mClassificationEqualCount.svg</normaloff>:/images/themes/default/classification_methods/mClassificationEqualCount.svg</iconset>
+   </property>
+   <property name="text">
+    <string>关闭类型选择</string>
+   </property>
+   <property name="toolTip">
+    <string>关闭类型选择</string>
+   </property>
+  </action>
+  <action name="showshaderparameter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/ccGear.png</normaloff>:/images/cc/ccGear.png</iconset>
+   </property>
+   <property name="text">
+    <string>shaderparameter</string>
+   </property>
+  </action>
+  <action name="mActionPickPoints">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
+   </property>
+   <property name="text">
+    <string>拾取点，并显示在表格中</string>
+   </property>
+   <property name="toolTip">
+    <string>拾取点，并显示在表格中</string>
+   </property>
+  </action>
+  <action name="mActionBrush">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+   </property>
+   <property name="text">
+    <string>刷子工具</string>
+   </property>
+   <property name="toolTip">
+    <string>刷子</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionSinglePointPen">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/cursors/mSampler.svg</normaloff>:/images/themes/default/cursors/mSampler.svg</iconset>
+   </property>
+   <property name="text">
+    <string>刻刀工具</string>
+   </property>
+   <property name="toolTip">
+    <string>刻刀工具</string>
+   </property>
+  </action>
+  <action name="mActionClassifyByRect">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectRectangle.svg</normaloff>:/images/themes/default/mActionSelectRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>mActionClassifyByRect</string>
+   </property>
+   <property name="toolTip">
+    <string>Classify By Rect</string>
+   </property>
+  </action>
+  <action name="mActionClassifyByPologon">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectPolygon.svg</normaloff>:/images/themes/default/mActionSelectPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>mActionClassifyByPologon</string>
+   </property>
+   <property name="toolTip">
+    <string>Classify By Pologon</string>
+   </property>
+  </action>
+  <action name="action_tiqudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/cc/mapIcon.png</normaloff>:/images/cc/mapIcon.png</iconset>
+   </property>
+   <property name="text">
+    <string>电力线提取</string>
+   </property>
+  </action>
+  <action name="action_chongjiandianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmFuzzifyGaussian.svg</iconset>
+   </property>
+   <property name="text">
+    <string>电力线重建</string>
+   </property>
+  </action>
+  <action name="action_xiubudianlixian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/north_arrows/gpsarrow2.svg</normaloff>:/images/north_arrows/gpsarrow2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>模型离散化</string>
+   </property>
+  </action>
+  <action name="m_actionStartDianliXian">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/algorithms/mAlgorithmLineDensity.svg</normaloff>:/images/themes/default/algorithms/mAlgorithmLineDensity.svg</iconset>
+   </property>
+   <property name="text">
+    <string>m_actionStartDianliXian</string>
    </property>
   </action>
  </widget>

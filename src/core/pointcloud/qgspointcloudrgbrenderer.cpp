@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -200,7 +200,7 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 			color = field.as<uint16_t>();
 		}
 	}
-	V3f Vertex;
+	V3d Vertex;
 	uint16_t red;
 	uint16_t green;
 	uint16_t blue;
@@ -209,8 +209,13 @@ void QgsPointCloudRgbRenderer::renderDisplaz(DrawCount mdrawlist, std::shared_pt
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-			Vertex = m_geom->getPointByIndex(*it);
-			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();
+      if (!m_geom->getPointByIndex(*it, Vertex))
+      {
+        return;
+      } 
+			//V3f Vertex = V3f(m_P[*it]) + m_geom->offset();+
+
+
 			 red = color[(*it) * 3] / 100;
 			 green = color[(*it) * 3 + 1] / 100;
 			blue = color[(*it) * 3 + 2] / 100;

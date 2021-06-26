@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -53,6 +53,7 @@ QgsDisplazProvider::QgsDisplazProvider(
     profile = qgis::make_unique< QgsScopedRuntimeProfile >(tr("Open data source"), QStringLiteral("projectload"));
 
   mIsValid = mIndex->load(uri);
+  //m_geom = mIndex->getgeom();
 }
 
 QgsDisplazProvider::~QgsDisplazProvider()
@@ -68,7 +69,17 @@ QgsCoordinateReferenceSystem QgsDisplazProvider::crs() const
 
 QgsRectangle QgsDisplazProvider::extent() const
 {
-  return mIndex->extent();
+  std::shared_ptr<Geometry> m_geom = mIndex->getgeom();
+  if (m_geom)
+  {
+   // m_geom->
+    return QgsRectangle(m_geom->boundingBox().min.x, m_geom->boundingBox().min.y, m_geom->boundingBox().max.x, m_geom->boundingBox().max.y);
+  }
+  else
+  {
+    return mIndex->extent();
+  }
+ 
 }
 
 QgsPointCloudAttributeCollection QgsDisplazProvider::attributes() const
@@ -178,6 +189,8 @@ QGISEXTERN QgsDisplazProvider *classFactory(const QString *uri, const QgsDataPro
 	sFileFilters += createFileFilter_(QObject::tr("Lidar Point Cloud Data"), QStringLiteral("*.las"));
 
 	sFileFilters += createFileFilter_(QObject::tr("Lidar Point Cloud Data"), QStringLiteral("*.laz"));
+
+  sFileFilters += createFileFilter_(QObject::tr("Hyperspectral Lidar Point Cloud Data"), QStringLiteral("*.hsp"));
 
 	return sFileFilters;
 }

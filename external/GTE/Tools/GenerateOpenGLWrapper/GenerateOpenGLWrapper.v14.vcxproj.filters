@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GL Headers">
+      <UniqueIdentifier>{d114a534-8440-42c3-8f3a-dec5c002fbf9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Initialize.txt" />
+    <Text Include="Version.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="glcorearb.h">
+      <Filter>GL Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="glext.h">
+      <Filter>GL Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="glxext.h">
+      <Filter>GL Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="wglext.h">
+      <Filter>GL Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="GL45.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GenerateOpenGLWrapper.cpp" />
+  </ItemGroup>
+</Project>

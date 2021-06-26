@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
-	void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) override;
+	  void renderDisplaz(DrawCount mdrawlist, std::shared_ptr<Geometry> m_geom, QgsPointCloudRenderContext &context) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
 
     QString mAttribute = QStringLiteral( "Intensity" );
     QgsColorRampShader mColorRampShader;
-
+  
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERER_H

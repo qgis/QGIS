@@ -6,10 +6,10 @@
     email                : zilolv at gmail dot com
  ***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   *
+ *  
+ *        *
+ *                                     *
  *                                                                         *
  ***************************************************************************/
 
@@ -76,7 +76,7 @@ private:
   std::unique_ptr<QgsDisplazPointCloudIndex> mIndex;
   bool mIsValid = false;
 
-	std::shared_ptr<Geometry>  m_geom;
+//	std::shared_ptr<Geometry>  m_geom;  读取线程慢，const 函数中不能修改 弃用 
 };
 
 
