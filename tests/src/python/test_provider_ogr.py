@@ -1644,6 +1644,51 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
 
+        # spatialite
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, "provider/spatialite.db"))
+        self.assertCountEqual([{'name': r.name(),
+                                'description': r.description(),
+                                'uri': r.uri(),
+                                'providerKey': r.providerKey(),
+                                'wkbType': r.wkbType(),
+                                'geomColName': r.geometryColumnName()} for r in res],
+                              [{'name': 'somedata',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=somedata'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 1,
+                                'geomColName': 'geom'},
+                               {'name': 'somepolydata',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=somepolydata'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 6,
+                                'geomColName': 'geom'},
+                               {'name': 'some data',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=some data'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 1,
+                                'geomColName': 'geom'},
+                               {'name': 'validator_project_test',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=validator_project_test'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 1,
+                                'geomColName': 'geom'},
+                               {'name': 'data_licenses',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=data_licenses'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 100,
+                                'geomColName': ''},
+                               {'name': 'some view',
+                                'description': '',
+                                'uri': '{}/provider/spatialite.db|layername=some view'.format(TEST_DATA_DIR),
+                                'providerKey': 'ogr',
+                                'wkbType': 100,
+                                'geomColName': ''}])
+
 
 if __name__ == '__main__':
     unittest.main()

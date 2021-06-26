@@ -2303,6 +2303,18 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     // qgis_projects (coming from http://plugins.qgis.org/plugins/QgisGeopackage/)
     return {};
   }
+
+  QStringList skippedLayerNames;
+  if ( driverName == QLatin1String( "SQLite" ) )
+  {
+    skippedLayerNames = QgsSqliteUtils::systemTables();
+  }
+  if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geom(etry)?($|_.*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption ) ) )
+       || skippedLayerNames.contains( layerName ) )
+  {
+    return {};
+  }
+
   // Get first column name,
   // TODO: add support for multiple
   QString geometryColumnName;
