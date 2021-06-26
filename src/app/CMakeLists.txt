@@ -119,7 +119,6 @@ set(QGIS_APP_SRCS
   pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
   qgsprofilewindowdockwidget.cpp
-  qgsdlwindowdockwidget.cpp
   vectortile/qgsvectortilelayerproperties.cpp
 
   vertextool/qgslockedfeature.cpp
@@ -510,12 +509,6 @@ include_directories(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
-IF(WITH_GTE )
-      include_directories(${CMAKE_SOURCE_DIR}/external/GTE)
-	    include_directories(${CMAKE_SOURCE_DIR}/external/GTE/Apprpolynomial3)
-      #link_directories(${CMAKE_BINARY_DIR}/external/GTE/Apprpolynomial3/${CMAKE_BUILD_TYPE})
-ENDIF()
-
 include_directories(
   ../analysis/processing
   ../analysis/raster
@@ -569,13 +562,13 @@ include_directories(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${Qt5OpenGL_INCLUDE_DIRS}
-  E:/code/displaz-master/src
-  E:/code/displaz-master/src/render
-  E:/code/displaz-master/src/gui
-  E:/code/displaz-master/build_external/dist/include
-  E:/code/displaz-master/build_external/dist/include/OpenEXR
-  E:/code/displaz-master/thirdparty/glew
-  E:/code/displaz-master/thirdparty
+  I:/tst/ccgis/displaz-master/displaz-master/src
+  I:/tst/ccgis/displaz-master/displaz-master/src/render
+  I:/tst/ccgis/displaz-master/displaz-master/src/gui
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include
+  I:/tst/ccgis/displaz-master/displaz-master/build_external/dist/include/OpenEXR
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty/glew
+  I:/tst/ccgis/displaz-master/displaz-master/thirdparty
 )
 
 if(HAVE_OPENCL)
@@ -637,13 +630,7 @@ target_link_libraries(qgis_app
   Half.lib
   displaz.lib
   embeddedGLEW.lib
-  polynomial3CurveFitter
 )
-
-if(Boost_FOUND)
-include_directories(${Boost_INCLUDE_DIRS})
-target_link_libraries(qgis_app ${Boost_LIBRARIES})
-endif()
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 

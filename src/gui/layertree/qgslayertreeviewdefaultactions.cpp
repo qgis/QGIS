@@ -6,10 +6,10 @@
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
- *   *
- *  
- *        *
- *                                     *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -94,7 +94,6 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
   connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
-
   return a;
 }
 
@@ -291,7 +290,6 @@ void QgsLayerTreeViewDefaultActions::zoomToLayer( QgsMapCanvas *canvas )
   QList<QgsMapLayer *> layers;
   layers << layer;
   zoomToLayers( canvas, layers );
-  emit ZoomToLayerHappend();
 }
 
 void QgsLayerTreeViewDefaultActions::zoomToSelection( QgsMapCanvas *canvas )

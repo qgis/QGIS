@@ -6,10 +6,10 @@
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
- *   *
- *  
- *        *
- *                                     *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudrendererregistry.h"
@@ -22,7 +22,6 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudextentrenderer.h"
 
-#include "qgsstyle.h"
 QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
@@ -162,22 +161,17 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   // set initial range for z values if possible
   const QVariant zMin = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
   const QVariant zMax = provider->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
-
+  if ( zMin.isValid() && zMax.isValid() )
+  {
     renderer->setMinimum( zMin.toDouble() );
     renderer->setMaximum( zMax.toDouble() );
 
     QgsColorRampShader shader = renderer->colorRampShader();
-    shader.setSourceColorRamp(QgsStyle::defaultStyle()->colorRamp(QStringLiteral("Viridis")));
-    shader.setColorRampType(QLatin1String("DISCRETE"));
-    if (zMin.isValid() && zMax.isValid())
-    {
-      shader.setMinimumValue(zMin.toDouble());
-      shader.setMaximumValue(zMax.toDouble());
-    }
-   // shader.classifyColorRamp(52, -1, QgsRectangle(0, 0, 0, 0), nullptr);
-    shader.setClip(true);
+    shader.setMinimumValue( zMin.toDouble() );
+    shader.setMaximumValue( zMax.toDouble() );
+    shader.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
     renderer->setColorRampShader( shader );
-  
+  }
   return renderer.release();
 }
 

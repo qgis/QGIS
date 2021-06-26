@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   *
- *  
- *        *
- *                                     *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -87,7 +87,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), QgsColorRampShader::Discrete );
   mColorInterpolationComboBox->addItem( tr( "Linear" ), QgsColorRampShader::Interpolated );
   mColorInterpolationComboBox->addItem( tr( "Exact" ), QgsColorRampShader::Exact );
-  mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Discrete) );
+  mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
 
   mClassificationModeComboBox->addItem( tr( "Continuous" ), QgsColorRampShader::Continuous );
   mClassificationModeComboBox->addItem( tr( "Equal Interval" ), QgsColorRampShader::EqualInterval );

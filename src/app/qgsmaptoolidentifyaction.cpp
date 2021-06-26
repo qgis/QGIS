@@ -6,10 +6,10 @@
     email                : wonder.sk at gmail dot com
  ***************************************************************************
  *                                                                         *
- *   *
- *  
- *        *
- *                                     *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -109,31 +109,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   tableDialog->show();
 }
 
-double gaussrand()
-{
-  static double V1, V2, S;
-  static int phase = 0;
-  double X;
 
-  if (phase == 0) {
-    do {
-      double U1 = (double)rand() / RAND_MAX;
-      double U2 = (double)rand() / RAND_MAX;
-
-      V1 = 2 * U1 - 1;
-      V2 = 2 * U2 - 1;
-      S = V1 * V1 + V2 * V2;
-    } while (S >= 1 || S == 0);
-
-    X = V1 * sqrt(-2 * log(S) / S);
-  }
-  else
-    X = V2 * sqrt(-2 * log(S) / S);
-
-  phase = 1 - phase;
-
-  return X;
-}
 void QgsMapToolIdentifyAction::identifyFromGeometry()
 {
   resultsDialog()->clear();
@@ -160,47 +136,7 @@ void QgsMapToolIdentifyAction::identifyFromGeometry()
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( geometry, mode, AllLayers, identifyContext );
 
   disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
-  if (results.isEmpty())
-  {
-    if (mCanvas->currentLayer()->dataProvider()->name() == "displaz")
-    {
-      IdentifyResult result;
-      result.mLayer = mCanvas->currentLayer();
-      for (int  i = 0; i < 149; i++)
-      {
-        QString band("B:");
-        QString num = QString::number(i,1000);
-        double Z = gaussrand();
-        double sd = 100;
-        double X = 600 + (Z * sd);
-        QString spec = QString::number(X,1000,2);
 
-        result.mDerivedAttributes.insert(band.append(num),spec);
-      }
-      for (int i = 0; i < 100; i++)
-      {
-        ///boxing
-        QString band("W:");
-        QString num = QString::number(i, 1000);
-        double Z = gaussrand();
-        double sd = 50;
-        double X;
-        if (40<i<60)
-        {
-          X = 1000-100*abs((50-i));
-        }
-        if (X<0)
-        {
-          X =  abs((50 - i));
-        }
-        X = X + (Z * sd);
-        QString wave = QString::number(X, 1000, 2);
-
-        result.mAttributes.insert(band.append(num), wave);
-      }
-      results.append(result);
-    }
-  }
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();

@@ -35,8 +35,6 @@
 #include <QUrl>
 #include "qgis_app.h"
 
-#include "qgspointcloudlayer.h"
-
 class QCloseEvent;
 class QTreeWidgetItem;
 class QAction;
@@ -48,7 +46,6 @@ class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
 class QgsMeshLayer;
-
 class QgsDockWidget;
 class QgsMapLayerAction;
 class QgsEditorWidgetSetup;
@@ -140,7 +137,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void addFeature( QgsVectorLayer *layer,
                      const QgsFeature &f,
                      const QMap< QString, QString > &derivedAttributes );
-    void addFeature(QgsPointCloudLayer *layer, const QMap<QString, QString> &Attributes, const QMap< QString, QString > &derivedAttributes);
+
     //! Adds feature from raster layer
     void addFeature( QgsRasterLayer *layer,
                      const QString &label,
@@ -150,7 +147,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QgsFeature &feature = QgsFeature(),
                      const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
-    
     /**
      * Adds results from mesh layer
      * \since QGIS 3.6

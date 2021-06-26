@@ -8,10 +8,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   *
- *  
- *        *
- *                                     *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
@@ -175,14 +175,14 @@ void QgsPointCloudClassifiedRenderer::renderDisplaz(DrawCount mdrawlist, std::sh
 		}
 	}
 
-	V3d Vertex;
+	V3f Vertex;
 	 QColor color;
 	while (mdrawlist.index.size() > decimal_step && mdrawlist.numVertices>1)
 	{
 		std::list<size_t>::iterator it = mdrawlist.index.begin();
 		try
 		{
-      if (!m_geom->getPointByIndex(*it, Vertex)) { return; };
+			Vertex = m_geom->getPointByIndex(*it);
 			attributeValue = classification[(*it)];
 			color = colors.value(attributeValue);
 			drawPoint(Vertex.x, Vertex.y, color, context);

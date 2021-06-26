@@ -28,6 +28,5 @@ target_link_libraries(qgiscrashhandler
   dbghelp
 )
 
-
 install(CODE "message(\"Installing crashhandler ...\")")
 install(TARGETS qgiscrashhandler RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})

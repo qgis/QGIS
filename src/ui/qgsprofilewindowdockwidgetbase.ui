@@ -52,8 +52,6 @@
       <addaction name="mActionZoomToSelected"/>
       <addaction name="mActionTurnLeft"/>
       <addaction name="mActionTurnRight"/>
-      <addaction name="actionmActionUpCenter"/>
-      <addaction name="actionmActionDownCenter"/>
       <addaction name="m_selectiononprofile"/>
       <addaction name="m_drawlieonprofile"/>
       <addaction name="m_drawlieonprofile_2"/>
@@ -321,27 +319,6 @@
    </property>
    <property name="text">
     <string>Pan Map</string>
-   </property>
-  </action>
-  <action name="actionmActionUpCenter">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
-   </property>
-   <property name="text">
-    <string>mActionUpCenter</string>
-   </property>
-  </action>
-  <action name="actionmActionDownCenter">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
-   </property>
-   <property name="text">
-    <string>mActionDownCenter</string>
-   </property>
-   <property name="toolTip">
-    <string>mActionDownCenter</string>
    </property>
   </action>
  </widget>

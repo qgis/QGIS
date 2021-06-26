@@ -3,27 +3,27 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
 
 # providers with implemented both static and dynamic building
-# add_subdirectory(wms)
+add_subdirectory(wms)
 if (POSTGRES_FOUND)
- #  add_subdirectory(postgres)
+  add_subdirectory(postgres)
 endif()
 
 if (NOT FORCE_STATIC_PROVIDERS)
  # add_subdirectory(arcgisrest)
- #  add_subdirectory(delimitedtext)
- #  add_subdirectory(geonode)
+  add_subdirectory(delimitedtext)
+  add_subdirectory(geonode)
   add_subdirectory(mssql)
   #add_subdirectory(ows)
  # add_subdirectory(wcs)
   #add_subdirectory(gpx)
- #  add_subdirectory(wfs)
+  add_subdirectory(wfs)
   #add_subdirectory(spatialite)
   #add_subdirectory(virtual)
   add_subdirectory(db2)
   #add_subdirectory(mdal)
 
   if (WITH_ORACLE)
-  #  add_subdirectory(oracle)
+   add_subdirectory(oracle)
   endif()
 
   if (WITH_PDAL)

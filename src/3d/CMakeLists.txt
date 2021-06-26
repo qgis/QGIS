@@ -273,11 +273,6 @@ endif()
 
 target_link_libraries(qgis_3d qgis_core)
 
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  target_link_libraries(qgis_3d ${Boost_LIBRARIES})
-endif()
-
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(
