@@ -1077,6 +1077,26 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
       res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
     }
+
+    // if all layernames are equal, we remove them from the uris
+    QSet< QString > layerNames;
+    for ( const QgsProviderSublayerDetails &details : std::as_const( res ) )
+    {
+      const QVariantMap parts = decodeUri( details.uri() );
+      layerNames.insert( parts.value( QStringLiteral( "layerName" ) ).toString() );
+    }
+
+    if ( layerNames.count() == 1 )
+    {
+      // all layer names are the same, so remove them from uris
+      for ( int i = 0; i < res.size(); ++i )
+      {
+        QVariantMap parts = decodeUri( res.at( i ).uri() );
+        parts.remove( QStringLiteral( "layerName" ) );
+        res[ i ].setUri( encodeUri( parts ) );
+      }
+    }
+
     return res;
   }
 }
