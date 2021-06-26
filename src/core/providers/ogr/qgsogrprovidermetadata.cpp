@@ -1031,8 +1031,6 @@ bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 
 QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
-  QStringList skippedLayerNames;
-
   QStringList options { QStringLiteral( "@LIST_ALL_TABLES=YES" ) };
 
   QString errCause;
@@ -1041,10 +1039,6 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     return {};
 
   const QString driverName = firstLayer->driverName();
-  if ( driverName == QLatin1String( "SQLite" ) )
-  {
-    skippedLayerNames = QgsSqliteUtils::systemTables();
-  }
 
   const int layerCount = firstLayer->GetLayerCount();
 
