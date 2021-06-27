@@ -3031,7 +3031,15 @@ namespace QgsWms
             newSubsetString.prepend( filteredLayer->subsetString() );
             newSubsetString.prepend( "(" );
           }
-          filteredLayer->setSubsetString( newSubsetString );
+          if ( ! filteredLayer->setSubsetString( newSubsetString ) )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Error setting subset string from filter for layer %1, filter: %2" ).arg( layer->name(), newSubsetString ),
+                                       QStringLiteral( "Server" ),
+                                       Qgis::MessageLevel::Warning );
+            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                          QStringLiteral( "Filter not valid for layer %1: check the filter syntax and the field names." ).arg( layer->name() ) );
+
+          }
         }
       }
 
