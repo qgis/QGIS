@@ -395,6 +395,18 @@ QString QgsVirtualRasterProvider::formulaString()
     return mFormulaString;
 }
 
+QVariantMap QgsVirtualRasterProviderMetadata::decodeUri( const QString &uri ) const
+{
+  return QVariantMap();
+  //return  QgsCoreClassWhereIwroteTheMethod ::decodeUri( uri );
+}
+
+QString QgsVirtualRasterProviderMetadata::encodeUri(  const QVariantMap &parts ) const
+{
+    return QString();
+    //return  QgsCoreClassWhereIwroteTheMethod ::encodeUri( parts );
+}
+
 QGISEXTERN QgsVirtualRasterProviderMetadata *providerMetadataFactory()
 {
   return new QgsVirtualRasterProviderMetadata();
