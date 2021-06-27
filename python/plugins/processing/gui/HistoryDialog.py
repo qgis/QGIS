@@ -134,6 +134,10 @@ class HistoryDialog(BASE, WIDGET):
     def fillTree(self):
         self.tree.clear()
         entries = ProcessingLog.getLogEntries()
+
+        if not entries:
+            return
+
         names = {}
         icons = {}
         group_items = []
