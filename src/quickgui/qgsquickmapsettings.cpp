@@ -21,6 +21,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 
 QgsQuickMapSettings::QgsQuickMapSettings( QObject *parent )
   : QObject( parent )
@@ -241,7 +242,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
   if ( !foundTheMapCanvas )
   {
     mMapSettings.setDestinationCrs( mProject->crs() );
-    mMapSettings.setExtent( mMapSettings.fullExtent() );
+    mMapSettings.setExtent( mProject->viewSettings()->fullExtent() );
   }
 
   mMapSettings.setRotation( 0 );
