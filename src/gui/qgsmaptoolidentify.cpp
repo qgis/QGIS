@@ -56,6 +56,7 @@
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgssymbol.h"
+#include "qgsmultilinestring.h"
 
 #include <QMouseEvent>
 #include <QCursor>
@@ -806,6 +807,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
 
   if ( geometryType == QgsWkbTypes::LineGeometry )
   {
+    const QgsAbstractGeometry *geom = feature.geometry().constGet();
+
     double dist = calc.measureLength( feature.geometry() );
     dist = calc.convertLengthMeasurement( dist, displayDistanceUnits() );
     QString str;
@@ -814,45 +817,50 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       str = formatDistance( dist );
       derivedAttributes.insert( tr( "Length (Ellipsoidal — %1)" ).arg( ellipsoid ), str );
     }
-    str = formatDistance( feature.geometry().constGet()->length()
+
+    str = formatDistance( geom->length()
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
-    if ( !QgsWkbTypes::hasZ( feature.geometry().wkbType() ) )
-      derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
-    else
-      derivedAttributes.insert( tr( "Length (Cartesian — 2D)" ), str );
-    if ( QgsWkbTypes::hasZ( feature.geometry().wkbType() ) && QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
+    if ( QgsWkbTypes::hasZ( geom->wkbType() )
+         && QgsWkbTypes::flatType( QgsWkbTypes::singleType( geom->wkbType() ) ) == QgsWkbTypes::LineString )
     {
-      str = formatDistance( qgsgeometry_cast< const QgsLineString * >( feature.geometry().constGet() )->length3D()
-                            * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
+      // 3d linestring (or multiline)
+      derivedAttributes.insert( tr( "Length (Cartesian — 2D)" ), str );
+
+      double totalLength3d = std::accumulate( geom->const_parts_begin(), geom->const_parts_end(), 0.0, []( double total, const QgsAbstractGeometry * part )
+      {
+        return total + qgsgeometry_cast< const QgsLineString * >( part )->length3D();
+      } );
+
+      str = formatDistance( totalLength3d, cartesianDistanceUnits );
       derivedAttributes.insert( tr( "Length (Cartesian — 3D)" ), str );
     }
-
-    const QgsAbstractGeometry *geom = feature.geometry().constGet();
-    if ( geom )
+    else
     {
-      str = QLocale().toString( geom->nCoordinates() );
-      derivedAttributes.insert( tr( "Vertices" ), str );
-      if ( !layerPoint.isEmpty() )
-      {
-        //add details of closest vertex to identify point
-        closestVertexAttributes( *geom, vId, layer, derivedAttributes );
-        closestPointAttributes( *geom, layerPoint, derivedAttributes );
-      }
+      derivedAttributes.insert( tr( "Length (Cartesian)" ), str );
+    }
 
-      if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
-      {
-        // Add the start and end points in as derived attributes
-        QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
-        str = formatXCoordinate( pnt );
-        derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
-        str = formatYCoordinate( pnt );
-        derivedAttributes.insert( tr( "firstY" ), str );
-        pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->endPoint().x(), curve->endPoint().y() ) );
-        str = formatXCoordinate( pnt );
-        derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
-        str = formatYCoordinate( pnt );
-        derivedAttributes.insert( tr( "lastY" ), str );
-      }
+    str = QLocale().toString( geom->nCoordinates() );
+    derivedAttributes.insert( tr( "Vertices" ), str );
+    if ( !layerPoint.isEmpty() )
+    {
+      //add details of closest vertex to identify point
+      closestVertexAttributes( *geom, vId, layer, derivedAttributes );
+      closestPointAttributes( *geom, layerPoint, derivedAttributes );
+    }
+
+    if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
+    {
+      // Add the start and end points in as derived attributes
+      QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
+      str = formatXCoordinate( pnt );
+      derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
+      str = formatYCoordinate( pnt );
+      derivedAttributes.insert( tr( "firstY" ), str );
+      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->endPoint().x(), curve->endPoint().y() ) );
+      str = formatXCoordinate( pnt );
+      derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
+      str = formatYCoordinate( pnt );
+      derivedAttributes.insert( tr( "lastY" ), str );
     }
   }
   else if ( geometryType == QgsWkbTypes::PolygonGeometry )
