@@ -98,6 +98,8 @@ void QgsQuickMapCanvasMap::refreshMap()
   stopRendering(); // if any...
 
   QgsMapSettings mapSettings = mMapSettings->mapSettings();
+  if ( !mapSettings.hasValidSettings() )
+    return;
 
   //build the expression context
   QgsExpressionContext expressionContext;
