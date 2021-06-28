@@ -28,7 +28,8 @@ class QgsExternalStorage;
  * \ingroup core
  * \brief Registry of external storage backends used by QgsExternalResourceWidget
  *
- * This is a singleton that should be accessed through QgsApplication::externalStorageRegistry().
+ * QgsExternalStorageRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::projectStorageRegistry().
  *
  * \since QGIS 3.22
  */

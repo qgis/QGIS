@@ -15,7 +15,8 @@ class QgsExternalStorageRegistry
 %Docstring(signature="appended")
 Registry of external storage backends used by :py:class:`QgsExternalResourceWidget`
 
-This is a singleton that should be accessed through :py:func:`QgsApplication.externalStorageRegistry()`.
+:py:class:`QgsExternalStorageRegistry` is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.projectStorageRegistry()`.
 
 .. versionadded:: 3.22
 %End
