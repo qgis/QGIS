@@ -383,7 +383,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       convertedSize = std::min( convertedSize, scale.maxSizeMM * mScaleFactor );
   }
 
-  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 1 ? mSymbologyReferenceScale / mRendererScale : 1;
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
   convertedSize *= symbologyReferenceScaleFactor;
 
   return convertedSize;
@@ -393,7 +393,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 {
   double mup = mMapToPixel.mapUnitsPerPixel();
 
-  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 1 ? mSymbologyReferenceScale / mRendererScale : 1;
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( unit )
   {
@@ -458,7 +458,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const
 {
   double mup = mMapToPixel.mapUnitsPerPixel();
-  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 1 ? mSymbologyReferenceScale / mRendererScale : 1;
+  const double symbologyReferenceScaleFactor = mSymbologyReferenceScale > 0 ? mSymbologyReferenceScale / mRendererScale : 1;
 
   switch ( outputUnit )
   {
