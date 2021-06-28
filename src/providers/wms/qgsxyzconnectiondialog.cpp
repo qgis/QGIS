@@ -16,6 +16,7 @@
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsxyzsourcewidget.h"
 
 #include <QMessageBox>
