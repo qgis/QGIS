@@ -62,9 +62,6 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileSourceSelect::showHelp );
   setupButtons( buttonBox );
 
-  // disable help button until we got an entry in the docs
-  buttonBox->button( QDialogButtonBox::Help )->setEnabled( false );
-
   populateConnectionList();
 }
 
@@ -205,6 +202,7 @@ void QgsVectorTileSourceSelect::cmbConnections_currentTextChanged( const QString
 
 void QgsVectorTileSourceSelect::showHelp()
 {
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
 }
 
 ///@endcond
