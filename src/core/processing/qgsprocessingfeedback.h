@@ -174,13 +174,13 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
      * number of \a steps. This feedback object will proxy calls
      * to the specified \a feedback object.
      */
-    QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
+    QgsProcessingMultiStepFeedback( size_t steps, QgsProcessingFeedback *feedback );
 
     /**
      * Sets the \a step which is being executed. This is used
      * to scale the current progress to account for progress through the overall process.
      */
-    void setCurrentStep( int step );
+    void setCurrentStep( size_t step );
 
     void setProgressText( const QString &text ) override;
     void reportError( const QString &error, bool fatalError = false ) override;
@@ -197,8 +197,8 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
 
   private:
 
-    int mChildSteps = 0;
-    int mCurrentStep = 0;
+    std::size_t mChildSteps = 0;
+    std::size_t mCurrentStep = 0;
     QgsProcessingFeedback *mFeedback = nullptr;
 
 };

@@ -150,7 +150,7 @@ QString QgsProcessingFeedback::textLog() const
 }
 
 
-QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
+QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( std::size_t childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )
   , mFeedback( feedback )
 {
@@ -158,10 +158,10 @@ QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorit
   connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingMultiStepFeedback::updateOverallProgress );
 }
 
-void QgsProcessingMultiStepFeedback::setCurrentStep( int step )
+void QgsProcessingMultiStepFeedback::setCurrentStep( std::size_t step )
 {
   mCurrentStep = step;
-  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
+  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / static_cast< double >( mChildSteps ) );
 }
 
 void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )

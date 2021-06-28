@@ -108,7 +108,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   std::vector< Feature > clusterFeatures;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
-  QHash< QgsFeatureId, int > idToObj;
+  QHash< QgsFeatureId, size_t > idToObj;
   while ( features.nextFeature( feat ) )
   {
     i++;
@@ -136,7 +136,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     n++;
 
-    idToObj[ feat.id() ] = static_cast<int>( clusterFeatures.size() );
+    idToObj[ feat.id() ] = clusterFeatures.size();
     clusterFeatures.emplace_back( Feature( point ) );
   }
 
@@ -159,7 +159,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   // cluster size
   std::unordered_map< int, int> clusterSize;
-  for ( int obj : idToObj )
+  for ( size_t obj : idToObj )
     clusterSize[ clusterFeatures[ obj ].cluster ]++;
 
   features = source->getFeatures();

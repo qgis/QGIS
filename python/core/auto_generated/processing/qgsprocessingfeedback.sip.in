@@ -172,14 +172,14 @@ for a number of child steps which each report their own feedback.
 %End
   public:
 
-    QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
+    QgsProcessingMultiStepFeedback( size_t steps, QgsProcessingFeedback *feedback );
 %Docstring
 Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
 number of ``steps``. This feedback object will proxy calls
 to the specified ``feedback`` object.
 %End
 
-    void setCurrentStep( int step );
+    void setCurrentStep( size_t step );
 %Docstring
 Sets the ``step`` which is being executed. This is used
 to scale the current progress to account for progress through the overall process.

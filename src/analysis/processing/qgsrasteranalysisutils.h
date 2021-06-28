@@ -118,22 +118,22 @@ namespace QgsRasterAnalysisUtils
   /**
    * Returns the arithmetic mean from a vector of cell values
    */
-  double meanFromCellValues( std::vector<double> &cellValues, int stackSize );
+  double meanFromCellValues( std::vector<double> &cellValues, std::size_t stackSize );
 
   /**
    * Returns the median from a vector of cell values
    */
-  double medianFromCellValues( std::vector<double> &cellValues, int stackSize );
+  double medianFromCellValues( std::vector<double> &cellValues, std::size_t stackSize );
 
   /**
    * Returns the standard deviation from a vector of cell values
    */
-  double stddevFromCellValues( std::vector<double> &cellValues, int stackSize );
+  double stddevFromCellValues( std::vector<double> &cellValues, std::size_t stackSize );
 
   /**
    * Returns the variance from a vector of cell values
    */
-  double varianceFromCellValues( std::vector<double> &cellValues, int stackSize );
+  double varianceFromCellValues( std::vector<double> &cellValues, std::size_t stackSize );
 
   /**
    * Returns the maximum value from a vector of cell values
@@ -148,12 +148,12 @@ namespace QgsRasterAnalysisUtils
   /**
    * Returns the majority value from a vector of cell values
    */
-  double majorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize );
+  double majorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, std::size_t stackSize );
 
   /**
    * Returns the minority value from a vector of cell values
    */
-  double minorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize );
+  double minorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, std::size_t stackSize );
 
   /**
    * Returns the range from a vector of cell values

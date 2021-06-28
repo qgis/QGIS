@@ -319,14 +319,14 @@ std::vector<double> QgsRasterAnalysisUtils::getCellValuesFromBlockStack( const s
   return cellValues;
 }
 
-double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> &cellValues, int stackSize )
+double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> &cellValues, std::size_t stackSize )
 {
   double sum = std::accumulate( cellValues.begin(), cellValues.end(), 0.0 );
   double mean = sum / static_cast<double>( stackSize );
   return mean;
 }
 
-double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> &cellValues, int stackSize )
+double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> &cellValues, std::size_t stackSize )
 {
   std::sort( cellValues.begin(), cellValues.end() );
   bool even = ( stackSize % 2 ) < 1;
@@ -341,18 +341,18 @@ double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> &cellVa
 }
 
 
-double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> &cellValues, int stackSize )
+double QgsRasterAnalysisUtils::stddevFromCellValues( std::vector<double> &cellValues, std::size_t stackSize )
 {
   double variance = varianceFromCellValues( cellValues, stackSize );
   double stddev = std::sqrt( variance );
   return stddev;
 }
 
-double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> &cellValues, int stackSize )
+double QgsRasterAnalysisUtils::varianceFromCellValues( std::vector<double> &cellValues, std::size_t stackSize )
 {
   double mean = meanFromCellValues( cellValues, stackSize );
   double accum = 0.0;
-  for ( int i = 0; i < stackSize; i++ )
+  for ( std::size_t i = 0; i < stackSize; i++ )
   {
     accum += std::pow( ( cellValues.at( i ) - mean ), 2.0 );
   }
@@ -370,7 +370,7 @@ double QgsRasterAnalysisUtils::minimumFromCellValues( std::vector<double> &cellV
   return *std::min_element( cellValues.begin(), cellValues.end() );
 }
 
-double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize )
+double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, std::size_t stackSize )
 {
   if ( stackSize == 1 )
   {
@@ -393,7 +393,7 @@ double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cell
     //search for majority using hash map [O(n)]
     std::unordered_map<double, int> map;
 
-    for ( int i = 0; i < stackSize; i++ )
+    for ( std::size_t i = 0; i < stackSize; i++ )
     {
       map[cellValues[i]]++;
     }
@@ -418,7 +418,7 @@ double QgsRasterAnalysisUtils::majorityFromCellValues( std::vector<double> &cell
   }
 }
 
-double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, int stackSize )
+double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> &cellValues, const double noDataValue, std::size_t stackSize )
 {
   if ( stackSize == 1 )
   {
@@ -439,14 +439,14 @@ double QgsRasterAnalysisUtils::minorityFromCellValues( std::vector<double> &cell
   else
   {
     //search for minority using hash map [O(n)]
-    std::unordered_map<double, int> map;
+    std::unordered_map<double, std::size_t> map;
 
-    for ( int i = 0; i < stackSize; i++ )
+    for ( std::size_t i = 0; i < stackSize; i++ )
     {
       map[cellValues[i]]++;
     }
 
-    int minCount = stackSize;
+    std::size_t minCount = stackSize;
     bool multipleMinorities = false;
     double result = noDataValue; //result will stay NoData if no minority value exists
     for ( auto pair : map )
