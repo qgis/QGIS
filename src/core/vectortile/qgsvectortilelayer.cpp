@@ -427,7 +427,6 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
         QUrl spriteUrl = QUrl( spriteUriBase );
         spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
         QNetworkRequest request = QNetworkRequest( spriteUrl );
-        
         QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
         QgsBlockingNetworkRequest networkRequest;
         switch ( networkRequest.get( request ) )
@@ -441,7 +440,6 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
             QUrl spriteUrl = QUrl( spriteUriBase );
             spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
             QNetworkRequest request = QNetworkRequest( spriteUrl );
-            
             QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
             QgsBlockingNetworkRequest networkRequest;
             switch ( networkRequest.get( request ) )
