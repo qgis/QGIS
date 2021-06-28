@@ -103,7 +103,7 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
   public slots:
 
     /**
-     * Cancel content fetching/storing
+     * Cancels content fetching/storing
      */
     virtual void cancel() {};
 
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageCo
   public:
 
     /**
-     * Return fetched resource file path
+     * Returns fetched resource file path
      */
     virtual QString filePath() const = 0;
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageCon
   public:
 
     /**
-     * Return stored resource URL
+     * Returns stored resource URL
      */
     virtual QString url() const = 0;
 

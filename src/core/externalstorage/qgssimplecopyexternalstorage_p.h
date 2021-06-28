@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgssimplecopyexternalstorage.h
+  qgssimplecopyexternalstorage_p.h
   --------------------------------------
   Date                 : March 2021
   Copyright            : (C) 2021 by Julien Cabieces
