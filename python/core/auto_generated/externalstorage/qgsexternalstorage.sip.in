@@ -33,7 +33,7 @@ Unique identifier of the external storage type.
 
     virtual QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const = 0 /Factory/;
 %Docstring
-Store file ``filePath`` to the ``url`` for this project external storage.
+Stores file ``filePath`` to the ``url`` for this project external storage.
 Storing process is run in background.
 Returns a :py:class:`QgsExternalStorageStoredContent` to follow the status of the stored resource.
 
@@ -42,14 +42,14 @@ After using this method, user should check if the returned content is not alread
 for :py:func:`QgsExternalStorageStoredContent.stored()`, :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or
 :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
 
-It's possible to give ``authcfg`` authentification configuration id in case its needed.
+It's possible to give ``authcfg`` authentication configuration id in case its needed.
 
 Caller takes ownership of the returned symbol.
 %End
 
     virtual QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authcfg = QString() ) const = 0 /Factory/;
 %Docstring
-Fetch file from ``url`` for this project external storage.
+Fetches file from ``url`` for this project external storage.
 Fetching process is run in background.
 Returns a :py:class:`QgsExternalStorageFetchedContent` to follow the status of the fetched resource.
 
@@ -58,7 +58,7 @@ After using this method, user should check if the returned content is not alread
 and then wait for :py:func:`QgsExternalStorageStoredContent.fetched()`, :py:func:`QgsExternalStorageStoredContent.errorOccurred()` or
 :py:func:`QgsExternalStorageStoredContent.canceled()` signals.
 
-It's possible to give ``authcfg`` authentification configuration id in case its needed.
+It's possible to give ``authcfg`` authentication configuration id in case its needed.
 %End
 };
 
@@ -89,7 +89,7 @@ Returns error textual description if an error occured and :py:func:`~QgsExternal
 
     virtual void cancel();
 %Docstring
-Cancel content fetching/storing
+Cancels content fetching/storing
 %End
   signals:
 
@@ -134,7 +134,7 @@ Class for :py:class:`QgsExternalStorage` fetched content
 
     virtual QString filePath() const = 0;
 %Docstring
-Return fetched resource file path
+Returns fetched resource file path
 %End
 
   signals:
@@ -160,7 +160,7 @@ Class for :py:class:`QgsExternalStorage` stored content
 
     virtual QString url() const = 0;
 %Docstring
-Return stored resource URL
+Returns stored resource URL
 %End
 
   signals:

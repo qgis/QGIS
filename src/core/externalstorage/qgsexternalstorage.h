@@ -57,7 +57,7 @@ class CORE_EXPORT QgsExternalStorage
      * for QgsExternalStorageStoredContent::stored(), QgsExternalStorageStoredContent::errorOccurred() or
      * QgsExternalStorageStoredContent::canceled() signals.
      *
-     * It's possible to give \a authcfg authentification configuration id in case its needed.
+     * It's possible to give \a authcfg authentication configuration id in case its needed.
      *
      * Caller takes ownership of the returned symbol.
      */
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsExternalStorage
      * and then wait for QgsExternalStorageStoredContent::fetched(), QgsExternalStorageStoredContent::errorOccurred() or
      * QgsExternalStorageStoredContent::canceled() signals.
      *
-     * It's possible to give \a authcfg authentification configuration id in case its needed.
+     * It's possible to give \a authcfg authentication configuration id in case its needed.
      */
     virtual QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authcfg = QString() ) const = 0 SIP_FACTORY;
 };
