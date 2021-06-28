@@ -562,7 +562,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     {
       // label size has already been calculated using any symbology reference scale factor -- we need
       // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, 1.0 );
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
 
       // convert label size to render units
       double labelWidthPx = context.convertToPainterUnits( label->getWidth(), QgsUnitTypes::RenderMapUnits, QgsMapUnitScale() );
