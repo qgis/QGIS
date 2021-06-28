@@ -30,7 +30,7 @@ from qgis.core import QgsApplication
 from qgis.gui import QgsGui, QgsHelp
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDate
-from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem, QShortcut
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.Qsci import QsciScintilla
 
@@ -78,6 +78,8 @@ class HistoryDialog(BASE, WIDGET):
 
         self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.tree.currentItemChanged.connect(self.changeText)
+        shorcut = QShortcut(Qt.Key_Return, self.tree, context=Qt.WidgetShortcut, activated=self.executeAlgorithm)
+
         self.clearButton.clicked.connect(self.clearLog)
         self.saveButton.clicked.connect(self.saveLog)
         self.helpButton.clicked.connect(self.openHelp)
