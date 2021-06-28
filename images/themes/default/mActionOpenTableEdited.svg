@@ -27,7 +27,7 @@
      id="namedview18"
      showgrid="false"
      inkscape:zoom="19.67"
-     inkscape:cx="5.663341"
+     inkscape:cx="-6.3600449"
      inkscape:cy="16.027777"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -41,7 +41,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -105,57 +105,58 @@
          style="fill:none" />
     </g>
     <g
-       style="stroke-linejoin:round;stroke-dashoffset:0.5;enable-background:new"
-       transform="matrix(0.58290926,0.33654275,-0.33654275,0.58290926,12.638737,4.6294758)"
-       id="g8092">
+       style="stroke-linejoin:round;stroke-dashoffset:0.5"
+       transform="matrix(0.67358019,0,0,0.67358019,7.750791,1.77309)"
+       id="g12596">
       <path
          style="fill:#505050;stroke:#505050;stroke-width:0.75;stroke-linecap:round"
          inkscape:connector-curvature="0"
-         d="m 8.0961023,18.028419 5.9999997,0 -3.12491,6.990956 z"
-         id="path8094" />
+         d="m 5.34,24.1 5.2,3 -6.2,4.49 z"
+         id="path12598" />
       <path
-         style="fill:#fce94f;stroke:#8b7617;stroke-width:0.75;stroke-linecap:round"
+         style="fill:#de6b37;stroke:#c04317;stroke-width:0.75;stroke-linecap:round"
          inkscape:connector-curvature="0"
-         d="m 8.0961004,1.0284199 6.0000006,-1e-6 10e-7,17.0000001 -5.9999997,0 z"
-         id="path8096" />
+         d="m 13.8,9.37 5.2,3 -8.5,14.7 -5.2,-3 z"
+         id="path12600" />
       <path
-         style="opacity:0.5;fill:none;stroke:#fcffff;stroke-width:2"
+         style="opacity:0.5;fill:none;stroke:#f8b008;stroke-width:2.1099999"
          inkscape:connector-curvature="0"
-         d="m 10.596101,2.0284194 10e-7,14.9999996"
-         id="path8098" />
+         d="M 15.5,11.5 7.6,25.2"
+         id="path12602" />
       <path
-         style="opacity:0.25;fill-opacity:0.58823494;stroke:#000000;stroke-width:2"
+         style="opacity:0.25;fill-opacity:0.58800001;stroke:#632923;stroke-width:2.16000009"
          inkscape:connector-curvature="0"
-         d="m 12.596101,2.0284192 2e-6,14.9999998"
-         id="path8100" />
+         d="M 17.3,12.6 9.16,26.5"
+         id="path12604" />
       <path
-         style="opacity:0.5;fill:#fce94f;stroke:#8b7617;stroke-width:0.75;stroke-linecap:round"
+         style="opacity:0.5;fill:#fc894f;stroke:#a7481e;stroke-width:0.75;stroke-linecap:round"
          inkscape:connector-curvature="0"
-         d="m 12.096101,2.0284193 10e-7,15.9999997"
-         id="path8102" />
+         d="m 16.8,12.2 -8,13.9"
+         id="path12606" />
       <path
          style="fill:#969696;stroke:#969696;stroke-width:0.5;stroke-linecap:square"
          inkscape:connector-curvature="0"
-         d="m 11.463292,23.228968 1.996957,-4.943779 -1.996957,-10e-7 z"
-         id="path8104" />
+         d="M 5.65,30.3 9.85,27.02 8.12,26.022 Z"
+         id="path12608" />
       <path
-         style="opacity:0.5;fill:#fce94f;stroke:#8b7617;stroke-width:0.75;stroke-linecap:round"
+         style="opacity:0.5;fill:#db562d;stroke:#9b3819;stroke-width:0.75;stroke-linecap:round"
          inkscape:connector-curvature="0"
-         d="m 9.5961007,2.0284198 1.5e-6,15.9999982"
-         id="path8106" />
+         d="m 14.6,11 -8,13.9"
+         id="path12610" />
       <g
          style="fill:#e6e6e6;stroke-width:0.5"
-         id="g8108">
+         id="g12612">
         <path
            style="stroke:#969696;stroke-linecap:round"
            inkscape:connector-curvature="0"
-           d="m 7.8653316,-0.08727704 6.4615374,0 0,2.17913134 -6.4615374,0 z"
-           id="path8110" />
+           d="m 16.4,0.0808 6.46,0 0,2.18 -6.46,0 z"
+           transform="matrix(0.8660254,0.5,-0.5,0.8660254,0,0)"
+           id="path12614" />
         <path
            style="stroke:#e6e6e6;stroke-linecap:square"
            inkscape:connector-curvature="0"
-           d="m 10.728912,23.38728 -1.9969556,-5.102091 1.9969556,0 z"
-           id="path8112" />
+           d="m 4.94,30.1 0.822,-5.42 1.73,0.998 z"
+           id="path12616" />
       </g>
     </g>
   </g>
