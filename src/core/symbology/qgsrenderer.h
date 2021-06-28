@@ -529,12 +529,17 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /**
      * Clones generic renderer data to another renderer.
+     *
      * Currently clones
      *
-     * - Order By
-     * - Paint Effect
+     * - Order by
+     * - Paint effect
+     * - Reference scale
+     * - Symbol levels enabled/disabled
+     * - Force raster render enabled/disabled
      *
      * \param destRenderer destination renderer for copied effect
+     * \since QGIS 3.22
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
