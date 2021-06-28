@@ -30,8 +30,7 @@ import tempfile
 
 from qgis.core import (
     QgsApplication,
-    QgsProcessingContext,
-    QgsProcessingFeedback
+    QgsProcessingContext
 )
 from qgis.testing import (
     start_app,
@@ -73,7 +72,8 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
     def testNeighbors(self):
         context = QgsProcessingContext()
-        input_raster = os.path.join(testDataPath, 'custom', 'grass7', 'float_raster.tif')
+        input_raster = os.path.join(testDataPath, 'float_raster.tif')
+        self.assertTrue(os.path.exists(input_raster))
 
         alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:r.neighbors')
         self.assertIsNotNone(alg)
@@ -91,6 +91,40 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
                       '-a': False,
                       'weight': '',
                       'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_REGION_CELLSIZE_PARAMETER': 0,
+                      'GRASS_RASTER_FORMAT_OPT': '',
+                      'GRASS_RASTER_FORMAT_META': ''}
+
+        ok, msg = alg.checkParameterValues(parameters, context)
+        self.assertFalse(ok)
+
+    def testWatershed(self):
+        context = QgsProcessingContext()
+        input_raster = os.path.join(testDataPath, 'dem.tif')
+        self.assertTrue(os.path.exists(input_raster))
+
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:r.watershed')
+        self.assertIsNotNone(alg)
+
+        temp_file = os.path.join(self.temp_dir, 'accumulation.tif')
+
+        # Test non positive threshold interger
+        parameters = {'elevation': input_raster,
+                      'accumulation': temp_file,
+                      'depression': None,
+                      'flow': None,
+                      'disturbed_land': None,
+                      'blocking': None,
+                      'max_slope_length': None,
+                      'threshold': 0,
+                      'convergence': 5,
+                      'memory': 300,
+                      '-s': False,
+                      '-m': False,
+                      '-4': False,
+                      '-a': False,
+                      '-b': False,
                       'GRASS_REGION_PARAMETER': None,
                       'GRASS_REGION_CELLSIZE_PARAMETER': 0,
                       'GRASS_RASTER_FORMAT_OPT': '',
