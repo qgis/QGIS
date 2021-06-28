@@ -424,7 +424,9 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
 
       for ( int resolution = 2; resolution > 0; resolution-- )
       {
-        QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
+        QUrl spriteUrl = QUrl( spriteUriBase );
+        spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
+        QNetworkRequest request = QNetworkRequest( spriteUrl );
         QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
         QgsBlockingNetworkRequest networkRequest;
         switch ( networkRequest.get( request ) )
@@ -435,10 +437,10 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
             const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
 
             // retrieve sprite images
-            QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
-
+            QUrl spriteUrl = QUrl( spriteUriBase );
+            spriteUrl.setPath( spriteUrl.path() + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) );
+            QNetworkRequest request = QNetworkRequest( spriteUrl );
             QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
-
             QgsBlockingNetworkRequest networkRequest;
             switch ( networkRequest.get( request ) )
             {
