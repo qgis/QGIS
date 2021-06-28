@@ -6,7 +6,7 @@ QgsProcessingParameterRasterLayer|depression|Locations of real depressions|None|
 QgsProcessingParameterRasterLayer|flow|Amount of overland flow per cell|None|True
 QgsProcessingParameterRasterLayer|disturbed_land|Percent of disturbed land, for USLE|None|True
 QgsProcessingParameterRasterLayer|blocking|Terrain blocking overland surface flow, for USLE|None|True
-QgsProcessingParameterNumber|threshold|Minimum size of exterior watershed basin|QgsProcessingParameterNumber.Integer|1|False|1|None
+QgsProcessingParameterNumber|threshold|Minimum size of exterior watershed basin|QgsProcessingParameterNumber.Integer|None|False|None|None
 QgsProcessingParameterNumber|max_slope_length|Maximum length of surface flow, for USLE|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|convergence|Convergence factor for MFD (1-10)|QgsProcessingParameterNumber.Integer|5|True|1|10
 QgsProcessingParameterNumber|memory|Maximum memory to be used with -m flag (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
