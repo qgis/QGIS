@@ -1889,7 +1889,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
     else
     {
       // Query
-      table = QStringLiteral( "%1 AS t" ).arg( layerProperty.tableName );
+      table = layerProperty.tableName;
     }
 
     if ( layerProperty.geometryColName.isEmpty() )
