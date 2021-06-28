@@ -29,6 +29,9 @@
 #include <QByteArray>
 #include <QVariant>
 
+#include <QUrl>
+#include <QUrlQuery>
+
 #define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
@@ -645,4 +648,27 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 {
   return colorName( colorInterpretation( bandNo ) );
+}
+
+QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
+{
+    const QgsDataSourceUri dsUri { uri };
+    QVariantMap decoded;
+    return decoded;
+}
+
+QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap &parts )
+{
+    /*
+    QString uri = "uri";
+    return uri;
+    */
+    QUrl uri( QStringLiteral( "virtualrasterprovider" ) );
+    QUrlQuery query;
+
+    //query.addQueryItem( QStringLiteral( "something" ), something );
+
+
+    uri.setQuery( query );
+    return QString( uri.toEncoded() );
 }

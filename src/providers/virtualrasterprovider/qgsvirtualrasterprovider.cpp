@@ -397,14 +397,14 @@ QString QgsVirtualRasterProvider::formulaString()
 
 QVariantMap QgsVirtualRasterProviderMetadata::decodeUri( const QString &uri ) const
 {
-  return QVariantMap();
-  //return  QgsCoreClassWhereIwroteTheMethod ::decodeUri( uri );
+    //return QVariantMap();
+    return QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri );
 }
 
 QString QgsVirtualRasterProviderMetadata::encodeUri(  const QVariantMap &parts ) const
 {
-    return QString();
-    //return  QgsCoreClassWhereIwroteTheMethod ::encodeUri( parts );
+    //return QString();
+    return  QgsRasterDataProvider::encodeVirtualRasterProviderUri( parts );
 }
 
 QGISEXTERN QgsVirtualRasterProviderMetadata *providerMetadataFactory()

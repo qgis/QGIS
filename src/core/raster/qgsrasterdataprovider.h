@@ -536,6 +536,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 
     /**
+     * Decodes the URI.
+     * \note used by Virtual Raster Provider only
+     */
+    static QVariantMap decodeVirtualRasterProviderUri( const QString &uri );
+
+    /**
+     * Encodes the URI.
+     * \note used by Virtual Raster Provider only
+     */
+    static QString encodeVirtualRasterProviderUri( const QVariantMap &parts );
+
+    /**
      * Validates creation options for a specific dataset and destination format.
      * \note used by GDAL provider only
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
