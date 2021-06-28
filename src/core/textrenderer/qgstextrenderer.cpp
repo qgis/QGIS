@@ -301,7 +301,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
-    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
   const QFont font = format.scaledFont( context, scaleFactor );
@@ -457,7 +457,7 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
-    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
   const QFont font = format.scaledFont( context, scaleFactor );
@@ -1284,7 +1284,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
     {
       // label size has already been calculated using any symbology reference scale factor -- we need
       // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
     }
 
     const QFont f = format.scaledFont( context, fontScale );
@@ -1431,7 +1431,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     {
       // label size has already been calculated using any symbology reference scale factor -- we need
       // to temporarily remove the reference scale here or we'll be applying the scaling twice
-      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
     }
 
     const double overallHeight = textHeight( context, format, textLines, Rect );
@@ -1587,7 +1587,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       {
         // label size has already been calculated using any symbology reference scale factor -- we need
         // to temporarily remove the reference scale here or we'll be applying the scaling twice
-        referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+        referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
       }
       const QFont font = format.scaledFont( context, fontScale );
       referenceScaleOverride.reset();
@@ -1689,7 +1689,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   {
     // label size has already been calculated using any symbology reference scale factor -- we need
     // to temporarily remove the reference scale here or we'll be applying the scaling twice
-    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, 1.0 ) );
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
   }
 
   const QFont font = format.scaledFont( context, fontScale );
