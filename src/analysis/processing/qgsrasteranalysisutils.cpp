@@ -479,7 +479,7 @@ double QgsRasterAnalysisUtils::varietyFromCellValues( std::vector<double> &cellV
   return uniqueValues.size();
 }
 
-double QgsRasterAnalysisUtils::nearestRankPercentile( std::vector<double> &cellValues, int stackSize, double percentile )
+double QgsRasterAnalysisUtils::nearestRankPercentile( std::vector<double> &cellValues, std::size_t stackSize, double percentile )
 {
   //if percentile equals 0 -> pick the first element of the ordered list
   std::sort( cellValues.begin(), cellValues.end() );
@@ -493,10 +493,10 @@ double QgsRasterAnalysisUtils::nearestRankPercentile( std::vector<double> &cellV
   return cellValues[i];
 }
 
-double QgsRasterAnalysisUtils::interpolatedPercentileInc( std::vector<double> &cellValues, int stackSize, double percentile )
+double QgsRasterAnalysisUtils::interpolatedPercentileInc( std::vector<double> &cellValues, std::size_t stackSize, double percentile )
 {
   std::sort( cellValues.begin(), cellValues.end() );
-  double x = ( percentile * ( stackSize - 1 ) );
+  double x = ( percentile * ( static_cast<double>( stackSize ) - 1 ) );
 
   int i = static_cast<int>( std::floor( x ) );
   double xFraction = std::fmod( x, 1 );
@@ -515,10 +515,10 @@ double QgsRasterAnalysisUtils::interpolatedPercentileInc( std::vector<double> &c
   }
 }
 
-double QgsRasterAnalysisUtils::interpolatedPercentileExc( std::vector<double> &cellValues, int stackSize, double percentile, double noDataValue )
+double QgsRasterAnalysisUtils::interpolatedPercentileExc( std::vector<double> &cellValues, std::size_t stackSize, double percentile, double noDataValue )
 {
   std::sort( cellValues.begin(), cellValues.end() );
-  double x = ( percentile * ( stackSize + 1 ) );
+  double x = ( percentile * ( static_cast<double>( stackSize )  + 1 ) );
 
   int i = static_cast<int>( std::floor( x ) ) - 1;
   double xFraction = std::fmod( x, 1 );
@@ -535,7 +535,7 @@ double QgsRasterAnalysisUtils::interpolatedPercentileExc( std::vector<double> &c
   }
 }
 
-double QgsRasterAnalysisUtils::interpolatedPercentRankInc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue )
+double QgsRasterAnalysisUtils::interpolatedPercentRankInc( std::vector<double> &cellValues, std::size_t stackSize, double value, double noDataValue )
 {
   std::sort( cellValues.begin(), cellValues.end() );
 
@@ -545,7 +545,7 @@ double QgsRasterAnalysisUtils::interpolatedPercentRankInc( std::vector<double> &
   }
   else
   {
-    for ( int i = 0; i < stackSize - 1; i++ )
+    for ( std::size_t i = 0; i < stackSize - 1; i++ )
     {
       if ( cellValues[i] <= value && cellValues[i + 1] >= value )
       {
@@ -555,14 +555,14 @@ double QgsRasterAnalysisUtils::interpolatedPercentRankInc( std::vector<double> &
         if ( !qgsDoubleNear( cellValues[i], cellValues[i + 1] ) )
           fraction = ( value - cellValues[i] ) / ( cellValues[i + 1] - cellValues[i] );
 
-        return ( fraction + i ) / ( stackSize - 1 );
+        return ( fraction + i ) / ( static_cast<double>( stackSize ) - 1 );
       }
     }
     return noDataValue;
   }
 }
 
-double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue )
+double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &cellValues, std::size_t stackSize, double value, double noDataValue )
 {
   std::sort( cellValues.begin(), cellValues.end() );
 
@@ -572,7 +572,7 @@ double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &
   }
   else
   {
-    for ( int i = 0; i < stackSize - 1; i++ )
+    for ( std::size_t i = 0; i < stackSize - 1; i++ )
     {
       if ( cellValues[i] <= value && cellValues[i + 1] >= value )
       {
@@ -582,7 +582,7 @@ double QgsRasterAnalysisUtils::interpolatedPercentRankExc( std::vector<double> &
         if ( !qgsDoubleNear( cellValues[i], cellValues[i + 1] ) )
           fraction = ( value - cellValues[i] ) / ( cellValues[i + 1] - cellValues[i] );
 
-        return ( ( i + 1 ) + fraction ) / ( stackSize + 1 );
+        return ( ( i + 1 ) + fraction ) / ( static_cast<double>( stackSize ) + 1 );
       }
     }
     return noDataValue;
