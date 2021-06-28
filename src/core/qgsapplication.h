@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QColor>
 
+#include <memory>
 #include "qgis_sip.h"
 #include "qgsconfig.h"
 #include "qgssettingsentry.h"
@@ -1056,7 +1057,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
       QgsConnectionRegistry *mConnectionRegistry = nullptr;
-      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
+      std::unique_ptr<QgsProjectStorageRegistry> mProjectStorageRegistry;
       QgsExternalStorageRegistry *mExternalStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
