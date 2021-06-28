@@ -109,7 +109,7 @@ class TestGrass7AlgorithmsRasterTest(unittest.TestCase, AlgorithmsTestBase.Algor
 
         temp_file = os.path.join(self.temp_dir, 'accumulation.tif')
 
-        # Test non positive threshold interger
+        # Test non positive threshold integer
         parameters = {'elevation': input_raster,
                       'accumulation': temp_file,
                       'depression': None,
