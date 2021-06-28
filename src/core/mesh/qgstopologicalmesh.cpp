@@ -925,10 +925,10 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
     {
       cdt->Triangulate();
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
-      QVector<QgsMeshFace> newFaces( triangles.size() );
+      QVector<QgsMeshFace> newFaces( static_cast<int>( triangles.size() ) );
       for ( size_t i = 0; i < triangles.size(); ++i )
       {
-        QgsMeshFace &face = newFaces[i];
+        QgsMeshFace &face = newFaces[static_cast<int>( i )];
         face.resize( 3 );
         for ( int j = 0; j < 3; j++ )
         {
