@@ -616,7 +616,11 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context = QgsRenderContext::fromMapSettings( mSettings );
   job.context.setPainter( painter );
   job.context.setLabelingEngine( labelingEngine2 );
+
+  QgsRectangle r1 = mSettings.visibleExtent();
+  r1.grow( mSettings.extentBuffer() );
   job.context.setExtent( mSettings.visibleExtent() );
+
   job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
   // if we can use the cache, let's do it and avoid rendering!
