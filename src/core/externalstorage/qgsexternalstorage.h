@@ -64,7 +64,7 @@ class CORE_EXPORT QgsExternalStorage
     virtual QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const = 0 SIP_FACTORY;
 
     /**
-     * Fetch file from \a url for this project external storage.
+     * Fetches file from \a url for this project external storage.
      * Fetching process is run in background.
      * Returns a QgsExternalStorageFetchedContent to follow the status of the fetched resource.
      *
