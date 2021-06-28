@@ -543,12 +543,18 @@ should be canceled.
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 %Docstring
 Clones generic renderer data to another renderer.
+
 Currently clones
 
-- Order By
-- Paint Effect
+- Order by
+- Paint effect
+- Reference scale
+- Symbol levels enabled/disabled
+- Force raster render enabled/disabled
 
 :param destRenderer: destination renderer for copied effect
+
+.. versionadded:: 3.22
 %End
 
   protected:

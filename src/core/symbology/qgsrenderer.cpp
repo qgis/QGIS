@@ -51,10 +51,12 @@ QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint
 
 void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) const
 {
-  if ( !destRenderer || !mPaintEffect )
+  if ( !destRenderer )
     return;
 
-  destRenderer->setPaintEffect( mPaintEffect->clone() );
+  if ( mPaintEffect )
+    destRenderer->setPaintEffect( mPaintEffect->clone() );
+
   destRenderer->setForceRasterRender( mForceRaster );
   destRenderer->setUsingSymbolLevels( mUsingSymbolLevels );
   destRenderer->mOrderBy = mOrderBy;
