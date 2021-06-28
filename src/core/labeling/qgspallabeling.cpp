@@ -443,7 +443,10 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
   ptOne = xform->toMapCoordinates( 1, 0 );
 
   // rect for clipping
-  extentGeom = QgsGeometry::fromRect( mapSettings.visibleExtent() );
+  QgsRectangle r1 = mapSettings.visibleExtent();
+  r1.grow( mapSettings.extentBuffer() );
+  extentGeom = QgsGeometry::fromRect( r1 );
+
   if ( !qgsDoubleNear( mapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
