@@ -48,7 +48,7 @@ class CORE_EXPORT QgsExternalStorage
     virtual QString type() const = 0;
 
     /**
-     * Store file \a filePath to the \a url for this project external storage.
+     * Stores file \a filePath to the \a url for this project external storage.
      * Storing process is run in background.
      * Returns a QgsExternalStorageStoredContent to follow the status of the stored resource.
      *
