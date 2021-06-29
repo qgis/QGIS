@@ -36,6 +36,8 @@
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
 
+#include <QUrl>
+#include <QUrlQuery>
 /**
 * \ingroup UnitTests
 * This is a unit test for the virtualraster provider
@@ -55,6 +57,7 @@ class TestQgsVirtualRasterProvider : public QObject
     void validLayer();
     void testv();
     void testRaster();
+    void testUrl();
 
 private:
     QString mTestDataDir;
@@ -169,6 +172,43 @@ void TestQgsVirtualRasterProvider::testRaster()
     qDebug() <<"VALUE IS "<< sampledValue;
 
     delete r;
+
+}
+
+void TestQgsVirtualRasterProvider::testUrl()
+{
+    //only to check how qurl and qurlquery works
+
+    QUrl url("memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)");
+    QUrlQuery query(url.query());
+    QList<QPair<QString, QString> > list = query.queryItems();
+    qDebug() << "LIST SIZE " << list.size();
+    for (int i = 0; i < list.size(); i++)
+    {
+        qDebug() << list[i];
+        qDebug() << list[i].first;
+        qDebug() << list[i].second << endl;
+    }
+
+    if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
+    {
+        //QString outputCrsDef = query.queryItemValue( QStringLiteral( "crs" ) );
+        qDebug() << query.queryItemValue( QStringLiteral( "crs" ) );
+    }
+
+    QStringList openOptions;
+    for ( const auto &item : query.queryItems() )
+    {
+        openOptions << QStringLiteral( "%1=%2" ).arg( item.first, item.second );
+    }
+    //qDebug() << openOptions;
+    QVariantMap components;
+    components.insert( QStringLiteral( "geometry" ), query.queryItemValue( QStringLiteral( "geometry" ) ) );
+    components.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" ) ) );
+    //components.insert( QStringLiteral( "field" ), query.queryItemValue( QStringLiteral( "field" ) ) );
+
+
+    qDebug() << components;
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

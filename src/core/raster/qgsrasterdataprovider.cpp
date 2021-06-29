@@ -652,8 +652,20 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 
 QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
 {
-    const QgsDataSourceUri dsUri { uri };
+
+    const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+    const QUrlQuery query( url.query() );
+    QList<QPair<QString, QString> > list = query.queryItems();
+
+
+
     QVariantMap decoded;
+    decoded.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" )) ); //createFromString in the providerClass
+    decoded.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" )) ); //something to tranform in qgsrectangle from string
+    decoded.insert( QStringLiteral( "width" ), query.queryItemValue( QStringLiteral( "width" )) ); //trasnform to int
+    decoded.insert( QStringLiteral( "height" ), query.queryItemValue( QStringLiteral( "height" )) ); //trasnform to int
+    decoded.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" )) );
+
     return decoded;
 }
 
