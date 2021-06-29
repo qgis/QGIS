@@ -502,9 +502,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  if ( mLayer->usePlaceholderLegendIcon() )
+  QString placeholderImage = mLayer->legendPlaceholderImage();
+  if ( !placeholderImage.isEmpty() )
   {
-    nodes << new QgsSimpleLegendNode( nodeLayer, QString(), QgsIconUtils::iconRaster() );
+    nodes << new QgsImageLegendNode( nodeLayer, QImage( placeholderImage ) );
   }
   else if ( mLayer->renderer() )
     nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );

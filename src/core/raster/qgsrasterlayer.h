@@ -467,15 +467,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QgsMapLayerTemporalProperties *temporalProperties() override;
 
-    //! True if a placeholder legend is shown in the legend rather than all the color entries
-    bool usePlaceholderLegendIcon() const { return mUsePlaceholderLegendIcon; }
-
-    /**
-     * Set if a placeholder legend is shown in the legend
-     * \param usePlaceholderIcon true if placeholder icon will be shown instead of symbology items
-     */
-    void setUsePlaceholderLegendIcon( bool usePlaceholderIcon ) { mUsePlaceholderLegendIcon = usePlaceholderIcon; }
-
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -574,8 +565,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
-
-    bool mUsePlaceholderLegendIcon = false;
 };
 
 // clazy:excludeall=qstring-allocations
