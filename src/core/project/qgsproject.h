@@ -23,6 +23,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+
 #include <memory>
 #include <QHash>
 #include <QList>
@@ -333,6 +335,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QString baseName() const;
+
+    /**
+     * Returns the type of paths used when storing file paths in a QGS/QGZ project file.
+     *
+     * \see setFilePathStorage()
+     * \since QGIS 3.22
+     */
+    Qgis::FilePathType filePathStorage() const;
+
+    /**
+     * Sets the \a type of paths used when storing file paths in a QGS/QGZ project file.
+     *
+     * \see filePathStorage()
+     * \since QGIS 3.22
+     */
+    void setFilePathStorage( Qgis::FilePathType type );
 
     /**
      * Returns the project's native coordinate reference system.

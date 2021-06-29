@@ -54,6 +54,7 @@ class TestQgsProject : public QObject
     void projectSaveUser();
     void testCrsExpressions();
     void testCrsValidAfterReadingProjectFile();
+    void testFilePathType();
     void testDefaultRelativePaths();
     void testAttachmentsQgs();
     void testAttachmentsQgz();
@@ -660,6 +661,16 @@ void TestQgsProject::testCrsValidAfterReadingProjectFile()
   QCOMPARE( crsChangedSpy.count(), 2 );
 }
 
+void TestQgsProject::testFilePathType()
+{
+  QgsProject p;
+  p.setFilePathStorage( Qgis::FilePathType::Absolute );
+  QCOMPARE( p.filePathStorage(), Qgis::FilePathType::Absolute );
+
+  p.setFilePathStorage( Qgis::FilePathType::Relative );
+  QCOMPARE( p.filePathStorage(), Qgis::FilePathType::Relative );
+}
+
 void TestQgsProject::testCrsExpressions()
 {
   QgsProject p;
@@ -709,15 +720,20 @@ void TestQgsProject::testDefaultRelativePaths()
 
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true );
   QgsProject p1;
-  bool p1PathsAbsolute = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const bool p1PathsAbsolute = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const Qgis::FilePathType p1Type = p1.filePathStorage();
+
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), false );
   p1.clear();
-  bool p1PathsAbsolute_2 = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const bool p1PathsAbsolute_2 = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const Qgis::FilePathType p2Type = p1.filePathStorage();
 
   s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), bk_defaultRelativePaths );
 
   QCOMPARE( p1PathsAbsolute, false );
   QCOMPARE( p1PathsAbsolute_2, true );
+  QCOMPARE( p1Type, Qgis::FilePathType::Relative );
+  QCOMPARE( p2Type, Qgis::FilePathType::Absolute );
 }
 
 void TestQgsProject::testAttachmentsQgs()

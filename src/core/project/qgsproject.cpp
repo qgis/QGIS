@@ -720,6 +720,25 @@ QString QgsProject::baseName() const
   }
 }
 
+Qgis::FilePathType QgsProject::filePathStorage() const
+{
+  const bool absolutePaths = readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  return absolutePaths ? Qgis::FilePathType::Absolute : Qgis::FilePathType::Relative;
+}
+
+void QgsProject::setFilePathStorage( Qgis::FilePathType type )
+{
+  switch ( type )
+  {
+    case Qgis::FilePathType::Absolute:
+      writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+      break;
+    case Qgis::FilePathType::Relative:
+      writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+      break;
+  }
+}
+
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
   return mCrs;
@@ -845,7 +864,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 2 );
 
   bool defaultRelativePaths = mSettings.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
-  writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), !defaultRelativePaths );
+  setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
 
   //copy default units to project
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
@@ -2128,7 +2147,7 @@ bool QgsProject::write()
     QString storageFilePath { storage->filePath( mFile.fileName() ) };
     if ( storageFilePath.isEmpty() )
     {
-      writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true );
+      setFilePathStorage( Qgis::FilePathType::Absolute );
     }
     context.setPathResolver( pathResolver() );
 
@@ -2739,22 +2758,29 @@ void QgsProject::dumpProperties() const
 
 QgsPathResolver QgsProject::pathResolver() const
 {
-  bool absolutePaths = readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
   QString filePath;
-  if ( ! absolutePaths )
+  switch ( filePathStorage() )
   {
-    // for projects stored in a custom storage, we need to ask to the
-    // storage for the path, if the storage returns an empty path
-    // relative paths are not supported
-    if ( QgsProjectStorage *storage = projectStorage() )
+    case Qgis::FilePathType::Absolute:
+      break;
+
+    case Qgis::FilePathType::Relative:
     {
-      filePath = storage->filePath( mFile.fileName() );
-    }
-    else
-    {
-      filePath = fileName();
+      // for projects stored in a custom storage, we need to ask to the
+      // storage for the path, if the storage returns an empty path
+      // relative paths are not supported
+      if ( QgsProjectStorage *storage = projectStorage() )
+      {
+        filePath = storage->filePath( mFile.fileName() );
+      }
+      else
+      {
+        filePath = fileName();
+      }
+      break;
     }
   }
+
   return QgsPathResolver( filePath, mArchive->dir() );
 }
 

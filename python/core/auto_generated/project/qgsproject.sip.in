@@ -15,6 +15,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")
@@ -262,6 +263,24 @@ Returns empty string when the project is stored in a project storage (there is n
 Returns the base name of the project file without the path and without extension - derived from :py:func:`~QgsProject.fileName`.
 
 .. versionadded:: 3.2
+%End
+
+    Qgis::FilePathType filePathStorage() const;
+%Docstring
+Returns the type of paths used when storing file paths in a QGS/QGZ project file.
+
+.. seealso:: :py:func:`setFilePathStorage`
+
+.. versionadded:: 3.22
+%End
+
+    void setFilePathStorage( Qgis::FilePathType type );
+%Docstring
+Sets the ``type`` of paths used when storing file paths in a QGS/QGZ project file.
+
+.. seealso:: :py:func:`filePathStorage`
+
+.. versionadded:: 3.22
 %End
 
     QgsCoordinateReferenceSystem crs() const;

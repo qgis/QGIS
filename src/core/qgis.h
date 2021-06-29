@@ -404,7 +404,8 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterResamplingStage )
 
     /**
-     * Type of error that can occur during mesh frame editing
+     * Type of error that can occur during mesh frame editing.
+     *
      * \since QGIS 3.22
      */
     enum class MeshEditingErrorType : int
@@ -416,6 +417,18 @@ class CORE_EXPORT Qgis
       InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
     };
     Q_ENUM( MeshEditingErrorType )
+
+    /**
+     * File path types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class FilePathType : int
+    {
+      Absolute, //!< Absolute path
+      Relative, //!< Relative path
+    };
+    Q_ENUM( FilePathType )
 
     /**
      * Identify search radius in mm
