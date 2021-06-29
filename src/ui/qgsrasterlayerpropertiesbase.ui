@@ -1740,7 +1740,7 @@ p, li { white-space: pre-wrap; }
          </widget>
          <widget class="QWidget" name="mOptsPage_Legend">
           <layout class="QGridLayout" name="gridLayout_15">
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -1758,33 +1758,14 @@ p, li { white-space: pre-wrap; }
              </layout>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QgsImageSourceLineEdit" name="mLegendPlaceholderWidget" native="true"/>
+           </item>
            <item row="0" column="0">
-            <widget class="QGroupBox" name="mPlaceholderImageGroupBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="title">
+            <widget class="QLabel" name="mLegendPlaceholderLabel">
+             <property name="text">
               <string>Legend placeholder image</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_16">
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLineEdit" name="mLegendPlaceholderLineEdit"/>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="mLegendPlaceholderToolButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
             </widget>
            </item>
           </layout>
@@ -2337,6 +2318,23 @@ p, li { white-space: pre-wrap; }
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

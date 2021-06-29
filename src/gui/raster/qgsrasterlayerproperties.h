@@ -214,8 +214,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void urlClicked( const QUrl &url );
 
-    void on_mLegendPlaceholderToolButton_clicked();
-
   private:
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;

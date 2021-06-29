@@ -25,6 +25,7 @@
 #include "qgis_gui.h"
 
 class QCheckBox;
+class QgsImageSourceLineEdit;
 class QLabel;
 class QPushButton;
 class QTreeView;
@@ -76,6 +77,8 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     QCheckBox *mShowLabelLegendCheckBox = nullptr;
     QgsCollapsibleGroupBox *mLabelLegendGroupBox = nullptr;
     QTreeWidget *mLabelLegendTreeWidget = nullptr;
+    QLabel *mPlaceholderImageLabel = nullptr;
+    QgsImageSourceLineEdit *mImageSourceLineEdit = nullptr;
 
     QgsMapCanvas *mCanvas = nullptr;
     QgsVectorLayer *mLayer = nullptr;

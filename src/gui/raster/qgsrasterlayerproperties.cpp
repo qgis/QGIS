@@ -914,7 +914,8 @@ void QgsRasterLayerProperties::sync()
   QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
-  mLegendPlaceholderLineEdit->setText( mRasterLayer->legendPlaceholderImage() );
+  mLegendPlaceholderWidget->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mLegendPlaceholderWidget->setSource( mRasterLayer->legendPlaceholderImage() );
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
   mTemporalWidget->syncToLayer();
@@ -947,7 +948,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * Legend Tab
    */
-  mRasterLayer->setLegendPlaceholderImage( mLegendPlaceholderLineEdit->text() );
+  mRasterLayer->setLegendPlaceholderImage( mLegendPlaceholderWidget->source() );
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "apply processing symbology tab" ), 3 );
@@ -1275,18 +1276,6 @@ void QgsRasterLayerProperties::urlClicked( const QUrl &url )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
-}
-
-void QgsRasterLayerProperties::on_mLegendPlaceholderToolButton_clicked()
-{
-  QgsSettings myQSettings;
-  QString myLastDir = myQSettings.value( QStringLiteral( "lastPlaceholderDir" ), QDir::homePath() ).toString();
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir );
-  if ( !myFileName.isEmpty() )
-  {
-    mLegendPlaceholderLineEdit->setText( myFileName );
-    myQSettings.setValue( QStringLiteral( "lastPlaceholderDir" ), QFileInfo( myFileName ).absolutePath() );
-  }
 }
 
 void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int index )
