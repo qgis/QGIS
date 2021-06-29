@@ -803,7 +803,16 @@ namespace QgsWms
         // get model and layer tree root of the legend
         QgsLegendModel *model = legend->model();
         QStringList layerSet;
-        const QList<QgsMapLayer *> layerList( map->layers() );
+        QList<QgsMapLayer *> mapLayers;
+        if ( map->layers().isEmpty() )
+        {
+          mapLayers = mProject->mapLayers( true ).values();
+        }
+        else
+        {
+          mapLayers = map->layers();
+        }
+        const QList<QgsMapLayer *> layerList = mapLayers;
         for ( const auto &layer : layerList )
           layerSet << layer->id();
 
