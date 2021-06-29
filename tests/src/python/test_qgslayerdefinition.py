@@ -11,10 +11,14 @@ __date__ = '07/01/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
+import shutil
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import (QgsProject,
-                       QgsLayerDefinition
+                       QgsLayerDefinition,
+                       QgsVectorLayer,
+                       Qgis
                        )
 
 from qgis.testing import unittest, start_app
@@ -129,6 +133,35 @@ class TestQgsLayerDefinition(unittest.TestCase):
         self.assertEqual(len(layers), 1)
         self.assertFalse(list(layers.values())[0].isValid())
         QgsProject.instance().removeAllMapLayers()
+
+    def test_path_storage(self):
+        """
+        Test storage of relative/absolute paths
+        """
+        temp_dir = QTemporaryDir()
+        gpkg_path = temp_dir.filePath('points_gpkg.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/points_gpkg.gpkg', gpkg_path)
+
+        p = QgsProject()
+        vl = QgsVectorLayer(gpkg_path)
+        self.assertTrue(vl.isValid())
+        p.addMapLayer(vl)
+
+        # write qlr with relative paths
+        ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('relative.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Relative)
+        self.assertTrue(ok)
+
+        with open(temp_dir.filePath('relative.qlr'), 'rt') as f:
+            lines = f.readlines()
+        self.assertIn('source="./points_gpkg.gpkg"', '\n'.join(lines))
+
+        # write qlr with absolute paths
+        ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('absolute.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Absolute)
+        self.assertTrue(ok)
+
+        with open(temp_dir.filePath('absolute.qlr'), 'rt') as f:
+            lines = f.readlines()
+        self.assertIn(f'source="{gpkg_path}"', '\n'.join(lines))
 
 
 if __name__ == '__main__':
