@@ -113,6 +113,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Stops editing
     void stopEditing();
 
+    //! Returns the extent of the edited mesh
+    QgsRectangle extent() const;
+
+    //! Returns whether the mesh has been modified
+    bool isModified() const;
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();

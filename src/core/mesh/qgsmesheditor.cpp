@@ -235,7 +235,6 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
     }
   }
 
-
   if ( !fillHoles )
   {
     QSet<int> concernedNativeFaces;
@@ -255,6 +254,7 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
 void QgsMeshEditor::stopEditing()
 {
   mTopologicalMesh.reindex();
+  mUndoStack->clear();
 }
 
 
@@ -381,3 +381,16 @@ void QgsMeshLayerUndoCommandRemoveFaces::redo()
 QgsMeshEditingError::QgsMeshEditingError(): errorType( Qgis::MeshEditingErrorType::NoError ), elementIndex( -1 ) {}
 
 QgsMeshEditingError::QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}
+
+QgsRectangle QgsMeshEditor::extent() const
+{
+  return mTriangularMesh->nativeExtent();
+}
+
+bool QgsMeshEditor::isModified() const
+{
+  if ( mUndoStack )
+    return !mUndoStack->isClean();
+
+  return false;
+}

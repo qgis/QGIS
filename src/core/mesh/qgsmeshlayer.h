@@ -179,6 +179,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void reload() override;
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
+    bool isEditable() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -721,12 +722,41 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 
     /**
+     * Returns whether the mesh frame support editing
+     *
+     * \return whether the mesh frame support editing
+     *
+     * \since QGIS 3.22
+     */
+    bool meshFrameSupportEditing() const;
+
+    /**
     * Starts edition of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
     * This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
     *
     * \since QGIS 3.22
     */
     bool startFrameEditing( const QgsCoordinateTransform &transform );
+
+    /**
+    * Commit edition of the mesh frame,
+    * Rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is True
+    *
+    * \return whether the commit succeeds
+    * \since QGIS 3.22
+    */
+    bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+
+    /**
+    * Roll Back edition of the mesh frame.
+    * Reload mesh from file, rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is True
+    *
+    * \return whether the commit succeeds
+    * \since QGIS 3.22
+    */
+    bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 
     /**
     * Stops edition of the mesh, re-indexes the faces and vertices,
@@ -745,18 +775,32 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshEditor *meshEditor();
 
     /**
+    * Returns whether the mesh fram has been modified since the last save
+    *
+    * \since QGIS 3.22
+    */
+    bool isFrameModified() const;
+
+
+    /**
+     *  Returns whether the mesh contains at mesh elements of given type
+     *  \since QGIS 3.22
+     */
+    bool contains( const QgsMesh::ElementType &type ) const;
+
+    /**
     * Returns the vertices count of the mesh frame
     *
     *  \since QGIS 3.22
     */
-    int meshVerticesCount() const;
+    int meshVertexCount() const;
 
     /**
     * Returns the faces count of the mesh frame
     *
     * \since QGIS 3.22
     */
-    int meshFacesCount() const;
+    int meshFaceCount() const;
 
     /**
     * Returns the edges count of the mesh frame
@@ -796,6 +840,27 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void timeSettingsChanged( );
+
+    /**
+     * Emitted when the mesh frame is modified
+     *
+     * \since QGIS 3.22
+     */
+    void frameModified();
+
+    /**
+     * Emitted when the mesh frame editing is started
+     *
+     * \since QGIS 3.22
+     */
+    void frameEditingStarted();
+
+    /**
+     * Emitted when the mesh frame editing is stopped
+     *
+     * \since QGIS 3.22
+     */
+    void frameEditingStopped();
 
   private: // Private methods
 

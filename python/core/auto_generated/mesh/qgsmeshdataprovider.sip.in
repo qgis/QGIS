@@ -148,6 +148,18 @@ Populates the mesh vertices, edges and faces
 
 .. versionadded:: 3.6
 %End
+
+    virtual bool saveMeshFrame( const QgsMesh &mesh ) = 0;
+%Docstring
+Saves the ``mesh`` frame to the source.
+
+:param mesh: the mesh to save
+
+:return: ``True`` on success
+
+
+.. versionadded:: 3.22
+%End
 };
 
 class QgsMeshDatasetSourceInterface /Abstract/
@@ -410,6 +422,24 @@ Sets the temporal unit of the provider and reload data if it changes.
 :param unit: the temporal unit
 
 .. versionadded:: 3.14
+%End
+
+
+    virtual QgsMeshDriverMetadata driverMetadata()  const;
+%Docstring
+Returns the mesh driver metadata of the provider
+
+:return: the mesh driver metadata of the provider
+
+.. versionadded:: 3.22
+%End
+
+
+    virtual void close() = 0;
+%Docstring
+Closes the data provider and free every resources used
+
+.. versionadded:: 3.22
 %End
 
   signals:

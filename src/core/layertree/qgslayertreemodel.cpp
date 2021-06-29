@@ -27,6 +27,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -200,6 +201,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       // icons possibly overriding default icon
       QIcon icon;
 
+      bool isModified = false;
       switch ( layer->type() )
       {
         case QgsMapLayerType::RasterLayer:
@@ -208,6 +210,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         case QgsMapLayerType::MeshLayer:
           icon = QgsIconUtils::iconMesh();
+          isModified = qobject_cast<QgsMeshLayer *>( layer )->isFrameModified();
           break;
 
         case QgsMapLayerType::VectorTileLayer:
@@ -221,6 +224,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+          isModified = vlayer->isModified();
           if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
             icon = QgsIconUtils::iconPoint();
           else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
@@ -245,14 +249,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         icon = legendIconEmbeddedInParent( nodeLayer );
       }
 
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( vlayer && vlayer->isEditable() && testFlag( UseTextFormatting ) )
+      if ( layer->isEditable() && testFlag( UseTextFormatting ) )
       {
         const int iconSize = scaleIconSize( 16 );
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( vlayer->isModified() ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( isModified ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
         painter.end();
 
         icon = QIcon( pixmap );
@@ -939,6 +942,14 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     connect( vl, &QgsVectorLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
     connect( vl, &QgsVectorLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
     connect( vl, &QgsVectorLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    QgsMeshLayer *ml = qobject_cast< QgsMeshLayer * >( layer );
+    connect( ml, &QgsMeshLayer::frameEditingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( ml, &QgsMeshLayer::frameEditingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( ml, &QgsMeshLayer::frameModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
   }
 
   emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );

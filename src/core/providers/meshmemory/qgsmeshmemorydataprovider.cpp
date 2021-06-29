@@ -623,6 +623,14 @@ bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePa
   return true; // not implemented/supported
 }
 
+void QgsMeshMemoryDataProvider::close()
+{
+  mVertices.clear();
+  mFaces.clear();
+  mEdges.clear();
+  mDatasetGroups.clear();
+}
+
 QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
 {
   QgsRectangle rec;

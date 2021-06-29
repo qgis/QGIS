@@ -78,6 +78,8 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
 
+    QgsMeshDriverMetadata driverMetadata() const override;
+
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
                               const QgsMeshDatasetGroupMetadata &meta,
@@ -91,6 +93,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               QgsMeshDatasetSourceInterface *source,
                               int datasetGroupIndex
                             ) override;
+
+    bool saveMeshFrame( const QgsMesh &mesh ) override;
+
+    void close() override;
 
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
@@ -124,6 +130,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
     QStringList mSubLayersUris;
+    QString mDriverName;
 
     /**
      * Closes and reloads dataset

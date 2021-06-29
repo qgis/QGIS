@@ -16,6 +16,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertree.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -260,18 +261,16 @@ static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup
   parent->addChildNode( layerNode );
 }
 
-
-
 bool QgsLayerTreeUtils::layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes )
 {
   const auto constLayerNodes = layerNodes;
   for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
-    if ( !vl )
+    QgsMapLayer *layer = layerNode->layer();
+    if ( !layer )
       continue;
 
-    if ( vl->isEditable() )
+    if ( layer->isEditable() )
       return true;
   }
   return false;
@@ -282,12 +281,30 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer *> &layerN
   const auto constLayerNodes = layerNodes;
   for ( QgsLayerTreeLayer *layerNode : constLayerNodes )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerNode->layer() );
-    if ( !vl )
+    QgsMapLayer *layer = layerNode->layer();
+    if ( !layer )
       continue;
 
-    if ( vl->isEditable() && vl->isModified() )
-      return true;
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vl->isEditable() && vl->isModified() )
+          return true;
+      }
+      break;
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer );
+        if ( ml->isEditable()  && ml->isFrameModified() )
+          return true;
+      }
+      break;
+      default:
+        continue;
+        break;
+    }
   }
   return false;
 }

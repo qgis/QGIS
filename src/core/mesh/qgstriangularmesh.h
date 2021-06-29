@@ -292,6 +292,14 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
      */
     QgsMeshVertex triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const;
 
+    /**
+     *
+     * Returns the extent of the mesh in the native mesh coordinates system, returns empty extent if the transformation fails
+     *
+     * \since QGIS 3.22
+     */
+    QgsRectangle nativeExtent();
+
   private:
 
     /**
