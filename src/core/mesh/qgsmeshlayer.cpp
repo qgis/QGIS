@@ -1029,24 +1029,27 @@ int QgsMeshLayer::meshVertexCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->vertexCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->vertexCount();
+  else return 0;
 }
 
 int QgsMeshLayer::meshFaceCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->faceCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->faceCount();
+  else return 0;
 }
 
 int QgsMeshLayer::meshEdgeCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->edgeCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->edgeCount();
+  else return 0;
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()
