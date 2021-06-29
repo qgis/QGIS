@@ -292,7 +292,7 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_wcstest
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/test_provider_wcs
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
 
