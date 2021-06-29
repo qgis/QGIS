@@ -326,7 +326,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   int dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
   spinBoxDP->setValue( dp );
 
-  cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true ) ? 0 : 1 );
+  cbxAbsolutePath->addItem( tr( "Absolute" ), static_cast< int >( Qgis::FilePathType::Absolute ) );
+  cbxAbsolutePath->addItem( tr( "Relative" ), static_cast< int >( Qgis::FilePathType::Relative ) );
+  cbxAbsolutePath->setCurrentIndex( cbxAbsolutePath->findData( static_cast< int >( QgsProject::instance()->filePathStorage() ) ) );
 
   // populate combo box with ellipsoids
   // selection of the ellipsoid from settings is deferred to a later point, because it would
@@ -1124,7 +1126,7 @@ void QgsProjectProperties::apply()
   QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), cbxAbsolutePath->currentIndex() == 0 );
+  QgsProject::instance()->setFilePathStorage( static_cast< Qgis::FilePathType >( cbxAbsolutePath->currentData().toInt() ) );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER" ) ) )
   {

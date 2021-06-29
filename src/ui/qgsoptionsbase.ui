@@ -1047,18 +1047,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="mDefaultPathsComboBox">
-                      <item>
-                       <property name="text">
-                        <string>Relative</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Absolute</string>
-                       </property>
-                      </item>
-                     </widget>
+                     <widget class="QComboBox" name="mDefaultPathsComboBox"/>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_24">
