@@ -34,6 +34,7 @@
 #include "qgsmeshlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgsfileutils.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
@@ -201,13 +202,16 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   return true;
 }
 
-bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage )
+bool QgsLayerDefinition::exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage )
 {
-  if ( !path.endsWith( QLatin1String( ".qlr" ) ) )
-    path = path.append( ".qlr" );
+  return exportLayerDefinition( path, selectedTreeNodes, QgsProject::instance()->filePathStorage(), errorMessage );
+}
+
+bool QgsLayerDefinition::exportLayerDefinition( const QString &p, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage )
+{
+  const QString path = QgsFileUtils::ensureFileNameHasExtension( p, { QStringLiteral( "qlr" )} );
 
   QFile file( path );
-
   if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
   {
     errorMessage = file.errorString();
@@ -215,8 +219,15 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   }
 
   QgsReadWriteContext context;
-  bool writeAbsolutePath = QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
-  context.setPathResolver( QgsPathResolver( writeAbsolutePath ? QString() : path ) );
+  switch ( pathType )
+  {
+    case Qgis::FilePathType::Absolute:
+      context.setPathResolver( QgsPathResolver( QString() ) );
+      break;
+    case Qgis::FilePathType::Relative:
+      context.setPathResolver( QgsPathResolver( path ) );
+      break;
+  }
 
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, context ) )

@@ -33,13 +33,40 @@ Loads the QLR at path into QGIS.  New layers are added to given project into lay
 %Docstring
 Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
 %End
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage /Out/ );
+
+    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage /Out/ );
 %Docstring
-Export the selected layer tree nodes to a QLR file
+Exports the selected layer tree nodes to a QLR file.
+
+This method uses the :py:func:`QgsProject.instance()`'s file path setting to determine whether absolute
+or relative paths are written. Use the variant with an explicit argument for file path type
+for control over this setting.
+
+:param path: file path for exported QLR file
+:param selectedTreeNodes: layer tree nodes to include in the QLR file
+
+:return: - ``True`` if the export was successful
+         - errorMessage: will be set to any error messages generated during the export
 %End
+
+    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage /Out/ );
+%Docstring
+Exports the selected layer tree nodes to a QLR file.
+
+:param path: file path for exported QLR file
+:param selectedTreeNodes: layer tree nodes to include in the QLR file
+:param pathType: specifies whether absolute or relative file paths should be used.
+
+:return: - ``True`` if the export was successful
+         - errorMessage: will be set to any error messages generated during the export
+
+
+.. versionadded:: 3.22
+%End
+
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage /Out/, const QgsReadWriteContext &context );
 %Docstring
-Export the selected layer tree nodes to a QLR-XML document
+Exports the selected layer tree nodes to a QLR XML document.
 %End
 
     static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsReadWriteContext &context );

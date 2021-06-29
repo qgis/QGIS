@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 #include <QString>
 #include <QVector>
@@ -46,9 +47,39 @@ class CORE_EXPORT QgsLayerDefinition
     static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT );
     //! Loads the QLR from the XML document.  New layers are added to given project into layer tree specified by rootGroup
     static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context );
-    //! Export the selected layer tree nodes to a QLR file
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT );
-    //! Export the selected layer tree nodes to a QLR-XML document
+
+    /**
+     * Exports the selected layer tree nodes to a QLR file.
+     *
+     * This method uses the QgsProject::instance()'s file path setting to determine whether absolute
+     * or relative paths are written. Use the variant with an explicit argument for file path type
+     * for control over this setting.
+     *
+     * \param path file path for exported QLR file
+     * \param selectedTreeNodes layer tree nodes to include in the QLR file
+     * \param errorMessage will be set to any error messages generated during the export
+     *
+     * \returns TRUE if the export was successful
+     */
+    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT );
+
+    /**
+     * Exports the selected layer tree nodes to a QLR file.
+     *
+     * \param path file path for exported QLR file
+     * \param selectedTreeNodes layer tree nodes to include in the QLR file
+     * \param pathType specifies whether absolute or relative file paths should be used.
+     * \param errorMessage will be set to any error messages generated during the export
+     *
+     * \returns TRUE if the export was successful
+     *
+     * \since QGIS 3.22
+     */
+    static bool exportLayerDefinition( const QString &path, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage SIP_OUT );
+
+    /**
+     * Exports the selected layer tree nodes to a QLR XML document.
+     */
     static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage SIP_OUT, const QgsReadWriteContext &context );
 
     /**
