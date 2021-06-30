@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsproviderutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProviderUtils
+{
+%Docstring(signature="appended")
+
+Contains utility functions for working with data providers.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsproviderutils.h"
+%End
+  public:
+
+    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details );
+%Docstring
+Returns ``True`` if the sublayer ``details`` are incomplete, and require a more in-depth
+scan.
+
+For instance, if the details contain any vector sublayers with unknown geometry types
+then a query with the Qgis.SublayerQueryFlag.ResolveGeometryType flag is required.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsproviderutils.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
