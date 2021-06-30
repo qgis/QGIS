@@ -207,9 +207,9 @@ void TestQgsVirtualRasterProvider::testUrl()
     //qDebug() << openOptions;
     */
     QVariantMap components;
-    components.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" ) ) );
-    components.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" ) ) );
-    components.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" ) ) );
+    //components.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" ) ) );
+    //components.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" ) ) );
+    //components.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" ) ) );
 
     qDebug() << "-------------------------------------------------------";
     //qDebug() << QStringRef(&list[7].first, list[7].first.size()-4, 4); //":uri"
@@ -232,7 +232,16 @@ void TestQgsVirtualRasterProvider::testUrl()
 
 
     //components.insert( QStringLiteral( "produt" ), attributes );
+    for ( const auto &item : query.queryItems() )
+    {
+        components.insert( item.first, item.second );
+    }
+
     qDebug() << components;
+    qDebug() << "-------------------------------------------------------";
+
+    qDebug() << list;
+
 
 }
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
