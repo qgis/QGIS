@@ -365,9 +365,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     QString placeholderImage = mLayer->legendPlaceholderImage();
     if ( !placeholderImage.isEmpty() )
     {
-      QgsImageCache ic;
       bool fitsInCache;
-      QImage img = ic.pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+      QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
       nodes << new QgsImageLegendNode( nodeLayer, img );
       return nodes;
     }
@@ -519,9 +518,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
   QString placeholderImage = mLayer->legendPlaceholderImage();
   if ( !placeholderImage.isEmpty() )
   {
-    QgsImageCache ic;
     bool fitsInCache;
-    QImage img = ic.pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+    QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
     nodes << new QgsImageLegendNode( nodeLayer, img );
   }
   else if ( mLayer->renderer() )

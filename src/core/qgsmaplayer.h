@@ -1282,6 +1282,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown
      * \return placholder image path
+     * \since QGIS 3.22
      */
     QString legendPlaceholderImage() const { return mLegendPlaceholderImage;}
 

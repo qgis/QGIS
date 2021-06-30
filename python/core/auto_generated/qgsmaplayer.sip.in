@@ -1436,6 +1436,8 @@ Returns the layer's elevation properties. This may be ``None``, depending on the
 Returns path to the placeholder image or an empty string if a generated legend is shown
 
 :return: placholder image path
+
+.. versionadded:: 3.22
 %End
 
     void setLegendPlaceholderImage( const QString &imgPath );
