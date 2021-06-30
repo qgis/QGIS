@@ -728,6 +728,8 @@ namespace QgsWms
 
         map->setLayers( layerSet );
         map->setKeepLayerSet( true );
+        // Set style override if a particular style should be used due to a map theme.
+        // It will actualize linked legend symbols too.
         if ( !layersStyle.isEmpty() )
         {
           map->setLayerStyleOverrides( layersStyle );
