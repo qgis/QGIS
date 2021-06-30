@@ -11362,6 +11362,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
 
       case QMessageBox::Save:
       {
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QApplication::setOverrideCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->commitFrameEditing( transform, false ) )
@@ -11370,13 +11371,11 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
         }
 
         mlayer->triggerRepaint();
-
-        QApplication::restoreOverrideCursor();
       }
       break;
       case QMessageBox::Discard:
       {
-        QApplication::setOverrideCursor( Qt::WaitCursor );
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->rollBackFrameEditing( transform, false ) )
         {
@@ -11387,8 +11386,6 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
         }
 
         mlayer->triggerRepaint();
-
-        QApplication::restoreOverrideCursor();
         break;
       }
 
@@ -11398,11 +11395,10 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   }
   else //mesh layer not modified
   {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
     QgsCanvasRefreshBlocker refreshBlocker;
     mlayer->rollBackFrameEditing( transform, false );
     mlayer->triggerRepaint();
-    QApplication::restoreOverrideCursor();
   }
 
   if ( !res && mlayer == activeLayer() )
@@ -11463,7 +11459,7 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
-  if ( !mlayer || !mlayer->isEditable() || !mlayer->isFrameModified() )
+  if ( !mlayer || !mlayer->isEditable() || !mlayer->isModified() )
     return;
 
   if ( mlayer == activeLayer() )
@@ -11682,7 +11678,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::MeshLayer:
       {
         QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( currentLayer );
-        enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isFrameModified() );
+        enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isModified() );
       }
       break;
       default:
@@ -11718,22 +11714,7 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
     if ( !layer )
       continue;
 
-    bool layerIsModified = false;
-
-    switch ( layer->type() )
-    {
-      case QgsMapLayerType::VectorLayer:
-        layerIsModified = qobject_cast<QgsVectorLayer *>( layer )->isModified();
-        break;
-      case QgsMapLayerType::MeshLayer:
-        layerIsModified = qobject_cast<QgsMeshLayer *>( layer )->isFrameModified();
-        break;
-      default:
-        continue;
-        break;
-    }
-
-    if ( layer->isEditable() && ( !modified || layerIsModified ) )
+    if ( layer->isEditable() && ( !modified || layer->isModified() ) )
       editLayers << layer;
   }
   return editLayers;
