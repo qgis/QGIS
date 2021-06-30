@@ -33,6 +33,7 @@
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmapthemecollection.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrasteridentifyresult.h"
@@ -695,8 +696,10 @@ namespace QgsWms
         // If the map is set to follow preset we need to disable follow preset and manually
         // configure the layers here or the map item internal logic will override and get
         // the layers from the map theme.
+        QMap<QString, QString> layersStyle;
         if ( map->followVisibilityPreset() )
         {
+          QString presetName = map->followVisibilityPresetName();
           if ( layerSet.isEmpty() )
           {
             // Get the layers from the theme
@@ -704,6 +707,16 @@ namespace QgsWms
             layerSet = map->layersToRender( &ex );
           }
           map->setFollowVisibilityPreset( false );
+          QList<QgsMapThemeCollection::MapThemeLayerRecord> mapThemeRecords = QgsProject::instance()->mapThemeCollection()->mapThemeState( presetName ).layerRecords();
+          for ( auto layerMapThemeRecord : mapThemeRecords )
+          {
+            if ( layerSet.contains( layerMapThemeRecord.layer() ) )
+            {
+              QString styleName = layerMapThemeRecord.currentStyle;
+              layersStyle.insert( layerMapThemeRecord.layer()->id(),
+                                  layerMapThemeRecord.layer()->styleManager()->style( layerMapThemeRecord.currentStyle ).xmlData() );
+            }
+          }
         }
 
         // Handle highlight layers
@@ -715,6 +728,11 @@ namespace QgsWms
 
         map->setLayers( layerSet );
         map->setKeepLayerSet( true );
+        if ( !layersStyle.isEmpty() )
+        {
+          map->setLayerStyleOverrides( layersStyle );
+          map->setKeepLayerStyles( true );
+        }
       }
 
       //grid space x / y
