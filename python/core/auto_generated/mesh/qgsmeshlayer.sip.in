@@ -159,6 +159,8 @@ QgsMeshLayer cannot be copied.
 
     virtual bool isEditable() const;
 
+    virtual bool supportsEditing() const;
+
 
     QString providerType() const;
 %Docstring
@@ -708,15 +710,6 @@ Returns the relative time of the dataset from the reference time of its group
 Returns the relative time (in milliseconds) of the dataset from the reference time of its group
 
 .. versionadded:: 3.16
-%End
-
-    bool meshFrameSupportEditing() const;
-%Docstring
-Returns whether the mesh frame support editing
-
-:return: whether the mesh frame support editing
-
-.. versionadded:: 3.22
 %End
 
     bool startFrameEditing( const QgsCoordinateTransform &transform );

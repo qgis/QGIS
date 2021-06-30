@@ -1809,7 +1809,8 @@ Makes layer read-only (editing disabled) or not
 :return: ``False`` if the layer is in editing yet
 %End
 
-    bool supportsEditing();
+    virtual bool supportsEditing() const;
+
 %Docstring
 Returns whether the layer supports editing or not
 

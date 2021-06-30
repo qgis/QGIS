@@ -1721,7 +1721,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \return FALSE if the layer is read only or the data provider has no editing capabilities
      * \since QGIS 3.18
      */
-    bool supportsEditing();
+    bool supportsEditing() const override;
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer

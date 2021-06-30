@@ -186,7 +186,7 @@ QString QgsMeshLayer::providerType() const
   return mProviderKey;
 }
 
-bool QgsMeshLayer::meshFrameSupportEditing() const
+bool QgsMeshLayer::supportsEditing() const
 {
   if ( !mDataProvider )
     return false;
@@ -890,7 +890,7 @@ qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetInde
 
 bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
-  if ( !meshFrameSupportEditing() )
+  if ( !supportsEditing() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ) );
     return false;

@@ -551,12 +551,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     virtual void setSubLayerVisibility( const QString &name, bool visible );
 
+    /**
+     * Returns whether the layer supports editing or not.
+     * \return FALSE if the layer is read only or the data provider has no editing capabilities.
+     * \note default implementation returns FALSE.
+     * \since QGIS 3.22 in the base class QgsMapLayer.
+     */
+    virtual bool supportsEditing() const;
+
     //! Returns TRUE if the layer can be edited.
     virtual bool isEditable() const;
 
     /**
-     *  Return TRUE if the layer has been modified since last commit/save, default implementation returns FALSE
-     *  \since QGIS 3.22 in the base class QgsMapLayer
+     *  Return TRUE if the layer has been modified since last commit/save.
+     * \note default implementation returns FALSE.
+     *  \since QGIS 3.22 in the base class QgsMapLayer.
      */
     virtual bool isModified() const;
 

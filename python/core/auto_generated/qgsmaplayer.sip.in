@@ -552,6 +552,19 @@ Set the visibility of the given sublayer name.
 :param visible: sublayer visibility
 %End
 
+    virtual bool supportsEditing() const;
+%Docstring
+Returns whether the layer supports editing or not.
+
+:return: ``False`` if the layer is read only or the data provider has no editing capabilities.
+
+.. note::
+
+   default implementation returns ``False``.
+
+.. versionadded:: 3.22
+%End
+
     virtual bool isEditable() const;
 %Docstring
 Returns ``True`` if the layer can be edited.
@@ -559,7 +572,11 @@ Returns ``True`` if the layer can be edited.
 
     virtual bool isModified() const;
 %Docstring
-Return ``True`` if the layer has been modified since last commit/save, default implementation returns ``False``
+Return ``True`` if the layer has been modified since last commit/save.
+
+.. note::
+
+   default implementation returns ``False``.
 
 .. versionadded:: 3.22
 %End

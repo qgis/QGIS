@@ -11141,9 +11141,7 @@ void QgisApp::toggleMapTips( bool enabled )
 void QgisApp::toggleEditing()
 {
   QgsMapLayer *currentLayer =  activeLayer();
-  if ( currentLayer &&
-       ( currentLayer->type() == QgsMapLayerType::VectorLayer  ||
-         currentLayer->type() == QgsMapLayerType::MeshLayer ) )
+  if ( currentLayer && currentLayer->supportsEditing() )
   {
     toggleEditing( currentLayer, true );
   }
@@ -11151,6 +11149,10 @@ void QgisApp::toggleEditing()
   {
     // active although there's no layer active!?
     mActionToggleEditing->setChecked( false );
+    mActionToggleEditing->setEnabled( false );
+    visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
+                                      tr( "Layer cannot be edited" ),
+                                      Qgis::MessageLevel::Warning );
   }
 }
 
@@ -11328,7 +11330,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
   if ( !mlayer )
     return false;
 
-  if ( !mlayer->meshFrameSupportEditing() )
+  if ( !mlayer->supportsEditing() )
     return false; //TODO: when adapted widget will be ready, ask the user if he want to create a new one based on this one
 
   bool res = false;
@@ -15616,7 +15618,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
       enableDigitizeTechniqueActions( false );
 
-      bool canSupportEditing = mlayer->meshFrameSupportEditing();
+      bool canSupportEditing = mlayer->supportsEditing();
       bool isEditable = mlayer->isEditable();
       mActionToggleEditing->setEnabled( canSupportEditing );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );

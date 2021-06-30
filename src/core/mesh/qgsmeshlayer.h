@@ -180,6 +180,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
     bool isEditable() const override;
+    bool supportsEditing() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -720,15 +721,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.16
      */
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
-
-    /**
-     * Returns whether the mesh frame support editing
-     *
-     * \return whether the mesh frame support editing
-     *
-     * \since QGIS 3.22
-     */
-    bool meshFrameSupportEditing() const;
 
     /**
     * Starts edition of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.

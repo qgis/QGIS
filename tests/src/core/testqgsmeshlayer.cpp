@@ -133,7 +133,7 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMemoryLayer->datasetGroupTreeRootItem()->childCount(), 5 );
   QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
-  QVERIFY( !mMemoryLayer->meshFrameSupportEditing() );
+  QVERIFY( !mMemoryLayer->supportsEditing() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
 
@@ -153,7 +153,7 @@ void TestQgsMeshLayer::initTestCase()
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_vector.dat" );
   QCOMPARE( mMdalLayer->datasetGroupTreeRootItem()->childCount(), 5 );
-  QVERIFY( mMdalLayer->meshFrameSupportEditing() );
+  QVERIFY( mMdalLayer->supportsEditing() );
 
   QVERIFY( mMdalLayer->isValid() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
@@ -229,7 +229,7 @@ void TestQgsMeshLayer::test_read_flower_mesh()
   QVERIFY( layer.dataProvider()->isValid() );
   QCOMPARE( 8, layer.dataProvider()->vertexCount() );
   QCOMPARE( 5, layer.dataProvider()->faceCount() );
-  QVERIFY( layer.meshFrameSupportEditing() );
+  QVERIFY( layer.supportsEditing() );
 }
 
 void TestQgsMeshLayer::test_read_1d_mesh()
