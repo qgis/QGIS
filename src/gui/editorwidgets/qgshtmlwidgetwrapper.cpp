@@ -56,8 +56,9 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   connect( page, &QWebPage::loadFinished, this, [ = ]( bool ) { fixHeight(); }, Qt::ConnectionType::UniqueConnection );
 
 #endif
-}
 
+  checkGeometryNeeds();
+}
 
 void QgsHtmlWidgetWrapper::reinitWidget( )
 {
@@ -67,9 +68,35 @@ void QgsHtmlWidgetWrapper::reinitWidget( )
   initWidget( mWidget );
 }
 
+void QgsHtmlWidgetWrapper::checkGeometryNeeds()
+{
+  if ( !mWidget )
+    return;
+
+  // initialize a temporary QgsWebView to render HTML code and check if one evaluated expression
+  // needs geometry
+  QgsWebView webView;
+  NeedsGeometryEvaluator evaluator;
+
+  const QgsAttributeEditorContext attributecontext = context();
+  QgsExpressionContext expressionContext = layer()->createExpressionContext();
+  evaluator.setExpressionContext( expressionContext );
+
+  auto frame = webView.page()->mainFrame();
+  connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ frame, &evaluator ]
+  {
+    frame->addToJavaScriptWindowObject( QStringLiteral( "expression" ), &evaluator );
+  } );
+
+  webView.setHtml( mHtmlCode );
+
+  mNeedsGeometry = evaluator.needsGeometry();
+}
+
 void QgsHtmlWidgetWrapper::setHtmlCode( const QString &htmlCode )
 {
   mHtmlCode = htmlCode;
+  checkGeometryNeeds();
 }
 
 void QgsHtmlWidgetWrapper::setHtmlContext( )
@@ -88,7 +115,6 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
 
   HtmlExpression *htmlExpression = new HtmlExpression();
   htmlExpression->setExpressionContext( expressionContext );
-  mWidget->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
   auto frame = mWidget->page()->mainFrame();
   connect( frame, &QWebFrame::javaScriptWindowObjectCleared, frame, [ = ]
   {
@@ -116,6 +142,12 @@ void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
   setHtmlContext();
 }
 
+bool QgsHtmlWidgetWrapper::needsGeometry() const
+{
+  return mNeedsGeometry;
+}
+
+
 ///@cond PRIVATE
 void HtmlExpression::setExpressionContext( const QgsExpressionContext &context )
 {
@@ -128,4 +160,18 @@ QString HtmlExpression::evaluate( const QString &expression ) const
   exp.prepare( &mExpressionContext );
   return exp.evaluate( &mExpressionContext ).toString();
 }
+
+void NeedsGeometryEvaluator::evaluate( const QString &expression )
+{
+  QgsExpression exp = QgsExpression( expression );
+  exp.prepare( &mExpressionContext );
+  mNeedsGeometry |= exp.needsGeometry();
+}
+
+void NeedsGeometryEvaluator::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
+
 ///@endcond
