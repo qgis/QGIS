@@ -516,6 +516,7 @@
 %Include auto_generated/providers/qgsproviderregistry.sip
 %Include auto_generated/providers/qgsprovidersublayerdetails.sip
 %Include auto_generated/providers/qgsprovidersublayertask.sip
+%Include auto_generated/providers/qgsproviderutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
