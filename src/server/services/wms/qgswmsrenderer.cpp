@@ -806,6 +806,8 @@ namespace QgsWms
         QList<QgsMapLayer *> mapLayers;
         if ( map->layers().isEmpty() )
         {
+          // in QGIS desktop, all layers has its legend, including invisible layers
+          // and using maptheme, legend items are automatically filtered
           mapLayers = mProject->mapLayers( true ).values();
         }
         else
