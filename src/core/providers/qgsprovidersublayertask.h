@@ -57,7 +57,7 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
     ~QgsProviderSublayerTask() override;
 
     /**
-     * Return the sublayer details as calculated by the task.
+     * Returns the sublayer details as calculated by the task.
      */
     QList<QgsProviderSublayerDetails> results() const;
 
