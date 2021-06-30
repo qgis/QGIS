@@ -11160,13 +11160,10 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   {
     case QgsMapLayerType::VectorLayer:
       return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
-      break;
     case QgsMapLayerType::MeshLayer:
       return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
-      break;
     default:
       return false;
-      break;
   }
 }
 
@@ -11426,10 +11423,8 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   {
     case QgsMapLayerType::VectorLayer:
       return saveVectorLayerEdits( layer, leaveEditable, triggerRepaint );
-      break;
     case QgsMapLayerType::MeshLayer:
       return saveMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-      break;
     default:
       break;
   }
@@ -11484,10 +11479,8 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
   {
     case QgsMapLayerType::VectorLayer:
       return cancelVectorLayerEdits( layer, leaveEditable, triggerRepaint );
-      break;
     case QgsMapLayerType::MeshLayer:
       return cancelMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-      break;
     default:
       break;
   }
