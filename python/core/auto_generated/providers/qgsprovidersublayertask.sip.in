@@ -45,7 +45,7 @@ specified ``uri``.
 
     QList<QgsProviderSublayerDetails> results() const;
 %Docstring
-Return the sublayer details as calculated by the task.
+Returns the sublayer details as calculated by the task.
 %End
 
     virtual bool run();
