@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef WITH_QTWEBKIT
 #include <QWebFrame>
+#endif
 
 #include "qgstest.h"
 
@@ -91,7 +93,9 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
 
   htmlWrapper->setFeature( f );
 
+#ifdef WITH_QTWEBKIT
   QCOMPARE( webView->page()->mainFrame()->toPlainText(), expectedText );
+#endif
 
   QgsProject::instance()->removeMapLayer( &layer );
 }
