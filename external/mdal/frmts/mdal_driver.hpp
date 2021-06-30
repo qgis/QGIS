@@ -43,6 +43,7 @@ namespace MDAL
       bool hasWriteDatasetCapability( MDAL_DataLocation location ) const;
 
       virtual std::string writeDatasetOnFileSuffix() const;
+      virtual std::string saveMeshOnFileSuffix() const;
 
       virtual bool canReadMesh( const std::string &uri );
       virtual bool canReadDatasets( const std::string &uri );
