@@ -11164,9 +11164,14 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
     case QgsMapLayerType::MeshLayer:
       return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
-    default:
-      return false;
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
   }
+  return false;
 }
 
 bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel )
@@ -11362,7 +11367,6 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
       case QMessageBox::Save:
       {
         QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
-        QApplication::setOverrideCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
         if ( !mlayer->commitFrameEditing( transform, false ) )
         {
@@ -11427,7 +11431,11 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
       return saveVectorLayerEdits( layer, leaveEditable, triggerRepaint );
     case QgsMapLayerType::MeshLayer:
       return saveMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-    default:
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
   }
 }
@@ -11483,7 +11491,11 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
       return cancelVectorLayerEdits( layer, leaveEditable, triggerRepaint );
     case QgsMapLayerType::MeshLayer:
       return cancelMeshLayerEdits( layer, leaveEditable, triggerRepaint );
-    default:
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
   }
 }
@@ -11661,8 +11673,7 @@ void QgisApp::updateLayerModifiedActions()
       case QgsMapLayerType::VectorLayer:
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-        QgsVectorDataProvider *dprovider = vlayer->dataProvider();
-        if ( dprovider )
+        if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
         {
           enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
                                    && vlayer->isEditable()
@@ -11676,7 +11687,11 @@ void QgisApp::updateLayerModifiedActions()
         enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isModified() );
       }
       break;
-      default:
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
   }
@@ -14603,8 +14618,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   {
     QgsDataProvider *provider = nullptr;
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
       connect( vlayer, &QgsVectorLayer::labelingFontNotFound, this, &QgisApp::labelingFontNotFound );
@@ -14623,8 +14637,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       provider = vProvider;
     }
 
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-    if ( rlayer )
+    if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
       // connect up any request the raster may make to update the statusbar message
       connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
@@ -14632,12 +14645,11 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       provider = rlayer->dataProvider();
     }
 
-    QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
-    if ( mlayer )
+    if ( QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer ) )
     {
-      connect( mlayer, &QgsMeshLayer::frameModified, this, &QgisApp::updateLayerModifiedActions );
-      connect( mlayer, &QgsMeshLayer::frameEditingStarted, this, &QgisApp::layerEditStateChanged );
-      connect( mlayer, &QgsMeshLayer::frameEditingStopped, this, &QgisApp::layerEditStateChanged );
+      connect( mlayer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+      connect( mlayer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+      connect( mlayer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       provider = mlayer->dataProvider();
     }
 

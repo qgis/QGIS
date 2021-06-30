@@ -731,21 +731,21 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool startFrameEditing( const QgsCoordinateTransform &transform );
 
     /**
-    * Commit edition of the mesh frame,
+    * Commits edition of the mesh frame,
     * Rebuilds the triangular mesh and its spatial index with \a transform,
     * Continue editing with the same mesh editor if \a continueEditing is True
     *
-    * \return whether the commit succeeds
+    * \return TRUE if the commit succeeds
     * \since QGIS 3.22
     */
     bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 
     /**
-    * Roll Back edition of the mesh frame.
+    * Rolls Back edition of the mesh frame.
     * Reload mesh from file, rebuilds the triangular mesh and its spatial index with \a transform,
-    * Continue editing with the same mesh editor if \a continueEditing is True
+    * Continue editing with the same mesh editor if \a continueEditing is TRUE
     *
-    * \return whether the commit succeeds
+    * \return TRUE if the rollback succeeds
     * \since QGIS 3.22
     */
     bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
@@ -767,7 +767,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshEditor *meshEditor();
 
     /**
-    * Returns whether the mesh fram has been modified since the last save
+    * Returns whether the mesh frame has been modified since the last save
     *
     * \since QGIS 3.22
     */
@@ -831,27 +831,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void timeSettingsChanged( );
-
-    /**
-     * Emitted when the mesh frame is modified
-     *
-     * \since QGIS 3.22
-     */
-    void frameModified();
-
-    /**
-     * Emitted when the mesh frame editing is started
-     *
-     * \since QGIS 3.22
-     */
-    void frameEditingStarted();
-
-    /**
-     * Emitted when the mesh frame editing is stopped
-     *
-     * \since QGIS 3.22
-     */
-    void frameEditingStopped();
 
   private: // Private methods
 

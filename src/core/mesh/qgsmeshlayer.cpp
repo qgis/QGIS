@@ -705,7 +705,7 @@ void QgsMeshLayer::onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes )
 void QgsMeshLayer::onMeshEdited()
 {
   mRendererCache.reset( new QgsMeshLayerRendererCache() );
-  emit frameModified();
+  emit layerModified();
   triggerRepaint();
 }
 
@@ -927,7 +927,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
   connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
 
-  emit frameEditingStarted();
+  emit editingStarted();
 
   return true;
 }
@@ -944,13 +944,13 @@ bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, 
   if ( continueEditing )
   {
     mMeshEditor->initialize();
-    emit frameModified();
+    emit layerModified();
     return res;
   }
 
   mMeshEditor->deleteLater();
   mMeshEditor = nullptr;
-  emit frameEditingStopped();
+  emit editingStopped();
 
   mDataProvider->reloadData();
   mDataProvider->populateMesh( mNativeMesh.get() );
@@ -979,7 +979,7 @@ bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform
   {
     mMeshEditor->deleteLater();
     mMeshEditor = nullptr;
-    emit frameEditingStopped();
+    emit editingStopped();
 
     mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
     mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );

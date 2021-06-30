@@ -944,9 +944,9 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   if ( layer->type() == QgsMapLayerType::MeshLayer )
   {
     QgsMeshLayer *ml = qobject_cast< QgsMeshLayer * >( layer );
-    connect( ml, &QgsMeshLayer::frameEditingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( ml, &QgsMeshLayer::frameEditingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( ml, &QgsMeshLayer::frameModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( ml, &QgsMeshLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( ml, &QgsMeshLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( ml, &QgsMeshLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
   }
 
   emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );

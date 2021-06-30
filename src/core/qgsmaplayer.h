@@ -553,7 +553,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns whether the layer supports editing or not.
-     * \return FALSE if the layer is read only or the data provider has no editing capabilities.
+     * \returns FALSE if the layer is read only or the data provider has no editing capabilities.
      * \note default implementation returns FALSE.
      * \since QGIS 3.22 in the base class QgsMapLayer.
      */
@@ -563,9 +563,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isEditable() const;
 
     /**
-     *  Return TRUE if the layer has been modified since last commit/save.
+     * Returns TRUE if the layer has been modified since last commit/save.
      * \note default implementation returns FALSE.
-     *  \since QGIS 3.22 in the base class QgsMapLayer.
+     * \since QGIS 3.22 in the base class QgsMapLayer.
      */
     virtual bool isModified() const;
 
@@ -1544,6 +1544,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     void customPropertyChanged( const QString &key );
+
+    /**
+     * Emitted when editing on this layer has started.
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void editingStarted();
+
+    /**
+     * Emitted when edited changes have been successfully written to the data provider.
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void editingStopped();
+
+    /**
+     * Emitted when modifications has been done on layer
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void layerModified();
 
   private slots:
 
