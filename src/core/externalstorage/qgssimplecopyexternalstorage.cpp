@@ -53,7 +53,7 @@ void QgsSimpleCopyExternalStorageStoredContent::cancel()
   if ( !mCopyTask )
     return;
 
-  disconnect( mCopyTask, &QgsTask::taskTerminated, nullptr, nullptr );
+  disconnect( mCopyTask, &QgsTask::taskTerminated, this, nullptr );
   connect( mCopyTask, &QgsTask::taskTerminated, this, [ = ]
   {
     mStatus = Qgis::ContentStatus::Canceled;
