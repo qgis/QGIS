@@ -38,7 +38,11 @@ std::string MDAL::Driver::filters() const
 
 std::string MDAL::Driver::writeDatasetOnFileSuffix() const
 {
+  return std::string();
+}
 
+std::string MDAL::Driver::saveMeshOnFileSuffix() const
+{
   return std::string();
 }
 
