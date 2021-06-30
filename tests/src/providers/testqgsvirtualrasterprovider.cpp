@@ -179,10 +179,12 @@ void TestQgsVirtualRasterProvider::testUrl()
 {
     //only to check how qurl and qurlquery works
 
-    QUrl url("memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)");
+    //QUrl url("memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
+    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&widht=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal");
     QUrlQuery query(url.query());
     QList<QPair<QString, QString> > list = query.queryItems();
     qDebug() << "LIST SIZE " << list.size();
+    /*
     for (int i = 0; i < list.size(); i++)
     {
         qDebug() << list[i];
@@ -195,19 +197,41 @@ void TestQgsVirtualRasterProvider::testUrl()
         //QString outputCrsDef = query.queryItemValue( QStringLiteral( "crs" ) );
         qDebug() << query.queryItemValue( QStringLiteral( "crs" ) );
     }
-
+    */
+    /*
     QStringList openOptions;
     for ( const auto &item : query.queryItems() )
     {
         openOptions << QStringLiteral( "%1=%2" ).arg( item.first, item.second );
     }
     //qDebug() << openOptions;
+    */
     QVariantMap components;
-    components.insert( QStringLiteral( "geometry" ), query.queryItemValue( QStringLiteral( "geometry" ) ) );
+    components.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" ) ) );
     components.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" ) ) );
-    //components.insert( QStringLiteral( "field" ), query.queryItemValue( QStringLiteral( "field" ) ) );
+    components.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" ) ) );
+
+    qDebug() << "-------------------------------------------------------";
+    //qDebug() << QStringRef(&list[7].first, list[7].first.size()-4, 4); //":uri"
+    //qDebug() << QStringRef(&list[7].first, 0, list[7].first.indexOf(':')); //"landsat" i.e name
 
 
+    for (int i = 0; i < list.size(); i++)
+    {
+        if ( QStringRef(&list[i].first, list[i].first.size()-4, 4) == ":uri" )
+        {
+            qDebug() << list[i].second << endl;
+        }
+        if ( QStringRef(&list[i].first, list[i].first.size()-9, 9) == ":provider" )
+        {
+            qDebug() << list[i].second << endl;
+        }
+
+    }
+    //qDebug() << list.first.indexOf(":uri") << endl;
+
+
+    //components.insert( QStringLiteral( "produt" ), attributes );
     qDebug() << components;
 
 }
