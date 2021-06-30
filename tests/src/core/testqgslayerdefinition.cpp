@@ -21,6 +21,7 @@
 
 #include <qgsapplication.h>
 #include <qgsproject.h>
+#include <qgsvectorlayer.h>
 #include <qgslayertree.h>
 #include <qgslayerdefinition.h>
 
@@ -42,10 +43,16 @@ class TestQgsLayerDefinition: public QObject
     void testFindLayers();
 
     /**
-     * test that export does not crash: regression #18981
+     * test that export does not crash
      * https://github.com/qgis/QGIS/issues/26812 - Save QLR crashes QGIS 3
      */
     void testExportDoesNotCrash();
+
+    /**
+     * Test valueRelation in Attribute form wrong loaded from layer definition file (qlr)
+     * https://github.com/qgis/QGIS/issues/43978
+     */
+    void testWidgetConfig();
 
   private:
     QTemporaryFile *mTempFile;
@@ -100,6 +107,16 @@ void TestQgsLayerDefinition::testExportDoesNotCrash()
   QgsProject::instance()->layerTreeRoot()->removeAllChildren();
   QgsLayerDefinition::loadLayerDefinition( mTempFile->fileName(), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
   testFindLayers();
+}
+
+void TestQgsLayerDefinition::testWidgetConfig()
+{
+  const auto vl { static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "NewMemory" ) ).first() ) };
+  QVERIFY( vl );
+  const auto field { vl->fields().at( 0 ) };
+  const auto config { field.editorWidgetSetup().config() };
+  QCOMPARE( config[ QStringLiteral( "Description" ) ].toString(), QString() );
+  QCOMPARE( config[ QStringLiteral( "FilterExpression" ) ].toString(), QString() );
 }
 
 
