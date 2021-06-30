@@ -29,6 +29,17 @@ class QgsProviderSublayerDetails;
  *
  * \brief A QgsTask which retrieves sublayer details for a URI.
  *
+ * This task executes a call to QgsProviderRegistry::querySublayers() in a background
+ * thread. Depending on the URI queried it can be expensive to calculate the sublayers
+ * (e.g. in the case where a full table scan is required to resolve mixed geometry
+ * type layers), so it is beneficial to perform these queries in the background wherever
+ * possible.
+ *
+ * While QgsProviderRegistry::querySublayers() offers various flags to control
+ * how in-depth the querying will be, these flags are not exposed through QgsProviderSublayerTask.
+ * Rather QgsProviderSublayerTask will always execute the most thorough query
+ * possible, regardless of how expensive this may be.
+ *
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
