@@ -201,7 +201,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       // icons possibly overriding default icon
       QIcon icon;
 
-      bool isModified = false;
       switch ( layer->type() )
       {
         case QgsMapLayerType::RasterLayer:
@@ -210,7 +209,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         case QgsMapLayerType::MeshLayer:
           icon = QgsIconUtils::iconMesh();
-          isModified = qobject_cast<QgsMeshLayer *>( layer )->isFrameModified();
           break;
 
         case QgsMapLayerType::VectorTileLayer:
@@ -224,7 +222,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-          isModified = vlayer->isModified();
           if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
             icon = QgsIconUtils::iconPoint();
           else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
@@ -255,7 +252,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
         QPainter painter( &pixmap );
-        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( isModified ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+        painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( layer->isModified() ? QStringLiteral( "/mIconEditableEdits.svg" ) : QStringLiteral( "/mActionToggleEditing.svg" ) ) );
         painter.end();
 
         icon = QIcon( pixmap );

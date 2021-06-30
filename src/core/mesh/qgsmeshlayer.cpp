@@ -1003,7 +1003,7 @@ QgsMeshEditor *QgsMeshLayer::meshEditor()
   return mMeshEditor;
 }
 
-bool QgsMeshLayer::isFrameModified() const
+bool QgsMeshLayer::isModified() const
 {
   if ( mMeshEditor )
     return mMeshEditor->isModified();

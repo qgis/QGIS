@@ -779,8 +779,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     *
     * \since QGIS 3.22
     */
-    bool isFrameModified() const;
-
+    bool isModified() const override;
 
     /**
      *  Returns whether the mesh contains at mesh elements of given type

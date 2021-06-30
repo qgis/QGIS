@@ -1742,6 +1742,7 @@ Returns ``True`` if this is a geometry layer and ``False`` in case of NoGeometry
 %End
 
     virtual bool isModified() const;
+
 %Docstring
 Returns ``True`` if the provider has been modified since the last commit
 %End

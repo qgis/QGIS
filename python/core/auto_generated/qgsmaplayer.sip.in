@@ -557,6 +557,13 @@ Set the visibility of the given sublayer name.
 Returns ``True`` if the layer can be edited.
 %End
 
+    virtual bool isModified() const;
+%Docstring
+Return ``True`` if the layer has been modified since last commit/save, default implementation returns ``False``
+
+.. versionadded:: 3.22
+%End
+
     virtual bool isSpatial() const;
 %Docstring
 Returns ``True`` if the layer is considered a spatial layer, ie it has some form of geometry associated with it.

@@ -127,7 +127,7 @@ void TestQgsMeshEditor::startStopEditing()
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 6 );
 
   // roll back editing and continue editing
-  QVERIFY( meshLayerQuadTriangle->isFrameModified() );
+  QVERIFY( meshLayerQuadTriangle->isModified() );
   QVERIFY( meshLayerQuadTriangle->rollBackFrameEditing( transform, true ) );
   QVERIFY( editor->mTriangularMesh->faceCentroids().count() == editor->mMesh->faceCount() );
   QVERIFY( editor->mTriangularMesh->vertices().count() == editor->mMesh->vertexCount() );
@@ -151,7 +151,7 @@ void TestQgsMeshEditor::startStopEditing()
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 6 );
 
   // roll back editing and stop editing
-  QVERIFY( meshLayerQuadTriangle->isFrameModified() );
+  QVERIFY( meshLayerQuadTriangle->isModified() );
   QVERIFY( meshLayerQuadTriangle->rollBackFrameEditing( transform, false ) );
 
   QVERIFY( !meshLayerQuadTriangle->meshEditor() );

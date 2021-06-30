@@ -11162,7 +11162,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
       break;
     case QgsMapLayerType::MeshLayer:
-      return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ) );
+      return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
       break;
     default:
       return false;
@@ -11346,7 +11346,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
     if ( !res )
       QgsMessageLog::logMessage( tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
   }
-  else if ( mlayer->isFrameModified() )
+  else if ( mlayer->isModified() )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
     if ( allowCancel )

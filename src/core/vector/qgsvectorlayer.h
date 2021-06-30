@@ -1663,7 +1663,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isSpatial() const FINAL;
 
     //! Returns TRUE if the provider has been modified since the last commit
-    virtual bool isModified() const;
+    bool isModified() const override;
 
     /**
      * Returns TRUE if the field comes from the auxiliary layer,

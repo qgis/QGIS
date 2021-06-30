@@ -285,26 +285,8 @@ bool QgsLayerTreeUtils::layersModified( const QList<QgsLayerTreeLayer *> &layerN
     if ( !layer )
       continue;
 
-    switch ( layer->type() )
-    {
-      case QgsMapLayerType::VectorLayer:
-      {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vl->isEditable() && vl->isModified() )
-          return true;
-      }
-      break;
-      case QgsMapLayerType::MeshLayer:
-      {
-        QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( layer );
-        if ( ml->isEditable()  && ml->isFrameModified() )
-          return true;
-      }
-      break;
-      default:
-        continue;
-        break;
-    }
+    if ( layer->isEditable() && layer->isModified() )
+      return true;
   }
   return false;
 }

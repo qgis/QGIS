@@ -1901,6 +1901,11 @@ bool QgsMapLayer::isEditable() const
   return false;
 }
 
+bool QgsMapLayer::isModified() const
+{
+  return false;
+}
+
 bool QgsMapLayer::isSpatial() const
 {
   return true;
