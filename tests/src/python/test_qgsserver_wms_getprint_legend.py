@@ -36,11 +36,12 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
     QGIS server print behaves inconsistently regarding legend content"""
 
     def test_wms_getprint_legend(self):
-        """Test project has 2 layer: red and green and four templates:
+        """Test project has 2 layer: red and green and five templates:
             red: follow map theme red
             green: follow map theme green
             blank: no map theme
             full: follow map theme full with both layer
+            falsegreen : follow map theme falsegreen (visible layer : green but with blue style)
         """
 
         tmp_dir = QTemporaryDir()
@@ -263,6 +264,55 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.assertEqual(color.red(), 0)
         self.assertEqual(color.green(), 255)
         self.assertEqual(color.blue(), 0)
+
+        # full template, full theme, specified layer is red
+        params["TEMPLATE"] = "falsegreen"
+        params["map0:LAYERS"] = "red"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        color = image.pixelColor(600, 40)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 0)
+        color = image.pixelColor(600, 60)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
+
+        # full template, full theme, specified layer is green
+        params["map0:LAYERS"] = "green"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        color = image.pixelColor(600, 40)
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+        color = image.pixelColor(600, 60)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
+
+        # full template, full theme
+        params["map0:LAYERS"] = ""
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        color = image.pixelColor(600, 40)
+        self.assertEqual(color.red(), 0)
+        self.assertEqual(color.green(), 0)
+        self.assertEqual(color.blue(), 255)
+        color = image.pixelColor(600, 60)
+        self.assertEqual(color.red(), 255)
+        self.assertEqual(color.green(), 255)
+        self.assertEqual(color.blue(), 255)
 
 
 if __name__ == '__main__':
