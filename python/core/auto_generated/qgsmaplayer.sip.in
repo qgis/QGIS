@@ -572,7 +572,7 @@ Returns ``True`` if the layer can be edited.
 
     virtual bool isModified() const;
 %Docstring
-Return ``True`` if the layer has been modified since last commit/save.
+Returns ``True`` if the layer has been modified since last commit/save.
 
 .. note::
 
@@ -1748,6 +1748,27 @@ Emitted when the validity of this layer changed.
 Emitted when a custom property of the layer has been changed or removed.
 
 .. versionadded:: 3.18
+%End
+
+    void editingStarted();
+%Docstring
+Emitted when editing on this layer has started.
+
+.. versionadded:: 3.22
+%End
+
+    void editingStopped();
+%Docstring
+Emitted when edited changes have been successfully written to the data provider.
+
+.. versionadded:: 3.22
+%End
+
+    void layerModified();
+%Docstring
+Emitted when modifications has been done on layer
+
+.. versionadded:: 3.22
 %End
 
   protected:

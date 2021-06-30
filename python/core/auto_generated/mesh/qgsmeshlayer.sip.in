@@ -722,22 +722,22 @@ This operation will disconnect the mesh layer from the data provider anf removes
 
     bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Commit edition of the mesh frame,
+Commits edition of the mesh frame,
 Rebuilds the triangular mesh and its spatial index with ``transform``,
 Continue editing with the same mesh editor if ``continueEditing`` is True
 
-:return: whether the commit succeeds
+:return: ``True`` if the commit succeeds
 
 .. versionadded:: 3.22
 %End
 
     bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 %Docstring
-Roll Back edition of the mesh frame.
+Rolls Back edition of the mesh frame.
 Reload mesh from file, rebuilds the triangular mesh and its spatial index with ``transform``,
-Continue editing with the same mesh editor if ``continueEditing`` is True
+Continue editing with the same mesh editor if ``continueEditing`` is ``True``
 
-:return: whether the commit succeeds
+:return: ``True`` if the rollback succeeds
 
 .. versionadded:: 3.22
 %End
@@ -761,7 +761,7 @@ Returns a pointer to the mesh editor own by the mesh layer
     virtual bool isModified() const;
 
 %Docstring
-Returns whether the mesh fram has been modified since the last save
+Returns whether the mesh frame has been modified since the last save
 
 .. versionadded:: 3.22
 %End
@@ -825,27 +825,6 @@ Emitted when active vector group dataset is changed
 Emitted when time format is changed
 
 .. versionadded:: 3.8
-%End
-
-    void frameModified();
-%Docstring
-Emitted when the mesh frame is modified
-
-.. versionadded:: 3.22
-%End
-
-    void frameEditingStarted();
-%Docstring
-Emitted when the mesh frame editing is started
-
-.. versionadded:: 3.22
-%End
-
-    void frameEditingStopped();
-%Docstring
-Emitted when the mesh frame editing is stopped
-
-.. versionadded:: 3.22
 %End
 
   private: // Private methods
