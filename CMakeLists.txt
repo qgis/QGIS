@@ -620,7 +620,7 @@ if (PEDANTIC)
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreturn-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
     endif()
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
