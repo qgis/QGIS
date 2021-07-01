@@ -41,9 +41,9 @@
 
 /* typedefs for plugins */
 typedef QgisPlugin *create_ui( QgisInterface *qI );
-typedef QString name_t();
-typedef QString description_t();
-typedef QString category_t();
+typedef const QString *name_t();
+typedef const QString *description_t();
+typedef const QString *category_t();
 typedef int type_t();
 
 
@@ -372,10 +372,10 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
         {
           pl->initGui();
           // add it to the plugin registry
-          addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
+          addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), *pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( *pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )

@@ -1147,10 +1147,6 @@ typedef unsigned long long qgssize;
 #ifndef QGISEXTERN
 #ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
-#  ifdef _MSC_VER
-// do not warn about C bindings returning QString
-#    pragma warning(disable:4190)
-#  endif
 #else
 #  if defined(__GNUC__) || defined(__clang__)
 #    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
