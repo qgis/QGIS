@@ -90,6 +90,13 @@ class CORE_EXPORT QgsIconUtils
      */
     static QIcon iconForLayer( const QgsMapLayer *layer );
 
+    /**
+     * Returns the default icon for the specified layer \a type.
+     *
+     * \since QGIS 3.22
+     */
+    static QIcon iconForLayerType( QgsMapLayerType type );
+
 };
 
 #endif // QGSICONUTILS_H
