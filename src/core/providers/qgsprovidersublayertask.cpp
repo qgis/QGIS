@@ -19,6 +19,7 @@
 #include "qgsfeedback.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsreadwritelocker.h"
 
 QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri )
   : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
@@ -28,6 +29,7 @@ QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri )
 
 QList<QgsProviderSublayerDetails> QgsProviderSublayerTask::results() const
 {
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
   return mResults;
 }
 
@@ -37,7 +39,11 @@ bool QgsProviderSublayerTask::run()
 {
   mFeedback = std::make_unique< QgsFeedback >();
 
-  mResults = QgsProviderRegistry::instance()->querySublayers( mUri, Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures, mFeedback.get() );
+  const QList<QgsProviderSublayerDetails> res = QgsProviderRegistry::instance()->querySublayers( mUri, Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures, mFeedback.get() );
+
+  QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
+  mResults = res;
+
   return true;
 }
 

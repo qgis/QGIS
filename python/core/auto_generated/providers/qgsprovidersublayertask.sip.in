@@ -48,9 +48,12 @@ specified ``uri``.
 Returns the sublayer details as calculated by the task.
 %End
 
-    virtual bool run();
-
     virtual void cancel();
+
+
+  protected:
+
+    virtual bool run();
 
 
 };
