@@ -266,7 +266,7 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
-    //QgsVirtualRasterProvider::
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
 }
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
