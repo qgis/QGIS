@@ -1,0 +1,235 @@
+/***************************************************************************
+                             qgsprovidersublayermodel.cpp
+                             ----------------------
+    begin                : June 2021
+    copyright            : (C) 2021 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsprovidersublayermodel.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsiconutils.h"
+#include <QLocale>
+
+QgsProviderSublayerModel::QgsProviderSublayerModel( QObject *parent )
+  : QAbstractItemModel( parent )
+{
+
+}
+
+void QgsProviderSublayerModel::setSublayerDetails( const QList<QgsProviderSublayerDetails> &details )
+{
+  // remove layers which don't exist in new list
+  for ( int i = mSublayers.count() - 1; i >= 0; --i )
+  {
+    if ( !details.contains( mSublayers.at( i ) ) )
+    {
+      beginRemoveRows( QModelIndex(), i, i );
+      mSublayers.removeAt( i );
+      endRemoveRows();
+    }
+  }
+
+  // and add new layers which exist only in new list
+  for ( const QgsProviderSublayerDetails &layer : details )
+  {
+    if ( !mSublayers.contains( layer ) )
+    {
+      beginInsertRows( QModelIndex(), mSublayers.count(), mSublayers.count() );
+      mSublayers.append( layer );
+      endInsertRows();
+    }
+  }
+}
+
+QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() const
+{
+  return mSublayers;
+}
+
+QModelIndex QgsProviderSublayerModel::index( int row, int column, const QModelIndex &parent ) const
+{
+  if ( column < 0 || column >= columnCount() )
+  {
+    //column out of bounds
+    return QModelIndex();
+  }
+
+  if ( !parent.isValid() && row >= 0 && row < mSublayers.size() )
+  {
+    //return an index for the sublayer at this position
+    return createIndex( row, column );
+  }
+
+  //only top level supported for now
+  return QModelIndex();
+}
+
+QModelIndex QgsProviderSublayerModel::parent( const QModelIndex &index ) const
+{
+  Q_UNUSED( index )
+
+  //all items are top level for now
+  return QModelIndex();
+}
+
+int QgsProviderSublayerModel::columnCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent )
+  return static_cast< int >( Column::Description ) + 1;
+}
+
+int QgsProviderSublayerModel::rowCount( const QModelIndex &parent ) const
+{
+  if ( !parent.isValid() )
+  {
+    return mSublayers.size();
+  }
+  else
+  {
+    //no children for nw
+    return 0;
+  }
+}
+
+QVariant QgsProviderSublayerModel::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() )
+    return QVariant();
+
+  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
+    return QVariant();
+
+  const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    case Qt::EditRole:
+    {
+      switch ( static_cast< Column >( index.column() ) )
+      {
+        case QgsProviderSublayerModel::Column::Name:
+          return details.name();
+        case QgsProviderSublayerModel::Column::Description:
+        {
+          switch ( details.type() )
+          {
+            case QgsMapLayerType::VectorLayer:
+            {
+              QString count;
+              if ( details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
+                   || details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
+                count = tr( "Uncounted" );
+              else
+                count = QLocale().toString( details.featureCount() );
+
+              if ( !details.description().isEmpty() )
+                return QStringLiteral( "%1 - %2 (%3)" ).arg( details.description(),
+                       QgsWkbTypes::displayString( details.wkbType() ),
+                       count );
+              else
+                return QStringLiteral( "%2 (%3)" ).arg(
+                         QgsWkbTypes::displayString( details.wkbType() ),
+                         count );
+            }
+
+            case QgsMapLayerType::RasterLayer:
+            case QgsMapLayerType::PluginLayer:
+            case QgsMapLayerType::MeshLayer:
+            case QgsMapLayerType::VectorTileLayer:
+            case QgsMapLayerType::AnnotationLayer:
+            case QgsMapLayerType::PointCloudLayer:
+              return details.description();
+          }
+          break;
+
+        }
+      }
+      return details.name();
+
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( index.column() == 0 )
+        return details.type() == QgsMapLayerType::VectorLayer
+               ? QgsIconUtils::iconForWkbType( details.wkbType() )
+               : QgsIconUtils::iconForLayerType( details.type() );
+      else
+        return QVariant();
+    }
+
+    case static_cast< int >( Role::ProviderKey ):
+      return details.providerKey();
+
+    case static_cast< int >( Role::LayerType ):
+      return static_cast< int >( details.type() );
+
+    case static_cast< int >( Role::Uri ):
+      return details.uri();
+
+    case static_cast< int >( Role::Name ):
+      return details.name();
+
+    case static_cast< int >( Role::Description ):
+      return details.description();
+
+    case static_cast< int >( Role::Path ):
+      return details.path();
+
+    case static_cast< int >( Role::FeatureCount ):
+      return details.featureCount();
+
+    case static_cast< int >( Role::WkbType ):
+      return details.wkbType();
+
+    case static_cast< int >( Role::GeometryColumnName ):
+      return details.geometryColumnName();
+
+    case static_cast< int >( Role::LayerNumber ):
+      return details.layerNumber();
+
+    default:
+      return QVariant();
+  }
+}
+
+QVariant QgsProviderSublayerModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  switch ( orientation )
+  {
+    case Qt::Vertical:
+      break;
+    case Qt::Horizontal:
+    {
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+        {
+          switch ( static_cast< Column>( section ) )
+          {
+            case QgsProviderSublayerModel::Column::Name:
+              return tr( "Layer" );
+            case QgsProviderSublayerModel::Column::Description:
+              return tr( "Description" );
+          }
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return QVariant();
+}
