@@ -14616,44 +14616,30 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    QgsDataProvider *provider = nullptr;
+    connect( layer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+    connect( layer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
       connect( vlayer, &QgsVectorLayer::labelingFontNotFound, this, &QgisApp::labelingFontNotFound );
 
-      QgsVectorDataProvider *vProvider = vlayer->dataProvider();
       // Do not check for layer editing capabilities because they may change
       // (for example when subsetString is added/removed) and signals need to
       // be in place in order to update the GUI
-      connect( vlayer, &QgsVectorLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-      connect( vlayer, &QgsVectorLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-      connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
       connect( vlayer, &QgsVectorLayer::styleLoaded, [this, vlayer]( QgsMapLayer::StyleCategories categories ) { vectorLayerStyleLoaded( vlayer, categories ); } );
-
-      provider = vProvider;
     }
 
     if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
       // connect up any request the raster may make to update the statusbar message
       connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
-
-      provider = rlayer->dataProvider();
     }
 
-    if ( QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer ) )
-    {
-      connect( mlayer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-      connect( mlayer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-      connect( mlayer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
-      provider = mlayer->dataProvider();
-    }
-
-    if ( provider )
+    if ( QgsDataProvider *provider = layer->dataProvider() )
     {
       connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
       connect( provider, &QgsDataProvider::dataChanged, this, [this] { refreshMapCanvas(); } );

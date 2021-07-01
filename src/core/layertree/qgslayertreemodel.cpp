@@ -930,24 +930,12 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
   connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeModel::layerFlagsChanged, Qt::UniqueConnection );
 
-  if ( layer->type() == QgsMapLayerType::VectorLayer )
-  {
-    // using unique connection because there may be temporarily more nodes for a layer than just one
-    // which would create multiple connections, however disconnect() would disconnect all multiple connections
-    // even if we wanted to disconnect just one connection in each call.
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
-    connect( vl, &QgsVectorLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( vl, &QgsVectorLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( vl, &QgsVectorLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-  }
-
-  if ( layer->type() == QgsMapLayerType::MeshLayer )
-  {
-    QgsMeshLayer *ml = qobject_cast< QgsMeshLayer * >( layer );
-    connect( ml, &QgsMeshLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( ml, &QgsMeshLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-    connect( ml, &QgsMeshLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
-  }
+  // using unique connection because there may be temporarily more nodes for a layer than just one
+  // which would create multiple connections, however disconnect() would disconnect all multiple connections
+  // even if we wanted to disconnect just one connection in each call.
+  connect( layer, &QgsMeshLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  connect( layer, &QgsMeshLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+  connect( layer, &QgsMeshLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
 
   emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );
 }
