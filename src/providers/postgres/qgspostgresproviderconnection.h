@@ -81,8 +81,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn> pgconn = nullptr ) const;
-    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn> pgconn = nullptr ) const;
+    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

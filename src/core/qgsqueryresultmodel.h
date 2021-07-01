@@ -127,8 +127,10 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     //! Emitted when all rows have been fetched or when the fetching has been stopped
     void fetchingComplete();
 
+    //! Emitted when more rows are requested
     void fetchMoreRows( qlonglong maxRows );
 
+    //! Emitted when fetching of rows starts
     void fetchingStarted();
 
   private:

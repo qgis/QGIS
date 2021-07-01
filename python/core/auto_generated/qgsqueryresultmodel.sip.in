@@ -80,8 +80,14 @@ Emitted when all rows have been fetched or when the fetching has been stopped
 %End
 
     void fetchMoreRows( qlonglong maxRows );
+%Docstring
+Emitted when more rows are requested
+%End
 
     void fetchingStarted();
+%Docstring
+Emitted when fetching of rows starts
+%End
 
 };
 
