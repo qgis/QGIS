@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayermodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProviderSublayerModel: QAbstractItemModel
+{
+%Docstring(signature="appended")
+
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+  public:
+
+    enum class Role
+    {
+      ProviderKey,
+      LayerType,
+      Uri,
+      Name,
+      Description,
+      Path,
+      FeatureCount,
+      WkbType,
+      GeometryColumnName,
+      LayerNumber,
+    };
+
+    enum class Column
+    {
+      Name,
+      Description,
+    };
+
+    QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderSublayerModel, with the specified ``parent`` object.
+%End
+
+    void setSublayerDetails( const QList< QgsProviderSublayerDetails > &details );
+%Docstring
+Sets the sublayer ``details`` to show in the model.
+
+.. seealso:: :py:func:`sublayerDetails`
+%End
+
+    QList< QgsProviderSublayerDetails > sublayerDetails() const;
+%Docstring
+Returns the sublayer details shown in the model.
+
+.. seealso:: :py:func:`setSublayerDetails`
+%End
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersublayermodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
