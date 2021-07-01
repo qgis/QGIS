@@ -230,6 +230,9 @@ class CORE_EXPORT QgsProviderSublayerDetails
      */
     void setLayerNumber( int number ) { mLayerNumber = number; }
 
+    bool operator==( const QgsProviderSublayerDetails &other ) const;
+    bool operator!=( const QgsProviderSublayerDetails &other ) const;
+
   private:
 
     QString mProviderKey;

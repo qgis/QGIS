@@ -211,6 +211,9 @@ Sets the associated layer ``number``, for providers which order sublayers.
 .. seealso:: :py:func:`layerNumber`
 %End
 
+    bool operator==( const QgsProviderSublayerDetails &other ) const;
+    bool operator!=( const QgsProviderSublayerDetails &other ) const;
+
 };
 
 
