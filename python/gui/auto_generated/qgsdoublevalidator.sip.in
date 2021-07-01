@@ -50,21 +50,21 @@ Constructor for QgsDoubleValidator.
 :param parent: parent object
 %End
 
-    QgsDoubleValidator( double bottom, double top, int decimals, QObject *parent );
+    QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
-:param decimals: the number of decimals accepted by the validator
+:param decimal: the number of decimals accepted by the validator
 :param parent: parent object
 %End
 
-    QgsDoubleValidator( int decimals, QObject *parent );
+    QgsDoubleValidator( int decimal, QObject *parent );
 %Docstring
 Constructor for QgsDoubleValidator.
 
-:param decimals: the number of decimals accepted by the validator
+:param decimal: the number of decimals accepted by the validator
 :param parent: parent object
 
 .. versionadded:: 3.16
@@ -76,7 +76,7 @@ Sets the number of decimals accepted by the validator to ``maxDecimals``.
 
 .. warning::
 
-   setting decimals overrides any custom regular expression that was previosly set
+   setting decimals overrides any custom regular expression that was previously set
 
 .. versionadded:: 3.22
 %End

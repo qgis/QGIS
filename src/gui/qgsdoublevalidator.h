@@ -72,23 +72,23 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
      *
      * \param bottom the minimal range limit accepted by the validator
      * \param top the maximal range limit accepted by the validator
-     * \param decimals the number of decimals accepted by the validator
+     * \param decimal the number of decimals accepted by the validator
      * \param parent parent object
      */
-    QgsDoubleValidator( double bottom, double top, int decimals, QObject *parent );
+    QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
 
     /**
      * Constructor for QgsDoubleValidator.
      *
-     * \param decimals the number of decimals accepted by the validator
+     * \param decimal the number of decimals accepted by the validator
      * \param parent parent object
      * \since QGIS 3.16
      */
-    QgsDoubleValidator( int decimals, QObject *parent );
+    QgsDoubleValidator( int decimal, QObject *parent );
 
     /**
      * Sets the number of decimals accepted by the validator to \a maxDecimals.
-     * \warning setting decimals overrides any custom regular expression that was previosly set
+     * \warning setting decimals overrides any custom regular expression that was previously set
      * \since QGIS 3.22
      */
     void setMaxDecimals( int maxDecimals );

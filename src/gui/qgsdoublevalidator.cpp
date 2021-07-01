@@ -55,23 +55,23 @@ QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, QObject *pare
   setRegularExpression( reg );
 }
 
-QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, int decimals, QObject *parent )
+QgsDoubleValidator::QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent )
   : QRegularExpressionValidator( parent )
   , mMinimum( bottom )
   , mMaximum( top )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimals ) ) );
+  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
   setRegularExpression( reg );
 }
 
-QgsDoubleValidator::QgsDoubleValidator( int decimals, QObject *parent )
+QgsDoubleValidator::QgsDoubleValidator( int decimal, QObject *parent )
   : QRegularExpressionValidator( parent )
   , mMinimum( std::numeric_limits<qreal>::lowest() )
   , mMaximum( std::numeric_limits<qreal>::max() )
 {
   // The regular expression accept double with point as decimal point but also the locale decimal point
-  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimals ) ) );
+  QRegularExpression reg( PERMISSIVE_DOUBLE.arg( locale().decimalPoint() ).arg( QString::number( decimal ) ) );
   setRegularExpression( reg );
 }
 
