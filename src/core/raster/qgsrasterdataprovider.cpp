@@ -653,33 +653,17 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
 {
 
-    const QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+    QUrl url = QUrl::fromEncoded( uri.toLatin1() );
     const QUrlQuery query( url.query() );
-    //QList<QPair<QString, QString> > list = query.queryItems();
+    //QUrlQuery query(url.query());
+    QVariantMap components;
 
-
-
-    QVariantMap decoded;
-    decoded.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" )) ); //createFromString like with QgsRectangle::fromWkt, but pay
-                                                                                               //attention in the encding
-    decoded.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" )) ); //something to tranform in qgsrectangle from string
-    decoded.insert( QStringLiteral( "width" ), query.queryItemValue( QStringLiteral( "width" )) ); //trasnform to int
-    decoded.insert( QStringLiteral( "height" ), query.queryItemValue( QStringLiteral( "height" )) ); //trasnform to int
-    decoded.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" )) );
-
-    if ( query.hasQueryItem( QStringLiteral( "rlayer" ) ) )
+    for ( const auto &item : query.queryItems() )
     {
-        QStringList rlayers = query.allQueryItemValues( QStringLiteral( "rlayer" ) );
-
-        for ( int i = 0; i < rlayers.size(); i++ )
-        {
-            qDebug() << rlayers[i];
-            QString name = QUrl::fromPercentEncoding( rlayers.at( i ).toUtf8() );
-        }
-
+        components.insert( item.first, item.second );
     }
 
-    return decoded;
+    return components;
 }
 
 QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap &parts )

@@ -36,6 +36,8 @@
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
 
+#include "qgsvirtualrasterprovider.h"
+
 #include <QUrl>
 #include <QUrlQuery>
 /**
@@ -57,7 +59,9 @@ class TestQgsVirtualRasterProvider : public QObject
     void validLayer();
     void testv();
     void testRaster();
-    void testUrl();
+    void testUrlDecoding();
+    void testUrlDecodingMinimal();
+    void testUriProviderDecoding();
 
 private:
     QString mTestDataDir;
@@ -175,74 +179,95 @@ void TestQgsVirtualRasterProvider::testRaster()
 
 }
 
-void TestQgsVirtualRasterProvider::testUrl()
+void TestQgsVirtualRasterProvider::testUrlDecoding()
 {
     //only to check how qurl and qurlquery works
-
-    //QUrl url("memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
-    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&widht=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal");
+    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
+    //FROM HERE
     QUrlQuery query(url.query());
-    QList<QPair<QString, QString> > list = query.queryItems();
-    qDebug() << "LIST SIZE " << list.size();
-    /*
-    for (int i = 0; i < list.size(); i++)
-    {
-        qDebug() << list[i];
-        qDebug() << list[i].first;
-        qDebug() << list[i].second << endl;
-    }
+    QVariantMap components;
 
-    if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
-    {
-        //QString outputCrsDef = query.queryItemValue( QStringLiteral( "crs" ) );
-        qDebug() << query.queryItemValue( QStringLiteral( "crs" ) );
-    }
-    */
-    /*
-    QStringList openOptions;
+    QSet<QString> rLayerName;
     for ( const auto &item : query.queryItems() )
     {
-        openOptions << QStringLiteral( "%1=%2" ).arg( item.first, item.second );
+        if ( item.first.indexOf(':') > 0 )
+        {
+            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
+        }
+        else
+        {
+            components.insert( item.first, item.second );
+        }
     }
-    //qDebug() << openOptions;
-    */
-    QVariantMap components;
-    //components.insert( QStringLiteral( "extent" ), query.queryItemValue( QStringLiteral( "extent" ) ) );
-    //components.insert( QStringLiteral( "crs" ), query.queryItemValue( QStringLiteral( "crs" ) ) );
-    //components.insert( QStringLiteral( "formula" ), query.queryItemValue( QStringLiteral( "formula" ) ) );
 
-    qDebug() << "-------------------------------------------------------";
-    //qDebug() << QStringRef(&list[7].first, list[7].first.size()-4, 4); //":uri"
-    //qDebug() << QStringRef(&list[7].first, 0, list[7].first.indexOf(':')); //"landsat" i.e name
-
-
-    for (int i = 0; i < list.size(); i++)
+    QVariantMap rLayers;
+/*
+    foreach (const QString &value, rLayerName)
     {
-        if ( QStringRef(&list[i].first, list[i].first.size()-4, 4) == ":uri" )
-        {
-            qDebug() << list[i].second << endl;
-        }
-        if ( QStringRef(&list[i].first, list[i].first.size()-9, 9) == ":provider" )
-        {
-            qDebug() << list[i].second << endl;
-        }
+
+        //QVariantMap rLayer;
+
+        //rLayer.insert( "name" ,  value );
+        //rLayer.insert( "uri" , query.queryItemValue( value % QStringLiteral(":uri") ) );
+        //rLayer.insert( "provider" , query.queryItemValue( value % QStringLiteral(":provider") ) );
+
+       //rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%value,rLayer);
+
+        QStringList rLayer;
+        rLayer << value;
+        rLayer << query.queryItemValue( value % QStringLiteral(":uri") );
+        rLayer << query.queryItemValue( value % QStringLiteral(":provider") );
+
+        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%value,rLayer);
 
     }
-    //qDebug() << list.first.indexOf(":uri") << endl;
+ */
 
 
-    //components.insert( QStringLiteral( "produt" ), attributes );
+    QSet<QString>::iterator i;
+    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
+    //foreach (const QString &value, rLayerName)
+    {
+        QStringList rLayer;
+        rLayer << (*i);
+        rLayer << query.queryItemValue( (*i) % QStringLiteral(":uri") );
+        rLayer << query.queryItemValue( (*i) % QStringLiteral(":provider") );
+
+        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%(*i),rLayer);
+    }
+
+    components.insert( QStringLiteral("rLayers"), rLayers );
+    //TO HERE
+    qDebug() << components << endl;
+    qDebug() << components.value("rLayers")<< endl;
+    /*
+    qDebug() << components.value("rLayers").toMap()<< endl;
+    qDebug() << components.value("rLayers").toMap().value("rLayer@dem") << endl;
+    qDebug() << components.value("rLayers").toMap().value("rLayer@dem").toMap().value("name") << endl;
+    */
+    qDebug() <<components.value("width").toString().toInt() << endl;
+    qDebug() <<components.value("extent").toString() << endl;
+
+}
+
+void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
+{
+    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
+    QUrlQuery query(url.query());
+    QVariantMap components;
+
     for ( const auto &item : query.queryItems() )
     {
         components.insert( item.first, item.second );
     }
 
-    qDebug() << components;
-    qDebug() << "-------------------------------------------------------";
-
-    qDebug() << list;
-
-
+    qDebug() << components << endl;
 }
+
+void TestQgsVirtualRasterProvider::testUriProviderDecoding()
+{
+    //QgsVirtualRasterProvider::
+}
+
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"
