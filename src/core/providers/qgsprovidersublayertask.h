@@ -19,6 +19,7 @@
 #define QGSPROVIDERSUBLAYERTASKTASK_H
 
 #include "qgstaskmanager.h"
+#include <QReadWriteLock>
 #include <memory>
 
 class QgsFeedback;
@@ -61,8 +62,11 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
      */
     QList<QgsProviderSublayerDetails> results() const;
 
-    bool run() override;
     void cancel() override;
+
+  protected:
+
+    bool run() override;
 
   private:
 
@@ -71,6 +75,8 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
     std::unique_ptr< QgsFeedback > mFeedback;
 
     QList<QgsProviderSublayerDetails> mResults;
+
+    mutable QReadWriteLock mLock;
 
 };
 
