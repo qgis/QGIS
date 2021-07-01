@@ -61,6 +61,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
         MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
           return mLayer == other.mLayer && isVisible == other.isVisible &&

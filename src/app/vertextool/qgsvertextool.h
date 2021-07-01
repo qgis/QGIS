@@ -42,6 +42,7 @@ struct Vertex
     , fid( fid )
     , vertexId( vertexId ) {}
 
+  // TODO c++20 - replace with = default
   bool operator==( const Vertex &other ) const
   {
     return layer == other.layer && fid == other.fid && vertexId == other.vertexId;

@@ -200,6 +200,8 @@ class ANALYSIS_EXPORT QgsGeometryCheck
        * The index of the part / ring / vertex, depending on \see what.
        */
       QgsVertexId vidx;
+
+      // TODO c++20 - replace with = default
       bool operator==( const QgsGeometryCheck::Change &other )
       {
         return what == other.what && type == other.type && vidx == other.vidx;

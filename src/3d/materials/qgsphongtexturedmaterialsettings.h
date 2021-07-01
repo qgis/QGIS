@@ -120,6 +120,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
 #endif
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsPhongTexturedMaterialSettings &other ) const
     {
       return mAmbient == other.mAmbient &&

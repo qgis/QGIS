@@ -73,6 +73,7 @@ class CORE_EXPORT QgsDatumTransform
        */
       int destinationTransformId = -1;
 
+      // TODO c++20 - replace with = default
       bool operator==( QgsDatumTransform::TransformPair other ) const
       {
         return other.sourceTransformId == sourceTransformId && other.destinationTransformId == destinationTransformId;

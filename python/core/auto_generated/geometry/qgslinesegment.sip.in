@@ -191,6 +191,7 @@ on the line, or exactly in line with the segment) and the result is undefined.
 Reverses the line segment, so that the start and end points are flipped.
 %End
 
+
     bool operator==( const QgsLineSegment2D &other ) const /HoldGIL/;
 
     bool operator!=( const QgsLineSegment2D &other ) const /HoldGIL/;

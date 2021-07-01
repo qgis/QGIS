@@ -49,6 +49,8 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
 
+    // TODO c++20 - replace with = default
+
     //! Operator used to compare configs' equality
     bool operator==( const QgsAuthMethodConfig &other ) const;
 

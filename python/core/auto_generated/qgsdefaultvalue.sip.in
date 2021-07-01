@@ -44,6 +44,7 @@ Create a new default value with the given ``expression`` and ``applyOnUpdate`` f
 
 .. seealso:: :py:func:`QgsVectorLayer.setDefaultValueDefinition`
 %End
+
     bool operator==( const QgsDefaultValue &other ) const;
 
     QString expression() const;

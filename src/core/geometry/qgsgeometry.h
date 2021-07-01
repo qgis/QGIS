@@ -2312,6 +2312,7 @@ class CORE_EXPORT QgsGeometry
         % End
 #endif
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsGeometry::Error &other ) const
         {
           return other.mMessage == mMessage && other.mHasLocation == mHasLocation && other.mLocation == mLocation;

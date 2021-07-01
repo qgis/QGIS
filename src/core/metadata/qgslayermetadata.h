@@ -81,6 +81,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
        */
       QgsBox3d bounds;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsLayerMetadata::SpatialExtent &other ) const;
     };
 
@@ -118,6 +119,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
          */
         void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsLayerMetadata::Extent &other ) const;
 
 #ifndef SIP_RUN
@@ -155,6 +157,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
        */
       QString constraint;
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsLayerMetadata::Constraint &other ) const;
 
     };
