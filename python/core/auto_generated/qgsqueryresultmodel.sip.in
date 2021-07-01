@@ -44,6 +44,9 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
 
+    void fetchMore( const QModelIndex &parent );
+    bool canFetchMore( const QModelIndex &parent ) const;
+
     QStringList columns() const;
 %Docstring
 Returns the column names
@@ -75,6 +78,10 @@ Cancels the row fetching.
 %Docstring
 Emitted when all rows have been fetched or when the fetching has been stopped
 %End
+
+    void fetchMoreRows( qlonglong maxRows );
+
+    void fetchingStarted();
 
 };
 

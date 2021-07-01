@@ -241,11 +241,25 @@ void QgsQueryResultWidget::startFetching()
     }
     else
     {
+      if ( mQueryResultWatcher.result().rowCount() > 0 )
+      {
+        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows)" ).arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ) ) );
+      }
+      else
+      {
+        mStatusLabel->setText( QStringLiteral( "Query executed successfully" ) );
+      }
       mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );
       connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
       {
         mModel->cancel();
         mWasCanceled = true;
+      } );
+
+
+      connect( mModel.get(), &QgsQueryResultModel::fetchingStarted, this, [ = ]
+      {
+        mProgressBar->show();
       } );
 
       connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
@@ -263,8 +277,9 @@ void QgsQueryResultWidget::startFetching()
             mProgressBar->setRange( 0, mActualRowCount );
           }
         }
-        mStatusLabel->setText( tr( "Fetched rows: %1 %2" )
-                               .arg( mModel->rowCount( mModel->index( -1, -1 ) ) )
+        mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3" )
+                               .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ) )
+                               .arg( mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ) )
                                .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
         if ( mActualRowCount != -1 )
         {
@@ -278,17 +293,12 @@ void QgsQueryResultWidget::startFetching()
       connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
       {
         mStopButton->setEnabled( false );
-        if ( ! mWasCanceled )
-        {
-          mStatusLabel->setText( "Query executed successfully." );
-          mProgressBar->hide();
-        }
       } );
     }
   }
   else
   {
-    mStatusLabel->setText( tr( "SQL command aborted." ) );
+    mStatusLabel->setText( tr( "SQL command aborted" ) );
     mProgressBar->hide();
   }
 }
@@ -296,7 +306,7 @@ void QgsQueryResultWidget::startFetching()
 void QgsQueryResultWidget::showError( const QString &title, const QString &message, bool isSqlError )
 {
   mStatusLabel->show();
-  mStatusLabel->setText( tr( "There was an error executing the query." ) );
+  mStatusLabel->setText( tr( "An error occurred while executing the query" ) );
   mProgressBar->hide();
   mQueryResultsTableView->hide();
   if ( isSqlError )

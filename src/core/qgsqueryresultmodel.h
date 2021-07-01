@@ -43,8 +43,8 @@ class QgsQueryResultFetcher: public QObject
       : mQueryResult( queryResult )
     {}
 
-    //! Start fetching
-    void fetchRows();
+    //! Start fetching at most \a maxRows, default value of -1 fetches all rows.
+    void fetchRows( qlonglong maxRows = -1 );
 
     //! Stop fetching
     void stopFetching();
@@ -97,6 +97,9 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
+    void fetchMore( const QModelIndex &parent );
+    bool canFetchMore( const QModelIndex &parent ) const;
+
     //! Returns the column names
     QStringList columns() const;
 
@@ -123,6 +126,10 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 
     //! Emitted when all rows have been fetched or when the fetching has been stopped
     void fetchingComplete();
+
+    void fetchMoreRows( qlonglong maxRows );
+
+    void fetchingStarted();
 
   private:
 

@@ -207,20 +207,27 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
   return execSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPostgresConn> pgconn ) const
 {
   QStringList columnNames;
   return execSqlPrivate( sql, resolveTypes, feedback, pgconn ).rows();
 }
 
-QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
+QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPostgresConn> _pgconn ) const
 {
+
+  auto custom_deleter = [ ]( QgsPostgresConn * p )
+  {
+    p->unref();
+  };
+  std::unique_ptr<QgsPostgresConn, decltype( custom_deleter )> pgconn( new QgsPostgresConn( QgsDataSourceUri( uri() ).connectionInfo( false ), false /* readOnly */, false /* shared */, true /* transaction */ ), custom_deleter );
+
   if ( ! pgconn )
   {
-    pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
   }
 
-  std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes, pgconn );
+  std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator = std::make_shared<QgsPostgresProviderResultIterator>( resolveTypes );
   QueryResult results( iterator );
 
   // Check feedback first!
@@ -229,153 +236,144 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     return results;
   }
 
-  QgsPostgresConn *conn = pgconn->get();
 
-  if ( ! conn )
+  if ( feedback && feedback->isCanceled() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+    return results;
+  }
+
+  // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
+  QMetaObject::Connection qtConnection;
+  if ( feedback )
+  {
+    qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &pgconn ]
+    {
+      if ( pgconn )
+        pgconn->PQCancel();
+    } );
+  }
+
+  std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( pgconn->PQexec( sql ) );
+
+  if ( feedback )
+  {
+    QObject::disconnect( qtConnection );
+  }
+
+  QString errCause;
+  if ( pgconn->PQstatus() != CONNECTION_OK || ! res->result() )
+  {
+    errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
+               .arg( sql ).arg( pgconn->PQstatus() )
+               .arg( pgconn->PQerrorMessage() );
   }
   else
   {
-
-    if ( feedback && feedback->isCanceled() )
+    const QString err { pgconn->PQerrorMessage() };
+    if ( ! err.isEmpty() )
     {
-      return results;
+      errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
+                 .arg( sql )
+                 .arg( pgconn->PQstatus() )
+                 .arg( err );
     }
-
-    // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
-    QMetaObject::Connection qtConnection;
-    if ( feedback )
-    {
-      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &pgconn ]
-      {
-        if ( pgconn )
-          pgconn->get()->PQCancel();
-      } );
-    }
-
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
-
-    if ( feedback )
-    {
-      QObject::disconnect( qtConnection );
-    }
-
-    QString errCause;
-    if ( conn->PQstatus() != CONNECTION_OK || ! res->result() )
-    {
-      errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
-                 .arg( sql ).arg( conn->PQstatus() )
-                 .arg( conn->PQerrorMessage() );
-    }
-    else
-    {
-      const QString err { conn->PQerrorMessage() };
-      if ( ! err.isEmpty() )
-      {
-        errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
-                   .arg( sql )
-                   .arg( conn->PQstatus() )
-                   .arg( err );
-      }
-    }
-
-    const qlonglong numRows { res->PQntuples() };
-
-    if ( numRows > 0 )
-    {
-
-      // Get column names
-      for ( int rowIdx = 0; rowIdx < res->PQnfields(); rowIdx++ )
-      {
-        results.appendColumn( res->PQfname( rowIdx ) );
-      }
-
-      // Try to convert value types at least for basic simple types that can be directly mapped to Python
-      const int numFields { res->PQnfields() };
-      if ( resolveTypes )
-      {
-        // Collect oids
-        QStringList oids;
-        oids.reserve( numFields );
-        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
-        {
-          if ( feedback && feedback->isCanceled() )
-          {
-            break;
-          }
-          const QString oidStr { QString::number( res->PQftype( rowIdx ) ) };
-          oids.push_back( oidStr );
-        }
-
-        const QList<QVariantList> typesResolved( executeSqlPrivate( QStringLiteral( "SELECT oid, typname FROM pg_type WHERE oid IN (%1)" ).arg( oids.join( ',' ) ), false, nullptr, pgconn ) );
-        QgsStringMap oidTypeMap;
-        for ( const auto &typeRes : std::as_const( typesResolved ) )
-        {
-          const QString oid { typeRes.constLast().toString() };
-          if ( ! oidTypeMap.contains( oid ) )
-          {
-            oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
-          }
-        }
-
-        for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
-        {
-          static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                QStringLiteral( "int2" ),
-                                                QStringLiteral( "int4" ),
-                                                QStringLiteral( "int8" ),
-                                              };
-          static const QStringList floatTypes = { QStringLiteral( "float4" ),
-                                                  QStringLiteral( "float8" ),
-                                                  QStringLiteral( "numeric" )
-                                                };
-
-          const QString typName { oidTypeMap[ oids.at( rowIdx )] };
-          QVariant::Type vType { QVariant::Type::String };
-          if ( floatTypes.contains( typName ) )
-          {
-            vType = QVariant::Double;
-          }
-          else if ( intTypes.contains( typName ) )
-          {
-            vType = QVariant::LongLong;
-          }
-          else if ( typName == QLatin1String( "date" ) )
-          {
-            vType = QVariant::Date;
-          }
-          else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
-          {
-            vType = QVariant::DateTime;
-          }
-          else if ( typName == QLatin1String( "time" ) )
-          {
-            vType = QVariant::Time;
-          }
-          else if ( typName == QLatin1String( "bool" ) )
-          {
-            vType = QVariant::Bool;
-          }
-          else if ( typName == QLatin1String( "char" ) )
-          {
-            vType = QVariant::Char;
-          }
-          else
-          {
-            // Just a warning, usually ok
-            QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
-          }
-          static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[ rowIdx ] = vType;
-        }
-      }
-    }
-    if ( ! errCause.isEmpty() )
-    {
-      throw QgsProviderConnectionException( errCause );
-    }
-    static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->result = std::move( res );
   }
+
+  const qlonglong numRows { res->PQntuples() };
+
+  if ( numRows > 0 )
+  {
+
+    // Get column names
+    for ( int rowIdx = 0; rowIdx < res->PQnfields(); rowIdx++ )
+    {
+      results.appendColumn( res->PQfname( rowIdx ) );
+    }
+
+    // Try to convert value types at least for basic simple types that can be directly mapped to Python
+    const int numFields { res->PQnfields() };
+    if ( resolveTypes )
+    {
+      // Collect oids
+      QStringList oids;
+      oids.reserve( numFields );
+      for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
+      {
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
+        const QString oidStr { QString::number( res->PQftype( rowIdx ) ) };
+        oids.push_back( oidStr );
+      }
+
+      const QList<QVariantList> typesResolved( executeSqlPrivate( QStringLiteral( "SELECT oid, typname FROM pg_type WHERE oid IN (%1)" ).arg( oids.join( ',' ) ), false, nullptr ) );
+      QgsStringMap oidTypeMap;
+      for ( const auto &typeRes : std::as_const( typesResolved ) )
+      {
+        const QString oid { typeRes.constLast().toString() };
+        if ( ! oidTypeMap.contains( oid ) )
+        {
+          oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
+        }
+      }
+
+      for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
+      {
+        static const QStringList intTypes = { QStringLiteral( "oid" ),
+                                              QStringLiteral( "int2" ),
+                                              QStringLiteral( "int4" ),
+                                              QStringLiteral( "int8" ),
+                                            };
+        static const QStringList floatTypes = { QStringLiteral( "float4" ),
+                                                QStringLiteral( "float8" ),
+                                                QStringLiteral( "numeric" )
+                                              };
+
+        const QString typName { oidTypeMap[ oids.at( rowIdx )] };
+        QVariant::Type vType { QVariant::Type::String };
+        if ( floatTypes.contains( typName ) )
+        {
+          vType = QVariant::Double;
+        }
+        else if ( intTypes.contains( typName ) )
+        {
+          vType = QVariant::LongLong;
+        }
+        else if ( typName == QLatin1String( "date" ) )
+        {
+          vType = QVariant::Date;
+        }
+        else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
+        {
+          vType = QVariant::DateTime;
+        }
+        else if ( typName == QLatin1String( "time" ) )
+        {
+          vType = QVariant::Time;
+        }
+        else if ( typName == QLatin1String( "bool" ) )
+        {
+          vType = QVariant::Bool;
+        }
+        else if ( typName == QLatin1String( "char" ) )
+        {
+          vType = QVariant::Char;
+        }
+        else
+        {
+          // Just a warning, usually ok
+          QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
+        }
+        static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[ rowIdx ] = vType;
+      }
+    }
+  }
+  if ( ! errCause.isEmpty() )
+  {
+    throw QgsProviderConnectionException( errCause );
+  }
+  static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->result = std::move( res );
   return results;
 }
 
@@ -387,8 +385,6 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
 
   if ( !result || mRowIndex >= result->PQntuples() )
   {
-    // Release the resources
-    mConn.reset();
     return row;
   }
 

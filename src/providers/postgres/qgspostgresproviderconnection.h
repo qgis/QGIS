@@ -20,9 +20,8 @@
 
 struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgsPostgresProviderResultIterator( bool resolveTypes, std::shared_ptr<QgsPoolPostgresConn> pgConn )
+    QgsPostgresProviderResultIterator( bool resolveTypes )
       : mResolveTypes( resolveTypes )
-      , mConn( pgConn )
     {}
 
     QMap<int, QVariant::Type> typeMap;
@@ -35,7 +34,6 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
     qlonglong rowCountPrivate() const override;
 
     bool mResolveTypes = true;
-    std::shared_ptr<QgsPoolPostgresConn> mConn;
     qlonglong mRowIndex = 0;
 };
 
@@ -83,8 +81,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
 
   private:
 
-    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
-    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
+    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn> pgconn = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPostgresConn> pgconn = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;

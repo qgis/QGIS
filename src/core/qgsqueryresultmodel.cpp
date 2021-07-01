@@ -23,10 +23,11 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
   mWorker = std::make_unique<QgsQueryResultFetcher>( &mQueryResult );
   mWorker->moveToThread( &mWorkerThread );
-  connect( &mWorkerThread, &QThread::started, mWorker.get(), &QgsQueryResultFetcher::fetchRows );
+  //connect( &mWorkerThread, &QThread::started, mWorker.get(), [ = ] () { mWorker->fetchRows( 1000 ); }, Qt::ConnectionType::QueuedConnection );
   // Forward signals to the model
   connect( mWorker.get(), &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
   connect( mWorker.get(), &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
+  connect( this, &QgsQueryResultModel::fetchMoreRows, mWorker.get(), &QgsQueryResultFetcher::fetchRows );
   mWorkerThread.start();
   if ( mQueryResult.rowCount() > 0 )
   {
@@ -39,6 +40,24 @@ void QgsQueryResultModel::rowsReady( const QList<QList<QVariant>> &rows )
   beginInsertRows( QModelIndex(), mRows.count( ), mRows.count( ) + rows.count() - 1 );
   mRows.append( rows );
   endInsertRows();
+}
+
+
+bool QgsQueryResultModel::canFetchMore( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() )
+    return false;
+  return mQueryResult.rowCount() < 0 || mRows.length() < mQueryResult.rowCount();
+}
+
+
+void QgsQueryResultModel::fetchMore( const QModelIndex &parent )
+{
+  if ( ! parent.isValid() )
+  {
+    emit fetchingStarted();
+    emit fetchMoreRows( 1000 );
+  }
 }
 
 void QgsQueryResultModel::cancel()
@@ -121,11 +140,12 @@ QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientati
 
 const int QgsQueryResultFetcher::ROWS_TO_FETCH = 200;
 
-void QgsQueryResultFetcher::fetchRows()
+void QgsQueryResultFetcher::fetchRows( qlonglong maxRows )
 {
   qlonglong rowCount { 0 };
   QList<QList<QVariant>> newRows;
-  while ( mStopFetching == 0 && mQueryResult->hasNextRow() )
+  newRows.reserve( ROWS_TO_FETCH );
+  while ( mStopFetching == 0 && mQueryResult->hasNextRow() && ( maxRows < 0 || rowCount < maxRows ) )
   {
     newRows.append( mQueryResult->nextRow() );
     ++rowCount;
