@@ -65,9 +65,10 @@ class CORE_EXPORT QgsTimeDuration
              !hours && !minutes && !seconds;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsTimeDuration &other ) const
     {
-      return years == other.years && months == other.months &&
+      return years == other.years && months == other.months && weeks == other.weeks &&
              days == other.days && hours == other.hours &&
              minutes == other.minutes && seconds == other.seconds;
     }

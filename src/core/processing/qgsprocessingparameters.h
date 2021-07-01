@@ -162,6 +162,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool loadVariant( const QVariantMap &map );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const
     {
       return source == other.source
@@ -296,6 +297,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
       return QVariant::fromValue( *this );
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
     bool operator!=( const QgsProcessingOutputLayerDefinition &other ) const;
 

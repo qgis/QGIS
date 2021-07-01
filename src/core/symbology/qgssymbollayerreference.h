@@ -85,6 +85,8 @@ class CORE_EXPORT QgsSymbolLayerId
      */
     QVector<int> symbolLayerIndexPath() const { return mIndexPath; }
 
+    // TODO c++20 - replace with = default
+
     //! Equality operator
     bool operator==( const QgsSymbolLayerId &other ) const
     {

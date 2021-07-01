@@ -67,6 +67,8 @@ class CORE_EXPORT  QgsFields
         , originIndex( oi )
       {}
 
+      // TODO c++20 - replace with = default
+
       //! \since QGIS 2.6
       bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
       //! \since QGIS 2.6

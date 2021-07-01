@@ -108,6 +108,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 
 #endif
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsGoochMaterialSettings &other ) const
     {
       return mDiffuse == other.mDiffuse &&

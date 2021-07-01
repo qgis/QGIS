@@ -72,6 +72,7 @@ class CORE_EXPORT QgsProcessingModelChildDependency
       return true;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsProcessingModelChildDependency &other ) const
     {
       return childId == other.childId && conditionalBranch == other.conditionalBranch;

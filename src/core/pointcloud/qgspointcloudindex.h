@@ -62,6 +62,8 @@ class CORE_EXPORT IndexedPointCloudNode
     //! Returns whether node is valid
     bool isValid() const { return mD >= 0; }
 
+    // TODO c++20 - replace with = default
+
     //! Compares nodes
     bool operator==( IndexedPointCloudNode other ) const
     {

@@ -60,6 +60,7 @@ Returns the dependency origin
 Returns the ID of the layer this dependency depends on
 %End
 
+
     bool operator==( const QgsMapLayerDependency &other ) const;
 
     //! hash operator

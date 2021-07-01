@@ -234,6 +234,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
           QgsWkbTypes::Type wkbType;
           QgsCoordinateReferenceSystem crs;
 
+          // TODO c++20 - replace with = default
           inline bool operator==( const GeometryColumnType &other ) const
           {
             return this->crs == other.crs && this->wkbType == other.wkbType;

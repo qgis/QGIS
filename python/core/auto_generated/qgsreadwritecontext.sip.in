@@ -45,6 +45,7 @@ Returns the message level
 Returns the stack of categories of the message
 %End
 
+
         bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const;
 
         bool operator!=( const QgsReadWriteContext::ReadWriteMessage &other ) const;

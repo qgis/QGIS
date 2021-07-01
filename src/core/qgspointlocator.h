@@ -276,6 +276,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
           return point;
         }
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsPointLocator::Match &other ) const
         {
           return mType == other.mType &&

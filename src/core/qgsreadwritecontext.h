@@ -57,6 +57,8 @@ class CORE_EXPORT QgsReadWriteContext
         //! Returns the stack of categories of the message
         QStringList categories() const {return mCategories;}
 
+        // TODO c++20 - replace with = default
+
         bool operator==( const QgsReadWriteContext::ReadWriteMessage &other ) const
         {
           return mMessage == other.mMessage && mLevel == other.mLevel && mCategories == other.mCategories;
