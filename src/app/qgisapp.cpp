@@ -11140,8 +11140,8 @@ void QgisApp::toggleMapTips( bool enabled )
 
 void QgisApp::toggleEditing()
 {
-  QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( currentLayer )
+  QgsMapLayer *currentLayer =  activeLayer();
+  if ( currentLayer && currentLayer->supportsEditing() )
   {
     toggleEditing( currentLayer, true );
   }
@@ -11149,12 +11149,33 @@ void QgisApp::toggleEditing()
   {
     // active although there's no layer active!?
     mActionToggleEditing->setChecked( false );
+    mActionToggleEditing->setEnabled( false );
+    visibleMessageBar()->pushMessage( tr( "Start editing failed" ),
+                                      tr( "Layer cannot be edited" ),
+                                      Qgis::MessageLevel::Warning );
   }
 }
 
 bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      return toggleEditingVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), allowCancel );
+    case QgsMapLayerType::MeshLayer:
+      return toggleEditingMeshLayer( qobject_cast<QgsMeshLayer *>( layer ), allowCancel );
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+  }
+  return false;
+}
+
+bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel )
+{
   if ( !vlayer )
   {
     return false;
@@ -11298,12 +11319,97 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     vlayer->triggerRepaint();
   }
 
-  if ( !res && layer == activeLayer() )
+  if ( !res && vlayer == activeLayer() )
   {
     // while also called when layer sends editingStarted/editingStopped signals,
     // this ensures correct restoring of gui state if toggling was canceled
     // or layer commit/rollback functions failed
-    activateDeactivateLayerRelatedActions( layer );
+    activateDeactivateLayerRelatedActions( vlayer );
+  }
+
+  return res;
+}
+
+bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
+{
+  if ( !mlayer )
+    return false;
+
+  if ( !mlayer->supportsEditing() )
+    return false; //TODO: when adapted widget will be ready, ask the user if he want to create a new one based on this one
+
+  bool res = false;
+
+  QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+
+  if ( !mlayer->isEditable() )
+  {
+    res = mlayer->startFrameEditing( transform );
+    mActionToggleEditing->setChecked( res );
+
+    if ( !res )
+      QgsMessageLog::logMessage( tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+  }
+  else if ( mlayer->isModified() )
+  {
+    QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
+    if ( allowCancel )
+      buttons = buttons | QMessageBox::Cancel;
+    switch ( QMessageBox::question( nullptr,
+                                    tr( "Stop Editing" ),
+                                    tr( "Do you want to save the changes to layer %1?" ).arg( mlayer->name() ),
+                                    buttons ) )
+    {
+      case QMessageBox::Cancel:
+        res = false;
+        break;
+
+      case QMessageBox::Save:
+      {
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+        QgsCanvasRefreshBlocker refreshBlocker;
+        if ( !mlayer->commitFrameEditing( transform, false ) )
+        {
+          res = false;
+        }
+
+        mlayer->triggerRepaint();
+      }
+      break;
+      case QMessageBox::Discard:
+      {
+        QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+        QgsCanvasRefreshBlocker refreshBlocker;
+        if ( !mlayer->rollBackFrameEditing( transform, false ) )
+        {
+          visibleMessageBar()->pushMessage( tr( "Error" ),
+                                            tr( "Problems during roll back" ),
+                                            Qgis::MessageLevel::Critical );
+          res = false;
+        }
+
+        mlayer->triggerRepaint();
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+  else //mesh layer not modified
+  {
+    QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+    QgsCanvasRefreshBlocker refreshBlocker;
+    mlayer->rollBackFrameEditing( transform, false );
+    mlayer->triggerRepaint();
+  }
+
+  if ( !res && mlayer == activeLayer() )
+  {
+    // while also called when layer sends editingStarted/editingStopped signals,
+    // this ensures correct restoring of gui state if toggling was canceled
+    // or layer commit/rollback functions failed
+    activateDeactivateLayerRelatedActions( mlayer );
   }
 
   return res;
@@ -11315,6 +11421,26 @@ void QgisApp::saveActiveLayerEdits()
 }
 
 void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  if ( !layer )
+    return;
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      return saveVectorLayerEdits( layer, leaveEditable, triggerRepaint );
+    case QgsMapLayerType::MeshLayer:
+      return saveMeshLayerEdits( layer, leaveEditable, triggerRepaint );
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+  }
+}
+
+void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
@@ -11335,7 +11461,46 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   }
 }
 
+void QgisApp::saveMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+  if ( !mlayer || !mlayer->isEditable() || !mlayer->isModified() )
+    return;
+
+  if ( mlayer == activeLayer() )
+    mSaveRollbackInProgress = true;
+
+  QgsCanvasRefreshBlocker refreshBlocker;
+  QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  mlayer->commitFrameEditing( transform, leaveEditable );
+
+  if ( triggerRepaint )
+  {
+    mlayer->triggerRepaint();
+  }
+}
+
 void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  if ( !layer )
+    return;
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      return cancelVectorLayerEdits( layer, leaveEditable, triggerRepaint );
+    case QgsMapLayerType::MeshLayer:
+      return cancelMeshLayerEdits( layer, leaveEditable, triggerRepaint );
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+      break;
+  }
+}
+
+void QgisApp::cancelVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() )
@@ -11363,6 +11528,33 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
   if ( triggerRepaint )
   {
     vlayer->triggerRepaint();
+  }
+}
+
+void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRepaint )
+{
+  QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+  if ( !mlayer || !mlayer->isEditable() )
+    return;
+
+  if ( mlayer == activeLayer() && leaveEditable )
+    mSaveRollbackInProgress = true;
+
+  QgsCanvasRefreshBlocker refreshBlocker;
+  QgsCoordinateTransform transform( mlayer->crs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  if ( !mlayer->rollBackFrameEditing( transform, leaveEditable ) )
+  {
+    mSaveRollbackInProgress = false;
+    QMessageBox::warning( nullptr,
+                          tr( "Error" ),
+                          tr( "Could not %1 changes to layer %2" )
+                          .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ),
+                                mlayer->name() ) );
+  }
+
+  if ( triggerRepaint )
+  {
+    mlayer->triggerRepaint();
   }
 }
 
@@ -11472,17 +11664,38 @@ bool QgisApp::verifyEditsActionDialog( const QString &act, const QString &upon )
 void QgisApp::updateLayerModifiedActions()
 {
   bool enableSaveLayerEdits = false;
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( vlayer )
+
+  QgsMapLayer *currentLayer = activeLayer();
+  if ( currentLayer )
   {
-    QgsVectorDataProvider *dprovider = vlayer->dataProvider();
-    if ( dprovider )
+    switch ( currentLayer->type() )
     {
-      enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
-                               && vlayer->isEditable()
-                               && vlayer->isModified() );
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+        if ( QgsVectorDataProvider *dprovider = vlayer->dataProvider() )
+        {
+          enableSaveLayerEdits = ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues
+                                   && vlayer->isEditable()
+                                   && vlayer->isModified() );
+        }
+      }
+      break;
+      case QgsMapLayerType::MeshLayer:
+      {
+        QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( currentLayer );
+        enableSaveLayerEdits = ( mlayer->isEditable() && mlayer->isModified() );
+      }
+      break;
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+        break;
     }
   }
+
   mActionSaveLayerEdits->setEnabled( enableSaveLayerEdits );
 
   QList<QgsLayerTreeLayer *> selectedLayerNodes = mLayerTreeView ? mLayerTreeView->selectedLayerNodes() : QList<QgsLayerTreeLayer *>();
@@ -11507,15 +11720,12 @@ QList<QgsMapLayer *> QgisApp::editableLayers( bool modified ) const
   const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
   for ( QgsLayerTreeLayer *nodeLayer : constFindLayers )
   {
-    if ( !nodeLayer->layer() )
+    QgsMapLayer *layer = nodeLayer->layer();
+    if ( !layer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-    if ( !vl )
-      continue;
-
-    if ( vl->isEditable() && ( !modified || vl->isModified() ) )
-      editLayers << vl;
+    if ( layer->isEditable() && ( !modified || layer->isModified() ) )
+      editLayers << layer;
   }
   return editLayers;
 }
@@ -14406,38 +14616,30 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
-    QgsDataProvider *provider = nullptr;
+    connect( layer, &QgsMeshLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+    connect( layer, &QgsMeshLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+    connect( layer, &QgsMeshLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
       connect( vlayer, &QgsVectorLayer::labelingFontNotFound, this, &QgisApp::labelingFontNotFound );
 
-      QgsVectorDataProvider *vProvider = vlayer->dataProvider();
       // Do not check for layer editing capabilities because they may change
       // (for example when subsetString is added/removed) and signals need to
       // be in place in order to update the GUI
-      connect( vlayer, &QgsVectorLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-      connect( vlayer, &QgsVectorLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-      connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
       connect( vlayer, &QgsVectorLayer::styleLoaded, [this, vlayer]( QgsMapLayer::StyleCategories categories ) { vectorLayerStyleLoaded( vlayer, categories ); } );
-
-      provider = vProvider;
     }
 
-    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-    if ( rlayer )
+    if ( QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer ) )
     {
       // connect up any request the raster may make to update the statusbar message
       connect( rlayer, &QgsRasterLayer::statusChanged, this, &QgisApp::showStatusMessage );
-
-      provider = rlayer->dataProvider();
     }
 
-    if ( provider )
+    if ( QgsDataProvider *provider = layer->dataProvider() )
     {
       connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
       connect( provider, &QgsDataProvider::dataChanged, this, [this] { refreshMapCanvas(); } );
@@ -15346,6 +15548,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::MeshLayer:
+    {
+      QgsMeshLayer *mlayer = qobject_cast<QgsMeshLayer *>( layer );
+
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -15375,8 +15580,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionSelectByExpression->setEnabled( false );
       mActionSelectByForm->setEnabled( false );
       mActionOpenFieldCalc->setEnabled( false );
-      mActionToggleEditing->setEnabled( false );
-      mActionToggleEditing->setChecked( false );
       mActionSaveLayerEdits->setEnabled( false );
       mUndoDock->widget()->setEnabled( false );
       mActionUndo->setEnabled( false );
@@ -15412,7 +15615,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
       enableDigitizeTechniqueActions( false );
-      break;
+
+      bool canSupportEditing = mlayer->supportsEditing();
+      bool isEditable = mlayer->isEditable();
+      mActionToggleEditing->setEnabled( canSupportEditing );
+      mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+    }
+
+    break;
 
     case QgsMapLayerType::VectorTileLayer:
       mActionLocalHistogramStretch->setEnabled( false );

@@ -1742,6 +1742,7 @@ Returns ``True`` if this is a geometry layer and ``False`` in case of NoGeometry
 %End
 
     virtual bool isModified() const;
+
 %Docstring
 Returns ``True`` if the provider has been modified since the last commit
 %End
@@ -1808,7 +1809,8 @@ Makes layer read-only (editing disabled) or not
 :return: ``False`` if the layer is in editing yet
 %End
 
-    bool supportsEditing();
+    virtual bool supportsEditing() const;
+
 %Docstring
 Returns whether the layer supports editing or not
 
@@ -2729,11 +2731,6 @@ Emitted when selection was changed
 :param clearAndSelect: In case this is set to ``True``, the old selection was dismissed and the new selection corresponds to selected
 %End
 
-    void layerModified();
-%Docstring
-Emitted when modifications has been done on layer
-%End
-
     void allowCommitChanged();
 %Docstring
 Emitted whenever the :py:func:`~QgsVectorLayer.allowCommitChanged` property of this layer changes.
@@ -2749,16 +2746,6 @@ Emitted when the layer is checked for modifications. Use for last-minute additio
     void beforeEditingStarted();
 %Docstring
 Emitted before editing on this layer is started.
-%End
-
-    void editingStarted();
-%Docstring
-Emitted when editing on this layer has started.
-%End
-
-    void editingStopped();
-%Docstring
-Emitted when edited changes have been successfully written to the data provider.
 %End
 
     void beforeCommitChanges( bool stopEditing );

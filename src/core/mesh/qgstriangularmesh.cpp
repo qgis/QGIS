@@ -170,7 +170,8 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   Q_ASSERT( nativeMesh );
 
   // FIND OUT IF UPDATE IS NEEDED
-  if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
+  if ( mTriangularMesh.vertices.size() == nativeMesh->vertices.size() &&
+       mNativeMeshFaceCentroids.size() == nativeMesh->faces.size() &&
        mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
        mTriangularMesh.edges.size() == nativeMesh->edges.size() &&
        ( ( !mCoordinateTransform.isValid() && !transform.isValid() ) ||
@@ -288,6 +289,27 @@ QgsMeshVertex QgsTriangularMesh::nativeToTriangularCoordinates( const QgsMeshVer
 QgsMeshVertex QgsTriangularMesh::triangularToNativeCoordinates( const QgsMeshVertex &vertex ) const
 {
   return transformVertex( vertex, QgsCoordinateTransform::ReverseTransform );
+}
+
+QgsRectangle QgsTriangularMesh::nativeExtent()
+{
+  QgsRectangle nativeExtent;
+  if ( mCoordinateTransform.isValid() )
+  {
+    try
+    {
+      nativeExtent = mCoordinateTransform.transform( mExtent, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse )
+      QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+    }
+  }
+  else
+    nativeExtent = mExtent;
+
+  return nativeExtent;
 }
 
 QgsRectangle QgsTriangularMesh::extent() const

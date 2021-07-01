@@ -818,6 +818,11 @@ void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
   // NOOP
 }
 
+bool QgsMapLayer::supportsEditing() const
+{
+  return false;
+}
+
 QgsCoordinateReferenceSystem QgsMapLayer::crs() const
 {
   return mCRS;
@@ -1897,6 +1902,11 @@ QgsError QgsMapLayer::error() const
 
 
 bool QgsMapLayer::isEditable() const
+{
+  return false;
+}
+
+bool QgsMapLayer::isModified() const
 {
   return false;
 }

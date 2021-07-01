@@ -148,12 +148,10 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   onActiveScalarGroupChanged( mMeshLayer->rendererSettings().activeScalarDatasetGroup() );
   onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );
 
-  bool hasFaces = ( mMeshLayer->dataProvider() &&
-                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+  bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
   mFaceMeshGroupBox->setVisible( hasFaces );
 
-  bool hasEdges = ( mMeshLayer->dataProvider() &&
-                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
+  bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
   mEdgeMeshGroupBox->setVisible( hasEdges );
 
   QgsSettings settings;

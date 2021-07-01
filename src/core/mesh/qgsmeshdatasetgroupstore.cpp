@@ -99,11 +99,11 @@ bool QgsMeshDatasetGroupStore::addDatasetGroup( QgsMeshDatasetGroup *group )
   switch ( group->dataType() )
   {
     case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      if ( ! group->checkValueCountPerDataset( mLayer->meshFacesCount() ) )
+      if ( ! group->checkValueCountPerDataset( mLayer->meshFaceCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVertices:
-      if ( ! group->checkValueCountPerDataset( mLayer->meshVerticesCount() ) )
+      if ( ! group->checkValueCountPerDataset( mLayer->meshVertexCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVolumes:

@@ -3703,7 +3703,7 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
-bool QgsVectorLayer::supportsEditing()
+bool QgsVectorLayer::supportsEditing() const
 {
   if ( ! mDataProvider )
     return false;

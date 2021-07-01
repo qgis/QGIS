@@ -179,6 +179,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void reload() override;
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
+    bool isEditable() const override;
+    bool supportsEditing() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -729,6 +731,26 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool startFrameEditing( const QgsCoordinateTransform &transform );
 
     /**
+    * Commits edition of the mesh frame,
+    * Rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is True
+    *
+    * \return TRUE if the commit succeeds
+    * \since QGIS 3.22
+    */
+    bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+
+    /**
+    * Rolls Back edition of the mesh frame.
+    * Reload mesh from file, rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is TRUE
+    *
+    * \return TRUE if the rollback succeeds
+    * \since QGIS 3.22
+    */
+    bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+
+    /**
     * Stops edition of the mesh, re-indexes the faces and vertices,
     * rebuilds the triangular mesh and its spatial index with \a transform,
     * clean the undostack
@@ -745,18 +767,31 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshEditor *meshEditor();
 
     /**
+    * Returns whether the mesh frame has been modified since the last save
+    *
+    * \since QGIS 3.22
+    */
+    bool isModified() const override;
+
+    /**
+     *  Returns whether the mesh contains at mesh elements of given type
+     *  \since QGIS 3.22
+     */
+    bool contains( const QgsMesh::ElementType &type ) const;
+
+    /**
     * Returns the vertices count of the mesh frame
     *
     *  \since QGIS 3.22
     */
-    int meshVerticesCount() const;
+    int meshVertexCount() const;
 
     /**
     * Returns the faces count of the mesh frame
     *
     * \since QGIS 3.22
     */
-    int meshFacesCount() const;
+    int meshFaceCount() const;
 
     /**
     * Returns the edges count of the mesh frame

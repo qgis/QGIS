@@ -168,6 +168,9 @@ QgsMeshLayer *QgsMeshLayer::clone() const
 
 QgsRectangle QgsMeshLayer::extent() const
 {
+  if ( mMeshEditor )
+    return mMeshEditor->extent();
+
   if ( mDataProvider )
     return mDataProvider->extent();
   else
@@ -181,6 +184,19 @@ QgsRectangle QgsMeshLayer::extent() const
 QString QgsMeshLayer::providerType() const
 {
   return mProviderKey;
+}
+
+bool QgsMeshLayer::supportsEditing() const
+{
+  if ( !mDataProvider )
+    return false;
+
+  if ( mMeshEditor )
+    return true;
+
+  QgsMeshDriverMetadata driverMetadata = mDataProvider->driverMetadata();
+
+  return driverMetadata.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData;
 }
 
 bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
@@ -401,9 +417,9 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
   QgsMeshDatasetValue value;
   const QgsTriangularMesh *mesh = triangularMesh();
 
-  if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  if ( mesh && index.isValid() )
   {
-    if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    if ( contains( QgsMesh::ElementType::Edge ) )
     {
       QgsRectangle searchRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius );
       return dataset1dValue( index, point, searchRadius );
@@ -689,6 +705,7 @@ void QgsMeshLayer::onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes )
 void QgsMeshLayer::onMeshEdited()
 {
   mRendererCache.reset( new QgsMeshLayerRendererCache() );
+  emit layerModified();
   triggerRepaint();
 }
 
@@ -873,6 +890,12 @@ qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetInde
 
 bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
+  if ( !supportsEditing() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ) );
+    return false;
+  }
+
   if ( mMeshEditor )
   {
     QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" already in editing mode" ).arg( name() ) );
@@ -893,13 +916,76 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
     return false;
   }
 
+  // During editing, we don't need anymore the provider data. Mesh frame data is stored in the mesh editor.
+  mDataProvider->close();
+
+  // All dataset group are removed and replace by a unique virtual dataset group that provide vertices elevation value.
+  mExtraDatasetUri.clear();
   mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
   mDatasetGroupStore->addDatasetGroup( new QgsMeshVerticesElevationDatasetGroup( tr( "vertices elevation" ), mNativeMesh.get() ) );
   resetDatasetGroupTreeItem();
 
   connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
 
+  emit editingStarted();
+
   return true;
+}
+
+bool QgsMeshLayer::commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
+{
+  stopFrameEditing( transform );
+
+  if ( !mDataProvider )
+    return false;
+
+  bool res = mDataProvider->saveMeshFrame( *mNativeMesh.get() );
+
+  if ( continueEditing )
+  {
+    mMeshEditor->initialize();
+    emit layerModified();
+    return res;
+  }
+
+  mMeshEditor->deleteLater();
+  mMeshEditor = nullptr;
+  emit editingStopped();
+
+  mDataProvider->reloadData();
+  mDataProvider->populateMesh( mNativeMesh.get() );
+  mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+  mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
+  resetDatasetGroupTreeItem();
+  return true;
+}
+
+bool QgsMeshLayer::rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing )
+{
+  stopFrameEditing( transform );
+
+  if ( !mDataProvider )
+    return false;
+
+  mDataProvider->reloadData();
+  mDataProvider->populateMesh( mNativeMesh.get() );
+  updateTriangularMesh( transform );
+
+  if ( continueEditing )
+  {
+    return mMeshEditor->initialize() == QgsMeshEditingError();
+  }
+  else
+  {
+    mMeshEditor->deleteLater();
+    mMeshEditor = nullptr;
+    emit editingStopped();
+
+    mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
+    mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() );
+    resetDatasetGroupTreeItem();
+    return true;
+  }
 }
 
 void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
@@ -909,6 +995,7 @@ void QgsMeshLayer::stopFrameEditing( const QgsCoordinateTransform &transform )
 
   mMeshEditor->stopEditing();
   mTriangularMeshes.at( 0 )->update( mNativeMesh.get(), transform );
+  mRendererCache.reset( new QgsMeshLayerRendererCache() );
 }
 
 QgsMeshEditor *QgsMeshLayer::meshEditor()
@@ -916,28 +1003,53 @@ QgsMeshEditor *QgsMeshLayer::meshEditor()
   return mMeshEditor;
 }
 
-int QgsMeshLayer::meshVerticesCount() const
+bool QgsMeshLayer::isModified() const
+{
+  if ( mMeshEditor )
+    return mMeshEditor->isModified();
+
+  return false;
+}
+
+bool QgsMeshLayer::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case QgsMesh::ElementType::Vertex:
+      return meshVertexCount() != 0;
+    case QgsMesh::ElementType::Edge:
+      return meshEdgeCount() != 0;
+    case QgsMesh::ElementType::Face:
+      return meshFaceCount() != 0;
+  }
+  return false;
+}
+
+int QgsMeshLayer::meshVertexCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->vertexCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->vertexCount();
+  else return 0;
 }
 
-int QgsMeshLayer::meshFacesCount() const
+int QgsMeshLayer::meshFaceCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->faceCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->faceCount();
+  else return 0;
 }
 
 int QgsMeshLayer::meshEdgeCount() const
 {
   if ( mMeshEditor )
     return mNativeMesh->edgeCount();
-  else
+  else if ( mDataProvider )
     return mDataProvider->edgeCount();
+  else return 0;
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()
@@ -1473,6 +1585,11 @@ QString QgsMeshLayer::htmlMetadata() const
 
   myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
+}
+
+bool QgsMeshLayer::isEditable() const
+{
+  return mMeshEditor != nullptr;
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

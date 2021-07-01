@@ -221,6 +221,34 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
+QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
+{
+  if ( !mMeshH )
+    return QgsMeshDriverMetadata();
+
+  QString name = MDAL_M_driverName( mMeshH );
+  MDAL_DriverH mdalDriver = MDAL_driverFromName( name.toStdString().c_str() );
+  QString longName = MDAL_DR_longName( mdalDriver );
+  QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
+
+  QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
+  bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
+  if ( hasSaveFaceDatasetsCapability )
+    capabilities |= QgsMeshDriverMetadata::CanWriteFaceDatasets;
+  bool hasSaveVertexDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnVertices );
+  if ( hasSaveVertexDatasetsCapability )
+    capabilities |= QgsMeshDriverMetadata::CanWriteVertexDatasets;
+  bool hasSaveEdgeDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnEdges );
+  if ( hasSaveEdgeDatasetsCapability )
+    capabilities |= QgsMeshDriverMetadata::CanWriteEdgeDatasets;
+  bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
+  if ( hasMeshSaveCapability )
+    capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
+  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix );
+
+  return meta;
+}
+
 bool QgsMdalProvider::persistDatasetGroup(
   const QString &outputFilePath,
   const QString &outputDriver,
@@ -420,6 +448,21 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
     return true;
 }
 
+bool QgsMdalProvider::saveMeshFrame( const QgsMesh &mesh )
+{
+  QgsMdalProviderMetadata mdalProviderMetaData;
+  return mdalProviderMetaData.createMeshData( mesh, dataSourceUri(), mDriverName, crs() );
+}
+
+void QgsMdalProvider::close()
+{
+  if ( mMeshH )
+    MDAL_CloseMesh( mMeshH );
+  mMeshH = nullptr;
+
+  mExtraDatasetUris.clear();
+}
+
 void QgsMdalProvider::loadData()
 {
   QByteArray curi = dataSourceUri().toUtf8();
@@ -428,6 +471,7 @@ void QgsMdalProvider::loadData()
 
   if ( mMeshH )
   {
+    mDriverName = MDAL_M_driverName( mMeshH );
     const QString proj = MDAL_M_projection( mMeshH );
     if ( !proj.isEmpty() )
       mCrs.createFromString( proj );
@@ -472,7 +516,7 @@ void QgsMdalProvider::reloadProviderData()
   int datasetCountBeforeAdding = datasetGroupCount();
 
   if ( mMeshH )
-    for ( auto uri : mExtraDatasetUris )
+    for ( const QString &uri : std::as_const( mExtraDatasetUris ) )
     {
       std::string str = uri.toStdString();
       MDAL_M_LoadDatasets( mMeshH, str.c_str() );

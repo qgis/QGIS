@@ -1663,7 +1663,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isSpatial() const FINAL;
 
     //! Returns TRUE if the provider has been modified since the last commit
-    virtual bool isModified() const;
+    bool isModified() const override;
 
     /**
      * Returns TRUE if the field comes from the auxiliary layer,
@@ -1721,7 +1721,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \return FALSE if the layer is read only or the data provider has no editing capabilities
      * \since QGIS 3.18
      */
-    bool supportsEditing();
+    bool supportsEditing() const override;
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer
@@ -2551,9 +2551,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
-    //! Emitted when modifications has been done on layer
-    void layerModified();
-
     /**
      * Emitted whenever the allowCommitChanged() property of this layer changes.
      *
@@ -2566,12 +2563,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Emitted before editing on this layer is started.
     void beforeEditingStarted();
-
-    //! Emitted when editing on this layer has started.
-    void editingStarted();
-
-    //! Emitted when edited changes have been successfully written to the data provider.
-    void editingStopped();
 
     /**
      * Emitted before changes are committed to the data provider.
