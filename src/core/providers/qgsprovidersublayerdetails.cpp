@@ -23,3 +23,22 @@ QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) 
 {
   return QgsMapLayerFactory::createLayer( mUri, mName, mType, mProviderKey, options.transformContext );
 }
+
+bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &other ) const
+{
+  return mProviderKey == other.mProviderKey
+         && mType == other.mType
+         && mUri == other.mUri
+         && mLayerNumber == other.mLayerNumber
+         && mName == other.mName
+         && mDescription == other.mDescription
+         && mFeatureCount == other.mFeatureCount
+         && mGeometryColumnName == other.mGeometryColumnName
+         && mPath == other.mPath
+         && mWkbType == other.mWkbType;
+}
+
+bool QgsProviderSublayerDetails::operator!=( const QgsProviderSublayerDetails &other ) const
+{
+  return !( *this == other );
+}

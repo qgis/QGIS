@@ -69,6 +69,58 @@ class TestQgsProviderSublayerDetails(unittest.TestCase):
         d.setLayerNumber(13)
         self.assertEqual(d.layerNumber(), 13)
 
+    def test_equality(self):
+        """
+        Test equality operator
+        """
+        d = QgsProviderSublayerDetails()
+        d2 = QgsProviderSublayerDetails()
+        d.setProviderKey('key')
+        self.assertNotEqual(d, d2)
+        d2.setProviderKey('key')
+        self.assertEqual(d, d2)
+
+        d.setType(QgsMapLayerType.MeshLayer)
+        self.assertNotEqual(d, d2)
+        d2.setType(QgsMapLayerType.MeshLayer)
+        self.assertEqual(d, d2)
+
+        d.setUri('some uri')
+        self.assertNotEqual(d, d2)
+        d2.setUri('some uri')
+        self.assertEqual(d, d2)
+
+        d.setName('name')
+        self.assertNotEqual(d, d2)
+        d2.setName('name')
+        self.assertEqual(d, d2)
+
+        d.setDescription('desc')
+        self.assertNotEqual(d, d2)
+        d2.setDescription('desc')
+        self.assertEqual(d, d2)
+
+        d.setPath(['a', 'b', 'c'])
+        self.assertNotEqual(d, d2)
+        d2.setPath(['a', 'b', 'c'])
+        self.assertEqual(d, d2)
+
+        d.setFeatureCount(1000)
+        self.assertNotEqual(d, d2)
+        d2.setFeatureCount(1000)
+        self.assertEqual(d, d2)
+
+        d.setWkbType(QgsWkbTypes.Point)
+        self.assertNotEqual(d, d2)
+        d2.setWkbType(QgsWkbTypes.Point)
+        self.assertEqual(d, d2)
+
+        d.setGeometryColumnName('geom_col')
+        self.assertEqual(d.geometryColumnName(), 'geom_col')
+
+        d.setLayerNumber(13)
+        self.assertEqual(d.layerNumber(), 13)
+
     def test_to_layer(self):
         """
         Test converting sub layer details to a layer
