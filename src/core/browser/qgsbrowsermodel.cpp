@@ -122,7 +122,7 @@ void QgsBrowserModel::addRootItems()
       continue;
 
     const QString driveName = QStorageInfo( path ).displayName();
-    const QString name = driveName.isEmpty() ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+    const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
 
     QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
@@ -507,7 +507,7 @@ void QgsBrowserModel::refreshDrives()
     if ( !mDriveItems.contains( path ) )
     {
       const QString driveName = QStorageInfo( path ).displayName();
-      const QString name = driveName.isEmpty() ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+      const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
 
       QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
       item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
