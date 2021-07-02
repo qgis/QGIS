@@ -77,14 +77,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # blank template, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -93,14 +88,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer is displayed, there is no second item
+        self._assertGreen(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # blank template
         params["map0:LAYERS"] = ""
@@ -109,14 +99,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertGreen(image.pixelColor(600, 60))
 
         # red template, red theme, specified layer is red
         params["TEMPLATE"] = "red"
@@ -126,14 +111,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # red template, red theme, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -142,14 +122,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer is displayed, there is no second item
+        self._assertGreen(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # red template, red theme
         params["map0:LAYERS"] = ""
@@ -158,14 +133,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # green template, green theme, specified layer is red
         params["TEMPLATE"] = "green"
@@ -175,14 +145,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # green template, green theme, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -191,14 +156,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer is displayed, there is no second item
+        self._assertGreen(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # green template, green theme
         params["map0:LAYERS"] = ""
@@ -207,14 +167,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer is displayed, there is no second item
+        self._assertGreen(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # full template, full theme, specified layer is red
         params["TEMPLATE"] = "full"
@@ -224,14 +179,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # full template, full theme, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -240,14 +190,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer is displayed, there is no second item
+        self._assertGreen(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # full template, full theme
         params["map0:LAYERS"] = ""
@@ -256,16 +201,11 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 0)
+        # Both red and green layers are displayed
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertGreen(image.pixelColor(600, 60))
 
-        # full template, full theme, specified layer is red
+        # falsegreen template, falsegreen theme (green layer is blue), specified layer is red
         params["TEMPLATE"] = "falsegreen"
         params["map0:LAYERS"] = "red"
         response = QgsBufferServerResponse()
@@ -273,14 +213,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 0)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the red layer is displayed, there is no second item
+        self._assertRed(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # full template, full theme, specified layer is green
         params["map0:LAYERS"] = "green"
@@ -289,14 +224,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer (in blue) is displayed, there is no second item
+        self._assertBlue(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
         # full template, full theme
         params["map0:LAYERS"] = ""
@@ -305,14 +235,9 @@ class PyQgsServerWMSGetPrintLegend(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        color = image.pixelColor(600, 40)
-        self.assertEqual(color.red(), 0)
-        self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
-        color = image.pixelColor(600, 60)
-        self.assertEqual(color.red(), 255)
-        self.assertEqual(color.green(), 255)
-        self.assertEqual(color.blue(), 255)
+        # Only the green layer (in blue) is displayed, there is no second item
+        self._assertBlue(image.pixelColor(600, 40))
+        self._assertWhite(image.pixelColor(600, 60))
 
 
 if __name__ == '__main__':

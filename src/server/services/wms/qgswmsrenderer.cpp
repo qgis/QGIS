@@ -706,7 +706,10 @@ namespace QgsWms
             const QgsExpressionContext ex { map->createExpressionContext() };
             layerSet = map->layersToRender( &ex );
           }
+          // Unable the theme
           map->setFollowVisibilityPreset( false );
+
+          // Collect the style of each layer in the theme that has been unabled
           QList<QgsMapThemeCollection::MapThemeLayerRecord> mapThemeRecords = QgsProject::instance()->mapThemeCollection()->mapThemeState( presetName ).layerRecords();
           for ( auto layerMapThemeRecord : mapThemeRecords )
           {
@@ -728,6 +731,7 @@ namespace QgsWms
 
         map->setLayers( layerSet );
         map->setKeepLayerSet( true );
+
         // Set style override if a particular style should be used due to a map theme.
         // It will actualize linked legend symbols too.
         if ( !layersStyle.isEmpty() )
