@@ -202,25 +202,25 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   {
     QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( demTerrainGenerator );
+    setTerrainGenerator( demTerrainGenerator );
   }
   else if ( terrainGenType == QLatin1String( "online" ) )
   {
     QgsOnlineTerrainGenerator *onlineTerrainGenerator = new QgsOnlineTerrainGenerator;
     onlineTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( onlineTerrainGenerator );
+    setTerrainGenerator( onlineTerrainGenerator );
   }
   else if ( terrainGenType == QLatin1String( "mesh" ) )
   {
     QgsMeshTerrainGenerator *meshTerrainGenerator = new QgsMeshTerrainGenerator;
     meshTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( meshTerrainGenerator );
+    setTerrainGenerator( meshTerrainGenerator );
   }
   else // "flat"
   {
     QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
     flatGen->setCrs( mCrs );
-    mTerrainGenerator.reset( flatGen );
+    setTerrainGenerator( flatGen );
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
@@ -626,10 +626,12 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
   if ( mTerrainGenerator )
   {
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+    disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+  connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
   emit terrainGeneratorChanged();
 }
