@@ -76,17 +76,19 @@ Cancels the row fetching.
 
     void fetchingComplete();
 %Docstring
-Emitted when all rows have been fetched or when the fetching has been stopped
+Emitted when all rows have been fetched or when the fetching has been stopped (canceled)
 %End
 
     void fetchMoreRows( qlonglong maxRows );
 %Docstring
 Emitted when more rows are requested
+
+:param maxRows: the number of rows that will be fetched
 %End
 
     void fetchingStarted();
 %Docstring
-Emitted when fetching of rows starts
+Emitted when fetching of rows has started
 %End
 
 };

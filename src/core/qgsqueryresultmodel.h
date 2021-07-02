@@ -61,8 +61,8 @@ class QgsQueryResultFetcher: public QObject
 
     const QgsAbstractDatabaseProviderConnection::QueryResult *mQueryResult = nullptr;
     QAtomicInt mStopFetching = 0;
-    // Batch of rows to fetch before emitting rowsReady
-    static const int ROWS_TO_FETCH;
+    // Number of rows rows to fetch before emitting rowsReady
+    static const int ROWS_BATCH_COUNT;
 
 };
 
@@ -124,13 +124,20 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
 
   signals:
 
-    //! Emitted when all rows have been fetched or when the fetching has been stopped
+    /**
+     * Emitted when all rows have been fetched or when the fetching has been stopped (canceled)
+     */
     void fetchingComplete();
 
-    //! Emitted when more rows are requested
+    /**
+     *  Emitted when more rows are requested
+     *  \param maxRows the number of rows that will be fetched
+     */
     void fetchMoreRows( qlonglong maxRows );
 
-    //! Emitted when fetching of rows starts
+    /**
+     * Emitted when fetching of rows has started
+     */
     void fetchingStarted();
 
   private:
@@ -140,6 +147,9 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     QThread mWorkerThread;
     std::unique_ptr<QgsQueryResultFetcher> mWorker;
     QList<QVariantList> mRows;
+
+    //! Number of rows to fetch when more rows are required, generally bigger than ROWS_BATCH_COUNT
+    static const int FETCH_MORE_ROWS_COUNT;
 
 };
 

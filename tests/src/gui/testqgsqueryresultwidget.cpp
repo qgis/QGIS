@@ -88,7 +88,10 @@ void TestQgsQueryResultWidget::testWidgetCrash()
   QTimer::singleShot( 1, model, [ & ] { delete res; } );
   QTimer::singleShot( 2, model, [ & ] { exited = true; } );
   while ( ! exited )
+  {
+    model->fetchMore( QModelIndex( ) );
     QgsApplication::processEvents();
+  }
   const auto rowCount { model->rowCount( model->index( -1, -1 ) ) };
   QVERIFY( rowCount > 0 && rowCount < 100000 );
   delete model;

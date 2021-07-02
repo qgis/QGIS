@@ -21,7 +21,7 @@ from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
 )
 from qgis.testing import unittest, start_app
-from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer
+from qgis.PyQt.QtCore import QCoreApplication, QVariant, Qt, QTimer, QModelIndex
 from qgis.PyQt.QtWidgets import QListView, QDialog, QVBoxLayout, QLabel
 from qgis.PyQt.QtTest import QAbstractItemModelTester
 
@@ -111,6 +111,10 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         QTimer.singleShot(600, loop_exiter)
 
         while self.running:
+            try:
+                self.model.fetchMore(QModelIndex())
+            except:
+                pass
             QCoreApplication.processEvents()
 
         row_count = res.fetchedRowCount()

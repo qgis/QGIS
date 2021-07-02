@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgsqueryresultmodel.h"
 
+const int QgsQueryResultModel::FETCH_MORE_ROWS_COUNT = 400;
+
 QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent )
   : QAbstractTableModel( parent )
   , mQueryResult( queryResult )
@@ -23,7 +25,6 @@ QgsQueryResultModel::QgsQueryResultModel( const QgsAbstractDatabaseProviderConne
   qRegisterMetaType< QList<QList<QVariant>>>( "QList<QList<QVariant>>" );
   mWorker = std::make_unique<QgsQueryResultFetcher>( &mQueryResult );
   mWorker->moveToThread( &mWorkerThread );
-  //connect( &mWorkerThread, &QThread::started, mWorker.get(), [ = ] () { mWorker->fetchRows( 1000 ); }, Qt::ConnectionType::QueuedConnection );
   // Forward signals to the model
   connect( mWorker.get(), &QgsQueryResultFetcher::rowsReady, this, &QgsQueryResultModel::rowsReady );
   connect( mWorker.get(), &QgsQueryResultFetcher::fetchingComplete, this, &QgsQueryResultModel::fetchingComplete );
@@ -56,7 +57,7 @@ void QgsQueryResultModel::fetchMore( const QModelIndex &parent )
   if ( ! parent.isValid() )
   {
     emit fetchingStarted();
-    emit fetchMoreRows( 1000 );
+    emit fetchMoreRows( FETCH_MORE_ROWS_COUNT );
   }
 }
 
@@ -138,25 +139,25 @@ QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientati
 
 ///@cond private
 
-const int QgsQueryResultFetcher::ROWS_TO_FETCH = 200;
+const int QgsQueryResultFetcher::ROWS_BATCH_COUNT = 200;
 
 void QgsQueryResultFetcher::fetchRows( qlonglong maxRows )
 {
   qlonglong rowCount { 0 };
   QList<QList<QVariant>> newRows;
-  newRows.reserve( ROWS_TO_FETCH );
+  newRows.reserve( ROWS_BATCH_COUNT );
   while ( mStopFetching == 0 && mQueryResult->hasNextRow() && ( maxRows < 0 || rowCount < maxRows ) )
   {
     newRows.append( mQueryResult->nextRow() );
     ++rowCount;
-    if ( rowCount % ROWS_TO_FETCH == 0 && mStopFetching == 0 )
+    if ( rowCount % ROWS_BATCH_COUNT == 0 && mStopFetching == 0 )
     {
       emit rowsReady( newRows );
       newRows.clear();
     }
   }
 
-  if ( rowCount % ROWS_TO_FETCH && mStopFetching == 0 )
+  if ( rowCount % ROWS_BATCH_COUNT && mStopFetching == 0 )
   {
     emit rowsReady( newRows );
   }
