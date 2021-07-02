@@ -2755,6 +2755,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
       if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
       {
         // skip the symbol, should already be present
+        e = e.nextSiblingElement();
         continue;
       }
 
@@ -2810,6 +2811,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
     if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
     {
       // skip the ramp, should already be present
+      e = e.nextSiblingElement();
       continue;
     }
 
@@ -2859,6 +2861,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
         if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
           // skip the format, should already be present
+          e = e.nextSiblingElement();
           continue;
         }
 
@@ -2904,6 +2907,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
         if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
         {
           // skip the settings, should already be present
+          e = e.nextSiblingElement();
           continue;
         }
 
@@ -2950,6 +2954,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
       if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
       {
         // skip the shape, should already be present
+        e = e.nextSiblingElement();
         continue;
       }
 
@@ -2995,6 +3000,7 @@ bool QgsStyle::importXml( const QString &filename, int sinceVersion )
       if ( entityAddedVersion != 0 && sinceVersion != -1 && entityAddedVersion <= sinceVersion )
       {
         // skip the symbol, should already be present
+        e = e.nextSiblingElement();
         continue;
       }
 
