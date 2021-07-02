@@ -497,7 +497,7 @@ Check whether the map settings are valid and can be used for rendering
 %End
     QgsRectangle visibleExtent() const;
 %Docstring
-Returns the actual extent derived from requested extent that takes takes output image size into account
+Returns the actual extent derived from requested extent that takes output image size into account
 %End
 
     QPolygonF visiblePolygon() const;
