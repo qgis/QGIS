@@ -16,6 +16,8 @@
 #ifndef QGSTOPOLOGICALMESH_H
 #define QGSTOPOLOGICALMESH_H
 
+#include <QSet>
+
 #include "qgsmeshdataprovider.h"
 
 SIP_NO_FILE
@@ -93,6 +95,12 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the added vertices with this changes
         QVector<QgsMeshVertex> addedVertices() const;
 
+        //! Returns the indexes of vertices that have changed coordinates
+        QList<int> changedCoordinatesVerticesIndexes() const;
+
+        //! Returns the new Z values of vertices that have changed their coordinates
+        QList<double> newVerticesZValues() const;
+
       private:
         int mAddedFacesFirstIndex = 0;
         QList<int> mFaceIndexesToRemove; // the removed faces indexes in the mesh
@@ -109,6 +117,10 @@ class CORE_EXPORT QgsTopologicalMesh
         QList<int> mVerticesToFaceRemoved;
         QList<std::array<int, 3>> mVerticesToFaceChanges; // {index of concerned vertex, previous value, changed value}
 
+        QList<int> mChangeCoordinateVerticesIndexes;
+        QList<double> mNewZValues;
+        QList<double> mOldZValues;
+
         int addedFaceIndexInMesh( int internalIndex ) const;
         int removedFaceIndexInmesh( int internalIndex ) const;
 
@@ -117,9 +129,9 @@ class CORE_EXPORT QgsTopologicalMesh
 
     /**
      * Creates a topologicaly consistent mesh with \a mesh, this static method modifies \a mesh to be topological consistent
-     * and return a topological mesh instance that contains and handeles this mesh (do not take ownership).
+     * and return a QgsTopologicalMesh instance that contains and handles this mesh (does not take ownership).
      */
-    static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, QgsMeshEditingError &error );
+    static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error );
 
     //! Creates new topological faces that are not yet included in the mesh
     TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
@@ -137,6 +149,15 @@ class CORE_EXPORT QgsTopologicalMesh
 
     //! Returns whether the vertex is on a boundary
     bool isVertexOnBoundary( int vertexIndex ) const;
+
+    //! Returns whether the vertex is a free vertex
+    bool isVertexFree( int vertexIndex ) const;
+
+    //! Returns a list of vertices are not linked to any faces
+    QList<int> freeVerticesIndexes() const;
+
+    //! Returns a vertex circulator linked to this mesh arround the vertex with index \a vertexIndex
+    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
 
     //----------- editing methods
 
@@ -175,11 +196,22 @@ class CORE_EXPORT QgsTopologicalMesh
 
     /**
      * Removes the vertex with index \a vertexIndex.
-     * If the vertex in linked with faces, the operation leads also to remove the faces. In this case, if the flag \a fillHole is set to TRUE,
-     * the hole is filled by a triangulation.
+     * If the vertex in linked with faces, the operation leads also to remove the faces. In this case, the hole is filled by a triangulation.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
-    Changes removeVertex( int vertexIndex, bool fillHole = false );
+    Changes removeVertexFillHole( int vertexIndex );
+
+    /**
+     * Removes all the vertices with index in the list \a vertices
+     * If vertices in linked with faces, the operation leads also to remove the faces without filling holes.
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     */
+    Changes removeVertices( const QList<int> &vertices );
+
+    /**
+     * Changes the Z values of the vertices with indexes in \a vertices indexes with the values in \a newValues
+     */
+    Changes changeZValue( const QList<int> &verticesIndexes, const QList<double> &newValues );
 
     //! Applies the changes
     void applyChanges( const Changes &changes );
@@ -190,8 +222,14 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Checks the topology of the face and sets it counter clock wise if necessary
     static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
-    //! Reindexes faces and vertices, after this operation, topological can't be edited anymore
+    /**
+     *  Reindexes faces and vertices, after this operation, the topological
+     *  mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
+     */
     void reindex();
+
+    //! method used for test and debug
+    bool checkConsistency() const;
 
   private:
 
@@ -202,15 +240,25 @@ class CORE_EXPORT QgsTopologicalMesh
       bool allowUniqueSharedVertex,
       bool writeInVertices );
 
-    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
+
+    //! Returns whether the two faces can be joined sharing the index \a commonIndex
     static bool facesCanBeJoinedWithCommonIndex( const QgsMeshFace &face1, const QgsMeshFace &face2, int commonIndex );
 
-    QSet<int> concernedFacesBy( const QList<int> faceIndex ) const;
+    //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
+    QSet<int> concernedFacesBy( const QList<int> faceIndexes ) const;
+
+    // Followong methor are used to retrieve free vertex without going through all the vertices container.
+    // For now, we use only QSet<int> with vertex indexes, but,
+    // maybe later we could use more sophisticated reference (spatial index?), to retrieve fre vertex in an extent
+    void dereferenceAsFreeVertex( int vertexIndex );
+    void referenceAsFreeVertex( int vertexIndex );
 
     //Attributes
     QgsMesh *mMesh = nullptr;
-    QVector<int> mVertexToface;
+    QVector<int> mVertexToFace;
     QVector<FaceNeighbors> mFacesNeighborhood;
+    QSet<int> mFreeVertices;
+    int mMaximumVerticesPerFace = 0;
 
     friend class QgsMeshVertexCirculator;
 
@@ -223,7 +271,7 @@ class CORE_EXPORT QgsTopologicalMesh
  *
  * \since QGIS 3.22
  */
-class QgsMeshVertexCirculator
+class CORE_EXPORT QgsMeshVertexCirculator
 {
   public:
 

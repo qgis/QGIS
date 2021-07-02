@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -779,6 +779,18 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="mMeshToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionEditMesh"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -3562,7 +3574,22 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New Mesh Layer</string>
    </property>
   </action>
+  <action name="mActionEditMesh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeshEditTool.svg</normaloff>:/images/themes/default/mActionMeshEditTool.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Mesh</string>
+   </property>
+  </action>
  </widget>
  <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -222,6 +222,14 @@ QgsRectangle QgsMdalProvider::extent() const
   return ret;
 }
 
+int QgsMdalProvider::maximumVerticesCountPerFace() const
+{
+  if ( !mMeshH )
+    return 0;
+
+  return MDAL_M_faceVerticesMaximumCount( mMeshH );
+}
+
 QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
 {
   if ( !mMeshH )

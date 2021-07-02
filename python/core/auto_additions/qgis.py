@@ -402,6 +402,7 @@ Qgis.RasterResamplingStage.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.MeshEditingErrorType.NoError.__doc__ = "No type"
 Qgis.MeshEditingErrorType.InvalidFace.__doc__ = "An error occurs due to an invalid face (for example, vertex indexes are unordered)"
+Qgis.MeshEditingErrorType.TooManyVerticesInFace.__doc__ = "A face has more vertices than the maximum number supported per face"
 Qgis.MeshEditingErrorType.FlatFace.__doc__ = "A flat face is present"
 Qgis.MeshEditingErrorType.UniqueSharedVertex.__doc__ = "A least two faces share only one vertices"
 Qgis.MeshEditingErrorType.InvalidVertex.__doc__ = "An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)"

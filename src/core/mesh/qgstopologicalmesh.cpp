@@ -15,7 +15,9 @@
  ***************************************************************************/
 #include "qgstopologicalmesh.h"
 #include "qgsmesheditor.h"
-#include <qgsmessagelog.h>
+#include "qgsmessagelog.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
 
 #include <poly2tri.h>
 #include <QSet>
@@ -40,7 +42,7 @@ QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topo
 {
   if ( vertexIndex >= 0 && vertexIndex < topologicalMesh.mMesh->vertexCount() )
   {
-    mCurrentFace = topologicalMesh.mVertexToface[vertexIndex];
+    mCurrentFace = topologicalMesh.mVertexToFace[vertexIndex];
     mIsValid = vertexPositionInFace( *topologicalMesh.mesh(), vertexIndex, mCurrentFace ) != -1;
   }
   else
@@ -222,7 +224,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
   for ( int boundary : topologicalFaces.mBoundaries )
   {
     //if the boundary id a free vertex in the destination mesh, no need to check
-    if ( mVertexToface.at( boundary ) == -1 )
+    if ( mVertexToFace.at( boundary ) == -1 )
       continue;
 
     int indexOfStartinFace = topologicalFaces.mVerticesToFace.value( boundary );
@@ -231,7 +233,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
     //search for face boundary on clockwise side of new faces
     newFacesCirculator.goBoundaryClockwise();
     int oppositeVertexForNewFace = newFacesCirculator.oppositeVertexClockWise();
-    if ( mVertexToface.at( oppositeVertexForNewFace ) == -1 )
+    if ( mVertexToFace.at( oppositeVertexForNewFace ) == -1 )
       continue;
 
     QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
@@ -269,9 +271,9 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
 
   const QList<int> &verticesToFaceToChange = topologicalFaces.mVerticesToFace.keys();
   for ( const int vtc : verticesToFaceToChange )
-    if ( mVertexToface.at( vtc ) == -1 )
+    if ( mVertexToFace.at( vtc ) == -1 )
       changes.mVerticesToFaceChanges.append( {vtc,
-                                              mVertexToface.at( vtc ),
+                                              mVertexToFace.at( vtc ),
                                               changes.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.value( vtc ) ) } );
 
   applyChanges( changes );
@@ -286,7 +288,7 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
   {
     int newSize = mMesh->vertices.count() + changes.mVerticesToAdd.count();
     mMesh->vertices.resize( newSize );
-    mVertexToface.resize( newSize );
+    mVertexToFace.resize( newSize );
   }
 
   if ( !changes.mFacesToAdd.empty() > 0 )
@@ -305,14 +307,18 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
   for ( int i = 0; i < changes.mVerticesToRemoveIndexes.count(); ++i )
   {
     int vertexIndex = changes.mVerticesToRemoveIndexes.at( i );
+    if ( mVertexToFace.at( vertexIndex ) == -1 )
+      dereferenceAsFreeVertex( vertexIndex );
     mMesh->vertices[vertexIndex] = QgsMeshVertex();
-    mVertexToface[vertexIndex] = -1;
+    mVertexToFace[vertexIndex] = -1;
   }
 
   for ( int i = 0; i < changes.mVerticesToAdd.count(); ++i )
   {
     mMesh->vertices[initialVerticesCount + i] = changes.mVerticesToAdd.at( i );
-    mVertexToface[initialVerticesCount + i] = changes.mVertexToFaceToAdd.at( i );
+    mVertexToFace[initialVerticesCount + i] = changes.mVertexToFaceToAdd.at( i );
+    if ( changes.mVertexToFaceToAdd.at( i ) == -1 )
+      referenceAsFreeVertex( initialVerticesCount + i );
   }
 
   for ( int i = 0; i < changes.mFacesToAdd.count(); ++i )
@@ -331,7 +337,22 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
 
   for ( const std::array<int, 3> vertexToFaceChange : std::as_const( changes.mVerticesToFaceChanges ) )
   {
-    mVertexToface[vertexToFaceChange.at( 0 )] = vertexToFaceChange.at( 2 );
+    int vertexIndex = vertexToFaceChange.at( 0 );
+    mVertexToFace[vertexToFaceChange.at( 0 )] = vertexToFaceChange.at( 2 );
+
+    if ( vertexToFaceChange.at( 2 ) == -1 &&
+         vertexToFaceChange.at( 1 ) != -1 &&
+         !mMesh->vertices.at( vertexIndex ).isEmpty() )
+      referenceAsFreeVertex( vertexIndex );
+
+    if ( vertexToFaceChange.at( 1 ) == -1 && vertexToFaceChange.at( 2 ) != -1 )
+      dereferenceAsFreeVertex( vertexIndex );
+  }
+
+  for ( int i = 0; i < changes.mChangeCoordinateVerticesIndexes.count(); ++i )
+  {
+    int vertexIndex = changes.mChangeCoordinateVerticesIndexes.at( i );
+    mMesh->vertices[vertexIndex].setZ( changes.mNewZValues.at( i ) );
   }
 }
 
@@ -355,14 +376,25 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
   {
     int vertexIndex = changes.mVerticesToRemoveIndexes.at( i );
     mMesh->vertices[vertexIndex] = changes.mRemovedVertices.at( i );
-    mVertexToface[vertexIndex] = changes.mVerticesToFaceRemoved.at( i );
+    mVertexToFace[vertexIndex] = changes.mVerticesToFaceRemoved.at( i );
+    if ( mVertexToFace.at( vertexIndex ) == -1 )
+      referenceAsFreeVertex( vertexIndex );
   }
 
   int verticesToFaceChangesCount = changes.mVerticesToFaceChanges.count();
   for ( int i = 0; i < verticesToFaceChangesCount; ++i )
   {
     const std::array<int, 3> vertexToFaceChange = changes.mVerticesToFaceChanges.at( verticesToFaceChangesCount - i - 1 );
-    mVertexToface[vertexToFaceChange.at( 0 )] = vertexToFaceChange.at( 1 );
+    int vertexIndex = vertexToFaceChange.at( 0 );
+    mVertexToFace[vertexIndex] = vertexToFaceChange.at( 1 );
+
+    if ( vertexToFaceChange.at( 2 ) == -1 && vertexToFaceChange.at( 1 ) != -1 )
+      dereferenceAsFreeVertex( vertexIndex );
+
+    if ( vertexToFaceChange.at( 1 ) == -1 &&
+         vertexToFaceChange.at( 2 ) != -1 &&
+         !mMesh->vertex( vertexIndex ).isEmpty() )
+      referenceAsFreeVertex( vertexIndex );
   }
 
   if ( !changes.mFacesToAdd.empty() > 0 )
@@ -375,8 +407,19 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
   if ( !changes.mVerticesToAdd.isEmpty() )
   {
     int newSize = mMesh->vertexCount() - changes.mVerticesToAdd.count();
+
+    for ( int i = newSize; i < mMesh->vertexCount(); ++i )
+      if ( mVertexToFace.at( i ) == -1 )
+        dereferenceAsFreeVertex( i );
+
     mMesh->vertices.resize( newSize );
-    mVertexToface.resize( newSize );
+    mVertexToFace.resize( newSize );
+  }
+
+  for ( int i = 0; i < changes.mChangeCoordinateVerticesIndexes.count(); ++i )
+  {
+    int vertexIndex = changes.mChangeCoordinateVerticesIndexes.at( i );
+    mMesh->vertices[vertexIndex].setZ( changes.mOldZValues.at( i ) );
   }
 }
 
@@ -409,6 +452,29 @@ QSet<int> QgsTopologicalMesh::concernedFacesBy( const QList<int> faceIndexes ) c
   return faces;
 }
 
+void QgsTopologicalMesh::dereferenceAsFreeVertex( int vertexIndex )
+{
+  mFreeVertices.remove( vertexIndex );
+}
+
+void QgsTopologicalMesh::referenceAsFreeVertex( int vertexIndex )
+{
+  mFreeVertices.insert( vertexIndex );
+}
+
+bool QgsTopologicalMesh::checkConsistency() const
+{
+  for ( int faceIndex = 0 ; faceIndex < mMesh->faces.count( ); ++faceIndex )
+  {
+    const QgsMeshFace &face = mMesh->faces.at( faceIndex );
+    for ( int i = 0; i < face.count(); ++i )
+      if ( mVertexToFace.at( face.at( i ) ) == -1 )
+        return false;
+  }
+
+  return true;
+}
+
 QgsMesh *QgsTopologicalMesh::mesh() const
 {
   return mMesh;
@@ -422,6 +488,26 @@ bool QgsTopologicalMesh::isVertexOnBoundary( int vertexIndex ) const
     return circulator.goBoundaryClockwise();
 
   return false;
+}
+
+bool QgsTopologicalMesh::isVertexFree( int vertexIndex ) const
+{
+  if ( vertexIndex < 0 || vertexIndex >= mMesh->vertexCount() )
+    return false;
+
+  if ( mMesh->vertices.at( vertexIndex ).isEmpty() )
+    return false;
+
+  return mVertexToFace.at( vertexIndex ) == -1;
+}
+
+QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  return mFreeVertices.values();
+#else
+  return QList<int>( mFreeVertices.begin(), mFreeVertices.end() );
+#endif
 }
 
 QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh )
@@ -534,7 +620,7 @@ void QgsTopologicalMesh::reindex()
 
   mMesh->faces.resize( newIndex );
 
-  mVertexToface.clear();
+  mVertexToFace.clear();
   mFacesNeighborhood.clear();
 }
 
@@ -556,6 +642,16 @@ QList<int> QgsTopologicalMesh::Changes::removedFaceIndexes() const
 QVector<QgsMeshVertex> QgsTopologicalMesh::Changes::addedVertices() const
 {
   return mVerticesToAdd;
+}
+
+QList<int> QgsTopologicalMesh::Changes::changedCoordinatesVerticesIndexes() const
+{
+  return mChangeCoordinateVerticesIndexes;
+}
+
+QList<double> QgsTopologicalMesh::Changes::newVerticesZValues() const
+{
+  return mNewZValues;
 }
 
 int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
@@ -581,19 +677,21 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFreeVertex( const QgsMeshVert
   changes.mVertexToFaceToAdd.append( -1 );
 
   mMesh->vertices.append( vertex );
-  mVertexToface.append( -1 );
+  mVertexToFace.append( -1 );
+  referenceAsFreeVertex( mMesh->vertices.count() - 1 );
 
   return changes;
 }
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  bool fillHole )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertexIndex )
 {
-  if ( mVertexToface.at( vertexIndex ) == -1 )
+  if ( mVertexToFace.at( vertexIndex ) == -1 ) //it is a free vertex
   {
     Changes changes;
     changes.mRemovedVertices.append( mMesh->vertices.at( vertexIndex ) );
     changes.mVerticesToRemoveIndexes.append( vertexIndex );
     changes.mVerticesToFaceRemoved.append( -1 );
+    dereferenceAsFreeVertex( vertexIndex );
     mMesh->vertices[vertexIndex] = QgsMeshVertex();
     return changes;
   }
@@ -603,13 +701,10 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
   circulator.goBoundaryClockwise();
   QList<int> boundariesVertexIndex;
   QList<int> associateFaceToBoundaries;
-  QList<int> removedFacesindexes;
-  //removedFacesindexes.append( circulator.currentFaceIndex() );
-  //boundariesVertexIndex.append( circulator.oppositeVertexClockWise() );
+  QList<int> removedFacesIndexes;
   do
-    //while ( )
   {
-    removedFacesindexes.append( circulator.currentFaceIndex() );
+    removedFacesIndexes.append( circulator.currentFaceIndex() );
     boundariesVertexIndex.append( circulator.oppositeVertexClockWise() );
     const QgsMeshFace &currentFace = circulator.currentFace();
     associateFaceToBoundaries.append( mFacesNeighborhood.at( circulator.currentFaceIndex() ).at(
@@ -626,44 +721,96 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
       }
     }
   }
-  while ( circulator.turnCounterClockwise() != -1 && circulator.currentFaceIndex() != removedFacesindexes.first() );
+  while ( circulator.turnCounterClockwise() != -1 && circulator.currentFaceIndex() != removedFacesIndexes.first() );
 
-  if ( circulator.currentFaceIndex() == -1 ) //we are on boundary, for now do not fill hole
-    fillHole = false;
-
-  //Remove duplicated boundaries
-  for ( int i = 0; i < boundariesVertexIndex.count(); ++i )
+  bool boundaryFill = false;
+  if ( circulator.currentFaceIndex() == -1 ) //we are on boundary of the mesh
   {
-    int otherPosition = boundariesVertexIndex.indexOf( boundariesVertexIndex.at( i ), i + 1 );
-    if ( otherPosition != -1 )
-    {
-      boundariesVertexIndex.removeAt( otherPosition );
-      associateFaceToBoundaries.removeAt( otherPosition );
-    }
+    boundaryFill = true;
+    //we need to add last vertex/boundary faces that was not added because we are on mesh boundary
+    circulator.goBoundaryCounterClockwise();
+    boundariesVertexIndex.append( circulator.oppositeVertexCounterClockWise() );
+    associateFaceToBoundaries.append( -1 );
+
   }
 
-  int currentVertexToFace = mVertexToface.at( vertexIndex );
-  Changes changes = removeFaces( removedFacesindexes );
+  int currentVertexToFace = mVertexToFace.at( vertexIndex );
+  // here, we use the method removeFaces that effectivly removes and then contructs changes
+  Changes changes = removeFaces( removedFacesIndexes );
   changes.mRemovedVertices.append( mMesh->vertices.at( vertexIndex ) );
   changes.mVerticesToRemoveIndexes.append( vertexIndex );
   changes.mVerticesToFaceRemoved.append( currentVertexToFace );
-
+  // these changes contain information that will lead to reference the removed vertex as free vertex when reverse/reapply
+  dereferenceAsFreeVertex( vertexIndex );
   mMesh->vertices[vertexIndex] = QgsMeshVertex();
-  mVertexToface[vertexIndex] = -1;
+  mVertexToFace[vertexIndex] = -1;
 
-  if ( fillHole )
+  QList<QList<int>> holes;
+  QList<QList<int>> associateMeshFacesToHoles;
+  if ( boundaryFill )
   {
-    QHash<p2t::Point *, int> mapPoly2TriPointToVertex;
-    std::vector<p2t::Point *> holeToFill( boundariesVertexIndex.count() );
-    for ( int i = 0; i < boundariesVertexIndex.count(); ++i )
+    // The hole is not a closed polygon, we need to close it, but the closing segment can intersect another segment.
+    // In this case we consider as many polygons as necessary.
+    while ( boundariesVertexIndex.count() > 1 )
     {
-      const QgsMeshVertex &vertex = mMesh->vertex( boundariesVertexIndex.at( i ) );
+      int concavePointPos = -1;
+      const QgsPoint &p1 = mMesh->vertices.at( boundariesVertexIndex.first() );
+      const QgsPoint *p2 = &mMesh->vertices.at( boundariesVertexIndex.last() );
+      for ( int i = 1; i < boundariesVertexIndex.count() - 1; ++i )
+      {
+        const QgsPoint *pointToTest = &mMesh->vertices.at( boundariesVertexIndex.at( i ) );
+        if ( QgsGeometryUtils::leftOfLine( *pointToTest, p1, *p2 ) < 0 )
+        {
+          concavePointPos = i;
+          p2 = pointToTest;
+        }
+      }
+
+      if ( concavePointPos == -1 ) //all boundaries are concave
+      {
+        holes.append( boundariesVertexIndex );
+        associateMeshFacesToHoles.append( associateFaceToBoundaries );
+        break;
+      }
+      else if ( concavePointPos == 1 ) //we don't have concave boundarie from the first point
+      {
+        boundariesVertexIndex.removeFirst();
+        associateFaceToBoundaries.removeFirst();
+      }
+      else  //concave point between first and last --> split
+      {
+        QList<int> partialHoleVertexIndex = boundariesVertexIndex.mid( 0, concavePointPos + 1 );
+        QList<int> partialAssociateFaces = associateFaceToBoundaries.mid( 0, concavePointPos + 1 );
+        holes.append( partialHoleVertexIndex );
+        partialAssociateFaces[partialAssociateFaces.count() - 1] = -1;
+        associateMeshFacesToHoles.append( partialAssociateFaces );
+        boundariesVertexIndex = boundariesVertexIndex.mid( concavePointPos );
+        associateFaceToBoundaries = associateFaceToBoundaries.mid( concavePointPos );
+      }
+    }
+  }
+  else
+  {
+    holes.append( boundariesVertexIndex );
+    associateMeshFacesToHoles.append( associateFaceToBoundaries );
+  }
+  Q_ASSERT( holes.count() == associateMeshFacesToHoles.count() );
+
+  int oldFacesCount = mMesh->faceCount();
+  for ( int i = 0; i < holes.count(); ++i )
+  {
+    const QList<int> &holeVertices = holes.at( i );
+    const QList<int> &associateMeshFacesToHole = associateMeshFacesToHoles.at( i );
+    QHash<p2t::Point *, int> mapPoly2TriPointToVertex;
+    std::vector<p2t::Point *> holeToFill( holeVertices.count() );
+    for ( int i = 0; i < holeVertices.count(); ++i )
+    {
+      const QgsMeshVertex &vertex = mMesh->vertex( holeVertices.at( i ) );
       holeToFill[i] = new p2t::Point( vertex.x(), vertex.y() );
-      mapPoly2TriPointToVertex.insert( holeToFill[i], boundariesVertexIndex.at( i ) );
+      mapPoly2TriPointToVertex.insert( holeToFill[i], holeVertices.at( i ) );
     }
 
     std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( holeToFill ) );
-
     try
     {
       cdt->Triangulate();
@@ -675,10 +822,11 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
         face.resize( 3 );
         for ( int j = 0; j < 3; j++ )
         {
-          int vertexIndex = mapPoly2TriPointToVertex.value( triangles.at( i )->GetPoint( j ), -1 );
-          if ( vertexIndex == -1 )
+          int vertInd = mapPoly2TriPointToVertex.value( triangles.at( i )->GetPoint( j ), -1 );
+          if ( vertInd == -1 )
             throw std::exception();
-          face[j] = vertexIndex;
+          Q_ASSERT( !mMesh->vertices.at( vertInd ).isEmpty() );
+          face[j] = vertInd;
         }
       }
 
@@ -695,9 +843,9 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
       // vertices to face changes
       const QList<int> &verticesToFaceToChange = topologicalFaces.mVerticesToFace.keys();
       for ( const int vtc : verticesToFaceToChange )
-        if ( mVertexToface.at( vtc ) == -1 )
+        if ( mVertexToFace.at( vtc ) == -1 )
           addChanges.mVerticesToFaceChanges.append( {vtc,
-              mVertexToface.at( vtc ),
+              mVertexToFace.at( vtc ),
               addChanges.addedFaceIndexInMesh( topologicalFaces.mVerticesToFace.value( vtc ) ) } );
 
 
@@ -714,39 +862,68 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
       }
 
       // link neighborhood for boundaries of each side
-      for ( int i = 0; i < boundariesVertexIndex.count(); ++i )
+      for ( int i = 0 ; i < holeVertices.count(); ++i )
       {
-        int vertexBoundaryIndex = boundariesVertexIndex.at( i );
+        int vertexHoleIndex = holeVertices.at( i );
 
-        int meshFaceBoundaryIndex = associateFaceToBoundaries.at( i );
+        int meshFaceBoundaryIndex = associateMeshFacesToHole.at( i );
 
-        QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexBoundaryIndex );
+        QgsMeshVertexCirculator circulator = QgsMeshVertexCirculator( topologicalFaces, vertexHoleIndex );
         circulator.goBoundaryClockwise();
         int newFaceBoundaryLocalIndex = circulator.currentFaceIndex();
         int newFaceBoundaryIndexInMesh = circulator.currentFaceIndex() + newFaceIndexStartIndex;
         const QgsMeshFace &newFace = circulator.currentFace();
-        int positionInNewFaces = vertexPositionInFace( vertexBoundaryIndex, newFace );
+        int positionInNewFaces = vertexPositionInFace( vertexHoleIndex, newFace );
 
         if ( meshFaceBoundaryIndex != -1 )
         {
           const QgsMeshFace meshFace = mMesh->face( meshFaceBoundaryIndex );
-          int positionInMeshFaceBoundary = vertexPositionInFace( *mMesh, vertexBoundaryIndex, meshFaceBoundaryIndex );
+          int positionInMeshFaceBoundary = vertexPositionInFace( *mMesh, vertexHoleIndex, meshFaceBoundaryIndex );
           positionInMeshFaceBoundary = ( positionInMeshFaceBoundary - 1 + meshFace.count() ) % meshFace.count(); //take the position just before
 
           addChanges.mNeighborhoodChanges.append( {meshFaceBoundaryIndex, positionInMeshFaceBoundary, -1, newFaceBoundaryIndexInMesh} );
         }
 
         addChanges.mFacesNeighborhoodToAdd[newFaceBoundaryLocalIndex][positionInNewFaces] = meshFaceBoundaryIndex;
-
       }
 
       applyChanges( addChanges );
 
       changes.mFacesToAdd.append( addChanges.mFacesToAdd );
-      changes.mAddedFacesFirstIndex = addChanges.mAddedFacesFirstIndex;
       changes.mFacesNeighborhoodToAdd.append( addChanges.mFacesNeighborhoodToAdd );
-      changes.mNeighborhoodChanges.append( addChanges.mNeighborhoodChanges );
-      changes.mVerticesToFaceChanges.append( addChanges.mVerticesToFaceChanges );
+      //for each neighborhood change, check if a corresponding change already exist and merge them, if not just append
+      for ( const std::array<int, 4> &neighborChangeToAdd : std::as_const( addChanges.mNeighborhoodChanges ) )
+      {
+        bool merged = false;
+        for ( std::array<int, 4> &existingNeighborChange : changes.mNeighborhoodChanges )
+        {
+          if ( existingNeighborChange.at( 0 ) == neighborChangeToAdd.at( 0 ) &&
+               existingNeighborChange.at( 1 ) == neighborChangeToAdd.at( 1 ) )
+          {
+            merged = true;
+            Q_ASSERT( existingNeighborChange.at( 3 ) == neighborChangeToAdd.at( 2 ) );
+            existingNeighborChange[3] = neighborChangeToAdd.at( 3 );
+          }
+        }
+        if ( !merged )
+          changes.mNeighborhoodChanges.append( neighborChangeToAdd );
+      }
+      //for each vertex to face change, check if a corresponding change already exist and merge them, if not just append
+      for ( const std::array<int, 3> &verticesToFaceToAdd : std::as_const( addChanges.mVerticesToFaceChanges ) )
+      {
+        bool merged = false;
+        for ( std::array<int, 3> &existingVerticesToFace : changes.mVerticesToFaceChanges )
+        {
+          if ( existingVerticesToFace.at( 0 ) == verticesToFaceToAdd.at( 0 ) )
+          {
+            merged = true;
+            Q_ASSERT( existingVerticesToFace.at( 2 ) == verticesToFaceToAdd.at( 1 ) );
+            existingVerticesToFace[2] = verticesToFaceToAdd.at( 2 );
+          }
+        }
+        if ( !merged )
+          changes.mVerticesToFaceChanges.append( verticesToFaceToAdd );
+      }
     }
     catch ( ... )
     {
@@ -756,8 +933,36 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertex( int vertexIndex,  
     qDeleteAll( holeToFill );
   }
 
-  return changes;
+  changes.mAddedFacesFirstIndex = oldFacesCount;
 
+  return changes;
+}
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertices( const QList<int> &vertices )
+{
+  QSet<int> facesIndex;
+  //Search for associated faces
+  for ( int vertexIndex : vertices )
+    facesIndex.unite( facesAroundVertex( vertexIndex ).toSet() );
+
+  // remove the faces
+  Changes changes = removeFaces( facesIndex.values() );
+
+  // removes the vertices
+  for ( int vertexIndex : vertices )
+  {
+    int currentVertexToFace = mVertexToFace.at( vertexIndex );
+    // here, we use the method removeFaces that effectivly removes and then contructs changes
+    changes.mRemovedVertices.append( mMesh->vertices.at( vertexIndex ) );
+    changes.mVerticesToRemoveIndexes.append( vertexIndex );
+    changes.mVerticesToFaceRemoved.append( currentVertexToFace );
+    // these changes contain information that will lead to reference the removed vertex as free vertex when reverse/reapply
+    dereferenceAsFreeVertex( vertexIndex );
+    mMesh->vertices[vertexIndex] = QgsMeshVertex();
+    mVertexToFace[vertexIndex] = -1;
+  }
+
+  return changes;
 }
 
 QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMesh::TopologicalFaces &topologicFaces ) const
@@ -770,7 +975,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     int boundary = boundaryToCheck.takeLast();
 
     //if the boundary id a free vertex in the destination mesh, no need to check
-    if ( mVertexToface.at( boundary ) == -1 )
+    if ( mVertexToFace.at( boundary ) == -1 )
       continue;
 
     int faceIndex = topologicFaces.mVerticesToFace.value( boundary );
@@ -842,15 +1047,22 @@ void QgsTopologicalMesh::TopologicalFaces::clear()
   mBoundaries.clear();
 }
 
-QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, QgsMeshEditingError &error )
+QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error )
 {
   QgsTopologicalMesh topologicMesh;
   topologicMesh.mMesh = mesh;
-  topologicMesh.mVertexToface = QVector<int>( mesh->vertexCount(), -1 );
+  topologicMesh.mVertexToFace = QVector<int>( mesh->vertexCount(), -1 );
+  topologicMesh.mMaximumVerticesPerFace = maxVerticesPerFace;
   error.errorType = Qgis::MeshEditingErrorType::NoError;
 
   for ( int i = 0; i < mesh->faceCount(); ++i )
   {
+    if ( maxVerticesPerFace != 0 && mesh->face( i ).count() > maxVerticesPerFace )
+    {
+      error = QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, i );
+      break;
+    }
+
     error = counterClockWiseFaces( mesh->faces[i], mesh );
     if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
     {
@@ -864,6 +1076,12 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, Qgs
   {
     TopologicalFaces subMesh = topologicMesh.createTopologicalFaces( mesh->faces, error, false, true );
     topologicMesh.mFacesNeighborhood = subMesh.mFacesNeighborhood;
+
+    for ( int i = 0; i < topologicMesh.mMesh->vertexCount(); ++i )
+    {
+      if ( topologicMesh.mVertexToFace.at( i ) == -1 )
+        topologicMesh.mFreeVertices.insert( i );
+    }
   }
 
   return topologicMesh;
@@ -921,8 +1139,8 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
 
       if ( writeInVertices )
       {
-        if ( mVertexToface[v1] == -1 )
-          mVertexToface[v1] = faceIndex ;
+        if ( mVertexToFace[v1] == -1 )
+          mVertexToFace[v1] = faceIndex ;
       }
       else
       {
@@ -1011,19 +1229,19 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> face
   return error;
 }
 
-QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> facesIndexes )
+QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> facesIndexesToRemove )
 {
   Changes changes;
-  changes.mFaceIndexesToRemove = facesIndexes;
-  changes.mFacesToRemove.resize( facesIndexes.count() );
-  changes.mFacesNeighborhoodToRemove.resize( facesIndexes.count() );
+  changes.mFaceIndexesToRemove = facesIndexesToRemove;
+  changes.mFacesToRemove.resize( facesIndexesToRemove.count() );
+  changes.mFacesNeighborhoodToRemove.resize( facesIndexesToRemove.count() );
 
-  QSet<int> indexSet = facesIndexes.toSet();
+  QSet<int> indexSet = facesIndexesToRemove.toSet();
   QSet<int> threatedVertex;
 
-  for ( int i = 0; i < facesIndexes.count(); ++i )
+  for ( int i = 0; i < facesIndexesToRemove.count(); ++i )
   {
-    const int faceIndex = facesIndexes.at( i );
+    const int faceIndex = facesIndexesToRemove.at( i );
     const QgsMeshFace &face = mMesh->face( faceIndex );
     changes.mFacesToRemove[i] = face;
     const FaceNeighbors &neighborhood = mFacesNeighborhood.at( faceIndex );
@@ -1040,9 +1258,9 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> fa
 
       //change vertexToFace
       int vertexIndex = face.at( j );
-      if ( !threatedVertex.contains( vertexIndex ) && indexSet.contains( mVertexToface.at( vertexIndex ) ) )
+      if ( !threatedVertex.contains( vertexIndex ) && indexSet.contains( mVertexToFace.at( vertexIndex ) ) )
       {
-        int oldValue = mVertexToface.at( vertexIndex );
+        int oldValue = mVertexToFace.at( vertexIndex );
         //look for another face linked to this vertex
         int refValue = -1;
         if ( neighborIndex != -1 && !indexSet.contains( neighborIndex ) ) //if exist, simpler to take it
@@ -1075,7 +1293,12 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> fa
 
 QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFaceIndex, const QgsMeshVertex &vertex )
 {
-  Changes changes = addFreeVertex( vertex );
+  Changes changes;
+  changes.mVerticesToAdd.append( vertex );
+  changes.mVertexToFaceToAdd.append( -1 );
+
+  mMesh->vertices.append( vertex );
+  mVertexToFace.append( -1 );
   changes.mAddedFacesFirstIndex = mMesh->faceCount();
 
   const QgsMeshFace includingFace = mMesh->face( includingFaceIndex );
@@ -1093,10 +1316,10 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFa
     changes.mFacesToAdd.append( face );
 
     int currentVertexIndex = includingFace.at( i );
-    if ( mVertexToface.at( currentVertexIndex ) == includingFaceIndex )
+    if ( mVertexToFace.at( currentVertexIndex ) == includingFaceIndex )
     {
       int newFaceIndex = mMesh->faceCount() - 1;
-      mVertexToface[currentVertexIndex] = newFaceIndex;
+      mVertexToFace[currentVertexIndex] = newFaceIndex;
       changes.mVerticesToFaceChanges.append( {currentVertexIndex, includingFaceIndex, newFaceIndex} );
     }
 
@@ -1125,9 +1348,28 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFa
 
   mFacesNeighborhood[includingFaceIndex] = FaceNeighbors();
   mMesh->faces[includingFaceIndex] = QgsMeshFace();
-  mVertexToface[mVertexToface.count() - 1] = mMesh->faceCount() - 1;
+  mVertexToFace[mVertexToFace.count() - 1] = mMesh->faceCount() - 1;
   changes.mVertexToFaceToAdd[changes.mVertexToFaceToAdd.count() - 1] = mMesh->faceCount() - 1 ;
 
   return changes;
 }
 
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::changeZValue( const QList<int> &verticesIndexes, const QList<double> &newValues )
+{
+  Q_ASSERT( verticesIndexes.count() == newValues.count() );
+  Changes changes;
+  changes.mChangeCoordinateVerticesIndexes.reserve( verticesIndexes.count() );
+  changes.mNewZValues.reserve( verticesIndexes.count() );
+  changes.mOldZValues.reserve( verticesIndexes.count() );
+  for ( int i = 0; i < verticesIndexes.count(); ++i )
+  {
+    changes.mChangeCoordinateVerticesIndexes.append( verticesIndexes.at( i ) );
+    changes.mOldZValues.append( mMesh->vertices.at( verticesIndexes.at( i ) ).z() );
+    changes.mNewZValues.append( newValues.at( i ) );
+  }
+
+  applyChanges( changes );
+
+  return changes;
+}

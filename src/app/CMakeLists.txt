@@ -246,6 +246,7 @@ set(QGIS_APP_SRCS
 
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsnewmeshlayerdialog.cpp
+  mesh/qgsmaptooleditmeshframe.cpp
 )
 
 if (WITH_SPATIALITE)

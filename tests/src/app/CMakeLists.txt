@@ -25,6 +25,7 @@ set(TESTS
   testqgsmaptoolscalefeature.cpp
   testqgsmaptoolcircularstring.cpp
   testqgsmaptoolcircle.cpp
+  testqgsmaptooleditmesh.cpp
   testqgsmaptoolmovefeature.cpp
   testqgsmaptoolellipse.cpp
   testqgsmaptoolrectangle.cpp

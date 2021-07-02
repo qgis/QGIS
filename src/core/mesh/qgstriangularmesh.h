@@ -125,6 +125,17 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     int faceIndexForPoint( const QgsPointXY &point ) const ;
 
     /**
+     * Finds index of triangle at given point
+     * It uses spatial indexing and don't use geos to be faster
+     *
+     * \param point point in map coordinate system
+     * \returns triangle index that contains the given point, -1 if no such triangle exists
+     *
+     * \since QGIS 3.12
+     */
+    int faceIndexForPoint_v2( const QgsPointXY &point ) const;
+
+    /**
      * Finds index of native face at given point
      * It uses spatial indexing
      *
@@ -136,15 +147,15 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     int nativeFaceIndexForPoint( const QgsPointXY &point ) const ;
 
     /**
-     * Finds index of triangle at given point
-     * It uses spatial indexing and don't use geos to be faster
+     * Finds indexes of native faces which bounding boxes intersect given bounding box
+     * It uses spatial indexing
      *
-     * \param point point in map coordinate system
-     * \returns triangle index that contains the given point, -1 if no such triangle exists
+     * \param rectangle bounding box in map coordinate system
+     * \returns native face indexes that have bounding box that intersect the rectangle
      *
-     * \since QGIS 3.12
+     * \since QGIS 3.22
      */
-    int faceIndexForPoint_v2( const QgsPointXY &point ) const;
+    QList<int> nativeFaceIndexForRectangle( const QgsRectangle &rectangle ) const ;
 
     /**
      * Finds indexes of triangles intersecting given bounding box
@@ -250,7 +261,9 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
       private:
         // triangular mesh elements that can be changed if the triangular mesh is updated, are not stored and have to be retrieve
         QVector<QgsMeshVertex> mAddedVertices;
-        //QList<int> mRemovedVertices;
+        QList<int> mChangedVerticesCoordinates;
+        mutable QList<double> mOldZValue;
+        QList<double> mNewZValue;
 
         QVector<QgsMeshFace> mNativeFacesToAdd;
         QList<int> mNativeFaceIndexesToRemove;
