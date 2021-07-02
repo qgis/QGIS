@@ -13,6 +13,8 @@
 #include "qgsrasterprojector.h"
 #include <QFileInfo>
 
+#include <QUrl>
+#include <QUrlQuery>
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
@@ -20,12 +22,40 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     : QgsRasterDataProvider( uri, providerOptions)
 {
     QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
-    //mUri = uri;
+
     bool check = true;
     if (check){
         mValid = true;
     } else {
         mValid = false;
+    }
+
+    QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+    const QUrlQuery query( url.query() );
+
+    if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
+    {
+        mCrs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+    }
+
+    if ( query.hasQueryItem( QStringLiteral( "extent" ) ) )
+    {
+        mExtent = QgsRectangle::fromWkt ( query.queryItemValue( QStringLiteral( "extent" ) ) );
+    }
+
+    if ( query.hasQueryItem( QStringLiteral( "width" ) ) )
+    {
+        mWidth = query.queryItemValue( QStringLiteral( "width" ) ).toInt();
+    }
+
+    if ( query.hasQueryItem( QStringLiteral( "height" ) ) )
+    {
+        mWidth = query.queryItemValue( QStringLiteral( "height" ) ).toInt();
+    }
+
+    if ( query.hasQueryItem( QStringLiteral( "formula" ) ) )
+    {
+        mFormulaString = query.queryItemValue( QStringLiteral( "formula" ) );
     }
 
 }

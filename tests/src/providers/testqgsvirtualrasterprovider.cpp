@@ -62,6 +62,7 @@ class TestQgsVirtualRasterProvider : public QObject
     void testUrlDecoding();
     void testUrlDecodingMinimal();
     void testUriProviderDecoding();
+    void testUriEncoding();
 
 private:
     QString mTestDataDir;
@@ -252,7 +253,7 @@ void TestQgsVirtualRasterProvider::testUrlDecoding()
 
 void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
 {
-    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
+    QUrl url("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
     QUrlQuery query(url.query());
     QVariantMap components;
 
@@ -262,11 +263,72 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
     }
 
     qDebug() << components << endl;
+
+    qDebug() <<"--------------------------------------------------------------------------------------------------";
+
+    QString uri1 = QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
+    QUrl url1 = QUrl::fromEncoded( uri1.toUtf8() );
+    const QUrlQuery query1( url1 );
+
+    //crs
+    if ( query1.hasQueryItem( QStringLiteral( "crs" ) ) )
+    {
+        QgsCoordinateReferenceSystem mCrs;
+        mCrs.createFromString( query1.queryItemValue( QStringLiteral( "crs" ) ) );
+
+        qDebug() << "mCrs.authid: " << mCrs.authid();
+        //qDebug() << query1.queryItemValue( QStringLiteral( "crs" ) );
+    }
+
+    //width and height (the same wth different key)
+    if ( query1.hasQueryItem( QStringLiteral( "width" ) ) )
+    {
+        int mWidth;
+        mWidth = query1.queryItemValue( QStringLiteral( "width" ) ).toInt();
+        qDebug() << "mWidth: " << mWidth;
+    }
+
+    //formula
+    if ( query1.hasQueryItem( QStringLiteral( "formula" ) ) )
+    {
+        QString mFormulaString;
+        mFormulaString = query1.queryItemValue( QStringLiteral( "formula" ) );
+        qDebug() << "mFormula: " << mFormulaString;
+    }
+
+    //extent
+    if ( query1.hasQueryItem( QStringLiteral( "extent" ) ) )
+    {
+        QgsRectangle mExtent;
+        mExtent = QgsRectangle::fromWkt ( query1.queryItemValue( QStringLiteral( "extent" ) ) );
+        qDebug() << "mExtent: " << mExtent.toString();
+        QCOMPARE( mExtent.toString() , QStringLiteral("18.6662979442000001,45.7767014376000034 : 18.7035979441999984,45.8117014376000000") );
+    }
+
+
+
 }
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+}
+
+void TestQgsVirtualRasterProvider::testUriEncoding()
+{
+    QUrl uri;
+    QUrlQuery query;
+    query.addQueryItem( QStringLiteral( "test" ), QStringLiteral( "item if the test" ));
+
+    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+    //qDebug() << extent.asWktPolygon();
+    QgsRectangle rect = QgsRectangle::fromWkt( extent.asWktPolygon() );
+    //qDebug() << rect.toString();
+    QCOMPARE( rect.toString() , extent.toString() );
+
+
+    uri.setQuery( query );
+    //qDebug() << QString( uri.toEncoded() );
 }
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
