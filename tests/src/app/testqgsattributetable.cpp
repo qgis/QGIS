@@ -563,11 +563,11 @@ void TestQgsAttributeTable::testCopySelectedRows()
 
   QgsFeatureList features = clipboard->copyOf();
   QCOMPARE( features.count(), 2 );
-  QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
-  QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );
+  QCOMPARE( features.at( 0 ).attribute( 0 ), QVariant( 1 ) );
+  QCOMPARE( features.at( 0 ).attribute( "col1" ), QVariant( 2 ) );
   QCOMPARE( features.at( 0 ).attribute( "col2" ), QVariant() );
-  QCOMPARE( features.at( 1 ).attribute( "pk" ), 2 );
-  QCOMPARE( features.at( 1 ).attribute( "col1" ), 4 );
+  QCOMPARE( features.at( 1 ).attribute( "pk" ), QVariant( 2 ) );
+  QCOMPARE( features.at( 1 ).attribute( "col1" ), QVariant( 4 ) );
   QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
 
   QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
