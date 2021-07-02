@@ -303,8 +303,10 @@ class QgsMeshLayerUndoCommandChangeZValue : public QgsMeshLayerUndoCommandMeshEd
 {
   public:
 
-    //! Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
-    //! the Z value changes with \a newValues
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the Z value changed with \a newValues
+     */
     QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues );
     void redo() override;
 
