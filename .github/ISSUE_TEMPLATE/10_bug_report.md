@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug/Crash report
 about: Create a bug report to help us improve QGIS.
 title: ''
 labels: 'Bug'
