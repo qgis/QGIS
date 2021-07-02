@@ -270,6 +270,7 @@ class CORE_EXPORT QgsOgrProviderUtils
 class QgsOgrDataset
 {
     friend class QgsOgrProviderUtils;
+    friend class QgsOgrTransaction;
     QgsOgrProviderUtils::DatasetIdentification mIdent;
     QgsOgrProviderUtils::DatasetWithLayers *mDs;
 
