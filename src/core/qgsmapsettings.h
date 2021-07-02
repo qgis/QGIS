@@ -459,7 +459,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
-    //! Returns the actual extent derived from requested extent that takes takes output image size into account
+    //! Returns the actual extent derived from requested extent that takes output image size into account
     QgsRectangle visibleExtent() const;
 
     /**
