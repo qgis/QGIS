@@ -36,6 +36,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgsZValueWidget( const QString &label, QWidget *parent = nullptr );
 
@@ -59,13 +60,14 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
-    double mValue;
+    double mValue = 0;
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
     ~QgsMapToolEditMeshFrame();

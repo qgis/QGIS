@@ -156,7 +156,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns a list of vertices are not linked to any faces
     QList<int> freeVerticesIndexes() const;
 
-    //! Returns a vertex circulator linked to this mesh arround the vertex with index \a vertexIndex
+    //! Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex
     QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
 
     //----------- editing methods

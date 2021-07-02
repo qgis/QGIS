@@ -735,7 +735,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
   }
 
   int currentVertexToFace = mVertexToFace.at( vertexIndex );
-  // here, we use the method removeFaces that effectivly removes and then contructs changes
+  // here, we use the method removeFaces that effectivly removes and then constructs changes
   Changes changes = removeFaces( removedFacesIndexes );
   changes.mRemovedVertices.append( mMesh->vertices.at( vertexIndex ) );
   changes.mVerticesToRemoveIndexes.append( vertexIndex );
@@ -952,7 +952,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertices( const QList<int>
   for ( int vertexIndex : vertices )
   {
     int currentVertexToFace = mVertexToFace.at( vertexIndex );
-    // here, we use the method removeFaces that effectivly removes and then contructs changes
+    // here, we use the method removeFaces that effectivly removes and then constructs changes
     changes.mRemovedVertices.append( mMesh->vertices.at( vertexIndex ) );
     changes.mVerticesToRemoveIndexes.append( vertexIndex );
     changes.mVerticesToFaceRemoved.append( currentVertexToFace );

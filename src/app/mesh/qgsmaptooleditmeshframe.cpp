@@ -182,6 +182,8 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
         return false;
       }
   }
+
+  return false;
 }
 
 QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
@@ -195,6 +197,8 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case Selecting:
       return QgsMapTool::Flags();
   }
+
+  return QgsMapTool::Flags();
 }
 
 bool QgsMapToolEditMeshFrame::eventFilter( QObject *obj, QEvent *ev )
@@ -419,7 +423,7 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolEditMeshFrame::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  //canvasReleseaseEvent() will be called just after the last click, so just flag the double click
+  //canvasReleseaseEvent() will be called just after the last click, so just flag the double clicks
   Q_UNUSED( e )
   mDoubleClick = true;
 }
@@ -648,7 +652,7 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
   {
     QgisApp::instance()->messageBar()->pushWarning(
       tr( "Mesh editing" ),
-      tr( "removing the vertex %1 leads to a topological error, operation cancelled." ).arg( error.elementIndex ) );
+      tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
   }
   else
     clearSelectedvertex();
