@@ -305,7 +305,38 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
         QCOMPARE( mExtent.toString() , QStringLiteral("18.6662979442000001,45.7767014376000034 : 18.7035979441999984,45.8117014376000000") );
     }
 
+    //rasterlayer
 
+    QSet<QString> rLayerName;
+    for ( const auto &item : query.queryItems() )
+    {
+        if ( (item.first.indexOf(':') == -1) )
+        {
+            continue;
+        }
+        else
+        {
+            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
+        }
+    }
+    qDebug() << "rLayerName " << rLayerName;
+
+    QVector<QStringList> mRasterLayers;
+
+    QSet<QString>::iterator i;
+    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
+    //foreach (const QString &value, rLayerName)
+    {
+        QStringList rLayerEl;
+        rLayerEl << (*i);
+        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":uri") );
+        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":provider") );
+
+
+        //mRasterLayers.append( QgsRasterLayer( rLayerEl.at(1) , rLayerEl.at(0) , rLayerEl.at(2)) );
+        mRasterLayers.append(rLayerEl);
+    }
+    qDebug() << mRasterLayers;
 
 }
 
