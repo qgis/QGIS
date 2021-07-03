@@ -914,6 +914,8 @@ void QgsRasterLayerProperties::sync()
   QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
   mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
 
+  mLegendPlaceholderWidget->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mLegendPlaceholderWidget->setSource( mRasterLayer->legendPlaceholderImage() );
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
 
   mTemporalWidget->syncToLayer();
@@ -946,6 +948,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * Legend Tab
    */
+  mRasterLayer->setLegendPlaceholderImage( mLegendPlaceholderWidget->source() );
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   QgsDebugMsgLevel( QStringLiteral( "apply processing symbology tab" ), 3 );

@@ -946,19 +946,23 @@ QSizeF QgsImageLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemCo
 {
   Q_UNUSED( itemHeight )
 
-  if ( ctx && ctx->painter )
+  if ( ctx && ctx->painter && ctx->context )
   {
+    QgsScopedRenderContextScaleToPixels scopedScaleToPixels( *( ctx->context ) );
+    double scaleFactor = ctx->context->scaleFactor();
+    double imgWidth = settings.wmsLegendSize().width() * scaleFactor;
+    double imgHeight = settings.wmsLegendSize().height() * scaleFactor;
+
+    QImage scaledImg = mImage.scaled( QSizeF( imgWidth, imgHeight ).toSize(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
     switch ( settings.symbolAlignment() )
     {
       case Qt::AlignLeft:
       default:
-        ctx->painter->drawImage( QRectF( ctx->columnLeft, ctx->top, settings.wmsLegendSize().width(), settings.wmsLegendSize().height() ),
-                                 mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+        ctx->painter->drawImage( QPointF( ctx->columnLeft * scaleFactor, ctx->top * scaleFactor ), scaledImg );
         break;
 
       case Qt::AlignRight:
-        ctx->painter->drawImage( QRectF( ctx->columnRight - settings.wmsLegendSize().width(), ctx->top, settings.wmsLegendSize().width(), settings.wmsLegendSize().height() ),
-                                 mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+        ctx->painter->drawImage( QPointF( ctx->columnRight * scaleFactor - imgWidth, ctx->top * scaleFactor ), scaledImg );
         break;
     }
   }

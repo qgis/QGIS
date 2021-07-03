@@ -14,7 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-
+#include "qgsiconutils.h"
+#include "qgsimagecache.h"
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
@@ -359,6 +360,18 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
+  if ( mLayer )
+  {
+    QString placeholderImage = mLayer->legendPlaceholderImage();
+    if ( !placeholderImage.isEmpty() )
+    {
+      bool fitsInCache;
+      QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+      nodes << new QgsImageLegendNode( nodeLayer, img );
+      return nodes;
+    }
+  }
+
   QgsFeatureRenderer *r = mLayer->renderer();
   if ( !r )
     return nodes;
@@ -502,7 +515,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  if ( mLayer->renderer() )
+  QString placeholderImage = mLayer->legendPlaceholderImage();
+  if ( !placeholderImage.isEmpty() )
+  {
+    bool fitsInCache;
+    QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+    nodes << new QgsImageLegendNode( nodeLayer, img );
+  }
+  else if ( mLayer->renderer() )
     nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }

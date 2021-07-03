@@ -406,6 +406,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
       mWgs84Extent = QgsXmlUtils::readRectangle( wgs84ExtentNode.toElement() );
   }
 
+  mLegendPlaceholderImage = layerElement.attribute( QStringLiteral( "legendPlaceholderImage" ) );
+
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
@@ -575,6 +577,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
+
+  layerElement.setAttribute( QStringLiteral( "legendPlaceholderImage" ), mLegendPlaceholderImage );
 
   // now append layer node to map layer node
   return writeXml( layerElement, document, context );

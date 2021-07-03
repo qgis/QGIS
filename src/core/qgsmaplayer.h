@@ -1279,6 +1279,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
 
+    /**
+     * Returns path to the placeholder image or an empty string if a generated legend is shown
+     * \return placholder image path
+     * \since QGIS 3.22
+     */
+    QString legendPlaceholderImage() const { return mLegendPlaceholderImage;}
+
+    /**
+     * Set placeholder image for legend. If the string is empty, a generated legend will be shown.
+     * \param imgPath file path to the placeholder image
+     * \since QGIS 3.22
+     */
+    void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
+
   public slots:
 
     /**
@@ -1866,6 +1880,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    //! Path to placeholder image for layer legend. If the string is empty, a generated legend is shown
+    QString mLegendPlaceholderImage;
 
     friend class QgsVectorLayer;
 };

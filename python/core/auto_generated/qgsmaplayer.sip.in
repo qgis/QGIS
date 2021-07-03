@@ -1431,6 +1431,24 @@ Returns the layer's elevation properties. This may be ``None``, depending on the
 .. versionadded:: 3.18
 %End
 
+    QString legendPlaceholderImage() const;
+%Docstring
+Returns path to the placeholder image or an empty string if a generated legend is shown
+
+:return: placholder image path
+
+.. versionadded:: 3.22
+%End
+
+    void setLegendPlaceholderImage( const QString &imgPath );
+%Docstring
+Set placeholder image for legend. If the string is empty, a generated legend will be shown.
+
+:param imgPath: file path to the placeholder image
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
