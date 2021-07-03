@@ -38,7 +38,7 @@ QString QgsDbscanClusteringAlgorithm::shortDescription() const
 
 QStringList QgsDbscanClusteringAlgorithm::tags() const
 {
-  return QObject::tr( "clustering,clusters,density,based,points" ).split( ',' );
+  return QObject::tr( "clustering,clusters,density,based,points,distance" ).split( ',' );
 }
 
 QString QgsDbscanClusteringAlgorithm::group() const
@@ -113,7 +113,8 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   const std::size_t minSize = static_cast< std::size_t>( parameterAsInt( parameters, QStringLiteral( "MIN_SIZE" ), context ) );
-  const double eps = parameterAsDouble( parameters, QStringLiteral( "EPS" ), context );
+  const double eps1 = parameterAsDouble( parameters, QStringLiteral( "EPS" ), context );
+  const double eps2 = parameterAsDouble( parameters, QStringLiteral( "EPS2" ), context ) * 24 * 60 * 60;
   const bool borderPointsAreNoise = parameterAsBoolean( parameters, QStringLiteral( "DBSCAN*" ), context );
 
   QgsFields outputFields = source->fields();
@@ -135,13 +136,31 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   if ( feedback->isCanceled() )
     return QVariantMap();
 
-  // dbscan!
+  std::unordered_map< QgsFeatureId, QDateTime> idToDateTime;
+  const QString dateTimeFieldName = parameterAsString( parameters, QStringLiteral( "DATETIME_FIELD" ), context );
+  if ( !dateTimeFieldName.isEmpty() )
+  {
+    const int dateTimefieldIndex = source->fields().lookupField( dateTimeFieldName );
+    if ( dateTimefieldIndex == -1 )
+      throw QgsProcessingException( QObject::tr( "Datetime field missing" ) );
+
+    // fetch temporal values
+    feedback->pushInfo( QObject::tr( "Fetching temporal values" ) );
+    QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << dateTimefieldIndex ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
+    QgsFeature feature;
+    while ( features.nextFeature( feature ) )
+    {
+      idToDateTime[ feature.id() ] = feature.attributes().at( dateTimefieldIndex ).toDateTime();
+    }
+  }
+
+  // stdbscan!
   feedback->pushInfo( QObject::tr( "Analysing clusters" ) );
   std::unordered_map< QgsFeatureId, int> idToCluster;
   idToCluster.reserve( index.size() );
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   const long featureCount = source->featureCount();
-  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, feedback );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
+  stdbscan( minSize, eps1, eps2, borderPointsAreNoise, featureCount, features, index, idToCluster, idToDateTime, feedback );
 
   // cluster size
   std::unordered_map< int, int> clusterSize;
@@ -182,14 +201,15 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   return outputs;
 }
 
-
-void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
-    const double eps,
+void QgsDbscanClusteringAlgorithm::stdbscan( const std::size_t minSize,
+    const double eps1,
+    const double eps2,
     const bool borderPointsAreNoise,
     const long featureCount,
     QgsFeatureIterator features,
     QgsSpatialIndexKDBush &index,
     std::unordered_map< QgsFeatureId, int> &idToCluster,
+    std::unordered_map< QgsFeatureId, QDateTime> &idToDateTime,
     QgsProcessingFeedback *feedback )
 {
   const double step = featureCount > 0 ? 90.0 / featureCount : 1;
@@ -231,13 +251,22 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
       continue;
     }
 
+    if ( !idToDateTime.empty() && !idToDateTime[ feat.id() ].isValid() )
+    {
+      // missing datetime value
+      feedback->reportError( QObject::tr( "Feature %1 is missing a valid datetime value." ).arg( feat.id() ).arg( QgsWkbTypes::displayString( feat.geometry().wkbType() ) ) );
+      feedback->setProgress( ++i * step );
+      continue;
+    }
+
     std::unordered_set< QgsSpatialIndexKDBushData, KDBushDataHashById, KDBushDataEqualById> within;
 
     if ( minSize > 1 )
     {
-      index.within( point, eps, [ &within]( const QgsSpatialIndexKDBushData & data )
+      index.within( point, eps1, [&within, pointId = feat.id(), &idToDateTime, &eps2]( const QgsSpatialIndexKDBushData & data )
       {
-        within.insert( data );
+        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ pointId ].secsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
+          within.insert( data );
       } );
       if ( within.size() < minSize )
         continue;
@@ -278,10 +307,12 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
       QgsPointXY point2 = j.point();
 
       std::unordered_set< QgsSpatialIndexKDBushData, KDBushDataHashById, KDBushDataEqualById > within2;
-      index.within( point2, eps, [&within2]( const QgsSpatialIndexKDBushData & data )
+      index.within( point2, eps1, [&within2, point2Id = j.id, &idToDateTime, &eps2]( const QgsSpatialIndexKDBushData & data )
       {
-        within2.insert( data );
+        if ( idToDateTime.empty() || ( idToDateTime[ data.id ].isValid() && std::abs( idToDateTime[ point2Id ].secsTo( idToDateTime[ data.id ] ) ) <= eps2 ) )
+          within2.insert( data );
       } );
+
       if ( within2.size() >= minSize )
       {
         // expand neighbourhood
