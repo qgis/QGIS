@@ -154,7 +154,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     //! Rubber band used to highlight the vertex that is in mouse over and not dragging anything
     QgsRubberBand *mVertexBand = nullptr;
     //! Marker used to propose to add a new face when a boundary vertex is highlight
-    std::unique_ptr<QgsVertexMarker> mNewFaceMarker;
+    QgsVertexMarker *mNewFaceMarker = nullptr;
     //! Rubber band used when adding a new face
     QgsRubberBand *mNewFaceBand = nullptr;
     QColor mInvalidFaceColor;

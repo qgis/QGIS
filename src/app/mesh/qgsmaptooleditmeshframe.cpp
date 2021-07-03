@@ -137,14 +137,16 @@ void QgsMapToolEditMeshFrame::deactivate()
   disconnect( canvas(), &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
   clear();
 
-  mNewFaceMarker.reset();
+  delete mNewFaceMarker;
+  mNewFaceMarker = nullptr;
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
 void QgsMapToolEditMeshFrame::activate()
 {
-  mNewFaceMarker.reset( new QgsVertexMarker( canvas() ) );
+  if ( !mNewFaceMarker )
+    mNewFaceMarker = new QgsVertexMarker( canvas() );
   mNewFaceMarker->setIconType( QgsVertexMarker::ICON_TRIANGLE );
   mNewFaceMarker->setIconSize( QgsGuiUtils::scaleIconSize( 12 ) );
   mNewFaceMarker->setColor( Qt::gray );
