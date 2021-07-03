@@ -175,7 +175,9 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
           menu->addActions( newActions );
         else
           menu->insertActions( existingActions.first(), newActions );
+        return true;
       }
+      return false;
       case AddingNewFace:
         return false;
       case Selecting:
