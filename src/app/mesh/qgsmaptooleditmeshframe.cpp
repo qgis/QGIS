@@ -17,6 +17,7 @@
 
 #include "qgisapp.h"
 
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmapcanvas.h"
@@ -264,13 +265,18 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
+  // advanced digitizing constraint only the first release of double clicks
+  // so we nned to store for the next one that could be a double clicks
+  if ( !mDoubleClicks )
+    mLastClickPoint = e->mapPoint();
+
   switch ( mCurrentState )
   {
     case Default:
     {
       if ( e->button() == Qt::LeftButton )
       {
-        if ( mDoubleClick )
+        if ( mDoubleClicks )
         {
           addVertex( e->mapPoint(), e->mapPointMatch() );
         }
@@ -284,6 +290,8 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mNewFaceBand->setVisible( true );
           mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
           addVertexToFaceCanditate( mCurrentVertexIndex );
+          QgsPointXY currentPoint = mapVertex( mCurrentVertexIndex );
+          cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
         else if ( mCurrentVertexIndex != -1 )
           setSelectedVertex( QList<int>() << mCurrentVertexIndex, e->modifiers() & Qt::ControlModifier );
@@ -295,14 +303,18 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     case AddingNewFace:
       if ( e->button() == Qt::LeftButton )
       {
-        if ( mDoubleClick )
+        if ( mDoubleClicks )
         {
-          addVertex( e->mapPoint(), e->mapPointMatch() );
-          highlightCloseVertex( e->mapPoint() );
+          addVertex( mLastClickPoint, e->mapPointMatch() );
+          highlightCloseVertex( mLastClickPoint );
         }
 
         if ( mCurrentVertexIndex != -1 )
+        {
           addVertexToFaceCanditate( mCurrentVertexIndex );
+          QgsPointXY currentPoint = mapVertex( mCurrentVertexIndex );
+          cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+        }
       }
       else if ( e->button() == Qt::RightButton )
       {
@@ -322,11 +334,13 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
       break;
   }
-  mDoubleClick = false;
+  mDoubleClicks = false;
 }
 
 void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  if ( !mCurrentEditor )
+    return;
   mSnapIndicator->setMatch( e->mapPointMatch() );
   if ( mZValueWidget )
     mZValueWidget->setFocus( Qt::TabFocusReason );
@@ -427,9 +441,9 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolEditMeshFrame::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  //canvasReleseaseEvent() will be called just after the last click, so just flag the double clicks
   Q_UNUSED( e )
-  mDoubleClick = true;
+  //canvasReleseaseEvent() will be called just after the last click, so just flag the double clicks
+  mDoubleClicks = true;
 }
 
 void QgsMapToolEditMeshFrame::onEditingStopped()

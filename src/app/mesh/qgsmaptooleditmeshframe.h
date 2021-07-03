@@ -143,7 +143,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
     QList<int> mSelectedVertex;
-    bool mDoubleClick = false;
+    bool mDoubleClicks = false;
+    QgsPointXY mLastClickPoint;
     double mCurrentZValue = 0;
 
     //! Rubber band used to highlight a face that is on mouse over and not dragging anything
