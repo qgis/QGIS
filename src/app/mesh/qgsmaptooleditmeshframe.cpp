@@ -659,7 +659,11 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
       tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
   }
   else
+  {
     clearSelectedvertex();
+    mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
+  }
 }
 
 void QgsMapToolEditMeshFrame::selectVerticesInGeometry( const QgsGeometry &geometry, bool ctrl )

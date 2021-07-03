@@ -121,7 +121,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // selection private method
     void setSelectedVertex( const QList<int> newSelectedVertex, bool ctrl );
     void clearSelectedvertex();
-    void removeSelectedVerticesFromMesh();
     void removeSelectedVerticesFromMesh( bool fillHole );
     void selectVerticesInGeometry( const QgsGeometry &geometry, bool ctrl );
 
