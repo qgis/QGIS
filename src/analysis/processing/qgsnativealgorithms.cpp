@@ -186,6 +186,7 @@
 #include "qgsalgorithmsplitlinesbylength.h"
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsalgorithmsplitwithlines.h"
+#include "qgsalgorithmstdbscanclustering.h"
 #include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmsumlinelength.h"
@@ -458,6 +459,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitLinesByLengthAlgorithm() );
   addAlgorithm( new QgsSplitVectorLayerAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsStDbscanClusteringAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsStyleFromProjectAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
