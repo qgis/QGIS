@@ -58,6 +58,32 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
         mFormulaString = query.queryItemValue( QStringLiteral( "formula" ) );
     }
 
+    QSet<QString> rLayerName;
+    for ( const auto &item : query.queryItems() )
+    {
+        if ( (item.first.indexOf(':') == -1) )
+        {
+            continue;
+        }
+        else
+        {
+            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
+        }
+    }
+
+    QVector<QStringList> mRasterLayers;
+
+    QSet<QString>::iterator i;
+    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
+    {
+        QStringList rLayerEl;
+        rLayerEl << (*i);
+        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":uri") );
+        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":provider") );
+
+        mRasterLayers.append(rLayerEl);
+    }
+
 }
 
 

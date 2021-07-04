@@ -655,14 +655,34 @@ QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString
 
     QUrl url = QUrl::fromEncoded( uri.toLatin1() );
     const QUrlQuery query( url.query() );
-    //QUrlQuery query(url.query());
     QVariantMap components;
 
+    QSet<QString> rLayerName;
     for ( const auto &item : query.queryItems() )
     {
-        components.insert( item.first, item.second );
+        if ( item.first.indexOf(':') > 0 )
+        {
+            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
+        }
+        else
+        {
+            components.insert( item.first, item.second );
+        }
     }
 
+    QVariantMap rLayers;
+    QSet<QString>::iterator i;
+    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
+    {
+        QStringList rLayer;
+        rLayer << (*i);
+        rLayer << query.queryItemValue( (*i) % QStringLiteral(":uri") );
+        rLayer << query.queryItemValue( (*i) % QStringLiteral(":provider") );
+
+        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%(*i),rLayer);
+    }
+
+    components.insert( QStringLiteral("rLayers"), rLayers );
     return components;
 }
 
