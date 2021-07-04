@@ -50,7 +50,7 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
     }
     else
     {
-      mHtmlSourceTextEdit->setPlainText( annotation->htmlSource() );
+      mHtmlSourceTextEdit->setText( annotation->htmlSource() );
       mSourceRadioButton->setChecked( true );
     }
   }
@@ -82,7 +82,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
     }
     else
     {
-      annotation->setHtmlSource( mHtmlSourceTextEdit->toPlainText() );
+      annotation->setHtmlSource( mHtmlSourceTextEdit->text() );
     }
     mItem->update();
   }

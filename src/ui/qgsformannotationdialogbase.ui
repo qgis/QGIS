@@ -55,7 +55,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPlainTextEdit" name="mHtmlSourceTextEdit"/>
+    <widget class="QgsCodeEditorHTML" name="mHtmlSourceTextEdit"/>
    </item>
    <item row="1" column="0">
     <widget class="QRadioButton" name="mSourceRadioButton">
@@ -101,4 +101,11 @@
    </hints>
   </connection>
  </connections>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+</customwidgets>
 </ui>
