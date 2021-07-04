@@ -163,7 +163,6 @@ void TestQgsVirtualRasterProvider::testv()
       }
     delete provider;
 
-
 }
 
 void TestQgsVirtualRasterProvider::testRaster()
@@ -347,19 +346,19 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
-    QUrl uri;
-    QUrlQuery query;
-    query.addQueryItem( QStringLiteral( "test" ), QStringLiteral( "item if the test" ));
 
-    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-    //qDebug() << extent.asWktPolygon();
-    QgsRectangle rect = QgsRectangle::fromWkt( extent.asWktPolygon() );
-    //qDebug() << rect.toString();
-    QCOMPARE( rect.toString() , extent.toString() );
+    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "virtualrasterprovider" ) );
+    QVERIFY( metadata );
 
+    const QVariantMap parts = metadata->decodeUri( QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal") );
 
-    uri.setQuery( query );
-    //qDebug() << QString( uri.toEncoded() );
+    qDebug() <<"--------------------------------------------------------------------------------------------------";
+
+    qDebug() << parts << endl;
+    qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( parts ) << endl;
+
+    qDebug() <<"--------------------------------------------------------------------------------------------------";
+
 }
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

@@ -688,15 +688,35 @@ QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString
 
 QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap &parts )
 {
-    /*
-    QString uri = "uri";
-    return uri;
-    */
-    QUrl uri( QStringLiteral( "virtualrasterprovider" ) );
+    QUrl uri;
     QUrlQuery query;
+    query.addQueryItem( QStringLiteral( "test" ), QStringLiteral( "item if the test" ));
 
-    //query.addQueryItem( QStringLiteral( "something" ), something );
+    if ( parts.contains( QStringLiteral("crs") ) )
+    {
+        query.addQueryItem( QStringLiteral("crs") , parts.value( QStringLiteral("crs") ).toString() );
+    }
 
+    if ( parts.contains( QStringLiteral("extent") ) )
+    {
+        query.addQueryItem( QStringLiteral("extent") , parts.value( QStringLiteral("extent") ).toString() );
+    }
+
+    if ( parts.contains( QStringLiteral("width") ) )
+    {
+        query.addQueryItem( QStringLiteral("width") , parts.value( QStringLiteral("width") ).toString() );
+    }
+
+    if ( parts.contains( QStringLiteral("height") ) )
+    {
+        query.addQueryItem( QStringLiteral("height") , parts.value( QStringLiteral("height") ).toString() );
+    }
+
+    if ( parts.contains( QStringLiteral("formula") ) )
+    {
+        //query.addQueryItem( QStringLiteral("formula") , parts.value( QStringLiteral("formula") ).toString() );
+        qDebug() << parts.value( QStringLiteral("formula") ).toString();
+    }
 
     uri.setQuery( query );
     return QString( uri.toEncoded() );
