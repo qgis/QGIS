@@ -214,7 +214,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
@@ -362,7 +362,7 @@ void QgsMeshLayerProperties::apply()
 
   QgsDebugMsgLevel( QStringLiteral( "processing config tabs" ), 4 );
 
-  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
   QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
@@ -410,7 +410,8 @@ void QgsMeshLayerProperties::apply()
 
   // Resync what have to be resync (widget that can be changed by other properties part)
   mStaticDatasetWidget->syncToLayer();
-  mRendererMeshPropertiesWidget->syncToLayer();
+  for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
+    w->syncToLayer( mMeshLayer );
 }
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
