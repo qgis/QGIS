@@ -64,6 +64,7 @@ void QgsPrintLayout::setName( const QString &name )
 {
   mName = name;
   emit nameChanged( name );
+  layoutProject()->setDirty( true );
 }
 
 QDomElement QgsPrintLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const

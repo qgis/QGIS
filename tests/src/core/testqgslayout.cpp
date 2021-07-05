@@ -173,6 +173,7 @@ void TestQgsLayout::name()
   QString layoutName = QStringLiteral( "test name" );
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
+  QVERIFY( p.isDirty() );
 }
 
 void TestQgsLayout::customProperties()
