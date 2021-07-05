@@ -14,6 +14,15 @@ class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
 
+A model for representing the sublayers present in a URI.
+
+:py:class:`QgsProviderSublayerModel` is designed to present a tree view of the sublayers
+available for a URI, including any vector, raster or mesh sublayers present.
+
+Additionally, :py:class:`QgsProviderSublayerModel` can include some non-sublayer items,
+e.g. in order to represent other content available for a URI, such as
+embedded project items. The non-sublayer items can be added by calling
+:py:func:`~addNonLayerItem`.
 
 .. versionadded:: 3.22
 %End
@@ -49,6 +58,7 @@ class QgsProviderSublayerModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
 
+Contains details for a non-sublayer item to include in a QgsProviderSublayerModel.
 
 .. versionadded:: 3.22
 %End
@@ -168,6 +178,49 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
 
 
 };
+
+
+class QgsProviderSublayerProxyModel: QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+
+A QSortFilterProxyModel for filtering and sorting a QgsProviderSublayerModel.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+  public:
+
+    QgsProviderSublayerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProviderSublayerProxyModel, with the specified ``parent`` object.
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the filter string used for filtering items in the model.
+
+.. seealso:: :py:func:`setFilterString`
+%End
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets the ``filter`` string used for filtering items in the model.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+  protected:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const;
+
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

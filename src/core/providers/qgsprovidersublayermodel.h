@@ -20,14 +20,23 @@
 
 #include "qgstaskmanager.h"
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 
 class QgsProviderSublayerDetails;
 
 /**
  * \ingroup core
  *
- * \brief
-
+ * \brief A model for representing the sublayers present in a URI.
+ *
+ * QgsProviderSublayerModel is designed to present a tree view of the sublayers
+ * available for a URI, including any vector, raster or mesh sublayers present.
+ *
+ * Additionally, QgsProviderSublayerModel can include some non-sublayer items,
+ * e.g. in order to represent other content available for a URI, such as
+ * embedded project items. The non-sublayer items can be added by calling
+ * addNonLayerItem().
+ *
  * \since QGIS 3.22
  */
 class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
@@ -63,7 +72,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     /**
      * \ingroup core
      *
-     * \brief
+     * \brief Contains details for a non-sublayer item to include in a QgsProviderSublayerModel.
 
      * \since QGIS 3.22
      */
@@ -178,5 +187,49 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QList<NonLayerItem> mNonLayerItems;
 
 };
+
+
+/**
+ * \ingroup core
+ *
+ * \brief A QSortFilterProxyModel for filtering and sorting a QgsProviderSublayerModel.
+ *
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProviderSublayerProxyModel, with the specified \a parent object.
+     */
+    QgsProviderSublayerProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the filter string used for filtering items in the model.
+     *
+     * \see setFilterString()
+     */
+    QString filterString() const;
+
+    /**
+     * Sets the \a filter string used for filtering items in the model.
+     *
+     * \see filterString()
+     */
+    void setFilterString( const QString &filter );
+
+  protected:
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
+  private:
+
+    QString mFilterString;
+
+};
+
 
 #endif // QGSPROVIDERSUBLAYERMODEL_H
