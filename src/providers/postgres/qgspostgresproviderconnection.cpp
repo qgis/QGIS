@@ -1676,7 +1676,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
         QStringLiteral( "ST_SymDifference" ),
         QStringLiteral( "ST_TPI" ),
         QStringLiteral( "ST_TRI" ),
-        QStringLiteral( "ST_Tesselate" ),
+        QStringLiteral( "ST_Tesselate" ),  //#spellok
         QStringLiteral( "ST_Tile" ),
         QStringLiteral( "ST_TileEnvelope" ),
         QStringLiteral( "ST_Touches" ),

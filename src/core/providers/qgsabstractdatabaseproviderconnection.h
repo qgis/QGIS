@@ -508,7 +508,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     enum SqlLayerDefinitionCapability
     {
       Filter = 1 << 1,            //! SQL layer definition supports filter
-      GeometryColumn = 1 << 2,    //! SQL layer definition supports geometry colum
+      GeometryColumn = 1 << 2,    //! SQL layer definition supports geometry column
       PrimaryKeys = 1 << 3,       //! SQL layer definition supports primary keys
       SelectAtId = 1 << 4         //! SQL layer definition supports disabling select at id
     };
