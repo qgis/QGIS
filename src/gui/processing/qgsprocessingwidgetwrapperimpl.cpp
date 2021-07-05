@@ -3934,7 +3934,7 @@ QgsProcessingParameterDefinition *QgsProcessingFieldParameterDefinitionWidget::c
   {
     defaultValue = mDefaultLineEdit->text();
   }
-  auto param = std::make_unique< QgsProcessingParameterField >( name, description, defaultValue, mParentLayerComboBox->currentData().toString(), dataType, mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
+  auto param = qgis::make_unique< QgsProcessingParameterField >( name, description, defaultValue, mParentLayerComboBox->currentData().toString(), dataType, mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
   param->setFlags( flags );
   return param.release();
 }
