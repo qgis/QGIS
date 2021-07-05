@@ -570,7 +570,7 @@ void TestQgsAttributeTable::testCopySelectedRows()
   QCOMPARE( features.at( 1 ).attribute( "col1" ), QVariant( 4 ) );
   QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
 
-  QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
+  QCOMPARE( clipboard->crs().authid(), QStringLiteral( "EPSG:3111" ) );
 }
 
 QGSTEST_MAIN( TestQgsAttributeTable )
