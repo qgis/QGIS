@@ -50,7 +50,9 @@ Set field names to ``fieldNames`` to be added to the lexer API.
 
     QStringList fieldNames() const;
 %Docstring
-Return field names from the lexer API.
+Returns field names from the lexer API.
+
+.. versionadded:: 3.22
 %End
 
     void setExtraKeywords( const QStringList &extraKeywords );
