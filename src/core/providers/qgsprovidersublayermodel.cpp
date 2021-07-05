@@ -348,3 +348,57 @@ void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
 {
   mIcon = icon;
 }
+
+//
+// QgsProviderSublayerProxyModel
+//
+
+QgsProviderSublayerProxyModel::QgsProviderSublayerProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+  sort( 0 );
+}
+
+bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
+
+  if ( mFilterString.trimmed().isEmpty() )
+    return true;
+
+  if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
+    return true;
+
+  if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Description ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
+    return true;
+
+  return false;
+}
+
+bool QgsProviderSublayerProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const
+{
+  const bool leftIsNonLayer = sourceModel()->data( source_left, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool();
+  const bool rightIsNonLayer = sourceModel()->data( source_right, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool();
+
+  if ( leftIsNonLayer && !rightIsNonLayer )
+    return true;
+  else if ( rightIsNonLayer && !leftIsNonLayer )
+    return false;
+
+  const QString leftName = sourceModel()->data( source_left, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
+  const QString rightName = sourceModel()->data( source_right, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
+
+  return leftName.compare( rightName, Qt::CaseInsensitive );
+}
+
+QString QgsProviderSublayerProxyModel::filterString() const
+{
+  return mFilterString;
+}
+
+void QgsProviderSublayerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
