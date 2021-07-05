@@ -149,6 +149,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     };
 
     State mCurrentState = Default;
+    bool mLeftButtonPressed = false;
 
     QPointer<QgsMeshLayer> mCurrentLayer = nullptr;
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr;
@@ -191,6 +192,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QgsVertexMarker *> mFreeVertexMarker;
 
     QgsZValueWidget *mZValueWidget = nullptr;
+
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;

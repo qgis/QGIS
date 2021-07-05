@@ -314,18 +314,16 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
   if ( !mCurrentEditor )
     return;
 
+  if ( e->button() == Qt::LeftButton )
+    mLeftButtonPressed = true;
+
   switch ( mCurrentState )
   {
     case Default:
       if ( e->button() == Qt::LeftButton )
       {
-        if ( mCurrentVertexIndex == -1 )
-        {
-          //start dragging a selection rubberband
-          mCurrentState = Selecting;
-          mStartSelectionPos = e->pos();
-          mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-        }
+        mStartSelectionPos = e->pos();
+        mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
       }
       break;
     case AddingNewFace:
@@ -345,6 +343,9 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   // so we nned to store for the next one that could be a double clicks
   if ( !mDoubleClicks )
     mLastClickPoint = e->mapPoint();
+
+  if ( e->button() == Qt::LeftButton )
+    mLeftButtonPressed = false;
 
   switch ( mCurrentState )
   {
@@ -415,12 +416,6 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       selectInGeometry( selectionGeom, e->modifiers() );
 
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-      if ( mSelectFaceMarker->isVisible() &&
-           e->mapPoint().distance( mSelectFaceMarker->center() ) < tolerance
-           && mCurrentFaceIndex >= 0 )
-      {
-        setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), e->modifiers() );
-      }
       break;
   }
   mDoubleClicks = false;
@@ -431,8 +426,13 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   if ( !mCurrentEditor )
     return;
   mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( mZValueWidget )
     mZValueWidget->setFocus( Qt::TabFocusReason );
+
+  if ( mLeftButtonPressed )
+    mCurrentState = Selecting;
+
   switch ( mCurrentState )
   {
     case Default:
