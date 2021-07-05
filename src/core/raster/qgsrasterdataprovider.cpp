@@ -690,7 +690,6 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap
 {
     QUrl uri;
     QUrlQuery query;
-    query.addQueryItem( QStringLiteral( "test" ), QStringLiteral( "item if the test" ));
 
     if ( parts.contains( QStringLiteral("crs") ) )
     {
@@ -714,9 +713,20 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap
 
     if ( parts.contains( QStringLiteral("formula") ) )
     {
-        //query.addQueryItem( QStringLiteral("formula") , parts.value( QStringLiteral("formula") ).toString() );
-        qDebug() << parts.value( QStringLiteral("formula") ).toString();
+        query.addQueryItem( QStringLiteral("formula") , parts.value( QStringLiteral("formula") ).toString() );
     }
+
+    if ( parts.contains( QStringLiteral("rLayers") ) )
+    {
+        QMap rLayers = parts.value( QStringLiteral("rLayers") ).toMap();
+
+        for (auto it = rLayers.constBegin(); it != rLayers.constEnd(); it ++)
+        {
+            query.addQueryItem( it.value().toStringList()[0] % QStringLiteral(":uri") , it.value().toStringList()[1] );
+            query.addQueryItem( it.value().toStringList()[0] % QStringLiteral(":provider") , it.value().toStringList()[2] );
+        }
+    }
+
 
     uri.setQuery( query );
     return QString( uri.toEncoded() );

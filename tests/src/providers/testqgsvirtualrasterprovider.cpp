@@ -238,15 +238,17 @@ void TestQgsVirtualRasterProvider::testUrlDecoding()
 
     components.insert( QStringLiteral("rLayers"), rLayers );
     //TO HERE
-    qDebug() << components << endl;
-    qDebug() << components.value("rLayers")<< endl;
+    //qDebug() << components << endl;
+    //qDebug() << components.value("rLayers")<< endl;
+
     /*
     qDebug() << components.value("rLayers").toMap()<< endl;
     qDebug() << components.value("rLayers").toMap().value("rLayer@dem") << endl;
     qDebug() << components.value("rLayers").toMap().value("rLayer@dem").toMap().value("name") << endl;
     */
-    qDebug() <<components.value("width").toString().toInt() << endl;
-    qDebug() <<components.value("extent").toString() << endl;
+
+    //qDebug() <<components.value("width").toString().toInt() << endl;
+    //qDebug() <<components.value("extent").toString() << endl;
 
 }
 
@@ -261,6 +263,7 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
         components.insert( item.first, item.second );
     }
 
+    /*
     qDebug() << components << endl;
 
     qDebug() <<"--------------------------------------------------------------------------------------------------";
@@ -337,10 +340,12 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
     }
     qDebug() << mRasterLayers;
 
+    */
 }
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
+    qDebug() << endl;
     qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
 }
 
@@ -352,12 +357,9 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
 
     const QVariantMap parts = metadata->decodeUri( QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal") );
 
-    qDebug() <<"--------------------------------------------------------------------------------------------------";
-
-    qDebug() << parts << endl;
+    //qDebug() << parts << endl;
+    qDebug() << endl;
     qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( parts ) << endl;
-
-    qDebug() <<"--------------------------------------------------------------------------------------------------";
 
 }
 
