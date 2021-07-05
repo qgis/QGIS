@@ -76,7 +76,7 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
 
      * \since QGIS 3.22
      */
-    class NonLayerItem
+    class CORE_EXPORT NonLayerItem
     {
       public:
 
