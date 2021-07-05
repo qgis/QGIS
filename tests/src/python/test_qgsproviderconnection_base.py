@@ -273,10 +273,17 @@ class TestPyQgsProviderConnectionBase():
 
                 # Test column names
                 res = conn.execSql(sql)
-                self.assertEqual(res.rowCount(), 1)
+
+                row_count = res.rowCount()
+                # Some providers do not support rowCount and return -1
+                if row_count != -1:
+                    self.assertEqual(row_count, 1)
+
                 rows = res.rows()
                 self.assertEqual(rows, [['QGIS Rocks - \U0001f604', 666, 1.234, 1234, expected_date, QtCore.QDateTime(2019, 7, 8, 12, 0, 12)]])
                 self.assertEqual(res.columns(), ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t'])
+
+                self.assertEqual(res.fetchedRowCount(), 1)
 
                 # Test iterator
                 old_rows = rows
@@ -348,7 +355,7 @@ class TestPyQgsProviderConnectionBase():
 
             # Spatial index
             spatial_index_exists = False
-            # we don't initially know if a spatial index exists -- some formats may create them by default, others not
+            # we don't initially know if a spatial index exists -- some formats may create them by default, others don't
             if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
                 spatial_index_exists = conn.spatialIndexExists(schema, self.myNewTable, self.geometryColumnName)
             if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
