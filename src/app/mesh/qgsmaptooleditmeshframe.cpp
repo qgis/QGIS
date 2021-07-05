@@ -89,9 +89,10 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 {
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
+  mActionRemoveFaces = new QAction( this );
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( false );} );
-
+  connect( mActionRemoveFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::removeFacesFromMesh );
   setAutoSnapEnabled( true );
 }
 
@@ -222,6 +223,8 @@ void QgsMapToolEditMeshFrame::clearAll()
 
   mSelectedFacesRubberband->deleteLater();
   mSelectedFacesRubberband = nullptr;
+
+  deleteZvalueWidget();
 }
 
 void QgsMapToolEditMeshFrame::activate()
@@ -239,11 +242,14 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
   {
     case Default:
     {
+      QList<QAction * >  newActions;
       if ( !mSelectedVertices.isEmpty() )
-      {
-        QList<QAction * >  newActions;
         newActions << mActionRemoveVerticesFillingHole << mActionRemoveVerticesWithoutFillingHole;
-        QList<QAction * > existingActions = menu->actions();
+      if ( !mSelectedFaces.isEmpty() )
+        newActions << mActionRemoveFaces;
+      QList<QAction * > existingActions = menu->actions();
+      if ( !newActions.isEmpty() )
+      {
         if ( existingActions.isEmpty() )
           menu->addActions( newActions );
         else
@@ -251,11 +257,11 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
         return true;
       }
       return false;
-      case AddingNewFace:
-        return false;
-      case Selecting:
-        return false;
-      }
+    }
+    case AddingNewFace:
+      return false;
+    case Selecting:
+      return false;
   }
 
   return false;
@@ -476,6 +482,11 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ControlModifier ) )
       {
         removeSelectedVerticesFromMesh( !( e->modifiers() & Qt::ShiftModifier ) );
+        e->accept();
+      }
+      else if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ShiftModifier ) )
+      {
+        removeFacesFromMesh();
         e->accept();
       }
 
@@ -779,6 +790,24 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
   }
 }
 
+void QgsMapToolEditMeshFrame::removeFacesFromMesh()
+{
+  QgsMeshEditingError error = mCurrentEditor->removeFaces( mSelectedFaces );
+  if ( error != QgsMeshEditingError() )
+  {
+    QgisApp::instance()->messageBar()->pushWarning(
+      tr( "Mesh editing" ),
+      tr( "removing the faces %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
+  }
+  else
+  {
+    clearSelectedvertex();
+    mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
+    mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+  }
+}
+
 void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   if ( mCurrentLayer.isNull() || !mCurrentLayer->triangularMesh() || mCurrentEditor.isNull() )
@@ -922,7 +951,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
       mSelectedFacesRubberband->setToGeometry( allFaces );
       QColor fillColor = canvas()->mapSettings().selectionColor();
 
-      if ( fillColor.alpha() > 100 ) //set alpha to 150 if the transparency is no enought to see the mesh
+      if ( fillColor.alpha() > 100 ) //set alpha to 150 if the transparency is no enough to see the mesh
         fillColor.setAlpha( 100 );
 
       mSelectedFacesRubberband->setFillColor( fillColor );
@@ -930,6 +959,11 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
   else
     mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+
+  if ( mSelectedFaces.count() == 1 )
+    mActionRemoveFaces->setText( tr( "Remove selected face" ) );
+  else
+    mActionRemoveFaces->setText( tr( "Remove selected faces" ) );
 }
 
 void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &mapPoint )

@@ -93,6 +93,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onEdit();
     void onEdidingStarted();
     void onEditingStopped();
+    void removeSelectedVerticesFromMesh( bool fillHole );
+    void removeFacesFromMesh();
 
   private:
     // methods
@@ -127,7 +129,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // selection private method
     void setSelectedVertices( const QList<int> newSelectedVertex,  Qt::KeyboardModifiers modifiers );
     void clearSelectedvertex();
-    void removeSelectedVerticesFromMesh( bool fillHole );
     void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
     void applyZValueOnSelectedVertices();
     void prepareSelection();
@@ -193,6 +194,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;
+    QAction *mActionRemoveFaces = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };
