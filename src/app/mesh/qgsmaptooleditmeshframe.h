@@ -119,12 +119,12 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool testNewVertexInFaceCanditate( int vertexIndex );
 
     // selection private method
-    void setSelectedVertex( const QList<int> newSelectedVertex, bool ctrl );
+    void setSelectedVertices( const QList<int> newSelectedVertex,  Qt::KeyboardModifiers modifiers );
     void clearSelectedvertex();
     void removeSelectedVerticesFromMesh( bool fillHole );
-    void selectVerticesInGeometry( const QgsGeometry &geometry, bool ctrl );
-
+    void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
     void applyZValueOnSelectedVertices();
+    void prepareSelection();
 
     // members
     enum State
@@ -132,6 +132,13 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Default,
       AddingNewFace,
       Selecting,
+    };
+
+    struct SelectedVertexData
+    {
+      //here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
+      QList<std::array<int, 2>> selectedEdges;
+      QList<std::array<int, 2>> meshFixedEdges;
     };
 
     State mCurrentState = Default;
@@ -142,7 +149,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentFaceIndex = -1;
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
-    QList<int> mSelectedVertex;
+    QMap<int, SelectedVertexData> mSelectedVertices;
+    QList<int> mSelectedFaces;
     bool mDoubleClicks = false;
     QgsPointXY mLastClickPoint;
     double mCurrentZValue = 0;
@@ -159,15 +167,23 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *mNewFaceBand = nullptr;
     QColor mInvalidFaceColor;
     QColor mValidFaceColor;
-    //! Rubber band for selection of vertices
+
+    //! members for selection of vertices
+    QgsVertexMarker *mSelectFaceMarker = nullptr;
     QgsRubberBand *mSelectionBand = nullptr;
     QPoint mStartSelectionPos;
+    QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
+    QColor mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
+    QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
+    QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
+    QgsRubberBand *mSelectedFacesRubberband = nullptr;
+    bool mSelectPartiallyContainedFace = false;
 
     //! Markers that makes visible free vertices
     QList<QgsVertexMarker *> mFreeVertexMarker;
 
     //! Markers for selected vertices
-    QList<QgsVertexMarker *> mSelectedVerticesMarker;
+    QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
 
     QgsZValueWidget *mZValueWidget = nullptr;
 

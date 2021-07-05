@@ -189,7 +189,40 @@ void TestQgsMapToolEditMesh::editVertex()
   tool.keyClick( Qt::Key_Enter );
 
   QCOMPARE( meshLayerQuadFlower->datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( 2500, 3250 ) ).x(), 1500 );
+
+  //Selection
+  // from left to right
+  tool.mouseMove( 1200, 3600 );
+  tool.mousePress( 1200, 3600, Qt::LeftButton );
+  tool.mouseMove( 2700, 2250 );
+  tool.mouseRelease( 2700, 2250, Qt::LeftButton );
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 5 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 1 );
+
+  // from left to right
+  tool.mouseMove( 2700, 2250 );
+  tool.mousePress( 2700, 2250, Qt::LeftButton );
+  tool.mouseMove( 1200, 3600 );
+  tool.mouseRelease( 1200, 3600, Qt::LeftButton );
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 8 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 7 );
+
+  // add a face to the selection (click on centroid)
+  tool.mouseMove( 800, 2500 );
+  tool.mouseMove( 833, 2500 );
+  tool.mouseClick( 833, 2500, Qt::LeftButton, Qt::ControlModifier );
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 9 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 8 );
+
+  // remove a vertex from the selection (click on centroid)
+  tool.mouseMove( 2500, 2400 );
+  tool.mouseMove( 2500, 2500 );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton, Qt::ShiftModifier );
+
+  QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 8 );
+  QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 6 );
 }
+
 
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )
