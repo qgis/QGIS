@@ -27,7 +27,7 @@
 #include "qgsfeedback.h"
 
 #include <QTextCodec>
-
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
