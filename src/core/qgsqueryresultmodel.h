@@ -97,8 +97,8 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
-    void fetchMore( const QModelIndex &parent );
-    bool canFetchMore( const QModelIndex &parent ) const;
+    void fetchMore( const QModelIndex &parent ) override;
+    bool canFetchMore( const QModelIndex &parent ) const override;
 
     //! Returns the column names
     QStringList columns() const;

@@ -44,8 +44,10 @@ Constructs a QgsQueryResultModel from a ``queryResult`` with optional ``parent``
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
 
-    void fetchMore( const QModelIndex &parent );
-    bool canFetchMore( const QModelIndex &parent ) const;
+    virtual void fetchMore( const QModelIndex &parent );
+
+    virtual bool canFetchMore( const QModelIndex &parent ) const;
+
 
     QStringList columns() const;
 %Docstring
