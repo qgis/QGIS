@@ -422,7 +422,7 @@ bool QgsProviderSublayerProxyModel::lessThan( const QModelIndex &source_left, co
   const QString leftName = sourceModel()->data( source_left, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
   const QString rightName = sourceModel()->data( source_right, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString();
 
-  return leftName.compare( rightName, Qt::CaseInsensitive );
+  return QString::localeAwareCompare( leftName, rightName ) < 0;
 }
 
 QString QgsProviderSublayerProxyModel::filterString() const

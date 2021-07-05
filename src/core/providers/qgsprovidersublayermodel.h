@@ -202,9 +202,12 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-  private:
+  protected:
 
+    //! Sublayer list
     QList<QgsProviderSublayerDetails> mSublayers;
+
+    //! Non layer item list
     QList<NonLayerItem> mNonLayerItems;
 
 };
