@@ -64,8 +64,6 @@ double QgsZValueWidget::zValue() const
   return mZValueSpinBox->value();
 }
 
-
-
 void QgsZValueWidget::setZValue( double z )
 {
   mZValueSpinBox->setValue( z );
@@ -89,48 +87,6 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mFaceRubberBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
-  mFaceRubberBand->setVisible( false );
-  mFaceRubberBand->setZValue( 5 );
-
-  QColor color = digitizingStrokeColor();
-  mFaceVerticesBand = new QgsRubberBand( canvas );
-  mFaceVerticesBand->setIcon( QgsRubberBand::ICON_CIRCLE );
-  mFaceVerticesBand->setColor( color );
-  mFaceVerticesBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
-  mFaceVerticesBand->setBrushStyle( Qt::NoBrush );
-  mFaceVerticesBand->setIconSize( QgsGuiUtils::scaleIconSize( 6 ) );
-  mFaceVerticesBand->setVisible( false );
-  mFaceVerticesBand->setZValue( 5 );
-
-  mVertexBand = new QgsRubberBand( canvas );
-  mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
-  mVertexBand->setColor( color );
-  mVertexBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
-  mVertexBand->setBrushStyle( Qt::NoBrush );
-  mVertexBand->setIconSize( QgsGuiUtils::scaleIconSize( 15 ) );
-  mVertexBand->setVisible( false );
-  mVertexBand->setZValue( 5 );
-
-  mNewFaceBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
-  mInvalidFaceColor = QColor( 255, 0, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
-  mValidFaceColor = QColor( 0, 255, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
-  mNewFaceBand->setFillColor( mInvalidFaceColor );
-  mNewFaceBand->setVisible( false );
-  mNewFaceBand->setZValue( 10 );
-
-  mSelectionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
-  mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
-  mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
-  mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
-  mSelectionBand->setFillColor( mSelectionBandTotalFillColor );
-  mSelectionBand->setStrokeColor( mSelectionBandTotalStrokeColor );
-  mSelectionBand->setZValue( 10 );
-
-  mSelectedFacesRubberband = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  mSelectedFacesRubberband->setZValue( 1 );
-
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
@@ -144,22 +100,56 @@ QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
   deleteZvalueWidget();
 }
 
-void QgsMapToolEditMeshFrame::deactivate()
+void QgsMapToolEditMeshFrame::initialize()
 {
-  disconnect( canvas(), &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
-  clear();
+  if ( !mFaceRubberBand )
+    mFaceRubberBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
+  mFaceRubberBand->setVisible( false );
+  mFaceRubberBand->setZValue( 5 );
 
-  delete mNewFaceMarker;
-  mNewFaceMarker = nullptr;
+  QColor color = digitizingStrokeColor();
+  if ( !mFaceVerticesBand )
+    mFaceVerticesBand = new QgsRubberBand( mCanvas );
+  mFaceVerticesBand->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mFaceVerticesBand->setColor( color );
+  mFaceVerticesBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  mFaceVerticesBand->setBrushStyle( Qt::NoBrush );
+  mFaceVerticesBand->setIconSize( QgsGuiUtils::scaleIconSize( 6 ) );
+  mFaceVerticesBand->setVisible( false );
+  mFaceVerticesBand->setZValue( 5 );
 
-  delete mSelectFaceMarker;
-  mSelectFaceMarker = nullptr;
+  if ( !mVertexBand )
+    mVertexBand = new QgsRubberBand( mCanvas );
+  mVertexBand->setIcon( QgsRubberBand::ICON_CIRCLE );
+  mVertexBand->setColor( color );
+  mVertexBand->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  mVertexBand->setBrushStyle( Qt::NoBrush );
+  mVertexBand->setIconSize( QgsGuiUtils::scaleIconSize( 15 ) );
+  mVertexBand->setVisible( false );
+  mVertexBand->setZValue( 5 );
 
-  QgsMapToolAdvancedDigitizing::deactivate();
-}
+  if ( !mNewFaceBand )
+    mNewFaceBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
+  mInvalidFaceColor = QColor( 255, 0, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
+  mValidFaceColor = QColor( 0, 255, 0, mNewFaceBand->fillColor().alpha() ); //override color and keep only the transparency
+  mNewFaceBand->setFillColor( mInvalidFaceColor );
+  mNewFaceBand->setVisible( false );
+  mNewFaceBand->setZValue( 10 );
 
-void QgsMapToolEditMeshFrame::activate()
-{
+  if ( !mSelectionBand )
+    mSelectionBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
+  mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
+  mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
+  mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
+  mSelectionBand->setFillColor( mSelectionBandTotalFillColor );
+  mSelectionBand->setStrokeColor( mSelectionBandTotalStrokeColor );
+  mSelectionBand->setZValue( 10 );
+
+  if ( !mSelectedFacesRubberband )
+    mSelectedFacesRubberband = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  mSelectedFacesRubberband->setZValue( 1 );
+
   if ( !mNewFaceMarker )
     mNewFaceMarker = new QgsVertexMarker( canvas() );
   mNewFaceMarker->setIconType( QgsVertexMarker::ICON_TRIANGLE );
@@ -182,6 +172,62 @@ void QgsMapToolEditMeshFrame::activate()
   setCurrentLayer( canvas()->currentLayer() );
   createZValueWidget();
   updateFreeVertices();
+}
+
+void QgsMapToolEditMeshFrame::clear()
+{
+  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mFaceVerticesBand->setVisible( false );
+  mVertexBand->reset( QgsWkbTypes::PointGeometry );
+  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+  qDeleteAll( mFreeVertexMarker );
+  mFreeVertexMarker.clear();
+  qDeleteAll( mSelectedVerticesMarker );
+  mSelectedVerticesMarker.clear();
+  mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+  deleteZvalueWidget();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+}
+
+void QgsMapToolEditMeshFrame::deactivate()
+{
+  disconnect( canvas(), &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
+  clearAll();
+
+  QgsMapToolAdvancedDigitizing::deactivate();
+}
+
+void QgsMapToolEditMeshFrame::clearAll()
+{
+  delete mNewFaceMarker;
+  mNewFaceMarker = nullptr;
+
+  delete mSelectFaceMarker;
+  mSelectFaceMarker = nullptr;
+
+  mFaceRubberBand->deleteLater();
+  mFaceRubberBand = nullptr;
+
+  mFaceVerticesBand ->deleteLater();
+  mFaceVerticesBand = nullptr;
+
+  mVertexBand->deleteLater();
+  mVertexBand = nullptr;
+
+  mNewFaceBand->deleteLater();
+  mNewFaceBand = nullptr;
+
+  mSelectionBand->deleteLater();
+  mSelectionBand = nullptr;
+
+  mSelectedFacesRubberband->deleteLater();
+  mSelectedFacesRubberband = nullptr;
+}
+
+void QgsMapToolEditMeshFrame::activate()
+{
+  initialize();
+
   QgsMapToolAdvancedDigitizing::activate();
 }
 
@@ -501,7 +547,6 @@ void QgsMapToolEditMeshFrame::onEditingStopped()
   updateFreeVertices();
   deleteZvalueWidget();
 }
-
 
 const QgsMeshVertex QgsMapToolEditMeshFrame::mapVertex( int index ) const
 {
@@ -1014,20 +1059,6 @@ void QgsMapToolEditMeshFrame::deleteZvalueWidget()
   }
 
   mZValueWidget = nullptr;
-}
-
-void QgsMapToolEditMeshFrame::clear()
-{
-  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mFaceVerticesBand->setVisible( false );
-  mVertexBand->reset( QgsWkbTypes::PointGeometry );
-  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
-  qDeleteAll( mFreeVertexMarker );
-  mFreeVertexMarker.clear();
-  qDeleteAll( mSelectedVerticesMarker );
-  mSelectedVerticesMarker.clear();
-  deleteZvalueWidget();
-  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
 void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch )

@@ -96,6 +96,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
   private:
     // methods
+    void initialize();
     const QgsMeshVertex mapVertex( int index ) const;
     const QgsMeshFace nativeFace( int index ) const;
 
@@ -104,7 +105,12 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void createZValueWidget();
     void deleteZvalueWidget();
+
+    //! Clear all markers and rubber bands
     void clear();
+    //! Delete all markers and rubber bands
+    void clearAll();
+
     void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch );
     void updateFreeVertices();
 
@@ -149,8 +155,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     int mCurrentFaceIndex = -1;
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
-    QMap<int, SelectedVertexData> mSelectedVertices;
-    QList<int> mSelectedFaces;
     bool mDoubleClicks = false;
     QgsPointXY mLastClickPoint;
     double mCurrentZValue = 0;
@@ -168,7 +172,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QColor mInvalidFaceColor;
     QColor mValidFaceColor;
 
-    //! members for selection of vertices
+    //! members for selection of vertices/faces
+    QMap<int, SelectedVertexData> mSelectedVertices;
+    QList<int> mSelectedFaces;
     QgsVertexMarker *mSelectFaceMarker = nullptr;
     QgsRubberBand *mSelectionBand = nullptr;
     QPoint mStartSelectionPos;
@@ -177,13 +183,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
     QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
     QgsRubberBand *mSelectedFacesRubberband = nullptr;
+    QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
     bool mSelectPartiallyContainedFace = false;
 
     //! Markers that makes visible free vertices
     QList<QgsVertexMarker *> mFreeVertexMarker;
-
-    //! Markers for selected vertices
-    QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
 
     QgsZValueWidget *mZValueWidget = nullptr;
 
