@@ -650,9 +650,20 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
+QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
 {
+    QUrl url = QUrl::fromEncoded( uri.toLatin1() );
+    const QUrlQuery query( url.query() );
+    DecodedUriParameters components;
 
+    if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
+    {
+        //mCrs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+        components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+    }
+
+    return components;
+    /*
     QUrl url = QUrl::fromEncoded( uri.toLatin1() );
     const QUrlQuery query( url.query() );
     QVariantMap components;
@@ -684,6 +695,7 @@ QVariantMap QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString
 
     components.insert( QStringLiteral("rLayers"), rLayers );
     return components;
+    */
 }
 
 QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap &parts )

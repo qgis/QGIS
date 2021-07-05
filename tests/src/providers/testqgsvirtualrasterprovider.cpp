@@ -346,12 +346,14 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
     qDebug() << endl;
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+    //change what u are outputting (not onl crs, but insead everything)
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).crs.authid();
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
 
+    /*
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "virtualrasterprovider" ) );
     QVERIFY( metadata );
 
@@ -360,7 +362,7 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
     //qDebug() << parts << endl;
     qDebug() << endl;
     qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( parts ) << endl;
-
+*/
 }
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )

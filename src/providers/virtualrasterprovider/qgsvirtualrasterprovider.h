@@ -89,7 +89,7 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsVirtualRasterProviderMetadata();
-    QVariantMap decodeUri( const QString &uri ) const override;
+    QgsRasterDataProvider::DecodedUriParameters decodeUriVirtual( const QString &uri ) const;
     QString encodeUri( const QVariantMap &parts ) const override;
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
