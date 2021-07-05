@@ -469,7 +469,6 @@ void QgsConnectionsApiFetcher::stopFetching()
   mStopFetching = 1;
 }
 
-///@endcond private
 
 QgsQueryResultItemDelegate::QgsQueryResultItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
@@ -490,3 +489,5 @@ QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QL
   }
   return result;
 }
+
+///@endcond private
