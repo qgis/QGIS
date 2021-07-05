@@ -196,6 +196,10 @@ Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 
+  protected:
+
+
+
 };
 
 
