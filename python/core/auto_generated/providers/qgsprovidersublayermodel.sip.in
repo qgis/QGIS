@@ -35,12 +35,99 @@ class QgsProviderSublayerModel: QAbstractItemModel
       WkbType,
       GeometryColumnName,
       LayerNumber,
+      IsNonLayerItem,
+      NonLayerItemType,
     };
 
     enum class Column
     {
       Name,
       Description,
+    };
+
+    class NonLayerItem
+{
+%Docstring(signature="appended")
+
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersublayermodel.h"
+%End
+      public:
+
+        QString type() const;
+%Docstring
+Returns the item's type.
+
+.. seealso:: :py:func:`setType`
+%End
+
+        void setType( const QString &type );
+%Docstring
+Sets the item's ``type``.
+
+.. seealso:: :py:func:`type`
+%End
+
+        QString name() const;
+%Docstring
+Returns the item's name.
+
+.. seealso:: :py:func:`setName`
+%End
+
+        void setName( const QString &name );
+%Docstring
+Sets the item's ``name``.
+
+.. seealso:: :py:func:`setName`
+%End
+
+        QString description() const;
+%Docstring
+Returns the item's description.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+        void setDescription( const QString &description );
+%Docstring
+Sets the item's ``description``.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+        QString uri() const;
+%Docstring
+Returns the item's URI.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+        void setUri( const QString &uri );
+%Docstring
+Set the item's ``uri``.
+
+.. seealso:: :py:func:`setUri`
+%End
+
+        QIcon icon() const;
+%Docstring
+Returns the item's icon.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
+        void setIcon( const QIcon &icon );
+%Docstring
+Sets the item's ``icon``.
+
+.. seealso:: :py:func:`setIcon`
+%End
+
     };
 
     QgsProviderSublayerModel( QObject *parent /TransferThis/ = 0 );
@@ -61,6 +148,12 @@ Returns the sublayer details shown in the model.
 
 .. seealso:: :py:func:`setSublayerDetails`
 %End
+
+    void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
+%Docstring
+Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
+%End
+
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
     virtual QModelIndex parent( const QModelIndex &index ) const;

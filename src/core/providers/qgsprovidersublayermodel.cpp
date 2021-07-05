@@ -56,6 +56,13 @@ QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() co
   return mSublayers;
 }
 
+void QgsProviderSublayerModel::addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item )
+{
+  beginInsertRows( QModelIndex(), mSublayers.count() + mNonLayerItems.count(), mSublayers.count() + mNonLayerItems.count() );
+  mNonLayerItems.append( item );
+  endInsertRows();
+}
+
 QModelIndex QgsProviderSublayerModel::index( int row, int column, const QModelIndex &parent ) const
 {
   if ( column < 0 || column >= columnCount() )
@@ -64,7 +71,7 @@ QModelIndex QgsProviderSublayerModel::index( int row, int column, const QModelIn
     return QModelIndex();
   }
 
-  if ( !parent.isValid() && row >= 0 && row < mSublayers.size() )
+  if ( !parent.isValid() && row >= 0 && row < mSublayers.size() + mNonLayerItems.size() )
   {
     //return an index for the sublayer at this position
     return createIndex( row, column );
@@ -92,7 +99,7 @@ int QgsProviderSublayerModel::rowCount( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
   {
-    return mSublayers.size();
+    return mSublayers.size() + mNonLayerItems.size();
   }
   else
   {
@@ -109,99 +116,152 @@ QVariant QgsProviderSublayerModel::data( const QModelIndex &index, int role ) co
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
-
-  switch ( role )
+  if ( index.row() < mSublayers.count() )
   {
-    case Qt::DisplayRole:
-    case Qt::ToolTipRole:
-    case Qt::EditRole:
-    {
-      switch ( static_cast< Column >( index.column() ) )
-      {
-        case QgsProviderSublayerModel::Column::Name:
-          return details.name();
-        case QgsProviderSublayerModel::Column::Description:
-        {
-          switch ( details.type() )
-          {
-            case QgsMapLayerType::VectorLayer:
-            {
-              QString count;
-              if ( details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
-                   || details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
-                count = tr( "Uncounted" );
-              else
-                count = QLocale().toString( details.featureCount() );
+    const QgsProviderSublayerDetails details = mSublayers.at( index.row() );
 
-              if ( !details.description().isEmpty() )
-                return QStringLiteral( "%1 - %2 (%3)" ).arg( details.description(),
-                       QgsWkbTypes::displayString( details.wkbType() ),
-                       count );
-              else
-                return QStringLiteral( "%2 (%3)" ).arg(
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+      case Qt::ToolTipRole:
+      case Qt::EditRole:
+      {
+        switch ( static_cast< Column >( index.column() ) )
+        {
+          case QgsProviderSublayerModel::Column::Name:
+            return details.name();
+          case QgsProviderSublayerModel::Column::Description:
+          {
+            switch ( details.type() )
+            {
+              case QgsMapLayerType::VectorLayer:
+              {
+                QString count;
+                if ( details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
+                     || details.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) )
+                  count = tr( "Uncounted" );
+                else
+                  count = QLocale().toString( details.featureCount() );
+
+                if ( !details.description().isEmpty() )
+                  return QStringLiteral( "%1 - %2 (%3)" ).arg( details.description(),
                          QgsWkbTypes::displayString( details.wkbType() ),
                          count );
+                else
+                  return QStringLiteral( "%2 (%3)" ).arg(
+                           QgsWkbTypes::displayString( details.wkbType() ),
+                           count );
+              }
+
+              case QgsMapLayerType::RasterLayer:
+              case QgsMapLayerType::PluginLayer:
+              case QgsMapLayerType::MeshLayer:
+              case QgsMapLayerType::VectorTileLayer:
+              case QgsMapLayerType::AnnotationLayer:
+              case QgsMapLayerType::PointCloudLayer:
+                return details.description();
             }
+            break;
 
-            case QgsMapLayerType::RasterLayer:
-            case QgsMapLayerType::PluginLayer:
-            case QgsMapLayerType::MeshLayer:
-            case QgsMapLayerType::VectorTileLayer:
-            case QgsMapLayerType::AnnotationLayer:
-            case QgsMapLayerType::PointCloudLayer:
-              return details.description();
           }
-          break;
-
         }
+        return details.name();
+
       }
-      return details.name();
 
-    }
+      case Qt::DecorationRole:
+      {
+        if ( index.column() == 0 )
+          return details.type() == QgsMapLayerType::VectorLayer
+                 ? QgsIconUtils::iconForWkbType( details.wkbType() )
+                 : QgsIconUtils::iconForLayerType( details.type() );
+        else
+          return QVariant();
+      }
 
-    case Qt::DecorationRole:
-    {
-      if ( index.column() == 0 )
-        return details.type() == QgsMapLayerType::VectorLayer
-               ? QgsIconUtils::iconForWkbType( details.wkbType() )
-               : QgsIconUtils::iconForLayerType( details.type() );
-      else
+      case static_cast< int >( Role::IsNonLayerItem ):
+        return false;
+
+      case static_cast< int >( Role::ProviderKey ):
+        return details.providerKey();
+
+      case static_cast< int >( Role::LayerType ):
+        return static_cast< int >( details.type() );
+
+      case static_cast< int >( Role::Uri ):
+        return details.uri();
+
+      case static_cast< int >( Role::Name ):
+        return details.name();
+
+      case static_cast< int >( Role::Description ):
+        return details.description();
+
+      case static_cast< int >( Role::Path ):
+        return details.path();
+
+      case static_cast< int >( Role::FeatureCount ):
+        return details.featureCount();
+
+      case static_cast< int >( Role::WkbType ):
+        return details.wkbType();
+
+      case static_cast< int >( Role::GeometryColumnName ):
+        return details.geometryColumnName();
+
+      case static_cast< int >( Role::LayerNumber ):
+        return details.layerNumber();
+
+      default:
         return QVariant();
     }
+  }
+  else
+  {
+    const NonLayerItem details = mNonLayerItems.at( index.row() - mSublayers.count() );
 
-    case static_cast< int >( Role::ProviderKey ):
-      return details.providerKey();
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+      case Qt::ToolTipRole:
+      case Qt::EditRole:
+      {
+        switch ( static_cast< Column >( index.column() ) )
+        {
+          case QgsProviderSublayerModel::Column::Name:
+            return details.name();
+          case QgsProviderSublayerModel::Column::Description:
+            return details.description();
+        }
+        return QVariant();
+      }
 
-    case static_cast< int >( Role::LayerType ):
-      return static_cast< int >( details.type() );
+      case Qt::DecorationRole:
+      {
+        if ( index.column() == 0 )
+          return details.icon();
+        else
+          return QVariant();
+      }
 
-    case static_cast< int >( Role::Uri ):
-      return details.uri();
+      case static_cast< int >( Role::IsNonLayerItem ):
+        return true;
 
-    case static_cast< int >( Role::Name ):
-      return details.name();
+      case static_cast< int >( Role::Uri ):
+        return details.uri();
 
-    case static_cast< int >( Role::Description ):
-      return details.description();
+      case static_cast< int >( Role::Name ):
+        return details.name();
 
-    case static_cast< int >( Role::Path ):
-      return details.path();
+      case static_cast< int >( Role::Description ):
+        return details.description();
 
-    case static_cast< int >( Role::FeatureCount ):
-      return details.featureCount();
+      case static_cast< int >( Role::NonLayerItemType ):
+        return details.type();
 
-    case static_cast< int >( Role::WkbType ):
-      return details.wkbType();
-
-    case static_cast< int >( Role::GeometryColumnName ):
-      return details.geometryColumnName();
-
-    case static_cast< int >( Role::LayerNumber ):
-      return details.layerNumber();
-
-    default:
-      return QVariant();
+      default:
+        return QVariant();
+    }
   }
 }
 
@@ -232,4 +292,59 @@ QVariant QgsProviderSublayerModel::headerData( int section, Qt::Orientation orie
     }
   }
   return QVariant();
+}
+
+
+//
+// QgsProviderSublayerModel::NonLayerItem
+//
+
+QString QgsProviderSublayerModel::NonLayerItem::type() const
+{
+  return mType;
+}
+
+void QgsProviderSublayerModel::NonLayerItem::setType( const QString &type )
+{
+  mType = type;
+}
+
+QString QgsProviderSublayerModel::NonLayerItem::name() const
+{
+  return mName;
+}
+
+void QgsProviderSublayerModel::NonLayerItem::setName( const QString &name )
+{
+  mName = name;
+}
+
+QString QgsProviderSublayerModel::NonLayerItem::description() const
+{
+  return mDescription;
+}
+
+void QgsProviderSublayerModel::NonLayerItem::setDescription( const QString &description )
+{
+  mDescription = description;
+}
+
+QString QgsProviderSublayerModel::NonLayerItem::uri() const
+{
+  return mUri;
+}
+
+void QgsProviderSublayerModel::NonLayerItem::setUri( const QString &uri )
+{
+  mUri = uri;
+}
+
+QIcon QgsProviderSublayerModel::NonLayerItem::icon() const
+{
+  return mIcon;
+}
+
+void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
+{
+  mIcon = icon;
 }
