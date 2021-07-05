@@ -88,6 +88,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 ///@endcond private
 
 /**
+ * \ingroup gui
  * \brief The QgsQueryResultWidget class allows users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
