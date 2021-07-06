@@ -173,7 +173,7 @@ QVariant QgsProviderSublayerModel::data( const QModelIndex &index, int role ) co
       {
         if ( index.column() == 0 )
           return details.type() == QgsMapLayerType::VectorLayer
-                 ? QgsIconUtils::iconForWkbType( details.wkbType() )
+                 ? ( details.wkbType() != QgsWkbTypes::Unknown ? QgsIconUtils::iconForWkbType( details.wkbType() ) : QVariant() )
                  : QgsIconUtils::iconForLayerType( details.type() );
         else
           return QVariant();
