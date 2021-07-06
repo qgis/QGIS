@@ -345,16 +345,35 @@ void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
-    qDebug() << endl;
-    //change what u are outputting (not onl crs, but insead everything)
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).crs.authid();
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).formula;
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).extent.toString();
+    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
 
+
+    QCOMPARE( decodedParams.width , 373);
+    QCOMPARE( decodedParams.height , 350);
+    QCOMPARE( decodedParams.extent , QgsRectangle(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000) );
+    QCOMPARE( decodedParams.crs , QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+    QCOMPARE( decodedParams.formula , QStringLiteral( "\"dem@1\" + 200" ) );
+
+
+    QCOMPARE( decodedParams.rInputLayers.at(1).provider , QStringLiteral( "gdal" ) );
+    QCOMPARE( decodedParams.rInputLayers.at(0).provider , QStringLiteral( "gdal" ) );
+
+    qDebug() << endl;
+    qDebug() << QStringLiteral("Raster layer: name, uri, provider");
+    for (int i = 0; i < decodedParams.rInputLayers.size() ; ++i)
+    {
+        qDebug() << decodedParams.rInputLayers.at(i).name << " " <<
+                    decodedParams.rInputLayers.at(i).uri  << " " <<
+                    decodedParams.rInputLayers.at(i).provider;
+    }
+    qDebug() << endl;
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
+
+    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+    qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams ) << endl;
 
     /*
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "virtualrasterprovider" ) );

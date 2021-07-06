@@ -695,6 +695,8 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
         components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
     }
 
+
+
     QSet<QString> rLayerName;
     for ( const auto &item : query.queryItems() )
     {
@@ -708,58 +710,74 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
         }
     }
 
-    //QVector<QStringList> mRasterLayers;
-
-    QSet<QString>::iterator i;
-    int j = 0;
-    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
-    {
-        //QStringList rLayerEl;
-        //rLayerEl << (*i);
-        //rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":uri") );
-        //rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":provider") );
-        //rInputLayers.append(InputLayers);
-        qDebug() << j;
-        j++;
-    }
-    return components;
-    /*
-    QUrl url = QUrl::fromEncoded( uri.toLatin1() );
-    const QUrlQuery query( url.query() );
-    QVariantMap components;
-
-    QSet<QString> rLayerName;
-    for ( const auto &item : query.queryItems() )
-    {
-        if ( item.first.indexOf(':') > 0 )
-        {
-            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
-        }
-        else
-        {
-            components.insert( item.first, item.second );
-        }
-    }
-
-    QVariantMap rLayers;
     QSet<QString>::iterator i;
     for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
     {
-        QStringList rLayer;
-        rLayer << (*i);
-        rLayer << query.queryItemValue( (*i) % QStringLiteral(":uri") );
-        rLayer << query.queryItemValue( (*i) % QStringLiteral(":provider") );
+        InputLayers rLayer;
+        rLayer.name = (*i);
+        rLayer.uri = query.queryItemValue( (*i) % QStringLiteral(":uri") );
+        rLayer.provider = query.queryItemValue( (*i) % QStringLiteral(":provider") );
 
-        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%(*i),rLayer);
+        components.rInputLayers.append(rLayer) ;
     }
 
-    components.insert( QStringLiteral("rLayers"), rLayers );
     return components;
-    */
 }
 
-QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap &parts )
+QString QgsRasterDataProvider::encodeVirtualRasterProviderUri(const DecodedUriParameters &parts )
 {
+    QUrl uri;
+    QUrlQuery query;
+
+    if ( parts.crs.isValid() )
+    {
+        query.addQueryItem( QStringLiteral("crs") , parts.crs.authid() );
+    }
+
+    if ( ! parts.extent.isNull() )
+    {
+        QString rect = QString("%1,%2,%3,%4").arg(qgsDoubleToString(parts.extent.xMinimum()), qgsDoubleToString(parts.extent.yMinimum()),
+                                                  qgsDoubleToString(parts.extent.xMaximum()), qgsDoubleToString(parts.extent.yMaximum()) );
+
+        query.addQueryItem( QStringLiteral("extent") , rect );
+    }
+
+    if ( parts.width )
+    {
+        query.addQueryItem( QStringLiteral("width") , QString::number( parts.width) );
+    }
+
+    if ( parts.height )
+    {
+        query.addQueryItem( QStringLiteral("height") , QString::number( parts.height) );
+    }
+
+    if ( ! parts.formula.isNull() )
+    {
+        query.addQueryItem( QStringLiteral("formula") , parts.formula );
+    }
+
+
+    if ( ! parts.rInputLayers.isEmpty() )
+    {
+        /*
+        for (int i = 0; i < parts.rInputLayers.size() ; ++i )
+        {
+            query.addQueryItem( parts.rInputLayers.at(i).name % QStringLiteral(":uri") , parts.rInputLayers.at(i).uri );
+            query.addQueryItem( parts.rInputLayers.at(i).name % QStringLiteral(":provider") , parts.rInputLayers.at(i).provider );
+        }
+        */
+
+        for ( const auto & it : parts.rInputLayers ) {
+            query.addQueryItem( it.name % QStringLiteral(":uri") , it.uri );
+            query.addQueryItem( it.name % QStringLiteral(":provider") , it.provider );
+        }
+
+
+    }
+    uri.setQuery( query );
+    return QString( uri.toEncoded() );
+    /*
     QUrl uri;
     QUrlQuery query;
 
@@ -801,4 +819,5 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const QVariantMap
 
     uri.setQuery( query );
     return QString( uri.toEncoded() );
+    */
 }

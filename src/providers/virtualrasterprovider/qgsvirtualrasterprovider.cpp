@@ -456,9 +456,8 @@ QgsRasterDataProvider::DecodedUriParameters QgsVirtualRasterProviderMetadata::de
     return QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri );
 }
 
-QString QgsVirtualRasterProviderMetadata::encodeUri(  const QVariantMap &parts ) const
+QString QgsVirtualRasterProviderMetadata::encodeUriVirtual( const QgsRasterDataProvider::DecodedUriParameters &parts ) const
 {
-    //return QString();
     return  QgsRasterDataProvider::encodeVirtualRasterProviderUri( parts );
 }
 
