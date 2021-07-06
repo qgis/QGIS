@@ -1658,7 +1658,13 @@ Adds topological points for every vertex of the geometry.
 
 :param geom: the geometry where each vertex is added to segments of other features
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1681,7 +1687,13 @@ editing.
 
 :param p: position of the vertex
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1703,7 +1715,13 @@ editing.
 
 :param p: position of the vertex
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1724,7 +1742,13 @@ editing.
 
 :param ps: point sequence of the vertices
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 

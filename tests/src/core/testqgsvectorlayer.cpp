@@ -397,6 +397,36 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3, 1 4, 1 5)" ).asWkt() );
 
   delete layerLine;
+
+  // Test error results -1: layer error, 1: geometry error
+  QgsVectorLayer *nonSpatialLayer = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "non spatial layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( nonSpatialLayer->isValid() );
+
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Non editable
+
+  nonSpatialLayer->startEditing();
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 1 );  // Non spatial
+
+  delete nonSpatialLayer;
+
+  QgsVectorLayer *layerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerPoint->isValid() );
+
+  layerPoint->startEditing();
+  result = layerPoint->addTopologicalPoints( QgsGeometry() );
+  QCOMPARE( result, 1 );  // Null geometry
+
+  delete layerPoint;
+
+  QgsVectorLayer *layerInvalid = new QgsVectorLayer( QStringLiteral(), QStringLiteral( "layer invalid" ), QStringLiteral( "none" ) );
+  QVERIFY( !layerInvalid->isValid() );
+
+  result = layerInvalid->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Invalid layer
+
+  delete layerInvalid;
 }
 
 void TestQgsVectorLayer::testCopyPasteFieldConfiguration_data()
