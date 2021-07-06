@@ -198,9 +198,14 @@ void QgsMeshEditor::applyChangeZValue( QgsMeshEditor::Edit &edit, const QList<in
   applyEditOnTriangularMesh( edit, mTopologicalMesh.changeZValue( verticesIndexes, newValues ) );
 }
 
+void QgsMeshEditor::applyChangeXYValue( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
+{
+  applyEditOnTriangularMesh( edit, mTopologicalMesh.changeXYValue( verticesIndexes, newValues ) );
+}
+
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
 {
-  QgsTriangularMesh::Changes triangularChanges( topologicChanges );
+  QgsTriangularMesh::Changes triangularChanges( topologicChanges, *mMesh );
   mTriangularMesh->applyChanges( triangularChanges );
 
   edit.topologicalChanges = topologicChanges;
@@ -351,6 +356,12 @@ QgsMeshEditingError QgsMeshEditor::removeVertices( const QList<int> &verticesToR
 void QgsMeshEditor::changeZValues( const QList<int> &verticesIndexes, const QList<double> &newZValues )
 {
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeZValue( this, verticesIndexes, newZValues ) );
+}
+
+void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
+{
+  // TODO : implement a check if it is possible to change the (x,y) values. For now, ths check is made in the APP part
+  mUndoStack->push( new QgsMeshLayerUndoCommandChangeXYValue( this, verticesIndexes, newValues ) );
 }
 
 void QgsMeshEditor::stopEditing()
@@ -529,18 +540,18 @@ QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
-  , mNewValue( newValues )
-{
-
-}
+  , mNewValues( newValues )
+{}
 
 void QgsMeshLayerUndoCommandChangeZValue::redo()
 {
   if ( !mVerticesIndexes.isEmpty() )
   {
     QgsMeshEditor::Edit edit;
-    mMeshEditor->applyChangeZValue( edit, mVerticesIndexes, mNewValue );
+    mMeshEditor->applyChangeZValue( edit, mVerticesIndexes, mNewValues );
     mEdits.append( edit );
+    mVerticesIndexes.clear();
+    mNewValues.clear();
   }
   else
   {
@@ -548,3 +559,27 @@ void QgsMeshLayerUndoCommandChangeZValue::redo()
       mMeshEditor->applyEdit( edit );
   }
 }
+
+QgsMeshLayerUndoCommandChangeXYValue::QgsMeshLayerUndoCommandChangeXYValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVerticesIndexes( verticesIndexes )
+  , mNewValues( newValues )
+{}
+
+void QgsMeshLayerUndoCommandChangeXYValue::redo()
+{
+  if ( !mVerticesIndexes.isEmpty() )
+  {
+    QgsMeshEditor::Edit edit;
+    mMeshEditor->applyChangeXYValue( edit, mVerticesIndexes, mNewValues );
+    mEdits.append( edit );
+    mVerticesIndexes.clear();
+    mNewValues.clear();
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+

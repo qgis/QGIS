@@ -790,7 +790,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionEditMesh"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">

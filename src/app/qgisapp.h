@@ -2365,6 +2365,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
+    /**
+     * Enable/disable mesh frame editing tools
+     */
+    void enableMeshEditingTools( bool enable );
+
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------

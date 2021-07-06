@@ -33,7 +33,7 @@ class TestQgsMapToolEditMesh : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    void editVertex();
+    void editMesh();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -67,18 +67,18 @@ void TestQgsMapToolEditMesh::init()
   meshLayerQuadFlower->startFrameEditing( transform );
 
   canvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
-
 }
 
-void TestQgsMapToolEditMesh::editVertex()
+void TestQgsMapToolEditMesh::editMesh()
 {
   double offsetInMapUnits = 15 * canvas->mapSettings().mapUnitsPerPixel();
 
   QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->meshEditor() );
-  editMeshMapTool->activate();
+
   TestQgsMapToolAdvancedDigitizingUtils tool( editMeshMapTool );
   canvas->setCurrentLayer( meshLayerQuadFlower.get() );
+  editMeshMapTool->mActionDigitizing->trigger();
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 8 );
@@ -221,6 +221,41 @@ void TestQgsMapToolEditMesh::editVertex()
 
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 8 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 6 );
+
+  // move some vertices with invalid resulting faces
+  QgsPointXY centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 1833.333 ), 1e-2 ) );
+  editMeshMapTool->mActionMoveVertices->trigger();
+  // first, select vertices by using the center of the face (all vertices of face are selected
+  tool.mouseMove( 1501, 1833.33 );
+  tool.mouseClick( 1501, 1833.33, Qt::LeftButton );
+  tool.mousePress( 1510, 1810, Qt::LeftButton );
+  tool.mouseMove( 2500, 3000 );
+  tool.mouseRelease( 2500, 3000, Qt::LeftButton );
+  centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 1833.333 ), 1e-2 ) );
+
+  // move some vertices
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 1833.333 ), 1e-2 ) );
+  editMeshMapTool->mActionMoveVertices->trigger();
+  // first, select vertices by using the center of the face (all vertices of face are selected
+  tool.mouseMove( 1501, 1833.33 );
+  tool.mouseClick( 1501, 1833.33, Qt::LeftButton );
+  tool.mousePress( 1510, 1810, Qt::LeftButton );
+  tool.mouseMove( 1520, 1820 );
+  tool.mouseRelease( 1520, 1820, Qt::LeftButton );
+  centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1510, 1843.333 ), 1e-2 ) );
+
+  // select only one vertex
+  tool.mouseMove( 1510, 1510 );
+  tool.mouseClick( 1510, 1510, Qt::LeftButton );
+  tool.mouseMove( 1512, 1509 );
+  tool.mousePress( 1512, 1509, Qt::LeftButton );
+  tool.mouseMove( 1500, 1500 );
+  tool.mouseRelease( 1500, 1500, Qt::LeftButton );
+  QgsPointXY vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1520, 1480 ), 30 );
+  QVERIFY( vertexPosition.compare( QgsPointXY( 1500, 1500 ), 1e-2 ) );
 }
 
 

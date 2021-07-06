@@ -352,7 +352,14 @@ void QgsTopologicalMesh::applyChanges( const QgsTopologicalMesh::Changes &change
   for ( int i = 0; i < changes.mChangeCoordinateVerticesIndexes.count(); ++i )
   {
     int vertexIndex = changes.mChangeCoordinateVerticesIndexes.at( i );
-    mMesh->vertices[vertexIndex].setZ( changes.mNewZValues.at( i ) );
+    if ( !changes.mNewZValues.isEmpty() )
+      mMesh->vertices[vertexIndex].setZ( changes.mNewZValues.at( i ) );
+    if ( !changes.mNewXYValues.isEmpty() )
+    {
+      const QgsPointXY &pt = changes.mNewXYValues.at( i );
+      mMesh->vertices[vertexIndex].setX( pt.x() );
+      mMesh->vertices[vertexIndex].setY( pt.y() );
+    }
   }
 }
 
@@ -419,7 +426,14 @@ void QgsTopologicalMesh::reverseChanges( const QgsTopologicalMesh::Changes &chan
   for ( int i = 0; i < changes.mChangeCoordinateVerticesIndexes.count(); ++i )
   {
     int vertexIndex = changes.mChangeCoordinateVerticesIndexes.at( i );
-    mMesh->vertices[vertexIndex].setZ( changes.mOldZValues.at( i ) );
+    if ( !changes.mOldZValues.isEmpty() )
+      mMesh->vertices[vertexIndex].setZ( changes.mOldZValues.at( i ) );
+    if ( !changes.mOldXYValues.isEmpty() )
+    {
+      const QgsPointXY &pt = changes.mOldXYValues.at( i );
+      mMesh->vertices[vertexIndex].setX( pt.x() );
+      mMesh->vertices[vertexIndex].setY( pt.y() );
+    }
   }
 }
 
@@ -652,6 +666,21 @@ QList<int> QgsTopologicalMesh::Changes::changedCoordinatesVerticesIndexes() cons
 QList<double> QgsTopologicalMesh::Changes::newVerticesZValues() const
 {
   return mNewZValues;
+}
+
+QList<QgsPointXY> QgsTopologicalMesh::Changes::newVerticesXYValues() const
+{
+  return mNewXYValues;
+}
+
+QList<QgsPointXY> QgsTopologicalMesh::Changes::oldVerticesXYValues() const
+{
+  return mOldXYValues;
+}
+
+QList<int> QgsTopologicalMesh::Changes::nativeFacesIndexesGeometryChanged() const
+{
+  return mNativeFacesIndexesGeometryChanged;
 }
 
 int QgsTopologicalMesh::Changes::addedFaceIndexInMesh( int internalIndex ) const
@@ -1368,6 +1397,29 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::changeZValue( const QList<int> &
     changes.mOldZValues.append( mMesh->vertices.at( verticesIndexes.at( i ) ).z() );
     changes.mNewZValues.append( newValues.at( i ) );
   }
+
+  applyChanges( changes );
+
+  return changes;
+}
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::changeXYValue( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
+{
+  Q_ASSERT( verticesIndexes.count() == newValues.count() );
+  Changes changes;
+  changes.mChangeCoordinateVerticesIndexes.reserve( verticesIndexes.count() );
+  changes.mNewXYValues.reserve( verticesIndexes.count() );
+  changes.mOldXYValues.reserve( verticesIndexes.count() );
+  QSet<int> concernedFace;
+  for ( int i = 0; i < verticesIndexes.count(); ++i )
+  {
+    changes.mChangeCoordinateVerticesIndexes.append( verticesIndexes.at( i ) );
+    changes.mOldXYValues.append( mMesh->vertices.at( verticesIndexes.at( i ) ) );
+    changes.mNewXYValues.append( newValues.at( i ) );
+    concernedFace.unite( facesAroundVertex( verticesIndexes.at( i ) ).toSet() );
+  }
+
+  changes.mNativeFacesIndexesGeometryChanged = concernedFace.values();
 
   applyChanges( changes );
 

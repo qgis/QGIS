@@ -255,8 +255,10 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
         //! Default constructor, no changes
         Changes() = default;
 
-        //! Constructor of the triangular changes from \a topological changes
-        Changes( const QgsTopologicalMesh::Changes &topologicalChanges );
+        /**
+         * Constructor of the triangular changes from \a topological changes and with the native mesh \a nativeMesh
+         */
+        Changes( const QgsTopologicalMesh::Changes &topologicalChanges, const QgsMesh &nativeMesh );
 
       private:
         // triangular mesh elements that can be changed if the triangular mesh is updated, are not stored and have to be retrieve
@@ -264,10 +266,15 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
         QList<int> mChangedVerticesCoordinates;
         mutable QList<double> mOldZValue;
         QList<double> mNewZValue;
+        QList<QgsPointXY> mOldXYValue;
+        QList<QgsPointXY> mNewXYValue;
 
         QVector<QgsMeshFace> mNativeFacesToAdd;
         QList<int> mNativeFaceIndexesToRemove;
         QVector<QgsMeshFace> mNativeFacesToRemove;
+        QList<int> mNativeFaceIndexesGeometryChanged;
+        QVector<QgsMeshFace> mNativeFacesGeometryChanged;
+        mutable QList<int> mTriangleIndexesGeometryChanged;
 
         mutable int mTrianglesAddedStartIndex = 0;  // defined each time the changes are apply
         mutable QList<int> mRemovedTriangleIndexes; // defined when changes are apply the first time

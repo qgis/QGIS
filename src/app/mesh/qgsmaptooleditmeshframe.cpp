@@ -16,6 +16,7 @@
 #include "qgsmaptooleditmeshframe.h"
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsdoublespinbox.h"
@@ -87,18 +88,61 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
+  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize mesh elements" ) );
+  mActionDigitizing->setCheckable( true );
+  mActionMoveVertices = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshMoveVertex.svg" ) ), tr( "Move vertices" ), this );
+  mActionMoveVertices->setCheckable( true );
+
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   mActionRemoveFaces = new QAction( this );
+
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( false );} );
   connect( mActionRemoveFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::removeFacesFromMesh );
+
+  connect( mActionDigitizing, &QAction::toggled, this, [this]( bool checked )
+  {
+    if ( checked )
+      activateWithState( Digitizing );
+  } );
+
+  connect( mActionMoveVertices, &QAction::toggled, this, [this]( bool checked )
+  {
+    if ( checked )
+      activateWithState( MoveVertex );
+  } );
+
   setAutoSnapEnabled( true );
+}
+
+void QgsMapToolEditMeshFrame::activateWithState( State state )
+{
+  if ( mCanvas->mapTool() != this )
+  {
+    mCanvas->setMapTool( this );
+    onEditingStarted();
+  }
+  mCurrentState = state;
 }
 
 QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
 {
   deleteZvalueWidget();
+}
+
+QList<QAction *> QgsMapToolEditMeshFrame::actions() const
+{
+  return  QList<QAction *>()
+          << mActionDigitizing
+          << mActionMoveVertices;
+}
+
+QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
+{
+  return  QList<QAction *>()
+          << mActionDigitizing
+          << mActionMoveVertices;
 }
 
 void QgsMapToolEditMeshFrame::initialize()
@@ -128,6 +172,14 @@ void QgsMapToolEditMeshFrame::initialize()
   mVertexBand->setIconSize( QgsGuiUtils::scaleIconSize( 15 ) );
   mVertexBand->setVisible( false );
   mVertexBand->setZValue( 5 );
+
+  if ( !mEdgeBand )
+    mEdgeBand = new QgsRubberBand( mCanvas );
+  QColor color2( color );
+  color2.setAlpha( color2.alpha() / 3 );
+  mEdgeBand->setColor( color2 );
+  mEdgeBand->setWidth( QgsGuiUtils::scaleIconSize( 10 ) );
+  mEdgeBand->setVisible( false );
 
   if ( !mNewFaceBand )
     mNewFaceBand = createRubberBand( QgsWkbTypes::PolygonGeometry );
@@ -169,31 +221,33 @@ void QgsMapToolEditMeshFrame::initialize()
   mSelectFaceMarker->setPenWidth( 3 );
   mSelectFaceMarker->setZValue( 10 );
 
-  connect( canvas(), &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
-  setCurrentLayer( canvas()->currentLayer() );
+  if ( !mMovingEdgesRubberband )
+    mMovingEdgesRubberband = createRubberBand( QgsWkbTypes::LineGeometry );
+
+  if ( !mMovingFacesRubberband )
+    mMovingFacesRubberband = createRubberBand( QgsWkbTypes::PolygonGeometry );
+
+  if ( !mMovingVerticesRubberband )
+    mMovingVerticesRubberband = createRubberBand( QgsWkbTypes::PointGeometry );
+  mMovingEdgesRubberband->setWidth( QgsGuiUtils::scaleIconSize( 2 ) );
+  mMovingEdgesRubberband->setBrushStyle( Qt::NoBrush );
+  mMovingEdgesRubberband->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mMovingEdgesRubberband->setVisible( false );
+  mMovingEdgesRubberband->setZValue( 5 );
+
+  connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
+
   createZValueWidget();
   updateFreeVertices();
-}
 
-void QgsMapToolEditMeshFrame::clear()
-{
-  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mFaceVerticesBand->setVisible( false );
-  mVertexBand->reset( QgsWkbTypes::PointGeometry );
-  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
-  qDeleteAll( mFreeVertexMarker );
-  mFreeVertexMarker.clear();
-  qDeleteAll( mSelectedVerticesMarker );
-  mSelectedVerticesMarker.clear();
-  mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-  deleteZvalueWidget();
-  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mIsInitialized = true;
 }
 
 void QgsMapToolEditMeshFrame::deactivate()
 {
-  disconnect( canvas(), &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
-  clearAll();
+  clearSelection();
+  clearCanvasHelpers();
+  deleteZvalueWidget();
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -229,8 +283,6 @@ void QgsMapToolEditMeshFrame::clearAll()
 
 void QgsMapToolEditMeshFrame::activate()
 {
-  initialize();
-
   QgsMapToolAdvancedDigitizing::activate();
 }
 
@@ -240,7 +292,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
 
   switch ( mCurrentState )
   {
-    case Default:
+    case Digitizing:
     {
       QList<QAction * >  newActions;
       if ( !mSelectedVertices.isEmpty() )
@@ -271,7 +323,7 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
 {
   switch ( mCurrentState )
   {
-    case Default:
+    case Digitizing:
       return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
     case AddingNewFace:
       return QgsMapTool::Flags();
@@ -317,19 +369,33 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
     mLeftButtonPressed = true;
 
-  switch ( mCurrentState )
+  if ( e->button() == Qt::LeftButton )
   {
-    case Default:
-      if ( e->button() == Qt::LeftButton )
-      {
+    switch ( mCurrentState )
+    {
+      case MoveVertex:
+        mCanMovingStart = false;
+        if ( mCurrentVertexIndex != -1 )
+        {
+          mStartMovingPoint = mapVertexXY( mCurrentVertexIndex );
+          mCanMovingStart = true;
+        }
+        else
+        {
+          mStartMovingPoint = e->mapPoint();
+          mCanMovingStart = mSelectedFacesRubberband->asGeometry().contains( &mStartMovingPoint );
+        }
+      case Digitizing:
         mStartSelectionPos = e->pos();
         mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-      }
-      break;
-    case AddingNewFace:
-      break;
-    case Selecting:
-      break;
+        mPreviousState = mCurrentState;
+        break;
+      case AddingNewFace:
+      case Selecting:
+      case MovingVertex:
+        break;
+
+    }
   }
 }
 
@@ -349,42 +415,36 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   switch ( mCurrentState )
   {
-    case Default:
+    case Digitizing:
     {
       if ( e->button() == Qt::LeftButton )
       {
-        if ( mDoubleClicks )
+        if ( mDoubleClicks )  //double clicks --> add a vertex
         {
           addVertex( e->mapPoint(), e->mapPointMatch() );
         }
         else if ( mNewFaceMarker->isVisible() &&
                   e->mapPoint().distance( mNewFaceMarker->center() ) < tolerance
-                  && mCurrentVertexIndex >= 0 )
+                  && mCurrentVertexIndex >= 0 )  //new face marker clicked --> start adding a new face
         {
-          clearSelectedvertex();
+          clearSelection();
           mCurrentState = AddingNewFace;
           mNewFaceMarker->setVisible( false );
           mNewFaceBand->setVisible( true );
           mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
           addVertexToFaceCanditate( mCurrentVertexIndex );
-          QgsPointXY currentPoint = mapVertex( mCurrentVertexIndex );
+          const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
-        else if ( mSelectFaceMarker->isVisible() &&
-                  e->mapPoint().distance( mSelectFaceMarker->center() ) < tolerance
-                  && mCurrentFaceIndex >= 0 )
+        else // try to select
         {
-          setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), e->modifiers() );
+          select( e->mapPoint(), e->modifiers(), tolerance );
         }
-        else if ( mCurrentVertexIndex != -1 )
-          setSelectedVertices( QList<int>() << mCurrentVertexIndex, e->modifiers() );
-        else
-          setSelectedVertices( QList<int>(),  e->modifiers() );
       }
     }
     break;
     case AddingNewFace:
-      if ( e->button() == Qt::LeftButton )
+      if ( e->button() == Qt::LeftButton ) //eventually add a vertex to the face
       {
         if ( mDoubleClicks )
         {
@@ -395,54 +455,193 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mCurrentVertexIndex != -1 )
         {
           addVertexToFaceCanditate( mCurrentVertexIndex );
-          QgsPointXY currentPoint = mapVertex( mCurrentVertexIndex );
+          QgsPointXY currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
         }
       }
-      else if ( e->button() == Qt::RightButton )
+      else if ( e->button() == Qt::RightButton ) //if possible validate and add the face to the mesh
       {
         if ( testNewVertexInFaceCanditate( -1 ) )
         {
           mCurrentEditor->addFace( mNewFaceCandidate.toVector() );
           mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
           mNewFaceCandidate.clear();
-          mCurrentState = Default;
+          mCurrentState = Digitizing;
         }
       }
       break;
     case Selecting:
-      mCurrentState = Default;
+    {
+      mCurrentState = mPreviousState;
       QgsGeometry selectionGeom = mSelectionBand->asGeometry();
       selectInGeometry( selectionGeom, e->modifiers() );
-
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+    }
+    break;
+    case MoveVertex:
+      select( e->mapPoint(), e->modifiers(), tolerance );
+      break;
+    case MovingVertex:
+      mCurrentState = MoveVertex;
+      if ( mIsMovingAllowed )
+      {
+        const QList<int> verticesIndexes = mSelectedVertices.keys();
+        QList<QgsPointXY> newPosition;
+        newPosition.reserve( verticesIndexes.count() );
+        QgsVector translation = e->mapPoint() - mStartMovingPoint;
+        for ( int i = 0; i < verticesIndexes.count(); ++i )
+        {
+          newPosition.append( mapVertexXY( verticesIndexes.at( i ) ) + translation );
+        }
+        mCurrentEditor->changeXYValues( mSelectedVertices.keys(), newPosition );
+        clearSelectedvertex();
+      }
+      mMovingEdgesRubberband->reset();
+      mMovingFacesRubberband->reset();
+      mMovingVerticesRubberband->reset();
       break;
   }
   mDoubleClicks = false;
 }
 
+void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance )
+{
+  if ( mSelectFaceMarker->isVisible() &&
+       mapPoint.distance( mSelectFaceMarker->center() ) < tolerance
+       && mCurrentFaceIndex >= 0 )
+  {
+    setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), modifiers );
+  }
+  else if ( mCurrentVertexIndex != -1 )
+    setSelectedVertices( QList<int>() << mCurrentVertexIndex, modifiers );
+  else
+    setSelectedVertices( QList<int>(),  modifiers );
+}
+
+bool QgsMapToolEditMeshFrame::testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const
+{
+  int faceSize = borderMovingfaces.count();
+  QgsPolygonXY polygon;
+  QVector<QgsPointXY> points( faceSize );
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    int ip0 =  borderMovingfaces[i];
+    int ip1 = borderMovingfaces[( i + 1 ) % faceSize];
+    int ip2 = borderMovingfaces[( i + 2 ) % faceSize];
+
+    QgsPointXY p0 = mCurrentLayer->nativeMesh()->vertices.at( ip0 ) + ( mSelectedVertices.contains( ip0 ) ? translation : QgsVector( 0, 0 ) );
+    QgsPointXY p1 = mCurrentLayer->nativeMesh()->vertices.at( ip1 ) + ( mSelectedVertices.contains( ip1 ) ? translation : QgsVector( 0, 0 ) );
+    QgsPointXY p2 = mCurrentLayer->nativeMesh()->vertices.at( ip2 ) + ( mSelectedVertices.contains( ip2 ) ? translation : QgsVector( 0, 0 ) );
+
+    double ux = p0.x() - p1.x();
+    double uy = p0.y() - p1.y();
+    double vx = p2.x() - p1.x();
+    double vy = p2.y() - p1.y();
+
+    double crossProduct = ux * vy - uy * vx;
+    if ( crossProduct >= 0 ) //if cross product>0, we have two edges clockwise
+      return false;
+    points[i] = p0;
+  }
+  polygon.append( points );
+
+  const QgsGeometry &deformedFace = QgsGeometry::fromPolygonXY( polygon );
+
+  // now test if the deformedface contain something else
+  QList<int> otherFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( deformedFace.boundingBox() );
+  {
+    for ( const int otherFaceIndex : otherFaceIndexes )
+    {
+      if ( mConcernedFaceBySelection.contains( otherFaceIndex ) )
+        continue;
+
+      const QgsMeshFace &otherFace = nativeFace( otherFaceIndex );
+      int existingFaceSize = otherFace.count();
+      bool shareVertex = false;
+      for ( int i = 0; i < existingFaceSize; ++i )
+      {
+        if ( borderMovingfaces.contains( otherFace.at( i ) ) )
+        {
+          shareVertex = true;
+          break;
+        }
+      }
+      if ( shareVertex )
+      {
+        //only test the edge that not contain a shared vertex
+        for ( int i = 0; i < existingFaceSize; ++i )
+        {
+          int index1 = otherFace.at( i );
+          int index2 = otherFace.at( ( i + 1 ) % existingFaceSize );
+          if ( ! borderMovingfaces.contains( index1 )  && !borderMovingfaces.contains( index2 ) )
+          {
+            const QgsPointXY &v1 = mapVertexXY( index1 );
+            const QgsPointXY &v2 = mapVertexXY( index2 );
+            QgsGeometry edgeGeom = QgsGeometry::fromPolylineXY( { v1, v2} );
+            if ( deformedFace.intersects( edgeGeom ) )
+              return false;
+          }
+        }
+      }
+      else
+      {
+        const QgsGeometry existingFaceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( otherFaceIndex ) ) ) );
+        if ( deformedFace.intersects( existingFaceGeom ) )
+          return false;
+      }
+    }
+  }
+
+  //finish with free vertices...
+  const QList<int> freeVerticesIndex = mCurrentEditor->freeVerticesIndexes();
+  for ( const int vertexIndex : freeVerticesIndex )
+  {
+    const QgsPointXY &mapPoint = mapVertexXY( vertexIndex );
+    if ( deformedFace.contains( &mapPoint ) )
+      return false;
+  }
+
+  return true;
+}
+
+
+
 void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mCurrentEditor )
     return;
+
+  const QgsPointXY &mapPoint = e->mapPoint();
+
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mZValueWidget )
     mZValueWidget->setFocus( Qt::TabFocusReason );
 
-  if ( mLeftButtonPressed )
-    mCurrentState = Selecting;
+  if ( mLeftButtonPressed && mCurrentState != MovingVertex )
+  {
+    if ( mCurrentState == MoveVertex && mCanMovingStart )
+    {
+      mCanMovingStart = false;
+      mCurrentState = MovingVertex;
+    }
+    else
+      mCurrentState = Selecting;
+  }
 
   switch ( mCurrentState )
   {
-    case Default:
-      highlightCurrentHoveredFace( e->mapPoint() );
-      highlightCloseVertex( e->mapPoint() );
+    case MoveVertex:
+    case Digitizing:
+      highlightCurrentHoveredFace( mapPoint );
+      highlightCloseEdge( mapPoint );
+      highlightCloseVertex( mapPoint );
       break;
     case AddingNewFace:
-      mNewFaceBand->movePoint( e->mapPoint() );
-      highlightCurrentHoveredFace( e->mapPoint() );
-      highlightCloseVertex( e->mapPoint() );
+      mNewFaceBand->movePoint( mapPoint );
+      highlightCurrentHoveredFace( mapPoint );
+      highlightCloseEdge( mapPoint );
+      highlightCloseVertex( mapPoint );
       if ( testNewVertexInFaceCanditate( mCurrentVertexIndex ) )
         mNewFaceBand->setColor( mValidFaceColor );
       else
@@ -450,7 +649,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       break;
     case Selecting:
     {
-      QRect rect = QRect( e->pos(), mStartSelectionPos );
+      const QRect &rect = QRect( e->pos(), mStartSelectionPos );
       mSelectPartiallyContainedFace = e->pos().x() < mStartSelectionPos.x();
       if ( mSelectPartiallyContainedFace )
       {
@@ -466,6 +665,81 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       mSelectionBand->setToCanvasRectangle( rect );
     }
     break;
+    case MovingVertex:
+    {
+      const QgsVector &translation = mapPoint - mStartMovingPoint;
+      mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
+      mMovingVerticesRubberband->reset( QgsWkbTypes::PointGeometry );
+      mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+      QgsGeometry faceGeom = mSelectedFacesRubberband->asGeometry();
+      faceGeom.translate( translation.x(), translation.y() );
+      mMovingFacesRubberband->setToGeometry( faceGeom );
+
+      mIsMovingAllowed = true;
+      for ( QMap<int, SelectedVertexData>::const_iterator it = mSelectedVertices.constBegin(); it != mSelectedVertices.constEnd(); ++it )
+      {
+        const QgsPointXY &point1 = mapVertexXY( it.key() ) + translation;
+        const SelectedVertexData &vertexData = it.value();
+        for ( int i = 0; i < vertexData.meshFixedEdges.count(); ++i )
+        {
+          const QgsPointXY point2 = mapVertexXY( vertexData.meshFixedEdges.at( i ).at( 1 ) );
+          QgsGeometry edge( new QgsLineString( {point1, point2} ) );
+          mMovingEdgesRubberband->addGeometry( edge );
+          if ( mIsMovingAllowed )
+            mIsMovingAllowed &= testBorderMovingFace( nativeFace( vertexData.meshFixedEdges.at( i ).at( 0 ) ), translation );
+        }
+
+        for ( int i = 0; i < vertexData.selectedEdges.count(); ++i )
+        {
+          const QgsPointXY point2 = mapVertexXY( vertexData.selectedEdges.at( i ).at( 1 ) ) + translation;
+          const QgsPointXY middlePoint( ( point1.x() + point2.x() ) / 2, ( point1.y() + point2.y() ) / 2 );
+          if ( !faceGeom.contains( &middlePoint ) )
+          {
+            QgsGeometry edge( new QgsLineString( {point1, point2} ) );
+            mMovingEdgesRubberband->addGeometry( edge );
+          }
+        }
+      }
+
+      if ( mIsMovingAllowed )
+      {
+        //to finish test if the polygons formed by the moving faces contains something else
+        const QList<int> &faceIndexesIntersect = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( faceGeom.boundingBox() );
+        for ( const int faceIndex : faceIndexesIntersect )
+        {
+          if ( mConcernedFaceBySelection.contains( faceIndex ) )
+            continue;
+          const QgsGeometry otherFaceGeom( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceIndex ) ) ) );
+          mIsMovingAllowed &= !faceGeom.intersects( otherFaceGeom );
+          if ( !mIsMovingAllowed )
+            break;
+        }
+
+        if ( mIsMovingAllowed ) //last check, the free vertices...
+        {
+          const QList<int> &freeVerticesIndexes = mCurrentEditor->freeVerticesIndexes();
+          for ( const int vertexIndex : freeVerticesIndexes )
+          {
+            const QgsPointXY &pointInMap = mapVertexXY( vertexIndex );
+            mIsMovingAllowed &= !faceGeom.contains( &pointInMap );
+            if ( !mIsMovingAllowed )
+              break;
+          }
+        }
+      }
+
+      if ( mIsMovingAllowed )
+      {
+        mMovingFacesRubberband->setFillColor( QColor( 0, 200, 0, 100 ) );
+        mMovingEdgesRubberband->setColor( QColor( 0, 200, 0, 100 ) );
+      }
+      else
+      {
+        mMovingFacesRubberband->setFillColor( QColor( 200, 0, 0, 100 ) );
+        mMovingEdgesRubberband->setColor( QColor( 200, 0, 0, 100 ) );
+      }
+    }
+    break;
   }
 
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
@@ -477,7 +751,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
 
   switch ( mCurrentState )
   {
-    case Default:
+    case Digitizing:
     {
       if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ControlModifier ) )
       {
@@ -492,13 +766,12 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
 
       if ( e->key() == Qt::Key_Escape )
       {
-        clearSelectedvertex();
+        clearSelection();
       }
 
-      if ( e->key() == Qt::Key_Enter )
+      if ( e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter )
       {
         applyZValueOnSelectedVertices();
-        e->accept();
       }
     }
     break;
@@ -510,7 +783,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         if ( !mNewFaceCandidate.isEmpty() )
           mNewFaceCandidate.removeLast();
         if ( mNewFaceCandidate.isEmpty() )
-          mCurrentState = Default;
+          mCurrentState = Digitizing;
         e->accept();
       }
 
@@ -518,12 +791,15 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       {
         mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
         mNewFaceCandidate.clear();
-        mCurrentState = Default;
+        mCurrentState = Digitizing;
         e->accept();
       }
     }
     break;
     case Selecting:
+    case MoveVertex:
+    case MovingVertex:
+      break;
       break;
   }
 }
@@ -534,7 +810,7 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
 
   switch ( mCurrentState )
   {
-    case Default:
+    case Digitizing:
       break;
     case AddingNewFace:
       if ( e->key() == Qt::Key_Backspace )
@@ -555,8 +831,7 @@ void QgsMapToolEditMeshFrame::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 void QgsMapToolEditMeshFrame::onEditingStopped()
 {
   mCurrentEditor = nullptr;
-  updateFreeVertices();
-  deleteZvalueWidget();
+  deactivate();
 }
 
 const QgsMeshVertex QgsMapToolEditMeshFrame::mapVertex( int index ) const
@@ -567,6 +842,12 @@ const QgsMeshVertex QgsMapToolEditMeshFrame::mapVertex( int index ) const
   return mCurrentLayer->triangularMesh()->vertices().at( index );
 }
 
+const QgsPointXY QgsMapToolEditMeshFrame::mapVertexXY( int index ) const
+{
+  const QgsMeshVertex &v = mapVertex( index );
+  return QgsPointXY( v.x(), v.y() );
+}
+
 const QgsMeshFace QgsMapToolEditMeshFrame::nativeFace( int index ) const
 {
   if ( mCurrentLayer.isNull() || ! mCurrentLayer->nativeMesh() )
@@ -575,11 +856,10 @@ const QgsMeshFace QgsMapToolEditMeshFrame::nativeFace( int index ) const
   return mCurrentLayer->nativeMesh()->face( index );
 }
 
-void QgsMapToolEditMeshFrame::onEdidingStarted()
+void QgsMapToolEditMeshFrame::onEditingStarted()
 {
   setCurrentLayer( canvas()->currentLayer() );
 }
-
 
 void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 {
@@ -590,7 +870,7 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 
   if ( mCurrentLayer )
   {
-    disconnect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEdidingStarted );
+    disconnect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     disconnect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
   }
 
@@ -603,14 +883,17 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
   }
 
   mCurrentEditor = nullptr;
+
   if ( mCurrentLayer )
   {
-    connect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEdidingStarted );
+    connect( mCurrentLayer, &QgsMeshLayer::editingStarted, this, &QgsMapToolEditMeshFrame::onEditingStarted );
     connect( mCurrentLayer, &QgsMeshLayer::editingStopped, this, &QgsMapToolEditMeshFrame::onEditingStopped );
 
     if ( mCurrentLayer->isEditable() )
     {
       mCurrentEditor = mCurrentLayer->meshEditor();
+      if ( !mIsInitialized )
+        initialize();
       connect( mCurrentEditor, &QgsMeshEditor::meshEdited, this, &QgsMapToolEditMeshFrame::onEdit );
     }
   }
@@ -621,12 +904,9 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
     updateFreeVertices();
   }
 
-  if ( !mCurrentEditor && mZValueWidget )
+  if ( !mCurrentEditor )
   {
-    deleteZvalueWidget();
-    mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-    mVertexBand->reset( QgsWkbTypes::PointGeometry );
-    clear();
+    deactivate();
   }
 }
 
@@ -641,11 +921,25 @@ QgsPointSequence QgsMapToolEditMeshFrame::nativeFaceGeometry( int faceIndex ) co
   const QgsMeshFace &face = mCurrentLayer->nativeMesh()->face( faceIndex );
 
   for ( const int index : face )
-  {
     faceGeometry.append( mapVertex( index ) );
-  }
 
   return faceGeometry;
+}
+
+QVector<QgsPointXY> QgsMapToolEditMeshFrame::edgeGeometry( const QgsMapToolEditMeshFrame::Edge &edge ) const
+{
+  const QVector<int> &vertexIndexes = edgeVertices( edge );
+
+  return {mapVertexXY( vertexIndexes.at( 0 ) ), mapVertexXY( vertexIndexes.at( 1 ) )};
+}
+
+QVector<int> QgsMapToolEditMeshFrame::edgeVertices( const QgsMapToolEditMeshFrame::Edge &edge ) const
+{
+  const QgsMeshFace &face = nativeFace( edge.at( 0 ) );
+  int faceSize = face.count();
+  int posInface = ( face.indexOf( edge.at( 1 ) ) + faceSize - 1 ) % faceSize;
+
+  return {face.at( posInface ), edge.at( 1 )};
 }
 
 QgsPointXY QgsMapToolEditMeshFrame::newFaceMarkerPosition( int vertexIndex )
@@ -691,11 +985,11 @@ QgsPointXY QgsMapToolEditMeshFrame::newFaceMarkerPosition( int vertexIndex )
 
 void QgsMapToolEditMeshFrame::addVertexToFaceCanditate( int vertexIndex )
 {
-  if ( vertexIndex == -1 && vertexIndex != mNewFaceCandidate.last() )
+  if ( vertexIndex == -1 || ( !mNewFaceCandidate.isEmpty() && vertexIndex == mNewFaceCandidate.last() ) )
     return;
 
-  mNewFaceBand->movePoint( mapVertex( vertexIndex ) );
-  mNewFaceBand->addPoint( mapVertex( vertexIndex ) );
+  mNewFaceBand->movePoint( mapVertexXY( vertexIndex ) );
+  mNewFaceBand->addPoint( mapVertexXY( vertexIndex ) );
   mNewFaceCandidate.append( vertexIndex );
 }
 
@@ -713,7 +1007,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
     mCurrentZValue = mZValueWidget->zValue();
 
   if ( !( modifiers & Qt::ControlModifier ) && !( modifiers & Qt::ShiftModifier ) )
-    clearSelectedvertex();
+    clearSelection();
 
   bool removeVertices = modifiers & Qt::ShiftModifier;
 
@@ -733,7 +1027,7 @@ void QgsMapToolEditMeshFrame::setSelectedVertices( const QList<int> newSelectedV
       marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
       marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
       marker->setColor( Qt::blue );
-      marker->setCenter( mapVertex( vertexIndex ) );
+      marker->setCenter( mapVertexXY( vertexIndex ) );
       marker->setZValue( 2 );
       mSelectedVerticesMarker[vertexIndex] = marker;
     }
@@ -770,6 +1064,7 @@ void QgsMapToolEditMeshFrame::clearSelectedvertex()
   mSelectedVerticesMarker.clear();
   if ( mZValueWidget )
     mZValueWidget->setZValue( mCurrentZValue );
+  mSelectedFacesRubberband->reset();
 }
 
 void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
@@ -783,7 +1078,7 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
   }
   else
   {
-    clearSelectedvertex();
+    clearSelection();
     mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
     mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
@@ -792,7 +1087,7 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
 
 void QgsMapToolEditMeshFrame::removeFacesFromMesh()
 {
-  QgsMeshEditingError error = mCurrentEditor->removeFaces( mSelectedFaces );
+  const QgsMeshEditingError &error = mCurrentEditor->removeFaces( mSelectedFaces.values() );
   if ( error != QgsMeshEditingError() )
   {
     QgisApp::instance()->messageBar()->pushWarning(
@@ -867,9 +1162,7 @@ void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
 
 void QgsMapToolEditMeshFrame::prepareSelection()
 {
-  const QgsMesh mesh = *mCurrentLayer->nativeMesh();
-
-  QSet<int> concernedFaces;
+  mConcernedFaceBySelection.clear();
   QSet<int> borderSelectionVertices;
   QMap<int, SelectedVertexData> movingVertices;
 
@@ -899,7 +1192,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
         borderSelectionVertices.insert( vertexIndex );
       }
 
-      concernedFaces.insert( circulator.currentFaceIndex() );
+      mConcernedFaceBySelection.insert( circulator.currentFaceIndex() );
     }
     while ( circulator.turnCounterClockwise() != firstface && circulator.currentFaceIndex() != -1 );
 
@@ -917,23 +1210,22 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   // remove faces that have at least one vertex not selected
-  mSelectedFaces = concernedFaces.values();
-  for ( const int faceIndex : std::as_const( mSelectedFaces ) )
+  mSelectedFaces = mConcernedFaceBySelection;
+  for ( const int faceIndex : std::as_const( mConcernedFaceBySelection ) )
   {
-    const QgsMeshFace &face = mesh.face( faceIndex );
+    const QgsMeshFace &face = nativeFace( faceIndex );
     for ( const int vi : std::as_const( face ) )
       if ( !mSelectedVertices.contains( vi ) )
       {
-        concernedFaces.remove( faceIndex );
+        mSelectedFaces.remove( faceIndex );
         continue;
       }
   }
 
-  mSelectedFaces = concernedFaces.values();
-
   if ( !mSelectedFaces.isEmpty() )
   {
-    QgsGeometry faceGeometrie( new QgsPolygon( new QgsLineString( nativeFaceGeometry( mSelectedFaces.at( 0 ) ) ) ) );
+    QList<int> faceList = mSelectedFaces.values();
+    QgsGeometry faceGeometrie( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceList.at( 0 ) ) ) ) );
     if ( mSelectedFaces.count() == 1 )
     {
       mSelectedFacesRubberband->setToGeometry( faceGeometrie );
@@ -945,7 +1237,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
 
       QVector<QgsGeometry> otherFaces( mSelectedFaces.count() );
       for ( int i = 0; i < mSelectedFaces.count(); ++i )
-        otherFaces[i] = QgsGeometry( new QgsPolygon( new QgsLineString( nativeFaceGeometry( mSelectedFaces.at( i ) ) ) ) );
+        otherFaces[i] = QgsGeometry( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceList.at( i ) ) ) ) );
       QString error;
       QgsGeometry allFaces( geomEngine->combine( otherFaces, &error ) );
       mSelectedFacesRubberband->setToGeometry( allFaces );
@@ -1055,8 +1347,8 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
     if ( closeVert >= 0 && ( mCurrentState != AddingNewFace || isBoundary || isFree ) )
     {
       mCurrentVertexIndex = closeVert;
-      mVertexBand->addPoint( mapVertex( closeVert ) );
-      if ( mCurrentState == Default )
+      mVertexBand->addPoint( mapVertexXY( closeVert ) );
+      if ( mCurrentState == Digitizing )
       {
         if ( isBoundary || isFree )
         {
@@ -1067,6 +1359,59 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
       }
     }
   }
+}
+
+void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
+{
+  if ( mCurrentLayer.isNull() )
+    return;
+
+  double tolerance = QgsTolerance::vertexSearchRadius( mCanvas->mapSettings() );
+  mCurrentEdge = {-1, -1};
+
+  QList<int> candidateFaceIndexes;
+
+  if ( mCurrentFaceIndex != -1 )
+  {
+    candidateFaceIndexes.append( mCurrentFaceIndex );
+  }
+  else
+  {
+    QgsRectangle searchRect( mapPoint.x() - tolerance, mapPoint.y() - tolerance, mapPoint.x() + tolerance, mapPoint.y() + tolerance );
+    candidateFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( searchRect );
+  }
+
+  double minimumDistance = std::numeric_limits<double>::max();
+  for ( const int faceIndex : std::as_const( candidateFaceIndexes ) )
+  {
+    const QgsMeshFace &face = nativeFace( faceIndex );
+    int faceSize = face.count();
+    for ( int i = 0; i < faceSize; ++i )
+    {
+      int iv1 = face.at( i );
+      int iv2 = face.at( ( i + 1 ) % faceSize );
+
+      QgsPointXY pt1 = mapVertexXY( iv1 );
+      QgsPointXY pt2 = mapVertexXY( iv2 );
+
+      QgsPointXY pointOneEdge;
+      double distance = sqrt( mapPoint.sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pointOneEdge ) );
+      if ( distance < tolerance && distance < minimumDistance )
+      {
+        mCurrentEdge = {faceIndex, iv2};
+        minimumDistance = distance;
+      }
+    }
+  }
+
+  mEdgeBand->reset();
+  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+  {
+    const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
+    mEdgeBand->addPoint( edgeGeom.at( 0 ) );
+    mEdgeBand->addPoint( edgeGeom.at( 1 ) );
+  }
+
 }
 
 void QgsMapToolEditMeshFrame::createZValueWidget()
@@ -1093,6 +1438,30 @@ void QgsMapToolEditMeshFrame::deleteZvalueWidget()
   }
 
   mZValueWidget = nullptr;
+}
+
+void QgsMapToolEditMeshFrame::clearSelection()
+{
+  mSelectedVertices.clear();
+  mSelectedFaces.clear();
+  mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
+  mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
+  qDeleteAll( mSelectedVerticesMarker );
+  mSelectedVerticesMarker.clear();
+  if ( mZValueWidget )
+    mZValueWidget->setZValue( mCurrentZValue );
+}
+
+void QgsMapToolEditMeshFrame::clearCanvasHelpers()
+{
+  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+  mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
+  mVertexBand->reset( QgsWkbTypes::PointGeometry );
+  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+  qDeleteAll( mFreeVertexMarker );
+  mFreeVertexMarker.clear();
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+  mSelectFaceMarker->setVisible( false );
 }
 
 void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch )
@@ -1132,7 +1501,7 @@ void QgsMapToolEditMeshFrame::updateFreeVertices()
   {
     mFreeVertexMarker.append( new QgsVertexMarker( canvas() ) );
     QgsVertexMarker *marker = mFreeVertexMarker.last();
-    marker->setCenter( mapVertex( freeVertexIndex ) );
+    marker->setCenter( mapVertexXY( freeVertexIndex ) );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setIconSize( QgsGuiUtils::scaleIconSize( 7 ) );
     marker->setColor( freeVertexColor );
@@ -1146,12 +1515,25 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
     return -1;
 
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+
+  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+  {
+    const QVector<int> &edge = edgeVertices( mCurrentEdge );
+
+    for ( const int vertexIndex : edge )
+    {
+      const QgsPointXY &meshVertex = mapVertexXY( vertexIndex );
+      if ( meshVertex.distance( mapPoint ) < tolerance )
+        return vertexIndex;
+    }
+  }
+
   if ( mCurrentFaceIndex >= 0 )
   {
     const QgsMeshFace &face = mCurrentLayer->nativeMesh()->face( mCurrentFaceIndex );
     for ( const int vertexIndex : face )
     {
-      const QgsPointXY &meshVertex = mapVertex( vertexIndex );
+      const QgsPointXY &meshVertex = mapVertexXY( vertexIndex );
       if ( meshVertex.distance( mapPoint ) < tolerance )
         return vertexIndex;
     }
@@ -1164,7 +1546,7 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
   const QList<int> &freeVertexIndexes = mCurrentEditor->freeVerticesIndexes();
   for ( const int vertexIndex : freeVertexIndexes )
   {
-    const QgsPointXY &meshVertex = mapVertex( vertexIndex );
+    const QgsPointXY &meshVertex = mapVertexXY( vertexIndex );
     if ( std::sqrt( meshVertex.sqrDist( mapPoint ) < tolerance ) )
       return vertexIndex;
   }

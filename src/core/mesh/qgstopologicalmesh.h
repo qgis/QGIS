@@ -101,6 +101,15 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns the new Z values of vertices that have changed their coordinates
         QList<double> newVerticesZValues() const;
 
+        //! Returns the new (X,Y) values of vertices that have changed their coordinates
+        QList<QgsPointXY> newVerticesXYValues() const;
+
+        //! Returns the old (X,Y) values of vertices that have changed their coordinates
+        QList<QgsPointXY> oldVerticesXYValues() const;
+
+        //! Returns a list of the native face indexes that have a geometry changed
+        QList<int> nativeFacesIndexesGeometryChanged() const;
+
       private:
         int mAddedFacesFirstIndex = 0;
         QList<int> mFaceIndexesToRemove; // the removed faces indexes in the mesh
@@ -120,6 +129,9 @@ class CORE_EXPORT QgsTopologicalMesh
         QList<int> mChangeCoordinateVerticesIndexes;
         QList<double> mNewZValues;
         QList<double> mOldZValues;
+        QList<QgsPointXY> mNewXYValues;
+        QList<QgsPointXY> mOldXYValues;
+        QList<int> mNativeFacesIndexesGeometryChanged;
 
         int addedFaceIndexInMesh( int internalIndex ) const;
         int removedFaceIndexInmesh( int internalIndex ) const;
@@ -213,6 +225,12 @@ class CORE_EXPORT QgsTopologicalMesh
      */
     Changes changeZValue( const QList<int> &verticesIndexes, const QList<double> &newValues );
 
+    /**
+     * Changes the (X,Y) values of the vertices with indexes in \a vertices indexes with the values in \a newValues
+     */
+    Changes changeXYValue( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+
+
     //! Applies the changes
     void applyChanges( const Changes &changes );
 
@@ -247,7 +265,7 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
     QSet<int> concernedFacesBy( const QList<int> faceIndexes ) const;
 
-    // Followong methor are used to retrieve free vertex without going through all the vertices container.
+    // Following methods are used to retrieve free vertex without going through all the vertices container.
     // For now, we use only QSet<int> with vertex indexes, but,
     // maybe later we could use more sophisticated reference (spatial index?), to retrieve fre vertex in an extent
     void dereferenceAsFreeVertex( int vertexIndex );
