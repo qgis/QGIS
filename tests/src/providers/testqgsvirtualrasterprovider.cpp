@@ -347,7 +347,10 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
     qDebug() << endl;
     //change what u are outputting (not onl crs, but insead everything)
-    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).crs.authid();
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).crs.authid();
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).formula;
+    qDebug() << QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal")).extent.toString();
+
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
