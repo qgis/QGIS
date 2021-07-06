@@ -349,6 +349,19 @@ void QgsProviderSublayerModel::NonLayerItem::setIcon( const QIcon &icon )
   mIcon = icon;
 }
 
+bool QgsProviderSublayerModel::NonLayerItem::operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const
+{
+  return mType == other.mType
+         && mName == other.mName
+         && mDescription == other.mDescription
+         && mUri == other.mUri;
+}
+
+bool QgsProviderSublayerModel::NonLayerItem::operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const
+{
+  return !( *this == other );
+}
+
 //
 // QgsProviderSublayerProxyModel
 //

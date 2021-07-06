@@ -149,6 +149,36 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Name), 'layer 3')
         self.assertEqual(model.data(model.index(0, 0), QgsProviderSublayerModel.Role.Description), None)
 
+    def test_non_layer_item(self):
+        item1 = QgsProviderSublayerModel.NonLayerItem()
+        item1.setUri('item uri 1')
+        item1.setName('item name 1')
+        item1.setType('item type 1')
+        item1.setDescription('item desc 1')
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        self.assertEqual(item1, item2)
+        self.assertFalse(item1 != item2)
+
+        item2.setUri('uu')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setName('item name 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setType('item type 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
+        item2 = QgsProviderSublayerModel.NonLayerItem(item1)
+        item2.setDescription('item description 2')
+        self.assertNotEqual(item1, item2)
+        self.assertTrue(item1 != item2)
+
     def test_model_with_non_layer_items(self):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)
