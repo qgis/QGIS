@@ -51,13 +51,17 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
     emit savedAsImage( mCaptureFileName );
   } );
 
+  mSplitter = new QSplitter( this );
+
   mContainer = QWidget::createWindowContainer( mEngine->window() );
   mNavigationWidget = new Qgs3DNavigationWidget( this );
 
+  mSplitter->addWidget( mContainer );
+  mSplitter->addWidget( mNavigationWidget );
+
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setContentsMargins( 0, 0, 0, 0 );
-  hLayout->addWidget( mContainer, 1 );
-  hLayout->addWidget( mNavigationWidget );
+  hLayout->addWidget( mSplitter );
   this->setOnScreenNavigationVisibility(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), true, QgsSettings::Gui ).toBool()
   );

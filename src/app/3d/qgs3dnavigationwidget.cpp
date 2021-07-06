@@ -16,7 +16,7 @@
 #include <QGridLayout>
 #include <QToolButton>
 #include <QObject>
-
+#include <QHeaderView>
 #include "qgis.h"
 
 Q_NOWARN_DEPRECATED_PUSH
@@ -187,9 +187,42 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   }
   );
 
-  mNearFarPlaneLabel = new QLabel( this );
-  mCameraPositionLabel = new QLabel( this );
-  mCameraLookAtLabel = new QLabel( this );
+  mCameraInfo = new QTableView( this );
+  mCameraInfo->setEditTriggers( QAbstractItemView::NoEditTriggers );
+
+  mCameraInfoItemModel = new QStandardItemModel( this );
+
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
+
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 0, 0 ), QStringLiteral( "Near plane" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 1, 0 ), QStringLiteral( "Far plane" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 2, 0 ), QStringLiteral( "Camera X pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 3, 0 ), QStringLiteral( "Camera Y pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 4, 0 ), QStringLiteral( "Camera Z pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 5, 0 ), QStringLiteral( "Looking at X" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 6, 0 ), QStringLiteral( "Looking at Y" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 7, 0 ), QStringLiteral( "Looking at Z" ) );
+
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 0, 1 ), QStringLiteral( "Near plane" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 1, 1 ), QStringLiteral( "Far plane" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 2, 1 ), QStringLiteral( "Camera X pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 3, 1 ), QStringLiteral( "Camera Y pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 4, 1 ), QStringLiteral( "Camera Z pos" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 5, 1 ), QStringLiteral( "Looking at X" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 6, 1 ), QStringLiteral( "Looking at Y" ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 7, 1 ), QStringLiteral( "Looking at Z" ) );
+
+  mCameraInfo->setModel( mCameraInfoItemModel );
+  mCameraInfo->verticalHeader()->hide();
+  mCameraInfo->horizontalHeader()->hide();
+  mCameraInfo->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeMode::Stretch );
 
   QGridLayout *gridLayout = new QGridLayout( this );
   gridLayout->addWidget( mTiltUpButton, 0, 0 );
@@ -201,11 +234,11 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   gridLayout->addWidget( mMoveRightButton, 1, 3, 2, 1, Qt::AlignCenter );
   gridLayout->addWidget( mMoveDownButton, 3, 1, 1, 2, Qt::AlignCenter );
   gridLayout->addWidget( mMoveLeftButton, 1, 0, 2, 1, Qt::AlignCenter );
-  gridLayout->addWidget( mTiltDownButton, 3, 4 );
 
-  gridLayout->addWidget( mNearFarPlaneLabel, 4, 0, 1, 4, Qt::AlignLeft );
-  gridLayout->addWidget( mCameraPositionLabel, 5, 0, 1, 4, Qt::AlignLeft );
-  gridLayout->addWidget( mCameraLookAtLabel, 6, 0, 1, 4, Qt::AlignLeft );
+  QHBoxLayout *layout = new QHBoxLayout( this );
+  layout->addWidget( mCameraInfo );
+
+  gridLayout->addLayout( layout, 4, 0, 1, 4, Qt::AlignCenter );
 
   gridLayout->setAlignment( Qt::AlignTop );
 }
@@ -214,9 +247,13 @@ void Qgs3DNavigationWidget::updateFromCamera()
 {
   // Make sure the angle is between 0 - 359
   whileBlocking( mCompas )->setValue( fmod( mParent3DMapCanvas->cameraController()->yaw() + 360, 360 ) );
-  mNearFarPlaneLabel->setText( QStringLiteral( "near: %1, far: %2" ).arg( mParent3DMapCanvas->cameraController()->camera()->nearPlane() ).arg( mParent3DMapCanvas->cameraController()->camera()->farPlane() ) );
-  QVector3D cameraPosition = mParent3DMapCanvas->cameraController()->camera()->position();
-  QgsVector3D lookingAt = mParent3DMapCanvas->cameraController()->lookingAtPoint();
-  mCameraPositionLabel->setText( QStringLiteral( "Camera position x: %1, y: %2, z: %3" ).arg( cameraPosition.x() ).arg( cameraPosition.y() ).arg( cameraPosition.z() ) );
-  mCameraLookAtLabel->setText( QStringLiteral( "Camera looking at x: %1, y: %2, z: %3" ).arg( lookingAt.x() ).arg( lookingAt.y() ).arg( lookingAt.z() ) );
+
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 0, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->camera()->nearPlane() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 1, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->camera()->farPlane() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 2, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->camera()->position().x() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 3, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->camera()->position().y() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 4, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->camera()->position().z() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 5, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->lookingAtPoint().x() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 6, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->lookingAtPoint().y() ) );
+  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 7, 1 ), QStringLiteral( "%1" ).arg( mParent3DMapCanvas->cameraController()->lookingAtPoint().z() ) );
 }

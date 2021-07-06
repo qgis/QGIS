@@ -20,6 +20,8 @@
 #include <QGridLayout>
 #include <QToolButton>
 #include <QLabel>
+#include <QTableView>
+#include <QStandardItemModel>
 
 class QwtCompass;
 
@@ -50,9 +52,8 @@ class Qgs3DNavigationWidget : public QWidget
     QToolButton *mMoveDownButton = nullptr;
     QToolButton *mMoveLeftButton = nullptr;
     QwtCompass *mCompas = nullptr;
-    QLabel *mNearFarPlaneLabel = nullptr;
-    QLabel *mCameraPositionLabel = nullptr;
-    QLabel *mCameraLookAtLabel = nullptr;
+    QTableView *mCameraInfo = nullptr;
+    QStandardItemModel *mCameraInfoItemModel = nullptr;
 };
 
 #endif // QGS3DNAVIGATIONWIDGET_H
