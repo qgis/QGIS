@@ -67,7 +67,7 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
         dialog.setFields(fields)
         dialog.setTableName('no_lock_me_down_again')
 
-        #dialog.exec_()
+        # dialog.exec_()
 
         geom_type_combo = dialog.findChildren(QComboBox, 'mGeomTypeCbo')[0]
         geom_name_le = dialog.findChildren(QLineEdit, 'mGeomColumn')[0]
