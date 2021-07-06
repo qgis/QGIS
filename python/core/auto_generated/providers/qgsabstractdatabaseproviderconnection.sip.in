@@ -50,7 +50,7 @@ is not supported or cannot be performed without errors.
 
         QStringList columns() const;
 %Docstring
-Returns the column names
+Returns the column names.
 %End
 
         QList<QList<QVariant> > rows( QgsFeedback *feedback = 0 );
@@ -66,7 +66,7 @@ all the rows, an optional ``feedback`` can be used to interrupt the fetching loo
 
         bool hasNextRow() const;
 %Docstring
-Returns ``True`` if there are more rows to fetch
+Returns ``True`` if there are more rows to fetch.
 
 .. seealso:: :py:func:`nextRow`
 
@@ -75,7 +75,7 @@ Returns ``True`` if there are more rows to fetch
 
         QList<QVariant> nextRow() const;
 %Docstring
-Returns the next result row or an empty row if there are no rows left
+Returns the next result row or an empty row if there are no rows left.
 
 .. seealso:: :py:func:`hasNextRow`
 
@@ -84,7 +84,7 @@ Returns the next result row or an empty row if there are no rows left
 
         qlonglong fetchedRowCount( ) const;
 %Docstring
-Returns the number of fetched rows
+Returns the number of fetched rows.
 
 .. seealso:: :py:func:`rowCount`
 %End
@@ -148,39 +148,40 @@ Returns the number of fetched rows
 
         QString tableName() const;
 %Docstring
-Returns the table name
+Returns the table name.
 
 .. seealso:: :py:func:`defaultName`
 %End
 
         void setTableName( const QString &name );
 %Docstring
-Sets the table name to ``name``
+Sets the table name to ``name``.
 
 .. seealso:: :py:func:`defaultName`
 %End
 
         void addGeometryColumnType( const QgsWkbTypes::Type &type, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-Appends the geometry column ``type`` with the given ``srid`` to the geometry column types list
+Appends the geometry column ``type`` with the given ``srid`` to the geometry column types list.
 %End
 
         QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> geometryColumnTypes() const;
 %Docstring
 Returns the list of geometry column types and CRSs.
-The method returns a list of GeometryColumnType
+
+The method returns a list of GeometryColumnType.
 %End
 
         void setGeometryColumnTypes( const QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> &geometryColumnTypes );
 %Docstring
-Sets the geometry column types to ``geometryColumnTypes``
+Sets the geometry column types to ``geometryColumnTypes``.
 %End
 
         QString defaultName() const;
 %Docstring
-Returns the default name for the table entry
+Returns the default name for the table entry.
 
-It is usually the table name but in case there are multiple geometry
+This is usually the table name but in case there are multiple geometry
 columns, the geometry column name is appended to the table name.
 
 .. seealso:: :py:func:`geometryColumnCount`
@@ -189,67 +190,67 @@ columns, the geometry column name is appended to the table name.
         TableProperty at( int index ) const;
 %Docstring
 Returns the table property corresponding to the geometry type at
-the given ``index``
+the given ``index``.
 %End
 
         QString schema() const;
 %Docstring
-Returns the schema or an empty string for backends that do not support a schema
+Returns the schema or an empty string for backends that do not support a schema.
 %End
 
         void setSchema( const QString &schema );
 %Docstring
-Sets the ``schema``
+Sets the ``schema``.
 %End
 
         QString geometryColumn() const;
 %Docstring
-Returns the geometry column name
+Returns the geometry column name.
 %End
 
         void setGeometryColumn( const QString &geometryColumn );
 %Docstring
-Sets the geometry column name to ``geometryColumn``
+Sets the geometry column name to ``geometryColumn``.
 %End
 
         QStringList primaryKeyColumns() const;
 %Docstring
-Returns the list of primary key column names
+Returns the list of primary key column names.
 %End
 
         void setPrimaryKeyColumns( const QStringList &primaryKeyColumns );
 %Docstring
-Sets the primary key column names to ``primaryKeyColumns``
+Sets the primary key column names to ``primaryKeyColumns``.
 %End
 
         QList<QgsCoordinateReferenceSystem> crsList() const;
 %Docstring
-Returns the list of CRSs supported by the geometry column
+Returns the list of CRSs supported by the geometry column.
 %End
 
         TableFlags flags() const;
 %Docstring
-Returns the table flags
+Returns the table flags.
 %End
 
         void setFlags( const TableFlags &flags );
 %Docstring
-Sets the table ``flags``
+Sets the table ``flags``.
 %End
 
         QString comment() const;
 %Docstring
-Returns the table comment
+Returns the table comment.
 %End
 
         void setComment( const QString &comment );
 %Docstring
-Sets the table ``comment``
+Sets the table ``comment``.
 %End
 
         QVariantMap info() const;
 %Docstring
-Returns additional information about the table
+Returns additional information about the table.
 
 Provider classes may use this property
 to store custom bits of information.
@@ -257,7 +258,7 @@ to store custom bits of information.
 
         void setInfo( const QVariantMap &info );
 %Docstring
-Sets additional information about the table to ``info``
+Sets additional information about the table to ``info``.
 
 Provider classes may use this property
 to store custom bits of information.
@@ -265,24 +266,25 @@ to store custom bits of information.
 
         int geometryColumnCount() const;
 %Docstring
-Returns the number of geometry columns in the original table this entry refers to
+Returns the number of geometry columns in the original table this entry refers to.
 
-This information is used internally to build the :py:func:`defaultName`
+This information is used internally to build the :py:func:`defaultName`.
 %End
 
         void setGeometryColumnCount( int geometryColumnCount );
 %Docstring
-Sets the ``geometryColumnCount``
+Sets the ``geometryColumnCount``.
 %End
 
         void setFlag( const TableFlag &flag );
 %Docstring
-Sets a ``flag``
+Sets a ``flag``.
 %End
 
         int maxCoordinateDimensions() const;
 %Docstring
 Returns the maximum coordinate dimensions of the geometries of a vector table.
+
 This information is calculated from the geometry columns types.
 
 .. seealso:: :py:func:`geometryColumnTypes`
@@ -333,12 +335,14 @@ This information is calculated from the geometry columns types.
     QgsAbstractDatabaseProviderConnection( const QString &name );
 %Docstring
 Creates a new connection with ``name`` by reading its configuration from the settings.
+
 If a connection with this name cannot be found, an empty connection will be returned.
 %End
 
     QgsAbstractDatabaseProviderConnection( const QString &uri, const QVariantMap &configuration );
 %Docstring
 Creates a new connection from the given ``uri`` and ``configuration``.
+
 The connection is not automatically stored in the settings.
 
 .. seealso:: :py:func:`store`
@@ -353,7 +357,7 @@ Returns connection capabilities
 
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
 %Docstring
-Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
+Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 
 .. versionadded:: 3.16
 %End
@@ -362,9 +366,8 @@ Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
     virtual QString tableUri( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns the URI string for the given ``table`` and ``schema``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.12
 %End
@@ -372,70 +375,64 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual bool tableExists( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Checks whether a table ``name`` exists in the given ``schema``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void dropVectorTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Drops a vector (or aspatial) table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. note::
 
-   it is responsibility of the caller to handle open layers and registry entries.
+   It is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Drops a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. note::
 
-   it is responsibility of the caller to handle open layers and registry entries.
+   It is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
 Renames a vector or aspatial table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. note::
 
-   it is responsibility of the caller to handle open layers and registry entries.
+   It is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
 Renames a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. note::
 
-   it is responsibility of the caller to handle open layers and registry entries.
+   It is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void createSchema( const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Creates a new schema with the specified ``name``
+Creates a new schema with the specified ``name``.
 
 :raises QgsProviderConnectionException: 
 %End
@@ -443,22 +440,20 @@ Creates a new schema with the specified ``name``
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
 Drops an entire schema with the specified name.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param name: name of the schema to be dropped
 :param force: if ``True``, a DROP CASCADE will drop all related objects
 
 .. note::
 
-   it is responsibility of the caller to handle open layers and registry entries.
+   It is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const throw( QgsProviderConnectionException );
 %Docstring
 Deletes the field with the specified name.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param fieldName: name of the field to be deleted
 :param schema: name of the schema (schema is ignored if not supported by the backend).
@@ -469,15 +464,14 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End
 
     virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const throw( QgsProviderConnectionException );
 %Docstring
-Adds a field
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
+Adds a field.
 
 :param field: specification of the new field
 :param schema: name of the schema (schema is ignored if not supported by the backend).
@@ -487,7 +481,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End
@@ -508,21 +502,19 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
 Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array, optionally ``feedback`` can be provided.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. seealso:: :py:func:`execSql`
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual QueryResult execSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
 Executes raw ``sql`` and returns the (possibly empty) query results, optionally ``feedback`` can be provided.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. seealso:: :py:func:`executeSql`
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.18
 %End
@@ -530,9 +522,8 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
 Vacuum the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     struct SpatialIndexOptions
@@ -546,9 +537,7 @@ Creates a spatial index for the database table with given ``schema`` and ``name`
 
 The ``options`` argument can be used to provide extra options controlling the spatial index creation.
 
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
-
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.14
 %End
@@ -558,9 +547,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Determines whether a spatial index exists for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
 ignored if not supported by the backend).
 
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
-
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.14
 %End
@@ -570,9 +557,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 Deletes the existing spatial index for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
 ignored if not supported by the backend).
 
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
-
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.14
 %End
@@ -581,9 +566,8 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns information on a ``table`` in the given ``schema``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered or if the table does not exist.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered or if the table does not exist.
 
 .. note::
 
@@ -595,12 +579,11 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring
 Returns information on the tables in the given schema.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 :param schema: name of the schema (ignored if not supported by the backend)
 :param flags: filter tables by flags, this option completely overrides search options stored in the connection
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
 
@@ -608,22 +591,20 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
     virtual QStringList schemas() const throw( QgsProviderConnectionException );
 %Docstring
 Returns information about the existing schemas.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual QgsFields fields( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
 %Docstring
 Returns the fields of a ``table`` and ``schema``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered.
 
 .. note::
 
-   the default implementation creates a temporary vector layer, providers may
+   The default implementation creates a temporary vector layer, providers may
    choose to override this method for a greater efficiency.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End
@@ -639,7 +620,7 @@ Returns a list of native types supported by the connection.
 
     QString providerKey() const;
 %Docstring
-Returns the provider key
+Returns the provider key.
 
 .. versionadded:: 3.16
 %End
@@ -649,9 +630,9 @@ Returns the provider key
 
     void checkCapability( Capability capability ) const;
 %Docstring
-Checks if ``capability`` is supported and throws and exception if it's not
+Checks if ``capability`` is supported.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if the capability is not supported
 %End
 
 
