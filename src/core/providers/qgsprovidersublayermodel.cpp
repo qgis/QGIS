@@ -103,7 +103,7 @@ int QgsProviderSublayerModel::rowCount( const QModelIndex &parent ) const
   }
   else
   {
-    //no children for nw
+    //no children for now
     return 0;
   }
 }
