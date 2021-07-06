@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsexpressionutils.h"
 #include "qgscodeeditorsql.h"
 #include "qgsmessagelog.h"
 #include "qgsquerybuilder.h"
@@ -45,7 +46,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
     }
   }
          );
-  connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, [ = ] { updateButtons(); } );
+  connect( mSqlEditor, &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
   connect( mFilterToolButton, &QToolButton::pressed, this, [ = ]
   {
     if ( mConnection )
@@ -82,20 +83,20 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
     if ( ! collapsed )
     {
       // Configure the load layer interface
-      const bool showPkConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::PrimaryKeys )};
+      const bool showPkConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::PrimaryKeys )};
       mPkColumnsCheckBox->setVisible( showPkConfig );
       mPkColumnsComboBox->setVisible( showPkConfig );
 
-      const bool showGeometryColumnConfig {connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::GeometryColumn )};
+      const bool showGeometryColumnConfig {connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::GeometryColumn )};
       mGeometryColumnCheckBox->setVisible( showGeometryColumnConfig );
       mGeometryColumnComboBox->setVisible( showGeometryColumnConfig );
 
-      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::Filter ) };
+      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::Filter ) };
       mFilterLabel->setVisible( showFilterConfig );
       mFilterToolButton->setVisible( showFilterConfig );
       mFilterLineEdit->setVisible( showFilterConfig );
 
-      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability::SelectAtId ) };
+      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::SelectAtId ) };
       mAvoidSelectingAsFeatureIdCheckBox->setVisible( showDisableSelectAtId );
 
     }
@@ -120,7 +121,7 @@ void QgsQueryResultWidget::executeQuery()
 
   if ( mConnection )
   {
-    const auto sql = mSqlEditor->text( );
+    const QString sql { mSqlEditor->text( ) };
 
     mWasCanceled = false;
     mFeedback = std::make_unique<QgsFeedback>();
@@ -158,7 +159,7 @@ void QgsQueryResultWidget::executeQuery()
   }
   else
   {
-    showError( tr( "Connection error" ), tr( "Cannot execute query: connection to the database not set." ) );
+    showError( tr( "Connection error" ), tr( "Cannot execute query: connection to the database is not available." ) );
   }
 }
 
@@ -186,8 +187,8 @@ void QgsQueryResultWidget::updateSqlLayerColumns( )
   const bool hasPkInformation { ! mSqlVectorLayerOptions.primaryKeyColumns.isEmpty() };
   const bool hasGeomColInformation { ! mSqlVectorLayerOptions.geometryColumn.isEmpty() };
   static const QStringList geomColCandidates { QStringLiteral( "geom" ), QStringLiteral( "geometry" ),  QStringLiteral( "the_geom" ) };
-  const auto constCols { mModel->columns() };
-  for ( const auto &c : constCols )
+  const QStringList constCols { mModel->columns() };
+  for ( const QString &c : constCols )
   {
     const bool pkCheckedState = hasPkInformation ? mSqlVectorLayerOptions.primaryKeyColumns.contains( c ) : c.contains( QStringLiteral( "id" ), Qt::CaseSensitivity::CaseInsensitive );
     // Only check first match
@@ -241,7 +242,7 @@ void QgsQueryResultWidget::startFetching()
     }
     else
     {
-      if ( mQueryResultWatcher.result().rowCount() > 0 )
+      if ( mQueryResultWatcher.result().rowCount() != static_cast<long long>( Qgis::FeatureCountState::UnknownCount ) )
       {
         mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows)" ).arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ) ) );
       }
@@ -278,9 +279,9 @@ void QgsQueryResultWidget::startFetching()
           }
         }
         mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3" )
-                               .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ) )
-                               .arg( mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ) )
-                               .arg( mWasCanceled ? tr( "(stopped)" ) : QString() ) );
+                               .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ),
+                                     mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ),
+                                     mWasCanceled ? tr( "(stopped)" ) : QString() ) );
         if ( mActualRowCount != -1 )
         {
           mProgressBar->setValue( mModel->rowCount( mModel->index( -1, -1 ) ) );
@@ -361,7 +362,7 @@ void QgsQueryResultWidget::setConnection( QgsAbstractDatabaseProviderConnection 
   {
 
     // Add provider specific APIs
-    const auto keywordsDict { connection->sqlDictionary() };
+    const QMap<Qgis::SqlKeywordCategory, QStringList> keywordsDict { connection->sqlDictionary() };
     QStringList keywords;
     for ( auto it = keywordsDict.constBegin(); it != keywordsDict.constEnd(); it++ )
     {
@@ -421,12 +422,17 @@ void QgsConnectionsApiFetcher::fetchTokens()
 
     for ( const auto &schema : std::as_const( schemas ) )
     {
-      if ( mStopFetching ) { return; }
+
+      if ( mStopFetching )
+      {
+        return;
+      }
+
       QStringList tableNames;
       try
       {
-        const auto tables = mConnection->tables( schema );
-        for ( const auto &table : std::as_const( tables ) )
+        const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = mConnection->tables( schema );
+        for ( const QgsAbstractDatabaseProviderConnection::TableProperty &table : std::as_const( tables ) )
         {
           if ( mStopFetching ) { return; }
           tableNames.push_back( table.tableName() );
@@ -441,7 +447,12 @@ void QgsConnectionsApiFetcher::fetchTokens()
       // Get fields
       for ( const auto &table : std::as_const( tableNames ) )
       {
-        if ( mStopFetching ) { return; }
+
+        if ( mStopFetching )
+        {
+          return;
+        }
+
         QStringList fieldNames;
         try
         {
@@ -478,9 +489,7 @@ QgsQueryResultItemDelegate::QgsQueryResultItemDelegate( QObject *parent )
 QString QgsQueryResultItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
   Q_UNUSED( locale )
-  // TODO: use https://github.com/qgis/QGIS/pull/43705/files#diff-03e9f0d1977751f918b16f080b6595ff4f2183944e8aa6ac602d345325d8bcd5R440
-  //       when merged
-  QString result { QStyledItemDelegate::displayText( value, QLocale() ) };
+  QString result { QgsExpressionUtils::toLocalizedString( value ) };
   // Show no more than 255 characters
   if ( result.length() > 255 )
   {

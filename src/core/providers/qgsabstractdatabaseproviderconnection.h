@@ -117,14 +117,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          *
          * \see rowCount()
          */
-        qlonglong fetchedRowCount( ) const;
+        long long fetchedRowCount( ) const;
 
         /**
          * Returns the number of rows returned by a SELECT query or -1 if unknown
          *
          * \see fetchedRowCount()
          */
-        qlonglong rowCount( ) const;
+        long long rowCount( ) const;
 
 
 #ifdef SIP_RUN
@@ -168,10 +168,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
             bool hasNextRow() const;
 
             //! Returns the number of actually fetched rows
-            qlonglong fetchedRowCount();
+            long long fetchedRowCount();
 
-            //! Returns the total number of rows returned by a SELECT query or -1 if this is not known.
-            qlonglong rowCount();
+            //! Returns the total number of rows returned by a SELECT query or Qgis::FeatureCountState::UnknownCount ( -1 ) if this is not supported by the provider.
+            long long rowCount();
 
             virtual ~QueryResultIterator() = default;
 
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
             virtual QVariantList nextRowPrivate() = 0;
             virtual bool hasNextRowPrivate() const = 0;
-            virtual qlonglong rowCountPrivate() const = 0;
+            virtual long long rowCountPrivate() const = 0;
 
             mutable qlonglong mFetchedRowCount = 0;
             mutable QMutex mMutex;
@@ -223,12 +223,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     struct CORE_EXPORT SqlVectorLayerOptions
     {
-      QString sql; //! The SQL expression that defines the SQL (query) layer
-      QString filter; //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
-      QString layerName; //! Optional name for the new layer
-      QStringList primaryKeyColumns; //! List of primary key column names
-      QString geometryColumn; //! Name of the geometry column
-      bool disableSelectAtId; //! If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      QString sql; //!< The SQL expression that defines the SQL (query) layer
+      QString filter; //!< Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
+      QString layerName; //!< Optional name for the new layer
+      QStringList primaryKeyColumns; //!< List of primary key column names
+      QString geometryColumn; //!< Name of the geometry column
+      bool disableSelectAtId; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
     };
 
     /**
@@ -491,51 +491,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum GeometryColumnCapability
     {
-      Z = 1 << 1,                    //! Supports Z dimension
-      M = 1 << 2,                    //! Supports M dimension
-      SinglePart = 1 << 3,           //! Multi and single part types are distinct types
-      Curves = 1 << 4                //! Supports curves
+      Z = 1 << 1,                    //!< Supports Z dimension
+      M = 1 << 2,                    //!< Supports M dimension
+      SinglePart = 1 << 3,           //!< Multi and single part types are distinct types
+      Curves = 1 << 4                //!< Supports curves
     };
 
     Q_ENUM( GeometryColumnCapability )
     Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
     Q_FLAG( GeometryColumnCapabilities )
-
-    /**
-     * \brief The SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
-     * \since QGIS 3.22
-     */
-    enum SqlLayerDefinitionCapability
-    {
-      Filter = 1 << 1,            //! SQL layer definition supports filter
-      GeometryColumn = 1 << 2,    //! SQL layer definition supports geometry column
-      PrimaryKeys = 1 << 3,       //! SQL layer definition supports primary keys
-      SelectAtId = 1 << 4         //! SQL layer definition supports disabling select at id
-    };
-
-    Q_ENUM( SqlLayerDefinitionCapability )
-    Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
-    Q_FLAG( SqlLayerDefinitionCapabilities )
-
-    /**
-     * \brief The SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
-     * \note The category has currently no usage, but it was planned for future uses.
-     * \since QGIS 3.22
-     */
-    enum SqlKeywordCategory
-    {
-      Keyword,      //! SQL keyword
-      Constant,     //! SQL constant
-      Function,     //! SQL generic function
-      Geospatial,   //! SQL spatial function
-      Operator,     //! SQL operator
-      Math,         //! SQL math function
-      Aggregate,    //! SQL aggregate function
-      String,       //! SQL string function
-      Identifier    //! SQL identifier
-    };
-
-    Q_ENUM( SqlKeywordCategory )
 
     /**
      * Creates a new connection with \a name by reading its configuration from the settings.
@@ -571,7 +535,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
      * \since QGIS 3.22
      */
-    virtual SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
+    virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 
     // Operations interface
 
@@ -813,7 +777,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     *
     * \since QGIS 3.22
     */
-    virtual QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary();
+    virtual QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 
   protected:
 
@@ -829,7 +793,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     Capabilities mCapabilities = Capabilities() SIP_SKIP;
     GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
-    SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = SqlLayerDefinitionCapabilities() SIP_SKIP;
+    Qgis::SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = Qgis::SqlLayerDefinitionCapabilities() SIP_SKIP;
     QString mProviderKey;
 
 };

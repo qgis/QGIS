@@ -331,6 +331,41 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
+     * \since QGIS 3.22
+     */
+    enum class SqlLayerDefinitionCapability : int
+    {
+      Filter = 1 << 1,            //!< SQL layer definition supports filter
+      GeometryColumn = 1 << 2,    //!< SQL layer definition supports geometry column
+      PrimaryKeys = 1 << 3,       //!< SQL layer definition supports primary keys
+      SelectAtId = 1 << 4         //!< SQL layer definition supports disabling select at id
+    };
+
+    Q_ENUM( SqlLayerDefinitionCapability )
+    Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
+
+    /**
+     * SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
+     * \note The category has currently no usage, but it was planned for future uses.
+     * \since QGIS 3.22
+     */
+    enum class SqlKeywordCategory : int
+    {
+      Keyword,      //!< SQL keyword
+      Constant,     //!< SQL constant
+      Function,     //!< SQL generic function
+      Geospatial,   //!< SQL spatial function
+      Operator,     //!< SQL operator
+      Math,         //!< SQL math function
+      Aggregate,    //!< SQL aggregate function
+      String,       //!< SQL string function
+      Identifier    //!< SQL identifier
+    };
+    Q_ENUM( SqlKeywordCategory )
+
+
+    /**
      * Drive types
      * \since QGIS 3.20
      */

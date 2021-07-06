@@ -1063,75 +1063,70 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
 
     // SQL dialog
-    if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn )
+    if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
     {
+      QAction *sqlAction = new QAction( QObject::tr( "Run SQL command…" ), menu );
 
-      if ( conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
+      QObject::connect( sqlAction, &QAction::triggered, item, [ item, context ]
       {
-
-        QAction *sqlAction = new QAction( QObject::tr( "Run SQL command…" ), menu );
-
-        QObject::connect( sqlAction, &QAction::triggered, item, [ item, context ]
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
+        // This should never happen but let's play safe
+        if ( ! conn2 )
         {
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
-          // This should never happen but let's play safe
-          if ( ! conn2 )
+          QgsMessageLog::logMessage( tr( "Connection to the database (%1) was lost." ).arg( item->name() ) );
+          return;
+        }
+
+        // Create the SQL dialog: this might become an independent class dialog in the future, for now
+        // we are still prototyping the features that this dialog will have.
+
+        QgsDialog dialog;
+        dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+        dialog.setWindowTitle( tr( "%1 — Run SQL Commands" ).arg( item->name() ) );
+
+        // If this is a layer item (or below the hierarchy) we can pre-set the query to something
+        // meaningful
+        QString sql;
+
+        if ( qobject_cast<QgsLayerItem *>( item ) )
+        {
+          if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
           {
-            QgsMessageLog::logMessage( tr( "Connection to the database (%1) was lost." ).arg( item->name() ) );
-            return;
+            // Ok, this is gross: we lack a connection API for quoting properly...
+            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( item->name() ) );
           }
-
-          // Create the SQL dialog: this might become an independent class dialog in the future, for now
-          // we are still prototyping the features that this dialog will have.
-
-          QgsDialog dialog;
-          dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
-          dialog.setWindowTitle( tr( "%1 — Run SQL Commands" ).arg( item->name() ) );
-
-          // If this is a layer item (or below the hierarchy) we can pre-set the query to something
-          // meaningful
-          QString sql;
-
-          if ( qobject_cast<QgsLayerItem *>( item ) )
+          else
           {
-            if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
-            {
-              // Ok, this is gross: we lack a connection API for quoting properly...
-              sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( item->name() ) );
-            }
-            else
-            {
-              // Ok, this is gross: we lack a connection API for quoting properly...
-              sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->name() ) );
-            }
+            // Ok, this is gross: we lack a connection API for quoting properly...
+            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->name() ) );
           }
+        }
 
-          QgsGui::enableAutoGeometryRestore( &dialog );
-          QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
-          widget->setQuery( sql );
-          widget->layout()->setMargin( 0 );
-          dialog.layout()->addWidget( widget );
+        QgsGui::enableAutoGeometryRestore( &dialog );
+        QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
+        widget->setQuery( sql );
+        widget->layout()->setMargin( 0 );
+        dialog.layout()->addWidget( widget );
 
-          connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+        connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( item->databaseConnection() );
+          try
           {
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( item->databaseConnection() );
-            try
-            {
-              QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
-              QgsProject::instance()->addMapLayers( { sqlLayer } );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating new SQL layer: %1" ).arg( ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
-
-          } );
-          dialog.exec();
-
+            QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
+            QgsProject::instance()->addMapLayers( { sqlLayer } );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating new SQL layer: %1" ).arg( ex.what() ), context, Qgis::MessageLevel::Critical );
+          }
 
         } );
-        menu->addAction( sqlAction );
-      }
+        dialog.exec();
+
+
+      } );
+      menu->addAction( sqlAction );
     }
   }
 }

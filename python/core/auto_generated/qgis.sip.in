@@ -226,6 +226,31 @@ The development version
       UserCanceled,
     };
 
+    enum class SqlLayerDefinitionCapability
+    {
+      Filter,
+      GeometryColumn,
+      PrimaryKeys,
+      SelectAtId
+    };
+
+    typedef QFlags<Qgis::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
+
+
+    enum class SqlKeywordCategory
+    {
+      Keyword,
+      Constant,
+      Function,
+      Geospatial,
+      Operator,
+      Math,
+      Aggregate,
+      String,
+      Identifier
+    };
+
+
     enum class DriveType
     {
       Unknown,

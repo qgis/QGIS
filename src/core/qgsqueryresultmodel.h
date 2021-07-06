@@ -44,7 +44,7 @@ class QgsQueryResultFetcher: public QObject
     {}
 
     //! Start fetching at most \a maxRows, default value of -1 fetches all rows.
-    void fetchRows( qlonglong maxRows = -1 );
+    void fetchRows( long long maxRows = -1 );
 
     //! Stop fetching
     void stopFetching();

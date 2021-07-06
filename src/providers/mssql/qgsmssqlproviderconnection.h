@@ -41,7 +41,7 @@ struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnec
 
 
     // QueryResultIterator interface
-    qlonglong rowCountPrivate() const override;
+    long long rowCountPrivate() const override;
 };
 
 class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection

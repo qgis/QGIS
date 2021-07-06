@@ -124,9 +124,9 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filter,
-    SqlLayerDefinitionCapability::GeometryColumn,
-    SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
   };
 }
 
@@ -178,22 +178,22 @@ QgsVectorLayer *QgsOracleProviderConnection::createSqlVectorLayer( const QgsAbst
   // Try to guess the geometry and srid
   if ( ! vl->isValid() )
   {
-    const auto limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
-    const auto sql { QStringLiteral( R"(
+    const QString limit { QgsDataSourceUri( uri() ).useEstimatedMetadata() ? QStringLiteral( "AND ROWNUM < 100" ) : QString() };
+    const QString sql { QStringLiteral( R"(
       SELECT DISTINCT a.%1.SDO_GTYPE As gtype,
                             a.%1.SDO_SRID
             FROM (%2) a
             WHERE a.%1 IS NOT NULL %3
             ORDER BY a.%1.SDO_GTYPE
     )" ).arg( options.geometryColumn, options.sql, limit ) };
-    const auto candidates { executeSql( sql ) };
-    for ( const auto &row : std::as_const( candidates ) )
+    const QList<QList<QVariant>> candidates { executeSql( sql ) };
+    for ( const QList<QVariant> &row : std::as_const( candidates ) )
     {
       bool ok;
-      const auto type { row[ 0 ].toInt( &ok ) };
+      const int type { row[ 0 ].toInt( &ok ) };
       if ( ok )
       {
-        const auto srid { row[ 0 ].toInt( &ok ) };
+        const int srid { row[ 0 ].toInt( &ok ) };
 
         if ( ok )
         {
@@ -322,12 +322,12 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
   return types;
 }
 
-QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
+QMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
 {
   return
   {
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Keyword,
+      Qgis::SqlKeywordCategory::Keyword,
       {
         // From: http://docs.oracle.com/cd/B19306_01/server.102/b14200/ap_keywd.htm
         QStringLiteral( "ACCESS" ),
@@ -875,7 +875,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Function,
+      Qgis::SqlKeywordCategory::Function,
       {
         // From: https://docs.oracle.com/cd/B19306_01/server.102/b14200/functions001.htm
         QStringLiteral( "CAST" ),
@@ -895,7 +895,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Math,
+      Qgis::SqlKeywordCategory::Math,
       {
         QStringLiteral( "ABS" ),
         QStringLiteral( "ACOS" ),
@@ -929,7 +929,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::String,
+      Qgis::SqlKeywordCategory::String,
       {
         QStringLiteral( "CHR" ),
         QStringLiteral( "CONCAT" ),
@@ -962,7 +962,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Aggregate,
+      Qgis::SqlKeywordCategory::Aggregate,
       {
         QStringLiteral( "AVG" ),
         QStringLiteral( "COLLECT" ),
@@ -1012,7 +1012,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Geospatial,
+      Qgis::SqlKeywordCategory::Geospatial,
       {
         // From http://docs.oracle.com/cd/B19306_01/appdev.102/b14255/toc.htm
         // Spatial operators
@@ -1286,7 +1286,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Operator,
+      Qgis::SqlKeywordCategory::Operator,
       {
         QStringLiteral( "AND" ),
         QStringLiteral( "OR" ),
@@ -1325,7 +1325,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Constant,
+      Qgis::SqlKeywordCategory::Constant,
       {
         QStringLiteral( "NULL" ),
         QStringLiteral( "FALSE" ),
@@ -1407,7 +1407,7 @@ QVariantList QgsOracleProviderResultIterator::nextRowInternal()
   return row;
 }
 
-qlonglong QgsOracleProviderResultIterator::rowCountPrivate() const
+long long QgsOracleProviderResultIterator::rowCountPrivate() const
 {
   return mQuery.size();
 }

@@ -381,9 +381,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filter,
-    SqlLayerDefinitionCapability::PrimaryKeys,
-    SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
   };
 }
 
@@ -618,7 +618,7 @@ bool QgsGeoPackageProviderResultIterator::hasNextRowPrivate() const
   return ! mNextRow.isEmpty();
 }
 
-qlonglong QgsGeoPackageProviderResultIterator::rowCountPrivate() const
+long long QgsGeoPackageProviderResultIterator::rowCountPrivate() const
 {
   return  mRowCount;
 }
@@ -704,7 +704,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
   return fieldList;
 }
 
-QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection::sqlDictionary()
+QMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection::sqlDictionary()
 {
   /*
    * last_insert_rowid + list from: http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html
@@ -728,7 +728,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
   {
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Math, {
+      Qgis::SqlKeywordCategory::Math, {
         // SQL math functions
         QStringLiteral( "Abs( x [Double precision] )" ),
         QStringLiteral( "Acos( x [Double precision] )" ),
@@ -758,7 +758,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Function, {
+      Qgis::SqlKeywordCategory::Function, {
 
         // Specific
         QStringLiteral( "last_insert_rowid" ),
@@ -846,7 +846,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Geospatial, {
+      Qgis::SqlKeywordCategory::Geospatial, {
         // SQL functions reporting GEOS / LWGEOM errors and warnings
         QStringLiteral( "GEOS_GetLastWarningMsg( [void] )" ),
         QStringLiteral( "GEOS_GetLastErrorMsg( [void] )" ),

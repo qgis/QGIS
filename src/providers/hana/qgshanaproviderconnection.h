@@ -27,7 +27,7 @@ struct QgsHanaEmptyProviderResultIterator: public QgsAbstractDatabaseProviderCon
   private:
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
-    qlonglong rowCountPrivate() const override { return 0; };
+    long long rowCountPrivate() const override { return 0; };
 };
 
 struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
@@ -43,7 +43,7 @@ struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnecti
   private:
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
-    qlonglong rowCountPrivate() const override;
+    long long rowCountPrivate() const override;
 };
 
 class QgsHanaConnectionRef;

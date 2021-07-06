@@ -47,8 +47,8 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 
     // QueryResultIterator interface
   private:
-    qlonglong rowCountPrivate() const override;
-    qlonglong mRowCount = -1;
+    long long rowCountPrivate() const override;
+    long long mRowCount = -1;
 };
 
 
@@ -79,7 +79,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
-    QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 

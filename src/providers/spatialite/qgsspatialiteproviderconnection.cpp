@@ -319,8 +319,8 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
 
       // Need to store it here because provider (and underlying gaia library) returns views as spatial table if they have geometries
       QStringList viewNames;
-      const auto viewRows { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ).rows() };
-      for ( const auto &tn : std::as_const( viewRows ) )
+      const QList<QList<QVariant>> viewRows { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE type = 'view'" ) ).rows() };
+      for ( const QList<QVariant> &tn : std::as_const( viewRows ) )
       {
         viewNames.push_back( tn.first().toString() );
       }
@@ -328,14 +328,14 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
       // Another weirdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
       // may need LAUNDER on open, but let's try to make it consistent with how GPKG works.
       QgsStringMap tableNotLowercaseNames;
-      const auto lowerTables { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ).rows() };
-      for ( const auto &tn : std::as_const( lowerTables ) )
+      const QList<QList<QVariant>> lowerTables { executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ).rows() };
+      for ( const QList<QVariant> &tn : std::as_const( lowerTables ) )
       {
         const QString tName { tn.first().toString() };
         tableNotLowercaseNames.insert( tName.toLower(), tName );
       }
 
-      const auto constTables = connection.tables();
+      const QList<QgsSpatiaLiteConnection::TableEntry> constTables = connection.tables();
       for ( const QgsSpatiaLiteConnection::TableEntry &entry : constTables )
       {
         QString tableName { tableNotLowercaseNames.value( entry.tableName, entry.tableName ) };
@@ -365,9 +365,9 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
             property.setFlag( QgsSpatiaLiteProviderConnection::TableFlag::View );
           }
 
-          const auto constPkIdxs { vl->dataProvider()->pkAttributeIndexes() };
+          const QgsAttributeList constPkIdxs { vl->dataProvider()->pkAttributeIndexes() };
           QStringList pkNames;
-          for ( const auto &pkIdx : std::as_const( constPkIdxs ) )
+          for ( const int &pkIdx : std::as_const( constPkIdxs ) )
           {
             // Better safe than sorry
             if ( pkIdx < vl->fields().count() )
@@ -439,8 +439,8 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filter,
-    SqlLayerDefinitionCapability::GeometryColumn
+    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn
   };
 
 }
@@ -622,7 +622,7 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
   return row;
 }
 
-qlonglong QgsSpatialiteProviderResultIterator::rowCountPrivate() const
+long long QgsSpatialiteProviderResultIterator::rowCountPrivate() const
 {
   return mRowCount;
 }
@@ -663,7 +663,7 @@ QString QgsSpatiaLiteProviderConnection::pathFromUri() const
   return dsUri.database();
 }
 
-QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection::sqlDictionary()
+QMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection::sqlDictionary()
 {
   /*
    * List from: http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html
@@ -687,7 +687,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
   {
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Math, {
+      Qgis::SqlKeywordCategory::Math, {
         // SQL math functions
         QStringLiteral( "Abs( x [Double precision] )" ),
         QStringLiteral( "Acos( x [Double precision] )" ),
@@ -717,7 +717,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Function, {
+      Qgis::SqlKeywordCategory::Function, {
 
         // Specific
         QStringLiteral( "last_insert_rowid" ),
@@ -805,7 +805,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Geospatial, {
+      Qgis::SqlKeywordCategory::Geospatial, {
         // SQL functions reporting GEOS / LWGEOM errors and warnings
         QStringLiteral( "GEOS_GetLastWarningMsg( [void] )" ),
         QStringLiteral( "GEOS_GetLastErrorMsg( [void] )" ),

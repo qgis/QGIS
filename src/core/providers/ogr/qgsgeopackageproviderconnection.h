@@ -44,11 +44,11 @@ struct QgsGeoPackageProviderResultIterator: public QgsAbstractDatabaseProviderCo
     QVariantList mNextRow;
     QString mGeometryColumnName;
     QString mPrimaryKeyColumnName;
-    qlonglong mRowCount = -1;
+    long long mRowCount = -1;
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
-    qlonglong rowCountPrivate() const override;
+    long long rowCountPrivate() const override;
     QVariantList nextRowInternal();
 
 };
@@ -81,7 +81,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsFields fields( const QString &schema, const QString &table ) const override;
-    QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 

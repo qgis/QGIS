@@ -85,10 +85,10 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filter,
-    SqlLayerDefinitionCapability::PrimaryKeys,
-    SqlLayerDefinitionCapability::GeometryColumn,
-    SqlLayerDefinitionCapability::SelectAtId,
+    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::SelectAtId,
   };
 }
 
@@ -427,9 +427,9 @@ bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
   return result && mRowIndex < result->PQntuples();
 }
 
-qlonglong QgsPostgresProviderResultIterator::rowCountPrivate() const
+long long QgsPostgresProviderResultIterator::rowCountPrivate() const
 {
-  return result ? result->PQntuples() : -1;
+  return result ? result->PQntuples() : static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
 }
 
 
@@ -797,15 +797,17 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
-  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() };
+  QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
+  vectorLayerOptions.skipCrsValidation = true;
+  return new QgsVectorLayer{ tUri.uri(), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
 }
 
-QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::sqlDictionary()
+QMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::sqlDictionary()
 {
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
   {
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Keyword,
+      Qgis::SqlKeywordCategory::Keyword,
       {
         QStringLiteral( "absolute" ),
         QStringLiteral( "action" ),
@@ -1224,7 +1226,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Aggregate,
+      Qgis::SqlKeywordCategory::Aggregate,
       {
         QStringLiteral( "Max" ),
         QStringLiteral( "Min" ),
@@ -1240,7 +1242,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Math,
+      Qgis::SqlKeywordCategory::Math,
       {
         QStringLiteral( "Abs" ),
         QStringLiteral( "ACos" ),
@@ -1269,7 +1271,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
       }
     },
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Geospatial,
+      Qgis::SqlKeywordCategory::Geospatial,
       {
         // List from:
         // import requests, re, html;

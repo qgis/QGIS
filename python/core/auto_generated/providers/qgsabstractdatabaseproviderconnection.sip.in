@@ -82,14 +82,14 @@ Returns the next result row or an empty row if there are no rows left.
 .. seealso:: :py:func:`rewind`
 %End
 
-        qlonglong fetchedRowCount( ) const;
+        long long fetchedRowCount( ) const;
 %Docstring
 Returns the number of fetched rows.
 
 .. seealso:: :py:func:`rowCount`
 %End
 
-        qlonglong rowCount( ) const;
+        long long rowCount( ) const;
 %Docstring
 Returns the number of rows returned by a SELECT query or -1 if unknown
 
@@ -130,12 +130,12 @@ Returns the number of rows returned by a SELECT query or -1 if unknown
 
     struct SqlVectorLayerOptions
     {
-      QString sql; //! The SQL expression that defines the SQL (query) layer
-      QString filter; //! Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
-      QString layerName; //! Optional name for the new layer
-      QStringList primaryKeyColumns; //! List of primary key column names
-      QString geometryColumn; //! Name of the geometry column
-      bool disableSelectAtId; //! If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      QString sql; //!< The SQL expression that defines the SQL (query) layer
+      QString filter; //!< Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
+      QString layerName; //!< Optional name for the new layer
+      QStringList primaryKeyColumns; //!< List of primary key column names
+      QString geometryColumn; //!< Name of the geometry column
+      bool disableSelectAtId; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
     };
 
     struct TableProperty
@@ -353,31 +353,6 @@ This information is calculated from the geometry columns types.
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
 
 
-    enum SqlLayerDefinitionCapability
-    {
-      Filter,
-      GeometryColumn,
-      PrimaryKeys,
-      SelectAtId
-    };
-
-    typedef QFlags<QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
-
-
-    enum SqlKeywordCategory
-    {
-      Keyword,
-      Constant,
-      Function,
-      Geospatial,
-      Operator,
-      Math,
-      Aggregate,
-      String,
-      Identifier
-    };
-
-
     QgsAbstractDatabaseProviderConnection( const QString &name );
 %Docstring
 Creates a new connection with ``name`` by reading its configuration from the settings.
@@ -408,7 +383,7 @@ Returns connection geometry column capabilities (Z, M, SinglePart, Curves).
 .. versionadded:: 3.16
 %End
 
-    virtual SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
+    virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 %Docstring
 Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
 
@@ -684,7 +659,7 @@ Returns the provider key.
 .. versionadded:: 3.16
 %End
 
-    virtual QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary();
+    virtual QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 %Docstring
 Returns a dictionary of SQL keywords supported by the provider.
 The default implementation returns an list of common reserved words under the

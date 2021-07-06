@@ -141,9 +141,9 @@ QVariant QgsQueryResultModel::headerData( int section, Qt::Orientation orientati
 
 const int QgsQueryResultFetcher::ROWS_BATCH_COUNT = 200;
 
-void QgsQueryResultFetcher::fetchRows( qlonglong maxRows )
+void QgsQueryResultFetcher::fetchRows( long long maxRows )
 {
-  qlonglong rowCount { 0 };
+  long long rowCount { 0 };
   QList<QList<QVariant>> newRows;
   newRows.reserve( ROWS_BATCH_COUNT );
   while ( mStopFetching == 0 && mQueryResult->hasNextRow() && ( maxRows < 0 || rowCount < maxRows ) )

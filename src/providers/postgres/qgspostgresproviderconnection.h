@@ -31,10 +31,10 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
-    qlonglong rowCountPrivate() const override;
+    long long rowCountPrivate() const override;
 
     bool mResolveTypes = true;
-    qlonglong mRowIndex = 0;
+    long long mRowIndex = 0;
 };
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
@@ -77,7 +77,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
-    QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 

@@ -43,7 +43,7 @@ QgsAbstractDatabaseProviderConnection::GeometryColumnCapabilities QgsAbstractDat
   return mGeometryColumnCapabilities;
 }
 
-QgsAbstractDatabaseProviderConnection::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlLayerDefinitionCapabilities()
+Qgis::SqlLayerDefinitionCapabilities QgsAbstractDatabaseProviderConnection::sqlLayerDefinitionCapabilities()
 {
   return mSqlLayerDefinitionCapabilities;
 }
@@ -74,13 +74,13 @@ QString QgsAbstractDatabaseProviderConnection::providerKey() const
 ///@endcond
 
 
-QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
+QMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConnection::sqlDictionary()
 {
   return
   {
     // Common constants
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Constant, {
+      Qgis::SqlKeywordCategory::Constant, {
         QStringLiteral( "NULL" ),
         QStringLiteral( "FALSE" ),
         QStringLiteral( "TRUE" ),
@@ -89,7 +89,7 @@ QMap<QgsAbstractDatabaseProviderConnection::SqlKeywordCategory, QStringList> Qgs
     // Common SQL reserved words
     // From: GET https://en.wikipedia.org/wiki/SQL_reserved_words| grep 'style="background: #ececec; color: black; font-weight: bold;'| sed -e 's/.*>//'|sort
     {
-      QgsAbstractDatabaseProviderConnection::SqlKeywordCategory::Keyword,
+      Qgis::SqlKeywordCategory::Keyword,
       {
         QStringLiteral( "ABORT " ),
         QStringLiteral( "ABORTSESSION" ),
@@ -1429,7 +1429,7 @@ QList<QVariant> QgsAbstractDatabaseProviderConnection::QueryResult::nextRow() co
 }
 
 
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
+long long QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() const
 {
   if ( ! mResultIterator )
   {
@@ -1438,11 +1438,11 @@ qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::fetchedRowCount() 
   return mResultIterator->fetchedRowCount();
 }
 
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
+long long QgsAbstractDatabaseProviderConnection::QueryResult::rowCount() const
 {
   if ( ! mResultIterator )
   {
-    return -1;
+    return static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
   }
   return mResultIterator->rowCount();
 }
@@ -1485,13 +1485,13 @@ bool QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::ha
   return hasNextRowPrivate();
 }
 
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::fetchedRowCount()
+long long QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::fetchedRowCount()
 {
   QMutexLocker lock( &mMutex );
   return mFetchedRowCount;
 }
 
-qlonglong QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::rowCount()
+long long QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::rowCount()
 {
   QMutexLocker lock( &mMutex );
   return rowCountPrivate();

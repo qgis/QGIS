@@ -101,10 +101,10 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    SqlLayerDefinitionCapability::Filter,
-    SqlLayerDefinitionCapability::PrimaryKeys,
-    SqlLayerDefinitionCapability::GeometryColumn,
-    SqlLayerDefinitionCapability::SelectAtId,
+    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::SelectAtId,
   };
 }
 
@@ -331,7 +331,7 @@ QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
   return row;
 }
 
-qlonglong QgssMssqlProviderResultIterator::rowCountPrivate() const
+long long QgssMssqlProviderResultIterator::rowCountPrivate() const
 {
   return mQuery.size();
 }

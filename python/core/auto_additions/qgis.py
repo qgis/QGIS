@@ -315,6 +315,27 @@ Qgis.VectorExportResult.__doc__ = 'Vector layer export result codes.\n\n.. versi
 # --
 Qgis.VectorExportResult.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.SqlLayerDefinitionCapability.Filter.__doc__ = "SQL layer definition supports filter"
+Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ = "SQL layer definition supports geometry column"
+Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ = "SQL layer definition supports primary keys"
+Qgis.SqlLayerDefinitionCapability.SelectAtId.__doc__ = "SQL layer definition supports disabling select at id"
+Qgis.SqlLayerDefinitionCapability.__doc__ = 'SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.\n\n.. versionadded:: 3.22\n\n' + '* ``Filter``: ' + Qgis.SqlLayerDefinitionCapability.Filter.__doc__ + '\n' + '* ``GeometryColumn``: ' + Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ + '\n' + '* ``PrimaryKeys``: ' + Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ + '\n' + '* ``SelectAtId``: ' + Qgis.SqlLayerDefinitionCapability.SelectAtId.__doc__
+# --
+Qgis.SqlLayerDefinitionCapability.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SqlKeywordCategory.Keyword.__doc__ = "SQL keyword"
+Qgis.SqlKeywordCategory.Constant.__doc__ = "SQL constant"
+Qgis.SqlKeywordCategory.Function.__doc__ = "SQL generic function"
+Qgis.SqlKeywordCategory.Geospatial.__doc__ = "SQL spatial function"
+Qgis.SqlKeywordCategory.Operator.__doc__ = "SQL operator"
+Qgis.SqlKeywordCategory.Math.__doc__ = "SQL math function"
+Qgis.SqlKeywordCategory.Aggregate.__doc__ = "SQL aggregate function"
+Qgis.SqlKeywordCategory.String.__doc__ = "SQL string function"
+Qgis.SqlKeywordCategory.Identifier.__doc__ = "SQL identifier"
+Qgis.SqlKeywordCategory.__doc__ = 'SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.\n\n.. note::\n\n   The category has currently no usage, but it was planned for future uses.\n\n.. versionadded:: 3.22\n\n' + '* ``Keyword``: ' + Qgis.SqlKeywordCategory.Keyword.__doc__ + '\n' + '* ``Constant``: ' + Qgis.SqlKeywordCategory.Constant.__doc__ + '\n' + '* ``Function``: ' + Qgis.SqlKeywordCategory.Function.__doc__ + '\n' + '* ``Geospatial``: ' + Qgis.SqlKeywordCategory.Geospatial.__doc__ + '\n' + '* ``Operator``: ' + Qgis.SqlKeywordCategory.Operator.__doc__ + '\n' + '* ``Math``: ' + Qgis.SqlKeywordCategory.Math.__doc__ + '\n' + '* ``Aggregate``: ' + Qgis.SqlKeywordCategory.Aggregate.__doc__ + '\n' + '* ``String``: ' + Qgis.SqlKeywordCategory.String.__doc__ + '\n' + '* ``Identifier``: ' + Qgis.SqlKeywordCategory.Identifier.__doc__
+# --
+Qgis.SqlKeywordCategory.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DriveType.Unknown.__doc__ = "Unknown type"
 Qgis.DriveType.Invalid.__doc__ = "Invalid path"
 Qgis.DriveType.Removable.__doc__ = "Removable drive"

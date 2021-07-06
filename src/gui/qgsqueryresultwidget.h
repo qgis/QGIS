@@ -78,7 +78,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
   private:
 
-    const QgsAbstractDatabaseProviderConnection *mConnection;
+    const QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
     QAtomicInt mStopFetching = 0;
 
 };
@@ -161,6 +161,11 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
     void syncSqlOptions();
 
+    /**
+     * Updates buttons status.
+     */
+    void updateButtons();
+
   private:
 
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
@@ -175,10 +180,6 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QString mSqlErrorMessage;
     qlonglong mActualRowCount = -1;
 
-    /**
-     * Updates buttons status.
-     */
-    void updateButtons();
 
     /**
      * Updates SQL layer columns.

@@ -52,10 +52,10 @@ bool QgsHanaProviderResultIterator::hasNextRowPrivate() const
   return mNextRow;
 }
 
-qlonglong QgsHanaProviderResultIterator::rowCountPrivate() const
+long long QgsHanaProviderResultIterator::rowCountPrivate() const
 {
   // TODO: hana team, this is for you.
-  return -1;
+  return static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
