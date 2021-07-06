@@ -168,6 +168,16 @@ Returns the sublayer details shown in the model.
 .. seealso:: :py:func:`setSublayerDetails`
 %End
 
+    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+%Docstring
+Returns the sublayer corresponding to the given ``index``.
+%End
+
+    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+%Docstring
+Returns the non layer item corresponding to the given ``index``.
+%End
+
     void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
 %Docstring
 Adds a non-layer item (e.g. an embedded QGIS project item) to the model.

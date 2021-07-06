@@ -56,6 +56,26 @@ QList<QgsProviderSublayerDetails> QgsProviderSublayerModel::sublayerDetails() co
   return mSublayers;
 }
 
+QgsProviderSublayerDetails QgsProviderSublayerModel::indexToSublayer( const QModelIndex &index ) const
+{
+  if ( index.isValid() && index.row() < mSublayers.count() )
+  {
+    return mSublayers.at( index.row() );
+  }
+
+  return QgsProviderSublayerDetails();
+}
+
+QgsProviderSublayerModel::NonLayerItem QgsProviderSublayerModel::indexToNonLayerItem( const QModelIndex &index ) const
+{
+  if ( index.isValid() && index.row() >= mSublayers.count() && index.row() < mSublayers.count() + mNonLayerItems.count() )
+  {
+    return mNonLayerItems.at( index.row() - mSublayers.count() );
+  }
+
+  return QgsProviderSublayerModel::NonLayerItem();
+}
+
 void QgsProviderSublayerModel::addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item )
 {
   beginInsertRows( QModelIndex(), mSublayers.count() + mNonLayerItems.count(), mSublayers.count() + mNonLayerItems.count() );
