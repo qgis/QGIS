@@ -140,6 +140,17 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
          */
         void setIcon( const QIcon &icon );
 
+        bool operator==( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+        bool operator!=( const QgsProviderSublayerModel::NonLayerItem &other ) const;
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
       private:
 
         QString mType;
