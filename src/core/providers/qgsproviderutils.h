@@ -40,8 +40,11 @@ class CORE_EXPORT QgsProviderUtils
      *
      * For instance, if the details contain any vector sublayers with unknown geometry types
      * then a query with the Qgis::SublayerQueryFlag::ResolveGeometryType flag is required.
+     *
+     * If \a ignoreUnknownFeatureCount is TRUE then sublayers with an unknown feature count
+     * will not be considered as incomplete.
      */
-    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details );
+    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details, bool ignoreUnknownFeatureCount );
 
 };
 

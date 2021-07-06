@@ -22,13 +22,16 @@ Contains utility functions for working with data providers.
 %End
   public:
 
-    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details );
+    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details, bool ignoreUnknownFeatureCount );
 %Docstring
 Returns ``True`` if the sublayer ``details`` are incomplete, and require a more in-depth
 scan.
 
 For instance, if the details contain any vector sublayers with unknown geometry types
 then a query with the Qgis.SublayerQueryFlag.ResolveGeometryType flag is required.
+
+If ``ignoreUnknownFeatureCount`` is ``True`` then sublayers with an unknown feature count
+will not be considered as incomplete.
 %End
 
 };

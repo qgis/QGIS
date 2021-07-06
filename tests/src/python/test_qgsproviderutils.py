@@ -40,13 +40,46 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[0].wkbType(), QgsWkbTypes.Unknown)
 
         # need to resolve geometry types for complete details about this uri!
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
 
         # retry with retrieving geometry types
         sublayers = QgsProviderRegistry.instance().querySublayers(uri, Qgis.SublayerQueryFlag.ResolveGeometryType)
         # now we have all the details
         self.assertEqual(len(sublayers), 3)
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+
+        # this geopackage file requires manually requesting feature counts
+        uri = unitTestDataPath() + '/mixed_layers.gpkg'
+
+        # surface scan only
+        sublayers = QgsProviderRegistry.instance().querySublayers(uri)
+        self.assertEqual(len(sublayers), 4)
+        self.assertEqual(sublayers[0].name(), 'band1')
+        self.assertEqual(sublayers[1].name(), 'band2')
+        self.assertEqual(sublayers[2].name(), 'points')
+        self.assertEqual(sublayers[2].featureCount(), Qgis.FeatureCountState.Uncounted)
+        self.assertEqual(sublayers[3].name(), 'lines')
+        self.assertEqual(sublayers[3].featureCount(), Qgis.FeatureCountState.Uncounted)
+
+        # need to count features for complete details about this uri!
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        # ...unless we are ignoring unknown feature counts, that is...
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+
+        # retry with retrieving feature count
+        sublayers = QgsProviderRegistry.instance().querySublayers(uri, Qgis.SublayerQueryFlag.CountFeatures)
+        # now we have all the details
+        self.assertEqual(len(sublayers), 4)
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertEqual(sublayers[0].name(), 'band1')
+        self.assertEqual(sublayers[1].name(), 'band2')
+        self.assertEqual(sublayers[2].name(), 'points')
+        self.assertEqual(sublayers[2].featureCount(), 0)
+        self.assertEqual(sublayers[3].name(), 'lines')
+        self.assertEqual(sublayers[3].featureCount(), 6)
 
 
 if __name__ == '__main__':
