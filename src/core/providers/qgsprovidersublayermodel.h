@@ -181,6 +181,16 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     QList< QgsProviderSublayerDetails > sublayerDetails() const;
 
     /**
+     * Returns the sublayer corresponding to the given \a index.
+     */
+    QgsProviderSublayerDetails indexToSublayer( const QModelIndex &index ) const;
+
+    /**
+     * Returns the non layer item corresponding to the given \a index.
+     */
+    QgsProviderSublayerModel::NonLayerItem indexToNonLayerItem( const QModelIndex &index ) const;
+
+    /**
      * Adds a non-layer item (e.g. an embedded QGIS project item) to the model.
      */
     void addNonLayerItem( const QgsProviderSublayerModel::NonLayerItem &item );
