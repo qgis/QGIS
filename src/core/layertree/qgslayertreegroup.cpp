@@ -21,6 +21,7 @@
 
 #include <QDomElement>
 #include <QStringList>
+#include <QUuid>
 
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked, const QString &id )
