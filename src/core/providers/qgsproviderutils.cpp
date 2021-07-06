@@ -17,14 +17,17 @@
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayerdetails.h"
 
-bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details )
+bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, bool ignoreUnknownFeatureCount )
 {
   for ( const QgsProviderSublayerDetails &sublayer : details )
   {
     switch ( sublayer.type() )
     {
       case QgsMapLayerType::VectorLayer:
-        if ( sublayer.wkbType() == QgsWkbTypes::Unknown )
+        if ( sublayer.wkbType() == QgsWkbTypes::Unknown
+             || ( ignoreUnknownFeatureCount &&
+                  ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
+                    || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
           return true;
         break;
 
