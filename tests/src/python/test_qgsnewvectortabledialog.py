@@ -60,10 +60,14 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
         md = QgsProviderRegistry.instance().providerMetadata('ogr')
         conn = md.createConnection(self.uri, {})
         dialog = QgsNewVectorTableDialog(conn)
-        dialog.setFields(conn.fields('', 'cdb_lines'))
+        fields = QgsFields()
+        for f in conn.fields('', 'cdb_lines'):
+            if f.name() != 'geom':
+                fields.append(f)
+        dialog.setFields(fields)
         dialog.setTableName('no_lock_me_down_again')
 
-        # dialog.exec_()
+        #dialog.exec_()
 
         geom_type_combo = dialog.findChildren(QComboBox, 'mGeomTypeCbo')[0]
         geom_name_le = dialog.findChildren(QLineEdit, 'mGeomColumn')[0]
