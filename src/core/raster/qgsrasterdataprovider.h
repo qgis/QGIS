@@ -557,7 +557,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     };
 
-    static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri );
+    static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
+    //static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri);
 
     /**
      * Encodes the URI starting from the struct .

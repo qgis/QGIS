@@ -650,49 +650,77 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
   return colorName( colorInterpretation( bandNo ) );
 }
 
-QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri )
+QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri(const QString &uri , bool *ok)
+//QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri(const QString &uri)
 {
     QUrl url = QUrl::fromEncoded( uri.toLatin1() );
     const QUrlQuery query( url.query() );
     DecodedUriParameters components;
 
+
     if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
     {
         components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+        if (! components.crs.isValid() )
+        {
+            QgsDebugMsg("crs is not valid");
+            *ok = false;
+        }
+    }
+    else
+    {
+        QgsDebugMsg("crs is missing");
+        *ok = false;
     }
 
     if ( query.hasQueryItem( QStringLiteral( "extent" ) ) )
     {
-        //mExtent = QgsRectangle::fromWkt ( query.queryItemValue( QStringLiteral( "extent" ) ) );
 
-        /* //FOR ENCODING
-        QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-        qDebug() << extent.toString();
-        qDebug() << qgsDoubleToString(extent.xMinimum()) % QStringLiteral(",") % qgsDoubleToString(extent.yMinimum())
-                    % QStringLiteral(",") % qgsDoubleToString(extent.xMaximum()) % QStringLiteral(",") %
-                    qgsDoubleToString(extent.yMaximum());
-        qDebug() << qgsDoubleToString(extent.xMinimum()).toDouble();
-        double s1 = qgsDoubleToString(extent.xMinimum()).toDouble();
-        qDebug() << qgsDoubleToString(s1);
-        */
         QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split(',');
         components.extent = QgsRectangle(pointValuesList.at(0).toDouble(), pointValuesList.at(1).toDouble(),
                           pointValuesList.at(2).toDouble(), pointValuesList.at(3).toDouble());
+
+        if ( components.extent.isNull() )
+        {
+            QgsDebugMsg("extent is null is not valid");
+            *ok = false;
+        }
+
+    }
+    else
+    {
+        QgsDebugMsg("extent is missing");
+        *ok = false;
     }
 
     if ( query.hasQueryItem( QStringLiteral( "width" ) ) )
     {
         components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt();
     }
+    else
+    {
+        QgsDebugMsg("width is missing");
+        *ok = false;
+    }
 
     if ( query.hasQueryItem( QStringLiteral( "height" ) ) )
     {
         components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt();
     }
+    else
+    {
+        QgsDebugMsg("height is missing");
+        *ok = false;
+    }
 
     if ( query.hasQueryItem( QStringLiteral( "formula" ) ) )
     {
         components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
+    }
+    else
+    {
+        QgsDebugMsg("formula is missing");
+        *ok = false;
     }
 
 
@@ -700,7 +728,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
     QSet<QString> rLayerName;
     for ( const auto &item : query.queryItems() )
     {
-        if ( (item.first.indexOf(':') == -1) )
+        if ( item.first.indexOf(':') == -1 )
         {
             continue;
         }

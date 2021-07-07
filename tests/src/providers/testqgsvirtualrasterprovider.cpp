@@ -59,8 +59,8 @@ class TestQgsVirtualRasterProvider : public QObject
     void validLayer();
     void testv();
     void testRaster();
-    void testUrlDecoding();
-    void testUrlDecodingMinimal();
+    //void testUrlDecoding();
+    //void testUrlDecodingMinimal();
     void testUriProviderDecoding();
     void testUriEncoding();
 
@@ -179,172 +179,9 @@ void TestQgsVirtualRasterProvider::testRaster()
 
 }
 
-void TestQgsVirtualRasterProvider::testUrlDecoding()
-{
-    //only to check how qurl and qurlquery works
-    QUrl url("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
-    //FROM HERE
-    QUrlQuery query(url.query());
-    QVariantMap components;
-
-    QSet<QString> rLayerName;
-    for ( const auto &item : query.queryItems() )
-    {
-        if ( item.first.indexOf(':') > 0 )
-        {
-            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
-        }
-        else
-        {
-            components.insert( item.first, item.second );
-        }
-    }
-
-    QVariantMap rLayers;
-/*
-    foreach (const QString &value, rLayerName)
-    {
-
-        //QVariantMap rLayer;
-
-        //rLayer.insert( "name" ,  value );
-        //rLayer.insert( "uri" , query.queryItemValue( value % QStringLiteral(":uri") ) );
-        //rLayer.insert( "provider" , query.queryItemValue( value % QStringLiteral(":provider") ) );
-
-       //rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%value,rLayer);
-
-        QStringList rLayer;
-        rLayer << value;
-        rLayer << query.queryItemValue( value % QStringLiteral(":uri") );
-        rLayer << query.queryItemValue( value % QStringLiteral(":provider") );
-
-        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%value,rLayer);
-
-    }
- */
-
-
-    QSet<QString>::iterator i;
-    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
-    //foreach (const QString &value, rLayerName)
-    {
-        QStringList rLayer;
-        rLayer << (*i);
-        rLayer << query.queryItemValue( (*i) % QStringLiteral(":uri") );
-        rLayer << query.queryItemValue( (*i) % QStringLiteral(":provider") );
-
-        rLayers.insert(QStringLiteral("rLayer")%QStringLiteral("@")%(*i),rLayer);
-    }
-
-    components.insert( QStringLiteral("rLayers"), rLayers );
-    //TO HERE
-    //qDebug() << components << endl;
-    //qDebug() << components.value("rLayers")<< endl;
-
-    /*
-    qDebug() << components.value("rLayers").toMap()<< endl;
-    qDebug() << components.value("rLayers").toMap().value("rLayer@dem") << endl;
-    qDebug() << components.value("rLayers").toMap().value("rLayer@dem").toMap().value("name") << endl;
-    */
-
-    //qDebug() <<components.value("width").toString().toInt() << endl;
-    //qDebug() <<components.value("extent").toString() << endl;
-
-}
-
-void TestQgsVirtualRasterProvider::testUrlDecodingMinimal()
-{
-    QUrl url("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
-    QUrlQuery query(url.query());
-    QVariantMap components;
-
-    for ( const auto &item : query.queryItems() )
-    {
-        components.insert( item.first, item.second );
-    }
-
-    /*
-    qDebug() << components << endl;
-
-    qDebug() <<"--------------------------------------------------------------------------------------------------";
-
-    QString uri1 = QStringLiteral("?crs=EPSG:4326&extent=POLYGON((18.6662979442000001 45.77670143760000343, 18.70359794419999844 45.77670143760000343, 18.70359794419999844 45.81170143760000002, 18.6662979442000001 45.81170143760000002, 18.6662979442000001 45.77670143760000343))&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal");
-    QUrl url1 = QUrl::fromEncoded( uri1.toUtf8() );
-    const QUrlQuery query1( url1 );
-
-    //crs
-    if ( query1.hasQueryItem( QStringLiteral( "crs" ) ) )
-    {
-        QgsCoordinateReferenceSystem mCrs;
-        mCrs.createFromString( query1.queryItemValue( QStringLiteral( "crs" ) ) );
-
-        qDebug() << "mCrs.authid: " << mCrs.authid();
-        //qDebug() << query1.queryItemValue( QStringLiteral( "crs" ) );
-    }
-
-    //width and height (the same wth different key)
-    if ( query1.hasQueryItem( QStringLiteral( "width" ) ) )
-    {
-        int mWidth;
-        mWidth = query1.queryItemValue( QStringLiteral( "width" ) ).toInt();
-        qDebug() << "mWidth: " << mWidth;
-    }
-
-    //formula
-    if ( query1.hasQueryItem( QStringLiteral( "formula" ) ) )
-    {
-        QString mFormulaString;
-        mFormulaString = query1.queryItemValue( QStringLiteral( "formula" ) );
-        qDebug() << "mFormula: " << mFormulaString;
-    }
-
-    //extent
-    if ( query1.hasQueryItem( QStringLiteral( "extent" ) ) )
-    {
-        QgsRectangle mExtent;
-        mExtent = QgsRectangle::fromWkt ( query1.queryItemValue( QStringLiteral( "extent" ) ) );
-        qDebug() << "mExtent: " << mExtent.toString();
-        QCOMPARE( mExtent.toString() , QStringLiteral("18.6662979442000001,45.7767014376000034 : 18.7035979441999984,45.8117014376000000") );
-    }
-
-    //rasterlayer
-
-    QSet<QString> rLayerName;
-    for ( const auto &item : query.queryItems() )
-    {
-        if ( (item.first.indexOf(':') == -1) )
-        {
-            continue;
-        }
-        else
-        {
-            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
-        }
-    }
-    qDebug() << "rLayerName " << rLayerName;
-
-    QVector<QStringList> mRasterLayers;
-
-    QSet<QString>::iterator i;
-    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
-    //foreach (const QString &value, rLayerName)
-    {
-        QStringList rLayerEl;
-        rLayerEl << (*i);
-        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":uri") );
-        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":provider") );
-
-
-        //mRasterLayers.append( QgsRasterLayer( rLayerEl.at(1) , rLayerEl.at(0) , rLayerEl.at(2)) );
-        mRasterLayers.append(rLayerEl);
-    }
-    qDebug() << mRasterLayers;
-
-    */
-}
-
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
+
     QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
 
 
@@ -367,6 +204,7 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
                     decodedParams.rInputLayers.at(i).provider;
     }
     qDebug() << endl;
+
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
@@ -385,6 +223,8 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
     qDebug() << endl;
     qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( parts ) << endl;
 */
+
+
 }
 
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
