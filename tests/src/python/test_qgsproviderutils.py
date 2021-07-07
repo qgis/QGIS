@@ -81,6 +81,15 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[3].name(), 'lines')
         self.assertEqual(sublayers[3].featureCount(), 6)
 
+    def test_suggestLayerNameFromFilePath(self):
+        """
+        test suggestLayerNameFromFilePath
+        """
+        self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath(''), '')
+        self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath('/home/me/data/rivers.shp'), 'rivers')
+        # adf files should return parent dir name
+        self.assertEqual(QgsProviderUtils.suggestLayerNameFromFilePath('/home/me/data/rivers/hdr.adf'), 'rivers')
+
 
 if __name__ == '__main__':
     unittest.main()

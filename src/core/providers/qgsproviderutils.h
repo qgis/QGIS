@@ -46,6 +46,17 @@ class CORE_EXPORT QgsProviderUtils
      */
     static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details, bool ignoreUnknownFeatureCount );
 
+    /**
+     * Suggests a suitable layer name given only a file \a path.
+     *
+     * Usually this corresponds to the base file name of \a path (e.g.
+     * "rivers" for a path of "c:/my data/water/rivers.shp"). However
+     * some data formats which use fixed file paths (such as aigrid files)
+     * will instead return the parent directory name (e.g. "rivers" for
+     * a path of "c:/my data/water/rivers/hdr.adf").
+     */
+    static QString suggestLayerNameFromFilePath( const QString &path );
+
 };
 
 #endif //QGSPROVIDERUTILS_H

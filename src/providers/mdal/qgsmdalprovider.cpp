@@ -24,6 +24,7 @@
 #include "qgsmdaldataitems.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QFileInfo>
 #include <mutex>
@@ -1090,17 +1091,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     if ( details.name().isEmpty() )
     {
       // use file name as layer name if no layer name available from mdal
-
-      // special handling for .adf files -- use directory as group name, not the unhelpful .adf file name
-      if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
-      {
-        const QString dirName = info.path();
-        details.setName( QFileInfo( dirName ).completeBaseName() );
-      }
-      else
-      {
-        details.setName( info.completeBaseName() );
-      }
+      details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
     }
 
     res << details;
