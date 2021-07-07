@@ -25,7 +25,7 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
     {
       case QgsMapLayerType::VectorLayer:
         if ( sublayer.wkbType() == QgsWkbTypes::Unknown
-             || ( ignoreUnknownFeatureCount &&
+             || ( !ignoreUnknownFeatureCount &&
                   ( sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::Uncounted )
                     || sublayer.featureCount() == static_cast< long long >( Qgis::FeatureCountState::UnknownCount ) ) ) )
           return true;
