@@ -1033,8 +1033,16 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 {
   QStringList options { QStringLiteral( "@LIST_ALL_TABLES=YES" ) };
 
+  const QVariantMap uriParts = decodeUri( uri );
+  const QString originalUriLayerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+  int layerId = 0;
+  bool originalUriLayerIdWasSpecified = false;
+  const int uriLayerId = uriParts.value( QStringLiteral( "layerId" ) ).toInt( &originalUriLayerIdWasSpecified );
+  if ( originalUriLayerIdWasSpecified )
+    layerId = uriLayerId;
+
   QString errCause;
-  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( uri, false, options, 0, errCause, true );
+  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( uriParts.value( QStringLiteral( "path" ) ).toString(), false, options, layerId, errCause, true );
   if ( !firstLayer )
     return {};
 
@@ -1105,6 +1113,24 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
     parts.insert( QStringLiteral( "layerName" ), res.at( i ).name() );
     res[i].setUri( encodeUri( parts ) );
+  }
+
+  if ( !originalUriLayerName.isEmpty() )
+  {
+    // remove non-matching, unwanted layers
+    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    {
+      return sublayer.name() != originalUriLayerName;
+    } ), res.end() );
+  }
+
+  if ( originalUriLayerIdWasSpecified )
+  {
+    // remove non-matching, unwanted layers
+    res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
+    {
+      return sublayer.layerNumber() != uriLayerId;
+    } ), res.end() );
   }
 
   return res;
