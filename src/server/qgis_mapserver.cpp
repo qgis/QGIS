@@ -30,6 +30,7 @@ while QGIS server internal logging is printed to stderr.
 #include <condition_variable>
 
 //for CMAKE_INSTALL_PREFIX
+#include "qgscommandlineutils.h"
 #include "qgsconfig.h"
 #include "qgsserver.h"
 #include "qgsbufferserverrequest.h"
@@ -554,7 +555,10 @@ int main( int argc, char *argv[] )
   QCommandLineParser parser;
   parser.setApplicationDescription( QObject::tr( "QGIS Development Server %1" ).arg( VERSION ) );
   parser.addHelpOption();
-  parser.addVersionOption();
+
+  QCommandLineOption versionOption( QStringList() << "v" << "version", QObject::tr( "Version of QGIS and libraries" ) );
+  parser.addOption( versionOption );
+
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
                                 QObject::tr( "Address and port (default: \"localhost:8000\")\n"
                                     "address and port can also be specified with the environment\n"
@@ -571,6 +575,13 @@ int main( int argc, char *argv[] )
   parser.addOption( projectOption );
 
   parser.process( app );
+
+  if ( parser.isSet( versionOption ) )
+  {
+    std::cout << QgsCommandLineUtils::allVersions().toStdString();
+    return 0;
+  }
+
   const QStringList args = parser.positionalArguments();
 
   if ( args.size() == 1 )

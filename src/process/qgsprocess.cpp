@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscommandlineutils.h"
 #include "qgsprocess.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
@@ -298,6 +299,16 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     listAlgorithms( useJson );
     return 0;
   }
+  else if ( command == QLatin1String( "--version" ) || command == QLatin1String( "-v" ) )
+  {
+    std::cout << QgsCommandLineUtils::allVersions().toStdString();
+    return 0;
+  }
+  else if ( command == QLatin1String( "--help" ) || command == QLatin1String( "-h" ) )
+  {
+    showUsage( args.at( 0 ) );
+    return 0;
+  }
   else if ( command == QLatin1String( "help" ) )
   {
     if ( args.size() < 3 )
@@ -445,8 +456,10 @@ void QgsProcessingExec::showUsage( const QString &appName )
 
   msg << "QGIS Processing Executor - " << VERSION << " '" << RELEASE_NAME << "' ("
       << Qgis::version() << ")\n"
-      << "Usage: " << appName <<  " [--json] [--verbose] [command] [algorithm id or path to model file] [parameters]\n"
+      << "Usage: " << appName <<  " [--help] [--version] [--json] [--verbose] [command] [algorithm id or path to model file] [parameters]\n"
       << "\nOptions:\n"
+      << "\t--help or -h\t\tOutput the help\n"
+      << "\t--version or -v\t\tOutput all versions related to QGIS Process\n"
       << "\t--json\t\tOutput results as JSON objects\n"
       << "\t--verbose\tOutput verbose logs\n"
       << "\nAvailable commands:\n"
