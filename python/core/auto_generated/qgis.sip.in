@@ -311,7 +311,7 @@ The development version
     };
 
     enum class SublayerPromptMode
-      {
+    {
       AlwaysAsk,
       AskExcludingRasterBands,
       NeverAskSkip,

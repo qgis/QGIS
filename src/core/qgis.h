@@ -468,12 +468,12 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.22
      */
-    enum class SublayerPromptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSublayersDialog, PromptMode ) : int
-      {
-      AlwaysAsk  SIP_MONKEYPATCH_COMPAT_NAME( PromptAlways ), //!< Always ask users to select from available sublayers, if sublayers are present
-      AskExcludingRasterBands SIP_MONKEYPATCH_COMPAT_NAME( PromptIfNeeded ), //!< Ask users to select from available sublayers, unless only raster bands are present
-      NeverAskSkip SIP_MONKEYPATCH_COMPAT_NAME( PromptNever ), //!< Never ask users to select sublayers, instead don't load anything
-      NeverAskLoadAll SIP_MONKEYPATCH_COMPAT_NAME( PromptLoadAll ), //!< Never ask users to select sublayers, instead automatically load all available sublayers
+    enum class SublayerPromptMode : int
+    {
+      AlwaysAsk, //!< Always ask users to select from available sublayers, if sublayers are present
+      AskExcludingRasterBands, //!< Ask users to select from available sublayers, unless only raster bands are present
+      NeverAskSkip, //!< Never ask users to select sublayers, instead don't load anything
+      NeverAskLoadAll, //!< Never ask users to select sublayers, instead automatically load all available sublayers
     };
     Q_ENUM( SublayerPromptMode )
 

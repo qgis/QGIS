@@ -32,6 +32,35 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     Q_OBJECT
   public:
 
+    /**
+     * Prompt behavior of the QgsSublayersDialog
+     * \deprecated Use Qgis::SublayerPromptMode instead
+     */
+    Q_DECL_DEPRECATED enum PromptMode
+    {
+
+      /**
+       * always ask if there are existing sublayers
+       */
+      PromptAlways,
+
+      /**
+       * always ask if there are existing sublayers, but skip if there are bands for rasters
+       */
+      PromptIfNeeded,
+
+      /**
+       * never prompt, will not load anything
+       */
+      PromptNever,
+
+      /**
+       * never prompt, but load all sublayers
+       */
+      PromptLoadAll
+    };
+    Q_ENUM( PromptMode )
+
     enum ProviderType
     {
       Ogr,
