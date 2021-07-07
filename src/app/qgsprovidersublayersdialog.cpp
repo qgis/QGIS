@@ -193,7 +193,14 @@ QString QgsProviderSublayersDialog::groupName() const
     return QString();
 
   const QFileInfo fi( mFilePath );
-  return fi.completeBaseName();
+  QString res = fi.completeBaseName();
+
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    res = QgsMapLayer::formatLayerName( res );
+  }
+  return res;
 }
 
 void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &, const QItemSelection & )

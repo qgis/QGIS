@@ -7659,16 +7659,18 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   {
     bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, false );
     const bool singleSublayerOnly = sublayers.size() == 1;
-    if ( singleSublayerOnly && !detailsAreIncomplete )
-    {
-      // nice and easy -- we only have one sublayer, so load that
-    }
-    else if ( allowInteractive )
+    QString groupName;
+
+    if ( allowInteractive && ( !singleSublayerOnly || detailsAreIncomplete ) )
     {
       // prompt user for sublayers
       QgsProviderSublayersDialog dlg( fileName, sublayers, this );
 
-      dlg.exec();
+      if ( dlg.exec() )
+        sublayers = dlg.selectedLayers();
+      else
+        sublayers.clear(); // dialog was canceled, so don't add any sublayers
+      groupName = dlg.groupName();
     }
     else // non-interactive
     {
@@ -7680,15 +7682,77 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         // requery sublayers, resolving geometry types
         sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::ResolveGeometryType );
       }
-
-      // add all sublayers
-
     }
     ok = true;
+
+    // now add sublayers
+    if ( !sublayers.empty() )
+    {
+      QgsCanvasRefreshBlocker refreshBlocker;
+      QgsSettings settings;
+
+      QgsLayerTreeGroup *group = nullptr;
+      if ( !groupName.isEmpty() )
+      {
+        group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+      }
+
+      for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
+      {
+        QgsProviderSublayerDetails::LayerOptions options( QgsProject::instance()->transformContext() );
+        std::unique_ptr<QgsMapLayer> layer( sublayer.toLayer( options ) );
+        QgsMapLayer *ml = layer.get();
+        if ( !ml )
+          continue;
+
+        if ( group )
+        {
+          QgsProject::instance()->addMapLayer( layer.release(), false );
+          group->addLayer( ml );
+        }
+        else
+        {
+          QgsProject::instance()->addMapLayer( layer.release() );
+        }
+
+        switch ( ml->type() )
+        {
+          case QgsMapLayerType::VectorLayer:
+            break;
+          case QgsMapLayerType::RasterLayer:
+            break;
+          case QgsMapLayerType::PluginLayer:
+            break;
+          case QgsMapLayerType::MeshLayer:
+            postProcessAddedMeshLayer( qobject_cast< QgsMeshLayer * >( ml ) );
+            break;
+          case QgsMapLayerType::VectorTileLayer:
+            break;
+          case QgsMapLayerType::AnnotationLayer:
+            break;
+          case QgsMapLayerType::PointCloudLayer:
+            break;
+        }
+
+        if ( sublayers.size() == 1 )
+        {
+          QFileInfo info( fileName );
+          QString base = info.completeBaseName();
+          if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+          {
+            base = QgsMapLayer::formatLayerName( base );
+          }
+          ml->setName( base );
+        }
+      }
+    }
+    activateDeactivateLayerRelatedActions( activeLayer() );
   }
 
+  CPLPopErrorHandler();
+
 #if 0
-  // try to load it as raster
+// try to load it as raster
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
     // open .adf as a directory
@@ -7701,7 +7765,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
   }
 
-  // try as a vector
+// try as a vector
   if ( !ok || fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
     if ( allowInteractive )
@@ -7714,14 +7778,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
-  // Try to load as mesh layer after raster & vector
+// Try to load as mesh layer after raster & vector
   if ( !ok )
   {
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
   }
 #endif
-
-  CPLPopErrorHandler();
 
   if ( !ok )
   {
