@@ -21,6 +21,7 @@
 #include "ui_qgssublayersdialogbase.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /**
  * \ingroup gui
@@ -59,7 +60,9 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
        */
       PromptLoadAll
     };
+    Q_NOWARN_DEPRECATED_PUSH
     Q_ENUM( PromptMode )
+    Q_NOWARN_DEPRECATED_POP
 
     enum ProviderType
     {
