@@ -108,7 +108,7 @@ Changes the Z values of the vertices with indexes in ``vertices`` indexes with t
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 %Docstring
 Changes the (X,Y) coordinates values of the vertices with indexes in ``vertices`` indexes with the values in ``newValues``.
-The caller has the responsability to check if changing the vertices coordinates does not lead to topological errors
+The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
 %End
 
     void stopEditing();

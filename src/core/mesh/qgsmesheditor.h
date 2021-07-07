@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
-     * The caller has the responsability to check if changing the vertices coordinates does not lead to topological errors
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 

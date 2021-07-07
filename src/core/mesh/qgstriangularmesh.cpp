@@ -758,17 +758,17 @@ void QgsTriangularMesh::applyChanges( const QgsTriangularMesh::Changes &changes 
       for ( int i = 2; i < nativeFace.count(); ++i )
         bbox.include( mTriangularMesh.vertices.at( nativeFace.at( i ) ) );
 
-      QList<int> triangeIndexes = faceIndexesForRectangle( bbox );
+      QList<int> triangleIndexes = faceIndexesForRectangle( bbox );
       int pos = 0;
-      while ( pos < triangeIndexes.count() )
+      while ( pos < triangleIndexes.count() )
       {
-        if ( trianglesToNativeFaces().at( triangeIndexes.at( pos ) ) !=
+        if ( trianglesToNativeFaces().at( triangleIndexes.at( pos ) ) !=
              changes.mNativeFaceIndexesGeometryChanged.at( i ) )
-          triangeIndexes.removeAt( pos );
+          triangleIndexes.removeAt( pos );
         else
           ++pos;
       }
-      changes.mTriangleIndexesGeometryChanged.append( triangeIndexes );
+      changes.mTriangleIndexesGeometryChanged.append( triangleIndexes );
     }
   }
 

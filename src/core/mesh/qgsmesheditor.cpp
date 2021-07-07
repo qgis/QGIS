@@ -360,7 +360,7 @@ void QgsMeshEditor::changeZValues( const QList<int> &verticesIndexes, const QLis
 
 void QgsMeshEditor::changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues )
 {
-  // TODO : implement a check if it is possible to change the (x,y) values. For now, ths check is made in the APP part
+  // TODO : implement a check if it is possible to change the (x,y) values. For now, this check is made in the APP part
   mUndoStack->push( new QgsMeshLayerUndoCommandChangeXYValue( this, verticesIndexes, newValues ) );
 }
 
