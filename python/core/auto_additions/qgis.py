@@ -393,3 +393,20 @@ Qgis.FilePathType.Relative.__doc__ = "Relative path"
 Qgis.FilePathType.__doc__ = 'File path types.\n\n.. versionadded:: 3.22\n\n' + '* ``Absolute``: ' + Qgis.FilePathType.Absolute.__doc__ + '\n' + '* ``Relative``: ' + Qgis.FilePathType.Relative.__doc__
 # --
 Qgis.FilePathType.baseClass = Qgis
+QgsSublayersDialog.PromptMode = Qgis.SublayerPromptMode
+# monkey patching scoped based enum
+QgsSublayersDialog.PromptAlways = Qgis.SublayerPromptMode.AlwaysAsk
+QgsSublayersDialog.PromptAlways.is_monkey_patched = True
+QgsSublayersDialog.PromptAlways.__doc__ = "Always ask users to select from available sublayers, if sublayers are present"
+QgsSublayersDialog.PromptIfNeeded = Qgis.SublayerPromptMode.AskExcludingRasterBands
+QgsSublayersDialog.PromptIfNeeded.is_monkey_patched = True
+QgsSublayersDialog.PromptIfNeeded.__doc__ = "Ask users to select from available sublayers, unless only raster bands are present"
+QgsSublayersDialog.PromptNever = Qgis.SublayerPromptMode.NeverAskSkip
+QgsSublayersDialog.PromptNever.is_monkey_patched = True
+QgsSublayersDialog.PromptNever.__doc__ = "Never ask users to select sublayers, instead don't load anything"
+QgsSublayersDialog.PromptLoadAll = Qgis.SublayerPromptMode.NeverAskLoadAll
+QgsSublayersDialog.PromptLoadAll.is_monkey_patched = True
+QgsSublayersDialog.PromptLoadAll.__doc__ = "Never ask users to select sublayers, instead automatically load all available sublayers"
+Qgis.SublayerPromptMode.__doc__ = 'Specifies how to handle layer sources with multiple sublayers.\n\n.. versionadded:: 3.22\n\n' + '* ``PromptAlways``: ' + Qgis.SublayerPromptMode.AlwaysAsk.__doc__ + '\n' + '* ``PromptIfNeeded``: ' + Qgis.SublayerPromptMode.AskExcludingRasterBands.__doc__ + '\n' + '* ``PromptNever``: ' + Qgis.SublayerPromptMode.NeverAskSkip.__doc__ + '\n' + '* ``PromptLoadAll``: ' + Qgis.SublayerPromptMode.NeverAskLoadAll.__doc__
+# --
+Qgis.SublayerPromptMode.baseClass = Qgis

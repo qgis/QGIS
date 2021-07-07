@@ -5949,7 +5949,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   QVector<QgsDataItem *> childItems;
   QgsZipItem *zipItem = nullptr;
   QgsSettings settings;
-  QgsSublayersDialog::PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways );
+  Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
   QgsDebugMsgLevel( "askUserForZipItemLayers( " + path + ')', 2 );
 
@@ -5976,16 +5976,18 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   switch ( promptLayers )
   {
     // load all layers without prompting
-    case QgsSublayersDialog::PromptLoadAll:
+    case Qgis::SublayerPromptMode::NeverAskLoadAll:
       childItems = zipItem->children();
       break;
+
     // return because we should not prompt at all
-    case QgsSublayersDialog::PromptNever:
+    case Qgis::SublayerPromptMode::NeverAskSkip:
       delete zipItem;
       return false;
+
     // initialize a selection dialog and display it.
-    case QgsSublayersDialog::PromptAlways:
-    case QgsSublayersDialog::PromptIfNeeded:
+    case Qgis::SublayerPromptMode::AlwaysAsk:
+    case Qgis::SublayerPromptMode::AskExcludingRasterBands:
       QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this, Qt::WindowFlags(), path );
       QgsSublayersDialog::LayerDefinitionList layers;
 
@@ -6065,11 +6067,11 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
     return false;
 
   QgsSettings settings;
-  QgsSublayersDialog::PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways );
+  Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
-  return  promptLayers == QgsSublayersDialog::PromptAlways ||
-          promptLayers == QgsSublayersDialog::PromptLoadAll ||
-          ( promptLayers == QgsSublayersDialog::PromptIfNeeded && layer->bandCount() == 0 );
+  return promptLayers == Qgis::SublayerPromptMode::AlwaysAsk ||
+         promptLayers == Qgis::SublayerPromptMode::NeverAskLoadAll ||
+         ( promptLayers == Qgis::SublayerPromptMode::AskExcludingRasterBands && layer->bandCount() == 0 );
 }
 
 // This method is the method that does the real job. If the layer given in
