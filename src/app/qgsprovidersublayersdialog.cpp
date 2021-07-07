@@ -207,6 +207,13 @@ QString QgsProviderSublayersDialog::groupName() const
   const QFileInfo fi( mFilePath );
   QString res = fi.completeBaseName();
 
+  // special handling for .adf files -- use directory as group name, not the unhelpful .adf file name
+  if ( fi.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString dirName = fi.path();
+    res = QFileInfo( dirName ).completeBaseName();
+  }
+
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
   {
