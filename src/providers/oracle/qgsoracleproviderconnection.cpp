@@ -124,7 +124,7 @@ void QgsOracleProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
   };
