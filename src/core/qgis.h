@@ -464,6 +464,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( FilePathType )
 
     /**
+     * Specifies how to handle layer sources with multiple sublayers.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerPromptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSublayersDialog, PromptMode ) : int
+      {
+      AlwaysAsk  SIP_MONKEYPATCH_COMPAT_NAME( PromptAlways ), //!< Always ask users to select from available sublayers, if sublayers are present
+      AskExcludingRasterBands SIP_MONKEYPATCH_COMPAT_NAME( PromptIfNeeded ), //!< Ask users to select from available sublayers, unless only raster bands are present
+      NeverAskSkip SIP_MONKEYPATCH_COMPAT_NAME( PromptNever ), //!< Never ask users to select sublayers, instead don't load anything
+      NeverAskLoadAll SIP_MONKEYPATCH_COMPAT_NAME( PromptLoadAll ), //!< Never ask users to select sublayers, instead automatically load all available sublayers
+    };
+    Q_ENUM( SublayerPromptMode )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

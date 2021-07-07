@@ -21,18 +21,6 @@ class QgsSublayersDialog : QDialog
 %End
   public:
 
-    enum PromptMode
-    {
-
-      PromptAlways,
-
-      PromptIfNeeded,
-
-      PromptNever,
-
-      PromptLoadAll
-    };
-
     enum ProviderType
     {
       Ogr,
