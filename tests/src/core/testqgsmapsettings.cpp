@@ -62,6 +62,8 @@ class TestQgsMapSettings: public QObject
     void testRenderedFeatureHandlers();
     void testCustomRenderingFlags();
     void testClippingRegions();
+    void testComputeExtentForScale();
+    void testComputeScaleForExtent();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -622,6 +624,38 @@ void TestQgsMapSettings::testClippingRegions()
   settings.setClippingRegions( QList< QgsMapClippingRegion >() << region2 );
   QCOMPARE( settings.clippingRegions().size(), 1 );
   QCOMPARE( settings.clippingRegions().at( 0 ).geometry().asWkt(), QStringLiteral( "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))" ) ) ;
+}
+
+void TestQgsMapSettings::testComputeExtentForScale()
+{
+  QgsMapSettings settings;
+  settings.setExtent( QgsRectangle( -500., -500., 500., 500. ) ); // Just to ensure settings are valid
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  settings.setOutputSize( QSize( 1000, 1000 ) );
+
+  QgsRectangle rect = settings.computeExtentForScale( QgsPoint( 0, 0 ), 500 );
+
+  //                   [                   output width in inches                   ] * [scale]
+  double widthInches = settings.outputSize().width() / double( settings.outputDpi() ) * 500;
+  double widthMapUnits = widthInches * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceFeet, settings.mapUnits() ) / 12;
+  QGSCOMPARENEARRECTANGLE( rect, QgsRectangle( - 0.5 * widthMapUnits, - 0.5 * widthMapUnits, 0.5 * widthMapUnits, 0.5 * widthMapUnits ), 0.0001 );
+
+}
+
+void TestQgsMapSettings::testComputeScaleForExtent()
+{
+  QgsMapSettings settings;
+  settings.setExtent( QgsRectangle( -500., -500., 500., 500. ) ); // Just to ensure settings are valid
+  settings.setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  settings.setOutputSize( QSize( 1000, 1000 ) );
+
+  double scale = settings.computeScaleForExtent( QgsRectangle( -500., -500., 500., 500. ) );
+
+  double widthInches = 1000 * QgsUnitTypes::fromUnitToUnitFactor( settings.mapUnits(), QgsUnitTypes::DistanceFeet ) * 12;
+  double testScale = widthInches * settings.outputDpi() / double( settings.outputSize().width() );
+  QGSCOMPARENEAR( scale, testScale, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )
