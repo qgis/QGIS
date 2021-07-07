@@ -21,34 +21,16 @@ class QgsSublayersDialog : QDialog
 %End
   public:
 
- enum PromptMode
-%Docstring
-Prompt behavior of the QgsSublayersDialog
-
-.. deprecated::
-   Use Qgis.SublayerPromptMode instead
-%End
+    enum PromptMode
     {
 
       PromptAlways,
-%Docstring
-always ask if there are existing sublayers
-%End
 
       PromptIfNeeded,
-%Docstring
-always ask if there are existing sublayers, but skip if there are bands for rasters
-%End
 
       PromptNever,
-%Docstring
-never prompt, will not load anything
-%End
 
       PromptLoadAll
-%Docstring
-never prompt, but load all sublayers
-%End
     };
 
     enum ProviderType
