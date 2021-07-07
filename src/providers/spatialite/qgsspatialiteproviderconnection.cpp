@@ -27,6 +27,8 @@
 #include <QRegularExpression>
 #include <QTextCodec>
 
+#include <chrono>
+
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -439,7 +441,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn
   };
 
@@ -463,7 +465,9 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Read fields
     if ( ogrLayer )
@@ -471,6 +475,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
       auto iterator = std::make_shared<QgsSpatialiteProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )

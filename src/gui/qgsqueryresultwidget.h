@@ -178,8 +178,8 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     bool mFirstRowFetched = false;
     QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult> mQueryResultWatcher;
     QString mSqlErrorMessage;
-    qlonglong mActualRowCount = -1;
-
+    long long mActualRowCount = -1;
+    long long mFetchedRowsBatchCount = 0;
 
     /**
      * Updates SQL layer columns.

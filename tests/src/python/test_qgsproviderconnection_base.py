@@ -36,6 +36,7 @@ from qgis.core import (
     QgsFeedback,
     QgsApplication,
     QgsTask,
+    Qgis,
 )
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtTest import QSignalSpy
@@ -564,14 +565,14 @@ class TestPyQgsProviderConnectionBase():
         self.assertEqual(vl.name(), options.layerName)
 
         # Some providers can also create SQL layer without an explicit PK
-        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.PrimaryKeys:
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.PrimaryKeys:
             options.primaryKeyColumns = []
             vl = conn.createSqlVectorLayer(options)
             self.assertTrue(vl.isValid())
             self.assertTrue(vl.isSpatial())
 
         # Some providers can also create SQL layer without an explicit geometry column
-        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.GeometryColumn:
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.GeometryColumn:
             options.primaryKeyColumns = table_info.primaryKeyColumns()
             options.geometryColumn = ''
             vl = conn.createSqlVectorLayer(options)
@@ -581,7 +582,7 @@ class TestPyQgsProviderConnectionBase():
                 self.assertFalse(vl.isSpatial())
 
         # Some providers can also create SQL layer with filters
-        if sql_layer_capabilities & QgsAbstractDatabaseProviderConnection.Filter:
+        if sql_layer_capabilities & Qgis.SqlLayerDefinitionCapability.SubsetStringFilter:
             options.primaryKeyColumns = table_info.primaryKeyColumns()
             options.geometryColumn = table_info.geometryColumn()
             options.filter = f'"{options.primaryKeyColumns[0]}" > 0'

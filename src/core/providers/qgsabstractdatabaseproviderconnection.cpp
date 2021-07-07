@@ -1467,6 +1467,16 @@ QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr
   : mResultIterator( iterator )
 {}
 
+double QgsAbstractDatabaseProviderConnection::QueryResult::queryExecutionTime()
+{
+  return mQueryExecutionTime;
+}
+
+void QgsAbstractDatabaseProviderConnection::QueryResult::setQueryExecutionTime( double queryExecutionTime )
+{
+  mQueryExecutionTime = queryExecutionTime;
+}
+
 
 QVariantList QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator::nextRow()
 {

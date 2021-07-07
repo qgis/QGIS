@@ -22,12 +22,15 @@
 #include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
+
+#include <chrono>
 
 ///@cond PRIVATE
 
@@ -176,7 +179,11 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
 
 QgsVectorLayer *QgsGeoPackageProviderConnection::createSqlVectorLayer( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options ) const
 {
-  return new QgsVectorLayer( QStringLiteral( "%1|subset=%2" ).arg( uri(), options.sql ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
+  QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
+  Q_ASSERT( providerMetadata );
+  QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
+  decoded[ QStringLiteral( "subset" ) ] = options.sql;
+  return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -381,7 +388,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
   };
@@ -405,7 +412,9 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     // Read fields
     if ( ogrLayer )
@@ -413,6 +422,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsGeoPackageProviderConnecti
 
       auto iterator = std::make_shared<QgsGeoPackageProviderResultIterator>( std::move( hDS ), ogrLayer );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )

@@ -25,6 +25,8 @@
 #include <QRegularExpression>
 #include <QIcon>
 
+#include <chrono>
+
 extern "C"
 {
 #include <libpq-fe.h>
@@ -85,10 +87,10 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
-    Qgis::SqlLayerDefinitionCapability::SelectAtId,
+    Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 }
 
@@ -254,7 +256,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
       } );
     }
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 
     if ( feedback )
     {

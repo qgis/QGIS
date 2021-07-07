@@ -112,7 +112,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
   public slots:
 
     /**
-     * Triggered when \a newRows have been fetched and can be added to the model
+     * Triggered when \a newRows have been fetched and can be added to the model.
      */
     void rowsReady( const QList<QList<QVariant> > &rows );
 
@@ -125,13 +125,15 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
   signals:
 
     /**
-     * Emitted when all rows have been fetched or when the fetching has been stopped (canceled)
+     * Emitted when rows have been fetched (all of them or a batch if `maxRows` was passed to fetchMoreRows() )
+     * or when the fetching has been stopped (canceled).
+     * \see fetchMoreRows()
      */
     void fetchingComplete();
 
     /**
-     *  Emitted when more rows are requested
-     *  \param maxRows the number of rows that will be fetched
+     *  Emitted when more rows are requested.
+     *  \param maxRows the number of rows that will be fetched.
      */
     void fetchMoreRows( qlonglong maxRows );
 

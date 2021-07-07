@@ -1065,7 +1065,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     // SQL dialog
     if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
     {
-      QAction *sqlAction = new QAction( QObject::tr( "Run SQL command…" ), menu );
+      QAction *sqlAction = new QAction( QObject::tr( "Execute SQL …" ), menu );
 
       QObject::connect( sqlAction, &QAction::triggered, item, [ item, context ]
       {
@@ -1082,7 +1082,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         QgsDialog dialog;
         dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
-        dialog.setWindowTitle( tr( "%1 — Run SQL Commands" ).arg( item->name() ) );
+        dialog.setWindowTitle( tr( "%1 — Execute SQL" ).arg( item->name() ) );
 
         // If this is a layer item (or below the hierarchy) we can pre-set the query to something
         // meaningful

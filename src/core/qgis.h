@@ -336,12 +336,11 @@ class CORE_EXPORT Qgis
      */
     enum class SqlLayerDefinitionCapability : int
     {
-      Filter = 1 << 1,            //!< SQL layer definition supports filter
-      GeometryColumn = 1 << 2,    //!< SQL layer definition supports geometry column
-      PrimaryKeys = 1 << 3,       //!< SQL layer definition supports primary keys
-      SelectAtId = 1 << 4         //!< SQL layer definition supports disabling select at id
+      SubsetStringFilter = 1 << 1,  //!< SQL layer definition supports subset string filter
+      GeometryColumn = 1 << 2,      //!< SQL layer definition supports geometry column
+      PrimaryKeys = 1 << 3,         //!< SQL layer definition supports primary keys
+      UnstableFeatureIds = 1 << 4   //!< SQL layer definition supports disabling select at id
     };
-
     Q_ENUM( SqlLayerDefinitionCapability )
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
 
@@ -363,7 +362,6 @@ class CORE_EXPORT Qgis
       Identifier    //!< SQL identifier
     };
     Q_ENUM( SqlKeywordCategory )
-
 
     /**
      * Drive types
@@ -583,6 +581,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

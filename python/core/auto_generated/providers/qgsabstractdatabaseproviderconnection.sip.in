@@ -91,7 +91,7 @@ Returns the number of fetched rows.
 
         long long rowCount( ) const;
 %Docstring
-Returns the number of rows returned by a SELECT query or -1 if unknown
+Returns the number of rows returned by a SELECT query or Qgis.FeatureCountState.UnknownCount if unknown.
 
 .. seealso:: :py:func:`fetchedRowCount`
 %End
@@ -125,6 +125,16 @@ Returns the number of rows returned by a SELECT query or -1 if unknown
 
 
 
+        double queryExecutionTime( );
+%Docstring
+Returns the query execution time in milliseconds.
+%End
+
+        void setQueryExecutionTime( double queryExecutionTime );
+%Docstring
+Sets the query execution time to ``queryExecutionTime`` milliseconds.
+%End
+
 
     };
 
@@ -135,7 +145,7 @@ Returns the number of rows returned by a SELECT query or -1 if unknown
       QString layerName; //!< Optional name for the new layer
       QStringList primaryKeyColumns; //!< List of primary key column names
       QString geometryColumn; //!< Name of the geometry column
-      bool disableSelectAtId; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      bool disableSelectAtId;
     };
 
     struct TableProperty
@@ -462,7 +472,7 @@ Renames a raster table with given ``schema`` (schema is ignored if not supported
 %Docstring
 Creates a new schema with the specified ``name``.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual void dropSchema( const QString &name, bool force = false ) const throw( QgsProviderConnectionException );
@@ -523,7 +533,7 @@ Raises a :py:class:`QgsProviderConnectionException` if any errors are encountere
 
    it is responsibility of the caller to handle open layers and registry entries.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 %End
 
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
@@ -538,9 +548,8 @@ Executes raw ``sql`` and returns the (possibly empty) list of results in a multi
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates and returns a (possibly invalid) vector layer based on the ``sql`` statement and optional ``options``.
-Raises a :py:class:`QgsProviderConnectionException` if any errors are encountered or if SQL layer creation is not supported.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered or if SQL layer creation is not supported.
 
 .. versionadded:: 3.22
 %End
@@ -638,7 +647,7 @@ Returns the fields of a ``table`` and ``schema``.
    behavior when the layer does not expose all fields (GPKG for example hides geometry
    and primary key column).
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End
@@ -647,7 +656,7 @@ Returns the fields of a ``table`` and ``schema``.
 %Docstring
 Returns a list of native types supported by the connection.
 
-:raises QgsProviderConnectionException: 
+:raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
 %End

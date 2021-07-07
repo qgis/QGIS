@@ -27,6 +27,8 @@
 #include "qgsfeedback.h"
 #include <QIcon>
 
+#include <chrono>
+
 const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS
 {
   QStringLiteral( "geometryColumnsOnly" ),
@@ -101,10 +103,10 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
   };
   mSqlLayerDefinitionCapabilities =
   {
-    Qgis::SqlLayerDefinitionCapability::Filter,
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
-    Qgis::SqlLayerDefinitionCapability::SelectAtId,
+    Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 }
 
@@ -260,6 +262,8 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     QSqlQuery q = QSqlQuery( db );
     q.setForwardOnly( true );
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     if ( ! q.exec( sql ) )
     {
       const QString errorMessage { q.lastError().text() };
@@ -270,10 +274,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
     if ( q.isActive() )
     {
+      std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
       auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         long long fetchedRowCount( ) const;
 
         /**
-         * Returns the number of rows returned by a SELECT query or -1 if unknown
+         * Returns the number of rows returned by a SELECT query or Qgis::FeatureCountState::UnknownCount if unknown.
          *
          * \see fetchedRowCount()
          */
@@ -206,12 +206,24 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         QueryResult( ) = default SIP_SKIP;
 
+        /**
+         * Returns the query execution time in milliseconds.
+         */
+        double queryExecutionTime( );
+
+        /**
+         * Sets the query execution time to \a queryExecutionTime milliseconds.
+         */
+        void setQueryExecutionTime( double queryExecutionTime );
+
 ///@endcond private
 
       private:
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
+        //! Query execution time in milliseconds
+        double mQueryExecutionTime = 0;
 
     };
 
@@ -228,7 +240,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       QString layerName; //!< Optional name for the new layer
       QStringList primaryKeyColumns; //!< List of primary key column names
       QString geometryColumn; //!< Name of the geometry column
-      bool disableSelectAtId; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+      bool disableSelectAtId = false; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
     };
 
     /**
@@ -596,7 +608,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Creates a new schema with the specified \a name.
      *
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -639,7 +651,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Renames a schema with the specified \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -653,8 +665,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * Creates and returns a (possibly invalid) vector layer based on the \a sql statement and optional \a options.
-     * Raises a QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
      * \since QGIS 3.22
      */
     virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
@@ -748,7 +759,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * choose to override this method for a greater efficiency of to overcome provider's
      * behavior when the layer does not expose all fields (GPKG for example hides geometry
      * and primary key column).
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.16
      */
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
@@ -756,7 +767,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns a list of native types supported by the connection.
      *
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.16
      */
     virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException ) = 0;

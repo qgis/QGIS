@@ -315,11 +315,11 @@ Qgis.VectorExportResult.__doc__ = 'Vector layer export result codes.\n\n.. versi
 # --
 Qgis.VectorExportResult.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.SqlLayerDefinitionCapability.Filter.__doc__ = "SQL layer definition supports filter"
+Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ = "SQL layer definition supports subset string filter"
 Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ = "SQL layer definition supports geometry column"
 Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ = "SQL layer definition supports primary keys"
-Qgis.SqlLayerDefinitionCapability.SelectAtId.__doc__ = "SQL layer definition supports disabling select at id"
-Qgis.SqlLayerDefinitionCapability.__doc__ = 'SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.\n\n.. versionadded:: 3.22\n\n' + '* ``Filter``: ' + Qgis.SqlLayerDefinitionCapability.Filter.__doc__ + '\n' + '* ``GeometryColumn``: ' + Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ + '\n' + '* ``PrimaryKeys``: ' + Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ + '\n' + '* ``SelectAtId``: ' + Qgis.SqlLayerDefinitionCapability.SelectAtId.__doc__
+Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__ = "SQL layer definition supports disabling select at id"
+Qgis.SqlLayerDefinitionCapability.__doc__ = 'SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.\n\n.. versionadded:: 3.22\n\n' + '* ``SubsetStringFilter``: ' + Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ + '\n' + '* ``GeometryColumn``: ' + Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ + '\n' + '* ``PrimaryKeys``: ' + Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ + '\n' + '* ``UnstableFeatureIds``: ' + Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__
 # --
 Qgis.SqlLayerDefinitionCapability.baseClass = Qgis
 # monkey patching scoped based enum

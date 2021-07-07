@@ -91,12 +91,12 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
       mGeometryColumnCheckBox->setVisible( showGeometryColumnConfig );
       mGeometryColumnComboBox->setVisible( showGeometryColumnConfig );
 
-      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::Filter ) };
+      const bool showFilterConfig { connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::SubsetStringFilter ) };
       mFilterLabel->setVisible( showFilterConfig );
       mFilterToolButton->setVisible( showFilterConfig );
       mFilterLineEdit->setVisible( showFilterConfig );
 
-      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::SelectAtId ) };
+      const bool showDisableSelectAtId{ connection &&connection->sqlLayerDefinitionCapabilities().testFlag( Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds ) };
       mAvoidSelectingAsFeatureIdCheckBox->setVisible( showDisableSelectAtId );
 
     }
@@ -244,12 +244,15 @@ void QgsQueryResultWidget::startFetching()
     {
       if ( mQueryResultWatcher.result().rowCount() != static_cast<long long>( Qgis::FeatureCountState::UnknownCount ) )
       {
-        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows)" ).arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ) ) );
+        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 rows, %2 ms)" )
+                               .arg( QLocale().toString( mQueryResultWatcher.result().rowCount() ),
+                                     QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
       }
       else
       {
-        mStatusLabel->setText( QStringLiteral( "Query executed successfully" ) );
+        mStatusLabel->setText( QStringLiteral( "Query executed successfully (%1 s)" ).arg( QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
       }
+      mProgressBar->hide();
       mModel = std::make_unique<QgsQueryResultModel>( mQueryResultWatcher.result() );
       connect( mFeedback.get(), &QgsFeedback::canceled, mModel.get(), [ = ]
       {
@@ -257,13 +260,14 @@ void QgsQueryResultWidget::startFetching()
         mWasCanceled = true;
       } );
 
-
-      connect( mModel.get(), &QgsQueryResultModel::fetchingStarted, this, [ = ]
+      connect( mModel.get(), &QgsQueryResultModel::fetchMoreRows, this, [ = ]( long long maxRows )
       {
+        mFetchedRowsBatchCount = 0;
+        mProgressBar->setRange( 0, maxRows );
         mProgressBar->show();
       } );
 
-      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int, int )
+      connect( mModel.get(), &QgsQueryResultModel::rowsInserted, this, [ = ]( const QModelIndex &, int first, int last )
       {
         if ( ! mFirstRowFetched )
         {
@@ -273,19 +277,14 @@ void QgsQueryResultWidget::startFetching()
           updateButtons();
           updateSqlLayerColumns( );
           mActualRowCount = mModel->queryResult().rowCount();
-          if ( mActualRowCount != -1 )
-          {
-            mProgressBar->setRange( 0, mActualRowCount );
-          }
         }
-        mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3" )
+        mStatusLabel->setText( tr( "Fetched rows: %1/%2 %3 %4 ms" )
                                .arg( QLocale().toString( mModel->rowCount( mModel->index( -1, -1 ) ) ),
                                      mActualRowCount != -1 ? QLocale().toString( mActualRowCount ) : tr( "unknown" ),
-                                     mWasCanceled ? tr( "(stopped)" ) : QString() ) );
-        if ( mActualRowCount != -1 )
-        {
-          mProgressBar->setValue( mModel->rowCount( mModel->index( -1, -1 ) ) );
-        }
+                                     mWasCanceled ? tr( "(stopped)" ) : QString(),
+                                     QLocale().toString( mQueryResultWatcher.result().queryExecutionTime() ) ) );
+        mFetchedRowsBatchCount += last - first + 1;
+        mProgressBar->setValue( mFetchedRowsBatchCount );
       } );
 
       mQueryResultsTableView->setModel( mModel.get() );
@@ -293,6 +292,7 @@ void QgsQueryResultWidget::startFetching()
 
       connect( mModel.get(), &QgsQueryResultModel::fetchingComplete, mStopButton, [ = ]
       {
+        mProgressBar->hide();
         mStopButton->setEnabled( false );
       } );
     }
@@ -456,7 +456,7 @@ void QgsConnectionsApiFetcher::fetchTokens()
         QStringList fieldNames;
         try
         {
-          const auto fields( mConnection->fields( schema, table ) );
+          const QgsFields fields( mConnection->fields( schema, table ) );
           if ( mStopFetching ) { return; }
           for ( const auto &field : std::as_const( fields ) )
           {

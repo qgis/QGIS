@@ -65,7 +65,7 @@ Returns the query result
 
     void rowsReady( const QList<QList<QVariant> > &rows );
 %Docstring
-Triggered when ``newRows`` have been fetched and can be added to the model
+Triggered when ``newRows`` have been fetched and can be added to the model.
 %End
 
     void cancel();
@@ -78,14 +78,17 @@ Cancels the row fetching.
 
     void fetchingComplete();
 %Docstring
-Emitted when all rows have been fetched or when the fetching has been stopped (canceled)
+Emitted when rows have been fetched (all of them or a batch if `maxRows` was passed to :py:func:`~QgsQueryResultModel.fetchMoreRows` )
+or when the fetching has been stopped (canceled).
+
+.. seealso:: :py:func:`fetchMoreRows`
 %End
 
     void fetchMoreRows( qlonglong maxRows );
 %Docstring
-Emitted when more rows are requested
+Emitted when more rows are requested.
 
-:param maxRows: the number of rows that will be fetched
+:param maxRows: the number of rows that will be fetched.
 %End
 
     void fetchingStarted();

@@ -1351,6 +1351,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
     return QgsAbstractDatabaseProviderConnection::QueryResult();
 
   QSqlQuery qry( *pconn.get() );
+  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
   if ( !qry.exec( sql ) )
   {
     throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
@@ -1372,6 +1373,8 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
       results.appendColumn( rec.field( idx ).name() );
     }
     iterator->nextRow();
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
     return results;
   }
 
