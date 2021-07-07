@@ -1530,6 +1530,19 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.LineString)
         self.assertEqual(res[0].geometryColumnName(), '')
 
+        # single layer geopackage -- sublayers MUST have the layerName set on the uri,
+        # in case more layers are added in future to the gpkg
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'curved_polys.gpkg'))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "polys")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/curved_polys.gpkg|layername=polys")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.CurvePolygon)
+        self.assertEqual(res[0].geometryColumnName(), 'geometry')
+
         # make sure result is valid to load layer from
         options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
