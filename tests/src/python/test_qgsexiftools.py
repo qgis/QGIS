@@ -14,8 +14,7 @@ import qgis  # NOQA switch sip api
 import os
 import shutil
 from qgis.PyQt.QtCore import QTemporaryFile
-from qgis.core import QgsPointXY
-from qgis.analysis import (QgsExifTools)
+from qgis.core import QgsPointXY, QgsExifTools
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
