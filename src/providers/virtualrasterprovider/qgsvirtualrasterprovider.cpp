@@ -23,65 +23,36 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 {
     QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
 
-    bool check = true;
-    if (check){
+    bool ok;
+    //QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(uri);
+    QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
+
+    mCrs = decodedUriParams.crs;
+    mExtent = decodedUriParams.extent;
+    mWidth = decodedUriParams.width;
+    mHeight = decodedUriParams.height;
+    mFormulaString = decodedUriParams.formula;
+
+    QList<InputLayers>::iterator i;
+    for (i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i)
+    {
+
+    }
+    /*
+    for ( const auto & it : decodedUriParams.rInputLayers )
+    {
+        query.addQueryItem( it.name % QStringLiteral(":uri") , it.uri );
+        query.addQueryItem( it.name % QStringLiteral(":provider") , it.provider );
+    }
+    */
+
+    if (! ok)
+    {
+        mValid =false;
+    }
+    else
+    {
         mValid = true;
-    } else {
-        mValid = false;
-    }
-
-    QUrl url = QUrl::fromEncoded( uri.toLatin1() );
-    const QUrlQuery query( url.query() );
-
-    if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
-    {
-        mCrs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
-    }
-
-    if ( query.hasQueryItem( QStringLiteral( "extent" ) ) )
-    {
-        mExtent = QgsRectangle::fromWkt ( query.queryItemValue( QStringLiteral( "extent" ) ) );
-    }
-
-    if ( query.hasQueryItem( QStringLiteral( "width" ) ) )
-    {
-        mWidth = query.queryItemValue( QStringLiteral( "width" ) ).toInt();
-    }
-
-    if ( query.hasQueryItem( QStringLiteral( "height" ) ) )
-    {
-        mWidth = query.queryItemValue( QStringLiteral( "height" ) ).toInt();
-    }
-
-    if ( query.hasQueryItem( QStringLiteral( "formula" ) ) )
-    {
-        mFormulaString = query.queryItemValue( QStringLiteral( "formula" ) );
-    }
-
-    QSet<QString> rLayerName;
-    for ( const auto &item : query.queryItems() )
-    {
-        if ( (item.first.indexOf(':') == -1) )
-        {
-            continue;
-        }
-        else
-        {
-            rLayerName.insert( item.first.mid(0, item.first.indexOf(':')) );
-        }
-    }
-
-    QVector<QStringList> mRasterLayers;
-
-    QSet<QString>::iterator i;
-    for (i = rLayerName.begin(); i != rLayerName.end(); ++i)
-    {
-        QStringList rLayerEl;
-        rLayerEl << (*i);
-        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":uri") );
-        rLayerEl << query.queryItemValue( (*i) % QStringLiteral(":provider") );
-
-        mRasterLayers.append(rLayerEl);
     }
 
 }

@@ -83,6 +83,8 @@ private:
     QString mFormulaString;
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
 
+    QList<QgsRasterLayer *> mRasterLayers;
+
 };
 
 class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
