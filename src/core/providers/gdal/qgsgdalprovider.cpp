@@ -3639,8 +3639,15 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       const QVariantMap parts = decodeUri( uri );
       if ( parts.contains( QStringLiteral( "path" ) ) )
       {
-        QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+        const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
         name = fi.baseName();
+
+        if ( fi.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+        {
+          // for .adf files, we use the directory name as layer name
+          const QString dirName = fi.path();
+          name = QFileInfo( dirName ).completeBaseName();
+        }
       }
       details.setName( name.isEmpty() ? uri : name );
       return {details};
