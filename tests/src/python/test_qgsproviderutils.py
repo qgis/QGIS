@@ -64,9 +64,9 @@ class TestQgsProviderUtils(unittest.TestCase):
         self.assertEqual(sublayers[3].featureCount(), Qgis.FeatureCountState.Uncounted)
 
         # need to count features for complete details about this uri!
-        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
+        self.assertTrue(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
         # ...unless we are ignoring unknown feature counts, that is...
-        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, False))
+        self.assertFalse(QgsProviderUtils.sublayerDetailsAreIncomplete(sublayers, True))
 
         # retry with retrieving feature count
         sublayers = QgsProviderRegistry.instance().querySublayers(uri, Qgis.SublayerQueryFlag.CountFeatures)
