@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerserverproperties.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerServerProperties
+{
+%Docstring(signature="appended")
+Manages QGIS Server properties for a map layer
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerserverproperties.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    QgsMapLayerServerProperties( QgsMapLayer *layer = 0 );
+%Docstring
+Constructor - Creates a Map Layer QGIS Server Properties
+
+:param layer: The map layer
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerserverproperties.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

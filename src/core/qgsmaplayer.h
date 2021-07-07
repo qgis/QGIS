@@ -36,6 +36,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
+#include "qgsmaplayerserverproperties.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
@@ -396,6 +397,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString attributionUrl() const { return mAttributionUrl; }
 
     /* Layer metadataUrl information */
+
+
+    /**
+     * Returns QGIS Server Properties of the map layer
+     * \since QGIS 3.22
+     */
+    QgsMapLayerServerProperties *serverProperties() { return mMapLayerServerProperties.get(); }
 
     /**
      * Sets the metadata URL of the layer
@@ -1909,6 +1917,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! WMS legend
     QString mLegendUrl;
     QString mLegendUrlFormat;
+
+    //! Stores information about server properties
+    std::unique_ptr< QgsMapLayerServerProperties > mMapLayerServerProperties;
 
     //! \brief Error
     QgsError mError;

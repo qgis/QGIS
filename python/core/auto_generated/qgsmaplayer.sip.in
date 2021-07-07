@@ -359,6 +359,14 @@ Attribution indicates the provider of a layer or collection of layers.
 %End
 
 
+
+    QgsMapLayerServerProperties *serverProperties();
+%Docstring
+Returns QGIS Server Properties of the map layer
+
+.. versionadded:: 3.22
+%End
+
     void setMetadataUrl( const QString &metaUrl );
 %Docstring
 Sets the metadata URL of the layer
@@ -1915,6 +1923,7 @@ happens.
 
 .. versionadded:: 3.20
 %End
+
 
 
 
