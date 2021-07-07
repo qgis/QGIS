@@ -36,7 +36,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * Prompt behavior of the QgsSublayersDialog
      * \deprecated Use Qgis::SublayerPromptMode instead
      */
-    Q_DECL_DEPRECATED enum PromptMode
+    enum Q_DECL_DEPRECATED PromptMode
     {
 
       /**
