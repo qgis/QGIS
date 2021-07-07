@@ -53,8 +53,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
     return;
 
   QList<QgsLayerTreeNode *> nodes;
-  const auto constLayers = layers;
-  for ( QgsMapLayer *layer : constLayers )
+  for ( QgsMapLayer *layer : layers )
   {
     QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layer );
     nodeLayer->setItemVisibilityChecked( mNewLayersVisible );

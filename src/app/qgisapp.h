@@ -79,6 +79,7 @@ class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
 class QgsProviderRegistry;
+class QgsProviderSublayerDetails;
 class QgsPythonUtils;
 class QgsRasterLayer;
 class QgsRectangle;
@@ -1031,7 +1032,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore &featureStore );
-    QList<QgsMapLayer *> loadGDALSublayers( const QString &uri, const QStringList &list );
 
     //! Deletes the selected attributes for the currently selected vector layer
     void deleteSelected( QgsMapLayer *layer = nullptr, QWidget *parent = nullptr, bool checkFeaturesVisible = false );
@@ -2083,12 +2083,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool askUserForZipItemLayers( const QString &path );
 
     /**
-     * This method will open a dialog so the user can select GDAL sublayers to load,
-     * and then returns a list of these layers.
-     */
-    QList< QgsMapLayer * > askUserForGDALSublayers( QgsRasterLayer *layer );
-
-    /**
      * This method will verify if a GDAL layer contains sublayers
      */
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
@@ -2106,6 +2100,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addRasterLayer( QgsRasterLayer *rasterLayer );
 
+    QgsMapLayer *addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
+
     //! Open a raster layer - this is the generic function which takes all parameters
     QgsRasterLayer *addRasterLayerPrivate( const QString &uri, const QString &baseName,
                                            const QString &providerKey, bool guiWarning,
@@ -2115,7 +2111,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
                                        const QString &providerKey, bool guiWarning = true );
 
-    void postProcessAddedMeshLayer( QgsMeshLayer *layer );
+    void postProcessAddedLayer( QgsMapLayer *layer );
 
     //! Open a vector tile layer - this is the generic function which takes all parameters
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );

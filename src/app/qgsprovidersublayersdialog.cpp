@@ -124,8 +124,11 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mProxyModel->setSourceModel( mModel );
   mLayersTree->setModel( mProxyModel );
 
-  // resize columns
   QgsSettings settings;
+  const bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+  mCbxAddToGroup->setChecked( addToGroup );
+
+  // resize columns
   QByteArray ba = settings.value( "/Windows/SubLayers/headerState" ).toByteArray();
   if ( !ba.isNull() )
   {
@@ -168,6 +171,8 @@ QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
 {
   QgsSettings settings;
   settings.setValue( "/Windows/SubLayers/headerState", mLayersTree->header()->saveState() );
+  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCbxAddToGroup->isChecked() );
+
   if ( mTask )
     mTask->cancel();
 }
