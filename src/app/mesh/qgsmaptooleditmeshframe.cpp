@@ -311,8 +311,9 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
       return false;
     }
     case AddingNewFace:
-      return false;
     case Selecting:
+    case MoveVertex:
+    case MovingVertex:
       return false;
   }
 
@@ -326,8 +327,9 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case Digitizing:
       return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
     case AddingNewFace:
-      return QgsMapTool::Flags();
     case Selecting:
+    case MoveVertex:
+    case MovingVertex:
       return QgsMapTool::Flags();
   }
 
@@ -385,6 +387,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           mStartMovingPoint = e->mapPoint();
           mCanMovingStart = mSelectedFacesRubberband->asGeometry().contains( &mStartMovingPoint );
         }
+        FALLTHROUGH
       case Digitizing:
         mStartSelectionPos = e->pos();
         mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
@@ -800,7 +803,6 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
     case MoveVertex:
     case MovingVertex:
       break;
-      break;
   }
 }
 
@@ -817,6 +819,8 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
         e->accept(); //to avoid removing the value of the ZvalueWidget
       break;
     case Selecting:
+    case MoveVertex:
+    case MovingVertex:
       break;
   }
 }
