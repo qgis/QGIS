@@ -203,6 +203,11 @@ void QgsMeshEditor::applyChangeXYValue( QgsMeshEditor::Edit &edit, const QList<i
   applyEditOnTriangularMesh( edit, mTopologicalMesh.changeXYValue( verticesIndexes, newValues ) );
 }
 
+void QgsMeshEditor::applyFlipEdge( QgsMeshEditor::Edit &edit, int vertexIndex1, int vertexIndex2 )
+{
+  applyEditOnTriangularMesh( edit, mTopologicalMesh.flipEdge( vertexIndex1, vertexIndex2 ) );
+}
+
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
 {
   QgsTriangularMesh::Changes triangularChanges( topologicChanges, *mMesh );
@@ -235,6 +240,19 @@ QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove 
   mUndoStack->push( new QgsMeshLayerUndoCommandRemoveFaces( this, facesToRemove ) );
 
   return error;
+}
+
+bool QgsMeshEditor::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const
+{
+  return mTopologicalMesh.edgeCanBeFlipped( vertexIndex1, vertexIndex2 );
+}
+
+void QgsMeshEditor::flipEdge( int vertexIndex1, int vertexIndex2 )
+{
+  if ( !edgeCanBeFlipped( vertexIndex1, vertexIndex2 ) )
+    return;
+
+  mUndoStack->push( new QgsMeshLayerUndoCommandFlipEdge( this, vertexIndex1, vertexIndex2 ) );
 }
 
 QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error )
@@ -583,3 +601,26 @@ void QgsMeshLayerUndoCommandChangeXYValue::redo()
   }
 }
 
+
+QgsMeshLayerUndoCommandFlipEdge::QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVertexIndex1( vertexIndex1 )
+  , mVertexIndex2( vertexIndex2 )
+{}
+
+void QgsMeshLayerUndoCommandFlipEdge::redo()
+{
+  if ( mVertexIndex1 >= 0 && mVertexIndex2 >= 0 )
+  {
+    QgsMeshEditor::Edit edit;
+    mMeshEditor->applyFlipEdge( edit, mVertexIndex1, mVertexIndex2 );
+    mEdits.append( edit );
+    mVertexIndex1 = -1;
+    mVertexIndex2 = -1;
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}

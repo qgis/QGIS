@@ -221,6 +221,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsRubberBand *mMovingVerticesRubberband = nullptr;
     bool mIsMovingAllowed = false;
 
+    //! members for edge flip
+    QgsVertexMarker *mFlipEdgeMarker = nullptr;
+
     QgsZValueWidget *mZValueWidget = nullptr;
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;

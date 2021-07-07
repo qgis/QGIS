@@ -85,6 +85,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Removes faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
 
+    //! Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+
+    //! Flips edge (\a vertexIndex1, \a vertexIndex2)
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+
     /**
      *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
      *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
@@ -183,6 +189,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyRemoveFaces( Edit &edit, const QList<int> &faceToRemoveIndex );
     void applyChangeZValue( Edit &edit, const QList<int> &verticesIndexes, const QList<double> &newValues );
     void applyChangeXYValue( Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+    void applyFlipEdge( Edit &edit, int vertexIndex1, int vertexIndex2 );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
@@ -198,6 +205,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandSetZValue;
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
+    friend class QgsMeshLayerUndoCommandFlipEdge;
 };
 
 #ifndef SIP_RUN
@@ -344,6 +352,29 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
   private:
     QList<int> mVerticesIndexes;
     QList<QgsPointXY> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for flipping edge
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the Z value changed with \a newValues
+     */
+    QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
+    void redo() override;
+
+  private:
+    int mVertexIndex1 = -1;
+    int mVertexIndex2 = -1;
 };
 
 #endif //SIP_RUN

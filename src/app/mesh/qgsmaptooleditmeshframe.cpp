@@ -235,6 +235,15 @@ void QgsMapToolEditMeshFrame::initialize()
   mMovingEdgesRubberband->setVisible( false );
   mMovingEdgesRubberband->setZValue( 5 );
 
+  if ( !mFlipEdgeMarker )
+    mFlipEdgeMarker = new QgsVertexMarker( canvas() );
+  mFlipEdgeMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
+  mFlipEdgeMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mFlipEdgeMarker->setColor( Qt::gray );
+  mFlipEdgeMarker->setVisible( false );
+  mFlipEdgeMarker->setPenWidth( 3 );
+  mFlipEdgeMarker->setZValue( 10 );
+
   connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
 
   createZValueWidget();
@@ -438,6 +447,14 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           addVertexToFaceCanditate( mCurrentVertexIndex );
           const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
+        }
+        else if ( mFlipEdgeMarker->isVisible() &&
+                  e->mapPoint().distance( mFlipEdgeMarker->center() ) < tolerance &&
+                  mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+        {
+          QVector<int> edgeVert = edgeVertices( mCurrentEdge );
+          mCurrentEditor->flipEdge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
+          mCurrentEdge = {-1, -1};
         }
         else // try to select
         {
@@ -1371,6 +1388,15 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
     return;
 
   double tolerance = QgsTolerance::vertexSearchRadius( mCanvas->mapSettings() );
+
+  if ( mFlipEdgeMarker->isVisible() )
+  {
+    if ( mapPoint.distance( mFlipEdgeMarker->center() ) < tolerance )
+      mFlipEdgeMarker->setColor( Qt::red );
+    else
+      mFlipEdgeMarker->setColor( Qt::gray );
+  }
+
   mCurrentEdge = {-1, -1};
 
   QList<int> candidateFaceIndexes;
@@ -1409,11 +1435,23 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
   }
 
   mEdgeBand->reset();
+  mFlipEdgeMarker->setVisible( false );
   if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
   {
     const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
     mEdgeBand->addPoint( edgeGeom.at( 0 ) );
     mEdgeBand->addPoint( edgeGeom.at( 1 ) );
+
+    const QVector<int> edgeVert = edgeVertices( mCurrentEdge );
+
+    if ( mCurrentEditor->edgeCanBeFlipped( edgeVert.at( 0 ), edgeVert.at( 1 ) ) )
+    {
+      mFlipEdgeMarker->setCenter( QgsPointXY( ( edgeGeom.at( 0 ).x() + edgeGeom.at( 1 ).x() ) / 2,
+                                              ( edgeGeom.at( 0 ).y() + edgeGeom.at( 1 ).y() ) / 2 ) );
+      mFlipEdgeMarker->setVisible( true );
+    }
+    else
+      mFlipEdgeMarker->setVisible( false );
   }
 
 }

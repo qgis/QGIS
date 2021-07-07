@@ -234,6 +234,12 @@ void TestQgsMeshEditor::editTopologicMesh()
   QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
   QCOMPARE( topologicMesh.mesh()->vertexCount(), 6 );
 
+  QVERIFY( !topologicMesh.edgeCanBeFlipped( 2, 3 ) );
+  QVERIFY( topologicMesh.edgeCanBeFlipped( 3, 4 ) );
+  QVERIFY( !topologicMesh.edgeCanBeFlipped( 2, 4 ) );
+  QVERIFY( !topologicMesh.edgeCanBeFlipped( 1, 2 ) );
+  QVERIFY( !topologicMesh.edgeCanBeFlipped( 1, 4 ) );
+
   QVector<QgsTopologicalMesh::Changes> topologicChanges;
 
   const QVector<QgsMeshVertex> vertices(
@@ -499,6 +505,11 @@ void TestQgsMeshEditor::editTopologicMesh()
   topologicChanges.append( topologicMesh.removeVertexFillHole( 4 ) );
 
   QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
+  QVERIFY( topologicMesh.checkConsistency() );
+
+  QVERIFY( topologicMesh.edgeCanBeFlipped( 2, 12 ) );
+  topologicChanges.append( topologicMesh.flipEdge( 2, 12 ) );
+  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 24, 22} ) );
   QVERIFY( topologicMesh.checkConsistency() );
 
   // reverse all!!!
@@ -1094,6 +1105,26 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1950, 2700, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1833.33333333, 2600 ), 1e-6 ) );
 
+  //flip edge
+  QVERIFY( editor->edgeCanBeFlipped( 1, 3 ) );
+  QVERIFY( !editor->edgeCanBeFlipped( 4, 3 ) );
+  editor->flipEdge( 3, 1 );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2100, 2050, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2266.66666666 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2050, 2800, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2600 ), 1e-6 ) );
+
+  meshLayerQuadTriangle->undoStack()->undo();
+
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2050, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 2266.66666666 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1150, 2340, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1166.6666666, 2600 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2950, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 2933.33333333 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1950, 2700, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1833.33333333, 2600 ), 1e-6 ) );
+
   QCOMPARE( meshLayerQuadTriangle->meshVertexCount(), 9 );
   QCOMPARE( meshLayerQuadTriangle->meshFaceCount(), 8 );
 
@@ -1248,6 +1279,16 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1330, 2500, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1366.6666, 2533.3333 ), 1e-2 ) );
 
+  QVERIFY( editor->edgeCanBeFlipped( 4, 3 ) );
+  QVERIFY( editor->edgeCanBeFlipped( 1, 3 ) );
+  QVERIFY( editor->edgeCanBeFlipped( 1, 10 ) );
+  QVERIFY( editor->edgeCanBeFlipped( 14, 8 ) );
+  QVERIFY( !editor->edgeCanBeFlipped( 4, 15 ) );
+  QVERIFY( editor->edgeCanBeFlipped( 12, 10 ) );
+  QVERIFY( !editor->edgeCanBeFlipped( 10, 13 ) );
+  QVERIFY( !editor->edgeCanBeFlipped( 8, 9 ) );
+  QVERIFY( !editor->edgeCanBeFlipped( 10, 17 ) );
+
   QVERIFY( editor->removeVertices( {10}, true ) == QgsMeshEditingError() );
   QVERIFY( editor->checkConsistency() );
 
@@ -1257,6 +1298,11 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
 
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPoint( 1330, 2500, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1400, 2500 ), 1e-2 ) );
+
+  QVERIFY( editor->edgeCanBeFlipped( 14, 13 ) );
+  editor->flipEdge( 14, 13 );
+
+  editor->mUndoStack->undo();
 
   QVERIFY( editor->removeVertices( {13}, true ) == QgsMeshEditingError() );
 

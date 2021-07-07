@@ -1320,6 +1320,153 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeFaces( const QList<int> fa
   return changes;
 }
 
+bool QgsTopologicalMesh::flippableFaces( int vertexIndex1, int vertexIndex2, int &face1, int &face2, int &oppositeVertex1, int &oppositeVertex2 ) const
+{
+  QgsMeshVertexCirculator circulator1 = vertexCirculator( vertexIndex1 );
+  QgsMeshVertexCirculator circulator2 = vertexCirculator( vertexIndex2 );
+
+  circulator1.goBoundaryClockwise();
+  int firstFace1 = circulator1.currentFaceIndex();
+  circulator2.goBoundaryClockwise();
+  int firstFace2 = circulator2.currentFaceIndex();
+
+  if ( circulator1.oppositeVertexCounterClockWise() != vertexIndex2 )
+    while ( circulator1.turnCounterClockwise() != -1 &&
+            circulator1.currentFaceIndex() != firstFace1 &&
+            circulator1.oppositeVertexCounterClockWise() != vertexIndex2 ) {}
+
+  if ( circulator2.oppositeVertexCounterClockWise() != vertexIndex1 )
+    while ( circulator2.turnCounterClockwise() != -1 &&
+            circulator2.currentFaceIndex() != firstFace2 &&
+            circulator2.oppositeVertexCounterClockWise() != vertexIndex1 ) {}
+
+  if ( circulator1.oppositeVertexCounterClockWise() != vertexIndex2
+       || circulator2.oppositeVertexCounterClockWise() != vertexIndex1 )
+    return false;
+
+  face1 = circulator1.currentFaceIndex();
+  face2 = circulator2.currentFaceIndex();
+
+  oppositeVertex1 = circulator1.oppositeVertexClockWise();
+  oppositeVertex2 = circulator2.oppositeVertexClockWise();
+
+  return true;
+}
+
+bool QgsTopologicalMesh::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const
+{
+  int faceIndex1;
+  int faceIndex2;
+  int oppositeVertexFace1;
+  int oppositeVertexFace2;
+
+  if ( ! flippableFaces( vertexIndex1, vertexIndex2, faceIndex1, faceIndex2, oppositeVertexFace1, oppositeVertexFace2 ) ||
+       faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 )
+    return false;
+
+  const QgsMeshFace &face1 = mMesh->face( faceIndex1 );
+  const QgsMeshFace &face2 = mMesh->face( faceIndex2 );
+
+
+  if ( face1.count() != 3 || face2.count() != 3 )
+    return false;
+
+  QgsMeshVertex v1 = mMesh->vertices.at( vertexIndex1 );
+  QgsMeshVertex v2 = mMesh->vertices.at( vertexIndex2 );
+  QgsMeshVertex ov1 = mMesh->vertices.at( oppositeVertexFace1 );
+  QgsMeshVertex ov2 = mMesh->vertices.at( oppositeVertexFace2 );
+
+  double ux1 = ov1.x() - v1.x();
+  double uy1 = ov1.y() - v1.y();
+  double vx1 = ov2.x() - v1.x();
+  double vy1 = ov2.y() - v1.y();
+
+  double ux2 = ov1.x() - v2.x();
+  double uy2 = ov1.y() - v2.y();
+  double vx2 = ov2.x() - v2.x();
+  double vy2 = ov2.y() - v2.y();
+
+  double crossProduct1 = ux1 * vy1 - uy1 * vx1;
+  double crossProduct2 = ux2 * vy2 - uy2 * vx2;
+
+  return crossProduct1 * crossProduct2 < 0;
+}
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::flipEdge( int vertexIndex1, int vertexIndex2 )
+{
+  int faceIndex1;
+  int faceIndex2;
+  int oppositeVertexFace1;
+  int oppositeVertexFace2;
+
+  if ( ! flippableFaces( vertexIndex1, vertexIndex2, faceIndex1, faceIndex2, oppositeVertexFace1, oppositeVertexFace2 ) ||
+       faceIndex1 < 0 || faceIndex2 < 0 || oppositeVertexFace1 < 0 || oppositeVertexFace2 < 0 )
+    return Changes();
+
+  Changes changes;
+
+  const QgsMeshFace &face1 = mMesh->face( faceIndex1 );
+  const QgsMeshFace &face2 = mMesh->face( faceIndex2 );
+
+  Q_ASSERT( face1.count() == 3 );
+  Q_ASSERT( face2.count() == 3 );
+
+  int pos1 = vertexPositionInFace( vertexIndex1, face1 );
+  int pos2 = vertexPositionInFace( vertexIndex2, face2 );
+
+  int neighborFace1 = mFacesNeighborhood.at( faceIndex1 ).at( pos1 );
+  int posInNeighbor1 = vertexPositionInFace( *mMesh, oppositeVertexFace1, neighborFace1 );
+  int neighborFace2 = mFacesNeighborhood.at( faceIndex1 ).at( ( pos1 + 1 ) % 3 );
+  int posInNeighbor2 = vertexPositionInFace( *mMesh, vertexIndex2, neighborFace2 );
+  int neighborFace3 = mFacesNeighborhood.at( faceIndex2 ).at( pos2 );
+  int posInNeighbor3 = vertexPositionInFace( *mMesh, oppositeVertexFace2, neighborFace3 );
+  int neighborFace4 = mFacesNeighborhood.at( faceIndex2 ).at( ( pos2 + 1 ) % 3 );
+  int posInNeighbor4 = vertexPositionInFace( *mMesh, vertexIndex1, neighborFace4 );
+
+  changes.mFaceIndexesToRemove.append( faceIndex1 );
+  changes.mFaceIndexesToRemove.append( faceIndex2 );
+  changes.mFacesToRemove.append( face1 );
+  changes.mFacesToRemove.append( face2 );
+  changes.mFacesNeighborhoodToRemove.append( mFacesNeighborhood.at( faceIndex1 ) );
+  changes.mFacesNeighborhoodToRemove.append( mFacesNeighborhood.at( faceIndex2 ) );
+  int startIndex = mMesh->faceCount();
+  changes.mAddedFacesFirstIndex = startIndex;
+  changes.mFacesToAdd.append( {oppositeVertexFace1, oppositeVertexFace2, vertexIndex1} );
+  changes.mFacesToAdd.append( {oppositeVertexFace2, oppositeVertexFace1, vertexIndex2} );
+  changes.mFacesNeighborhoodToAdd.append( {startIndex + 1,
+                                          mFacesNeighborhood.at( faceIndex2 ).at( ( pos2 + 1 ) % 3 ),
+                                          mFacesNeighborhood.at( faceIndex1 ).at( pos1 )} );
+  changes.mFacesNeighborhoodToAdd.append( {startIndex,
+                                          mFacesNeighborhood.at( faceIndex1 ).at( ( pos1 + 1 ) % 3 ),
+                                          mFacesNeighborhood.at( faceIndex2 ).at( pos2 )} );
+
+  if ( neighborFace1 >= 0 )
+    changes.mNeighborhoodChanges.append( {neighborFace1, posInNeighbor1, faceIndex1, startIndex} );
+  if ( neighborFace2 >= 0 )
+    changes.mNeighborhoodChanges.append( {neighborFace2, posInNeighbor2, faceIndex1, startIndex + 1} );
+  if ( neighborFace3 >= 0 )
+    changes.mNeighborhoodChanges.append( {neighborFace3, posInNeighbor3, faceIndex2, startIndex + 1} );
+  if ( neighborFace4 >= 0 )
+    changes.mNeighborhoodChanges.append( {neighborFace4, posInNeighbor4, faceIndex2, startIndex} );
+
+
+  if ( mVertexToFace.at( vertexIndex1 ) == faceIndex1 || mVertexToFace.at( vertexIndex1 ) == faceIndex2 )
+    changes.mVerticesToFaceChanges.append( {vertexIndex1,  mVertexToFace.at( vertexIndex1 ), startIndex} );
+  if ( mVertexToFace.at( vertexIndex2 ) == faceIndex1 || mVertexToFace.at( vertexIndex2 ) == faceIndex2 )
+    changes.mVerticesToFaceChanges.append( {vertexIndex2,  mVertexToFace.at( vertexIndex2 ), startIndex + 1} );
+
+  if ( mVertexToFace.at( oppositeVertexFace1 ) == faceIndex1 )
+    changes.mVerticesToFaceChanges.append( {oppositeVertexFace1,  faceIndex1, startIndex} );
+
+  if ( mVertexToFace.at( oppositeVertexFace2 ) == faceIndex2 )
+    changes.mVerticesToFaceChanges.append( {oppositeVertexFace2,  faceIndex2, startIndex + 1} );
+
+  applyChanges( changes );
+
+  return changes;
+}
+
+
 QgsTopologicalMesh::Changes QgsTopologicalMesh::addVertexInface( int includingFaceIndex, const QgsMeshVertex &vertex )
 {
   Changes changes;

@@ -195,6 +195,17 @@ class CORE_EXPORT QgsTopologicalMesh
     Changes removeFaces( const QList<int> facesIndexes );
 
     /**
+     * Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+     */
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+
+    /**
+     *  Flips edge (\a vertexIndex1, \a vertexIndex2)
+     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     */
+    Changes flipEdge( int vertexIndex1, int vertexIndex2 );
+
+    /**
      *  Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
@@ -270,6 +281,9 @@ class CORE_EXPORT QgsTopologicalMesh
     // maybe later we could use more sophisticated reference (spatial index?), to retrieve fre vertex in an extent
     void dereferenceAsFreeVertex( int vertexIndex );
     void referenceAsFreeVertex( int vertexIndex );
+
+    // Test if edge (vertexIndex1, vertexIndex2) is flippable and return correspoding face and opposite vertices
+    bool flippableFaces( int vertexIndex1, int vertexIndex2, int &face1, int &face2, int &oppositeVertex1, int &oppositeVertex2 ) const;
 
     //Attributes
     QgsMesh *mMesh = nullptr;
