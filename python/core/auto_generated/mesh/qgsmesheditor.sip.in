@@ -80,6 +80,16 @@ Adds a face ``face`` to the mesh with vertex indexes ``vertexIndexes``, returns 
 Removes faces ``faces`` to the mesh, returns topological errors if this operation fails (operation is not realized)
 %End
 
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+%Docstring
+Returns ``True`` if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+%End
+
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+%Docstring
+Flips edge (``vertexIndex1``, ``vertexIndex2``)
+%End
+
     int addPointsAsVertices( const QVector<QgsPoint> &point, double tolerance );
 %Docstring
 Adds points as vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform

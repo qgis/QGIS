@@ -282,7 +282,7 @@ class CORE_EXPORT QgsTopologicalMesh
     void dereferenceAsFreeVertex( int vertexIndex );
     void referenceAsFreeVertex( int vertexIndex );
 
-    // Test if edge (vertexIndex1, vertexIndex2) is flippable and return correspoding face and opposite vertices
+    //! Test if edge (vertexIndex1, vertexIndex2) is flippable and return corresponding faces and opposite vertices
     bool flippableFaces( int vertexIndex1, int vertexIndex2, int &face1, int &face2, int &oppositeVertex1, int &oppositeVertex2 ) const;
 
     //Attributes
