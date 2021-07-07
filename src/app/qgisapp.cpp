@@ -98,6 +98,9 @@
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayersdialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -7675,6 +7678,41 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
+  // query sublayers
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName );
+  if ( !sublayers.empty() )
+  {
+    bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, false );
+    const bool singleSublayerOnly = sublayers.size() == 1;
+    if ( singleSublayerOnly && !detailsAreIncomplete )
+    {
+      // nice and easy -- we only have one sublayer, so load that
+    }
+    else if ( allowInteractive )
+    {
+      // prompt user for sublayers
+      QgsProviderSublayersDialog dlg( fileName, sublayers, this );
+
+      dlg.exec();
+    }
+    else // non-interactive
+    {
+      // in non-interactive mode we don't care if feature counts are missing, so re-test if
+      // details are incomplete with ignoring unknown feature counts
+      detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+      if ( detailsAreIncomplete )
+      {
+        // requery sublayers, resolving geometry types
+        sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::ResolveGeometryType );
+      }
+
+      // add all sublayers
+
+    }
+    ok = true;
+  }
+
+#if 0
   // try to load it as raster
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
@@ -7701,14 +7739,14 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
-
-  CPLPopErrorHandler();
-
   // Try to load as mesh layer after raster & vector
   if ( !ok )
   {
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
   }
+#endif
+
+  CPLPopErrorHandler();
 
   if ( !ok )
   {
