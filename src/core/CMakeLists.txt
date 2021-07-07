@@ -1863,6 +1863,14 @@ add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS
 # require c++17
 target_compile_features(qgis_core PRIVATE cxx_std_17)
 
+# Exiv still uses std::auto_ptr
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_definitions(qgis_core PUBLIC _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR)
+endif()
+if (MSVC)
+  target_compile_definitions(qgis_core PUBLIC _HAS_AUTO_PTR_ETC=1)
+endif()
+
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
   ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
