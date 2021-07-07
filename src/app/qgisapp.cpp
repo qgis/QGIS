@@ -5658,24 +5658,21 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
 
-  QString base( baseName );
+  // query sublayers
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
+      QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( url )
+      : QgsProviderRegistry::instance()->querySublayers( url );
 
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  // filter out non-mesh sublayers
+  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
   {
-    base = QgsMapLayer::formatLayerName( base );
-  }
+    return sublayer.type() != QgsMapLayerType::MeshLayer;
+  } ), sublayers.end() );
 
-  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
+  QgsMeshLayer *result = nullptr;
+  QgsProviderSublayerDetails::LayerOptions options( QgsProject::instance()->transformContext() );
 
-  // create the layer
-  QgsMeshLayer::LayerOptions options;
-  std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( url, base, providerKey, options ) );
-
-  QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-  if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-    referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
-
-  if ( ! layer || ( !layer->isValid() && layer->subLayers().isEmpty() ) )
+  if ( sublayers.empty() )
   {
     if ( guiWarning )
     {
@@ -5686,45 +5683,79 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
     // since the layer is bad, stomp on it
     return nullptr;
   }
-
-  if ( !layer->isValid() && layer->subLayers().count() > 0 ) //sublayers to load
+  else if ( sublayers.size() > 1 )
   {
-    QList< QgsMapLayer * > subLayers = askUserForMDALSublayers( layer.get() );
-
-    if ( subLayers.isEmpty() )
-      layer.reset( nullptr );
-    else
+    // ask user for sublayers
+    QgsProviderSublayersDialog dlg( url, sublayers, this );
+    if ( dlg.exec() )
     {
-      for ( QgsMapLayer *newLayer : std::as_const( subLayers ) )
+      const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
+      if ( !selectedLayers.isEmpty() )
       {
-        askUserForDatumTransform( newLayer->crs(), QgsProject::instance()->crs(), newLayer );
-        QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( newLayer );
-        if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
-          qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, meshLayer->dataProvider()->temporalCapabilities() );
-        bool ok;
-        newLayer->loadDefaultStyle( ok );
-        newLayer->loadDefaultMetadata( ok );
+        const QString groupName = dlg.groupName();
+        QgsLayerTreeGroup *group = nullptr;
+        if ( !groupName.isEmpty() )
+        {
+          group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+        }
+
+        for ( const QgsProviderSublayerDetails &sublayer : std::as_const( selectedLayers ) )
+        {
+          std::unique_ptr<QgsMeshLayer> layer( qobject_cast< QgsMeshLayer * >( sublayer.toLayer( options ) ) );
+          QgsMeshLayer *ml = layer.get();
+          if ( !result )
+            result = ml;
+
+          if ( group )
+          {
+            QgsProject::instance()->addMapLayer( layer.release(), false );
+            group->addLayer( ml );
+          }
+          else
+          {
+            QgsProject::instance()->addMapLayer( layer.release() );
+          }
+
+          postProcessAddedMeshLayer( ml );
+        }
       }
-
-      layer.reset( qobject_cast< QgsMeshLayer * >( subLayers.at( 0 ) ) );
     }
-
   }
   else
   {
-    if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->referenceTime().isValid() )
-      qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
-    QgsProject::instance()->addMapLayer( layer.get() );
-    askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer.get() );
+    // create the layer
+    std::unique_ptr<QgsMeshLayer> layer( qobject_cast< QgsMeshLayer * >( sublayers.at( 0 ).toLayer( options ) ) );
+    result = layer.get();
 
-    bool ok;
-    layer->loadDefaultStyle( ok );
-    layer->loadDefaultMetadata( ok );
+    QString base( baseName );
+    if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+    {
+      base = QgsMapLayer::formatLayerName( base );
+    }
+    layer->setName( base );
+
+    QgsProject::instance()->addMapLayer( layer.release() );
+    postProcessAddedMeshLayer( result );
   }
 
   activateDeactivateLayerRelatedActions( activeLayer() );
+  return result;
+}
 
-  return layer.release();
+void QgisApp::postProcessAddedMeshLayer( QgsMeshLayer *layer )
+{
+  QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+  if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+    referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
+
+  if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->referenceTime().isValid() )
+    qobject_cast< QgsMeshLayerTemporalProperties * >( layer->temporalProperties() )->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
+
+  askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
+
+  bool ok = false;
+  layer->loadDefaultStyle( ok );
+  layer->loadDefaultMetadata( ok );
 }
 
 QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QString &baseName )
@@ -6269,62 +6300,6 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLay
     if ( addToGroup && ! newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
-  return result;
-}
-
-QList<QgsMapLayer *> QgisApp::askUserForMDALSublayers( QgsMeshLayer *layer )
-{
-  QList< QgsMapLayer * > result;
-  if ( !layer )
-    return result;
-
-  QStringList sublayers = layer->subLayers();
-  if ( sublayers.empty() )
-    return result;
-
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Mdal, QStringLiteral( "mdal" ), this );
-  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
-
-  QgsSublayersDialog::LayerDefinitionList layersDefList;
-  int id = 1;
-  for ( const QString &layerUri : sublayers )
-  {
-    QgsSublayersDialog::LayerDefinition definition;
-    QString name = layerUri;
-    definition.layerName = layerUri;
-    definition.layerId = id++;
-    layersDefList.append( definition );
-  }
-
-  chooseSublayersDialog.populateLayerTable( layersDefList );
-  if ( chooseSublayersDialog.exec() )
-  {
-    QgsSublayersDialog::LayerDefinitionList selection = chooseSublayersDialog.selection();
-    for ( auto definition : selection )
-    {
-      int id = definition.layerId;
-      QString name = definition.layerName;
-      QString path = layer->source();
-      name = name.mid( name.indexOf( path ) + path.length() + 2 );
-      result.append( new QgsMeshLayer( sublayers.at( id - 1 ), name, QStringLiteral( "mdal" ) ) );
-    }
-
-    if ( !selection.isEmpty() )
-    {
-      if ( chooseSublayersDialog.addToGroupCheckbox() )
-      {
-        QgsLayerTreeGroup *group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
-        for ( QgsMapLayer *layerAdded : result )
-        {
-          QgsProject::instance()->addMapLayer( layerAdded, false );
-          group->addLayer( layerAdded );
-        }
-      }
-      else
-        QgsProject::instance()->addMapLayers( result );
-    }
-  }
-
   return result;
 }
 

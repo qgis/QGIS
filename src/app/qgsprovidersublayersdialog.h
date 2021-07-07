@@ -54,6 +54,9 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
 
     ~QgsProviderSublayersDialog() override;
 
+    QList< QgsProviderSublayerDetails > selectedLayers() const;
+    QString groupName() const;
+
   signals:
 
     /**
@@ -69,6 +72,8 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
     QgsProviderSublayerModel *mModel = nullptr;
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
     QPointer< QgsProviderSublayerTask > mTask;
+    QString mFilePath;
+    QString mFileName;
 
 };
 
