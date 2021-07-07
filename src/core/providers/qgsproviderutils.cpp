@@ -17,6 +17,8 @@
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayerdetails.h"
 
+#include <QFileInfo>
+
 bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, bool ignoreUnknownFeatureCount )
 {
   for ( const QgsProviderSublayerDetails &sublayer : details )
@@ -42,4 +44,19 @@ bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSubl
   }
 
   return false;
+}
+
+QString QgsProviderUtils::suggestLayerNameFromFilePath( const QString &path )
+{
+  const QFileInfo info( path );
+  // default to base name of file
+  QString name = info.completeBaseName();
+
+  // special handling for .adf files -- use directory as base name, not the unhelpful .adf file name
+  if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString dirName = info.path();
+    name = QFileInfo( dirName ).completeBaseName();
+  }
+  return name;
 }

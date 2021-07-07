@@ -7666,20 +7666,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       QgsCanvasRefreshBlocker refreshBlocker;
       QgsSettings settings;
 
-      const QFileInfo info( fileName );
-      QString base = info.completeBaseName();
-
-      // special handling for .adf files -- use directory as base name, not the unhelpful .adf file name
-      if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
-      {
-        const QString dirName = info.path();
-        base = QFileInfo( dirName ).completeBaseName();
-      }
-
+      QString base = QgsProviderUtils::suggestLayerNameFromFilePath( fileName );
       if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
       {
         base = QgsMapLayer::formatLayerName( base );
       }
+
       addSublayers( sublayers, base, groupName );
     }
     activateDeactivateLayerRelatedActions( activeLayer() );

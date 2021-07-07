@@ -45,6 +45,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
 
 #include <QImage>
 #include <QColor>
@@ -3639,15 +3640,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       const QVariantMap parts = decodeUri( uri );
       if ( parts.contains( QStringLiteral( "path" ) ) )
       {
-        const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-        name = fi.baseName();
-
-        if ( fi.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
-        {
-          // for .adf files, we use the directory name as layer name
-          const QString dirName = fi.path();
-          name = QFileInfo( dirName ).completeBaseName();
-        }
+        name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "path" ) ).toString() );
       }
       details.setName( name.isEmpty() ? uri : name );
       return {details};
