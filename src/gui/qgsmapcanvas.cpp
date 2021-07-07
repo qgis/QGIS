@@ -205,17 +205,30 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
-  mSettings.setDevicePixelRatio( devicePixelRatio() );
+  updateDevicePixelFromScreen();
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
   moveCanvasContents( true );
 
+
   // keep device pixel ratio up to date on screen or resolution change
   if ( window()->windowHandle() )
   {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
-    connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
+    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    {
+      disconnect( mScreenDpiChangedConnection );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal )
+      {
+        updateDevicePixelFromScreen();
+      } );
+      updateDevicePixelFromScreen();
+    } );
+
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal )
+    {
+      updateDevicePixelFromScreen();
+    } );
   }
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
@@ -245,7 +258,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setCanvasColor( mSettings.backgroundColor() );
 
   setTemporalRange( mSettings.temporalRange() );
-
   refresh();
 }
 
@@ -966,6 +978,21 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   emit contextMenuAboutToShow( &menu, event );
 
   menu.exec( event->globalPos() );
+}
+
+void QgsMapCanvas::updateDevicePixelFromScreen()
+{
+  mSettings.setDevicePixelRatio( devicePixelRatio() );
+  // TODO: QGIS 4 -> always respect screen dpi
+  if ( QgsSettings().value( QStringLiteral( "qgis/respect_screen_dpi" ), QStringLiteral( "false" ), QgsSettings::Section::Gui ) == QLatin1String( "true" ) )
+  {
+    mSettings.setOutputDpi( screen()->physicalDotsPerInch() );
+  }
+  else
+  {
+    // Fallback: compatibility with QGIS <= 3.20; always assume low dpi screens
+    mSettings.setOutputDpi( 96.0 );
+  }
 }
 
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )

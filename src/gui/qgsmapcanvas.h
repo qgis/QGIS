@@ -1358,6 +1358,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     int mBlockItemPositionUpdates = 0;
 
+    QMetaObject::Connection mScreenDpiChangedConnection;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
@@ -1427,6 +1429,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void clearElevationCache();
 
     void showContextMenu( QgsMapMouseEvent *event );
+
+    void updateDevicePixelFromScreen();
 
     friend class TestQgsMapCanvas;
 

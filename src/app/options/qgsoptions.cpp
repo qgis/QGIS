@@ -740,6 +740,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mMapTipsDelaySpinBox->setValue( mSettings->value( QStringLiteral( "qgis/mapTipsDelay" ), 850 ).toInt() );
   mMapTipsDelaySpinBox->setClearValue( 850 );
 
+  mRespectScreenDpiCheckBox->setChecked( mSettings->value( QStringLiteral( "qgis/respect_screen_dpi" ), QStringLiteral( "false" ), QgsSettings::Section::Gui ) == QStringLiteral( "true" ) );
+
   //
   // Raster properties
   //
@@ -1606,6 +1608,8 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
+  mSettings->setValue( QStringLiteral( "qgis/respect_screen_dpi" ), mRespectScreenDpiCheckBox->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ), QgsSettings::Section::Gui );
+
   mSettings->setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), ( QgsClipboard::CopyFormat )mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
