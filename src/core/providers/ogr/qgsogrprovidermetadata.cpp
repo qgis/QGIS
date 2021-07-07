@@ -1042,13 +1042,13 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
   const int layerCount = firstLayer->GetLayerCount();
 
+  QList<QgsProviderSublayerDetails> res;
   if ( layerCount == 1 )
   {
-    return QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, true, feedback );
+    res << QgsOgrProviderUtils::querySubLayerList( 0, firstLayer.get(), driverName, flags, false, uri, true, feedback );
   }
   else
   {
-    QList<QgsProviderSublayerDetails> res;
     // In case there is no free opened dataset in the cache, keep the first
     // layer alive while we iterate over the other layers, so that we can
     // reuse the same dataset. Can help in a particular with a FileGDB with
@@ -1077,28 +1077,37 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
 
       res << QgsOgrProviderUtils::querySubLayerList( i, i == 0 ? firstLayer.get() : layer.get(), driverName, flags, false, uri, false, feedback );
     }
-
-    // if all layernames are equal, we remove them from the uris
-    QSet< QString > layerNames;
-    for ( const QgsProviderSublayerDetails &details : std::as_const( res ) )
-    {
-      const QVariantMap parts = decodeUri( details.uri() );
-      layerNames.insert( parts.value( QStringLiteral( "layerName" ) ).toString() );
-    }
-
-    if ( layerNames.count() == 1 )
-    {
-      // all layer names are the same, so remove them from uris
-      for ( int i = 0; i < res.size(); ++i )
-      {
-        QVariantMap parts = decodeUri( res.at( i ).uri() );
-        parts.remove( QStringLiteral( "layerName" ) );
-        res[ i ].setUri( encodeUri( parts ) );
-      }
-    }
-
-    return res;
   }
+
+  // Systematically add a layerName= option to all OGR sublayers in case
+  // the current single layer dataset becomes layer a multi-layer one.
+  // (Except for a few select extensions, known to be always single layer dataset!)
+  for ( int i = 0; i < res.count(); ++i )
+  {
+    QVariantMap parts = decodeUri( res.at( i ).uri() );
+    if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() ||
+         !parts.value( QStringLiteral( "layerId" ) ).toString().isEmpty() )
+      continue;
+
+    bool isAlwaysSingleLayerDataset = false;
+    const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+    if ( fi.isFile() )
+    {
+      const QString ext = fi.suffix().toLower();
+      isAlwaysSingleLayerDataset = ext == QLatin1String( "shp" ) ||
+                                   ext == QLatin1String( "mif" ) ||
+                                   ext == QLatin1String( "tab" ) ||
+                                   ext == QLatin1String( "csv" ) ||
+                                   ext == QLatin1String( "geojson" );
+    }
+    if ( isAlwaysSingleLayerDataset )
+      continue;
+
+    parts.insert( QStringLiteral( "layerName" ), res.at( i ).name() );
+    res[i].setUri( encodeUri( parts ) );
+  }
+
+  return res;
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
