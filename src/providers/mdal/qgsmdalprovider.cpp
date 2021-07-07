@@ -1087,6 +1087,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     // strip the driver name and path from the MDAL uri to get the layer name
     details.setName( layerUri.mid( layerUri.indexOf( uri ) + uri.length() + 2 ) );
+    if ( details.name().isEmpty() )
+    {
+      // use file name as layer name if no layer name available from mdal
+      details.setName( info.completeBaseName() );
+    }
 
     res << details;
 
