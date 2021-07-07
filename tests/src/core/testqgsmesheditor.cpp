@@ -228,7 +228,7 @@ void TestQgsMeshEditor::createTopologicMesh()
 void TestQgsMeshEditor::editTopologicMesh()
 {
   QgsMeshEditingError error;
-  QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 5, error );
+  QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
   QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
@@ -338,6 +338,17 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( checkFacesAround( topologicMesh, 6, {4} ) );
   QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
   QVERIFY( topologicMesh.checkConsistency() );
+
+  QVERIFY( !topologicMesh.canBeMerged( 4, 5 ) );
+  QVERIFY( topologicMesh.canBeMerged( 3, 4 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 1, 4 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 0, 1 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 0, 3 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 2, 3 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 4, 2 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 2, 1 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 3, 5 ) );
+  QVERIFY( !topologicMesh.canBeMerged( 6, 7 ) );
 
   faces =
   {
@@ -509,7 +520,12 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   QVERIFY( topologicMesh.edgeCanBeFlipped( 2, 12 ) );
   topologicChanges.append( topologicMesh.flipEdge( 2, 12 ) );
-  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 24, 22} ) );
+  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 22, 24} ) );
+  QVERIFY( topologicMesh.checkConsistency() );
+
+  QVERIFY( topologicMesh.canBeMerged( 3, 8 ) );
+  topologicChanges.append( topologicMesh.merge( 3, 8 ) );
+  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 22, 25} ) );
   QVERIFY( topologicMesh.checkConsistency() );
 
   // reverse all!!!
@@ -541,7 +557,7 @@ void TestQgsMeshEditor::editTopologicMesh()
 
   topologicMesh.reindex();
 
-  QCOMPARE( topologicMesh.mesh()->faceCount(), 12 );
+  QCOMPARE( topologicMesh.mesh()->faceCount(), 11 );
   QCOMPARE( topologicMesh.mesh()->vertexCount(), 12 );
 }
 
@@ -1113,6 +1129,28 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
   QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2266.66666666 ), 1e-6 ) );
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2050, 2800, 0 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2600 ), 1e-6 ) );
+
+  meshLayerQuadTriangle->undoStack()->undo();
+
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2050, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 2266.66666666 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1150, 2340, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1166.6666666, 2600 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2950, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 2933.33333333 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1950, 2700, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1833.33333333, 2600 ), 1e-6 ) );
+
+  //merge
+  QVERIFY( editor->canBeMerged( 1, 3 ) );
+  QVERIFY( !editor->canBeMerged( 4, 3 ) );
+  editor->merge( 3, 1 );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2100, 2050, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2422.22222222 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2050, 2800, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 2166.6666666, 2422.22222222 ), 1e-6 ) ); //same face
+
+  QVERIFY( !editor->canBeMerged( 2, 3 ) ); //leads to 5 vertices per face, limited to 4
 
   meshLayerQuadTriangle->undoStack()->undo();
 

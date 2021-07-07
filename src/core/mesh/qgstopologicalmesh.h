@@ -177,20 +177,20 @@ class CORE_EXPORT QgsTopologicalMesh
     QgsMeshEditingError canFacesBeAdded( const TopologicalFaces &topologicalFaces ) const;
 
     /**
-     *  Adds faces \a topologicFaces to the topologic mesh.
-     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     * Adds faces \a topologicFaces to the topologic mesh.
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addFaces( const TopologicalFaces &topologicFaces );
 
     /**
-     *  Returns whether faces with index in \a faceIndexes can be removed/
-     *  The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
+     * Returns whether faces with index in \a faceIndexes can be removed/
+     * The method an error object with type QgsMeshEditingError::NoError if the faces can be removed, otherwise returns the corresponding error
      */
     QgsMeshEditingError canFacesBeRemoved( const QList<int> facesIndexes );
 
     /**
-     *  Removes faces with index in \a faceIndexes.
-     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     * Removes faces with index in \a faceIndexes.
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes removeFaces( const QList<int> facesIndexes );
 
@@ -200,20 +200,31 @@ class CORE_EXPORT QgsTopologicalMesh
     bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
 
     /**
-     *  Flips edge (\a vertexIndex1, \a vertexIndex2)
-     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     * Flips edge (\a vertexIndex1, \a vertexIndex2)
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes flipEdge( int vertexIndex1, int vertexIndex2 );
 
     /**
-     *  Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
-     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     * Returns TRUE if faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2 can be merged
+     */
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+
+    /**
+     * Merges faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     */
+    Changes merge( int vertexIndex1, int vertexIndex2 );
+
+    /**
+     * Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addVertexInface( int faceIndex, const QgsMeshVertex &vertex );
 
     /**
-     *  Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
-     *  The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     * Adds a free \a vertex in the face, that is a vertex tha tis not included or linked with any faces.
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
     Changes addFreeVertex( const QgsMeshVertex &vertex );
 
@@ -252,8 +263,8 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsMeshEditingError counterClockWiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
-     *  Reindexes faces and vertices, after this operation, the topological
-     *  mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
+     * Reindexes faces and vertices, after this operation, the topological
+     * mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
      */
     void reindex();
 
@@ -282,8 +293,18 @@ class CORE_EXPORT QgsTopologicalMesh
     void dereferenceAsFreeVertex( int vertexIndex );
     void referenceAsFreeVertex( int vertexIndex );
 
-    //! Test if edge (vertexIndex1, vertexIndex2) is flippable and return corresponding faces and opposite vertices
-    bool flippableFaces( int vertexIndex1, int vertexIndex2, int &face1, int &face2, int &oppositeVertex1, int &oppositeVertex2 ) const;
+    /**
+     * Returns faces that are either side of th edge (\a vertexIndex1, \a vertexIndex2)
+     * and neighbor vertices of entry vertex in each faces
+     */
+    bool eitherSideFacesAndVertices( int vertexIndex1,
+                                     int vertexIndex2,
+                                     int &face1,
+                                     int &face2,
+                                     int &neighborVertex1InFace1,
+                                     int &neighborVertex1InFace2,
+                                     int &neighborVertex2inFace1,
+                                     int &neighborVertex2inFace2 ) const;
 
     //Attributes
     QgsMesh *mMesh = nullptr;

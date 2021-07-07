@@ -208,6 +208,11 @@ void QgsMeshEditor::applyFlipEdge( QgsMeshEditor::Edit &edit, int vertexIndex1, 
   applyEditOnTriangularMesh( edit, mTopologicalMesh.flipEdge( vertexIndex1, vertexIndex2 ) );
 }
 
+void QgsMeshEditor::applyMerge( QgsMeshEditor::Edit &edit, int vertexIndex1, int vertexIndex2 )
+{
+  applyEditOnTriangularMesh( edit, mTopologicalMesh.merge( vertexIndex1, vertexIndex2 ) );
+}
+
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
 {
   QgsTriangularMesh::Changes triangularChanges( topologicChanges, *mMesh );
@@ -253,6 +258,19 @@ void QgsMeshEditor::flipEdge( int vertexIndex1, int vertexIndex2 )
     return;
 
   mUndoStack->push( new QgsMeshLayerUndoCommandFlipEdge( this, vertexIndex1, vertexIndex2 ) );
+}
+
+bool QgsMeshEditor::canBeMerged( int vertexIndex1, int vertexIndex2 ) const
+{
+  return mTopologicalMesh.canBeMerged( vertexIndex1, vertexIndex2 );
+}
+
+void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
+{
+  if ( !canBeMerged( vertexIndex1, vertexIndex2 ) )
+    return;
+
+  mUndoStack->push( new QgsMeshLayerUndoCommandMerge( this, vertexIndex1, vertexIndex2 ) );
 }
 
 QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error )
@@ -624,3 +642,28 @@ void QgsMeshLayerUndoCommandFlipEdge::redo()
       mMeshEditor->applyEdit( edit );
   }
 }
+
+QgsMeshLayerUndoCommandMerge::QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVertexIndex1( vertexIndex1 )
+  , mVertexIndex2( vertexIndex2 )
+{}
+
+void QgsMeshLayerUndoCommandMerge::redo()
+{
+  if ( mVertexIndex1 >= 0 && mVertexIndex2 >= 0 )
+  {
+    QgsMeshEditor::Edit edit;
+    mMeshEditor->applyMerge( edit, mVertexIndex1, mVertexIndex2 );
+    mEdits.append( edit );
+    mVertexIndex1 = -1;
+    mVertexIndex2 = -1;
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+
+

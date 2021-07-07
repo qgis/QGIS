@@ -92,6 +92,14 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void flipEdge( int vertexIndex1, int vertexIndex2 );
 
     /**
+     * Returns TRUE if faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2 can be merged
+     */
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+
+    //! Merges faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2
+    void merge( int vertexIndex1, int vertexIndex2 );
+
+    /**
      *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
      *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
      *  The method returns the number of vertices effectivly added.
@@ -190,6 +198,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyChangeZValue( Edit &edit, const QList<int> &verticesIndexes, const QList<double> &newValues );
     void applyChangeXYValue( Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
     void applyFlipEdge( Edit &edit, int vertexIndex1, int vertexIndex2 );
+    void applyMerge( Edit &edit, int vertexIndex1, int vertexIndex2 );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
@@ -206,6 +215,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandChangeZValue;
     friend class QgsMeshLayerUndoCommandChangeXYValue;
     friend class QgsMeshLayerUndoCommandFlipEdge;
+    friend class QgsMeshLayerUndoCommandMerge;
 };
 
 #ifndef SIP_RUN
@@ -377,6 +387,28 @@ class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
     int mVertexIndex2 = -1;
 };
 
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for flipping edge
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandMerge : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the Z value changed with \a newValues
+     */
+    QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
+    void redo() override;
+
+  private:
+    int mVertexIndex1 = -1;
+    int mVertexIndex2 = -1;
+};
 #endif //SIP_RUN
 
 #endif // QGSMESHEDITOR_H
