@@ -122,6 +122,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
     void highlightCloseVertex( const QgsPointXY &mapPoint );
     void highlightCloseEdge( const QgsPointXY &mapPoint );
+    bool edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const;
+    bool faceCanBeInteractive( int faceIndex ) const;
 
     void createZValueWidget();
     void deleteZvalueWidget();
@@ -159,7 +161,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // members
     struct SelectedVertexData
     {
-      //edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
+      //Here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
       QList<Edge> selectedEdges;
       QList<Edge> meshFixedEdges;
     };
@@ -203,6 +205,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QSet<int> mSelectedFaces;
     QSet<int> mConcernedFaceBySelection;
     QgsVertexMarker *mSelectFaceMarker = nullptr;
+    QgsVertexMarker *mSelectEdgeMarker = nullptr;
     QgsRubberBand *mSelectionBand = nullptr;
     QPoint mStartSelectionPos;
     QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
@@ -223,6 +226,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     //! members for edge flip
     QgsVertexMarker *mFlipEdgeMarker = nullptr;
+
+    //! members for merge face
+    QgsVertexMarker *mMergeFaceMarker = nullptr;
 
     QgsZValueWidget *mZValueWidget = nullptr;
 

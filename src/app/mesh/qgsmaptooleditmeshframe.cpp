@@ -221,6 +221,16 @@ void QgsMapToolEditMeshFrame::initialize()
   mSelectFaceMarker->setPenWidth( 3 );
   mSelectFaceMarker->setZValue( 10 );
 
+  if ( !mSelectEdgeMarker )
+    mSelectEdgeMarker = new QgsVertexMarker( canvas() );
+  mSelectEdgeMarker->setIconType( QgsVertexMarker::ICON_BOX );
+  mSelectEdgeMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mSelectEdgeMarker->setColor( Qt::gray );
+  mSelectEdgeMarker->setFillColor( Qt::gray );
+  mSelectEdgeMarker->setVisible( false );
+  mSelectEdgeMarker->setPenWidth( 3 );
+  mSelectEdgeMarker->setZValue( 10 );
+
   if ( !mMovingEdgesRubberband )
     mMovingEdgesRubberband = createRubberBand( QgsWkbTypes::LineGeometry );
 
@@ -238,11 +248,20 @@ void QgsMapToolEditMeshFrame::initialize()
   if ( !mFlipEdgeMarker )
     mFlipEdgeMarker = new QgsVertexMarker( canvas() );
   mFlipEdgeMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
-  mFlipEdgeMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
+  mFlipEdgeMarker->setIconSize( QgsGuiUtils::scaleIconSize( 12 ) );
   mFlipEdgeMarker->setColor( Qt::gray );
   mFlipEdgeMarker->setVisible( false );
   mFlipEdgeMarker->setPenWidth( 3 );
   mFlipEdgeMarker->setZValue( 10 );
+
+  if ( !mMergeFaceMarker )
+    mMergeFaceMarker = new QgsVertexMarker( canvas() );
+  mMergeFaceMarker->setIconType( QgsVertexMarker::ICON_X );
+  mMergeFaceMarker->setIconSize( QgsGuiUtils::scaleIconSize( 12 ) );
+  mMergeFaceMarker->setColor( Qt::gray );
+  mMergeFaceMarker->setVisible( false );
+  mMergeFaceMarker->setPenWidth( 3 );
+  mMergeFaceMarker->setZValue( 10 );
 
   connect( mCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolEditMeshFrame::setCurrentLayer );
 
@@ -268,6 +287,15 @@ void QgsMapToolEditMeshFrame::clearAll()
 
   delete mSelectFaceMarker;
   mSelectFaceMarker = nullptr;
+
+  delete mSelectEdgeMarker;
+  mSelectEdgeMarker = nullptr;
+
+  delete mFlipEdgeMarker;
+  mFlipEdgeMarker = nullptr;
+
+  delete mMergeFaceMarker;
+  mMergeFaceMarker = nullptr;
 
   mFaceRubberBand->deleteLater();
   mFaceRubberBand = nullptr;
@@ -456,6 +484,14 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mCurrentEditor->flipEdge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
           mCurrentEdge = {-1, -1};
         }
+        else if ( mMergeFaceMarker->isVisible() &&
+                  e->mapPoint().distance( mMergeFaceMarker->center() ) < tolerance &&
+                  mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+        {
+          QVector<int> edgeVert = edgeVertices( mCurrentEdge );
+          mCurrentEditor->merge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
+          mCurrentEdge = {-1, -1};
+        }
         else // try to select
         {
           select( e->mapPoint(), e->modifiers(), tolerance );
@@ -533,7 +569,16 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
     setSelectedVertices( nativeFace( mCurrentFaceIndex ).toList(), modifiers );
   }
   else if ( mCurrentVertexIndex != -1 )
+  {
     setSelectedVertices( QList<int>() << mCurrentVertexIndex, modifiers );
+  }
+  else if ( mSelectEdgeMarker->isVisible() &&
+            mapPoint.distance( mSelectEdgeMarker->center() ) < tolerance &&
+            mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+  {
+    QVector<int> edgeVert = edgeVertices( mCurrentEdge );
+    setSelectedVertices( edgeVert.toList(), modifiers );
+  }
   else
     setSelectedVertices( QList<int>(),  modifiers );
 }
@@ -1395,6 +1440,22 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
       mFlipEdgeMarker->setColor( Qt::red );
     else
       mFlipEdgeMarker->setColor( Qt::gray );
+
+    if ( mapPoint.distance( mSelectEdgeMarker->center() ) < tolerance )
+    {
+      mSelectEdgeMarker->setColor( Qt::red );
+      mSelectEdgeMarker->setFillColor( Qt::red );
+    }
+    else
+    {
+      mSelectEdgeMarker->setColor( Qt::gray );
+      mSelectEdgeMarker->setFillColor( Qt::gray );
+    }
+
+    if ( mapPoint.distance( mMergeFaceMarker->center() ) < tolerance )
+      mMergeFaceMarker->setColor( Qt::red );
+    else
+      mMergeFaceMarker->setColor( Qt::gray );
   }
 
   mCurrentEdge = {-1, -1};
@@ -1407,7 +1468,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
   }
   else
   {
-    QgsRectangle searchRect( mapPoint.x() - tolerance, mapPoint.y() - tolerance, mapPoint.x() + tolerance, mapPoint.y() + tolerance );
+    const QgsRectangle searchRect( mapPoint.x() - tolerance, mapPoint.y() - tolerance, mapPoint.x() + tolerance, mapPoint.y() + tolerance );
     candidateFaceIndexes = mCurrentLayer->triangularMesh()->nativeFaceIndexForRectangle( searchRect );
   }
 
@@ -1426,7 +1487,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
 
       QgsPointXY pointOneEdge;
       double distance = sqrt( mapPoint.sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pointOneEdge ) );
-      if ( distance < tolerance && distance < minimumDistance )
+      if ( distance < tolerance && distance < minimumDistance && edgeCanBeInteractive( iv1, iv2 ) )
       {
         mCurrentEdge = {faceIndex, iv2};
         minimumDistance = distance;
@@ -1436,6 +1497,8 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
 
   mEdgeBand->reset();
   mFlipEdgeMarker->setVisible( false );
+  mMergeFaceMarker->setVisible( false );
+  mSelectEdgeMarker->setVisible( false );
   if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
   {
     const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
@@ -1443,17 +1506,63 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
     mEdgeBand->addPoint( edgeGeom.at( 1 ) );
 
     const QVector<int> edgeVert = edgeVertices( mCurrentEdge );
+    QgsPointXY basePoint;
+    QgsVector intervalOfMarkers;
+    if ( std::fabs( edgeGeom.at( 0 ).x() - edgeGeom.at( 1 ).x() ) > std::fabs( edgeGeom.at( 0 ).y() - edgeGeom.at( 1 ).y() ) )
+    {
+      // edge are more horizontal than vertical, take the vertex on the left side
+      if ( edgeGeom.at( 0 ).x() < edgeGeom.at( 1 ).x() )
+      {
+        basePoint = edgeGeom.at( 0 );
+        intervalOfMarkers = ( edgeGeom.at( 1 ) - edgeGeom.at( 0 ) ) / 4;
+      }
+      else
+      {
+        basePoint = edgeGeom.at( 1 );
+        intervalOfMarkers = ( edgeGeom.at( 0 ) - edgeGeom.at( 1 ) ) / 4;
+      }
+    }
+    else
+    {
+      // edge are more vertical than horizontal, take the vertex on the bottom
+      if ( edgeGeom.at( 0 ).y() < edgeGeom.at( 1 ).y() )
+      {
+        basePoint = edgeGeom.at( 0 );
+        intervalOfMarkers = ( edgeGeom.at( 1 ) - edgeGeom.at( 0 ) ) / 4;
+      }
+      else
+      {
+        basePoint = edgeGeom.at( 1 );
+        intervalOfMarkers = ( edgeGeom.at( 0 ) - edgeGeom.at( 1 ) ) / 4;
+      }
+    }
 
     if ( mCurrentEditor->edgeCanBeFlipped( edgeVert.at( 0 ), edgeVert.at( 1 ) ) )
     {
-      mFlipEdgeMarker->setCenter( QgsPointXY( ( edgeGeom.at( 0 ).x() + edgeGeom.at( 1 ).x() ) / 2,
-                                              ( edgeGeom.at( 0 ).y() + edgeGeom.at( 1 ).y() ) / 2 ) );
       mFlipEdgeMarker->setVisible( true );
+      mFlipEdgeMarker->setCenter( basePoint + intervalOfMarkers );
     }
     else
       mFlipEdgeMarker->setVisible( false );
-  }
 
+    mSelectEdgeMarker->setVisible( true );
+    mSelectEdgeMarker->setCenter( basePoint + intervalOfMarkers * 2 );
+
+    if ( mCurrentEditor->canBeMerged( edgeVert.at( 0 ), edgeVert.at( 1 ) ) )
+    {
+      mMergeFaceMarker->setVisible( true );
+      mMergeFaceMarker->setCenter( basePoint + intervalOfMarkers * 3 );
+    }
+    else
+      mMergeFaceMarker->setVisible( false );
+  }
+}
+
+bool QgsMapToolEditMeshFrame::edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const
+{
+  double mapUnitPerPixel = mCanvas->mapSettings().mapUnitsPerPixel();
+  int distanceInPixel = mapVertexXY( vertexIndex1 ).distance( mapVertexXY( vertexIndex2 ) ) / mapUnitPerPixel;
+  return distanceInPixel > 90;
 }
 
 void QgsMapToolEditMeshFrame::createZValueWidget()
