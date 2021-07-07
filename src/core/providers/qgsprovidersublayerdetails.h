@@ -100,7 +100,11 @@ class CORE_EXPORT QgsProviderSublayerDetails
         : transformContext( transformContext )
       {}
 
+      //! Coordinate transform context
       QgsCoordinateTransformContext transformContext;
+
+      //! Set to TRUE if the default layer style should be loaded
+      bool loadDefaultStyle = true;
     };
 
     /**

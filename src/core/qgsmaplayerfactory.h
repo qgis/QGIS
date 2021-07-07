@@ -54,14 +54,36 @@ class CORE_EXPORT QgsMapLayerFactory
     static QString typeToString( QgsMapLayerType type );
 
     /**
+     * Setting options for loading layers.
+     *
+     * \since QGIS 3.22
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions with \a transformContext.
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+        : transformContext( transformContext )
+      {}
+
+      //! Transform context
+      QgsCoordinateTransformContext transformContext;
+
+      //! Set to TRUE if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+    };
+
+    /**
      * Creates a map layer, given a \a uri, \a name, layer \a type and \a provider name.
      *
      * Caller takes ownership of the returned layer.
      *
      * \since QGIS 3.22
      */
-    static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type,
-                                     const QString &provider = QString(), const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() ) SIP_FACTORY;
+    static QgsMapLayer *createLayer( const QString &uri, const QString &name, QgsMapLayerType type, const LayerOptions &options,
+                                     const QString &provider = QString() ) SIP_FACTORY;
 
 };
 

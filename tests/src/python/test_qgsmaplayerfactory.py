@@ -23,7 +23,8 @@ from qgis.core import (
     QgsPointCloudLayer,
     QgsAnnotationLayer,
     QgsVectorTileLayer,
-    QgsDataSourceUri
+    QgsDataSourceUri,
+    QgsCoordinateTransformContext
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -77,31 +78,32 @@ class TestQgsMapLayerFactory(unittest.TestCase):
 
     def testCreateLayer(self):
         # create vector
-        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'lines', QgsMapLayerType.VectorLayer, 'ogr')
+        options = QgsMapLayerFactory.LayerOptions(QgsCoordinateTransformContext())
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'lines.shp'), 'lines', QgsMapLayerType.VectorLayer, options, 'ogr')
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsVectorLayer)
         self.assertEqual(ml.name(), 'lines')
 
         # create raster
-        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'landsat.tif'), 'rl', QgsMapLayerType.RasterLayer, 'gdal')
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'landsat.tif'), 'rl', QgsMapLayerType.RasterLayer, options, 'gdal')
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsRasterLayer)
         self.assertEqual(ml.name(), 'rl')
 
         # create mesh
-        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'mesh', 'lines.2dm'), 'ml', QgsMapLayerType.MeshLayer, 'mdal')
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'mesh', 'lines.2dm'), 'ml', QgsMapLayerType.MeshLayer, options, 'mdal')
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsMeshLayer)
         self.assertEqual(ml.name(), 'ml')
 
         # create point cloud
-        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'rgb', 'ept.json'), 'pcl', QgsMapLayerType.PointCloudLayer, 'ept')
+        ml = QgsMapLayerFactory.createLayer(os.path.join(unitTestDataPath(), 'point_clouds', 'ept', 'rgb', 'ept.json'), 'pcl', QgsMapLayerType.PointCloudLayer, options, 'ept')
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsPointCloudLayer)
         self.assertEqual(ml.name(), 'pcl')
 
         # annotation layer
-        ml = QgsMapLayerFactory.createLayer('', 'al', QgsMapLayerType.AnnotationLayer)
+        ml = QgsMapLayerFactory.createLayer('', 'al', QgsMapLayerType.AnnotationLayer, options)
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsAnnotationLayer)
         self.assertEqual(ml.name(), 'al')
@@ -111,7 +113,7 @@ class TestQgsMapLayerFactory(unittest.TestCase):
         ds.setParam("type", "xyz")
         ds.setParam("url", "file://{}/{{z}}-{{x}}-{{y}}.pbf".format(os.path.join(unitTestDataPath(), 'vector_tile')))
         ds.setParam("zmax", "1")
-        ml = QgsMapLayerFactory.createLayer(ds.encodedUri().data().decode(), 'vtl', QgsMapLayerType.VectorTileLayer)
+        ml = QgsMapLayerFactory.createLayer(ds.encodedUri().data().decode(), 'vtl', QgsMapLayerType.VectorTileLayer, options)
         self.assertTrue(ml.isValid())
         self.assertIsInstance(ml, QgsVectorTileLayer)
         self.assertEqual(ml.name(), 'vtl')
