@@ -98,14 +98,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   QgsGui::enableAutoGeometryRestore( this );
 
   const QFileInfo fileInfo( uri );
-  const QString filePath = fileInfo.isFile() && fileInfo.exists() ? uri : QString();
-  const QString fileName = !filePath.isEmpty() ? fileInfo.fileName() : QString();
+  mFilePath = fileInfo.isFile() && fileInfo.exists() ? uri : QString();
+  mFileName = !mFilePath.isEmpty() ? fileInfo.fileName() : QString();
 
-  setWindowTitle( fileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), fileName ) );
+  setWindowTitle( mFileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), mFileName ) );
 
   mLblFilePath->setText( QStringLiteral( "<a href=\"%1\">%2</a>" )
-                         .arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) ) );
-  mLblFilePath->setVisible( ! fileName.isEmpty() );
+                         .arg( QUrl::fromLocalFile( mFilePath ).toString(), QDir::toNativeSeparators( QFileInfo( mFilePath ).canonicalFilePath() ) ) );
+  mLblFilePath->setVisible( !mFileName.isEmpty() );
   mLblFilePath->setWordWrap( true );
   mLblFilePath->setTextInteractionFlags( Qt::TextBrowserInteraction );
   connect( mLblFilePath, &QLabel::linkActivated, this, [ = ]( const QString & link )
@@ -158,17 +158,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, [ = ]
   {
-    const QModelIndexList selection = mLayersTree->selectionModel()->selectedRows();
-    QList< QgsProviderSublayerDetails > selectedSublayers;
-    for ( const QModelIndex &index : selection )
-    {
-      const QModelIndex sourceIndex = mProxyModel->mapToSource( index );
-      if ( !mModel->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
-      {
-        selectedSublayers << mModel->indexToSublayer( sourceIndex );
-      }
-    }
-    emit layersAdded( selectedSublayers );
+    emit layersAdded( selectedLayers() );
     accept();
   } );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -180,6 +170,30 @@ QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
   settings.setValue( "/Windows/SubLayers/headerState", mLayersTree->header()->saveState() );
   if ( mTask )
     mTask->cancel();
+}
+
+QList<QgsProviderSublayerDetails> QgsProviderSublayersDialog::selectedLayers() const
+{
+  const QModelIndexList selection = mLayersTree->selectionModel()->selectedRows();
+  QList< QgsProviderSublayerDetails > selectedSublayers;
+  for ( const QModelIndex &index : selection )
+  {
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( index );
+    if ( !mModel->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      selectedSublayers << mModel->indexToSublayer( sourceIndex );
+    }
+  }
+  return selectedSublayers;
+}
+
+QString QgsProviderSublayersDialog::groupName() const
+{
+  if ( !mCbxAddToGroup->isChecked() )
+    return QString();
+
+  const QFileInfo fi( mFilePath );
+  return fi.completeBaseName();
 }
 
 void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &, const QItemSelection & )
