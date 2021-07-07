@@ -1606,7 +1606,7 @@ void TestQgsMeshLayer::testMdalProviderQuerySublayers()
   res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 0 );
-  QCOMPARE( res.at( 0 ).name(), QString( ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "quad_and_triangle" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
