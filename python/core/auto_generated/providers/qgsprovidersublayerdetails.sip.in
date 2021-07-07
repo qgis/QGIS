@@ -84,6 +84,8 @@ Constructor for LayerOptions with ``transformContext``.
 %End
 
       QgsCoordinateTransformContext transformContext;
+
+      bool loadDefaultStyle;
     };
 
     QgsMapLayer *toLayer( const LayerOptions &options ) const /Factory/;

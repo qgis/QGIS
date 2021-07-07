@@ -5741,6 +5741,7 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sortedLayers ) )
   {
     QgsProviderSublayerDetails::LayerOptions options( QgsProject::instance()->transformContext() );
+    options.loadDefaultStyle = false;
 
     std::unique_ptr<QgsMapLayer> layer( sublayer.toLayer( options ) );
     if ( !layer )
@@ -5802,12 +5803,11 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
   switch ( layer->type() )
   {
     case QgsMapLayerType::VectorLayer:
-      break;
     case QgsMapLayerType::RasterLayer:
     {
-      QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
       bool ok = false;
-      rasterLayer->loadDefaultMetadata( ok );
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
       break;
     }
 

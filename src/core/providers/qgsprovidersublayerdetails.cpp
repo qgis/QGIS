@@ -21,7 +21,9 @@
 
 QgsMapLayer *QgsProviderSublayerDetails::toLayer( const LayerOptions &options ) const
 {
-  return QgsMapLayerFactory::createLayer( mUri, mName, mType, mProviderKey, options.transformContext );
+  QgsMapLayerFactory::LayerOptions layerOptions( options.transformContext );
+  layerOptions.loadDefaultStyle = options.loadDefaultStyle;
+  return QgsMapLayerFactory::createLayer( mUri, mName, mType, layerOptions, mProviderKey );
 }
 
 bool QgsProviderSublayerDetails::operator==( const QgsProviderSublayerDetails &other ) const
