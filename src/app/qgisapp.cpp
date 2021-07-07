@@ -5749,13 +5749,21 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
     // when multiple layers are loaded from a GPX file or similar (refs https://github.com/qgis/QGIS/issues/37551)
     if ( group )
     {
-      layer->setName( layerName );
+      if ( !layerName.isEmpty() )
+        layer->setName( layerName );
+      else if ( !baseName.isEmpty() )
+        layer->setName( baseName );
       QgsProject::instance()->addMapLayer( layer.release(), false );
       group->addLayer( ml );
     }
     else
     {
-      layer->setName( QStringLiteral( "%1 — %2" ).arg( baseName, layerName ) );
+      if ( layerName != baseName && !layerName.isEmpty() && !baseName.isEmpty() )
+        layer->setName( QStringLiteral( "%1 — %2" ).arg( baseName, layerName ) );
+      else if ( !layerName.isEmpty() )
+        layer->setName( layerName );
+      else if ( !baseName.isEmpty() )
+        layer->setName( baseName );
       QgsProject::instance()->addMapLayer( layer.release() );
     }
 
@@ -5774,7 +5782,6 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
 
   return result;
 }
-
 
 void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
 {
@@ -5800,7 +5807,7 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
       if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
         referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
 
-      if ( ! qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
+      if ( meshLayer->dataProvider() && !qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
         qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, meshLayer->dataProvider()->temporalCapabilities() );
 
       bool ok = false;
@@ -15908,18 +15915,6 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
 
   activateDeactivateLayerRelatedActions( activeLayer() );
   return result;
-
-#if 0
-  // XXX ya know QgsRasterLayer can snip out the basename on its own;
-  // XXX why do we have to pass it in for it?
-  // ET : we may not be getting "normal" files here, so we still need the baseName argument
-  if ( !providerKey.isEmpty() && uri.endsWith( QLatin1String( ".adf" ), Qt::CaseInsensitive ) )
-  {
-    QFileInfo fileInfo( uri );
-    QString dirName = fileInfo.path();
-    layer = new QgsRasterLayer( dirName, QFileInfo( dirName ).completeBaseName(), QStringLiteral( "gdal" ) );
-  }
-#endif
 }
 
 QgsRasterLayer *QgisApp::addRasterLayer(
