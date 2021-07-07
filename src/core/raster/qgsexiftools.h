@@ -16,7 +16,7 @@
 #ifndef QGSEXIFTOOLS_H
 #define QGSEXIFTOOLS_H
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 #include "qgspointxy.h"
 
 #include <QObject>
@@ -29,7 +29,7 @@
  * \ingroup analysis
  * \since QGIS 3.6
  */
-class ANALYSIS_EXPORT QgsExifTools
+class CORE_EXPORT QgsExifTools
 {
     Q_GADGET
 
