@@ -26,8 +26,18 @@ Contains utilities for working with EXIF tags in images.
   public:
 
     static QVariantMap readTags( const QString &imagePath );
+%Docstring
+Returns a map object containing all exif tags stored in the image at ``imagePath``.
+
+.. versionadded:: 3.22
+%End
 
     static QVariant readTag( const QString &imagePath, const QString &key );
+%Docstring
+Returns the value of of an exif tag ``key`` stored in the image at ``imagePath``.
+
+.. versionadded:: 3.22
+%End
 
     static QgsPoint getGeoTag( const QString &imagePath, bool &ok /Out/ );
 %Docstring
