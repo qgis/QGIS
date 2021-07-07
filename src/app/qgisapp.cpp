@@ -5683,16 +5683,30 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   }
   else if ( sublayers.size() > 1 )
   {
-    // ask user for sublayers
-    QgsProviderSublayersDialog dlg( url, sublayers, this );
-    if ( dlg.exec() )
+    // ask user for sublayers (unless user settings dictate otherwise!)
+    switch ( shouldAskUserForSublayers( sublayers ) )
     {
-      const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
-      if ( !selectedLayers.isEmpty() )
+      case SublayerHandling::AskUser:
       {
-        result = qobject_cast< QgsMeshLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+        QgsProviderSublayersDialog dlg( url, sublayers, this );
+        if ( dlg.exec() )
+        {
+          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
+          if ( !selectedLayers.isEmpty() )
+          {
+            result = qobject_cast< QgsMeshLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+          }
+        }
+        break;
       }
-    }
+      case SublayerHandling::LoadAll:
+      {
+        result = qobject_cast< QgsMeshLayer * >( addSublayers( sublayers, baseName, QString() ) );
+        break;
+      }
+      case SublayerHandling::AbortLoading:
+        break;
+    };
   }
   else
   {
@@ -5949,7 +5963,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   QVector<QgsDataItem *> childItems;
   QgsZipItem *zipItem = nullptr;
   QgsSettings settings;
-  Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
+  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
   QgsDebugMsgLevel( "askUserForZipItemLayers( " + path + ')', 2 );
 
@@ -6059,19 +6073,35 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   return ok;
 }
 
-// should the GDAL sublayers dialog should be presented to the user?
-bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
+QgisApp::SublayerHandling QgisApp::shouldAskUserForSublayers( const QList<QgsProviderSublayerDetails> &layers ) const
 {
-  // return false if layer is empty or raster has no sublayers
-  if ( !layer || layer->providerType() != QLatin1String( "gdal" ) || layer->subLayers().empty() )
-    return false;
-
   QgsSettings settings;
-  Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
+  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
-  return promptLayers == Qgis::SublayerPromptMode::AlwaysAsk ||
-         promptLayers == Qgis::SublayerPromptMode::NeverAskLoadAll ||
-         ( promptLayers == Qgis::SublayerPromptMode::AskExcludingRasterBands && layer->bandCount() == 0 );
+  switch ( promptLayers )
+  {
+    case Qgis::SublayerPromptMode::AlwaysAsk:
+      return SublayerHandling::AskUser;
+
+    case Qgis::SublayerPromptMode::AskExcludingRasterBands:
+    {
+      // if any non-raster layers are found, we ask the user. Otherwise we load all
+      for ( const QgsProviderSublayerDetails &sublayer : layers )
+      {
+        if ( sublayer.type() != QgsMapLayerType::RasterLayer )
+          return SublayerHandling::AskUser;
+      }
+      return SublayerHandling::LoadAll;
+    }
+
+    case Qgis::SublayerPromptMode::NeverAskSkip:
+      return SublayerHandling::AbortLoading;
+
+    case Qgis::SublayerPromptMode::NeverAskLoadAll:
+      return SublayerHandling::LoadAll;
+  }
+
+  return SublayerHandling::AskUser;
 }
 
 // This method is the method that does the real job. If the layer given in
@@ -7585,32 +7615,49 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName );
   if ( !sublayers.empty() )
   {
-    bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, false );
+    const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
     const bool singleSublayerOnly = sublayers.size() == 1;
     QString groupName;
 
     if ( allowInteractive && ( !singleSublayerOnly || detailsAreIncomplete ) )
     {
-      // prompt user for sublayers
-      QgsProviderSublayersDialog dlg( fileName, sublayers, this );
-
-      if ( dlg.exec() )
-        sublayers = dlg.selectedLayers();
-      else
-        sublayers.clear(); // dialog was canceled, so don't add any sublayers
-      groupName = dlg.groupName();
-    }
-    else // non-interactive
-    {
-      // in non-interactive mode we don't care if feature counts are missing, so re-test if
-      // details are incomplete with ignoring unknown feature counts
-      detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
-      if ( detailsAreIncomplete )
+      // ask user for sublayers (unless user settings dictate otherwise!)
+      switch ( shouldAskUserForSublayers( sublayers ) )
       {
-        // requery sublayers, resolving geometry types
-        sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::ResolveGeometryType );
-      }
+        case SublayerHandling::AskUser:
+        {
+          // prompt user for sublayers
+          QgsProviderSublayersDialog dlg( fileName, sublayers, this );
+
+          if ( dlg.exec() )
+            sublayers = dlg.selectedLayers();
+          else
+            sublayers.clear(); // dialog was canceled, so don't add any sublayers
+          groupName = dlg.groupName();
+          break;
+        }
+
+        case SublayerHandling::LoadAll:
+        {
+          if ( detailsAreIncomplete )
+          {
+            // requery sublayers, resolving geometry types
+            sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::ResolveGeometryType );
+          }
+          break;
+        }
+
+        case SublayerHandling::AbortLoading:
+          sublayers.clear(); // don't add any sublayers
+          break;
+      };
     }
+    else if ( detailsAreIncomplete )
+    {
+      // requery sublayers, resolving geometry types
+      sublayers = QgsProviderRegistry::instance()->querySublayers( fileName, Qgis::SublayerQueryFlag::ResolveGeometryType );
+    }
+
     ok = true;
 
     // now add sublayers
@@ -15884,16 +15931,30 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   }
   else if ( sublayers.size() > 1 )
   {
-    // ask user for sublayers
-    QgsProviderSublayersDialog dlg( uri, sublayers, this );
-    if ( dlg.exec() )
+    // ask user for sublayers (unless user settings dictate otherwise!)
+    switch ( shouldAskUserForSublayers( sublayers ) )
     {
-      const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
-      if ( !selectedLayers.isEmpty() )
+      case SublayerHandling::AskUser:
       {
-        result = qobject_cast< QgsRasterLayer * >( addSublayers( selectedLayers, name, dlg.groupName() ) );
+        QgsProviderSublayersDialog dlg( uri, sublayers, this );
+        if ( dlg.exec() )
+        {
+          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
+          if ( !selectedLayers.isEmpty() )
+          {
+            result = qobject_cast< QgsRasterLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+          }
+        }
+        break;
       }
-    }
+      case SublayerHandling::LoadAll:
+      {
+        result = qobject_cast< QgsRasterLayer * >( addSublayers( sublayers, baseName, QString() ) );
+        break;
+      }
+      case SublayerHandling::AbortLoading:
+        break;
+    };
   }
   else
   {
