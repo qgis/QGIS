@@ -2082,10 +2082,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool askUserForZipItemLayers( const QString &path );
 
-    /**
-     * This method will verify if a GDAL layer contains sublayers
-     */
-    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
+    enum class SublayerHandling
+    {
+      AskUser,
+      LoadAll,
+      AbortLoading
+    };
+    SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers ) const;
 
     /**
      * This method will open a dialog so the user can select OGR sublayers to load,
