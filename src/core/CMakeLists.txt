@@ -615,6 +615,7 @@ set(QGIS_CORE_SRCS
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
+  raster/qgsexiftools.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgsraster.cpp
@@ -1561,6 +1562,7 @@ set(QGIS_CORE_HDRS
   raster/qgscontrastenhancement.h
   raster/qgscontrastenhancementfunction.h
   raster/qgscubicrasterresampler.h
+  raster/qgsexiftools.h
   raster/qgshillshaderenderer.h
   raster/qgshuesaturationfilter.h
   raster/qgslinearminmaxenhancement.h
@@ -1883,6 +1885,7 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
+  ${EXIV2_INCLUDE_DIR}
 )
 
 if (WITH_SPATIALITE)
@@ -2052,6 +2055,7 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
+  ${EXIV2_LIBRARY}
 )
 
 if (WITH_SPATIALITE)

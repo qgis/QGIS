@@ -229,7 +229,6 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsreclassifyutils.cpp
 
   raster/qgsalignraster.cpp
-  raster/qgsexiftools.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -341,7 +340,6 @@ set(QGIS_ANALYSIS_HDRS
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
-  raster/qgsexiftools.h
   raster/qgshillshadefilter.h
   raster/qgskde.h
   raster/qgsninecellfilter.h
@@ -403,8 +401,6 @@ if(TARGET Qt5::PrintSupport)
     processing/qgsalgorithmlayouttopdf.cpp
   )
 endif()
-
-find_package(EXIV2 REQUIRED)
 
 include_directories(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
@@ -481,10 +477,6 @@ target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_BINARY_DIR}/src/analysis
 )
 
-target_include_directories(qgis_analysis SYSTEM PUBLIC
-  ${EXIV2_INCLUDE_DIR}
-)
-
 GENERATE_EXPORT_HEADER(
    qgis_analysis
    BASE_NAME ANALYSIS
@@ -529,7 +521,6 @@ endif()
 target_link_libraries(
   qgis_analysis
   qgis_core
-  ${EXIV2_LIBRARY}
   )
 
 if(HAVE_GSL)
