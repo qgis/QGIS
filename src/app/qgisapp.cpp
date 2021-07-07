@@ -7619,6 +7619,14 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
       const QFileInfo info( fileName );
       QString base = info.completeBaseName();
+
+      // special handling for .adf files -- use directory as base name, not the unhelpful .adf file name
+      if ( info.suffix().compare( QLatin1String( "adf" ), Qt::CaseInsensitive ) == 0 )
+      {
+        const QString dirName = info.path();
+        base = QFileInfo( dirName ).completeBaseName();
+      }
+
       if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
       {
         base = QgsMapLayer::formatLayerName( base );
@@ -7631,19 +7639,6 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   CPLPopErrorHandler();
 
 #if 0
-// try to load it as raster
-  if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
-  {
-    // open .adf as a directory
-    if ( fileName.endsWith( QLatin1String( ".adf" ), Qt::CaseInsensitive ) )
-    {
-      QString dirName = fileInfo.path();
-      ok  = addRasterLayer( dirName, QFileInfo( dirName ).completeBaseName() );
-    }
-    else
-      ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
-  }
-
 // try as a vector
   if ( !ok || fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
