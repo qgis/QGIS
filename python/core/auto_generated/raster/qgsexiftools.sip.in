@@ -25,6 +25,9 @@ Contains utilities for working with EXIF tags in images.
 
   public:
 
+    static QVariantMap readTags( const QString &imagePath );
+
+    static QVariant readTag( const QString &imagePath, const QString &key );
 
     static QgsPoint getGeoTag( const QString &imagePath, bool &ok /Out/ );
 %Docstring
@@ -75,6 +78,7 @@ Returns ``True`` if writing was successful.
 
 .. seealso:: :py:func:`getGeoTag`
 %End
+
 };
 
 /************************************************************************

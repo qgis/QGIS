@@ -18,10 +18,174 @@
 
 #include <exiv2/exiv2.hpp>
 
+#include <QDate>
 #include <QRegularExpression>
 #include <QFileInfo>
+#include <QTime>
 
-#if 0 // needs further work on the correct casting of tag values to QVariant values!
+
+double readRationale( const Exiv2::Value &value, long n = 0 )
+{
+  Exiv2::Rational rational = value.toRational( n );
+  return static_cast< double >( rational.first ) / rational.second;
+};
+
+double readCoordinate( const Exiv2::Value &value )
+{
+  double res = 0;
+  double div = 1;
+  for ( int i = 0; i < 3; i++ )
+  {
+    res += readRationale( value, i ) / div;
+    div *= 60;
+  }
+  return res;
+};
+
+QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it )
+{
+  QVariant val;
+
+  if ( key == QLatin1String( "Exif.GPSInfo.GPSLatitude" ) ||
+       key == QLatin1String( "Exif.GPSInfo.GPSLongitude" ) ||
+       key == QLatin1String( "Exif.GPSInfo.GPSDestLatitude" ) ||
+       key == QLatin1String( "Exif.GPSInfo.GPSDestLongitude" ) )
+  {
+    val = readCoordinate( it->value() );
+  }
+  else if ( key == QLatin1String( "Exif.GPSInfo.GPSTimeStamp" ) )
+  {
+    const QStringList parts = QString::fromStdString( it->toString() ).split( QRegularExpression( QStringLiteral( "\\s+" ) ) );
+    if ( parts.size() == 3 )
+    {
+      const int hour = readRationale( it->value(), 0 );
+      const int minute = readRationale( it->value(), 1 );
+      const int second = readRationale( it->value(), 2 );
+      val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" )
+                                 .arg( QString::number( hour ).rightJustified( 2, '0' ) )
+                                 .arg( QString::number( minute ).rightJustified( 2, '0' ) )
+                                 .arg( QString::number( second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
+    }
+  }
+  else if ( key == QLatin1String( "Exif.GPSInfo.GPSDateStamp" ) )
+  {
+    val = QVariant::fromValue( QDate::fromString( QString::fromStdString( it->toString() ), QLatin1String( "yyyy:MM:dd" ) ) );
+  }
+  else if ( key == QLatin1String( "Exif.Image.DateTime" ) ||
+            key == QLatin1String( "Exif.Image.DateTime" ) ||
+            key == QLatin1String( "Exif.Photo.DateTimeDigitized" ) ||
+            key == QLatin1String( "Exif.Photo.DateTimeOriginal" ) )
+  {
+    val = QVariant::fromValue( QDateTime::fromString( QString::fromStdString( it->toString() ), QLatin1String( "yyyy:MM:dd hh:mm:ss" ) ) );
+  }
+  else
+  {
+    switch ( it->typeId() )
+    {
+      case Exiv2::asciiString:
+      case Exiv2::string:
+      case Exiv2::comment:
+      case Exiv2::directory:
+      case Exiv2::xmpText:
+        val = QString::fromStdString( it->toString() );
+        break;
+
+      case Exiv2::unsignedLong:
+      case Exiv2::signedLong:
+      case Exiv2::unsignedLongLong:
+      case Exiv2::signedLongLong:
+        val = QVariant::fromValue( it->toLong() );
+        break;
+
+      case Exiv2::tiffDouble:
+      case Exiv2::tiffFloat:
+        val = QVariant::fromValue( it->toFloat() );
+        break;
+
+      case Exiv2::unsignedShort:
+      case Exiv2::signedShort:
+      case Exiv2::unsignedByte:
+      case Exiv2::signedByte:
+      case Exiv2::tiffIfd:
+      case Exiv2::tiffIfd8:
+        val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
+        break;
+
+      case Exiv2::date:
+      {
+        Exiv2::DateValue::Date date = static_cast< const Exiv2::DateValue *>( &it->value() )->getDate();
+        val = QVariant::fromValue( QDate::fromString( QStringLiteral( "%1-%2-%3" ).arg( date.year )
+                                   .arg( QString::number( date.month ).rightJustified( 2, '0' ) )
+                                   .arg( QString::number( date.day ).rightJustified( 2, '0' ) ), QLatin1String( "yyyy-MM-dd" ) ) );
+        break;
+      }
+
+      case Exiv2::time:
+      {
+        Exiv2::TimeValue::Time time = static_cast< const Exiv2::TimeValue *>( &it->value() )->getTime();
+        val = QVariant::fromValue( QTime::fromString( QStringLiteral( "%1:%2:%3" ).arg( QString::number( time.hour ).rightJustified( 2, '0' ) )
+                                   .arg( QString::number( time.minute ).rightJustified( 2, '0' ) )
+                                   .arg( QString::number( time.second ).rightJustified( 2, '0' ) ), QLatin1String( "hh:mm:ss" ) ) );
+        break;
+      }
+
+      case Exiv2::unsignedRational:
+      case Exiv2::signedRational:
+      {
+        if ( it->count() == 1 )
+        {
+          val = QVariant::fromValue( readRationale( it->value() ) );
+        }
+        else
+        {
+          val = QString::fromStdString( it->toString() );
+        }
+        break;
+      }
+
+      case Exiv2::undefined:
+      case Exiv2::xmpAlt:
+      case Exiv2::xmpBag:
+      case Exiv2::xmpSeq:
+      case Exiv2::langAlt:
+      case Exiv2::invalidTypeId:
+      case Exiv2::lastTypeId:
+        val = QString::fromStdString( it->toString() );
+        break;
+
+    }
+  }
+  return val;
+}
+
+QString doubleToExifCoordinateString( const double val )
+{
+  double d = std::abs( val );
+  int degrees = static_cast< int >( std::floor( d ) );
+  double m = 60 * ( d - degrees );
+  int minutes = static_cast< int >( std::floor( m ) );
+  double s = 60 * ( m - minutes );
+  int seconds = static_cast< int >( std::floor( s * 1000 ) );
+  return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
+}
+
+QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
+{
+  std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
+  if ( !image || key.isEmpty() )
+    return QVariant();
+
+  image->readMetadata();
+  Exiv2::ExifData &exifData = image->exifData();
+  if ( exifData.empty() )
+  {
+    return QVariant();
+  }
+
+  Exiv2::ExifData::const_iterator i = exifData.findKey( Exiv2::ExifKey( key.toUtf8().constData() ) );
+  return i != exifData.end() ? decodeExifData( key, i ) : QVariant();
+}
+
 QVariantMap QgsExifTools::readTags( const QString &imagePath )
 {
   std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
@@ -40,66 +204,9 @@ QVariantMap QgsExifTools::readTags( const QString &imagePath )
   for ( Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i )
   {
     const QString key = QString::fromStdString( i->key() );
-    QVariant val;
-    switch ( i->typeId() )
-    {
-      case Exiv2::asciiString:
-      case Exiv2::string:
-      case Exiv2::comment:
-      case Exiv2::directory:
-      case Exiv2::xmpText:
-        val = QString::fromStdString( i->toString() );
-        break;
-
-      case Exiv2::unsignedLong:
-      case Exiv2::signedLong:
-        val = QVariant::fromValue( i->toLong() );
-        break;
-
-      case Exiv2::tiffDouble:
-      case Exiv2::tiffFloat:
-        val = QVariant::fromValue( i->toFloat() );
-        break;
-
-      case Exiv2::unsignedShort:
-      case Exiv2::signedShort:
-        val = QVariant::fromValue( static_cast< int >( i->toLong() ) );
-        break;
-
-      case Exiv2::unsignedRational:
-      case Exiv2::signedRational:
-      case Exiv2::unsignedByte:
-      case Exiv2::signedByte:
-      case Exiv2::undefined:
-      case Exiv2::tiffIfd:
-      case Exiv2::date:
-      case Exiv2::time:
-      case Exiv2::xmpAlt:
-      case Exiv2::xmpBag:
-      case Exiv2::xmpSeq:
-      case Exiv2::langAlt:
-      case Exiv2::invalidTypeId:
-      case Exiv2::lastTypeId:
-        val = QString::fromStdString( i->toString() );
-        break;
-
-    }
-
-    res.insert( key, val );
+    res.insert( key, decodeExifData( key, i ) );
   }
   return res;
-}
-#endif
-
-QString doubleToExifCoordinate( const double val )
-{
-  double d = std::abs( val );
-  int degrees = static_cast< int >( std::floor( d ) );
-  double m = 60 * ( d - degrees );
-  int minutes = static_cast< int >( std::floor( m ) );
-  double s = 60 * ( m - minutes );
-  int seconds = static_cast< int >( std::floor( s * 1000 ) );
-  return QStringLiteral( "%1/1 %2/1 %3/1000" ).arg( degrees ).arg( minutes ).arg( seconds );
 }
 
 bool QgsExifTools::hasGeoTag( const QString &imagePath )
@@ -135,32 +242,8 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
          itLonRef == exifData.end() || itLonVal == exifData.end() )
       return QgsPoint();
 
-    auto readCoord = []( const QString & coord )->double
-    {
-      double res = 0;
-      double div = 1;
-      const QStringList parts = coord.split( QRegularExpression( QStringLiteral( "\\s+" ) ) );
-      for ( const QString &rational : parts )
-      {
-        const QStringList pair = rational.split( '/' );
-        if ( pair.size() != 2 )
-          break;
-        res += ( pair[0].toDouble() / pair[1].toDouble() ) / div;
-        div *= 60;
-      }
-      return res;
-    };
-
-    auto readRationale = []( const QString & rational )->double
-    {
-      const QStringList pair = rational.split( '/' );
-      if ( pair.size() != 2 )
-        return std::numeric_limits< double >::quiet_NaN();
-      return pair[0].toDouble() / pair[1].toDouble();
-    };
-
-    double lat = readCoord( QString::fromStdString( itLatVal->value().toString() ) );
-    double lon = readCoord( QString::fromStdString( itLonVal->value().toString() ) );
+    double lat = readCoordinate( itLatVal->value() );
+    double lon = readCoordinate( itLonVal->value() );
 
     const QString latRef = QString::fromStdString( itLatRef->value().toString() );
     const QString lonRef = QString::fromStdString( itLonRef->value().toString() );
@@ -179,7 +262,7 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
     Exiv2::ExifData::iterator itElevRefVal = exifData.findKey( Exiv2::ExifKey( "Exif.GPSInfo.GPSAltitudeRef" ) );
     if ( itElevVal != exifData.end() )
     {
-      double elev = readRationale( QString::fromStdString( itElevVal->value().toString() ) );
+      double elev = readRationale( itElevVal->value() );
       if ( itElevRefVal != exifData.end() )
       {
         const QString elevRef = QString::fromStdString( itElevRefVal->value().toString() );
@@ -214,8 +297,8 @@ bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &loca
 
     exifData["Exif.GPSInfo.GPSVersionID"] = "2 0 0 0";
     exifData["Exif.GPSInfo.GPSMapDatum"] = "WGS-84";
-    exifData["Exif.GPSInfo.GPSLatitude"] = doubleToExifCoordinate( location.y() ).toStdString();
-    exifData["Exif.GPSInfo.GPSLongitude"] = doubleToExifCoordinate( location.x() ).toStdString();
+    exifData["Exif.GPSInfo.GPSLatitude"] = doubleToExifCoordinateString( location.y() ).toStdString();
+    exifData["Exif.GPSInfo.GPSLongitude"] = doubleToExifCoordinateString( location.x() ).toStdString();
     if ( !std::isnan( details.elevation ) )
     {
       const QString elevationString = QStringLiteral( "%1/1000" ).arg( static_cast< int>( std::floor( std::abs( details.elevation ) * 1000 ) ) );
