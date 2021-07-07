@@ -157,7 +157,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
-
+  connect( mLayersTree, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
+  {
+    mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                           mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                           QItemSelectionModel::ClearAndSelect );
+    emit layersAdded( selectedLayers() );
+    accept();
+  } );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, [ = ]
   {
