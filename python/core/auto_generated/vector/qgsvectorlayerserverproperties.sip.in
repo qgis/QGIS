@@ -11,7 +11,7 @@
 
 
 
-class QgsVectorLayerServerProperties
+class QgsVectorLayerServerProperties : QgsMapLayerServerProperties
 {
 %Docstring(signature="appended")
 Manages QGIS Server properties for a vector layer

@@ -84,6 +84,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayerType type,
   : mDataSource( source )
   , mLayerName( lyrname )
   , mLayerType( type )
+  , mServerProperties( new QgsMapLayerServerProperties( this ) )
   , mUndoStack( new QUndoStack( this ) )
   , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
@@ -125,9 +126,9 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setDataUrlFormat( dataUrlFormat() );
   layer->setAttribution( attribution() );
   layer->setAttributionUrl( attributionUrl() );
-  layer->setMetadataUrl( metadataUrl() );
-  layer->setMetadataUrlType( metadataUrlType() );
-  layer->setMetadataUrlFormat( metadataUrlFormat() );
+//  layer->setMetadataUrl( metadataUrl() );
+//  layer->setMetadataUrlType( metadataUrlType() );
+//  layer->setMetadataUrlFormat( metadataUrlFormat() );
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
@@ -136,6 +137,8 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setCustomProperties( mCustomProperties );
   layer->setOpacity( mLayerOpacity );
   layer->setMetadata( mMetadata );
+//  if ( auto *lServerProperties = serverProperties() )
+//    layer->setServerProperties( lServerProperties->clone( layer ) );
 }
 
 QgsMapLayerType QgsMapLayer::type() const
@@ -196,6 +199,104 @@ const QgsDataProvider *QgsMapLayer::dataProvider() const
 QString QgsMapLayer::shortName() const
 {
   return mShortName;
+}
+
+//void QgsMapLayer::setServerProperties( QgsMapLayerServerProperties *properties )
+//{
+//  mMapLayerServerProperties.reset( properties );
+////    if ( mMapLayerServerProperties )
+//  //      mMapLayerServerProperties->setParent( this );
+//}
+
+void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
+{
+  QgsMessageLog::logMessage( QObject::tr( "INSERTION" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+  QList<QgsMapLayerServerProperties::MetadataUrl> urls = mServerProperties->metadataUrls();
+  if ( urls.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "INSERTION VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+
+    QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, QLatin1String(), QLatin1String() );
+    urls.insert( 0, newItem );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "REMPLACEMENT" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+
+    QgsMapLayerServerProperties::MetadataUrl old = urls.takeAt( 0 );
+    QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, old.type, old.format );
+
+    urls.insert( 0, newItem );
+  }
+  this->serverProperties()->setMetadataUrls( urls );
+//  mServerProperties->setMetadataUrls( urls );
+}
+
+QString QgsMapLayer::metadataUrl() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QLatin1String();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "PAS VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+    return mServerProperties->metadataUrls().at( 0 ).url;
+  }
+}
+
+void QgsMapLayer::setMetadataUrlType( const QString &metaUrlType )
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), metaUrlType, QLatin1String() );
+    mServerProperties->metadataUrls().insert( 0, newItem );
+  }
+  else
+  {
+    QgsMapLayerServerProperties::MetadataUrl old = mServerProperties->metadataUrls().takeAt( 0 );
+    QgsMapLayerServerProperties::MetadataUrl newItem( old.url, metaUrlType, old.format );
+    mServerProperties->metadataUrls().insert( 0, newItem );
+  }
+}
+
+QString QgsMapLayer::metadataUrlType() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QLatin1String();
+  }
+  else
+  {
+    return mServerProperties->metadataUrls().at( 0 ).type;
+  }
+}
+
+void QgsMapLayer::setMetadataUrlFormat( const QString &metaUrlFormat )
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    QgsMapLayerServerProperties::MetadataUrl newItem( QLatin1String(), QLatin1String(), metaUrlFormat );
+    mServerProperties->metadataUrls().insert( 0, newItem );
+  }
+  else
+  {
+    QgsMapLayerServerProperties::MetadataUrl old = mServerProperties->metadataUrls().takeAt( 0 );
+    QgsMapLayerServerProperties::MetadataUrl newItem( old.url, old.type, metaUrlFormat );
+    mServerProperties->metadataUrls().insert( 0, newItem );
+  }
+}
+
+QString QgsMapLayer::metadataUrlFormat() const
+{
+  if ( mServerProperties->metadataUrls().isEmpty() )
+  {
+    return QStringLiteral();
+  }
+  else
+  {
+    return mServerProperties->metadataUrls().at( 0 ).format;
+  }
 }
 
 QString QgsMapLayer::publicSource() const
@@ -362,8 +463,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
 
-  //metadataUrl
+  //dataUrl
   const QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
+  QDomElement dataUrlElem = layerElement.firstChildElement( QStringLiteral( "dataUrl" ) );
   if ( !dataUrlElem.isNull() )
   {
     mDataUrl = dataUrlElem.text();
@@ -387,13 +489,16 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   }
 
   //metadataUrl
-  const QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
+  QDomElement metaUrlElem = layerElement.firstChildElement( QStringLiteral( "metadataUrl" ) );
   if ( !metaUrlElem.isNull() )
   {
-    mMetadataUrl = metaUrlElem.text();
-    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
-    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
+    QString url = metaUrlElem.text();
+    QString type = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
+    QString format = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
+    QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
+    mServerProperties->metadataUrls().insert( 0, newItem );
   }
+  // mMapLayerServerProperties->readXml()
 
   // mMetadata.readFromLayer( this );
   const QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
@@ -514,7 +619,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   // layer metadataUrl
-  const QString aDataUrl = dataUrl();
+  QString aDataUrl = dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
     QDomElement layerDataUrl = document.createElement( QStringLiteral( "dataUrl" ) );
@@ -547,7 +652,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   }
 
   // layer metadataUrl
-  const QString aMetadataUrl = metadataUrl();
+  QString aMetadataUrl = metadataUrl();
   if ( !aMetadataUrl.isEmpty() )
   {
     QDomElement layerMetadataUrl = document.createElement( QStringLiteral( "metadataUrl" ) );

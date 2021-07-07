@@ -20,6 +20,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsmaplayerserverproperties.h"
 #include <QMap>
 #include <QString>
 #include <QMetaType>
@@ -35,7 +36,7 @@ class QDomDocument;
  * \brief Manages QGIS Server properties for a vector layer
  * \since QGIS 3.10
  */
-class CORE_EXPORT QgsVectorLayerServerProperties
+class CORE_EXPORT QgsVectorLayerServerProperties : public QgsMapLayerServerProperties
 {
     Q_GADGET
 

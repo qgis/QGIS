@@ -55,6 +55,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsMapLayerDependency,
                        QgsRenderContext,
                        QgsPalLayerSettings,
+                       QgsVectorServerProperties,
                        QgsVectorLayerSimpleLabeling,
                        QgsSingleCategoryDiagramRenderer,
                        QgsDiagramLayerSettings,
@@ -2911,6 +2912,11 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(500, 600))))
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
+
+    def test_server_properties(self):
+        """ Test server properties. """
+        layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
+        self.assertIsInstance(layer.serverProperties(), QgsVectorServerProperties)
 
     def testClone(self):
         # init crs

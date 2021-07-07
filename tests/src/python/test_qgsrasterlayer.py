@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import (
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (Qgis,
+                       QgsMapLayerServerProperties,
                        QgsRaster,
                        QgsRasterLayer,
                        QgsReadWriteContext,
@@ -266,6 +267,14 @@ class TestQgsRasterLayer(unittest.TestCase):
         layer.setRenderer(r)
         assert self.rendererChanged
         assert layer.renderer() == r
+
+    def test_server_properties(self):
+        """ Test server properties. """
+        raster_path = os.path.join(
+            unitTestDataPath('raster'),
+            'band1_float32_noct_epsg4326.tif')
+        layer = QgsRasterLayer(raster_path, 'test_raster')
+        self.assertIsInstance(layer.serverProperties(), QgsMapLayerServerProperties)
 
     def testQgsRasterMinMaxOrigin(self):
 

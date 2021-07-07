@@ -69,7 +69,9 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 
 QList< QgsVectorLayerServerProperties::WmsDimensionInfo > QgsServerApiUtils::temporalDimensions( const QgsVectorLayer *layer )
 {
-  QList< QgsVectorLayerServerProperties::WmsDimensionInfo > dimensions { layer->serverProperties()->wmsDimensions() };
+
+  QgsVectorLayerServerProperties *serverProperties = static_cast<QgsVectorLayerServerProperties *>( layer->serverProperties() );
+  QList< QgsVectorLayerServerProperties::WmsDimensionInfo > dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time
   dimensions.erase( std::remove_if( dimensions.begin(),
                                     dimensions.end(),
