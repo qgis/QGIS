@@ -150,7 +150,7 @@ QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath
     QFileInfo fi( rasterLayerPath );
     nonNullBaseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName );
+  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName, QString() );
 }
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey )

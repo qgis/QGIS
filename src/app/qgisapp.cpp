@@ -2352,7 +2352,6 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
-    connect( mDataSourceManagerDialog, static_cast<void ( QgsDataSourceManagerDialog::* )()>( &QgsDataSourceManagerDialog::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::handleDropUriList, this, &QgisApp::handleDropUriList );
     connect( this, &QgisApp::newProject, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::updateProjectHome );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, &QgisApp::openFile );
@@ -6008,7 +6007,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     QgsDebugMsgLevel( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
     if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
     {
-      if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
+      if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName(), QString() ) )
         ok = true;
     }
     else if ( layerItem->providerKey() == QLatin1String( "ogr" ) )
@@ -6727,7 +6726,7 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName() );
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName(), QString() );
         }
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ),
                                           tr( "Calculation complete." ),
@@ -15743,74 +15742,7 @@ void QgisApp::renameView()
   }
 }
 
-/////////////////////////////////////////////////////////////////
-//
-//
-// Only functions relating to raster layer management in this
-// section (look for a similar comment block to this to find
-// the end of this section).
-//
-// Tim Sutton
-//
-//
-/////////////////////////////////////////////////////////////////
-
-
-// this is a slot for action from GUI to open and add raster layers
-void QgisApp::addRasterLayer()
-{
-  QStringList selectedFiles;
-  QString e;//only for parameter correctness
-  QString title = tr( "Open a GDAL Supported Raster Data Source" );
-  QgsGuiUtils::openFilesRememberingFilter( QStringLiteral( "lastRasterFileFilter" ), mRasterFileFilter, selectedFiles, e,
-      title );
-
-  if ( selectedFiles.isEmpty() )
-  {
-    // no files were selected, so just bail
-    return;
-  }
-
-  addRasterLayers( selectedFiles );
-
-}
-
-//
-// This is the method that does the actual work of adding a raster layer - the others
-// here simply create a raster layer object and delegate here. It is the responsibility
-// of the calling method to manage things such as the frozen state of the mapcanvas and
-// using waitcursors etc. - this method won't and SHOULDN'T do it
-//
-bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
-{
-  Q_CHECK_PTR( rasterLayer );
-
-  if ( ! rasterLayer )
-  {
-    // XXX insert meaningful whine to the user here; although be
-    // XXX mindful that a null layer may mean exhausted memory resources
-    return false;
-  }
-
-  if ( !rasterLayer->isValid() )
-  {
-    delete rasterLayer;
-    return false;
-  }
-
-  // register this layer with the central layers registry
-  QList<QgsMapLayer *> myList;
-  myList << rasterLayer;
-  QgsProject::instance()->addMapLayers( myList );
-
-  askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs(), rasterLayer );
-
-  return true;
-}
-
-QgsRasterLayer *QgisApp::addRasterLayerPrivate(
-  const QString &uri, const QString &name, const QString &providerKey,
-  bool guiWarning )
+QgsRasterLayer *QgisApp::addRasterLayerPrivate( const QString &uri, const QString &name, const QString &providerKey, bool guiWarning )
 {
   QString shortName = name;
   QRegularExpression reRasterFile( QStringLiteral( "^/vsi(.+/)*([^ ]+)( .+)?$" ), QRegularExpression::CaseInsensitiveOption );
@@ -15827,14 +15759,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, shortName, providerKey, guiWarning );
 }
 
-QgsRasterLayer *QgisApp::addRasterLayer(
-  QString const &rasterFile, QString const &baseName, bool guiWarning )
-{
-  return addRasterLayerPrivate( rasterFile, baseName, QString(), guiWarning );
-}
-
-QgsRasterLayer *QgisApp::addRasterLayer(
-  QString const &uri, QString const &baseName, QString const &providerKey )
+QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
   return addRasterLayerPrivate( uri, baseName, providerKey, true );
 }
@@ -15927,22 +15852,6 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
   return returnValue;
 
 }
-
-
-
-
-///////////////////////////////////////////////////////////////////
-//
-//
-//
-//
-//    RASTER ONLY RELATED FUNCTIONS BLOCK ENDS....
-//
-//
-//
-//
-///////////////////////////////////////////////////////////////////
-
 
 QgsPluginLayer *QgisApp::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )
 {

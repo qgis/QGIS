@@ -213,13 +213,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp &operator=( QgisApp const & ) = delete;
 
     /**
-     * Open a raster layer for the given file
-     * \returns FALSE if unable to open a raster layer for rasterFile
-     * \note This is essentially a simplified version of the above
-     */
-    QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
-
-    /**
      * Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
      * \since QGIS 2.8
      */
@@ -1752,12 +1745,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
 
-    /**
-     * \brief Open one or more raster layers and add to the map
-     *  Will prompt user for file names using a file selection dialog
-     */
-    void addRasterLayer();
-
     void selectionChanged( QgsMapLayer *layer );
 
     void extentChanged();
@@ -2097,12 +2084,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * in the process
      */
     QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *&layerTransferOwnership, const QStringList &subLayers );
-
-    /**
-     * Add a raster layer to the map (passed in as a ptr).
-     * It won't force a refresh.
-     */
-    bool addRasterLayer( QgsRasterLayer *rasterLayer );
 
     QgsMapLayer *addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
