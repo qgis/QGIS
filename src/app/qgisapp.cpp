@@ -15742,14 +15742,9 @@ void QgisApp::renameView()
   }
 }
 
-QgsRasterLayer *QgisApp::addRasterLayerPrivate( const QString &uri, const QString &name, const QString &providerKey, bool guiWarning )
-{
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, shortName, providerKey, guiWarning );
-}
-
 QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  return addRasterLayerPrivate( uri, baseName, providerKey, true );
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, providerKey, true );
 }
 
 bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiWarning )
@@ -15797,7 +15792,8 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       }
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( src, layerName, QString(), guiWarning );
+      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QString(), guiWarning );
+
       if ( layer && layer->isValid() )
       {
         //only allow one copy of a ai grid file to be loaded at a
