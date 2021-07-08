@@ -1574,7 +1574,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        # multi-layer archive, but with specific layer name specified
+        # multi-layer archive, but with specific suffix specified
         res = metadata.querySublayers('/vsitar/' + os.path.join(TEST_DATA_DIR, 'zip', 'testtar.tgz') + '/folder/points.geojson')
         self.assertEqual(len(res), 1)
         self.assertEqual(res[0].layerNumber(), 0)
