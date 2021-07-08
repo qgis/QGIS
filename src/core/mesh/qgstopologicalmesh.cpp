@@ -35,6 +35,20 @@ static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceI
   return vertexPositionInFace( vertexIndex, mesh.face( faceIndex ) );
 }
 
+static double crossProduct( int centralVertex, int vertex1, int vertex2, const QgsMesh &mesh )
+{
+  QgsMeshVertex vc = mesh.vertices.at( centralVertex );
+  QgsMeshVertex v1 = mesh.vertices.at( vertex1 );
+  QgsMeshVertex v2 = mesh.vertices.at( vertex2 );
+
+  double ux1 = v1.x() - vc.x();
+  double uy1 = v1.y() - vc.y();
+  double vx1 = v2.x() - vc.x();
+  double vy1 = v2.y() - vc.y();
+
+  return ux1 * vy1 - uy1 * vx1;
+}
+
 QgsMeshVertexCirculator::QgsMeshVertexCirculator( const QgsTopologicalMesh &topologicalMesh, int vertexIndex )
   : mFaces( topologicalMesh.mMesh->faces )
   , mFacesNeighborhood( topologicalMesh.mFacesNeighborhood )
@@ -561,18 +575,13 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockWiseFaces( QgsMeshFace &face
     if ( v2.isEmpty() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
 
-    double ux = v0.x() - v1.x();
-    double uy = v0.y() - v1.y();
-    double vx = v2.x() - v1.x();
-    double vy = v2.y() - v1.y();
-
-    double crossProduct = ux * vy - uy * vx; //if cross product>0, we have two edges clockwise
-    if ( direction != 0 && crossProduct * direction < 0 )   // We have a convex face or a (partially) flat face
+    double crossProd = crossProduct( iv1, iv0, iv2, *mesh ); //if cross product>0, we have two edges clockwise
+    if ( direction != 0 && crossProd * direction < 0 )   // We have a convex face or a (partially) flat face
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, -1 );
-    else if ( crossProduct == 0 )
+    else if ( crossProd == 0 )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
-    else if ( direction == 0 && crossProduct != 0 )
-      direction = crossProduct / std::fabs( crossProduct );
+    else if ( direction == 0 && crossProd != 0 )
+      direction = crossProd / std::fabs( crossProd );
   }
 
   if ( direction > 0 )// clockwise --> reverse the order of the index;
@@ -1400,23 +1409,8 @@ bool QgsTopologicalMesh::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) 
   if ( face1.count() != 3 || face2.count() != 3 )
     return false;
 
-  QgsMeshVertex v1 = mMesh->vertices.at( vertexIndex1 );
-  QgsMeshVertex v2 = mMesh->vertices.at( vertexIndex2 );
-  QgsMeshVertex ov1 = mMesh->vertices.at( oppositeVertexFace1 );
-  QgsMeshVertex ov2 = mMesh->vertices.at( oppositeVertexFace2 );
-
-  double ux1 = ov1.x() - v1.x();
-  double uy1 = ov1.y() - v1.y();
-  double vx1 = ov2.x() - v1.x();
-  double vy1 = ov2.y() - v1.y();
-
-  double ux2 = ov1.x() - v2.x();
-  double uy2 = ov1.y() - v2.y();
-  double vx2 = ov2.x() - v2.x();
-  double vy2 = ov2.y() - v2.y();
-
-  double crossProduct1 = ux1 * vy1 - uy1 * vx1;
-  double crossProduct2 = ux2 * vy2 - uy2 * vx2;
+  double crossProduct1 = crossProduct( vertexIndex1, oppositeVertexFace1, oppositeVertexFace2, *mMesh );
+  double crossProduct2 = crossProduct( vertexIndex2, oppositeVertexFace1, oppositeVertexFace2, *mMesh );
 
   return crossProduct1 * crossProduct2 < 0;
 }
@@ -1550,18 +1544,8 @@ bool QgsTopologicalMesh::canBeMerged( int vertexIndex1, int vertexIndex2 ) const
   QgsMeshVertex nv21 = mMesh->vertices.at( neighborVertex2inFace1 );
   QgsMeshVertex nv22 = mMesh->vertices.at( neighborVertex2inFace2 );
 
-  double ux1 = nv11.x() - v1.x();
-  double uy1 = nv11.y() - v1.y();
-  double vx1 = nv12.x() - v1.x();
-  double vy1 = nv12.y() - v1.y();
-
-  double ux2 = nv21.x() - v2.x();
-  double uy2 = nv21.y() - v2.y();
-  double vx2 = nv22.x() - v2.x();
-  double vy2 = nv22.y() - v2.y();
-
-  double crossProduct1 = ux1 * vy1 - uy1 * vx1;
-  double crossProduct2 = ux2 * vy2 - uy2 * vx2;
+  double crossProduct1 = crossProduct( vertexIndex1, neighborVertex1InFace1, neighborVertex1InFace2, *mMesh );
+  double crossProduct2 = crossProduct( vertexIndex2, neighborVertex2inFace1, neighborVertex2inFace2, *mMesh );
 
   return crossProduct1 * crossProduct2 < 0;
 }
@@ -1642,6 +1626,87 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::merge( int vertexIndex1, int ver
 
   changes.mFacesToAdd.append( newface );
   changes.mFacesNeighborhoodToAdd.append( newNeighborhood );
+
+  applyChanges( changes );
+
+  return changes;
+}
+
+bool QgsTopologicalMesh::faceCanBeSplit( int faceIndex ) const
+{
+  const QgsMeshFace face = mMesh->face( faceIndex );
+
+  return face.count() == 4;
+}
+
+QgsTopologicalMesh::Changes QgsTopologicalMesh::splitFace( int faceIndex )
+{
+  //search for the spliited angle (greater angle)
+  const QgsMeshFace &face = mMesh->face( faceIndex );
+  int faceSize = face.count();
+
+  Q_ASSERT( faceSize == 4 );
+
+  double maxAngle = 0;
+  int splitVertexPos = -1;
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    QgsVector vect1( mMesh->vertex( face.at( i ) ) - mMesh->vertex( face.at( ( i + 1 ) % faceSize ) ) );
+    QgsVector vect2( mMesh->vertex( face.at( ( i + 2 ) % faceSize ) ) - mMesh->vertex( face.at( ( i + 1 ) % faceSize ) ) );
+
+    double angle = std::abs( vect1.angle( vect2 ) );
+    angle = std::min( angle, 2.0 * M_PI - angle );
+    if ( angle > maxAngle )
+    {
+      maxAngle = angle;
+      splitVertexPos = ( i + 1 ) % faceSize;
+    }
+  }
+
+  Changes changes;
+
+  const QgsMeshFace newFace1 = {face.at( splitVertexPos ),
+                                face.at( ( splitVertexPos + 1 ) % faceSize ),
+                                face.at( ( splitVertexPos + 2 ) % faceSize )
+                               };
+
+  const QgsMeshFace newFace2 = {face.at( splitVertexPos ),
+                                face.at( ( splitVertexPos + 2 ) % faceSize ),
+                                face.at( ( splitVertexPos + 3 ) % faceSize )
+                               };
+
+  QVector<int> neighborIndex( faceSize );
+  QVector<int> posInNeighbor( faceSize );
+
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    neighborIndex[i] = mFacesNeighborhood.at( faceIndex ).at( ( splitVertexPos + i ) % faceSize );
+    posInNeighbor[i] = vertexPositionInFace( *mMesh,  face.at( ( splitVertexPos + i + 1 ) % faceSize ), neighborIndex[i] );
+  }
+
+  changes.mFaceIndexesToRemove.append( faceIndex );
+  changes.mFacesToRemove.append( face );
+  changes.mFacesNeighborhoodToRemove.append( mFacesNeighborhood.at( faceIndex ) );
+  int startIndex = mMesh->faceCount();
+  changes.mAddedFacesFirstIndex = startIndex;
+  changes.mFacesToAdd.append( newFace1 );
+  changes.mFacesToAdd.append( newFace2 );
+
+  changes.mFacesNeighborhoodToAdd.append( {mFacesNeighborhood.at( faceIndex ).at( splitVertexPos ),
+                                          mFacesNeighborhood.at( faceIndex ).at( ( splitVertexPos + 1 ) % faceSize ),
+                                          startIndex + 1} );
+  changes.mFacesNeighborhoodToAdd.append( {startIndex,
+                                          mFacesNeighborhood.at( faceIndex ).at( ( splitVertexPos + 2 ) % faceSize ),
+                                          mFacesNeighborhood.at( faceIndex ).at( ( splitVertexPos + 3 ) % faceSize )} );
+
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    if ( neighborIndex[i] >= 0 )
+      changes.mNeighborhoodChanges.append( {neighborIndex[i], posInNeighbor[i], faceIndex, startIndex + int( i / 2 )} );
+
+    if ( mVertexToFace.at( face.at( ( splitVertexPos + i ) % faceSize ) ) == faceIndex )
+      mVertexToFace[face.at( ( splitVertexPos + i ) % faceSize )] = startIndex + int( i / 2 );
+  }
 
   applyChanges( changes );
 

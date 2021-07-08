@@ -228,19 +228,24 @@ void TestQgsMeshEditor::createTopologicMesh()
 void TestQgsMeshEditor::editTopologicMesh()
 {
   QgsMeshEditingError error;
-  QgsTopologicalMesh topologicMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
+  QgsTopologicalMesh topologicalMesh = QgsTopologicalMesh::createTopologicalMesh( &nativeMesh, 4, error );
   QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
-  QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
-  QCOMPARE( topologicMesh.mesh()->vertexCount(), 6 );
+  QCOMPARE( topologicalMesh.mesh()->faceCount(), 4 );
+  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 6 );
 
-  QVERIFY( !topologicMesh.edgeCanBeFlipped( 2, 3 ) );
-  QVERIFY( topologicMesh.edgeCanBeFlipped( 3, 4 ) );
-  QVERIFY( !topologicMesh.edgeCanBeFlipped( 2, 4 ) );
-  QVERIFY( !topologicMesh.edgeCanBeFlipped( 1, 2 ) );
-  QVERIFY( !topologicMesh.edgeCanBeFlipped( 1, 4 ) );
+  QVERIFY( !topologicalMesh.edgeCanBeFlipped( 2, 3 ) );
+  QVERIFY( topologicalMesh.edgeCanBeFlipped( 3, 4 ) );
+  QVERIFY( !topologicalMesh.edgeCanBeFlipped( 2, 4 ) );
+  QVERIFY( !topologicalMesh.edgeCanBeFlipped( 1, 2 ) );
+  QVERIFY( !topologicalMesh.edgeCanBeFlipped( 1, 4 ) );
 
-  QVector<QgsTopologicalMesh::Changes> topologicChanges;
+  QVERIFY( topologicalMesh.faceCanBeSplit( 0 ) );
+  QVERIFY( !topologicalMesh.faceCanBeSplit( 1 ) );
+  QVERIFY( !topologicalMesh.faceCanBeSplit( 2 ) );
+  QVERIFY( !topologicalMesh.faceCanBeSplit( 3 ) );
+
+  QVector<QgsTopologicalMesh::Changes> topologicalChanges;
 
   const QVector<QgsMeshVertex> vertices(
   {
@@ -253,23 +258,23 @@ void TestQgsMeshEditor::editTopologicMesh()
   } );
 
   for ( const QgsMeshVertex &vertex : vertices )
-    topologicChanges.append( topologicMesh.addFreeVertex( vertex ) );
+    topologicalChanges.append( topologicalMesh.addFreeVertex( vertex ) );
 
-  QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
-  QCOMPARE( topologicMesh.mesh()->vertexCount(), 12 );
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 6 );
+  QCOMPARE( topologicalMesh.mesh()->faceCount(), 4 );
+  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 12 );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 6 );
 
   QgsTopologicalMesh::TopologicalFaces topologicFaces;
 
   QVector<QgsMeshFace> faces;
   faces = {{5, 7, 6}};
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) ==
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) ==
            QgsMeshEditingError( Qgis::MeshEditingErrorType::UniqueSharedVertex, 5 ) );
 
   faces = {{5, 7, 6, 4}};
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces =
   {
@@ -282,9 +287,9 @@ void TestQgsMeshEditor::editTopologicMesh()
     {11, 5, 3},   // 6
   };
 
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
 
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces =
   {
@@ -297,9 +302,9 @@ void TestQgsMeshEditor::editTopologicMesh()
     {11, 5, 3},   // 6
   };
 
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ).errorType ==  Qgis::MeshEditingErrorType::UniqueSharedVertex );
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 6 );
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ).errorType ==  Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 6 );
 
   faces =
   {
@@ -314,41 +319,41 @@ void TestQgsMeshEditor::editTopologicMesh()
   };
 
 
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
 
   faces = {{5, 7, 6, 4}};
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
-  topologicChanges.append( topologicMesh.addFaces( topologicFaces ) ) ;
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  topologicalChanges.append( topologicalMesh.addFaces( topologicFaces ) ) ;
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 4 );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 4 );
 
-  QVERIFY( checkNeighbors( topologicMesh, 0, {-1, 2, 1} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {-1, 0, 2} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {-1, 2, 4} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 4, {-1, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {0, 1, 2} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3, 4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {3, 4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 6, {4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {-1, 2, 1} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {-1, 0, 2} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {-1, 2, 4} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 4, {-1, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {0, 1, 2} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3, 4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {3, 4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 6, {4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 7, {4} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  QVERIFY( !topologicMesh.canBeMerged( 4, 5 ) );
-  QVERIFY( topologicMesh.canBeMerged( 3, 4 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 1, 4 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 0, 1 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 0, 3 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 2, 3 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 4, 2 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 2, 1 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 3, 5 ) );
-  QVERIFY( !topologicMesh.canBeMerged( 6, 7 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 4, 5 ) );
+  QVERIFY( topologicalMesh.canBeMerged( 3, 4 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 1, 4 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 0, 1 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 0, 3 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 2, 3 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 4, 2 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 2, 1 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 3, 5 ) );
+  QVERIFY( !topologicalMesh.canBeMerged( 6, 7 ) );
 
   faces =
   {
@@ -360,205 +365,210 @@ void TestQgsMeshEditor::editTopologicMesh()
     {11, 5, 3},   // 6
   };
 
-  topologicFaces = topologicMesh.createNewTopologicalFaces( faces, error );
-  QVERIFY( topologicMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
-  topologicChanges.append( topologicMesh.addFaces( topologicFaces ) ) ;
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, error );
+  QVERIFY( topologicalMesh.canFacesBeAdded( topologicFaces ) == QgsMeshEditingError() );
+  topologicalChanges.append( topologicalMesh.addFaces( topologicFaces ) ) ;
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
 
-  QVERIFY( checkNeighbors( topologicMesh, 0, {1, 2, 9, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {0, 2, 6} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {2, 4, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 4, {-1, 3, 5} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 5, {-1, 4} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 6, {-1, 1, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 7, {-1, 6, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 8, {-1, 0, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 9, {-1, 0, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 10, {-1, 3, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0, 8, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1, 6, 7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {1, 2, 0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3, 10, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3, 4, 5, 6} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {4, 3, 10} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 6, {4, 5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 8, {5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 9, {6, 7} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 10, {7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 11, {9, 10} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {1, 2, 9, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {0, 2, 6} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {2, 4, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 4, {-1, 3, 5} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 5, {-1, 4} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 6, {-1, 1, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 7, {-1, 6, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 8, {-1, 0, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 9, {-1, 0, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 10, {-1, 3, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0, 8, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1, 6, 7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {1, 2, 0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3, 10, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3, 4, 5, 6} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {4, 3, 10} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 6, {4, 5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 7, {4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 8, {5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 9, {6, 7} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 10, {7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 11, {9, 10} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  topologicMesh.reverseChanges( topologicChanges.last() );
+  topologicalMesh.reverseChanges( topologicalChanges.last() );
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 4 );
-  QVERIFY( checkNeighbors( topologicMesh, 0, {-1, 2, 1} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {-1, 0, 2} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {-1, 2, 4} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 4, {-1, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {0, 1, 2} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3, 4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {3, 4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 6, {4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 4 );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {-1, 2, 1} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {-1, 0, 2} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {-1, 2, 4} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 4, {-1, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {0, 1, 2} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3, 4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {3, 4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 6, {4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 7, {4} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  topologicMesh.applyChanges( topologicChanges.last() );
+  topologicalMesh.applyChanges( topologicalChanges.last() );
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
-  QVERIFY( checkNeighbors( topologicMesh, 0, {1, 2, 9, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {0, 2, 6} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {2, 4, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 4, {-1, 3, 5} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 5, {-1, 4} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 6, {-1, 1, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 7, {-1, 6, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 8, {-1, 0, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 9, {-1, 0, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 10, {-1, 3, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0, 8, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1, 6, 7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {1, 2, 0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3, 10, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3, 4, 5, 6} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {4, 3, 10} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 6, {4, 5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 8, {5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 9, {6, 7} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 10, {7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 11, {9, 10} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {1, 2, 9, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {0, 2, 6} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {2, 4, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 4, {-1, 3, 5} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 5, {-1, 4} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 6, {-1, 1, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 7, {-1, 6, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 8, {-1, 0, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 9, {-1, 0, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 10, {-1, 3, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0, 8, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1, 6, 7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {1, 2, 0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3, 10, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3, 4, 5, 6} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {4, 3, 10} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 6, {4, 5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 7, {4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 8, {5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 9, {6, 7} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 10, {7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 11, {9, 10} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
   QList<int> faceToRemove;
   faceToRemove = {2, 3};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 1, 2, 3};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {0, 9};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {8, 0, 9, 10};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {1, 2, 3, 4, 5};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {0, 1, 2, 3, 4, 5};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ).errorType == Qgis::MeshEditingErrorType::UniqueSharedVertex );
 
   faceToRemove = {9, 0, 1, 2, 3, 4, 5};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
   faceToRemove = {0, 6, 7, 8};
-  QVERIFY( topologicMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
+  QVERIFY( topologicalMesh.canFacesBeRemoved( faceToRemove ) == QgsMeshEditingError() );
 
-  topologicChanges.append( topologicMesh.removeFaces( {0, 9} ) );
+  topologicalChanges.append( topologicalMesh.removeFaces( {0, 9} ) );
 
-  QVERIFY( checkNeighbors( topologicMesh, 8, {-1, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 10, {-1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {-1, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {-1, 2, 6} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {1, 6, 7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, { 1, 2} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, { 2, 3, 10} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 11, {10} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( checkNeighbors( topologicalMesh, 8, {-1, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 10, {-1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {-1, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {-1, 2, 6} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {1, 6, 7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, { 1, 2} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, { 2, 3, 10} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 11, {10} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  topologicMesh.reverseChanges( topologicChanges.last() );
+  topologicalMesh.reverseChanges( topologicalChanges.last() );
 
-  QVERIFY( checkNeighbors( topologicMesh, 0, {1, 2, 9, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {0, 2, 6} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {2, 4, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 4, {-1, 3, 5} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 5, {-1, 4} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 6, {-1, 1, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 7, {-1, 6, 8} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 8, {-1, 0, 7} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 9, {-1, 0, 10} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 10, {-1, 3, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0, 8, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1, 6, 7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {1, 2, 0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3, 10, 9} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3, 4, 5, 6} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {4, 3, 10} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 6, {4, 5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 7, {4} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 8, {5} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 9, {6, 7} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 10, {7, 8} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 11, {9, 10} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {1, 2, 9, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {0, 2, 6} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {2, 4, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 4, {-1, 3, 5} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 5, {-1, 4} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 6, {-1, 1, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 7, {-1, 6, 8} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 8, {-1, 0, 7} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 9, {-1, 0, 10} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 10, {-1, 3, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0, 8, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1, 6, 7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {1, 2, 0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3, 10, 9} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3, 4, 5, 6} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {4, 3, 10} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 6, {4, 5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 7, {4} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 8, {5} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 9, {6, 7} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 10, {7, 8} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 11, {9, 10} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  topologicMesh.applyChanges( topologicChanges.last() );
+  topologicalMesh.applyChanges( topologicalChanges.last() );
 
-  topologicChanges.append( topologicMesh.addVertexInface( 4, {2.2, 0.5, 0} ) ); // vertex 12
+  topologicalChanges.append( topologicalMesh.addVertexInface( 4, {2.2, 0.5, 0} ) ); // vertex 12
 
-  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 13, 14} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 13, 14} ) );
 
-  topologicFaces = topologicMesh.createNewTopologicalFaces( {{4, 8, 9}, {0, 3, 2, 1}}, error );
+  topologicFaces = topologicalMesh.createNewTopologicalFaces( {{4, 8, 9}, {0, 3, 2, 1}}, error );
   QVERIFY( error == QgsMeshEditingError() );
-  topologicChanges.append( topologicMesh.addFaces( topologicFaces ) );
-  QVERIFY( checkFacesAround( topologicMesh, 9, {7, 6, 15} ) );
+  topologicalChanges.append( topologicalMesh.addFaces( topologicFaces ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 9, {7, 6, 15} ) );
 
-  topologicChanges.append( topologicMesh.removeVertexFillHole( 4 ) );
+  topologicalChanges.append( topologicalMesh.removeVertexFillHole( 4 ) );
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  QVERIFY( topologicMesh.edgeCanBeFlipped( 2, 12 ) );
-  topologicChanges.append( topologicMesh.flipEdge( 2, 12 ) );
-  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 22, 24} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( topologicalMesh.edgeCanBeFlipped( 2, 12 ) );
+  topologicalChanges.append( topologicalMesh.flipEdge( 2, 12 ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 24} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  QVERIFY( topologicMesh.canBeMerged( 3, 8 ) );
-  topologicChanges.append( topologicMesh.merge( 3, 8 ) );
-  QVERIFY( checkFacesAround( topologicMesh, 12, {11, 12, 20, 22, 25} ) );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QVERIFY( topologicalMesh.canBeMerged( 3, 8 ) );
+  topologicalChanges.append( topologicalMesh.merge( 3, 8 ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 25} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
+
+  QVERIFY( topologicalMesh.faceCanBeSplit( 25 ) );
+  topologicalChanges.append( topologicalMesh.splitFace( 25 ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 26, 27} ) );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
   // reverse all!!!
-  for ( int i = 0; i < topologicChanges.count(); ++i )
-    topologicMesh.reverseChanges( topologicChanges.at( topologicChanges.count() - i - 1 ) );
+  for ( int i = 0; i < topologicalChanges.count(); ++i )
+    topologicalMesh.reverseChanges( topologicalChanges.at( topologicalChanges.count() - i - 1 ) );
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
-  QVERIFY( checkNeighbors( topologicMesh, 0, {-1, 1, 2} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 1, {-1, 0, 2} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 2, {0, 1, 3} ) );
-  QVERIFY( checkNeighbors( topologicMesh, 3, {-1, 2} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 0, {0} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 1, {0, 1} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 2, {0, 2, 1} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 3, {0, 2, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 4, {1, 2, 3} ) );
-  QVERIFY( checkFacesAround( topologicMesh, 5, {3} ) );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
+  QVERIFY( checkNeighbors( topologicalMesh, 0, {-1, 1, 2} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 1, {-1, 0, 2} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 2, {0, 1, 3} ) );
+  QVERIFY( checkNeighbors( topologicalMesh, 3, {-1, 2} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 0, {0} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 1, {0, 1} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {0, 2, 1} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {0, 2, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 4, {1, 2, 3} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 5, {3} ) );
 
-  QCOMPARE( topologicMesh.mesh()->faceCount(), 4 );
-  QCOMPARE( topologicMesh.mesh()->vertexCount(), 6 );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QCOMPARE( topologicalMesh.mesh()->faceCount(), 4 );
+  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 6 );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
   // reapply all!!!
-  for ( int i = 0; i < topologicChanges.count(); ++i )
-    topologicMesh.applyChanges( topologicChanges.at( i ) );
+  for ( int i = 0; i < topologicalChanges.count(); ++i )
+    topologicalMesh.applyChanges( topologicalChanges.at( i ) );
 
-  QCOMPARE( topologicMesh.freeVerticesIndexes().count(), 0 );
-  QVERIFY( topologicMesh.checkConsistency() );
+  QCOMPARE( topologicalMesh.freeVerticesIndexes().count(), 0 );
+  QVERIFY( topologicalMesh.checkConsistency() );
 
-  topologicMesh.reindex();
+  topologicalMesh.reindex();
 
-  QCOMPARE( topologicMesh.mesh()->faceCount(), 11 );
-  QCOMPARE( topologicMesh.mesh()->vertexCount(), 12 );
+  QCOMPARE( topologicalMesh.mesh()->faceCount(), 12 );
+  QCOMPARE( topologicalMesh.mesh()->vertexCount(), 12 );
 }
 
 void TestQgsMeshEditor::badTopologicMesh()
@@ -1152,6 +1162,16 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadTriangle()
 
   QVERIFY( !editor->canBeMerged( 2, 3 ) ); //leads to 5 vertices per face, limited to 4
 
+  //split
+  QVERIFY( editor->faceCanBeSplit( 8 ) );
+  QCOMPARE( editor->splitFaces( {8} ), 1 );
+
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 2100, 2500, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 2333.3333333, 2333.33333333 ), 1e-6 ) );
+  centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1950, 2500, 0 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1833.3333333, 2600.0 ), 1e-6 ) );
+
+  meshLayerQuadTriangle->undoStack()->undo();
   meshLayerQuadTriangle->undoStack()->undo();
 
   centroid = meshLayerQuadTriangle->snapOnElement( QgsMesh::Face, QgsPoint( 1400, 2050, 0 ), 10 );

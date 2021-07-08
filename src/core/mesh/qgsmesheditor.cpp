@@ -213,6 +213,11 @@ void QgsMeshEditor::applyMerge( QgsMeshEditor::Edit &edit, int vertexIndex1, int
   applyEditOnTriangularMesh( edit, mTopologicalMesh.merge( vertexIndex1, vertexIndex2 ) );
 }
 
+void QgsMeshEditor::applySplit( QgsMeshEditor::Edit &edit, int faceIndex )
+{
+  applyEditOnTriangularMesh( edit, mTopologicalMesh.splitFace( faceIndex ) );
+}
+
 void QgsMeshEditor::applyEditOnTriangularMesh( QgsMeshEditor::Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges )
 {
   QgsTriangularMesh::Changes triangularChanges( topologicChanges, *mMesh );
@@ -271,6 +276,27 @@ void QgsMeshEditor::merge( int vertexIndex1, int vertexIndex2 )
     return;
 
   mUndoStack->push( new QgsMeshLayerUndoCommandMerge( this, vertexIndex1, vertexIndex2 ) );
+}
+
+bool QgsMeshEditor::faceCanBeSplit( int faceIndex ) const
+{
+  return mTopologicalMesh.faceCanBeSplit( faceIndex );
+}
+
+int QgsMeshEditor::splitFaces( const QList<int> &faceIndexes )
+{
+  QList<int> faceIndexesSplittable;
+
+  for ( const int faceIndex : faceIndexes )
+    if ( faceCanBeSplit( faceIndex ) )
+      faceIndexesSplittable.append( faceIndex );
+
+  if ( faceIndexesSplittable.isEmpty() )
+    return 0;
+
+  mUndoStack->push( new QgsMeshLayerUndoCommandSplitFaces( this, faceIndexesSplittable ) );
+
+  return faceIndexesSplittable.count();
 }
 
 QVector<QgsMeshFace> QgsMeshEditor::prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error )
@@ -666,4 +692,26 @@ void QgsMeshLayerUndoCommandMerge::redo()
   }
 }
 
+QgsMeshLayerUndoCommandSplitFaces::QgsMeshLayerUndoCommandSplitFaces( QgsMeshEditor *meshEditor, const QList<int> &faceIndexes )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mFaceIndexes( faceIndexes )
+{}
 
+void QgsMeshLayerUndoCommandSplitFaces::redo()
+{
+  if ( !mFaceIndexes.isEmpty() )
+  {
+    for ( int faceIndex : mFaceIndexes )
+    {
+      QgsMeshEditor::Edit edit;
+      mMeshEditor->applySplit( edit, faceIndex );
+      mEdits.append( edit );
+    }
+    mFaceIndexes.clear();
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}

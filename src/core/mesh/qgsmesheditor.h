@@ -100,6 +100,17 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void merge( int vertexIndex1, int vertexIndex2 );
 
     /**
+     * Returns TRUE if face with index \a faceIndex can be split
+     */
+    bool faceCanBeSplit( int faceIndex ) const;
+
+    /**
+     * Splits faces with index \a faceIndexes. Only faces that can be split are split.
+     * Returns the count of faces effictively split
+     */
+    int splitFaces( const QList<int> &faceIndexes );
+
+    /**
      *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
      *  from triangular coordinate to layer coordinate succeeds or if any vertices are next the added vertex (under \a tolerance distance).
      *  The method returns the number of vertices effectivly added.
@@ -199,6 +210,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void applyChangeXYValue( Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
     void applyFlipEdge( Edit &edit, int vertexIndex1, int vertexIndex2 );
     void applyMerge( Edit &edit, int vertexIndex1, int vertexIndex2 );
+    void applySplit( QgsMeshEditor::Edit &edit, int faceIndex );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
 
@@ -216,6 +228,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandChangeXYValue;
     friend class QgsMeshLayerUndoCommandFlipEdge;
     friend class QgsMeshLayerUndoCommandMerge;
+    friend class QgsMeshLayerUndoCommandSplitFaces;
 };
 
 #ifndef SIP_RUN
@@ -354,7 +367,7 @@ class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshE
 
     /**
      * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
-     * the Z value changed with \a newValues
+     * the (X,Y) values changed with \a newValues
      */
     QgsMeshLayerUndoCommandChangeXYValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
     void redo() override;
@@ -376,8 +389,7 @@ class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
   public:
 
     /**
-     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
-     * the Z value changed with \a newValues
+     * Constructor with the associated \a meshEditor and the vertex indexes of the edge (\a vertexIndex1, \a vertexIndex2)
      */
     QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
     void redo() override;
@@ -390,7 +402,7 @@ class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
 /**
  * \ingroup core
  *
- * \brief  Class for undo/redo command for flipping edge
+ * \brief  Class for undo/redo command for merging face
  *
  * \since QGIS 3.22
  */
@@ -399,8 +411,8 @@ class QgsMeshLayerUndoCommandMerge : public QgsMeshLayerUndoCommandMeshEdit
   public:
 
     /**
-     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
-     * the Z value changed with \a newValues
+     * Constructor with the associated \a meshEditor and the vertex indexes of
+     * the edge (\a vertexIndex1, \a vertexIndex2) that separate the face to merge
      */
     QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
     void redo() override;
@@ -409,6 +421,28 @@ class QgsMeshLayerUndoCommandMerge : public QgsMeshLayerUndoCommandMeshEdit
     int mVertexIndex1 = -1;
     int mVertexIndex2 = -1;
 };
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for splitting faces
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandSplitFaces : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a faceIndexes of the faces to split
+     */
+    QgsMeshLayerUndoCommandSplitFaces( QgsMeshEditor *meshEditor, const QList<int> &faceIndexes );
+    void redo() override;
+
+  private:
+    QList<int> mFaceIndexes;
+};
+
 #endif //SIP_RUN
 
 #endif // QGSMESHEDITOR_H

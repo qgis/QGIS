@@ -217,6 +217,17 @@ class CORE_EXPORT QgsTopologicalMesh
     Changes merge( int vertexIndex1, int vertexIndex2 );
 
     /**
+     * Returns TRUE if face with index \a faceIndex can be split
+     */
+    bool faceCanBeSplit( int faceIndex ) const;
+
+    /**
+     * Splits face with index \a faceIndex
+     * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
+     */
+    Changes splitFace( int faceIndex );
+
+    /**
      * Adds a \a vertex in the face with index \a faceIndex. The including face is removed and new faces surrounding the added vertex are added.
      * The method returns a instance of the class QgsTopologicalMesh::Change that can be used to reverse or reapply the operation.
      */
