@@ -2046,7 +2046,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
         for ( const QString &w : std::as_const( warnings ) )
         {
-          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
+          message += QStringLiteral( "<li>%1</l>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
         }
         message += QLatin1String( "</ul>" );
         showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
@@ -5650,71 +5650,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
 
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return addMeshLayerPrivate( url, baseName, providerKey );
-}
-
-QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &baseName, const QString &providerKey, const bool guiWarning )
-{
-  QgsCanvasRefreshBlocker refreshBlocker;
-  QgsSettings settings;
-
-  // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-      QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( url )
-      : QgsProviderRegistry::instance()->querySublayers( url );
-
-  // filter out non-mesh sublayers
-  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
-  {
-    return sublayer.type() != QgsMapLayerType::MeshLayer;
-  } ), sublayers.end() );
-
-  QgsMeshLayer *result = nullptr;
-  if ( sublayers.empty() )
-  {
-    if ( guiWarning )
-    {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
-      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-    }
-
-    // since the layer is bad, stomp on it
-    return nullptr;
-  }
-  else if ( sublayers.size() > 1 )
-  {
-    // ask user for sublayers (unless user settings dictate otherwise!)
-    switch ( shouldAskUserForSublayers( sublayers ) )
-    {
-      case SublayerHandling::AskUser:
-      {
-        QgsProviderSublayersDialog dlg( url, sublayers, this );
-        if ( dlg.exec() )
-        {
-          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
-          if ( !selectedLayers.isEmpty() )
-          {
-            result = qobject_cast< QgsMeshLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
-          }
-        }
-        break;
-      }
-      case SublayerHandling::LoadAll:
-      {
-        result = qobject_cast< QgsMeshLayer * >( addSublayers( sublayers, baseName, QString() ) );
-        break;
-      }
-      case SublayerHandling::AbortLoading:
-        break;
-    };
-  }
-  else
-  {
-    result = qobject_cast< QgsMeshLayer * >( addSublayers( sublayers, baseName, QString() ) );
-  }
-
-  activateDeactivateLayerRelatedActions( activeLayer() );
-  return result;
+  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, url, baseName, providerKey, true );
 }
 
 QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName )
@@ -13304,10 +13240,11 @@ void QgisApp::showLayoutManager()
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
-  return addVectorLayerPrivate( vectorLayerPath, name, providerKey );
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, name, providerKey, true );
 }
 
-QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, const QString &name, const QString &providerKey, const bool guiWarning )
+template<typename T>
+T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings )
 {
   QgsSettings settings;
 
@@ -13316,43 +13253,41 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
 
   // if the layer needs authentication, ensure the master password is set
-  bool authok = true;
   const QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( rx.match( vectorLayerPath ).hasMatch() )
+  if ( rx.match( uri ).hasMatch() )
   {
-    authok = false;
     if ( !QgsAuthGuiUtils::isDisabled( messageBar() ) )
     {
-      authok = QgsApplication::authManager()->setMasterPassword( true );
+      QgsApplication::authManager()->setMasterPassword( true );
     }
   }
 
-  QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, vectorLayerPath );
+  QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, uri );
   if ( uriElements.contains( QStringLiteral( "path" ) ) )
   {
     // run layer path through QgsPathResolver so that all inbuilt paths and other localised paths are correctly expanded
     uriElements[ QStringLiteral( "path" ) ] = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
   }
-  // Not all providers implement decodeUri(), so use original vectorLayerPath if uriElements is empty
-  const QString updatedUri = uriElements.isEmpty() ? vectorLayerPath : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
+  // Not all providers implement decodeUri(), so use original uri if uriElements is empty
+  const QString updatedUri = uriElements.isEmpty() ? uri : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
 
   // query sublayers
   QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
       QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
       : QgsProviderRegistry::instance()->querySublayers( updatedUri );
 
-  // filter out non-vector sublayers
-  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
+  // filter out non-matching sublayers
+  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails & sublayer )
   {
-    return sublayer.type() != QgsMapLayerType::VectorLayer;
+    return sublayer.type() != type;
   } ), sublayers.end() );
 
-  QgsVectorLayer *result = nullptr;
+  T *result = nullptr;
   if ( sublayers.empty() )
   {
-    if ( guiWarning )
+    if ( guiWarnings )
     {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( vectorLayerPath );
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
       visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
     }
 
@@ -13372,14 +13307,14 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
           const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
           if ( !selectedLayers.isEmpty() )
           {
-            result = qobject_cast< QgsVectorLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+            result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
           }
         }
         break;
       }
       case SublayerHandling::LoadAll:
       {
-        result = qobject_cast< QgsVectorLayer * >( addSublayers( sublayers, baseName, QString() ) );
+        result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ) );
         break;
       }
       case SublayerHandling::AbortLoading:
@@ -13388,7 +13323,7 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   }
   else
   {
-    result = qobject_cast< QgsVectorLayer * >( addSublayers( sublayers, name, QString() ) );
+    result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ) );
 
     if ( result )
     {
@@ -15860,20 +15795,10 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
   return true;
 }
 
-
-// Open a raster layer - this is the generic function which takes all parameters
-// this method is a blend of addRasterLayer() functions (with and without provider)
-// and addRasterLayers()
 QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   const QString &uri, const QString &name, const QString &providerKey,
-  bool guiWarning, bool guiUpdate )
+  bool guiWarning )
 {
-  std::unique_ptr< QgsCanvasRefreshBlocker > refreshBlocker;
-  if ( guiUpdate )
-  {
-    refreshBlocker = std::make_unique< QgsCanvasRefreshBlocker >();
-  }
-
   QString shortName = name;
   QRegularExpression reRasterFile( QStringLiteral( "^/vsi(.+/)*([^ ]+)( .+)?$" ), QRegularExpression::CaseInsensitiveOption );
   QRegularExpressionMatch matchRasterFile = reRasterFile.match( name );
@@ -15886,88 +15811,19 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     }
   }
 
-  QgsSettings settings;
-  QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( shortName ) : shortName;
-
-  // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-      QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( uri )
-      : QgsProviderRegistry::instance()->querySublayers( uri );
-
-  // filter out non-raster sublayers
-  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
-  {
-    return sublayer.type() != QgsMapLayerType::RasterLayer;
-  } ), sublayers.end() );
-
-  QgsRasterLayer *result = nullptr;
-  if ( sublayers.empty() )
-  {
-    if ( guiWarning )
-    {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
-      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-    }
-
-    // since the layer is bad, stomp on it
-    return nullptr;
-  }
-  else if ( sublayers.size() > 1 )
-  {
-    // ask user for sublayers (unless user settings dictate otherwise!)
-    switch ( shouldAskUserForSublayers( sublayers ) )
-    {
-      case SublayerHandling::AskUser:
-      {
-        QgsProviderSublayersDialog dlg( uri, sublayers, this );
-        if ( dlg.exec() )
-        {
-          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
-          if ( !selectedLayers.isEmpty() )
-          {
-            result = qobject_cast< QgsRasterLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
-          }
-        }
-        break;
-      }
-      case SublayerHandling::LoadAll:
-      {
-        result = qobject_cast< QgsRasterLayer * >( addSublayers( sublayers, baseName, QString() ) );
-        break;
-      }
-      case SublayerHandling::AbortLoading:
-        break;
-    };
-  }
-  else
-  {
-    result = qobject_cast< QgsRasterLayer * >( addSublayers( sublayers, name, QString() ) );
-
-    if ( result )
-    {
-      QString base( baseName );
-      if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-      {
-        base = QgsMapLayer::formatLayerName( base );
-      }
-      result->setName( base );
-    }
-  }
-
-  activateDeactivateLayerRelatedActions( activeLayer() );
-  return result;
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, shortName, providerKey, guiWarning );
 }
 
 QgsRasterLayer *QgisApp::addRasterLayer(
   QString const &rasterFile, QString const &baseName, bool guiWarning )
 {
-  return addRasterLayerPrivate( rasterFile, baseName, QString(), guiWarning, true );
+  return addRasterLayerPrivate( rasterFile, baseName, QString(), guiWarning );
 }
 
 QgsRasterLayer *QgisApp::addRasterLayer(
   QString const &uri, QString const &baseName, QString const &providerKey )
 {
-  return addRasterLayerPrivate( uri, baseName, providerKey, true, true );
+  return addRasterLayerPrivate( uri, baseName, providerKey, true );
 }
 
 bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiWarning )
@@ -16015,8 +15871,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       }
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( src, layerName,
-                              QString(), guiWarning, true );
+      QgsRasterLayer *layer = addRasterLayerPrivate( src, layerName, QString(), guiWarning );
       if ( layer && layer->isValid() )
       {
         //only allow one copy of a ai grid file to be loaded at a

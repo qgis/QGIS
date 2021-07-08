@@ -171,6 +171,7 @@ class QgsNetworkLoggerWidgetFactory;
 #include "qgsmasterlayoutinterface.h"
 #include "qgsmaptoolselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+#include "qgis.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 #include "qgsvectorlayerref.h"
@@ -2107,12 +2108,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a raster layer - this is the generic function which takes all parameters
     QgsRasterLayer *addRasterLayerPrivate( const QString &uri, const QString &baseName,
-                                           const QString &providerKey, bool guiWarning,
-                                           bool guiUpdate );
-
-    //! Open a mesh layer - this is the generic function which takes all parameters
-    QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
-                                       const QString &providerKey, bool guiWarning = true );
+                                           const QString &providerKey, bool guiWarning );
 
     void postProcessAddedLayer( QgsMapLayer *layer );
 
@@ -2126,8 +2122,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         bool guiWarning = true );
 
     bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
-    QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );
 
+    template<typename T> T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
 
     /**
      * Add the current project to the recently opened/saved projects list
