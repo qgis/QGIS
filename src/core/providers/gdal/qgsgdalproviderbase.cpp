@@ -332,15 +332,13 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
   if ( path.startsWith( vsiPrefix, Qt::CaseInsensitive ) )
   {
     path = path.mid( vsiPrefix.count() );
-    if ( vsiPrefix == QLatin1String( "/vsizip/" ) )
+
+    const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]+)" ) );
+    QRegularExpressionMatch match = vsiRegex.match( path );
+    if ( match.hasMatch() )
     {
-      const QRegularExpression vsiRegex( QStringLiteral( "(?:\\.zip|\\.tar|\\.gz|\\.tar\\.gz|\\.tgz)([^|]*)" ) );
-      QRegularExpressionMatch match = vsiRegex.match( path );
-      if ( match.hasMatch() )
-      {
-        vsiSuffix = match.captured( 1 );
-        path = path.remove( match.capturedStart( 1 ), match.capturedLength( 1 ) );
-      }
+      vsiSuffix = match.captured( 1 );
+      path = path.remove( match.capturedStart( 1 ), match.capturedLength( 1 ) );
     }
   }
   else
