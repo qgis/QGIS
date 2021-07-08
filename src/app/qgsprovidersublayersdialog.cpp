@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
+#include <QUrl>
 
 QgsProviderSublayerDialogModel::QgsProviderSublayerDialogModel( QObject *parent )
   : QgsProviderSublayerModel( parent )
