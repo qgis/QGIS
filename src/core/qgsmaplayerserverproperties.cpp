@@ -24,3 +24,21 @@ QgsMapLayerServerProperties::QgsMapLayerServerProperties( QgsMapLayer *layer )
   : mLayer( layer )
 {
 }
+
+bool QgsMapLayerServerProperties::MetadataUrl::operator==( const QgsMapLayerServerProperties::MetadataUrl &other ) const
+{
+  return url == other.url &&
+         type == other.type &&
+         format == other.format;
+}
+
+void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
+{
+  Q_UNUSED( layer_node );
+}
+
+void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+{
+  Q_UNUSED( layer_node );
+  Q_UNUSED( document );
+}

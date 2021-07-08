@@ -27,11 +27,62 @@ Manages QGIS Server properties for a map layer
 
   public:
 
+    struct MetadataUrl
+    {
+
+      MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() );
+%Docstring
+Constructor for MetadataUrl.
+%End
+
+      QString url;
+
+      QString type;
+
+      QString format;
+
+
+      bool operator==( const QgsMapLayerServerProperties::MetadataUrl &other ) const;
+    };
+
     QgsMapLayerServerProperties( QgsMapLayer *layer = 0 );
 %Docstring
 Constructor - Creates a Map Layer QGIS Server Properties
 
 :param layer: The map layer
+%End
+
+    QList <QgsMapLayerServerProperties::MetadataUrl> metadataUrls() const;
+%Docstring
+Returns a list of metadataUrl resources associated for the layer.
+
+:return: the list of metadata URLs
+
+.. seealso:: :py:func:`setMetadataUrls`
+%End
+
+    void setMetadataUrls( const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls );
+%Docstring
+Sets a the list of metadata URL for the layer
+
+.. seealso:: :py:func:`metadataUrls`
+
+.. seealso:: :py:func:`addMetadataUrl`
+%End
+    void addMetadataUrl( const MetadataUrl &metaUrl );
+%Docstring
+Add a metadataUrl for the layer
+
+.. seealso:: :py:func:`setMetadataUrls`
+%End
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+%Docstring
+Saves server properties to xml under the layer node
+%End
+
+    void readXml( const QDomNode &layer_node );
+%Docstring
+Reads server properties from project file.
 %End
 
 };

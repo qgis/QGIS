@@ -42,14 +42,86 @@ class CORE_EXPORT QgsMapLayerServerProperties
   public:
 
     /**
+     * \brief MetadataUrl structure.
+     * MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * \ingroup core
+     */
+    struct CORE_EXPORT MetadataUrl
+    {
+
+      /**
+       * Constructor for MetadataUrl.
+       */
+      MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() )
+        : url( url )
+        , type( type )
+        , format( format )
+      {}
+
+      /**
+       * URL of the link
+       */
+      QString url;
+
+      /**
+       * Link type. Suggested to use FGDC or TC211.
+       */
+      QString type;
+
+      /**
+       * Format specification of online resource. It is strongly suggested to either use text/plain or text/xml.
+       */
+      QString format;
+
+      // TODO c++20 - replace with = default
+
+      /**
+       * Compare two MetadataUrl structure.
+       */
+      bool operator==( const QgsMapLayerServerProperties::MetadataUrl &other ) const;
+    };
+
+    /**
      * Constructor - Creates a Map Layer QGIS Server Properties
      *
      * \param layer The map layer
      */
     QgsMapLayerServerProperties( QgsMapLayer *layer = nullptr );
 
+    /**
+     * Returns a list of metadataUrl resources associated for the layer.
+     * \returns the list of metadata URLs
+     * \see setMetadataUrls()
+     */
+    QList <QgsMapLayerServerProperties::MetadataUrl> metadataUrls() const { return mMetadataUrls; };
+
+
+    /**
+     * Sets a the list of metadata URL for the layer
+     * \see metadataUrls()
+     * \see addMetadataUrl()
+     */
+    void setMetadataUrls( const QList<QgsMapLayerServerProperties::MetadataUrl> &metaUrls ) { mMetadataUrls = metaUrls; };
+
+    /**
+     * Add a metadataUrl for the layer
+     * \see setMetadataUrls()
+     */
+    void addMetadataUrl( const MetadataUrl &metaUrl ) { mMetadataUrls << metaUrl; };
+
+    /**
+     * Saves server properties to xml under the layer node
+     */
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+
+    /**
+     * Reads server properties from project file.
+     */
+    void readXml( const QDomNode &layer_node );
+
   private:
     QgsMapLayer *mLayer = nullptr;
+    QList< QgsMapLayerServerProperties::MetadataUrl > mMetadataUrls;
 
 };
 

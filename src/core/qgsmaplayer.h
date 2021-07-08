@@ -400,64 +400,87 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /**
-     * Returns QGIS Server Properties of the map layer
+     * Returns QGIS Server Properties for the map layer
      * \since QGIS 3.22
      */
     QgsMapLayerServerProperties *serverProperties() { return mMapLayerServerProperties.get(); }
 
     /**
+     * Returns QGIS Server Properties const for the map layer
+     * \since QGIS 3.22
+     */
+    // const QgsMapLayerServerProperties *serverProperties() { return mMapLayerServerProperties.get(); } const SIP_SKIP;
+
+    /**
+     * Set QGIS Server Properties for the map layer
+     * \since QGIS 3.22
+     */
+    // void *setServerProperties(QgsMapLayerServerProperties &mProperties) { mMapLayerServerProperties = mProperties }
+    void setServerProperties( QgsMapLayerServerProperties *properties SIP_TRANSFER = nullptr );
+
+    /**
      * Sets the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
-     * \returns the layer metadata URL
-     * \see metadataUrl()
+     *  Since QGIS 3.22, it edits the first metadata URL link. You should use setServerProperties.
+     * \see setServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrl( const QString &metaUrl ) { mMetadataUrl = metaUrl; }
+    void setMetadataUrl( const QString &metaUrl );
 
     /**
      * Returns the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrl is a a link to the detailed, standardized metadata about the data.
+     * Since QGIS 3.22, it returns the first metadata URL link. You should use setServerProperties.
      * \returns the layer metadata URL
-     * \see setMetadataUrl()
+     * \see mapLayerServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrl() const { return mMetadataUrl; }
+    QString metadataUrl() const;
 
     /**
      * Set the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request
      *  MetadataUrlType indicates the standard to which the metadata complies.
+     *  Since QGIS 3.22, it edits the first metadata URL type. You should use setServerProperties.
      * \returns the layer metadata type
-     * \see metadataUrlType()
+     * \see mapLayerServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlType( const QString &metaUrlType ) { mMetadataUrlType = metaUrlType; }
+    void setMetadataUrlType( const QString &metaUrlType );
 
     /**
      * Returns the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates the standard to which the metadata complies.
+     * Since QGIS 3.22, it returns the first metadata URL type. You should use setServerProperties.
      * \returns the layer metadata type
-     * \see setMetadataUrlType()
+     * \see mapLayerServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrlType() const { return mMetadataUrlType; }
+    QString metadataUrlType() const;
 
     /**
      * Sets the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
-     * \returns the layer metadata format
-     * \see metadataUrlFormat()
+     *  Since QGIS 3.22, it edits the first metadata URL format. You should use setServerProperties.
+     * \see mapLayerServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    void setMetadataUrlFormat( const QString &metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
+    void setMetadataUrlFormat( const QString &metaUrlFormat );
 
     /**
      * Returns the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
      *  MetadataUrlType indicates how the metadata is structured.
+     * Since QGIS 3.22, it returns the first metadata URL format. You should use setServerProperties.
      * \returns the layer metadata format
-     * \see setMetadataUrlFormat()
+     * \see mapLayerServerProperties()
+     * \deprecated since QGIS 3.22
      */
-    QString metadataUrlFormat() const { return mMetadataUrlFormat; }
+    QString metadataUrlFormat() const;
 
     /**
      * Set the blending mode used for rendering a layer.
@@ -1910,16 +1933,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mAttributionUrl;
 
     //! MetadataUrl of the layer
-    QString mMetadataUrl;
-    QString mMetadataUrlType;
-    QString mMetadataUrlFormat;
+//    QString mMetadataUrl;
+//    QString mMetadataUrlType;
+//    QString mMetadataUrlFormat;
 
     //! WMS legend
     QString mLegendUrl;
     QString mLegendUrlFormat;
-
-    //! Stores information about server properties
-    std::unique_ptr< QgsMapLayerServerProperties > mMapLayerServerProperties;
 
     //! \brief Error
     QgsError mError;
@@ -2025,6 +2045,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     double mMaxScale = 100000000;
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
+
+    //! Stores information about server properties
+    std::unique_ptr< QgsMapLayerServerProperties > mMapLayerServerProperties;
+    //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
+    //QgsMapLayerServerProperties *mMapLayerServerProperties = nullptr;
 
     //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;

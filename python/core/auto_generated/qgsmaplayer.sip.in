@@ -362,20 +362,24 @@ Attribution indicates the provider of a layer or collection of layers.
 
     QgsMapLayerServerProperties *serverProperties();
 %Docstring
-Returns QGIS Server Properties of the map layer
+Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
+
+
+    void setServerProperties( QgsMapLayerServerProperties *properties /Transfer/ = 0 );
 
     void setMetadataUrl( const QString &metaUrl );
 %Docstring
 Sets the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
 MetadataUrl is a a link to the detailed, standardized metadata about the data.
+Since QGIS 3.22, it edits the first metadata URL link. You should use setServerProperties.
 
-:return: the layer metadata URL
+.. seealso:: :py:func:`setServerProperties`
 
-.. seealso:: :py:func:`metadataUrl`
+.. deprecated:: QGIS 3.22
 %End
 
     QString metadataUrl() const;
@@ -383,10 +387,13 @@ MetadataUrl is a a link to the detailed, standardized metadata about the data.
 Returns the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
 MetadataUrl is a a link to the detailed, standardized metadata about the data.
+Since QGIS 3.22, it returns the first metadata URL link. You should use setServerProperties.
 
 :return: the layer metadata URL
 
-.. seealso:: :py:func:`setMetadataUrl`
+.. seealso:: :py:func:`mapLayerServerProperties`
+
+.. deprecated:: QGIS 3.22
 %End
 
     void setMetadataUrlType( const QString &metaUrlType );
@@ -394,10 +401,13 @@ MetadataUrl is a a link to the detailed, standardized metadata about the data.
 Set the metadata type of the layer
 used by QGIS Server in GetCapabilities request
 MetadataUrlType indicates the standard to which the metadata complies.
+Since QGIS 3.22, it edits the first metadata URL type. You should use setServerProperties.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`metadataUrlType`
+.. seealso:: :py:func:`mapLayerServerProperties`
+
+.. deprecated:: QGIS 3.22
 %End
 
     QString metadataUrlType() const;
@@ -405,10 +415,13 @@ MetadataUrlType indicates the standard to which the metadata complies.
 Returns the metadata type of the layer
 used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates the standard to which the metadata complies.
+Since QGIS 3.22, it returns the first metadata URL type. You should use setServerProperties.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`setMetadataUrlType`
+.. seealso:: :py:func:`mapLayerServerProperties`
+
+.. deprecated:: QGIS 3.22
 %End
 
     void setMetadataUrlFormat( const QString &metaUrlFormat );
@@ -416,10 +429,11 @@ MetadataUrlType indicates the standard to which the metadata complies.
 Sets the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates how the metadata is structured.
+Since QGIS 3.22, it edits the first metadata URL format. You should use setServerProperties.
 
-:return: the layer metadata format
+.. seealso:: :py:func:`mapLayerServerProperties`
 
-.. seealso:: :py:func:`metadataUrlFormat`
+.. deprecated:: QGIS 3.22
 %End
 
     QString metadataUrlFormat() const;
@@ -427,10 +441,13 @@ MetadataUrlType indicates how the metadata is structured.
 Returns the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates how the metadata is structured.
+Since QGIS 3.22, it returns the first metadata URL format. You should use setServerProperties.
 
 :return: the layer metadata format
 
-.. seealso:: :py:func:`setMetadataUrlFormat`
+.. seealso:: :py:func:`mapLayerServerProperties`
+
+.. deprecated:: QGIS 3.22
 %End
 
     void setBlendMode( QPainter::CompositionMode blendMode );
@@ -1923,7 +1940,6 @@ happens.
 
 .. versionadded:: 3.20
 %End
-
 
 
 
