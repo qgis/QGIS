@@ -1530,6 +1530,30 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.LineString)
         self.assertEqual(res[0].geometryColumnName(), '')
 
+        # geometry collection sublayers -- requires a scan to resolve geometry type
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'multipatch.shp'))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "multipatch")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Unknown)
+        self.assertEqual(res[0].geometryColumnName(), '')
+
+        # retry with retrieving geometry types
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'multipatch.shp'), Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "multipatch")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Polygon)
+        self.assertEqual(res[0].geometryColumnName(), '')
+
         # single layer geopackage -- sublayers MUST have the layerName set on the uri,
         # in case more layers are added in future to the gpkg
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'curved_polys.gpkg'))

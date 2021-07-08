@@ -241,6 +241,9 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     static QString ogrWkbGeometryTypeName( OGRwkbGeometryType type );
 
+    //! Resolves the geometry type for a feature, with special handling for some drivers
+    static OGRwkbGeometryType resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName );
+
     static QString analyzeURI( QString const &uri,
                                bool &isSubLayer,
                                int &layerIndex,

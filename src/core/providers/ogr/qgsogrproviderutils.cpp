@@ -2025,6 +2025,28 @@ QString QgsOgrProviderUtils::ogrWkbGeometryTypeName( OGRwkbGeometryType type )
   return geom;
 }
 
+OGRwkbGeometryType QgsOgrProviderUtils::resolveGeometryTypeForFeature( OGRFeatureH feature, const QString &driverName )
+{
+  if ( OGRGeometryH geom = OGR_F_GetGeometryRef( feature ) )
+  {
+    OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
+
+    // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
+    if ( wkbFlatten( gType ) == wkbGeometryCollection &&
+         driverName == QLatin1String( "ESRI Shapefile" )  &&
+         OGR_G_GetGeometryCount( geom ) >= 1 &&
+         wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geom, 0 ) ) ) == wkbTIN )
+    {
+      gType = wkbMultiPolygon25D;
+    }
+    return gType;
+  }
+  else
+  {
+    return wkbNone;
+  }
+}
+
 QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 {
   QString uri( dsName );
@@ -2378,10 +2400,9 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
     gdal::ogr_feature_unique_ptr fet;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
-      if ( geom )
+      const OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( resolveGeometryTypeForFeature( fet.get(), driverName ) );
+      if ( gType != wkbNone )
       {
-        OGRwkbGeometryType gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
         fCount[gType] = fCount.value( gType ) + 1;
       }
 
