@@ -21,6 +21,7 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsexiftools.h"
 #include "qgsfeaturerequest.h"
 #include "qgsstringutils.h"
 #include "qgsmultipoint.h"
@@ -2356,6 +2357,14 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
   long long millisecs_since_epoch = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
   // no sense to check for strange values, as Qt behavior is undefined anyway (see docs)
   return QVariant( QDateTime::fromMSecsSinceEpoch( millisecs_since_epoch ) );
+}
+
+static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QString tag = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  return !tag.isNull() ? QgsExifTools::readTag( filepath, tag ) : QVariant( QgsExifTools::readTags( filepath ) );
 }
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype) \
@@ -6671,6 +6680,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnFilePath, QStringLiteral( "Files and Paths" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "file_size" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
                                             fcnFileSize, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "exif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tag" ), true ),
+                                            fcnExif, QStringLiteral( "Files and Paths" ) )
+
 
         // hash
         << new QgsStaticExpressionFunction( QStringLiteral( "hash" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "method" ) ),
