@@ -1654,6 +1654,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
 
   QVariantMap uriParts = decodeGdalUri( baseUri );
+  const QString datasetPath = uriParts.value( QStringLiteral( "path" ) ).toString();
 
   if ( metadata )
   {
@@ -1679,10 +1680,10 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         else
         {
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
-          sepIdx = layerName.indexOf( baseUri + "\":" );
+          sepIdx = layerName.indexOf( datasetPath + "\":" );
           if ( sepIdx >= 0 )
           {
-            layerName = layerName.mid( layerName.indexOf( baseUri + "\":" ) + baseUri.length() + 2 );
+            layerName = layerName.mid( layerName.indexOf( datasetPath + "\":" ) + datasetPath.length() + 2 );
           }
         }
 
@@ -1693,10 +1694,12 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
 
-        QVariantMap layerUriParts = decodeGdalUri( uri );
+        const QVariantMap layerUriParts = decodeGdalUri( uri );
+        // update original uri parts with this layername and path -- this ensures that other uri components
+        // like open options are preserved for the sublayer uris
         uriParts.insert( QStringLiteral( "layerName" ), layerUriParts.value( QStringLiteral( "layerName" ) ) );
         uriParts.insert( QStringLiteral( "path" ), layerUriParts.value( QStringLiteral( "path" ) ) );
-        details.setUri( encodeGdalUri( layerUriParts ) );
+        details.setUri( encodeGdalUri( uriParts ) );
 
         res << details;
       }
