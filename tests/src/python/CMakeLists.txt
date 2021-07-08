@@ -382,6 +382,7 @@ if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
   ADD_PYTHON_TEST(PyQgsVectorLayerUtilsPostgres test_qgsvectorlayerutils_postgres.py)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+  ADD_PYTHON_TEST(PyQgsPostgresProviderLatency test_provider_postgres_latency.py TEST_TIMEOUT=600)
   ADD_PYTHON_TEST(PyQgsPostgresRasterProvider test_provider_postgresraster.py)
   ADD_PYTHON_TEST(PyQgsPostgresDomain test_qgspostgresdomain.py)
   ADD_PYTHON_TEST(PyQgsPostgresTransaction test_qgspostgrestransaction.py)
@@ -410,7 +411,7 @@ if (ENABLE_PGTEST)
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
-    PyQgsProviderConnectionPostgres
+    PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency
     PROPERTIES LABELS "POSTGRES")
 endif()
 

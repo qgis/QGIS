@@ -20,3 +20,5 @@ services:
       - postgres
     env_file:
       - docker-variables.env
+    cap_add:
+      - NET_ADMIN
