@@ -17,7 +17,8 @@ public:
     QgsVirtualRasterProvider ( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions);
     //QgsVirtualRasterProvider ( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
-    virtual ~QgsVirtualRasterProvider() override = default;
+    //virtual ~QgsVirtualRasterProvider() override = default;
+    virtual ~QgsVirtualRasterProvider() override;
 
     QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
@@ -83,7 +84,9 @@ private:
     QString mFormulaString;
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
 
-    QList<QgsRasterLayer *> mRasterLayers;
+    //QVector <std::unique_ptr< QgsRasterLayer > *> mRasterLayers;
+    QVector <QgsRasterLayer *> mRasterLayers;
+
 
 };
 
@@ -91,7 +94,7 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsVirtualRasterProviderMetadata();
-    QgsRasterDataProvider::DecodedUriParameters decodeUriVirtual( const QString &uri ) const;
+    QgsRasterDataProvider::DecodedUriParameters decodeUriVirtual(const QString &uri , bool *ok=nullptr ) const;
     QString encodeUriVirtual( const QgsRasterDataProvider::DecodedUriParameters &parts ) const;
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };

@@ -23,9 +23,10 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 {
     QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
 
-    bool ok;
+    bool  ok = true;
     //QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(uri);
-    QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
+    //QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
+    QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri , & ok );
 
     mCrs = decodedUriParams.crs;
     mExtent = decodedUriParams.extent;
@@ -36,24 +37,36 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     QList<InputLayers>::iterator i;
     for (i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i)
     {
+        //std::unique_ptr< QgsRasterLayer > rProvidedLayer = std::make_unique< QgsRasterLayer >( i->uri, i->name, i->provider );
+        //mRasterLayers << & rProvidedLayer;
+        //mRasterLayers.append(& rProvidedLayer);
+
+        QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( i->uri, i->name, i->provider );
+        mRasterLayers << rProvidedLayer;
+
+        /*
+        if (rProvidedLayer->isValid() && ! mRasterLayers.contains(& rProvidedLayer) )
+        {
+            mRasterLayers << & rProvidedLayer;
+            //mRasterLayers.append(& rProvidedLayer);
+
+        }
+        */
+
 
     }
-    /*
-    for ( const auto & it : decodedUriParams.rInputLayers )
-    {
-        query.addQueryItem( it.name % QStringLiteral(":uri") , it.uri );
-        query.addQueryItem( it.name % QStringLiteral(":provider") , it.provider );
-    }
-    */
 
-    if (! ok)
-    {
-        mValid =false;
-    }
-    else
+
+
+    if (! (ok ==false) )
     {
         mValid = true;
     }
+    /*else
+    {
+        mValid = true;
+    }*/
+
 
 }
 
@@ -85,6 +98,14 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvide
     mYBlockSize = other.mYBlockSize;
 }
 
+QgsVirtualRasterProvider::~QgsVirtualRasterProvider()
+{
+    for (int i= 0; i < mRasterLayers.size(); ++i)
+    {
+        delete mRasterLayers[i];
+    }
+
+}
 
 QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
 {
@@ -422,9 +443,9 @@ QString QgsVirtualRasterProvider::formulaString()
     return mFormulaString;
 }
 
-QgsRasterDataProvider::DecodedUriParameters QgsVirtualRasterProviderMetadata::decodeUriVirtual( const QString &uri ) const
+QgsRasterDataProvider::DecodedUriParameters QgsVirtualRasterProviderMetadata::decodeUriVirtual(const QString &uri , bool *ok) const
 {
-    return QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri );
+    return QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri , ok);
 }
 
 QString QgsVirtualRasterProviderMetadata::encodeUriVirtual( const QgsRasterDataProvider::DecodedUriParameters &parts ) const

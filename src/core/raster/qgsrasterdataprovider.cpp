@@ -661,6 +661,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
     if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
     {
         components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
+
         if (! components.crs.isValid() )
         {
             QgsDebugMsg("crs is not valid");

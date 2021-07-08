@@ -63,6 +63,7 @@ class TestQgsVirtualRasterProvider : public QObject
     //void testUrlDecodingMinimal();
     void testUriProviderDecoding();
     void testUriEncoding();
+    void testConstructor();
 
 private:
     QString mTestDataDir;
@@ -80,9 +81,10 @@ void TestQgsVirtualRasterProvider::initTestCase()
 
     mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
     mReport = QStringLiteral( "<h1>Virtual Raster Provider Tests</h1>\n" );
-/*
+
     QString demFileName = mTestDataDir + "raster/dem.tif";
     QFileInfo demRasterFileInfo( demFileName );
+    /*
     mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
                                           demRasterFileInfo.completeBaseName() );
 
@@ -94,7 +96,7 @@ void TestQgsVirtualRasterProvider::initTestCase()
 void TestQgsVirtualRasterProvider::validLayer()
 {
   QgsRasterLayer::LayerOptions options;
-/*
+
   std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >(
         mTestDataDir + QStringLiteral( "raster/dem.tif" ),
         QStringLiteral( "layer" ),
@@ -102,8 +104,8 @@ void TestQgsVirtualRasterProvider::validLayer()
         options
       );
 
-  QVERIFY( layer->isValid() );
-*/
+  QVERIFY( ! layer->isValid() );
+
 }
 
 //runs after all tests
@@ -217,8 +219,25 @@ void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
 
-    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal"));
     qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams ) << endl;
+
+}
+
+void TestQgsVirtualRasterProvider::testConstructor()
+{
+
+    QString uri = QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal");
+    std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >(   uri,
+                                                                                    QStringLiteral( "layer" ),
+                                                                                    QStringLiteral( "virtualrasterprovider" ) );
+
+    qDebug() << QStringLiteral("crs check in the provider: ") % layer->dataProvider()->crs().authid();
+    qDebug() << QStringLiteral("name of the provider: ") % layer->dataProvider()->name();
+    qDebug() << QStringLiteral("crs check in the raster layer: ") % layer->crs().authid();
+
+    QVERIFY( layer->dataProvider()->isValid());
+    QVERIFY( layer->isValid());
 
 }
 
