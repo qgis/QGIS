@@ -551,7 +551,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/landsat_b1.zip" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1" ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/landsat_b1.zip/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
@@ -563,7 +563,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz" );
   QCOMPARE( res.count(), 3 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b2" ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/folder/folder2/landsat_b2.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
@@ -571,7 +571,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "landsat_b1" ) );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "landsat_b1.tif" ) );
   QCOMPARE( res.at( 1 ).description(), QString() );
   QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
@@ -579,7 +579,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 2 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 2 ).name(), QStringLiteral( "landsat_b1" ) );
+  QCOMPARE( res.at( 2 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
   QCOMPARE( res.at( 2 ).description(), QString() );
   QCOMPARE( res.at( 2 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 2 ).providerKey(), QStringLiteral( "gdal" ) );
@@ -591,7 +591,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b2" ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/folder/folder2/landsat_b2.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
@@ -601,7 +601,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1" ) );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
