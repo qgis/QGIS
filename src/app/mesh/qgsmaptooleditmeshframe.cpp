@@ -429,10 +429,12 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
+  const QgsPointXY &mapPoint = e->mapPoint();
+
   // advanced digitizing constraint only the first release of double clicks
   // so we nned to store for the next one that could be a double clicks
   if ( !mDoubleClicks )
-    mLastClickPoint = e->mapPoint();
+    mLastClickPoint = mapPoint;
 
   if ( e->button() == Qt::LeftButton )
     mLeftButtonPressed = false;
@@ -445,17 +447,17 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         if ( mDoubleClicks )  //double clicks --> add a vertex
         {
-          addVertex( e->mapPoint(), e->mapPointMatch() );
+          addVertex( mapPoint, e->mapPointMatch() );
         }
         else if ( mNewFaceMarker->isVisible() &&
-                  e->mapPoint().distance( mNewFaceMarker->center() ) < tolerance
+                  mapPoint.distance( mNewFaceMarker->center() ) < tolerance
                   && mCurrentVertexIndex >= 0 )  //new face marker clicked --> start adding a new face
         {
           clearSelection();
           mCurrentState = AddingNewFace;
           mNewFaceMarker->setVisible( false );
           mNewFaceBand->setVisible( true );
-          mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+          mNewFaceBand->reset();
           addVertexToFaceCanditate( mCurrentVertexIndex );
           const QgsPointXY &currentPoint = mapVertexXY( mCurrentVertexIndex );
           cadDockWidget()->setPoints( QList<QgsPointXY>() << currentPoint << currentPoint );
@@ -464,21 +466,25 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                   e->mapPoint().distance( mFlipEdgeMarker->center() ) < tolerance &&
                   mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
         {
+          clearSelection();
           QVector<int> edgeVert = edgeVertices( mCurrentEdge );
           mCurrentEditor->flipEdge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
           mCurrentEdge = {-1, -1};
+          highLight( mapPoint );
         }
         else if ( mMergeFaceMarker->isVisible() &&
                   e->mapPoint().distance( mMergeFaceMarker->center() ) < tolerance &&
                   mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
         {
+          clearSelection();
           QVector<int> edgeVert = edgeVertices( mCurrentEdge );
           mCurrentEditor->merge( edgeVert.at( 0 ), edgeVert.at( 1 ) );
           mCurrentEdge = {-1, -1};
+          highLight( mapPoint );
         }
         else // try to select
         {
-          select( e->mapPoint(), e->modifiers(), tolerance );
+          select( mapPoint, e->modifiers(), tolerance );
         }
       }
     }
@@ -519,7 +525,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     break;
     case MoveVertex:
-      select( e->mapPoint(), e->modifiers(), tolerance );
+      select( mapPoint, e->modifiers(), tolerance );
       break;
     case MovingVertex:
       mCurrentState = MoveVertex;
@@ -679,15 +685,11 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     case MoveVertex:
     case Digitizing:
-      highlightCurrentHoveredFace( mapPoint );
-      highlightCloseEdge( mapPoint );
-      highlightCloseVertex( mapPoint );
+      highLight( mapPoint );
       break;
     case AddingNewFace:
       mNewFaceBand->movePoint( mapPoint );
-      highlightCurrentHoveredFace( mapPoint );
-      highlightCloseEdge( mapPoint );
-      highlightCloseVertex( mapPoint );
+      highLight( mapPoint );
       if ( testNewVertexInFaceCanditate( mCurrentVertexIndex ) )
         mNewFaceBand->setColor( mValidFaceColor );
       else
@@ -918,6 +920,13 @@ const QgsMeshFace QgsMapToolEditMeshFrame::nativeFace( int index ) const
     return QgsMeshFace();
 
   return mCurrentLayer->nativeMesh()->face( index );
+}
+
+void QgsMapToolEditMeshFrame::highLight( const QgsPointXY &mapPoint )
+{
+  highlightCurrentHoveredFace( mapPoint );
+  highlightCloseVertex( mapPoint );
+  highlightCloseEdge( mapPoint );
 }
 
 void QgsMapToolEditMeshFrame::onEditingStarted()
@@ -1519,7 +1528,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
   mFlipEdgeMarker->setVisible( false );
   mMergeFaceMarker->setVisible( false );
   mSelectEdgeMarker->setVisible( false );
-  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 &&  mCurrentState == Digitizing )
   {
     const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
     mEdgeBand->addPoint( edgeGeom.at( 0 ) );
@@ -1623,14 +1632,24 @@ void QgsMapToolEditMeshFrame::clearSelection()
 
 void QgsMapToolEditMeshFrame::clearCanvasHelpers()
 {
-  mFaceRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  mFaceVerticesBand->reset( QgsWkbTypes::PointGeometry );
-  mVertexBand->reset( QgsWkbTypes::PointGeometry );
-  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
+  mFaceRubberBand->reset();
+  mFaceVerticesBand->reset();
+  mVertexBand->reset();
+  mNewFaceBand->reset();
+
   qDeleteAll( mFreeVertexMarker );
   mFreeVertexMarker.clear();
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
   mSelectFaceMarker->setVisible( false );
+  clearEdgeHelpers();
+}
+
+void QgsMapToolEditMeshFrame::clearEdgeHelpers()
+{
+  mEdgeBand->reset();
+  mSelectEdgeMarker->setVisible( false );
+  mFlipEdgeMarker->setVisible( false );
+  mMergeFaceMarker->setVisible( false );
 }
 
 void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch )

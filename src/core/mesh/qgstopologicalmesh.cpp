@@ -1624,6 +1624,14 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::merge( int vertexIndex1, int ver
     }
   }
 
+  for ( int i = 0; i < faceSize1; ++i )
+    if ( mVertexToFace.at( face1.at( i ) ) == faceIndex1 )
+      changes.mVerticesToFaceChanges.append( {face1.at( i ), faceIndex1, startIndex} );
+
+  for ( int i = 0; i < faceSize2; ++i )
+    if ( mVertexToFace.at( face2.at( i ) ) == faceIndex2 )
+      changes.mVerticesToFaceChanges.append( {face2.at( i ), faceIndex2, startIndex} );
+
   changes.mFacesToAdd.append( newface );
   changes.mFacesNeighborhoodToAdd.append( newNeighborhood );
 
@@ -1704,8 +1712,9 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::splitFace( int faceIndex )
     if ( neighborIndex[i] >= 0 )
       changes.mNeighborhoodChanges.append( {neighborIndex[i], posInNeighbor[i], faceIndex, startIndex + int( i / 2 )} );
 
-    if ( mVertexToFace.at( face.at( ( splitVertexPos + i ) % faceSize ) ) == faceIndex )
-      mVertexToFace[face.at( ( splitVertexPos + i ) % faceSize )] = startIndex + int( i / 2 );
+    int vertexIndex = face.at( ( splitVertexPos + i ) % faceSize );
+    if ( mVertexToFace.at( vertexIndex ) == faceIndex )
+      changes.mVerticesToFaceChanges.append( {vertexIndex, faceIndex, startIndex + int( i / 2 )} );
   }
 
   applyChanges( changes );

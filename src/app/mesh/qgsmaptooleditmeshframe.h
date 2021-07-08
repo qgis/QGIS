@@ -116,6 +116,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     const QgsPointXY mapVertexXY( int index ) const;
     const QgsMeshFace nativeFace( int index ) const;
 
+    void highLight( const QgsPointXY &mapPoint );
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
     void highlightCloseVertex( const QgsPointXY &mapPoint );
     void highlightCloseEdge( const QgsPointXY &mapPoint );
@@ -127,6 +128,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void clearSelection();
     void clearCanvasHelpers();
+    void clearEdgeHelpers();
 
     void clearAll();
 
@@ -145,7 +147,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void addVertexToFaceCanditate( int vertexIndex );
     bool testNewVertexInFaceCanditate( int vertexIndex );
 
-    // selection private method
+    // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );
     void setSelectedVertices( const QList<int> newSelectedVertex,  Qt::KeyboardModifiers modifiers );
     void clearSelectedvertex();

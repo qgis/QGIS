@@ -531,11 +531,17 @@ void TestQgsMeshEditor::editTopologicMesh()
   QVERIFY( topologicalMesh.canBeMerged( 3, 8 ) );
   topologicalChanges.append( topologicalMesh.merge( 3, 8 ) );
   QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 25} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 8, {18, 20, 25} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {16, 17, 18, 25} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {16, 25, 22, 10} ) );
   QVERIFY( topologicalMesh.checkConsistency() );
 
   QVERIFY( topologicalMesh.faceCanBeSplit( 25 ) );
   topologicalChanges.append( topologicalMesh.splitFace( 25 ) );
   QVERIFY( checkFacesAround( topologicalMesh, 12, {11, 12, 20, 22, 26, 27} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 8, {18, 20, 27} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 2, {16, 17, 18, 27, 26} ) );
+  QVERIFY( checkFacesAround( topologicalMesh, 3, {16, 26, 22, 10} ) );
   QVERIFY( topologicalMesh.checkConsistency() );
 
   // reverse all!!!
