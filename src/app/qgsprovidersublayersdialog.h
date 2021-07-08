@@ -50,6 +50,7 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
     QgsProviderSublayersDialog( const QString &uri,
                                 const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
+                                const QList< QgsMapLayerType > &acceptableTypes = QList< QgsMapLayerType >(),
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );
 
