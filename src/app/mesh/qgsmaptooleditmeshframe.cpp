@@ -95,10 +95,12 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   mActionRemoveFaces = new QAction( this );
+  mActionSplitFaces = new QAction( this );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( false );} );
   connect( mActionRemoveFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::removeFacesFromMesh );
+  connect( mActionSplitFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::splitSelectedFaces );
 
   connect( mActionDigitizing, &QAction::toggled, this, [this]( bool checked )
   {
@@ -331,17 +333,26 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
     case Digitizing:
     {
       QList<QAction * >  newActions;
+
       if ( !mSelectedVertices.isEmpty() )
         newActions << mActionRemoveVerticesFillingHole << mActionRemoveVerticesWithoutFillingHole;
+
       if ( !mSelectedFaces.isEmpty() )
         newActions << mActionRemoveFaces;
+
+      if ( mSplittableFaceCount > 0 )
+        newActions << mActionSplitFaces;
+
       QList<QAction * > existingActions = menu->actions();
       if ( !newActions.isEmpty() )
       {
         if ( existingActions.isEmpty() )
           menu->addActions( newActions );
         else
+        {
           menu->insertActions( existingActions.first(), newActions );
+          menu->insertSeparator( existingActions.first() );
+        }
         return true;
       }
       return false;
@@ -1156,6 +1167,12 @@ void QgsMapToolEditMeshFrame::removeFacesFromMesh()
   }
 }
 
+void QgsMapToolEditMeshFrame::splitSelectedFaces()
+{
+  if ( mSplittableFaceCount > 0 )
+    mCurrentEditor->splitFaces( mSelectedFaces.values() );
+}
+
 void QgsMapToolEditMeshFrame::selectInGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers )
 {
   if ( mCurrentLayer.isNull() || !mCurrentLayer->triangularMesh() || mCurrentEditor.isNull() )
@@ -1312,7 +1329,19 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   if ( mSelectedFaces.count() == 1 )
     mActionRemoveFaces->setText( tr( "Remove selected face" ) );
   else
-    mActionRemoveFaces->setText( tr( "Remove selected faces" ) );
+    mActionRemoveFaces->setText( tr( "Remove %1 selected faces" ).arg( mSelectedFaces.count() ) );
+
+  mSplittableFaceCount = 0;
+  for ( const int faceIndex : std::as_const( mSelectedFaces ) )
+  {
+    if ( mCurrentEditor->faceCanBeSplit( faceIndex ) )
+      mSplittableFaceCount++;
+  }
+
+  if ( mSplittableFaceCount == 1 )
+    mActionSplitFaces->setText( tr( "Split selected face" ) );
+  else
+    mActionSplitFaces->setText( tr( "Split %1 selected faces" ).arg( mSplittableFaceCount ) );
 }
 
 void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &mapPoint )

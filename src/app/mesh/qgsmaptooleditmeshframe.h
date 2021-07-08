@@ -94,6 +94,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onEditingStopped();
     void removeSelectedVerticesFromMesh( bool fillHole );
     void removeFacesFromMesh();
+    void splitSelectedFaces();
 
   private:
 
@@ -226,11 +227,15 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     //! members for merge face
     QgsVertexMarker *mMergeFaceMarker = nullptr;
 
+    //! members for split face
+    int mSplittableFaceCount = 0;
+
     QgsZValueWidget *mZValueWidget = nullptr;
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;
     QAction *mActionRemoveFaces = nullptr;
+    QAction *mActionSplitFaces = nullptr;
 
     QAction *mActionDigitizing = nullptr;
     QAction *mActionMoveVertices = nullptr;
