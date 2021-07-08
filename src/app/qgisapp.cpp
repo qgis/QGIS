@@ -15744,18 +15744,6 @@ void QgisApp::renameView()
 
 QgsRasterLayer *QgisApp::addRasterLayerPrivate( const QString &uri, const QString &name, const QString &providerKey, bool guiWarning )
 {
-  QString shortName = name;
-  QRegularExpression reRasterFile( QStringLiteral( "^/vsi(.+/)*([^ ]+)( .+)?$" ), QRegularExpression::CaseInsensitiveOption );
-  QRegularExpressionMatch matchRasterFile = reRasterFile.match( name );
-
-  if ( matchRasterFile.hasMatch() )
-  {
-    if ( !matchRasterFile.captured( 2 ).isEmpty() )
-    {
-      shortName = matchRasterFile.captured( 2 );
-    }
-  }
-
   return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, shortName, providerKey, guiWarning );
 }
 
