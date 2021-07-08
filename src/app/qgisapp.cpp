@@ -5767,11 +5767,56 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::VectorTileLayer:
+    {
+      bool ok = false;
+      QString error = layer->loadDefaultStyle( ok );
+      if ( !ok )
+        visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::MessageLevel::Warning );
+      error = layer->loadDefaultMetadata( ok );
+      if ( !ok )
+        visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
       break;
+    }
+
     case QgsMapLayerType::AnnotationLayer:
       break;
+
     case QgsMapLayerType::PointCloudLayer:
+    {
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
+
+#ifdef HAVE_3D
+      if ( !layer->renderer3D() )
+      {
+        QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer );
+        // for point clouds we default to a 3d renderer. it just makes sense :)
+        std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( pcLayer->renderer() );
+        if ( renderer3D )
+          layer->setRenderer3D( renderer3D.release() );
+        else
+        {
+          // maybe waiting on an index...
+          if ( pcLayer->dataProvider()->indexingState() != QgsPointCloudDataProvider::Indexed )
+          {
+            QPointer< QgsPointCloudLayer > layerPointer( pcLayer );
+            connect( pcLayer->dataProvider(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, [layerPointer]( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
+            {
+              if ( !layerPointer || state != QgsPointCloudDataProvider::Indexed )
+                return;
+
+              std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layerPointer->renderer() );
+              if ( renderer3D )
+                layerPointer->setRenderer3D( renderer3D.release() );
+            } );
+          }
+        }
+      }
+#endif
       break;
+    }
   }
 }
 
@@ -5813,13 +5858,8 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     // since the layer is bad, stomp on it
     return nullptr;
   }
-  bool ok = false;
-  QString error = layer->loadDefaultStyle( ok );
-  if ( !ok )
-    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::MessageLevel::Warning );
-  error = layer->loadDefaultMetadata( ok );
-  if ( !ok )
-    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
+
+  postProcessAddedLayer( layer.get() );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -5855,36 +5895,9 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
     // since the layer is bad, stomp on it
     return nullptr;
   }
-  bool ok = false;
-  layer->loadDefaultStyle( ok );
-  layer->loadDefaultMetadata( ok );
 
-#ifdef HAVE_3D
-  if ( !layer->renderer3D() )
-  {
-    // for point clouds we default to a 3d renderer. it just makes sense :)
-    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layer->renderer() );
-    if ( renderer3D )
-      layer->setRenderer3D( renderer3D.release() );
-    else
-    {
-      // maybe waiting on an index...
-      if ( layer->dataProvider()->indexingState() != QgsPointCloudDataProvider::Indexed )
-      {
-        QPointer< QgsPointCloudLayer > layerPointer( layer.get() );
-        connect( layer->dataProvider(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, [layerPointer]( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
-        {
-          if ( !layerPointer || state != QgsPointCloudDataProvider::Indexed )
-            return;
+  postProcessAddedLayer( layer.get() );
 
-          std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DAppUtils::convert2dPointCloudRendererTo3d( layerPointer->renderer() );
-          if ( renderer3D )
-            layerPointer->setRenderer3D( renderer3D.release() );
-        } );
-      }
-    }
-  }
-#endif
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
