@@ -1187,7 +1187,8 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     // remove non-matching, unwanted layers
     res.erase( std::remove_if( res.begin(), res.end(), [ = ]( const QgsProviderSublayerDetails & sublayer )
     {
-      return sublayer.name() != originalUriLayerName;
+      const QVariantMap uriParts = decodeUri( sublayer.uri() );
+      return uriParts.value( QStringLiteral( "layerName" ) ).toString() != originalUriLayerName && sublayer.name() != originalUriLayerName;
     } ), res.end() );
   }
 

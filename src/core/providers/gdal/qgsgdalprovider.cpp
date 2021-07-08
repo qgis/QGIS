@@ -3660,8 +3660,6 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
   if ( !dataset )
   {
-    if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
-      QgsDebugMsg( QStringLiteral( "Error querying sublayers: %1 " ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return {};
   }
 
@@ -3681,7 +3679,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       const QVariantMap parts = decodeUri( uri );
       if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
       {
-        name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "vsiSuffix" ) ).toString() );
+        name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+        if ( name.startsWith( '/' ) )
+          name = name.mid( 1 );
       }
       else if ( parts.contains( QStringLiteral( "path" ) ) )
       {
