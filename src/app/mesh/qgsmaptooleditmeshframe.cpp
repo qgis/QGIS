@@ -57,7 +57,7 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
   mZValueSpinBox->setClearValue( 0.0 );
   mZValueSpinBox->clear();
 
-  setFocusProxy( mZValueSpinBox );
+  mZValueSpinBox->setFocusPolicy( Qt::NoFocus );
 }
 
 double QgsZValueWidget::zValue() const
@@ -78,10 +78,9 @@ void QgsZValueWidget::setDefaultValue( double z )
   mZValueSpinBox->selectAll();
 }
 
-void QgsZValueWidget::setEventFilterOnValueSpinbox( QObject *filter )
+QWidget *QgsZValueWidget::keyboardEntryWidget() const
 {
-  if ( mZValueSpinBox )
-    mZValueSpinBox->installEventFilter( filter );
+  return mZValueSpinBox;
 }
 
 QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
@@ -373,33 +372,6 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
   return QgsMapTool::Flags();
 }
 
-bool QgsMapToolEditMeshFrame::eventFilter( QObject *obj, QEvent *ev )
-{
-  if ( mZValueWidget && obj )
-  {
-    switch ( ev->type() )
-    {
-      case QEvent::KeyPress:
-        keyPressEvent( static_cast<QKeyEvent *>( ev ) );
-        if ( ev->isAccepted() )
-          return true;
-        break;
-      case QEvent::KeyRelease:
-        keyReleaseEvent( static_cast<QKeyEvent *>( ev ) );
-        if ( ev->isAccepted() )
-          return true;
-        break;
-      default:
-        return false;
-        break;
-    }
-  }
-  else
-    QgsMapToolAdvancedDigitizing::eventFilter( obj, ev );
-
-  return false;
-}
-
 void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mCurrentEditor )
@@ -434,9 +406,10 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
       case Selecting:
       case MovingVertex:
         break;
-
     }
   }
+
+  QgsMapToolAdvancedDigitizing::cadCanvasPressEvent( e );
 }
 
 void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -558,6 +531,8 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       break;
   }
   mDoubleClicks = false;
+
+  QgsMapToolAdvancedDigitizing::cadCanvasReleaseEvent( e );
 }
 
 void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance )
@@ -669,8 +644,6 @@ bool QgsMapToolEditMeshFrame::testBorderMovingFace( const QgsMeshFace &borderMov
   return true;
 }
 
-
-
 void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mCurrentEditor )
@@ -679,9 +652,6 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   const QgsPointXY &mapPoint = e->mapPoint();
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
-
-  if ( mZValueWidget )
-    mZValueWidget->setFocus( Qt::TabFocusReason );
 
   if ( mLeftButtonPressed && mCurrentState != MovingVertex )
   {
@@ -812,8 +782,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
 {
-  e->ignore();
-
+  bool consumned = false;
   switch ( mCurrentState )
   {
     case Digitizing:
@@ -821,22 +790,24 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ControlModifier ) )
       {
         removeSelectedVerticesFromMesh( !( e->modifiers() & Qt::ShiftModifier ) );
-        e->accept();
+        consumned = true;
       }
       else if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ShiftModifier ) )
       {
         removeFacesFromMesh();
-        e->accept();
+        consumned = true;
       }
 
       if ( e->key() == Qt::Key_Escape )
       {
         clearSelection();
+        consumned = true;
       }
 
       if ( e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter )
       {
         applyZValueOnSelectedVertices();
+        consumned = true;
       }
     }
     break;
@@ -849,7 +820,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
           mNewFaceCandidate.removeLast();
         if ( mNewFaceCandidate.isEmpty() )
           mCurrentState = Digitizing;
-        e->accept();
+        consumned = true;
       }
 
       if ( e->key() == Qt::Key_Escape )
@@ -857,7 +828,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
         mNewFaceCandidate.clear();
         mCurrentState = Digitizing;
-        e->accept();
+        consumned = true;
       }
     }
     break;
@@ -866,25 +837,39 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
     case MovingVertex:
       break;
   }
+
+  if ( !consumned )
+    QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
+  else
+    e->ignore();
+
+  if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
+    e->ignore();
+
+  QgsMapToolAdvancedDigitizing::keyPressEvent( e );
 }
 
 void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
 {
-  e->ignore();
-
+  bool consumned = false;
   switch ( mCurrentState )
   {
     case Digitizing:
       break;
     case AddingNewFace:
       if ( e->key() == Qt::Key_Backspace )
-        e->accept(); //to avoid removing the value of the ZvalueWidget
+        consumned = true; //to avoid removing the value of the ZvalueWidget
       break;
     case Selecting:
     case MoveVertex:
     case MovingVertex:
       break;
   }
+
+  if ( !consumned )
+    QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
+
+  QgsMapToolAdvancedDigitizing::keyReleaseEvent( e );
 }
 
 void QgsMapToolEditMeshFrame::canvasDoubleClickEvent( QgsMapMouseEvent *e )
@@ -892,6 +877,8 @@ void QgsMapToolEditMeshFrame::canvasDoubleClickEvent( QgsMapMouseEvent *e )
   Q_UNUSED( e )
   //canvasReleseaseEvent() will be called just after the last click, so just flag the double clicks
   mDoubleClicks = true;
+
+  QgsMapToolAdvancedDigitizing::canvasDoubleClickEvent( e );
 }
 
 void QgsMapToolEditMeshFrame::onEditingStopped()
@@ -1217,6 +1204,10 @@ void QgsMapToolEditMeshFrame::applyZValueOnSelectedVertices()
 {
   if ( !mZValueWidget )
     return;
+
+  if ( mSelectedVertices.isEmpty() )
+    return;
+
   QList<double> zValues;
   zValues.reserve( mSelectedVertices.count() );
   mCurrentZValue = mZValueWidget->zValue();
@@ -1576,8 +1567,6 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
 
   mZValueWidget = new QgsZValueWidget( tr( "Vertex elevation:" ) );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
-  mZValueWidget->setFocus( Qt::TabFocusReason );
-  mZValueWidget->setEventFilterOnValueSpinbox( this );
 }
 
 void QgsMapToolEditMeshFrame::deleteZvalueWidget()

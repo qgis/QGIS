@@ -26,6 +26,7 @@
 #include "qgsmeshlayer.h"
 #include "qgspointlocator.h"
 
+
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgsDoubleSpinBox;
@@ -52,11 +53,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
      */
     void setDefaultValue( double z );
 
-    /**
-     *  Installs an event filter (see QObject::eventFilter()) on the Z value spin box.
-     *  This \a filter can be used to control keyboard entry when the focus is on the Z value spin box.
-     */
-    void setEventFilterOnValueSpinbox( QObject *filter );
+    QWidget *keyboardEntryWidget() const;
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
@@ -81,7 +78,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     Flags flags() const override;
 
   protected:
-    bool eventFilter( QObject *obj, QEvent *ev ) override;
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
