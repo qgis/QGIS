@@ -711,20 +711,7 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( const QString &driverName, OG
         if ( !nextFeature )
           break;
 
-        OGRGeometryH geometry = OGR_F_GetGeometryRef( nextFeature.get() );
-        if ( geometry )
-        {
-          geomType = OGR_G_GetGeometryType( geometry );
-
-          // Shapefile MultiPatch can be reported as GeometryCollectionZ of TINZ
-          if ( wkbFlatten( geomType ) == wkbGeometryCollection &&
-               driverName == QLatin1String( "ESRI Shapefile" )  &&
-               OGR_G_GetGeometryCount( geometry ) >= 1 &&
-               wkbFlatten( OGR_G_GetGeometryType( OGR_G_GetGeometryRef( geometry, 0 ) ) ) == wkbTIN )
-          {
-            geomType = wkbMultiPolygon25D;
-          }
-        }
+        geomType = QgsOgrProviderUtils::resolveGeometryTypeForFeature( nextFeature.get(), driverName );
         if ( geomType != wkbNone )
           break;
       }
