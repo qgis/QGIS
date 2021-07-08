@@ -5421,76 +5421,12 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   return newuri;
 }
 
-static QStringList splitSubLayerDef( const QString &subLayerDef )
-{
-  return subLayerDef.split( QgsDataProvider::sublayerSeparator() );
-}
-
-static void setupVectorLayer( const QString &vectorLayerPath,
-                              const QStringList &sublayers,
-                              QgsVectorLayer *&layer,
-                              const QString &providerKey,
-                              QgsVectorLayer::LayerOptions options )
-{
-  //set friendly name for datasources with only one layer
-  QgsSettings settings;
-  QStringList elements = splitSubLayerDef( sublayers.at( 0 ) );
-  QString rawLayerName = elements.size() >= 2 ? elements.at( 1 ) : QString();
-  QString subLayerNameFormatted = rawLayerName;
-  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-  {
-    subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
-  }
-
-  if ( elements.size() >= 4 && layer->name().compare( rawLayerName, Qt::CaseInsensitive ) != 0
-       && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
-  {
-    if ( layer->name().isEmpty( ) )
-    {
-      layer->setName( rawLayerName );
-    }
-    else
-    {
-      layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), rawLayerName ) );
-    }
-  }
-
-  // Systematically add a layername= option to OGR datasets in case
-  // the current single layer dataset becomes layer a multi-layer one.
-  // Except for a few select extensions, known to be always single layer dataset.
-  QFileInfo fi( vectorLayerPath );
-  QString ext = fi.suffix().toLower();
-  if ( providerKey == QLatin1String( "ogr" ) &&
-       ext != QLatin1String( "shp" ) &&
-       ext != QLatin1String( "mif" ) &&
-       ext != QLatin1String( "tab" ) &&
-       ext != QLatin1String( "csv" ) &&
-       ext != QLatin1String( "geojson" ) &&
-       ! vectorLayerPath.contains( QStringLiteral( "layerid=" ) ) &&
-       ! vectorLayerPath.contains( QStringLiteral( "layername=" ) ) )
-  {
-    auto uriParts = QgsProviderRegistry::instance()->decodeUri(
-                      layer->providerType(), layer->dataProvider()->dataSourceUri() );
-    uriParts.insert( QStringLiteral( "layerName" ), rawLayerName );
-    QString composedURI = QgsProviderRegistry::instance()->encodeUri(
-                            layer->providerType(), uriParts );
-
-    auto newLayer = std::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
-    if ( newLayer && newLayer->isValid() )
-    {
-      delete layer;
-      layer = newLayer.release();
-    }
-  }
-}
-
-
 bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
   return addVectorLayersPrivate( layerQStringList, enc, dataSourceType );
 }
 
-bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, const bool guiWarning )
+bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &enc, const QString &dataSourceType, const bool guiWarning )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
 
@@ -5499,25 +5435,24 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   QgsSettings settings;
   bool userAskedToAddLayers = false;
 
-  for ( QString src : layerQStringList )
+  for ( const QString &layerUri : layers )
   {
-    src = src.trimmed();
+    const QString uri = layerUri.trimmed();
     QString baseName;
     if ( dataSourceType == QLatin1String( "file" ) )
     {
-      QString srcWithoutLayername( src );
+      QString srcWithoutLayername( uri );
       int posPipe = srcWithoutLayername.indexOf( '|' );
       if ( posPipe >= 0 )
         srcWithoutLayername.resize( posPipe );
-      QFileInfo fi( srcWithoutLayername );
-      baseName = fi.completeBaseName();
+      baseName = QgsProviderUtils::suggestLayerNameFromFilePath( srcWithoutLayername );
 
       // if needed prompt for zipitem layers
-      QString vsiPrefix = QgsZipItem::vsiPrefix( src );
-      if ( ! src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
+      QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+      if ( ! uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
            ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
       {
-        if ( askUserForZipItemLayers( src ) )
+        if ( askUserForZipItemLayers( uri ) )
           continue;
       }
     }
@@ -5525,98 +5460,112 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     {
       // Try to extract the database name and use it as base name
       // sublayers names (if any) will be appended to the layer name
-      auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), src ) );
+      const QVariantMap parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri ) );
       if ( parts.value( QStringLiteral( "databaseName" ) ).isValid() )
         baseName = parts.value( QStringLiteral( "databaseName" ) ).toString();
       else
-        baseName = src;
+        baseName = uri;
     }
     else //directory //protocol
     {
-      QFileInfo fi( src );
-      baseName = fi.completeBaseName();
+      baseName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
     }
+
     if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
     {
       baseName = QgsMapLayer::formatLayerName( baseName );
     }
 
     QgsDebugMsgLevel( "completeBaseName: " + baseName, 2 );
-    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
-    const auto scheme { QUrl( src ).scheme() };
+    const bool isVsiCurl { uri.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const auto scheme { QUrl( uri ).scheme() };
     const bool isRemoteUrl { scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) };
 
-    // create the layer
-    QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    options.loadDefaultStyle = false;
+    std::unique_ptr< QgsTemporaryCursorOverride > cursorOveride;
     if ( isVsiCurl || isRemoteUrl )
     {
-      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( src ) );
-      QApplication::setOverrideCursor( Qt::WaitCursor );
+      cursorOveride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+      visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( uri ) );
       qApp->processEvents();
     }
-    QgsVectorLayer *layer = new QgsVectorLayer( src, baseName, QStringLiteral( "ogr" ), options );
-    Q_CHECK_PTR( layer );
-    if ( isVsiCurl || isRemoteUrl )
-    {
-      QApplication::restoreOverrideCursor( );
-    }
-    if ( ! layer )
-    {
-      // Let render() do its own cursor management
-      //      QApplication::restoreOverrideCursor();
 
-      // XXX insert meaningful whine to the user here
-      return false;
-    }
+    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( uri );
+    // filter out non-vector sublayers
+    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
+    {
+      return sublayer.type() != QgsMapLayerType::VectorLayer;
+    } ), sublayers.end() );
 
-    if ( layer->isValid() )
+    cursorOveride.reset();
+
+    const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri );
+    const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
+
+    if ( !sublayers.empty() )
     {
       userAskedToAddLayers = true;
-      if ( !enc.isEmpty() )
-        layer->setProviderEncoding( enc );
 
-      QStringList sublayers = layer->dataProvider()->subLayers();
-      QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
+      const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+      const bool singleSublayerOnly = sublayers.size() == 1;
+      QString groupName;
 
-      // If the newly created layer has more than 1 layer of data available, we show the
-      // sublayers selection dialog so the user can select the sublayers to actually load.
-      if ( sublayers.count() > 1 )
+      if ( !singleSublayerOnly || detailsAreIncomplete )
       {
-        addedLayers.append( askUserForOGRSublayers( layer, sublayers ) );
-        // layer is no longer valid and has been nullified
-
-        for ( QgsMapLayer *l : addedLayers )
-          askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
-      }
-      else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
-      {
-        setupVectorLayer( src, sublayers, layer,
-                          QStringLiteral( "ogr" ), options );
-
-        layersToAdd << layer;
-      }
-      else
-      {
-        if ( guiWarning )
+        // ask user for sublayers (unless user settings dictate otherwise!)
+        switch ( shouldAskUserForSublayers( sublayers ) )
         {
-          QString msg = tr( "%1 doesn't have any layers." ).arg( src );
-          visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-        }
-        delete layer;
+          case SublayerHandling::AskUser:
+          {
+            // prompt user for sublayers
+            QgsProviderSublayersDialog dlg( uri, path, sublayers, this );
+
+            if ( dlg.exec() )
+              sublayers = dlg.selectedLayers();
+            else
+              sublayers.clear(); // dialog was canceled, so don't add any sublayers
+            groupName = dlg.groupName();
+            break;
+          }
+
+          case SublayerHandling::LoadAll:
+          {
+            if ( detailsAreIncomplete )
+            {
+              // requery sublayers, resolving geometry types
+              sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
+            }
+            break;
+          }
+
+          case SublayerHandling::AbortLoading:
+            sublayers.clear(); // don't add any sublayers
+            break;
+        };
       }
+      else if ( detailsAreIncomplete )
+      {
+        // requery sublayers, resolving geometry types
+        sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
+      }
+
+      // now add sublayers
+      if ( !sublayers.empty() )
+      {
+        addedLayers << addSublayers( sublayers, baseName, groupName );
+      }
+
     }
     else
     {
-      // since the layer is bad, stomp on it
-      delete layer;
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( src );
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
       // If the failed layer was a vsicurl type, give the user a chance to try the normal download.
       if ( isVsiCurl &&
            QMessageBox::question( this, tr( "Invalid Data Source" ),
                                   tr( "Download with \"Protocol\" source type has failed, do you want to try the \"File\" source type?" ) ) == QMessageBox::Yes )
       {
-        return addVectorLayersPrivate( QStringList() << src.replace( QLatin1String( "/vsicurl/" ), " " ), enc, dataSourceType, guiWarning );
+        QString fileUri = uri;
+        fileUri.replace( QLatin1String( "/vsicurl/" ), " " );
+        return addVectorLayersPrivate( QStringList() << fileUri, enc, dataSourceType, guiWarning );
       }
       else if ( guiWarning )
       {
@@ -5637,10 +5586,14 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
-    bool ok;
-    l->loadDefaultStyle( ok );
-    l->loadDefaultMetadata( ok );
+    if ( !enc.isEmpty() )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l ) )
+        vl->setProviderEncoding( enc );
+    }
+
     askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
+    postProcessAddedLayer( l );
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -5652,7 +5605,7 @@ QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName
   return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, url, baseName, providerKey, true );
 }
 
-QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName )
+QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName )
 {
   QgsLayerTreeGroup *group = nullptr;
   if ( !groupName.isEmpty() )
@@ -5663,8 +5616,6 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
   QgsSettings settings;
   const bool formatLayerNames = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool();
 
-  QgsMapLayer *result = nullptr;
-
   // if we aren't adding to a group, we need to add the layers in reverse order so that they maintain the correct
   // order in the layer tree!
   QList<QgsProviderSublayerDetails> sortedLayers = layers;
@@ -5672,6 +5623,9 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
   {
     std::reverse( sortedLayers.begin(), sortedLayers.end() );
   }
+
+  QList< QgsMapLayer * > result;
+  result.reserve( sortedLayers.size() );
 
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sortedLayers ) )
   {
@@ -5683,9 +5637,12 @@ QgsMapLayer *QgisApp::addSublayers( const QList<QgsProviderSublayerDetails> &lay
       continue;
 
     QgsMapLayer *ml = layer.get();
-    // result should always be the first layer specified (which is the LAST layer in the loop if group name is empty!)
-    if ( !result || groupName.isEmpty() )
-      result = ml;
+    // if we aren't adding to a group, then we're iterating the layers in the reverse order
+    // so account for that in the returned list of layers
+    if ( groupName.isEmpty() )
+      result.insert( 0, ml );
+    else
+      result << ml;
 
     QString layerName = layer->name();
     if ( formatLayerNames )
@@ -6050,163 +6007,6 @@ QgisApp::SublayerHandling QgisApp::shouldAskUserForSublayers( const QList<QgsPro
   }
 
   return SublayerHandling::AskUser;
-}
-
-// This method is the method that does the real job. If the layer given in
-// parameter is nullptr, then the method tries to act on the activeLayer.
-QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLayer, const QStringList &sublayers )
-{
-  QList<QgsMapLayer *> result;
-
-  QgsSublayersDialog::LayerDefinitionList list;
-  QMap< QString, int > mapLayerNameToCount;
-  bool uniqueNames = true;
-  int lastLayerId = -1;
-  const auto constSublayers = sublayers;
-  for ( const QString &sublayer : constSublayers )
-  {
-    // OGR provider returns items in this format:
-    // <layer_index>:<name>:<feature_count>:<geom_type>
-
-    QStringList elements = splitSubLayerDef( sublayer );
-    if ( elements.count() >= 4 )
-    {
-      QgsSublayersDialog::LayerDefinition def;
-      def.layerId = elements[0].toInt();
-      def.layerName = elements[1];
-      def.count = elements[2].toInt();
-      def.type = elements[3];
-      // ignore geometry column name at elements[4]
-      if ( elements.count() >= 6 )
-        def.description = elements[5];
-      if ( lastLayerId != def.layerId )
-      {
-        int count = ++mapLayerNameToCount[def.layerName];
-        if ( count > 1 || def.layerName.isEmpty() )
-          uniqueNames = false;
-        lastLayerId = def.layerId;
-      }
-      list << def;
-    }
-    else
-    {
-      QgsDebugMsg( "Unexpected output from OGR provider's subLayers()! " + sublayer );
-    }
-  }
-
-  // Check if the current layer uri contains the
-
-  // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), parentLayer->dataProvider()->dataSourceUri() );
-  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
-  chooseSublayersDialog.populateLayerTable( list );
-
-  if ( !chooseSublayersDialog.exec() )
-  {
-    delete parentLayer;
-    parentLayer = nullptr;
-    return result;
-  }
-
-  const bool addToGroup = chooseSublayersDialog.addToGroupCheckbox();
-
-  QString name = parentLayer->name();
-
-  auto uriParts = QgsProviderRegistry::instance()->decodeUri(
-                    parentLayer->providerType(), parentLayer->dataProvider()->dataSourceUri() );
-  QString uri( uriParts.value( QStringLiteral( "path" ) ).toString() );
-  QStringList openOptions( uriParts.value( QStringLiteral( "openOptions" ) ).toStringList() );
-
-  // The uri must contain the actual uri of the vectorLayer from which we are
-  // going to load the sublayers.
-  QString fileName = QFileInfo( uri ).baseName();
-  const auto constSelection = chooseSublayersDialog.selection();
-  const QString providerType = parentLayer->providerType();
-
-  if ( name.isEmpty() )
-  {
-    name = fileName;
-  }
-
-  // We delete the parent layer now, to be sure in the GeoPackage case that
-  // when several sublayers are selected, they will use the same GDAL dataset
-  // This is critical to make project transactions work, as in
-  // https://github.com/qgis/QGIS/issues/39431#issuecomment-713460189
-  delete parentLayer;
-  parentLayer = nullptr;
-
-  for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
-  {
-    QVariantMap newUriParts;
-    newUriParts.insert( QStringLiteral( "path" ), uri );
-    QString layerGeometryType = def.type;
-    if ( uniqueNames )
-    {
-      newUriParts.insert( QStringLiteral( "layerName" ), def.layerName );
-    }
-    else
-    {
-      // Only use layerId if there are ambiguities with names
-      newUriParts.insert( QStringLiteral( "layerId" ), QString::number( def.layerId ) );
-    }
-
-    if ( !layerGeometryType.isEmpty() )
-    {
-      newUriParts.insert( QStringLiteral( "geometryType" ), layerGeometryType );
-    }
-    if ( !openOptions.isEmpty() )
-    {
-      newUriParts.insert( QStringLiteral( "openOptions" ), openOptions );
-    }
-
-    QString composedURI = QgsProviderRegistry::instance()->encodeUri(
-                            providerType, newUriParts );
-    QgsDebugMsgLevel( "Creating new vector layer using " + composedURI, 2 );
-
-    // if user has opted to add sublayers to a group, then we don't need to include the
-    // filename in the layer's name, because the group is already titled with the filename.
-    // But otherwise, we DO include the file name so that users can differentiate the source
-    // when multiple layers are loaded from a GPX file or similar (refs https://github.com/qgis/QGIS/issues/37551)
-    const QString name = addToGroup ? def.layerName : fileName + " " + def.layerName;
-
-    QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-    options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
-    if ( layer && layer->isValid() )
-    {
-      result << layer;
-    }
-    else
-    {
-      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( composedURI );
-      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-      delete layer;
-    }
-  }
-
-  if ( !result.isEmpty() )
-  {
-    QgsSettings settings;
-    bool newLayersVisible = settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool();
-    QgsLayerTreeGroup *group = nullptr;
-    if ( addToGroup )
-      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
-
-    QgsProject::instance()->addMapLayers( result, ! addToGroup );
-    for ( QgsMapLayer *l : std::as_const( result ) )
-    {
-      bool ok;
-      l->loadDefaultStyle( ok );
-      l->loadDefaultMetadata( ok );
-      if ( addToGroup )
-        group->addLayer( l );
-    }
-
-    // Respect if user don't want the new group of layers visible.
-    if ( addToGroup && ! newLayersVisible )
-      group->setItemVisibilityCheckedRecursive( newLayersVisible );
-  }
-  return result;
 }
 
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
@@ -7575,7 +7375,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         case SublayerHandling::AskUser:
         {
           // prompt user for sublayers
-          QgsProviderSublayersDialog dlg( fileName, sublayers, this );
+          QgsProviderSublayersDialog dlg( fileName, fileName, sublayers, this );
 
           if ( dlg.exec() )
             sublayers = dlg.selectedLayers();
@@ -13275,10 +13075,12 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
   }
 
   QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, uri );
+  QString path = uri;
   if ( uriElements.contains( QStringLiteral( "path" ) ) )
   {
     // run layer path through QgsPathResolver so that all inbuilt paths and other localised paths are correctly expanded
-    uriElements[ QStringLiteral( "path" ) ] = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
+    path = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
+    uriElements[ QStringLiteral( "path" ) ] = path;
   }
   // Not all providers implement decodeUri(), so use original uri if uriElements is empty
   const QString updatedUri = uriElements.isEmpty() ? uri : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
@@ -13313,20 +13115,20 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
     {
       case SublayerHandling::AskUser:
       {
-        QgsProviderSublayersDialog dlg( updatedUri, sublayers, this );
+        QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, this );
         if ( dlg.exec() )
         {
           const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
           if ( !selectedLayers.isEmpty() )
           {
-            result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+            result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ).value( 0 ) );
           }
         }
         break;
       }
       case SublayerHandling::LoadAll:
       {
-        result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ) );
+        result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ).value( 0 ) );
         break;
       }
       case SublayerHandling::AbortLoading:
@@ -13335,7 +13137,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
   }
   else
   {
-    result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ) );
+    result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ).value( 0 ) );
 
     if ( result )
     {
@@ -15747,13 +15549,10 @@ QgsRasterLayer *QgisApp::addRasterLayer( QString const &uri, QString const &base
   return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, providerKey, true );
 }
 
-bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiWarning )
+bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
 {
-  if ( fileNameQStringList.empty() )
+  if ( files.empty() )
   {
-    // no files selected so bail out, but
-    // allow mMapCanvas to handle events
-    // first
     return false;
   }
 
@@ -15763,7 +15562,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
   bool returnValue = true;
-  for ( const QString &src : fileNameQStringList )
+  for ( const QString &src : files )
   {
     QString errMsg;
     bool ok = false;
@@ -15781,31 +15580,33 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     {
       QFileInfo myFileInfo( src );
 
-      // set the layer name to the file base name...
-      QString layerName = myFileInfo.completeBaseName();
-
-      // ...unless provided explicitly
+      // set the layer name to the file base name unless provided explicitly
+      QString layerName;
       const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), src );
       if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
         layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
+      else
+      {
+        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( src );
+      }
 
       // try to create the layer
-      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QString(), guiWarning );
+      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
 
       if ( layer && layer->isValid() )
       {
         //only allow one copy of a ai grid file to be loaded at a
         //time to prevent the user selecting all adfs in 1 dir which
-        //actually represent 1 coverate,
+        //actually represent 1 coverage,
 
         if ( myFileInfo.fileName().endsWith( QLatin1String( ".adf" ), Qt::CaseInsensitive ) )
         {
           break;
         }
       }
-      // if layer is invalid addRasterLayerPrivate() will show the error
+      // if layer is invalid addLayerPrivate() will show the error
 
     } // valid raster filename
     else
@@ -15829,12 +15630,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       returnValue = false;
     }
   }
-
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
-
   return returnValue;
-
 }
 
 QgsPluginLayer *QgisApp::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )

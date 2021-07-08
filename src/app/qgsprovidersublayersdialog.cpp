@@ -91,14 +91,14 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   return QgsProviderSublayerModel::flags( index );
 }
 
-QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QList<QgsProviderSublayerDetails> initialDetails, QWidget *parent, Qt::WindowFlags fl )
+QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  const QFileInfo fileInfo( uri );
-  mFilePath = fileInfo.isFile() && fileInfo.exists() ? uri : QString();
+  const QFileInfo fileInfo( filePath );
+  mFilePath = fileInfo.isFile() && fileInfo.exists() ? filePath : QString();
   mFileName = !mFilePath.isEmpty() ? fileInfo.fileName() : QString();
 
   setWindowTitle( mFileName.isEmpty() ? tr( "Select Items to Add" ) : QStringLiteral( "%1 | %2" ).arg( tr( "Select Items to Add" ), mFileName ) );
