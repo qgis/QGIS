@@ -171,42 +171,62 @@ QString doubleToExifCoordinateString( const double val )
 
 QVariant QgsExifTools::readTag( const QString &imagePath, const QString &key )
 {
-  std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
-  if ( !image || key.isEmpty() )
+  if ( !QFileInfo::exists( imagePath ) )
     return QVariant();
 
-  image->readMetadata();
-  Exiv2::ExifData &exifData = image->exifData();
-  if ( exifData.empty() )
+  try
+  {
+    std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
+    if ( !image || key.isEmpty() )
+      return QVariant();
+
+    image->readMetadata();
+    Exiv2::ExifData &exifData = image->exifData();
+    if ( exifData.empty() )
+    {
+      return QVariant();
+    }
+
+    Exiv2::ExifData::const_iterator i = exifData.findKey( Exiv2::ExifKey( key.toUtf8().constData() ) );
+    return i != exifData.end() ? decodeExifData( key, i ) : QVariant();
+  }
+  catch ( ... )
   {
     return QVariant();
   }
-
-  Exiv2::ExifData::const_iterator i = exifData.findKey( Exiv2::ExifKey( key.toUtf8().constData() ) );
-  return i != exifData.end() ? decodeExifData( key, i ) : QVariant();
 }
 
 QVariantMap QgsExifTools::readTags( const QString &imagePath )
 {
-  std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
-  if ( !image )
+  if ( !QFileInfo::exists( imagePath ) )
     return QVariantMap();
 
-  image->readMetadata();
-  Exiv2::ExifData &exifData = image->exifData();
-  if ( exifData.empty() )
+  try
+  {
+    std::unique_ptr< Exiv2::Image > image( Exiv2::ImageFactory::open( imagePath.toStdString() ) );
+    if ( !image )
+      return QVariantMap();
+
+    image->readMetadata();
+    Exiv2::ExifData &exifData = image->exifData();
+    if ( exifData.empty() )
+    {
+      return QVariantMap();
+    }
+
+    QVariantMap res;
+    Exiv2::ExifData::const_iterator end = exifData.end();
+    for ( Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i )
+    {
+      const QString key = QString::fromStdString( i->key() );
+      res.insert( key, decodeExifData( key, i ) );
+    }
+    return res;
+  }
+  catch ( ... )
   {
     return QVariantMap();
   }
-
-  QVariantMap res;
-  Exiv2::ExifData::const_iterator end = exifData.end();
-  for ( Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i )
-  {
-    const QString key = QString::fromStdString( i->key() );
-    res.insert( key, decodeExifData( key, i ) );
-  }
-  return res;
 }
 
 bool QgsExifTools::hasGeoTag( const QString &imagePath )
