@@ -1049,6 +1049,52 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     }
   }
 
+  if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
+       && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+  {
+    // get list of files inside archive file
+    QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ), 3 );
+    char **papszSiblingFiles = VSIReadDirRecursive( QString( vsiPrefix + uriParts.value( QStringLiteral( "path" ) ).toString() ).toLocal8Bit().constData() );
+    if ( papszSiblingFiles )
+    {
+      QList<QgsProviderSublayerDetails> res;
+
+      QStringList files;
+      for ( int i = 0; papszSiblingFiles[i]; i++ )
+      {
+        files << papszSiblingFiles[i];
+      }
+
+      for ( const QString &file : std::as_const( files ) )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        // ugly hack to remove .dbf file if there is a .shp file
+        QFileInfo info( file );
+        if ( info.suffix().compare( QLatin1String( "dbf" ), Qt::CaseInsensitive ) == 0 )
+        {
+          if ( files.contains( file.left( file.size() - 4 ) + ".shp" ) )
+            continue;
+        }
+        if ( info.completeSuffix().compare( QLatin1String( "shp.xml" ), Qt::CaseInsensitive ) == 0
+             || info.completeSuffix().compare( QLatin1String( "shx" ), Qt::CaseInsensitive ) == 0 )
+        {
+          continue;
+        }
+
+        // skip directories (files ending with /)
+        if ( file.right( 1 ) != QLatin1String( "/" ) )
+        {
+          uriParts.insert( QStringLiteral( "vsiSuffix" ), QStringLiteral( "/%1" ).arg( file ) );
+          res << querySublayers( encodeUri( uriParts ), flags, feedback );
+        }
+      }
+      CSLDestroy( papszSiblingFiles );
+      return res;
+    }
+  }
+
   const QString originalUriLayerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
   int layerId = 0;
   bool originalUriLayerIdWasSpecified = false;
