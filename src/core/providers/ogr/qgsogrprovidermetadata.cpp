@@ -28,6 +28,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgszipitem.h"
 
 #include <QFileInfo>
 #include <QFile>
@@ -1029,11 +1030,25 @@ bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   return false;
 }
 
-QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
+QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const QString &u, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
+  QString uri = u;
   QStringList options { QStringLiteral( "@LIST_ALL_TABLES=YES" ) };
 
-  const QVariantMap uriParts = decodeUri( uri );
+  QVariantMap uriParts = decodeUri( uri );
+
+  // Try to open using VSIFileHandler
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( !vsiPrefix.isEmpty() && uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+  {
+    if ( !uri.startsWith( vsiPrefix ) )
+    {
+      // update zip etc to use vsi prefix if it wasn't explicitly specified
+      uri = vsiPrefix + uri;
+      uriParts = decodeUri( uri );
+    }
+  }
+
   const QString originalUriLayerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
   int layerId = 0;
   bool originalUriLayerIdWasSpecified = false;
@@ -1042,7 +1057,15 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     layerId = uriLayerId;
 
   QString errCause;
-  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( uriParts.value( QStringLiteral( "path" ) ).toString(), false, options, layerId, errCause, true );
+
+  QVariantMap firstLayerUriParts;
+  if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty() )
+    firstLayerUriParts.insert( QStringLiteral( "vsiPrefix" ), uriParts.value( QStringLiteral( "vsiPrefix" ) ) );
+  if ( !uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+    firstLayerUriParts.insert( QStringLiteral( "vsiSuffix" ), uriParts.value( QStringLiteral( "vsiSuffix" ) ) );
+  firstLayerUriParts.insert( QStringLiteral( "path" ), uriParts.value( QStringLiteral( "path" ) ) );
+
+  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( encodeUri( firstLayerUriParts ), false, options, layerId, errCause, true );
   if ( !firstLayer )
     return {};
 

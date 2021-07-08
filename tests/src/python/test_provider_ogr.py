@@ -1530,6 +1530,22 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.LineString)
         self.assertEqual(res[0].geometryColumnName(), '')
 
+        # zip file layer vector
+        res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'zip', 'points2.zip'))
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].layerNumber(), 0)
+        self.assertEqual(res[0].name(), "points")
+        self.assertEqual(res[0].description(), '')
+        self.assertEqual(res[0].uri(), '/vsizip/' + TEST_DATA_DIR + "/zip/points2.zip|layername=points")
+        self.assertEqual(res[0].providerKey(), "ogr")
+        self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(res[0].wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(res[0].geometryColumnName(), '')
+        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
+        vl = res[0].toLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
         # geometry collection sublayers -- requires a scan to resolve geometry type
         res = metadata.querySublayers(os.path.join(TEST_DATA_DIR, 'multipatch.shp'))
         self.assertEqual(len(res), 1)
@@ -1568,7 +1584,6 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].geometryColumnName(), 'geometry')
 
         # make sure result is valid to load layer from
-        options = QgsProviderSublayerDetails.LayerOptions(QgsCoordinateTransformContext())
         vl = res[0].toLayer(options)
         self.assertTrue(vl.isValid())
 
