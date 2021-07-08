@@ -41,3 +41,4 @@ jobs:
         only-labels: 'feedback'
         days-before-stale: 14
         days-before-close: 28
+        operations-per-run: 100
