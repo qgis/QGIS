@@ -5452,7 +5452,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
       if ( ! uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) &&
            ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
       {
-        if ( askUserForZipItemLayers( uri ) )
+        if ( askUserForZipItemLayers( uri, { QgsMapLayerType::VectorLayer } ) )
           continue;
       }
     }
@@ -5861,121 +5861,80 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   return layer.release();
 }
 
-// present a dialog to choose zipitem layers
-bool QgisApp::askUserForZipItemLayers( const QString &path )
+bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes )
 {
-  bool ok = false;
-  QVector<QgsDataItem *> childItems;
-  QgsZipItem *zipItem = nullptr;
-  QgsSettings settings;
-  const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
+  // query sublayers
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
 
-  QgsDebugMsgLevel( "askUserForZipItemLayers( " + path + ')', 2 );
-
-  // if scanZipBrowser == no: skip to the next file
-  if ( settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString() == QLatin1String( "no" ) )
+  // filter out non-matching sublayers
+  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
   {
-    return false;
-  }
+    return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
+  } ), sublayers.end() );
 
-  zipItem = new QgsZipItem( nullptr, path, path );
-  if ( ! zipItem )
+  if ( sublayers.empty() )
     return false;
 
-  zipItem->populate( true );
-  QgsDebugMsgLevel( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ), 2 );
+  const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
+  const bool singleSublayerOnly = sublayers.size() == 1;
+  QString groupName;
 
-  // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
-  if ( zipItem->rowCount() <= 1 )
+  if ( !singleSublayerOnly || detailsAreIncomplete )
   {
-    delete zipItem;
-    return false;
-  }
-
-  switch ( promptLayers )
-  {
-    // load all layers without prompting
-    case Qgis::SublayerPromptMode::NeverAskLoadAll:
-      childItems = zipItem->children();
-      break;
-
-    // return because we should not prompt at all
-    case Qgis::SublayerPromptMode::NeverAskSkip:
-      delete zipItem;
-      return false;
-
-    // initialize a selection dialog and display it.
-    case Qgis::SublayerPromptMode::AlwaysAsk:
-    case Qgis::SublayerPromptMode::AskExcludingRasterBands:
-      QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this, Qt::WindowFlags(), path );
-      QgsSublayersDialog::LayerDefinitionList layers;
-
-      for ( int i = 0; i < zipItem->children().size(); i++ )
+    // ask user for sublayers (unless user settings dictate otherwise!)
+    switch ( shouldAskUserForSublayers( sublayers ) )
+    {
+      case SublayerHandling::AskUser:
       {
-        QgsDataItem *item = zipItem->children().at( i );
-        QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-        if ( !layerItem )
-          continue;
+        // prompt user for sublayers
+        QgsProviderSublayersDialog dlg( path, path, sublayers, this );
 
-        QgsDebugMsgLevel( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
-
-        QgsSublayersDialog::LayerDefinition def;
-        def.layerId = i;
-        def.layerName = item->name();
-        if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
-        {
-          def.type = tr( "Raster" );
-        }
-        else if ( layerItem->providerKey() == QLatin1String( "ogr" ) )
-        {
-          def.type = tr( "Vector" );
-        }
-        layers << def;
+        if ( dlg.exec() )
+          sublayers = dlg.selectedLayers();
+        else
+          sublayers.clear(); // dialog was canceled, so don't add any sublayers
+        groupName = dlg.groupName();
+        break;
       }
 
-      chooseSublayersDialog.populateLayerTable( layers );
-
-      if ( chooseSublayersDialog.exec() )
+      case SublayerHandling::LoadAll:
       {
-        const auto constSelection = chooseSublayersDialog.selection();
-        for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
+        if ( detailsAreIncomplete )
         {
-          childItems << zipItem->children().at( def.layerId );
+          // requery sublayers, resolving geometry types
+          sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
         }
+        break;
       }
 
-      break;
+      case SublayerHandling::AbortLoading:
+        sublayers.clear(); // don't add any sublayers
+        break;
+    };
   }
-
-  if ( childItems.isEmpty() )
+  else if ( detailsAreIncomplete )
   {
-    // return true so dialog doesn't popup again (#6225) - hopefully this doesn't create other trouble
-    ok = true;
+    // requery sublayers, resolving geometry types
+    sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
   }
 
-  // add childItems
-  const auto constChildItems = childItems;
-  for ( QgsDataItem *item : constChildItems )
+  // now add sublayers
+  if ( !sublayers.empty() )
   {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-    if ( !layerItem )
-      continue;
+    QgsCanvasRefreshBlocker refreshBlocker;
+    QgsSettings settings;
 
-    QgsDebugMsgLevel( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
-    if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
+    QString base = QgsProviderUtils::suggestLayerNameFromFilePath( path );
+    if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
     {
-      if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName(), QString() ) )
-        ok = true;
+      base = QgsMapLayer::formatLayerName( base );
     }
-    else if ( layerItem->providerKey() == QLatin1String( "ogr" ) )
-    {
-      if ( addVectorLayers( QStringList( item->path() ), QString(), QStringLiteral( "file" ) ) )
-        ok = true;
-    }
+
+    addSublayers( sublayers, base, groupName );
+    activateDeactivateLayerRelatedActions( activeLayer() );
   }
 
-  delete zipItem;
-  return ok;
+  return true;
 }
 
 QgisApp::SublayerHandling QgisApp::shouldAskUserForSublayers( const QList<QgsProviderSublayerDetails> &layers ) const
@@ -7322,7 +7281,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
   if ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) )
   {
-    if ( askUserForZipItemLayers( fileName ) )
+    if ( askUserForZipItemLayers( fileName, {} ) )
     {
       CPLPopErrorHandler();
       return true;
@@ -7426,21 +7385,6 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
 
   CPLPopErrorHandler();
-
-#if 0
-// try as a vector
-  if ( !ok || fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
-  {
-    if ( allowInteractive )
-    {
-      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QString(), QStringLiteral( "file" ), false );
-    }
-    else
-    {
-      ok = ok || addVectorLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ogr" ), false );
-    }
-  }
-#endif
 
   if ( !ok )
   {
@@ -15572,7 +15516,7 @@ bool QgisApp::addRasterLayers( QStringList const &files, bool guiWarning )
     if ( ( !src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || src.endsWith( QLatin1String( ".zip" ) ) || src.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( src ) )
+      if ( askUserForZipItemLayers( src, { QgsMapLayerType::RasterLayer } ) )
         continue;
     }
 

@@ -2068,7 +2068,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * This method will open a dialog so the user can select GDAL sublayers to load
      * \returns TRUE if any items were loaded
      */
-    bool askUserForZipItemLayers( const QString &path );
+    bool askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes );
 
     enum class SublayerHandling
     {
