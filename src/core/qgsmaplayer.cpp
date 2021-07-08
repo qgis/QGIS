@@ -124,9 +124,9 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setDataUrlFormat( dataUrlFormat() );
   layer->setAttribution( attribution() );
   layer->setAttributionUrl( attributionUrl() );
-  layer->setMetadataUrl( metadataUrl() );
-  layer->setMetadataUrlType( metadataUrlType() );
-  layer->setMetadataUrlFormat( metadataUrlFormat() );
+//  layer->setMetadataUrl( metadataUrl() );
+//  layer->setMetadataUrlType( metadataUrlType() );
+//  layer->setMetadataUrlFormat( metadataUrlFormat() );
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
@@ -203,16 +203,21 @@ void QgsMapLayer::setServerProperties( QgsMapLayerServerProperties *properties )
 
 void QgsMapLayer::setMetadataUrl( const QString &metaUrl )
 {
+  QgsMessageLog::logMessage( QObject::tr( "INSERTION" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
   QList<QgsMapLayerServerProperties::MetadataUrl> urls = mMapLayerServerProperties->metadataUrls();
   if ( urls.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "INSERTION VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+
     QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, QLatin1String(), QLatin1String() );
     urls.insert( 0, newItem );
   }
   else
   {
+    QgsMessageLog::logMessage( QObject::tr( "REMPLACEMENT" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
+
     QgsMapLayerServerProperties::MetadataUrl old = urls.takeAt( 0 );
-    QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, QLatin1String(), old.format );
+    QgsMapLayerServerProperties::MetadataUrl newItem( metaUrl, old.type, old.format );
 
     urls.insert( 0, newItem );
   }
@@ -227,6 +232,7 @@ QString QgsMapLayer::metadataUrl() const
   }
   else
   {
+    QgsMessageLog::logMessage( QObject::tr( "PAS VIDE" ), QObject::tr( "DEBUG" ), Qgis::MessageLevel::Warning );
     return mMapLayerServerProperties->metadataUrls().at( 0 ).url;
   }
 }
