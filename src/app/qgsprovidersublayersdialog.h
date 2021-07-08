@@ -48,6 +48,7 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
   public:
 
     QgsProviderSublayersDialog( const QString &uri,
+                                const QString &filePath,
                                 const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );

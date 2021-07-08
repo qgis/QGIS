@@ -1184,7 +1184,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * user with a dialog.
      * \returns TRUE if successfully added layer(s)
      */
-    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
+    bool addRasterLayers( const QStringList &files, bool guiWarning = true );
 
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
@@ -2078,14 +2078,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     };
     SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers ) const;
 
-    /**
-     * This method will open a dialog so the user can select OGR sublayers to load,
-     * and then returns a list of these layers. It will destroy the passed layer
-     * in the process
-     */
-    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *&layerTransferOwnership, const QStringList &subLayers );
-
-    QgsMapLayer *addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
+    QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
     void postProcessAddedLayer( QgsMapLayer *layer );
 
@@ -2098,7 +2091,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         const QString &providerKey,
         bool guiWarning = true );
 
-    bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
+    bool addVectorLayersPrivate( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
 
     template<typename T> T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
 
