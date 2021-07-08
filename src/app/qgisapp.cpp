@@ -13315,18 +13315,10 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
 
   QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
 
-  /* Eliminate the need to instantiate the layer based on provider type.
-     The caller is responsible for cobbling together the needed information to
-     open the layer
-     */
-  QgsDebugMsgLevel( "Creating new vector layer using " + vectorLayerPath
-                    + " with baseName of " + baseName
-                    + " and providerKey of " + providerKey, 2 );
-
   // if the layer needs authentication, ensure the master password is set
   bool authok = true;
-  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( rx.indexIn( vectorLayerPath ) != -1 )
+  const QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+  if ( rx.match( vectorLayerPath ).hasMatch() )
   {
     authok = false;
     if ( !QgsAuthGuiUtils::isDisabled( messageBar() ) )
@@ -13334,11 +13326,6 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
       authok = QgsApplication::authManager()->setMasterPassword( true );
     }
   }
-
-  // create the layer
-  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  // Default style is loaded later in this method
-  options.loadDefaultStyle = false;
 
   QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, vectorLayerPath );
   if ( uriElements.contains( QStringLiteral( "path" ) ) )
@@ -13348,70 +13335,74 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   }
   // Not all providers implement decodeUri(), so use original vectorLayerPath if uriElements is empty
   const QString updatedUri = uriElements.isEmpty() ? vectorLayerPath : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
-  QgsVectorLayer *layer = new QgsVectorLayer( updatedUri, baseName, providerKey, options );
 
-  if ( authok && layer->isValid() )
+  // query sublayers
+  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
+      QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
+      : QgsProviderRegistry::instance()->querySublayers( updatedUri );
+
+  // filter out non-vector sublayers
+  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
   {
-    const bool layerIsSpecified = vectorLayerPath.contains( QLatin1String( "layerid=" ) ) ||
-                                  vectorLayerPath.contains( QLatin1String( "layername=" ) );
+    return sublayer.type() != QgsMapLayerType::VectorLayer;
+  } ), sublayers.end() );
 
-    const QStringList sublayers = layer->dataProvider()->subLayers();
-    if ( !layerIsSpecified )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
-    }
-
-    // If the newly created layer has more than 1 layer of data available, we show the
-    // sublayers selection dialog so the user can select the sublayers to actually load.
-    if ( !layerIsSpecified && sublayers.count() > 1 )
-    {
-      QList< QgsMapLayer * > addedLayers = askUserForOGRSublayers( layer, sublayers );
-      // layer is no longer valid and has been nullified
-
-      layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
-      for ( QgsMapLayer *l : addedLayers )
-        askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
-    }
-    else
-    {
-      // Register this layer with the layers registry
-      QList<QgsMapLayer *> myList;
-
-      //set friendly name for datasources with only one layer
-      if ( !sublayers.isEmpty() )
-      {
-        setupVectorLayer( vectorLayerPath, sublayers, layer,
-                          providerKey, options );
-      }
-
-      myList << layer;
-      QgsProject::instance()->addMapLayers( myList );
-
-      askUserForDatumTransform( layer->crs(), QgsProject::instance()->crs(), layer );
-
-      bool ok;
-      layer->loadDefaultStyle( ok );
-      layer->loadDefaultMetadata( ok );
-    }
-  }
-  else
+  QgsVectorLayer *result = nullptr;
+  if ( sublayers.empty() )
   {
     if ( guiWarning )
     {
-      QString message = layer->dataProvider() ? layer->dataProvider()->error().message( QgsErrorMessage::Text ) : tr( "Invalid provider" );
-      QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map. Reason: %2" ).arg( vectorLayerPath, message );
-      visibleMessageBar()->pushMessage( tr( "Layer is not valid" ), msg, Qgis::MessageLevel::Critical );
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( vectorLayerPath );
+      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
     }
 
-    delete layer;
+    // since the layer is bad, stomp on it
     return nullptr;
   }
+  else if ( sublayers.size() > 1 )
+  {
+    // ask user for sublayers (unless user settings dictate otherwise!)
+    switch ( shouldAskUserForSublayers( sublayers ) )
+    {
+      case SublayerHandling::AskUser:
+      {
+        QgsProviderSublayersDialog dlg( updatedUri, sublayers, this );
+        if ( dlg.exec() )
+        {
+          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
+          if ( !selectedLayers.isEmpty() )
+          {
+            result = qobject_cast< QgsVectorLayer * >( addSublayers( selectedLayers, baseName, dlg.groupName() ) );
+          }
+        }
+        break;
+      }
+      case SublayerHandling::LoadAll:
+      {
+        result = qobject_cast< QgsVectorLayer * >( addSublayers( sublayers, baseName, QString() ) );
+        break;
+      }
+      case SublayerHandling::AbortLoading:
+        break;
+    };
+  }
+  else
+  {
+    result = qobject_cast< QgsVectorLayer * >( addSublayers( sublayers, name, QString() ) );
 
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
+    if ( result )
+    {
+      QString base( baseName );
+      if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+      {
+        base = QgsMapLayer::formatLayerName( base );
+      }
+      result->setName( base );
+    }
+  }
 
-  return layer;
-
+  activateDeactivateLayerRelatedActions( activeLayer() );
+  return result;
 }
 
 void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
@@ -15896,7 +15887,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   }
 
   QgsSettings settings;
-  QString baseName =  settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( shortName ) : shortName;
+  QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( shortName ) : shortName;
 
   // query sublayers
   QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
