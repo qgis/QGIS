@@ -95,6 +95,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingOffsetCapStyle );
   addSettingsEntry( &settingsDigitizingOffsetShowAdvanced );
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
+  addSettingsEntry( &settingsRespectScreenDPI );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
