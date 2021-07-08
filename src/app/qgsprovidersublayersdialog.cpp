@@ -91,7 +91,7 @@ Qt::ItemFlags QgsProviderSublayerDialogModel::flags( const QModelIndex &index ) 
   return QgsProviderSublayerModel::flags( index );
 }
 
-QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, QWidget *parent, Qt::WindowFlags fl )
+QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails, const QList<QgsMapLayerType> &acceptableTypes, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
@@ -147,7 +147,13 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     mTask = new QgsProviderSublayerTask( uri );
     connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [ = ]
     {
-      mModel->setSublayerDetails( mTask->results() );
+      QList< QgsProviderSublayerDetails > res = mTask->results();
+      res.erase( std::remove_if( res.begin(), res.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
+      {
+        return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
+      } ), res.end() );
+
+      mModel->setSublayerDetails( res );
       mTask = nullptr;
     } );
     QgsApplication::taskManager()->addTask( mTask.data() );

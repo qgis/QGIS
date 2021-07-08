@@ -5517,7 +5517,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
           case SublayerHandling::AskUser:
           {
             // prompt user for sublayers
-            QgsProviderSublayersDialog dlg( uri, path, sublayers, this );
+            QgsProviderSublayersDialog dlg( uri, path, sublayers, {QgsMapLayerType::VectorLayer}, this );
 
             if ( dlg.exec() )
               sublayers = dlg.selectedLayers();
@@ -5533,6 +5533,11 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
             {
               // requery sublayers, resolving geometry types
               sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
+              // filter out non-vector sublayers
+              sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
+              {
+                return sublayer.type() != QgsMapLayerType::VectorLayer;
+              } ), sublayers.end() );
             }
             break;
           }
@@ -5546,6 +5551,11 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
       {
         // requery sublayers, resolving geometry types
         sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
+        // filter out non-vector sublayers
+        sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails & sublayer )
+        {
+          return sublayer.type() != QgsMapLayerType::VectorLayer;
+        } ), sublayers.end() );
       }
 
       // now add sublayers
@@ -5887,7 +5897,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapL
       case SublayerHandling::AskUser:
       {
         // prompt user for sublayers
-        QgsProviderSublayersDialog dlg( path, path, sublayers, this );
+        QgsProviderSublayersDialog dlg( path, path, sublayers, acceptableTypes, this );
 
         if ( dlg.exec() )
           sublayers = dlg.selectedLayers();
@@ -5903,6 +5913,10 @@ bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapL
         {
           // requery sublayers, resolving geometry types
           sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
+          sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
+          {
+            return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
+          } ), sublayers.end() );
         }
         break;
       }
@@ -5916,6 +5930,10 @@ bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapL
   {
     // requery sublayers, resolving geometry types
     sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
+    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails & sublayer )
+    {
+      return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
+    } ), sublayers.end() );
   }
 
   // now add sublayers
@@ -7334,7 +7352,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         case SublayerHandling::AskUser:
         {
           // prompt user for sublayers
-          QgsProviderSublayersDialog dlg( fileName, fileName, sublayers, this );
+          QgsProviderSublayersDialog dlg( fileName, fileName, sublayers, {}, this );
 
           if ( dlg.exec() )
             sublayers = dlg.selectedLayers();
@@ -13059,7 +13077,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
     {
       case SublayerHandling::AskUser:
       {
-        QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, this );
+        QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, {type}, this );
         if ( dlg.exec() )
         {
           const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
