@@ -3205,7 +3205,7 @@ namespace QgsWms
             dimValue = dimValue.trimmed();
           }
           // Range value is separated by / for example 0/1
-          if ( dimValue.count( '/' ) == 1 )
+          if ( dimValue.contains( '/' ) )
           {
             QStringList rangeValues = dimValue.split( '/' );
             // Check range value size
@@ -3214,8 +3214,8 @@ namespace QgsWms
               continue; // throw an error
             }
             // Get range values
-            QVariant rangeMin = QVariant( rangeValues[0] );
-            QVariant rangeMax = QVariant( rangeValues[1] );
+            QVariant rangeMin = QVariant( rangeValues[0].replace( "&#47;", "/" ).replace( "&#44;", "," ) );
+            QVariant rangeMax = QVariant( rangeValues[1].replace( "&#47;", "/" ).replace( "&#44;", "," ) );
             // Convert and check range values
             if ( !dimField.convertCompatible( rangeMin ) )
             {
@@ -3253,7 +3253,7 @@ namespace QgsWms
           }
           else
           {
-            QVariant dimVariant = QVariant( dimValue );
+            QVariant dimVariant = QVariant( dimValue.replace( "&#47;", "/" ).replace( "&#44;", "," ) );
             if ( !dimField.convertCompatible( dimVariant ) )
             {
               continue; // throw an error
