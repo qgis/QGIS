@@ -5481,10 +5481,10 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
     const auto scheme { QUrl( uri ).scheme() };
     const bool isRemoteUrl { scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) };
 
-    std::unique_ptr< QgsTemporaryCursorOverride > cursorOveride;
+    std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
     if ( isVsiCurl || isRemoteUrl )
     {
-      cursorOveride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+      cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
       visibleMessageBar()->pushInfo( tr( "Remote layer" ), tr( "loading %1, please wait …" ).arg( uri ) );
       qApp->processEvents();
     }
@@ -5496,7 +5496,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
       return sublayer.type() != QgsMapLayerType::VectorLayer;
     } ), sublayers.end() );
 
-    cursorOveride.reset();
+    cursorOverride.reset();
 
     const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri );
     const QString path = uriParts.value( QStringLiteral( "path" ) ).toString();
