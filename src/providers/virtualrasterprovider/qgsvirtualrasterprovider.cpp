@@ -47,6 +47,8 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
         if (rProvidedLayer->isValid() )
         {
             if (! mRasterLayers.contains( rProvidedLayer )) mRasterLayers << rProvidedLayer;
+            qDebug() << QStringLiteral("N of Bands for ")% rProvidedLayer->name() % QStringLiteral(" ")<< rProvidedLayer->bandCount();
+            qDebug() << rProvidedLayer->publicSource();
         }
         else
         {
@@ -134,7 +136,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     entry.ref = QStringLiteral( "dem@1" );
     mRasterEntries<<entry;
 
-    mFormulaString = "\"dem@1\" + 200";
+    //mFormulaString = "\"dem@1\" + 200";
     QString mLastError = "last error";
     //END HARDCODED DATA--------------------------------------------------------------------------------------------
 
