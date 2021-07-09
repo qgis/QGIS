@@ -2641,6 +2641,35 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         """Test Single and Multi Column PK, `Small` Data"""
         from itertools import combinations
 
+        def test_for_pk_restore_data():
+            self.execSQLCommand('''
+            TRUNCATE qgis_test.multi_column_pk_small_data_table;
+            INSERT INTO qgis_test.multi_column_pk_small_data_table(
+              id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
+                id_macaddr, id_macaddr8, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
+              SELECT
+                ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+                dx + 1000000 * dy,                                                    --id_int
+                dx + 1000000 * dy,                                                    --id_bigint
+                dx || E\' ot\\'her \' || dy,                                          --id_str
+                (\'192.168.0.1\'::inet + dx + 100 * dy )::inet,                       --id_inet4
+                (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::inet + dx + 100 * dy )::inet,  --id_inet6
+                (\'192.168.0.1\'::cidr + dx + 100 * dy )::cidr,                       --id_cidr4
+                (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::cidr + dx + 100 * dy )::cidr,  --id_cidr6
+                ((112233445566 + dx + 100 * dy)::text)::macaddr,                      --id_macaddr
+                ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
+                now() - ((dx||\' hour\')::text)::interval - ((dy||\' day\')::text)::interval,
+                NULLIF( ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+                  ( (10000000)::text || (100000000000 + dy + dy%2)::text || (100000000000 + dx)::text )::uuid ),
+                NULL,
+                ST_Translate(
+                  ST_GeomFromText(\'POLYGON((3396900.0 6521800.0,3396900.0 6521870.0,
+                      3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
+                  100.0 * dx,
+                  100.0 * dy )
+              FROM generate_series(1,3) dx, generate_series(1,3) dy;
+            REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
+
         def test_for_pk_combinations(test_type_list, pk_column_name_list, fids_get_count):
             pk_column_name = ','.join(pk_column_name_list)
             set_new_pk = '''
@@ -2660,6 +2689,15 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                                  error_string.format(test_type, pk_column_name, fids_get_count, len(fids)))
                 self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
                                  error_string.format(test_type, pk_column_name, fids_get_count, len(fids2)))
+                if test_type in ["table", "view"]:
+                    expected_geometry = 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'
+                    self.assertTrue(vl.startEditing())
+                    for f in vl.getFeatures(fids):
+                        self.assertTrue(vl.changeGeometry(f.id(), QgsGeometry.fromWkt(expected_geometry)))
+                    self.assertTrue(vl.commitChanges())
+                    for f in vl.getFeatures(fids):
+                        assert compareWkt(f.geometry().asWkt(), expected_geometry), "Write test to {} with PK {} FAIL\n".format(test_type, pk_column_name)
+                    test_for_pk_restore_data()
 
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data_table CASCADE;')
         self.execSQLCommand('''
@@ -2687,33 +2725,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         DROP MATERIALIZED VIEW IF EXISTS qgis_test.multi_column_pk_small_data_mat_view;
         CREATE MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view AS
           SELECT * FROM qgis_test.multi_column_pk_small_data_table;''')
-        self.execSQLCommand('''
-        TRUNCATE qgis_test.multi_column_pk_small_data_table;
-        INSERT INTO qgis_test.multi_column_pk_small_data_table(
-          id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
-            id_macaddr, id_macaddr8, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
-          SELECT
-            ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
-            dx + 1000000 * dy,                                                    --id_int
-            dx + 1000000 * dy,                                                    --id_bigint
-            dx || E\' ot\\'her \' || dy,                                          --id_str
-            (\'192.168.0.1\'::inet + dx + 100 * dy )::inet,                       --id_inet4
-            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::inet + dx + 100 * dy )::inet,  --id_inet6
-            (\'192.168.0.1\'::cidr + dx + 100 * dy )::cidr,                       --id_cidr4
-            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::cidr + dx + 100 * dy )::cidr,  --id_cidr6
-            ((112233445566 + dx + 100 * dy)::text)::macaddr,                      --id_macaddr
-            ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
-            now() - ((dx||\' hour\')::text)::interval - ((dy||\' day\')::text)::interval,
-            NULLIF( ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
-              ( (10000000)::text || (100000000000 + dy + dy%2)::text || (100000000000 + dx)::text )::uuid ),
-            NULL,
-            ST_Translate(
-              ST_GeomFromText(\'POLYGON((3396900.0 6521800.0,3396900.0 6521870.0,
-                  3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
-              100.0 * dx,
-              100.0 * dy )
-          FROM generate_series(1,3) dx, generate_series(1,3) dy;
-        REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
+        test_for_pk_restore_data()
 
         pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
         test_type_list = ["table", "view", "mat_view"]

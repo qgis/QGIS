@@ -116,8 +116,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
         error_string = 'Save geoms to remote DB : expected < 10s, got {}s'
 
         vl = QgsVectorLayer(self.dbconn + set_new_layer, 'test_vl_remote_save', 'postgres')
-        # fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(1000))]
-        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(50))]
+        fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(1000))]
         self.assertTrue(vl.startEditing())
         for f in vl.getFeatures(fids):
             self.assertTrue(vl.changeGeometry(f.id(), f.geometry()))
