@@ -2046,7 +2046,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
         for ( const QString &w : std::as_const( warnings ) )
         {
-          message += QStringLiteral( "<li>%1</l>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
+          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
         }
         message += QLatin1String( "</ul>" );
         showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
