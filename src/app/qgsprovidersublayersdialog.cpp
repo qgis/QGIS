@@ -214,6 +214,21 @@ QList<QgsProviderSublayerDetails> QgsProviderSublayersDialog::selectedLayers() c
   return selectedSublayers;
 }
 
+QList<QgsProviderSublayerModel::NonLayerItem> QgsProviderSublayersDialog::selectedNonLayerItems() const
+{
+  const QModelIndexList selection = mLayersTree->selectionModel()->selectedRows();
+  QList< QgsProviderSublayerModel::NonLayerItem > selectedItems;
+  for ( const QModelIndex &index : selection )
+  {
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( index );
+    if ( mModel->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      selectedItems << mModel->indexToNonLayerItem( sourceIndex );
+    }
+  }
+  return selectedItems;
+}
+
 QString QgsProviderSublayersDialog::groupName() const
 {
   if ( !mCbxAddToGroup->isChecked() )
