@@ -181,6 +181,14 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
+void QgsProviderSublayersDialog::setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items )
+{
+  for ( const QgsProviderSublayerModel::NonLayerItem &item : items )
+  {
+    mModel->addNonLayerItem( item );
+  }
+}
+
 QgsProviderSublayersDialog::~QgsProviderSublayersDialog()
 {
   QgsSettings settings;

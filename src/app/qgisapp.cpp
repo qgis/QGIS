@@ -5965,8 +5965,11 @@ bool QgisApp::askUserForZipItemLayers( const QString &path, const QList< QgsMapL
   return true;
 }
 
-QgisApp::SublayerHandling QgisApp::shouldAskUserForSublayers( const QList<QgsProviderSublayerDetails> &layers ) const
+QgisApp::SublayerHandling QgisApp::shouldAskUserForSublayers( const QList<QgsProviderSublayerDetails> &layers, bool hasNonLayerItems ) const
 {
+  if ( hasNonLayerItems )
+    return SublayerHandling::AskUser;
+
   QgsSettings settings;
   const Qgis::SublayerPromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk );
 
@@ -7353,23 +7356,40 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
+  QList< QgsProviderSublayerModel::NonLayerItem > nonLayerItems;
+  if ( QgsProjectStorage *ps = QgsApplication::projectStorageRegistry()->projectStorageFromUri( fileName ) )
+  {
+    const QStringList projects = ps->listProjects( fileName );
+    for ( const QString &project : projects )
+    {
+      QgsProviderSublayerModel::NonLayerItem projectItem;
+      projectItem.setType( QStringLiteral( "project" ) );
+      projectItem.setName( project );
+      projectItem.setUri( fileName );
+      projectItem.setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconQgsProjectFile.svg" ) ) );
+      nonLayerItems << projectItem;
+    }
+  }
+
   // query sublayers
   QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( fileName );
-  if ( !sublayers.empty() )
+
+  if ( !sublayers.empty() || !nonLayerItems.empty() )
   {
     const bool detailsAreIncomplete = QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, true );
     const bool singleSublayerOnly = sublayers.size() == 1;
     QString groupName;
 
-    if ( allowInteractive && ( !singleSublayerOnly || detailsAreIncomplete ) )
+    if ( allowInteractive && ( !singleSublayerOnly || detailsAreIncomplete || !nonLayerItems.empty() ) )
     {
       // ask user for sublayers (unless user settings dictate otherwise!)
-      switch ( shouldAskUserForSublayers( sublayers ) )
+      switch ( shouldAskUserForSublayers( sublayers, !nonLayerItems.empty() ) )
       {
         case SublayerHandling::AskUser:
         {
           // prompt user for sublayers
           QgsProviderSublayersDialog dlg( fileName, fileName, sublayers, {}, this );
+          dlg.setNonLayerItems( nonLayerItems );
 
           if ( dlg.exec() )
             sublayers = dlg.selectedLayers();
