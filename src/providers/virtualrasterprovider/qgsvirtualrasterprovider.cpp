@@ -41,14 +41,27 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     QList<InputLayers>::iterator i;
     for (i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i)
     {
-
         QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( i->uri, i->name, i->provider );
 
         if (rProvidedLayer->isValid() )
         {
             if (! mRasterLayers.contains( rProvidedLayer )) mRasterLayers << rProvidedLayer;
-            qDebug() << QStringLiteral("N of Bands for ")% rProvidedLayer->name() % QStringLiteral(" ")<< rProvidedLayer->bandCount();
-            qDebug() << rProvidedLayer->publicSource();
+            qDebug() << rProvidedLayer->name();
+
+            for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+            {
+                  QgsRasterCalculatorEntry entry;
+                  entry.raster = rProvidedLayer;
+                  entry.bandNumber = j + 1;
+                  entry.ref = rProvidedLayer->name() % QStringLiteral("@") % QString::number(j+1);
+                  /*
+                  if ( ! uniqueRasterBandIdentifier( entry ) )
+                    break;
+                  */
+                  mRasterEntries.push_back( entry );
+
+                  qDebug() << entry.ref;
+            }
         }
         else
         {
