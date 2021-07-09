@@ -2080,7 +2080,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       LoadAll,
       AbortLoading
     };
-    SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers ) const;
+    SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false ) const;
 
     QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 

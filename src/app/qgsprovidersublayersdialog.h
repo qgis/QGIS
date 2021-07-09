@@ -54,6 +54,8 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 Qt::WindowFlags fl = Qt::WindowFlags() );
 
+    void setNonLayerItems( const QList< QgsProviderSublayerModel::NonLayerItem > &items );
+
     ~QgsProviderSublayersDialog() override;
 
     QList< QgsProviderSublayerDetails > selectedLayers() const;
