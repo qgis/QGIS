@@ -10053,6 +10053,9 @@ void QgisApp::enableStreamDigitizing( bool enable )
 
 void QgisApp::enableDigitizeTechniqueActions( bool enable, QAction *triggeredFromToolAction )
 {
+  if ( !mMapTools )
+    return;
+
   QgsSettings settings;
 
   const QList< QgsMapToolCapture * > captureTools = mMapTools->captureTools();
@@ -14787,7 +14790,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionReverseLine->setEnabled( false );
     mActionTrimExtendFeature->setEnabled( false );
 
-    mUndoDock->widget()->setEnabled( false );
+    if ( mUndoDock && mUndoDock->widget() )
+      mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
     mActionSimplifyFeature->setEnabled( false );
