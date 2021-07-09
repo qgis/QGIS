@@ -163,7 +163,7 @@ class TestQgsLayerDefinition(unittest.TestCase):
         with open(temp_dir.filePath('absolute.qlr'), 'rt') as f:
             lines = f.readlines()
         self.assertIn(f'source="{gpkg_path}"', '\n'.join(lines))
-    
+
     def testWidgetConfig(self):
 
         temp = QTemporaryDir()
