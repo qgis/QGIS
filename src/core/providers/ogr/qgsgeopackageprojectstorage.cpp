@@ -97,6 +97,12 @@ static bool _projectsTableExists( const QString &database )
   return ok;
 }
 
+bool QgsGeoPackageProjectStorage::isSupportedUri( const QString &uri ) const
+{
+  const QFileInfo fi( uri );
+  return fi.isFile() && fi.suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
+}
+
 QStringList QgsGeoPackageProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
