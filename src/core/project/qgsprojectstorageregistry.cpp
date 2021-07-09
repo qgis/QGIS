@@ -37,6 +37,14 @@ QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromUri( const QStri
     if ( uri.startsWith( scheme ) )
       return storage;
   }
+
+  // second chance -- use isSupportedUri to determine if a uri is supported by a backend
+  for ( auto it = mBackends.constBegin(); it != mBackends.constEnd(); ++it )
+  {
+    QgsProjectStorage *storage = it.value();
+    if ( storage->isSupportedUri( uri ) )
+      return storage;
+  }
   return nullptr;
 }
 
