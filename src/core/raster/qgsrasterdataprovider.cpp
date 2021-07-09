@@ -667,6 +667,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
             QgsDebugMsg("crs is not valid");
             *ok = false;
         }
+
     }
     else
     {
@@ -683,7 +684,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
 
         if ( components.extent.isNull() )
         {
-            QgsDebugMsg("extent is null is not valid");
+            QgsDebugMsg("extent is null");
             *ok = false;
         }
 
@@ -696,7 +697,14 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
 
     if ( query.hasQueryItem( QStringLiteral( "width" ) ) )
     {
-        components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt();
+        bool flag;
+        components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flag );
+
+        if ( !flag ||  components.width < 0 || components.width > INT_MAX)
+        {
+            QgsDebugMsg("invalid or negative width input");
+            *ok = false;
+        }
     }
     else
     {
@@ -706,7 +714,14 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
 
     if ( query.hasQueryItem( QStringLiteral( "height" ) ) )
     {
-        components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt();
+        bool flag;
+        components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flag );
+
+        if ( !flag ||  components.height < 0 || components.height > INT_MAX)
+        {
+            QgsDebugMsg("invalid or negative width input");
+            *ok = false;
+        }
     }
     else
     {
@@ -719,7 +734,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
         components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
         if ( components.formula.isNull() )
         {
-            QgsDebugMsg("formula is null");
+            QgsDebugMsg("formula string provided is null");
             *ok = false;
         }
     }
@@ -759,7 +774,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
         rLayer.provider = query.queryItemValue( (*i) % QStringLiteral(":provider") );
         components.rInputLayers.append(rLayer) ;
 
-        if (rLayer.name.isNull() || rLayer.uri.isNull() || rLayer.provider.isNull())
+        if ( rLayer.uri.isNull() || rLayer.provider.isNull())
         {
             QgsDebugMsg("One or more raster information are missing");
             *ok = false;

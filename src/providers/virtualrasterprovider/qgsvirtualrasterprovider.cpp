@@ -24,9 +24,13 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
 
     bool  ok = true;
-    //QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(uri);
     //QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
     QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri , & ok );
+
+    if (! (ok == false) )
+    {
+        mValid = true;
+    }
 
     mCrs = decodedUriParams.crs;
     mExtent = decodedUriParams.extent;
@@ -37,37 +41,18 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
     QList<InputLayers>::iterator i;
     for (i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i)
     {
-        //std::unique_ptr< QgsRasterLayer > rProvidedLayer = std::make_unique< QgsRasterLayer >( i->uri, i->name, i->provider );
-        //mRasterLayers << & rProvidedLayer;
-        //mRasterLayers.append(& rProvidedLayer);
 
         QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( i->uri, i->name, i->provider );
-        mRasterLayers << rProvidedLayer;
 
-        /*
-        if (rProvidedLayer->isValid() && ! mRasterLayers.contains(& rProvidedLayer) )
+        if (rProvidedLayer->isValid() )
         {
-            mRasterLayers << & rProvidedLayer;
-            //mRasterLayers.append(& rProvidedLayer);
-
+            if (! mRasterLayers.contains( rProvidedLayer )) mRasterLayers << rProvidedLayer;
         }
-        */
-
-
+        else
+        {
+            mValid = false;
+        }
     }
-
-
-
-    if (! (ok ==false) )
-    {
-        mValid = true;
-    }
-    /*else
-    {
-        mValid = true;
-    }*/
-
-
 }
 
 

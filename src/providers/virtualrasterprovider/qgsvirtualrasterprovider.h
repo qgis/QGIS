@@ -84,7 +84,6 @@ private:
     QString mFormulaString;
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
 
-    //QVector <std::unique_ptr< QgsRasterLayer > *> mRasterLayers;
     QVector <QgsRasterLayer *> mRasterLayers;
 
 
