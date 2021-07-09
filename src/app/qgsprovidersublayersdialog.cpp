@@ -322,6 +322,6 @@ void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &sel
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !mLayersTree->selectionModel()->selectedRows().empty() );
 
+  mCbxAddToGroup->setEnabled( !selectedANonLayerItem );
   mButtonBox->button( QDialogButtonBox::Ok )->setText( selectedANonLayerItem ? tr( "Open" ) : tr( "Add Layers" ) );
-
 }
