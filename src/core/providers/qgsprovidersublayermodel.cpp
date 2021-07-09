@@ -301,7 +301,7 @@ QVariant QgsProviderSublayerModel::headerData( int section, Qt::Orientation orie
           switch ( static_cast< Column>( section ) )
           {
             case QgsProviderSublayerModel::Column::Name:
-              return tr( "Layer" );
+              return tr( "Item" );
             case QgsProviderSublayerModel::Column::Description:
               return tr( "Description" );
           }

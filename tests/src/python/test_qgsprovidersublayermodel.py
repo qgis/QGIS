@@ -36,8 +36,8 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(model.columnCount(QModelIndex()), 2)
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
 
@@ -202,8 +202,8 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         model = QgsProviderSublayerModel()
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(model.columnCount(QModelIndex()), 2)
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(model.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(model.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
 
@@ -309,8 +309,8 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         proxy.setSourceModel(model)
         self.assertEqual(model.rowCount(QModelIndex()), 0)
         self.assertEqual(proxy.columnCount(QModelIndex()), 2)
-        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Layer')
-        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Layer')
+        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.DisplayRole), 'Item')
+        self.assertEqual(proxy.headerData(0, Qt.Horizontal, Qt.ToolTipRole), 'Item')
         self.assertEqual(proxy.headerData(1, Qt.Horizontal, Qt.DisplayRole), 'Description')
         self.assertEqual(proxy.headerData(1, Qt.Horizontal, Qt.ToolTipRole), 'Description')
 
