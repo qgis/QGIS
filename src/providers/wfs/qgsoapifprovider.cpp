@@ -690,10 +690,9 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
   }
 
-  url = mShared->appendExtraQueryParameters( url );
-
   while ( !url.isEmpty() )
   {
+    url = mShared->appendExtraQueryParameters( url );
 
     if ( maxTotalFeatures > 0 && totalDownloadedFeatureCount >= maxTotalFeatures )
     {
@@ -721,7 +720,6 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
       break;
     }
     url = itemsRequest.nextUrl();
-    url = mShared->appendExtraQueryParameters( url );
 
     // Consider if we should display a progress dialog
     // We can only do that if we know how many features will be downloaded
