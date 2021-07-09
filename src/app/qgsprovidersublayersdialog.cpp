@@ -160,7 +160,20 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     QgsApplication::taskManager()->addTask( mTask.data() );
   }
 
-  connect( mBtnSelectAll, &QAbstractButton::pressed, mLayersTree, &QTreeView::selectAll );
+  connect( mBtnSelectAll, &QAbstractButton::pressed, this, [ = ]
+  {
+    mLayersTree->selectionModel()->clear();
+    for ( int row = 0; row < mProxyModel->rowCount(); ++row )
+    {
+      const QModelIndex index = mProxyModel->index( row, 0 );
+      if ( !mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+      {
+        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                               QItemSelectionModel::Select );
+      }
+    }
+  } );
   connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [ = ] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
@@ -179,6 +192,8 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     accept();
   } );
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  mButtonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add Layers" ) );
+
 }
 
 void QgsProviderSublayersDialog::setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items )
@@ -246,7 +261,67 @@ QString QgsProviderSublayersDialog::groupName() const
   return res;
 }
 
-void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &, const QItemSelection & )
+void QgsProviderSublayersDialog::treeSelectionChanged( const QItemSelection &selected, const QItemSelection & )
 {
+  if ( mBlockSelectionChanges )
+    return;
+
+  mBlockSelectionChanges = true;
+  bool selectedANonLayerItem = false;
+  QModelIndex firstSelectedNonLayerItem;
+  bool selectedALayerItem = false;
+  for ( const QModelIndex &index : selected.indexes() )
+  {
+    if ( index.column() != 0 )
+      continue;
+
+    if ( mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      if ( !selectedANonLayerItem )
+      {
+        selectedANonLayerItem = true;
+        firstSelectedNonLayerItem = index;
+      }
+      else
+      {
+        // only one non-layer item can be selected
+        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                               QItemSelectionModel::Deselect );
+      }
+    }
+    else
+    {
+      selectedALayerItem = true;
+    }
+  }
+
+  for ( int row = 0; row < mProxyModel->rowCount(); ++row )
+  {
+    const QModelIndex index = mProxyModel->index( row, 0 );
+    if ( mProxyModel->data( index, static_cast< int >( QgsProviderSublayerModel::Role::IsNonLayerItem ) ).toBool() )
+    {
+      if ( ( selectedANonLayerItem && index != firstSelectedNonLayerItem ) || selectedALayerItem )
+      {
+        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                               QItemSelectionModel::Deselect );
+      }
+    }
+    else
+    {
+      if ( selectedANonLayerItem )
+      {
+        mLayersTree->selectionModel()->select( QItemSelection( mLayersTree->model()->index( index.row(), 0, index.parent() ),
+                                               mLayersTree->model()->index( index.row(), mLayersTree->model()->columnCount() - 1, index.parent() ) ),
+                                               QItemSelectionModel::Deselect );
+      }
+    }
+  }
+  mBlockSelectionChanges = false;
+
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !mLayersTree->selectionModel()->selectedRows().empty() );
+
+  mButtonBox->button( QDialogButtonBox::Ok )->setText( selectedANonLayerItem ? tr( "Open" ) : tr( "Add Layers" ) );
+
 }
