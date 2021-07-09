@@ -84,8 +84,8 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
   return true;
 }
 
-bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
-                 const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition )
+bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
+                  const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition )
 {
   if ( outputType == inputType )
   {
@@ -182,9 +182,9 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   {
     for ( const AttributeData &attribute : attributeData )
     {
-      _serialize( destinationBuffer, outputOffset,
-                  attribute.requestedType, s,
-                  attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
+      __serialize( destinationBuffer, outputOffset,
+                   attribute.requestedType, s,
+                   attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
 
       outputOffset += attribute.requestedSize;
     }
