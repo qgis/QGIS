@@ -156,7 +156,7 @@ Example - replace path with a variable:
 .. code-block:: python
 
        def my_processor(path):
-          return path.replace('c:/Users/ClintBarton/Documents/Projects', '@projectdir@')
+          return path.replace('c:/Users/ClintBarton/Documents/Projects', '$projectdir$')
 
        QgsPathResolver.setPathWriter(my_processor)
 
