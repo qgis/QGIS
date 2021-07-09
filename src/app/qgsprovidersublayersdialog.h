@@ -59,6 +59,7 @@ class QgsProviderSublayersDialog : public QDialog, private Ui::QgsProviderSublay
     ~QgsProviderSublayersDialog() override;
 
     QList< QgsProviderSublayerDetails > selectedLayers() const;
+    QList< QgsProviderSublayerModel::NonLayerItem > selectedNonLayerItems() const;
     QString groupName() const;
 
   signals:

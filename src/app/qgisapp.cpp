@@ -7365,7 +7365,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       QgsProviderSublayerModel::NonLayerItem projectItem;
       projectItem.setType( QStringLiteral( "project" ) );
       projectItem.setName( project );
-      projectItem.setUri( fileName );
+      projectItem.setUri( QStringLiteral( "%1://%2?projectName=%3" ).arg( ps->type(), fileName, project ) );
       projectItem.setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconQgsProjectFile.svg" ) ) );
       nonLayerItems << projectItem;
     }
@@ -7392,9 +7392,15 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
           dlg.setNonLayerItems( nonLayerItems );
 
           if ( dlg.exec() )
+          {
             sublayers = dlg.selectedLayers();
+            nonLayerItems = dlg.selectedNonLayerItems();
+          }
           else
+          {
             sublayers.clear(); // dialog was canceled, so don't add any sublayers
+            nonLayerItems.clear();
+          }
           groupName = dlg.groupName();
           break;
         }
@@ -7435,8 +7441,22 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       }
 
       addSublayers( sublayers, base, groupName );
+      activateDeactivateLayerRelatedActions( activeLayer() );
     }
-    activateDeactivateLayerRelatedActions( activeLayer() );
+    else if ( !nonLayerItems.empty() )
+    {
+      QgsCanvasRefreshBlocker refreshBlocker;
+      if ( checkTasksDependOnProject() )
+        return true;
+
+      // possibly save any pending work before opening a different project
+      if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+      {
+        // error handling and reporting is in addProject() function
+        addProject( nonLayerItems.at( 0 ).uri() );
+      }
+      return true;
+    }
   }
 
   CPLPopErrorHandler();
