@@ -914,22 +914,69 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(dp.changeAttributeValues({1: {0: 'A string'}}))
         f = vl.getFeature(1)
         self.assertEqual(f.attribute('int'), 123)
+                          QgsField("size", QVariant.Double),
+                          QgsField("mytext", QVariant.String, "text"),
+                          QgsField("size2", QVariant.Double, "double precision"),
+                          QgsField("short", QVariant.Int, "int2"),
+                          QgsField("lessshort", QVariant.Int, "int4"),
+                          QgsField("numericfield", QVariant.Double, "numeric"),
+                          QgsField("decimalfield", QVariant.Double, "decimal"),
+                          QgsField("stringlistfield", QVariant.StringList, "stringlist"),
+                          QgsField("integerlistfield", QVariant.List, "integerlist"),
+                          QgsField("doublelistfield", QVariant.List, "doublelist")])
+        self.assertEqual(pr.fields()[3].typeName(), "text")
+        self.assertEqual(pr.fields()[4].typeName(), "double precision")
+        self.assertEqual(pr.fields()[5].typeName(), "int2")
+        self.assertEqual(pr.fields()[6].typeName(), "int4")
+        self.assertEqual(pr.fields()[7].typeName(), "numeric")
+        self.assertEqual(pr.fields()[8].typeName(), "decimal")
+        self.assertEqual(pr.fields()[9].typeName(), "stringlist")
+        self.assertEqual(pr.fields()[10].typeName(), "integerlist")
+        self.assertEqual(pr.fields()[11].typeName(), "doublelist")
+
+        vl2=vl.clone()
+
+        self.assertEqual(pr.fields()[0].name(), vl2.fields()[0].name())
+        self.assertEqual(pr.fields()[1].name(), vl2.fields()[1].name())
+        self.assertEqual(pr.fields()[2].name(), vl2.fields()[2].name())
+        self.assertEqual(pr.fields()[3].name(), vl2.fields()[3].name())
+        self.assertEqual(pr.fields()[4].name(), vl2.fields()[4].name())
+        self.assertEqual(pr.fields()[5].name(), vl2.fields()[5].name())
+        self.assertEqual(pr.fields()[6].name(), vl2.fields()[6].name())
+        self.assertEqual(pr.fields()[7].name(), vl2.fields()[7].name())
+        self.assertEqual(pr.fields()[8].name(), vl2.fields()[8].name())
+        self.assertEqual(pr.fields()[9].name(), vl2.fields()[9].name())
+        self.assertEqual(pr.fields()[10].name(), vl2.fields()[10].name())
+        self.assertEqual(pr.fields()[11].name(), vl2.fields()[11].name())
+
+        self.assertEqual(pr.fields()[0].typeName(), vl2.fields()[0].typeName())
+        self.assertEqual(pr.fields()[1].typeName(), vl2.fields()[1].typeName())
+        self.assertEqual(pr.fields()[2].typeName(), vl2.fields()[2].typeName())
+        self.assertEqual(pr.fields()[3].typeName(), vl2.fields()[3].typeName())
+        self.assertEqual(pr.fields()[4].typeName(), vl2.fields()[4].typeName())
+        self.assertEqual(pr.fields()[5].typeName(), vl2.fields()[5].typeName())
+        self.assertEqual(pr.fields()[6].typeName(), vl2.fields()[6].typeName())
+        self.assertEqual(pr.fields()[7].typeName(), vl2.fields()[7].typeName())
+        self.assertEqual(pr.fields()[8].typeName(), vl2.fields()[8].typeName())
+        self.assertEqual(pr.fields()[9].typeName(), vl2.fields()[9].typeName())
+        self.assertEqual(pr.fields()[10].typeName(), vl2.fields()[10].typeName())
+        self.assertEqual(pr.fields()[11].typeName(), vl2.fields()[11].typeName())
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     """Runs the provider test suite against an indexed memory layer"""
 
-    @classmethod
+    @ classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(
+        cls.vl=QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&field=dt:datetime&field=date:date&field=time:time&key=pk',
             'test', 'memory')
         assert (cls.vl.isValid())
-        cls.source = cls.vl.dataProvider()
+        cls.source=cls.vl.dataProvider()
 
-        f1 = QgsFeature()
+        f1=QgsFeature()
         f1.setAttributes(
             [5, -200, NULL, 'NuLl', '5', QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)), QDate(2020, 5, 2),
              QTime(12, 13, 1)])

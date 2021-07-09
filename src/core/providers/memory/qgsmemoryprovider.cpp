@@ -25,7 +25,7 @@
 
 #include <QUrl>
 #include <QUrlQuery>
-#include <QRegExp>
+#include <QRegularExpression>
 
 ///@cond PRIVATE
 
@@ -118,96 +118,108 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
   {
+    QStringList parseTypes;
+    const QList<QgsVectorDataProvider::NativeType> nativeTypesList( nativeTypes() );
+    for ( const NativeType &nativeType : nativeTypesList )
+      parseTypes.append( nativeType.mTypeName );
+
+    // Additional supported types (will be converted to native)
+    parseTypes.append( QLatin1String( "int" ) );
+    parseTypes.append( QLatin1String( "long" ) );
+    parseTypes.append( QLatin1String( "bool" ) );
+
     QList<QgsField> attributes;
-    QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
-                        "(?:\\((\\-?\\d+)"                // length
-                        "(?:\\,(\\-?\\d+))?"                  // precision
-                        "\\))?(\\[\\])?"                  // array
-                        "$", Qt::CaseInsensitive );
+    QRegularExpression reFieldDef( QString( "\\:"
+                                            "(%1)"                       // type
+                                            "(?:\\((\\-?\\d+)"           // length
+                                            "(?:\\,(\\-?\\d+))?"         // precision
+                                            "\\))?(\\[\\])?"             // array
+                                            "$" ).arg( parseTypes.join( '|' ) ),
+                                   QRegularExpression::CaseInsensitiveOption );
     QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
       QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
+      QRegularExpressionMatch regularExpressionMatch = reFieldDef.match( name );
+      if ( !regularExpressionMatch.hasMatch() )
+      {
+        QgsLogger::warning( tr( "Could not correctly parse field '%1' from uri '%2'" ).arg( name, uri ) );
+        continue;
+      }
+
+      name = name.mid( 0, regularExpressionMatch.capturedStart() );
+
       QVariant::Type type = QVariant::String;
       QVariant::Type subType = QVariant::Invalid;
-      QString typeName( QStringLiteral( "string" ) );
-      int length = 255;
-      int precision = 0;
+      QString typeName( regularExpressionMatch.captured( 1 ).toLower() );
 
-      int pos = reFieldDef.indexIn( name );
-      if ( pos >= 0 )
+      // Search typname correspondance in native types
+      bool isNativeType = false;
+      for ( const NativeType &nativeType : nativeTypesList )
       {
-        name = name.mid( 0, pos );
-        typeName = reFieldDef.cap( 1 ).toLower();
-        if ( typeName == QLatin1String( "int" ) || typeName == QLatin1String( "integer" ) )
+        if ( nativeType.mTypeName.toLower() == typeName )
+        {
+          isNativeType = true;
+          type = nativeType.mType;
+          subType = nativeType.mSubType;
+          typeName = nativeType.mTypeName;
+          break;
+        }
+      }
+
+      // Not a native type -> check other supported types:
+      if ( isNativeType == false )
+      {
+        if ( typeName == QLatin1String( "int" ) )
         {
           type = QVariant::Int;
           typeName = QStringLiteral( "integer" );
-          length = -1;
         }
-        else if ( typeName == QLatin1String( "int8" ) || typeName == QLatin1String( "long" ) )
+        else if ( typeName == QLatin1String( "long" ) )
         {
           type = QVariant::LongLong;
           typeName = QStringLiteral( "int8" );
-          length = -1;
         }
-        else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
-        {
-          type = QVariant::Double;
-          typeName = QStringLiteral( "double" );
-          length = 20;
-          precision = 5;
-        }
-        else if ( typeName == QLatin1String( "date" ) )
-        {
-          type = QVariant::Date;
-          typeName = QStringLiteral( "date" );
-          length = -1;
-        }
-        else if ( typeName == QLatin1String( "time" ) )
-        {
-          type = QVariant::Time;
-          typeName = QStringLiteral( "time" );
-          length = -1;
-        }
-        else if ( typeName == QLatin1String( "datetime" ) )
-        {
-          type = QVariant::DateTime;
-          typeName = QStringLiteral( "datetime" );
-          length = -1;
-        }
-        else if ( typeName == QLatin1String( "bool" ) || typeName == QLatin1String( "boolean" ) )
+        else if ( typeName == QLatin1String( "bool" ) )
         {
           type = QVariant::Bool;
           typeName = QStringLiteral( "boolean" );
-          length = -1;
         }
-        else if ( typeName == QLatin1String( "binary" ) )
+        else
         {
-          type = QVariant::ByteArray;
-          typeName = QStringLiteral( "binary" );
-          length = -1;
-        }
-
-        if ( !reFieldDef.cap( 2 ).isEmpty() )
-        {
-          length = reFieldDef.cap( 2 ).toInt();
-        }
-        if ( !reFieldDef.cap( 3 ).isEmpty() )
-        {
-          precision = reFieldDef.cap( 3 ).toInt();
-        }
-        if ( !reFieldDef.cap( 4 ).isEmpty() )
-        {
-          //array
-          subType = type;
-          type = type == QVariant::String ? QVariant::StringList : QVariant::List;
-          typeName += QLatin1String( "list" );
+          QgsLogger::warning( tr( "Unsupported typeName '%1'. Will be handled as string." ).arg( typeName ) );
+          type = QVariant::String;
+          typeName = QStringLiteral( "string" );
         }
       }
-      if ( !name.isEmpty() )
-        attributes.append( QgsField( name, type, typeName, length, precision, QString(), subType ) );
+
+      int length = -1;
+      if ( !regularExpressionMatch.captured( 2 ).isEmpty() )
+      {
+        length = regularExpressionMatch.captured( 2 ).toInt();
+      }
+
+      int precision = 0;
+      if ( !regularExpressionMatch.captured( 3 ).isEmpty() )
+      {
+        precision = regularExpressionMatch.captured( 3 ).toInt();
+      }
+
+      // Array
+      if ( !regularExpressionMatch.captured( 4 ).isEmpty() )
+      {
+        if ( subType == QVariant::Invalid )
+          subType = type;
+
+        if ( type != QVariant::List && type != QVariant::StringList )
+          type = type == QVariant::String ? QVariant::StringList : QVariant::List;
+
+        const QLatin1String listSuffix( "list" );
+        if ( !typeName.endsWith( listSuffix ) )
+          typeName += QLatin1String( "list" );
+      }
+
+      attributes.append( QgsField( name, type, typeName, length, precision, QString(), subType ) );
     }
     addAttributes( attributes );
   }
@@ -559,22 +571,25 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     switch ( it->type() )
+      const QList<QgsVectorDataProvider::NativeType> nativeTypesList( nativeTypes() );
+    for ( const NativeType &nativeType : nativeTypesList )
     {
-      case QVariant::Int:
-      case QVariant::Double:
-      case QVariant::String:
-      case QVariant::Date:
-      case QVariant::Time:
-      case QVariant::DateTime:
-      case QVariant::LongLong:
-      case QVariant::StringList:
-      case QVariant::List:
-      case QVariant::Bool:
-      case QVariant::ByteArray:
-        break;
-      default:
-        QgsDebugMsg( "Field type not supported: " + it->typeName() );
-        continue;
+    case QVariant::Int:
+    case QVariant::Double:
+    case QVariant::String:
+    case QVariant::Date:
+    case QVariant::Time:
+    case QVariant::DateTime:
+    case QVariant::LongLong:
+    case QVariant::StringList:
+    case QVariant::List:
+    case QVariant::Bool:
+    case QVariant::ByteArray:
+      break;
+    default:
+      QgsDebugMsg( "Field type not supported: " + it->typeName() );
+      QgsLogger::warning( "Field type not supported: " + field.typeName() );
+      continue;
     }
     // add new field as a last one
     mFields.append( *it );
