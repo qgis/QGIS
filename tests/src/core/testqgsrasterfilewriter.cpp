@@ -27,13 +27,14 @@
 #include "cpl_conv.h"
 
 //qgis includes...
-#include <qgsrasterchecker.h>
+#include "qgsrasterchecker.h"
 #include "qgsrasterdataprovider.h"
-#include <qgsrasterlayer.h>
-#include <qgsrasterfilewriter.h>
-#include <qgsrasternuller.h>
+#include "qgsrasterlayer.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasternuller.h"
 #include "qgsrasterprojector.h"
-#include <qgsapplication.h>
+#include "qgsapplication.h"
+#include "qgsrasterpipe.h"
 
 /**
  * \ingroup UnitTests

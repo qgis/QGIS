@@ -37,7 +37,7 @@ bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const
   return !operator==( other );
 }
 
-bool QgsCurve::isClosed() const
+bool QgsCurve::isClosed2D() const
 {
   if ( numPoints() == 0 )
     return false;
@@ -46,10 +46,18 @@ bool QgsCurve::isClosed() const
   QgsPoint start = startPoint();
   QgsPoint end = endPoint();
 
-  bool closed = qgsDoubleNear( start.x(), end.x() ) &&
-                qgsDoubleNear( start.y(), end.y() );
+  return qgsDoubleNear( start.x(), end.x() ) &&
+         qgsDoubleNear( start.y(), end.y() );
+}
+bool QgsCurve::isClosed() const
+{
+  bool closed = isClosed2D();
   if ( is3D() && closed )
+  {
+    QgsPoint start = startPoint();
+    QgsPoint end = endPoint();
     closed &= qgsDoubleNear( start.z(), end.z() ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
+  }
   return closed;
 }
 

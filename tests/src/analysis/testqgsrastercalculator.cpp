@@ -65,6 +65,8 @@ class TestQgsRasterCalculator : public QObject
     void testRasterEntries();
     void calcFormulasWithReprojectedLayers();
 
+    void testStatistics();
+
   private:
 
     QgsRasterLayer *mpLandsatRasterLayer = nullptr;
@@ -799,13 +801,13 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
     QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
     qDebug() << "Actual:" << block->value( 0, 0 ) << block->value( 0, 1 ) <<  block->value( 1, 0 ) <<  block->value( 1, 1 ) <<  block->value( 2, 0 ) <<  block->value( 2, 1 );
     qDebug() << "Expected:" << values[0] << values[1] <<  values[2] << values[3] << values[4] << values[5];
-    const double epsilon { 0.0001 };
-    QVERIFY( qgsDoubleNear( block->value( 0, 0 ), static_cast<double>( values[0] ), epsilon ) );
-    QVERIFY( qgsDoubleNear( block->value( 0, 1 ), static_cast<double>( values[1] ), epsilon ) );
-    QVERIFY( qgsDoubleNear( block->value( 1, 0 ), static_cast<double>( values[2] ), epsilon ) );
-    QVERIFY( qgsDoubleNear( block->value( 1, 1 ), static_cast<double>( values[3] ), epsilon ) );
-    QVERIFY( qgsDoubleNear( block->value( 2, 0 ), static_cast<double>( values[4] ), epsilon ) );
-    QVERIFY( qgsDoubleNear( block->value( 2, 1 ), static_cast<double>( values[5] ), epsilon ) );
+    const double epsilon { 0.001 };
+    QVERIFY2( qgsDoubleNear( block->value( 0, 0 ), static_cast<double>( values[0] ), epsilon ), formula.toUtf8().constData() );
+    QVERIFY2( qgsDoubleNear( block->value( 0, 1 ), static_cast<double>( values[1] ), epsilon ), formula.toUtf8().constData() );
+    QVERIFY2( qgsDoubleNear( block->value( 1, 0 ), static_cast<double>( values[2] ), epsilon ), formula.toUtf8().constData() );
+    QVERIFY2( qgsDoubleNear( block->value( 1, 1 ), static_cast<double>( values[3] ), epsilon ), formula.toUtf8().constData() );
+    QVERIFY2( qgsDoubleNear( block->value( 2, 0 ), static_cast<double>( values[4] ), epsilon ), formula.toUtf8().constData() );
+    QVERIFY2( qgsDoubleNear( block->value( 2, 1 ), static_cast<double>( values[5] ), epsilon ), formula.toUtf8().constData() );
     delete result;
     delete block;
   };
@@ -839,6 +841,38 @@ void TestQgsRasterCalculator::calcFormulasWithReprojectedLayers()
   _chk( QStringLiteral( "min(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-125, -125, -125, -125, -126, -124}, true );
   _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, false );
   _chk( QStringLiteral( "max(-\"landsat@1\", -\"landsat_4326@2\" + 15 )" ), {-124, -123, -124, -124, -125, -122}, true );
+
+}
+
+void TestQgsRasterCalculator::testStatistics()
+{
+  QgsRasterCalculatorEntry entry1;
+  entry1.bandNumber = 1;
+  entry1.raster = mpLandsatRasterLayer;
+  entry1.ref = QStringLiteral( "landsat@1" );
+
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until open
+  QString tmpName = tmpFile.fileName();
+  tmpFile.close();
+
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
+
+  QgsRasterCalculator rc( QStringLiteral( "\"landsat@1\" * 2" ),
+                          tmpName,
+                          QStringLiteral( "GTiff" ),
+                          extent, crs, 2, 3, { entry1 },
+                          QgsProject::instance()->transformContext() );
+  QCOMPARE( static_cast< int >( rc.processCalculation() ), 0 );
+
+  //open output file and check stats are there
+  auto ds = GDALOpenEx( tmpName.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_READONLY, nullptr, nullptr, nullptr );
+  auto band = GDALGetRasterBand( ds, 1 );
+  double sMin, sMax, sMean, sStdDev;
+  QCOMPARE( GDALGetRasterStatistics( band, true, false, &sMin, &sMax, &sMean, &sStdDev ), CE_None );
+  QCOMPARE( sMin, 248.0 );
+  QCOMPARE( sMax, 250.0 );
 
 }
 

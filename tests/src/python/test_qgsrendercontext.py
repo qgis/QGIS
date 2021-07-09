@@ -63,6 +63,10 @@ class TestQgsRenderContext(unittest.TestCase):
         c.setZRange(QgsDoubleRange(1, 10))
         self.assertEqual(c.zRange(), QgsDoubleRange(1, 10))
 
+        self.assertEqual(c.symbologyReferenceScale(), -1)
+        c.setSymbologyReferenceScale(1000)
+        self.assertEqual(c.symbologyReferenceScale(), 1000)
+
     def testCopyConstructor(self):
         """
         Test the copy constructor
@@ -72,11 +76,13 @@ class TestQgsRenderContext(unittest.TestCase):
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysText)
         c1.setMapExtent(QgsRectangle(1, 2, 3, 4))
         c1.setZRange(QgsDoubleRange(1, 10))
+        c1.setSymbologyReferenceScale(1000)
 
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysText)
         self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
+        self.assertEqual(c2.symbologyReferenceScale(), 1000)
 
         c1.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
@@ -145,6 +151,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertTrue(rc.testFlag(QgsRenderContext.LosslessImageRendering))
         self.assertTrue(rc.testFlag(QgsRenderContext.Render3DMap))
         self.assertEqual(ms.zRange(), QgsDoubleRange(1, 10))
+        self.assertEqual(rc.symbologyReferenceScale(), -1)
 
         ms.setTextRenderFormat(QgsRenderContext.TextFormatAlwaysOutlines)
         ms.setZRange(QgsDoubleRange())
@@ -304,6 +311,45 @@ class TestQgsRenderContext(unittest.TestCase):
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 1.0, places=5)
 
+        # with symbologyReferenceScale set
+        c = QgsMapUnitScale()
+        r.setSymbologyReferenceScale(1000)
+        r.setRendererScale(1000)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(sf, 0.5, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(sf, 11.8110236, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 4.166666665625, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(sf, 1.0, places=5)
+
+        r.setRendererScale(2000)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(sf, 0.5 / 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(sf, 11.8110236 / 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 4.166666665625 / 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0 / 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(sf, 1.0 / 2, places=5)
+
+        r.setRendererScale(500)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
+        self.assertAlmostEqual(sf, 0.5 * 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(sf, 11.8110236 * 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(sf, 4.166666665625 * 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(sf, 300.0 * 2, places=5)
+        sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(sf, 1.0 * 2, places=5)
+
     def testConvertToPainterUnits(self):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -372,14 +418,19 @@ class TestQgsRenderContext(unittest.TestCase):
 
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
         self.assertEqual(size, 2.0)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMapUnits), 2)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMillimeters), 2)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPoints), 5.66929, 4)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
         self.assertAlmostEqual(size, 3401.574, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderInches), 5.66929, 4)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPixels), 2, 4)
 
         # minimum size greater than the calculated size, so size should be limited to minSizeMM
         c.minSizeMM = 5
@@ -442,6 +493,61 @@ class TestQgsRenderContext(unittest.TestCase):
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
         c.maxScale = 0
+
+        # with symbology reference scale
+        c = QgsMapUnitScale()
+        r.setSymbologyReferenceScale(1000)
+        r.setRendererScale(1000)
+
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
+        self.assertEqual(size, 2.0)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMapUnits), 2)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(size, 47.244094, places=5)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMillimeters), 2)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPoints), 5.66929, 4)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderInches), 5.66929, 4)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(size, 4.0, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPixels), 2, 4)
+
+        r.setRendererScale(2000)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
+        self.assertEqual(size, 2.0)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMapUnits), 2)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(size, 47.244094 * 2, places=5)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMillimeters), 2)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833 * 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPoints), 5.66929, 4)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574 * 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderInches), 5.66929, 4)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(size, 4.0 * 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPixels), 2, 4)
+
+        r.setRendererScale(500)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
+        self.assertEqual(size, 2.0)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMapUnits), 2)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderMillimeters, c)
+        self.assertAlmostEqual(size, 47.244094 / 2, places=5)
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderMillimeters), 2)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderPoints, c)
+        self.assertAlmostEqual(size, 47.2440833 / 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPoints), 5.66929, 4)
+        size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderInches, c)
+        self.assertAlmostEqual(size, 3401.574 / 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderInches), 5.66929, 4)
+        size = r.convertToMapUnits(2, QgsUnitTypes.RenderPixels, c)
+        self.assertAlmostEqual(size, 4.0 / 2, places=5)
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderPixels), 2, 4)
 
     def testPixelSizeScaleFactor(self):
         ms = QgsMapSettings()

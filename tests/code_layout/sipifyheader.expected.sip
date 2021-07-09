@@ -134,6 +134,7 @@ A constructor with some special character types
 %End
 
     Constructor();
+
     virtual ~Destructor();
 
     Constructor( const QString &name,

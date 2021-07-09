@@ -19,26 +19,36 @@
 #include "qgsunittypes.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgssettings.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsproject.h"
+#include "qgsbearingnumericformat.h"
 
 #include <cmath>
 
-QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle *tool, Qt::WindowFlags f )
+QgsDisplayAngle::QgsDisplayAngle( QgsMapTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
   , mTool( tool )
 {
   setupUi( this );
 }
 
-void QgsDisplayAngle::setValueInRadians( double value )
+void QgsDisplayAngle::setAngleInRadians( double value )
 {
   mValue = value;
-  updateUi();
-}
 
-void QgsDisplayAngle::updateUi()
-{
   QgsSettings settings;
   QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
   int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
   mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, unit ), decimals, unit ) );
+}
+
+void QgsDisplayAngle::setBearingInRadians( double value )
+{
+  mValue = value;
+
+  const double degrees = value * 180.0 / M_PI;
+
+  QgsNumericFormatContext context;
+  const QString valueAsText = QgsProject::instance()->displaySettings()->bearingFormat()->formatDouble( degrees, context );
+  mAngleLineEdit->setText( valueAsText );
 }

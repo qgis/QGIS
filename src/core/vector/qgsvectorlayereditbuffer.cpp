@@ -711,6 +711,11 @@ void QgsVectorLayerEditBuffer::rollBack()
   Q_ASSERT( mAddedFeatures.isEmpty() );
 }
 
+QgsFeatureIds QgsVectorLayerEditBuffer::allAddedOrEditedFeatures() const
+{
+  return qgis::listToSet( mAddedFeatures.keys() ).unite( qgis::listToSet( mChangedAttributeValues.keys() ) ).unite( qgis::listToSet( mChangedGeometries.keys() ) );
+}
+
 #if 0
 QString QgsVectorLayerEditBuffer::dumpEditBuffer()
 {

@@ -69,7 +69,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             cls.uri + f' key=\'pk\' srid=4326 type=POINT table="{cls.schemaName}"."some_data" (geom) sql=', 'test')
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
-            cls.uri + f' key=\'pk\' srid=4326 type=POLYGON table="{cls.schemaName}"."some_poly_data" (geom) sql=', 'test')
+            cls.uri + f' key=\'pk\' srid=4326 type=POLYGON table="{cls.schemaName}"."some_poly_data" (geom) sql=',
+            'test')
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
@@ -95,17 +96,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def getSource(self):
         # create temporary table for edit tests
         create_sql = f'CREATE TABLE "{self.schemaName}"."edit_data" ( ' \
-            '"pk" INTEGER NOT NULL PRIMARY KEY,' \
-            '"cnt" INTEGER,' \
-            '"name" NVARCHAR(100), ' \
-            '"name2" NVARCHAR(100), ' \
-            '"num_char" NVARCHAR(100),' \
-            '"dt" TIMESTAMP,' \
-            '"date" DATE,' \
-            '"time" TIME,' \
-            '"geom" ST_POINT(4326))'
+                     '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"cnt" INTEGER,' \
+                     '"name" NVARCHAR(100), ' \
+                     '"name2" NVARCHAR(100), ' \
+                     '"num_char" NVARCHAR(100),' \
+                     '"dt" TIMESTAMP,' \
+                     '"date" DATE,' \
+                     '"time" TIME,' \
+                     '"geom" ST_POINT(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "dt", "date", ' \
-            '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+                     '"time", "geom") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
         insert_args = [
             [5, -200, None, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01',
              bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
@@ -118,8 +119,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
              bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
         self.prepareTestTable('edit_data', create_sql, insert_sql, insert_args)
 
-        return self.createVectorLayer(f'key=\'pk\' srid=4326 type=POINT table="{self.schemaName}"."edit_data" (geom) sql=',
-                                      'test')
+        return self.createVectorLayer(
+            f'key=\'pk\' srid=4326 type=POINT table="{self.schemaName}"."edit_data" (geom) sql=',
+            'test')
 
     def getEditableLayer(self):
         return self.getSource()
@@ -210,11 +212,11 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testCompositeUniqueConstraints(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."unique_composite_constraints" ( ' \
-            '"ID" INTEGER PRIMARY KEY,' \
-            '"VAL1" INTEGER,' \
-            '"VAL2" INTEGER,' \
-            '"VAL3" INTEGER,' \
-            'UNIQUE (VAL1, VAL2))'
+                     '"ID" INTEGER PRIMARY KEY,' \
+                     '"VAL1" INTEGER,' \
+                     '"VAL2" INTEGER,' \
+                     '"VAL3" INTEGER,' \
+                     'UNIQUE (VAL1, VAL2))'
         QgsHanaProviderUtils.executeSQL(self.conn, create_sql)
 
         vl = self.createVectorLayer(f'table="{self.schemaName}"."unique_composite_constraints" sql=',
@@ -296,8 +298,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testBooleanType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."boolean_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"fld1" BOOLEAN)'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"fld1" BOOLEAN)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."boolean_type" ("id", "fld1") VALUES (?, ?)'
         insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
@@ -313,11 +315,11 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testDecimalAndFloatTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."decimal_and_float_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"decimal_field" DECIMAL(15,4),' \
-            '"float_field" FLOAT(12))'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"decimal_field" DECIMAL(15,4),' \
+                     '"float_field" FLOAT(12))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."decimal_and_float_type" ("id", "decimal_field", ' \
-            f'"float_field") VALUES (?, ?, ?) '
+                     f'"float_field") VALUES (?, ?, ?) '
         insert_args = [[1, 1.1234, 1.76543]]
         self.prepareTestTable('decimal_and_float_type', create_sql, insert_sql, insert_args)
 
@@ -344,12 +346,12 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testDateTimeTypes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."date_time_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"date_field" DATE,' \
-            '"time_field" TIME,' \
-            '"datetime_field" TIMESTAMP)'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"date_field" DATE,' \
+                     '"time_field" TIME,' \
+                     '"datetime_field" TIMESTAMP)'
         insert_sql = f'INSERT INTO "{self.schemaName}"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
-            'VALUES (?, ?, ?, ?)'
+                     'VALUES (?, ?, ?, ?)'
         insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
@@ -374,8 +376,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testBinaryType(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"blob" VARBINARY(114))'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(114))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmludmFsdWU=')], [2, None]]
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
@@ -392,8 +394,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testBinaryTypeEdit(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."binary_type_edit" ( ' \
-            '"id" INTEGER NOT NULL PRIMARY KEY,' \
-            '"blob" VARBINARY(1000))'
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(1000))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
         insert_args = [[1, QByteArray(b'YmJi')]]
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
@@ -425,11 +427,11 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     def testGeometryAttributes(self):
         create_sql = f'CREATE TABLE "{self.schemaName}"."geometry_attribute" ( ' \
-            'ID INTEGER NOT NULL PRIMARY KEY,' \
-            'GEOM1 ST_GEOMETRY(4326),' \
-            'GEOM2 ST_GEOMETRY(4326))'
+                     'ID INTEGER NOT NULL PRIMARY KEY,' \
+                     'GEOM1 ST_GEOMETRY(4326),' \
+                     'GEOM2 ST_GEOMETRY(4326))'
         insert_sql = f'INSERT INTO "{self.schemaName}"."geometry_attribute" (ID, GEOM1, GEOM2) ' \
-            f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
+                     f'VALUES (?, ST_GeomFromText(?, 4326), ST_GeomFromText(?, 4326)) '
         insert_args = [[1, 'POINT (1 2)', 'LINESTRING (0 0,1 1)']]
         self.prepareTestTable('geometry_attribute', create_sql, insert_sql, insert_args)
 
@@ -448,8 +450,10 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, {1: 'LINESTRING (0 0,2 2)'})
 
     def testCreateLayerViaExport(self):
-        def runTest(self, primaryKey, attributeNames, attributeValues):
-            layer = QgsVectorLayer("Point?", "new_table", "memory")
+        def runTest(crs, primaryKey, attributeNames, attributeValues):
+            self.assertTrue(crs.isValid())
+
+            layer = QgsVectorLayer(f"Point?crs={crs.authid()}", "new_table", "memory")
             pr = layer.dataProvider()
 
             fields = [QgsField("fldid", QVariant.LongLong),
@@ -485,8 +489,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
             QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
             uri = self.uri + f' key=\'{primaryKey}\' table="{self.schemaName}"."import_data" (geom) sql='
-            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'hana',
-                                                                QgsCoordinateReferenceSystem('EPSG:4326'))
+            error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'hana', crs)
             self.assertEqual(error, QgsVectorLayerExporter.NoError)
 
             import_layer = self.createVectorLayer(
@@ -499,12 +502,35 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             geom = [f.geometry().asWkt() for f in import_layer.getFeatures()]
             self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
 
+            QgsHanaProviderUtils.dropTableIfExists(self.conn, self.schemaName, 'import_data')
+
+        def is_crs_installed(srid):
+            num_crs = QgsHanaProviderUtils.executeSQLFetchOne(self.conn,
+                                                              f'SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS '
+                                                              f'WHERE SRS_ID = {srid}')
+            return num_crs == 1
+
+        crs_4326 = QgsCoordinateReferenceSystem('EPSG:4326')
         # primary key already exists in the  imported layer
-        runTest(self, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
-                                                               [3, 'test2', NULL], [4, NULL, 13]])
+        runTest(crs_4326, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
+                                                                   [3, 'test2', NULL], [4, NULL, 13]])
         # primary key doesn't exist in the imported layer
-        runTest(self, 'pk', ['pk', 'fldid', 'fldtxt', 'fldint'], [[1, 1, 'test', 11], [2, 2, 'test2', 13],
-                                                                  [3, 3, 'test2', NULL], [4, 4, NULL, 13]])
+        runTest(crs_4326, 'pk', ['pk', 'fldid', 'fldtxt', 'fldint'], [[1, 1, 'test', 11], [2, 2, 'test2', 13],
+                                                                      [3, 3, 'test2', NULL], [4, 4, NULL, 13]])
+        # crs id that do not exist
+        # unfortunately, we cannot test new units of measure as
+        # QgsCoordinateReferenceSystem does not allow creating
+        # a new crs object from WKT that contain custom AUTHORITY
+        # or UNIT values.
+        unknown_srid = 3395
+        if not is_crs_installed(unknown_srid):
+            crs = QgsCoordinateReferenceSystem.fromEpsgId(unknown_srid)
+
+            runTest(crs, 'fldid', ['fldid', 'fldtxt', 'fldint'], [[1, 'test', 11], [2, 'test2', 13],
+                                                                  [3, 'test2', NULL], [4, NULL, 13]])
+            self.assertTrue(is_crs_installed(unknown_srid))
+            QgsHanaProviderUtils.executeSQL(self.conn, f'DROP SPATIAL REFERENCE SYSTEM "{crs.description()}"')
+            # QgsHanaProviderUtils.executeSQL(self.conn, 'DROP SPATIAL UNIT OF MEASURE degree_qgis')
 
     def testFilterRectOutsideSrsExtent(self):
         """Test filterRect which partially lies outside of the srs extent"""

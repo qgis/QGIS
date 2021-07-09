@@ -110,6 +110,14 @@ Key event for overriding. Default implementation does nothing.
 gesture event for overriding. Default implementation does nothing.
 %End
 
+    virtual bool canvasToolTipEvent( QHelpEvent *e );
+%Docstring
+Tooltip event for overriding. Default implementation does nothing.
+Returns whether the event was handled by the tool and should not be propagated further.
+
+.. versionadded:: 3.22
+%End
+
     void setAction( QAction *action );
 %Docstring
 Use this to associate a QAction to this maptool. Then when the setMapTool
@@ -169,6 +177,8 @@ returns pointer to the tool's map canvas
     QString toolName();
 %Docstring
 Emit map tool changed with the old tool
+
+.. seealso:: :py:func:`setToolName`
 
 .. versionadded:: 2.3
 %End
@@ -239,7 +249,7 @@ The default implementation does nothing and returns false.
 %End
 
   signals:
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 %Docstring
 emit a message
 %End
@@ -303,6 +313,15 @@ Transforms a ``rect`` from map coordinates to ``layer`` coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 Transforms a ``point`` from map coordinates to screen coordinates.
+%End
+
+    void setToolName( const QString &name );
+%Docstring
+Sets the tool's ``name``.
+
+.. seealso:: :py:func:`toolName`
+
+.. versionadded:: 3.20
 %End
 
 

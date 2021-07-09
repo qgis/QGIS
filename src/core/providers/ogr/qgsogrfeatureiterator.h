@@ -18,6 +18,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsogrconnpool.h"
 #include "qgsfields.h"
+#include "qgsogrutils.h"
 
 #include <ogr_api.h>
 

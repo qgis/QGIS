@@ -294,7 +294,12 @@ class CORE_EXPORT QgsFeatureRenderer
     //! create a renderer from XML element
     static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    //! store renderer info to XML element
+    /**
+     * Stores renderer properties to an XML element.
+     *
+     * Subclasses which override this method should call saveRendererData() as part of their
+     * implementation in order to store all common base class properties in the returned DOM element.
+     */
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
@@ -430,6 +435,38 @@ class CORE_EXPORT QgsFeatureRenderer
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
     /**
+     * Returns the symbology reference scale.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * A value of -1 indicates that symbology scaling by reference scale is disabled.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see setReferenceScale()
+     * \since QGIS 3.22
+     */
+    double referenceScale() const { return mReferenceScale; }
+
+    /**
+     * Sets the symbology reference \a scale.
+     *
+     * This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * Set to -1 to disable symbology scaling by reference scale.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if \a scale is set to 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see referenceScale()
+     * \since QGIS 3.22
+     */
+    void setReferenceScale( double scale ) { mReferenceScale = scale; }
+
+    /**
      * Gets the order in which features shall be processed by this renderer.
      * \note this property has no effect if orderByEnabled() is FALSE
      * \see orderByEnabled()
@@ -490,6 +527,22 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Clones generic renderer data to another renderer.
+     *
+     * Currently clones
+     *
+     * - Order by
+     * - Paint effect
+     * - Reference scale
+     * - Symbol levels enabled/disabled
+     * - Force raster render enabled/disabled
+     *
+     * \param destRenderer destination renderer for copied effect
+     * \since QGIS 3.22
+     */
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -515,28 +568,29 @@ class CORE_EXPORT QgsFeatureRenderer
     static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 
     /**
-     * Clones generic renderer data to another renderer.
-     * Currently clones
+     * Saves generic renderer data into the specified \a element.
      *
-     * - Order By
-     * - Paint Effect
+     * This method should be called in a subclass' save() implementation in order
+     * to store all common base class properties in the DOM \a element.
      *
-     * \param destRenderer destination renderer for copied effect
+     * \since QGIS 3.22
      */
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
 
     QString mType;
 
-    bool mUsingSymbolLevels;
+    bool mUsingSymbolLevels = false;
 
     //! The current type of editing marker
     int mCurrentVertexMarkerType;
     //! The current size of editing marker
-    double mCurrentVertexMarkerSize;
+    double mCurrentVertexMarkerSize = 2;
 
     QgsPaintEffect *mPaintEffect = nullptr;
 
-    bool mForceRaster;
+    bool mForceRaster = false;
+
+    double mReferenceScale = -1.0;
 
     /**
      * \note this function is used to convert old sizeScale expressions to symbol
@@ -552,7 +606,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     QgsFeatureRequest::OrderBy mOrderBy;
 
-    bool mOrderByEnabled;
+    bool mOrderByEnabled = false;
 
   private:
 #ifdef SIP_RUN

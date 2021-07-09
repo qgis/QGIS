@@ -20,6 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+#include "qgspropertycollection.h"
+
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -41,29 +44,29 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
- * \brief Base class for processing modules.
+ * \brief Contains a pipeline of raster interfaces for sequential raster processing.
  */
 class CORE_EXPORT QgsRasterPipe
 {
   public:
-    // Role of known interfaces
-    enum Role
+
+    /**
+     * Data definable properties.
+     * \since QGIS 3.22
+     */
+    enum Property
     {
-      UnknownRole   = 0,
-      ProviderRole  = 1,
-      RendererRole  = 2,
-      BrightnessRole = 3,
-      ResamplerRole = 4,
-      ProjectorRole = 5,
-      NullerRole = 6,
-      HueSaturationRole = 7,
+      RendererOpacity, //!< Raster renderer global opacity
     };
 
     /**
-     * Constructor for QgsRasterPipe.
+     * Constructor for an empty QgsRasterPipe.
      */
     QgsRasterPipe() = default;
 
+    /**
+     * Copy constructor.
+     */
     QgsRasterPipe( const QgsRasterPipe &pipe ) SIP_SKIP;
 
     ~QgsRasterPipe();
@@ -71,8 +74,11 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterPipe &operator=( const QgsRasterPipe &rh ) = delete;
 
     /**
-     * Try to insert interface at specified index and connect
+     * Attempts to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and FALSE is returned
+     *
+     * \see set()
+     * \see replace()
     */
     bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 #ifdef SIP_RUN
@@ -89,75 +95,176 @@ class CORE_EXPORT QgsRasterPipe
 #endif
 
     /**
-     * Try to replace interface at specified index and connect
-     * if connection would fail, the interface is not inserted and FALSE is returned
+     * Attempts to replace the interface at specified index and reconnect the pipe.
+     *
+     * If the connection would fail, the interface is not inserted and FALSE is returned.
+     *
+     * \see insert()
+     * \see set()
     */
     bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
     /**
-     * Insert a new known interface in default place or replace interface of the same
-     * role if it already exists. Known interfaces are: QgsRasterDataProvider,
-     * QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
-     * subclasses. For unknown interfaces it mus be explicitly specified position
-     * where it should be inserted using insert() method.
+     * Inserts a new known interface in default place or replace interface of the same
+     * role if it already exists.
+     *
+     * Known interfaces are:
+     *
+     * - QgsRasterDataProvider,
+     * - QgsRasterRenderer
+     * - QgsRasterResampleFilter
+     * - QgsRasterProjector
+     * - QgsHueSaturationFilter
+     * - QgsBrightnessContrastFilter
+     *
+     * (and their subclasses).
+     *
+     * For other interfaces the position of the interface in the pipe must be explicitly
+     * specified using the insert() method.
+     *
+     * \see insert()
+     * \see replace()
      */
     bool set( QgsRasterInterface *interface SIP_TRANSFER );
 
-    //! Remove and delete interface at given index if possible
+    /**
+     * Removes and deletes the interface at given index (if possible).
+     *
+     * Returns TRUE if the interface was successfully removed.
+     */
     bool remove( int idx );
 
-    //! Remove and delete interface from pipe if possible
+    /**
+     * Removes and deletes interface from pipe (if possible).
+     *
+     * Returns TRUE if the interface was successfully removed.
+     */
     bool remove( QgsRasterInterface *interface );
 
+    /**
+     * Returns the size of the pipe (the number of interfaces contained in the pipe).
+     */
     int size() const { return mInterfaces.size(); }
+
+    /**
+     * Returns the interface at the specified index.
+     */
     QgsRasterInterface *at( int idx ) const { return mInterfaces.at( idx ); }
+
+    /**
+     * Returns last interface in the pipe.
+     */
     QgsRasterInterface *last() const { return mInterfaces.last(); }
 
     /**
-     * Set interface at index on/off
-     *  Returns TRUE on success
+     * Set whether the interface at the specified index is enabled.
+     *
+     * Returns TRUE on success.
     */
     bool setOn( int idx, bool on );
 
-    //! Test if interface at index may be switched on/off
+    /**
+     * Returns TRUE if the interface at the specified index may be switched on or off.
+     */
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces
+
+    /**
+     * Returns the data provider interface, or NULLPTR if no data provider is present in the pipe.
+     */
     QgsRasterDataProvider *provider() const;
+
+    /**
+     * Returns the raster renderer interface, or NULLPTR if no raster renderer is present in the pipe.
+     */
     QgsRasterRenderer *renderer() const;
+
+    /**
+     * Returns the resample filter interface, or NULLPTR if no resample filter is present in the pipe.
+     */
     QgsRasterResampleFilter *resampleFilter() const;
+
+    /**
+     * Returns the brightness filter interface, or NULLPTR if no brightness filter is present in the pipe.
+     */
     QgsBrightnessContrastFilter *brightnessFilter() const;
+
+    /**
+     * Returns the hue/saturation interface, or NULLPTR if no hue/saturation filter is present in the pipe.
+     */
     QgsHueSaturationFilter *hueSaturationFilter() const;
+
+    /**
+     * Returns the projector interface, or NULLPTR if no projector is present in the pipe.
+     */
     QgsRasterProjector *projector() const;
+
+    /**
+     * Returns the raster nuller interface, or NULLPTR if no raster nuller is present in the pipe.
+     */
     QgsRasterNuller *nuller() const;
 
     /**
-     * Stage at which resampling occurs.
-     * \since QGIS 3.16
-     */
-    enum class ResamplingStage
-    {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
-    };
-
-    /**
-     * Select which stage of the pipe should apply resampling.
+     * Sets which stage of the pipe should apply resampling.
      *
      * Provider resampling is only supported if provider sets
      * ProviderHintCanPerformProviderResampling in providerCapabilities().
      *
+     * \see resamplingStage()
      * \since QGIS 3.16
      */
-    void setResamplingStage( ResamplingStage stage );
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
 
     /**
      * Returns which stage of the pipe should apply resampling
+     *
+     * \see setResamplingStage()
      * \since QGIS 3.16
      */
-    ResamplingStage resamplingStage() const { return mResamplingStage; }
+    Qgis::RasterResamplingStage resamplingStage() const { return mResamplingStage; }
+
+    /**
+     * Returns a reference to the pipe's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 3.22
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the pipe's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \note not available in Python bindings
+     * \since QGIS 3.22
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+    /**
+     * Sets the pipe's property \a collection, used for data defined overrides.
+     *
+     * Any existing properties will be discarded.
+     *
+     * \see dataDefinedProperties()
+     * \see Property
+     * \since QGIS 3.22
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
+     * Evaluates any data defined properties set on the pipe, applying their results
+     * to the corresponding interfaces in place.
+     *
+     * \since QGIS 3.22
+     */
+    void evaluateDataDefinedProperties( QgsExpressionContext &context );
+
+    /**
+     * Returns the definitions for data defined properties available for use in raster pipes.
+     *
+     * \since QGIS 3.22
+     */
+    static QgsPropertiesDefinition propertyDefinitions();
 
   private:
 #ifdef SIP_RUN
@@ -165,12 +272,12 @@ class CORE_EXPORT QgsRasterPipe
 #endif
 
     //! Gets known parent type_info of interface parent
-    Role interfaceRole( QgsRasterInterface *iface ) const;
+    Qgis::RasterPipeInterfaceRole interfaceRole( QgsRasterInterface *iface ) const;
 
     // Interfaces in pipe, the first is always provider
     QVector<QgsRasterInterface *> mInterfaces;
 
-    QMap<Role, int> mRoleMap;
+    QMap<Qgis::RasterPipeInterfaceRole, int> mRoleMap;
 
     // Set role in mRoleMap
     void setRole( QgsRasterInterface *interface, int idx );
@@ -182,7 +289,7 @@ class CORE_EXPORT QgsRasterPipe
     bool checkBounds( int idx ) const;
 
     //! Gets known interface by role
-    QgsRasterInterface *interface( Role role ) const;
+    QgsRasterInterface *interface( Qgis::RasterPipeInterfaceRole role ) const;
 
     /**
      * \brief Try to connect interfaces in pipe and to the provider at beginning.
@@ -190,7 +297,15 @@ class CORE_EXPORT QgsRasterPipe
     */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 
-    ResamplingStage mResamplingStage = ResamplingStage::ResampleFilter;
+    Qgis::RasterResamplingStage mResamplingStage = Qgis::RasterResamplingStage::ResampleFilter;
+
+    //! Property collection for data defined raster pipe settings
+    QgsPropertyCollection mDataDefinedProperties;
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
+    static void initPropertyDefinitions();
 };
 
 #endif

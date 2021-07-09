@@ -259,7 +259,10 @@ create a renderer from XML element
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
-store renderer info to XML element
+Stores renderer properties to an XML element.
+
+Subclasses which override this method should call :py:func:`~QgsFeatureRenderer.saveRendererData` as part of their
+implementation in order to store all common base class properties in the returned DOM element.
 %End
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QVariantMap &props = QVariantMap() ) const;
@@ -420,6 +423,40 @@ Sets whether the renderer should be rendered to a raster destination.
 .. versionadded:: 2.12
 %End
 
+    double referenceScale() const;
+%Docstring
+Returns the symbology reference scale.
+
+This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+A value of -1 indicates that symbology scaling by reference scale is disabled.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`setReferenceScale`
+
+.. versionadded:: 3.22
+%End
+
+    void setReferenceScale( double scale );
+%Docstring
+Sets the symbology reference ``scale``.
+
+This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+Set to -1 to disable symbology scaling by reference scale.
+
+The symbology reference scale is an optional property which specifies the reference
+scale at which symbology in paper units (such a millimeters or points) is fixed
+to. For instance, if ``scale`` is set to 1000 then a 2mm thick line will be rendered at
+exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+
+.. seealso:: :py:func:`referenceScale`
+
+.. versionadded:: 3.22
+%End
+
     QgsFeatureRequest::OrderBy orderBy() const;
 %Docstring
 Gets the order in which features shall be processed by this renderer.
@@ -503,6 +540,23 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+%Docstring
+Clones generic renderer data to another renderer.
+
+Currently clones
+
+- Order by
+- Paint effect
+- Reference scale
+- Symbol levels enabled/disabled
+- Force raster render enabled/disabled
+
+:param destRenderer: destination renderer for copied effect
+
+.. versionadded:: 3.22
+%End
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -533,16 +587,16 @@ Creates a point in screen coordinates from a wkb string in map
 coordinates
 %End
 
-    void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+    void saveRendererData( QDomDocument &doc, QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
-Clones generic renderer data to another renderer.
-Currently clones
+Saves generic renderer data into the specified ``element``.
 
-- Order By
-- Paint Effect
+This method should be called in a subclass' :py:func:`~QgsFeatureRenderer.save` implementation in order
+to store all common base class properties in the DOM ``element``.
 
-:param destRenderer: destination renderer for copied effect
+.. versionadded:: 3.22
 %End
+
 
 
 

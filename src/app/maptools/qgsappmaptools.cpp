@@ -29,6 +29,7 @@
 #include "qgsmaptoolcircle3points.h"
 #include "qgsmaptoolcircle2tangentspoint.h"
 #include "qgsmaptoolmeasureangle.h"
+#include "qgsmaptoolmeasurebearing.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolsvgannotation.h"
 #include "qgsmaptoolcircularstringcurvepoint.h"
@@ -120,6 +121,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::MeasureDistance, new QgsMeasureTool( canvas, false /* area */ ) );
   mTools.insert( Tool::MeasureArea, new QgsMeasureTool( canvas, true /* area */ ) );
   mTools.insert( Tool::MeasureAngle, new QgsMapToolMeasureAngle( canvas ) );
+  mTools.insert( Tool::MeasureBearing, new QgsMapToolMeasureBearing( canvas ) );
   mTools.insert( Tool::TextAnnotation, new QgsMapToolTextAnnotation( canvas ) );
   mTools.insert( Tool::FormAnnotation, new QgsMapToolFormAnnotation( canvas ) );
   mTools.insert( Tool::HtmlAnnotation, new QgsMapToolHtmlAnnotation( canvas ) );

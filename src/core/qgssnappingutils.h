@@ -146,6 +146,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         , unit( u )
       {}
 
+      // TODO c++20 - replace with = default
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;

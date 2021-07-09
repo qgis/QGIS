@@ -6,25 +6,58 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>400</height>
+    <width>453</width>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Add Polymorphic Relation</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,0">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+   <item row="7" column="0">
+    <widget class="QLabel" name="mReferencedLayersLabel">
+     <property name="text">
+      <string>Referenced layers</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mIdLineEdit">
+     <property name="placeholderText">
+      <string>[Generated automatically]</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsFieldComboBox" name="mReferencedLayerFieldComboBox"/>
+   </item>
+   <item row="6" column="1">
+    <widget class="QComboBox" name="mRelationStrengthComboBox"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsMapLayerComboBox" name="mReferencingLayerComboBox"/>
+   </item>
+   <item row="7" column="1">
+    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="mRelationStrengthLabel">
+     <property name="text">
+      <string>Relationship strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="mReferencingLayerLabel">
      <property name="text">
       <string>Referencing layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -42,17 +75,88 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="mReferencedLayersLabel">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mReferencedLayerExpressionLabel">
      <property name="text">
-      <string>Referenced layers</string>
+      <string>Layer field expression</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QgsMapLayerComboBox" name="mReferencingLayerComboBox"/>
+   <item row="3" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mReferencedLayerExpressionWidget" native="true"/>
    </item>
-   <item row="11" column="0" colspan="3">
+   <item row="9" column="0" colspan="2">
+    <widget class="QWidget" name="mFieldsMappingWidget" native="true">
+     <layout class="QGridLayout" name="mFieldsMappingLayout">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="mFieldsMappingTable">
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="rowCount">
+         <number>0</number>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>150</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string comment="polymorphic relations">Referenced (parent)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Referencing (child)</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QVBoxLayout" name="mFieldsMappingButtonsVBoxLayout">
+        <item>
+         <widget class="QToolButton" name="mFieldsMappingAddButton">
+          <property name="toolTip">
+           <string>Add new field pair as part of a composite foreign key</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mFieldsMappingRemoveButton">
+          <property name="toolTip">
+           <string>Remove the selected or last pair of fields</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="mFieldsMappingVSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="2">
     <widget class="QLabel" name="mPolymorphicRelationHelpLabel">
      <property name="text">
       <string>Polymorphic relations are for advanced usage where a set of standard relations have the same referencing layer but the referenced layer is calculated from an expression.</string>
@@ -62,110 +166,12 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="2">
-    <layout class="QVBoxLayout" name="mFieldsMappingButtonsVBoxLayout">
-     <item>
-      <widget class="QToolButton" name="mFieldsMappingAddButton">
-       <property name="toolTip">
-        <string>Add new field pair as part of a composite foreign key</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mFieldsMappingRemoveButton">
-       <property name="toolTip">
-        <string>Remove the selected or last pair of fields</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="mFieldsMappingVSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
    <item row="8" column="0" colspan="2">
     <widget class="QLabel" name="mFieldsMappingLabel">
      <property name="text">
       <string>Fields mapping</string>
      </property>
     </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsFieldComboBox" name="mReferencedLayerFieldComboBox"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mReferencedLayerExpressionLabel">
-     <property name="text">
-      <string>Layer field expression</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1" colspan="2">
-    <widget class="QgsCheckableComboBox" name="mReferencedLayersComboBox"/>
-   </item>
-   <item row="9" column="0" colspan="2">
-    <widget class="QTableWidget" name="mFieldsMappingTable">
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <property name="rowCount">
-      <number>0</number>
-     </property>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>150</number>
-     </attribute>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string comment="polymorphic relations">Referenced (parent)</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Referencing (child)</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="mIdLineEdit">
-     <property name="placeholderText">
-      <string>[Generated automatically]</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsFieldExpressionWidget" name="mReferencedLayerExpressionWidget" native="true"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="mRelationStrengthLabel">
-     <property name="text">
-      <string>Relationship strength</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QComboBox" name="mRelationStrengthComboBox"/>
    </item>
   </layout>
  </widget>
@@ -197,10 +203,8 @@
   <tabstop>mReferencingLayerComboBox</tabstop>
   <tabstop>mReferencedLayerFieldComboBox</tabstop>
   <tabstop>mRelationStrengthComboBox</tabstop>
-  <tabstop>mFieldsMappingTable</tabstop>
   <tabstop>mFieldsMappingAddButton</tabstop>
   <tabstop>mFieldsMappingRemoveButton</tabstop>
-  <tabstop>mReferencedLayersComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

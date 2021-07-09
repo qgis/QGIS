@@ -70,10 +70,18 @@ bool LayerRenderJob::imageCanBeComposed() const
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
+{}
 
+void QgsMapRendererJob::start()
 {
+  if ( mSettings.hasValidSettings() )
+    startPrivate();
+  else
+  {
+    mErrors.append( QgsMapRendererJob::Error( QString(), tr( "Invalid map settings" ) ) );
+    emit finished();
+  }
 }
-
 
 QgsMapRendererQImageJob::QgsMapRendererQImageJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )
@@ -680,7 +688,11 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context = QgsRenderContext::fromMapSettings( mSettings );
   job.context.setPainter( painter );
   job.context.setLabelingEngine( labelingEngine2 );
+
+  QgsRectangle r1 = mSettings.visibleExtent();
+  r1.grow( mSettings.extentBuffer() );
   job.context.setExtent( mSettings.visibleExtent() );
+
   job.context.setFeatureFilterProvider( mFeatureFilterProvider );
   QgsCoordinateTransform ct;
   ct.setDestinationCrs( mSettings.destinationCrs() );

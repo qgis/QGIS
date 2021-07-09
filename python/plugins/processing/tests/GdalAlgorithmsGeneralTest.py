@@ -240,7 +240,7 @@ class TestGdalAlgorithms(unittest.TestCase):
     def testOgrLayerNameExtraction(self):
         with tempfile.TemporaryDirectory() as outdir:
             def _copyFile(dst):
-                shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
+                shutil.copyfile(os.path.join(testDataPath, 'custom', 'weighted.csv'), dst)
 
             # OGR provider - single layer
             _copyFile(os.path.join(outdir, 'a.csv'))

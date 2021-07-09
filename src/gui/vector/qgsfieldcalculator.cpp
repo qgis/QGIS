@@ -59,9 +59,13 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   if ( !vl )
     return;
+  QgsVectorDataProvider *dataProvider = vl->dataProvider();
+  if ( !dataProvider )
+    return;
 
-  mCanAddAttribute = vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
-  mCanChangeAttributeValue = vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  const QgsVectorDataProvider::Capabilities caps = dataProvider->capabilities();
+  mCanAddAttribute = caps & QgsVectorDataProvider::AddAttributes;
+  mCanChangeAttributeValue = caps & QgsVectorDataProvider::ChangeAttributeValues;
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 

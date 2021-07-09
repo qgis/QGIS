@@ -40,6 +40,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
       DrawUnplacedLabels    = 1 << 6,  //!< Whether to render unplaced labels as an indicator/warning for users
+      CollectUnplacedLabels = 1 << 7,  //!< Whether unplaced labels should be collected in the labeling results (regardless of whether they are being rendered). Since QGIS 3.20
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

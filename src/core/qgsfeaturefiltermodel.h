@@ -110,7 +110,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
   private:
     QgsFeatureExpressionValuesGatherer *createValuesGatherer( const QgsFeatureRequest &request ) const override;
 
-    void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override;
+    void requestToReloadCurrentFeature( QgsFeatureRequest &request ) override SIP_FORCE;
 
     QSet<QString> requestedAttributes() const override;
 

@@ -238,7 +238,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::Warning );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::MessageLevel::Warning );
     return false;
   }
 

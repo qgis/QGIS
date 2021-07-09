@@ -544,7 +544,7 @@ QgsWkbTypes::Type QgsVirtualLayerProvider::wkbType() const
   return static_cast<QgsWkbTypes::Type>( mDefinition.geometryWkbType() );
 }
 
-long QgsVirtualLayerProvider::featureCount() const
+long long QgsVirtualLayerProvider::featureCount() const
 {
   if ( !mCachedStatistics )
   {

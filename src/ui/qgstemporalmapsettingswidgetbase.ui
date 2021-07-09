@@ -6,16 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>409</width>
-    <height>82</height>
+    <width>966</width>
+    <height>40</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,4">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
@@ -27,23 +33,6 @@
       <widget class="QgsDoubleSpinBox" name="mFrameSpinBox"/>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
       <widget class="QCheckBox" name="mCumulativeTemporalRange">
        <property name="text">
         <string>Cumulative range</string>
@@ -51,7 +40,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_3">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -73,7 +62,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>5</height>
       </size>
      </property>
     </spacer>

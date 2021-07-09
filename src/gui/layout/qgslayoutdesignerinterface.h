@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgslayoutexporter.h"
 #include <QObject>
 
 class QgsLayout;
@@ -351,6 +352,38 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     virtual void activateTool( StandardTool tool ) = 0;
 
+    /**
+     * \ingroup gui
+     * \brief Encapsulates the results of an export operation performed in the designer.
+     * \since QGIS 3.20
+     */
+    class ExportResults
+    {
+      public:
+
+        /**
+         * Result/error code of export.
+         */
+        QgsLayoutExporter::ExportResult result;
+
+        /**
+         * Returns the labeling results for all map items included in the export. Map keys are the item UUIDs (see QgsLayoutItem::uuid()).
+         *
+         * Ownership of the results remains with the layout designer.
+         */
+        QMap< QString, QgsLabelingResults * > labelingResults;
+
+    };
+
+    /**
+     * Returns the results of the last export operation performed in the designer.
+     *
+     * May be NULLPTR if no export has been performed in the designer.
+     *
+     * \since QGIS 3.20
+     */
+    virtual QgsLayoutDesignerInterface::ExportResults *lastExportResults() const = 0 SIP_FACTORY;
+
   public slots:
 
     /**
@@ -365,6 +398,24 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     virtual void showRulers( bool visible ) = 0;
 
+  signals:
+
+    /**
+     * Emitted whenever a layout is exported from the layout designer.
+     *
+     * The results of the export can be retrieved by calling lastExportResults().
+     *
+     * \since QGIS 3.20
+     */
+    void layoutExported();
+
+
+    /**
+     * Emitted when a \a map item's preview has been refreshed.
+     *
+     * \since QGIS 3.20
+     */
+    void mapPreviewRefreshed( QgsLayoutItemMap *map );
 
 };
 

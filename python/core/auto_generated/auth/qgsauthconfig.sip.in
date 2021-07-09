@@ -31,6 +31,7 @@ Construct a configuration for an authentication method
 :param version: Version of the configuration (for updating previously saved configs later on)
 %End
 
+
     bool operator==( const QgsAuthMethodConfig &other ) const;
 
     bool operator!=( const QgsAuthMethodConfig &other ) const;

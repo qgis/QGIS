@@ -116,6 +116,16 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      */
     void condenseCurves();
 
+    /**
+     * Converts the vertex at the given position from/to circular
+     * \returns FALSE if atVertex does not correspond to a valid vertex
+     * on this geometry (including if this geometry is a Point),
+     * or if the specified vertex can't be converted (e.g. start/end points).
+     *
+     * \since QGIS 3.20
+     */
+    bool toggleCircularAtVertex( QgsVertexId position );
+
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;

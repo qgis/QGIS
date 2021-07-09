@@ -49,7 +49,7 @@ struct AnchorAlongSegment
 };
 
 
-static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, QgsFeedback *feedback, int &count, int totalCount )
+static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, QgsFeedback *feedback, long long &count, long long totalCount )
 {
   QgsFeature f;
   int pntId = 0;
@@ -305,8 +305,8 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
 {
   // the logic here comes from GRASS implementation of Vect_snap_lines_list()
 
-  int count = 0;
-  int totalCount = source.featureCount() * 2;
+  long long count = 0;
+  long long totalCount = source.featureCount() * 2;
 
   // step 1: record all point locations in a spatial index + extra data structure to keep
   // reference to which other point they have been snapped to (in the next phase).

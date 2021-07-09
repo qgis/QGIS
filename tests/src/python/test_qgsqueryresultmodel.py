@@ -47,7 +47,8 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(cls.uri, {})
-        conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM generate_series(1,%s) AS id, md5(random()::text) AS descr' % cls.NUM_RECORDS)
+        conn.executeSql('DROP TABLE IF EXISTS qgis_test.random_big_data CASCADE;')
+        conn.executeSql('SELECT * INTO qgis_test.random_big_data FROM ( SELECT x AS id, md5(random()::text) AS descr FROM generate_series(1,%s) x ) AS foo_row;' % cls.NUM_RECORDS)
 
     @classmethod
     def tearDownClass(cls):
@@ -91,22 +92,22 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
     def test_model_stop(self):
         """Test that when a model is deleted fetching query rows is also interrupted"""
 
+        def model_deleter():
+            del(self.model)
+
+        def loop_exiter():
+            self.running = False
+
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(self.uri, {})
         res = conn.execSql('SELECT * FROM qgis_test.random_big_data')
 
         self.model = QgsQueryResultModel(res)
 
-        def model_deleter():
-            del(self.model)
-
         self.running = True
 
-        def loop_exiter():
-            self.running = False
-
-        QTimer.singleShot(1, model_deleter)
-        QTimer.singleShot(2, loop_exiter)
+        QTimer.singleShot(15, model_deleter)
+        QTimer.singleShot(600, loop_exiter)
 
         while self.running:
             QCoreApplication.processEvents()

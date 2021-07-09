@@ -197,14 +197,30 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
      * the About, Preferences and Quit items to the Mac Application menu.
      * These items must be translated identically in both qt_ and qgis_ files.
      */
+    QString qtTranslationsPath = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
+#ifdef __MINGW32__
+    QString prefix = QDir( QString( "%1/../" ).arg( QApplication::applicationDirPath() ) ).absolutePath();
+    qtTranslationsPath = prefix + qtTranslationsPath.mid( QLibraryInfo::location( QLibraryInfo::PrefixPath ).length() );
+#endif
+
     mQtTranslator = new QTranslator();
-    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + *sTranslation(), qtTranslationsPath ) )
     {
       installTranslator( mQtTranslator );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
+    }
+
+    mQtBaseTranslator = new QTranslator();
+    if ( mQtBaseTranslator->load( QStringLiteral( "qtbase_" ) + *sTranslation(), qtTranslationsPath ) )
+    {
+      installTranslator( mQtBaseTranslator );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "loading of qtbase translation failed %1/qt_%2" ).arg( qtTranslationsPath, *sTranslation() ), 2 );
     }
   }
 
@@ -417,6 +433,7 @@ QgsApplication::~QgsApplication()
   delete mApplicationMembers;
   delete mQgisTranslator;
   delete mQtTranslator;
+  delete mQtBaseTranslator;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -1920,6 +1937,11 @@ int QgsApplication::maxConcurrentConnectionsPerPool() const
 void QgsApplication::setTranslation( const QString &translation )
 {
   *sTranslation() = translation;
+}
+
+QString QgsApplication::translation() const
+{
+  return *sTranslation();
 }
 
 void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )

@@ -282,10 +282,15 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void prepare( QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
         /**
-         * register individual features
+         * Register individual features
+         *
+         * Returns result of registration, together with a list of all label features which
+         * were created as a result of registering \a feature. Ownership of these label features is not transferred
+         * (it has already been assigned to the label provider).
+         *
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) SIP_SKIP;
+        std::tuple< RegisterResult, QList< QgsLabelFeature * > > registerFeature( const QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) SIP_SKIP;
 
         /**
          * Returns TRUE if this rule or any of its children requires advanced composition effects
@@ -411,7 +416,7 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    void registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) override;
+    QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr ) override;
 
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );

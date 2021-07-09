@@ -284,7 +284,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
       layer->addJoin( join );
   }
 
-  layer->setProviderEncoding( dataProvider()->encoding() );
+  if ( mDataProvider )
+    layer->setProviderEncoding( mDataProvider->encoding() );
   layer->setDisplayExpression( displayExpression() );
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setReadOnly( isReadOnly() );
@@ -762,7 +763,7 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount( const QString &legendKey ) const
+long long QgsVectorLayer::featureCount( const QString &legendKey ) const
 {
   if ( !mSymbolFeatureCounted )
     return -1;
@@ -2566,10 +2567,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       {
         setMinimumScale( minScale );
       }
-    }
 
-    if ( categories.testFlag( Rendering ) )
-    {
       QDomElement e = node.toElement();
 
       // get the simplification drawing settings
@@ -2578,6 +2576,9 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
       mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
       mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
+
+      if ( mRenderer )
+        mRenderer->setReferenceScale( e.attribute( QStringLiteral( "symbologyReferenceScale" ), QStringLiteral( "-1" ) ).toDouble() );
     }
 
     //diagram renderer and diagram layer settings
@@ -2925,6 +2926,8 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
       mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
       mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
+
+      mapLayerNode.setAttribute( QStringLiteral( "symbologyReferenceScale" ), mRenderer ? mRenderer->referenceScale() : -1 );
     }
 
     if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
@@ -3416,7 +3419,7 @@ QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
   return pkAttributesList;
 }
 
-long QgsVectorLayer::featureCount() const
+long long QgsVectorLayer::featureCount() const
 {
   if ( ! mDataProvider )
     return -1;
@@ -3700,7 +3703,7 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
-bool QgsVectorLayer::supportsEditing()
+bool QgsVectorLayer::supportsEditing() const
 {
   if ( ! mDataProvider )
     return false;
@@ -3756,7 +3759,10 @@ void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 
 void QgsVectorLayer::addFeatureRendererGenerator( QgsFeatureRendererGenerator *generator )
 {
-  mRendererGenerators << generator;
+  if ( generator )
+  {
+    mRendererGenerators << generator;
+  }
 }
 
 void QgsVectorLayer::removeFeatureRendererGenerator( const QString &id )
@@ -4424,7 +4430,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
 
 QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate, const QString &fieldOrExpression,
                                     const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context,
-                                    bool *ok, QgsFeatureIds *fids ) const
+                                    bool *ok, QgsFeatureIds *fids, QgsFeedback *feedback ) const
 {
   if ( ok )
     *ok = false;
@@ -4460,7 +4466,7 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
   if ( fids )
     c.setFidsFilter( *fids );
   c.setParameters( parameters );
-  return c.calculate( aggregate, fieldOrExpression, context, ok );
+  return c.calculate( aggregate, fieldOrExpression, context, ok, feedback );
 }
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )

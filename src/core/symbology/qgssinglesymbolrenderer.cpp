@@ -115,7 +115,6 @@ QString QgsSingleSymbolRenderer::dump() const
 QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( mSymbol->clone() );
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   copyRendererData( r );
   return r;
@@ -278,8 +277,6 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singleSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mSymbol.get();
@@ -292,23 +289,14 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
   QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-
   if ( mDataDefinedSizeLegend )
   {
     QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
     mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
     rendererElem.appendChild( ddsLegendElem );
   }
+
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -377,8 +365,7 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
 
   if ( r )
   {
-    r->setOrderBy( renderer->orderBy() );
-    r->setOrderByEnabled( renderer->orderByEnabled() );
+    renderer->copyRendererData( r );
   }
 
   return r;

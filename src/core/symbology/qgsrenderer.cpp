@@ -51,21 +51,22 @@ QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint
 
 void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) const
 {
-  if ( !destRenderer || !mPaintEffect )
+  if ( !destRenderer )
     return;
 
-  destRenderer->setPaintEffect( mPaintEffect->clone() );
+  if ( mPaintEffect )
+    destRenderer->setPaintEffect( mPaintEffect->clone() );
+
+  destRenderer->setForceRasterRender( mForceRaster );
+  destRenderer->setUsingSymbolLevels( mUsingSymbolLevels );
   destRenderer->mOrderBy = mOrderBy;
   destRenderer->mOrderByEnabled = mOrderByEnabled;
+  destRenderer->mReferenceScale = mReferenceScale;
 }
 
 QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   : mType( type )
-  , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
-  , mCurrentVertexMarkerSize( 2 )
-  , mForceRaster( false )
-  , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -173,6 +174,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsRea
   {
     r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
     r->setForceRasterRender( element.attribute( QStringLiteral( "forceraster" ), QStringLiteral( "0" ) ).toInt() );
+    r->setReferenceScale( element.attribute( QStringLiteral( "referencescale" ), QStringLiteral( "-1" ) ).toDouble() );
 
     //restore layer effect
     QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
@@ -194,7 +196,17 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   Q_UNUSED( context )
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+
+  saveRendererData( doc, rendererElem, context );
+
+  return rendererElem;
+}
+
+void QgsFeatureRenderer::saveRendererData( QDomDocument &doc, QDomElement &rendererElem, const QgsReadWriteContext & )
+{
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "referencescale" ), mReferenceScale );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -206,7 +218,6 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     rendererElem.appendChild( orderBy );
   }
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  return rendererElem;
 }
 
 QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )

@@ -67,6 +67,8 @@ class CORE_EXPORT QgsMapLayerDependency
     //! Returns the ID of the layer this dependency depends on
     QString layerId() const { return mLayerId; }
 
+    // TODO c++20 - replace with = default
+
     //! Comparison operator
     bool operator==( const QgsMapLayerDependency &other ) const
     {

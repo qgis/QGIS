@@ -330,7 +330,7 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
             tr( "Security warning" ),
             tr( "Python macros cannot currently be run." ),
             btnEnableMacros,
-            Qgis::Warning,
+            Qgis::MessageLevel::Warning,
             0,
             messageBar );
 

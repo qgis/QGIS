@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsgeopackageproviderconnection.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
 #include "qgssqliteutils.h"
@@ -32,6 +33,7 @@
 #include "qgsfieldsitem.h"
 #include "qgszipitem.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsogrprovidermetadata.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -433,9 +435,9 @@ bool QgsOgrDataCollectionItem::saveConnection( const QString &path, const QStrin
     }
     if ( ok && ! connName.isEmpty() )
     {
-      QgsOgrDbConnection connection( connName, ogrDriverName );
-      connection.setPath( path );
-      connection.save();
+      QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+      QgsGeoPackageProviderConnection *providerConnection =  static_cast<QgsGeoPackageProviderConnection *>( providerMetadata->createConnection( connName ) );
+      providerMetadata->saveConnection( providerConnection, connName );
       return true;
     }
   }

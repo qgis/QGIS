@@ -36,9 +36,10 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     /**
        * Possible buttons shown in the relation editor
+       * \deprecated since QGIS 3.18 use QgsRelationEditorWidget::Button instead
        * \since QGIS 3.16
        */
-    enum Button
+    enum Q_DECL_DEPRECATED Button
     {
       Link = 1 << 1, //!< Link button
       Unlink = 1 << 2, //!< Unlink button
@@ -49,9 +50,11 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
       ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
+    Q_NOWARN_DEPRECATED_PUSH
     Q_ENUM( Button )
     Q_DECLARE_FLAGS( Buttons, Button )
     Q_FLAG( Buttons )
+    Q_NOWARN_DEPRECATED_POP
 
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
@@ -183,7 +186,9 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
+    Q_NOWARN_DEPRECATED_PUSH
     Buttons mButtons = Buttons( Button::AllButtons );
+    Q_NOWARN_DEPRECATED_POP
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
     QString mLabel;
@@ -191,7 +196,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QVariantMap mRelationEditorConfig;
 };
 
+Q_NOWARN_DEPRECATED_PUSH
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )
-
+Q_NOWARN_DEPRECATED_POP
 
 #endif // QGSATTRIBUTEEDITORRELATION_H

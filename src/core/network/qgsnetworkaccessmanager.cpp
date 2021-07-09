@@ -35,9 +35,15 @@
 #include <QTimer>
 #include <QBuffer>
 #include <QNetworkReply>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QMutex>
+#else
+#include <QRecursiveMutex>
+#endif
 #include <QThreadStorage>
 #include <QAuthenticator>
 #include <QStandardPaths>
+#include <QUuid>
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -47,6 +53,8 @@
 #include "qgsauthmanager.h"
 
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
+
+static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -115,6 +123,78 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 };
 ///@endcond
 
+/// @cond PRIVATE
+class QgsNetworkCookieJar : public QNetworkCookieJar
+{
+    Q_OBJECT
+
+  public:
+    QgsNetworkCookieJar( QgsNetworkAccessManager *parent )
+      : QNetworkCookieJar( parent )
+      , mNam( parent )
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+      , mMutex( QMutex::Recursive )
+#endif
+    {}
+
+    bool deleteCookie( const QNetworkCookie &cookie ) override
+    {
+      QMutexLocker locker( &mMutex );
+      if ( QNetworkCookieJar::deleteCookie( cookie ) )
+      {
+        emit mNam->cookiesChanged( allCookies() );
+        return true;
+      }
+      return false;
+    }
+    bool insertCookie( const QNetworkCookie &cookie ) override
+    {
+      QMutexLocker locker( &mMutex );
+      if ( QNetworkCookieJar::insertCookie( cookie ) )
+      {
+        emit mNam->cookiesChanged( allCookies() );
+        return true;
+      }
+      return false;
+    }
+    bool setCookiesFromUrl( const QList<QNetworkCookie> &cookieList, const QUrl &url ) override
+    {
+      QMutexLocker locker( &mMutex );
+      return QNetworkCookieJar::setCookiesFromUrl( cookieList, url );
+    }
+    bool updateCookie( const QNetworkCookie &cookie ) override
+    {
+      QMutexLocker locker( &mMutex );
+      if ( QNetworkCookieJar::updateCookie( cookie ) )
+      {
+        emit mNam->cookiesChanged( allCookies() );
+        return true;
+      }
+      return false;
+    }
+
+    // Override these to make them public
+    QList<QNetworkCookie> allCookies() const
+    {
+      QMutexLocker locker( &mMutex );
+      return QNetworkCookieJar::allCookies();
+    }
+    void setAllCookies( const QList<QNetworkCookie> &cookieList )
+    {
+      QMutexLocker locker( &mMutex );
+      QNetworkCookieJar::setAllCookies( cookieList );
+    }
+
+    QgsNetworkAccessManager *mNam = nullptr;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    mutable QMutex mMutex;
+#else
+    mutable QRecursiveMutex mMutex;
+#endif
+};
+///@endcond
+
+
 //
 // Static calls to enforce singleton behavior
 //
@@ -139,6 +219,7 @@ QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
+  setCookieJar( new QgsNetworkCookieJar( this ) );
 }
 
 void QgsNetworkAccessManager::setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler )
@@ -257,6 +338,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     // if caching is disabled then we override whatever the request actually has set!
     pReq->setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     pReq->setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  }
+
+  for ( const auto &preprocessor :  sCustomPreprocessors )
+  {
+    preprocessor.second( pReq );
   }
 
   static QAtomicInt sRequestId = 0;
@@ -576,6 +662,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 #endif
 
     connect( this, &QgsNetworkAccessManager::requestRequiresAuth, sMainNAM, &QgsNetworkAccessManager::requestRequiresAuth );
+    connect( sMainNAM, &QgsNetworkAccessManager::cookiesChanged, this, &QgsNetworkAccessManager::syncCookies );
+    connect( this, &QgsNetworkAccessManager::cookiesChanged, sMainNAM, &QgsNetworkAccessManager::syncCookies );
   }
   else
   {
@@ -681,6 +769,23 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
 
   if ( cache() != newcache )
     setCache( newcache );
+
+  if ( this != sMainNAM )
+  {
+    static_cast<QgsNetworkCookieJar *>( cookieJar() )->setAllCookies( static_cast<QgsNetworkCookieJar *>( sMainNAM->cookieJar() )->allCookies() );
+  }
+}
+
+void QgsNetworkAccessManager::syncCookies( const QList<QNetworkCookie> &cookies )
+{
+  if ( sender() != this )
+  {
+    static_cast<QgsNetworkCookieJar *>( cookieJar() )->setAllCookies( cookies );
+    if ( this == sMainNAM )
+    {
+      emit cookiesChanged( cookies );
+    }
+  }
 }
 
 int QgsNetworkAccessManager::timeout()
@@ -707,6 +812,31 @@ QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &r
   br.setAuthCfg( authCfg );
   br.post( request, data, forceRefresh, feedback );
   return br.reply();
+}
+
+QString QgsNetworkAccessManager::setRequestPreprocessor( const std::function<void ( QNetworkRequest * )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomPreprocessors.emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsNetworkAccessManager::removeRequestPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomPreprocessors.size();
+  sCustomPreprocessors.erase( std::remove_if( sCustomPreprocessors.begin(), sCustomPreprocessors.end(), [id]( std::pair< QString, std::function< void( QNetworkRequest * ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomPreprocessors.end() );
+  return prevCount != sCustomPreprocessors.size();
+}
+
+void QgsNetworkAccessManager::preprocessRequest( QNetworkRequest *req ) const
+{
+  for ( const auto &preprocessor :  sCustomPreprocessors )
+  {
+    preprocessor.second( req );
+  }
 }
 
 
@@ -756,3 +886,6 @@ void QgsNetworkAuthenticationHandler::handleAuthRequestCloseBrowser()
 {
   QgsDebugMsg( QStringLiteral( "Network authentication required external browser closed, but no handler was in place" ) );
 }
+
+// For QgsNetworkCookieJar
+#include "qgsnetworkaccessmanager.moc"

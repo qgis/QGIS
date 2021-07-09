@@ -113,7 +113,7 @@ Rotates the vector by a specified angle.
 %Docstring
 Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0).
 
-:raises :: py:class:`QgsException` if called on a vector with length of 0.
+:raises QgsException: if called on a vector with length of 0.
 %End
 
     bool operator==( QgsVector other ) const /HoldGIL/;

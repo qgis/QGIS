@@ -23,7 +23,13 @@ from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciStyle
-from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsSettings,
+    QgsBlockingNetworkRequest,
+    QgsFileUtils
+)
 from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 from qgis.utils import OverrideCursor
 import sys
@@ -652,6 +658,8 @@ class EditorTab(QWidget):
             if len(self.path) == 0:
                 self.path = None
                 return
+
+            self.path = QgsFileUtils.ensureFileNameHasExtension(self.path, ['py'])
             self.tw.setCurrentWidget(self)
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'Script was correctly saved.')

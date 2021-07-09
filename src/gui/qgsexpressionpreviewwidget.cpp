@@ -80,16 +80,6 @@ void QgsExpressionPreviewWidget::refreshPreview()
   {
     mExpression = QgsExpression( mExpressionText );
 
-    if ( !mExpressionContext.feature().isValid() )
-    {
-      if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
-      {
-        mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
-        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(220, 125, 0, 255);" ) );
-        return;
-      }
-    }
-
     if ( mUseGeomCalculator )
     {
       // only set an explicit geometry calculator if a call to setGeomCalculator was made. If not,
@@ -106,7 +96,23 @@ void QgsExpressionPreviewWidget::refreshPreview()
 
     if ( mExpression.hasParserError() || mExpression.hasEvalError() )
     {
-      QString errorString = mExpression.parserErrorString().replace( "\n", "<br>" );
+      // if parser error was a result of missing feature, then skip the misleading parser error message
+      // and instead show a friendly message, and allow the user to accept the expression anyway
+      // refs https://github.com/qgis/QGIS/issues/42884
+      if ( !mExpressionContext.feature().isValid() )
+      {
+        if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
+        {
+          mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
+          mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(220, 125, 0, 255);" ) );
+          emit expressionParsed( true );
+          setParserError( false );
+          setEvalError( false );
+          return;
+        }
+      }
+
+      QString errorString = mExpression.parserErrorString().replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
       QString tooltip;
       if ( mExpression.hasParserError() )
         tooltip = QStringLiteral( "<b>%1:</b>"

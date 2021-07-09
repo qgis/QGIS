@@ -79,6 +79,7 @@ class TestQgs3DRendering : public QObject
     void testBufferedLineRenderingWidth();
     void testMapTheme();
     void testMesh();
+    void testMesh_datasetOnFaces();
     void testMeshSimplified();
     void testRuleBasedRenderer();
     void testAnimationExport();
@@ -144,12 +145,12 @@ void TestQgs3DRendering::initTestCase()
   mLayerMeshDataset = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
   mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
   mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
+  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_els_face_scalar.dat" );
   QVERIFY( mLayerMeshDataset->isValid() );
   mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
   mLayerMeshDataset->temporalProperties()->setIsActive( false );
   mLayerMeshDataset->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   mLayerMeshDataset->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 2, 0 ) );
-  mProject->addMapLayer( mLayerMeshDataset );
   mProject->addMapLayer( mLayerMeshDataset );
 
   mLayerMeshSimplified = new QgsMeshLayer( dataDir + "/mesh/trap_steady_05_3D.nc", "mesh", "mdal" );
@@ -780,6 +781,48 @@ void TestQgs3DRendering::testMesh()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "mesh3d", img, 40 ) );
+}
+
+void TestQgs3DRendering::testMesh_datasetOnFaces()
+{
+  QgsRectangle fullExtent = mLayerMeshDataset->extent();
+
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
+  symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "mesh3dOnFace", img, 40 ) );
 }
 
 void TestQgs3DRendering::testMeshSimplified()

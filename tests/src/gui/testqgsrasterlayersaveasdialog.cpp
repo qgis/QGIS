@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterfilewriter.h"
-
+#include "qgsrasterpipe.h"
 #include "qgsgui.h"
 
 class TestQgsRasterLayerSaveAsDialog : public QObject

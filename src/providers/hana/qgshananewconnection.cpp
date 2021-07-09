@@ -361,9 +361,9 @@ void QgsHanaNewConnection::testConnection()
   unique_ptr<QgsHanaConnection> conn( QgsHanaConnection::createConnection( settings.toDataSourceUri(), nullptr, &errorMsg ) );
 
   if ( conn )
-    bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::Info );
+    bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::MessageLevel::Info );
   else
-    bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::Warning );
+    bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::MessageLevel::Warning );
 }
 
 QString QgsHanaNewConnection::getDatabaseName() const

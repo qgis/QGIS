@@ -23,28 +23,28 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library(delimitedtextprovider MODULE ${DTEXT_SRCS})
+add_library(provider_delimitedtext MODULE ${DTEXT_SRCS})
 
 # require c++17
-target_compile_features(delimitedtextprovider PRIVATE cxx_std_17)
+target_compile_features(provider_delimitedtext PRIVATE cxx_std_17)
 
-target_link_libraries(delimitedtextprovider
+target_link_libraries(provider_delimitedtext
   qgis_core
 )
 
 if (WITH_GUI)
-  target_link_libraries (delimitedtextprovider
+  target_link_libraries (provider_delimitedtext
     qgis_gui
   )
-  add_dependencies(delimitedtextprovider ui)
+  add_dependencies(provider_delimitedtext ui)
 endif()
 
-target_compile_definitions(delimitedtextprovider PRIVATE "-DQT_NO_FOREACH")
+target_compile_definitions(provider_delimitedtext PRIVATE "-DQT_NO_FOREACH")
 
 # clang-tidy
 if(CLANG_TIDY_EXE)
   set_target_properties(
-    delimitedtextprovider PROPERTIES
+    provider_delimitedtext PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 endif()
@@ -52,6 +52,6 @@ endif()
 ########################################################
 # Install
 
-install (TARGETS delimitedtextprovider
+install (TARGETS provider_delimitedtext
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

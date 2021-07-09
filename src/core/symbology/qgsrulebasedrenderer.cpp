@@ -1061,7 +1061,6 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::clone() const
 
   QgsRuleBasedRenderer *r = new QgsRuleBasedRenderer( clonedRoot );
 
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   copyRendererData( r );
   return r;
 }
@@ -1081,8 +1080,6 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "RuleRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
 
@@ -1093,16 +1090,7 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
   QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -1222,8 +1210,9 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
       value = QString::number( cat.value().toDouble(), 'f', 4 );
     else
       value = QgsExpression::quotedString( cat.value().toString() );
-    QString filter = QStringLiteral( "%1 = %2" ).arg( attr, value );
-    QString label = filter;
+    const QString filter = QStringLiteral( "%1 = %2" ).arg( attr, value );
+    const QString label = !cat.label().isEmpty() ? cat.label() :
+                          cat.value().isValid() ? value : QString();
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
@@ -1255,7 +1244,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
                      QString::number( rng.lowerValue(), 'f', 4 ),
                      QString::number( rng.upperValue(), 'f', 4 ) );
     firstRange = false;
-    QString label =  rng.label().isEmpty() ? filter : rng.label();
+    QString label = rng.label().isEmpty() ? filter : rng.label();
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
@@ -1521,8 +1510,7 @@ QgsRuleBasedRenderer *QgsRuleBasedRenderer::convertFromRenderer( const QgsFeatur
 
   if ( r )
   {
-    r->setOrderBy( renderer->orderBy() );
-    r->setOrderByEnabled( renderer->orderByEnabled() );
+    renderer->copyRendererData( r.get() );
   }
 
   return r.release();

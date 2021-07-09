@@ -713,6 +713,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void backgroundTaskCountChanged( int total );
 
+    /**
+     * Emitted when an \a item was added to the layout.
+     *
+     * \since QGIS 3.20
+     */
+    void itemAdded( QgsLayoutItem *item );
+
   private slots:
     void itemBackgroundTaskCountChanged( int count );
 

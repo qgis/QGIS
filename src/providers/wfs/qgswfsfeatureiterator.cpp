@@ -107,7 +107,7 @@ QString QgsWFSFeatureDownloaderImpl::sanitizeFilter( QString filter )
   return filter;
 }
 
-QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, bool forHits )
+QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeatures, bool forHits )
 {
   QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( getFeatureUrl );
@@ -349,7 +349,7 @@ void QgsWFSFeatureDownloaderImpl::createProgressDialog()
   CONNECT_PROGRESS_DIALOG( QgsWFSFeatureDownloaderImpl );
 }
 
-void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
+void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
 {
   bool success = true;
 
@@ -405,9 +405,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
     {
       break;
     }
-    int maxFeaturesThisRequest = static_cast<int>(
-                                   std::min( maxTotalFeatures - mTotalDownloadedFeatureCount,
-                                       static_cast<qint64>( std::numeric_limits<int>::max() ) ) );
+    long long maxFeaturesThisRequest = maxTotalFeatures - mTotalDownloadedFeatureCount;
     if ( mShared->mPageSize > 0 )
     {
       if ( maxFeaturesThisRequest > 0 )
@@ -436,7 +434,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
              true, /* forceRefresh */
              false /* cache */ );
 
-    int featureCountForThisResponse = 0;
+    long long featureCountForThisResponse = 0;
     bool bytesStillAvailableInReply = false;
     // Loop until there is no data coming from the current request
     while ( true )

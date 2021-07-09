@@ -1,4 +1,34 @@
 if (ENABLE_TESTS)
+
+
+  macro (add_qgis_test TESTSRC)
+    set(options OPTIONAL)
+    set(oneValueArgs MODULE LABELS)
+    set(multiValueArgs LINKEDLIBRARIES DEPENDENCIES)
+    cmake_parse_arguments(ARG_QGIS_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    set (TESTNAME ${TESTSRC})
+    string(REPLACE "test" "" TESTNAME ${TESTNAME})
+    string(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+    string(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+    set (TESTNAME  "test_${ARG_QGIS_TEST_MODULE}_${TESTNAME}")
+    add_executable(${TESTNAME} ${TESTSRC} ${util_SRCS})
+    # add_custom_target(${TESTNAME}moc ALL DEPENDS ${${TESTNAME}_MOC_SRCS})
+    target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
+    set_target_properties(${TESTNAME} PROPERTIES AUTORCC TRUE)
+    target_link_libraries(${TESTNAME} ${ARG_QGIS_TEST_LINKEDLIBRARIES})
+    target_link_libraries(${TESTNAME} ${Qt5Test_LIBRARIES})
+    add_test(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
+    if (DEFINED ARG_QGIS_TEST_DEPENDENCIES)
+      add_dependencies(${TESTNAME} ${ARG_QGIS_TEST_DEPENDENCIES})
+    endif()
+    if (DEFINED ARG_QGIS_TEST_LABELS)
+      set_tests_properties(${TESTNAME} PROPERTIES LABELS ${ARG_QGIS_TEST_LABELS})
+    endif()
+  endmacro()
+
+
+
   #############################################################
   # Compiler defines
 

@@ -86,6 +86,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
+  mFeedback = rh.mFeedback;
   return *this;
 }
 
@@ -170,7 +171,7 @@ QgsFeatureRequest &QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::Order
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setLimit( long limit )
+QgsFeatureRequest &QgsFeatureRequest::setLimit( long long limit )
 {
   mLimit = limit;
   return *this;
@@ -332,6 +333,16 @@ QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNe
 {
   mRequestMayBeNested = requestMayBeNested;
   return *this;
+}
+
+void QgsFeatureRequest::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QgsFeedback *QgsFeatureRequest::feedback() const
+{
+  return mFeedback;
 }
 
 

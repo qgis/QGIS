@@ -210,7 +210,7 @@ struct LabelRenderJob
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererJob : public QObject
+class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
   public:
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Start the rendering job and immediately return.
      * Does nothing if the rendering is already in progress.
      */
-    virtual void start() = 0;
+    void start();
 
     /**
      * Stop the rendering job - does not return until the job has terminated.
@@ -490,6 +490,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
+
+    /**
+     *  This pure virtual method has to be implemented in derived class for starting the rendering.
+     *  This method is called in start() method after ckecking if the map can be rendered.
+     *  \since QGIS 3.20
+     */
+    virtual void startPrivate() = 0;
+
 };
 
 
@@ -501,7 +509,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
+class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob SIP_ABSTRACT
 {
     Q_OBJECT
 

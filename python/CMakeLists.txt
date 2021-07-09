@@ -121,10 +121,6 @@ else()
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} ARM)
 endif()
 
-if(NOT QT_MOBILITY_LOCATION_FOUND)
-  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
-endif()
-
 # SIP 4.19.7+ can:
 # * prepend auto-generated Python signature to existing Docstrings
 # * document template based classes
@@ -153,6 +149,10 @@ endif()
 
 if((${PYQT5_VERSION_STR} VERSION_EQUAL 5.15) OR (${PYQT5_VERSION_STR} VERSION_GREATER 5.15))
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} VECTOR_MAPPED_TYPE)
+endif()
+
+if(NOT WITH_GUI)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_GUI)
 endif()
 
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
@@ -258,6 +258,7 @@ if(WITH_ANALYSIS)
 
   # analysis module
   file(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
+
   set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
   set(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
   if((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
@@ -368,3 +369,8 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+if((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  file(GLOB PY_PYIS ${QGIS_PYTHON_OUTPUT_DIRECTORY}/*.pyi)
+  install(FILES ${PY_PYIS} DESTINATION ${QGIS_PYTHON_DIR})
+endif()

@@ -122,6 +122,8 @@ QDomElement Qgs25DRenderer::save( QDomDocument &doc, const QgsReadWriteContext &
 
   QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc, context );
 
+  saveRendererData( doc, rendererElem, context );
+
   rendererElem.appendChild( symbolElem );
 
   return rendererElem;
@@ -277,7 +279,9 @@ Qgs25DRenderer *Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *rendere
   }
   else
   {
-    return new Qgs25DRenderer();
+    std::unique_ptr< Qgs25DRenderer > res = std::make_unique< Qgs25DRenderer >();
+    renderer->copyRendererData( res.get() );
+    return res.release();
   }
 }
 

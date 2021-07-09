@@ -36,14 +36,6 @@ QStringList QgsSpatiaLiteConnection::connectionList()
   return settings.childGroups();
 }
 
-void QgsSpatiaLiteConnection::deleteConnection( const QString &name )
-{
-  QgsSettings settings;
-  QString key = "/SpatiaLite/connections/" + name;
-  settings.remove( key + "/sqlitepath" );
-  settings.remove( key );
-}
-
 QString QgsSpatiaLiteConnection::connectionPath( const QString &name )
 {
   QgsSettings settings;

@@ -30,7 +30,8 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "bookmarks" )
     <<  QStringLiteral( "optionpages" )
     <<  QStringLiteral( "edit_features" )
-    <<  QStringLiteral( "goto" );
+    <<  QStringLiteral( "goto" )
+    <<  QStringLiteral( "nominatimgeocoder" ) ;
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )

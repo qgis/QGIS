@@ -23,10 +23,12 @@ from qgis.core import (QgsAuxiliaryStorage,
                        QgsPropertyDefinition,
                        QgsProperty,
                        QgsProject,
+                       QgsProjectArchive,
                        QgsFeatureRequest,
                        QgsPalLayerSettings,
                        QgsSymbolLayer,
                        QgsVectorLayerSimpleLabeling,
+                       QgsField,
                        QgsCallout,
                        QgsSimpleLineCallout,
                        NULL)
@@ -533,6 +535,70 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         # Auxiliary storage is NOT empty so .qgd file should be saved now
         qgd = newpath + '.qgd'
         self.assertTrue(os.path.exists(qgd))
+
+    def testInvalidPrimaryKey(self):
+        # create layer
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
+
+        # add a field with an invalid typename
+        field = QgsField(name="invalid_pk", type=QVariant.Int, typeName="xsd:int")
+        vl.startEditing()
+        vl.addAttribute(field)
+        vl.commitChanges()
+
+        # create auxiliary storage based on the invalid field
+        s = QgsAuxiliaryStorage()
+        pkf = field
+        al = s.createAuxiliaryLayer(pkf, vl)
+
+        self.assertEqual(al, None)
+        self.assertTrue("CREATE TABLE IF NOT EXISTS" in s.errorString())
+
+    def testQgdCreationInQgz(self):
+        # New project
+        p = QgsProject()
+        self.assertTrue(p.auxiliaryStorage().isValid())
+
+        # Save the project
+        path = tmpPath()
+        qgz = path + '.qgz'
+        self.assertTrue(p.write(qgz))
+        self.assertTrue(os.path.exists(qgz))
+
+        # Check the content of the archive: auxiliary database doesn't exist
+        # because it's empty
+        archive = QgsProjectArchive()
+        archive.unzip(qgz)
+        self.assertEqual(archive.auxiliaryStorageFile(), "")
+
+        # Add a vector layer and an auxiliary layer in the project
+        vl = createLayer()
+        self.assertTrue(vl.isValid())
+        p.addMapLayers([vl])
+
+        pkf = vl.fields().field(vl.fields().indexOf('pk'))
+        al = p.auxiliaryStorage().createAuxiliaryLayer(pkf, vl)
+        self.assertTrue(al.isValid())
+        vl.setAuxiliaryLayer(al)
+
+        # Add an auxiliary field to have a non empty auxiliary storage
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        self.assertTrue(al.addAuxiliaryField(pdef))
+
+        # Save the project
+        path = tmpPath()
+        qgz = path + '.qgz'
+        self.assertTrue(p.write(qgz))
+        self.assertTrue(os.path.exists(qgz))
+
+        # Check the content of the archive: auxiliary database exist
+        # because it's not empty
+        archive = QgsProjectArchive()
+        archive.unzip(qgz)
+        self.assertNotEqual(archive.auxiliaryStorageFile(), '')
 
 
 if __name__ == '__main__':

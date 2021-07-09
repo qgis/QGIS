@@ -115,6 +115,14 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     QgsFeatureMap addedFeatures() const { return mAddedFeatures; }
 
     /**
+     * Returns a list of the features IDs for all newly added or edited features
+     * in the buffer.
+     *
+     * \since QGIS 3.20
+     */
+    QgsFeatureIds allAddedOrEditedFeatures() const;
+
+    /**
      * Returns TRUE if the specified feature ID has been added but not committed.
      * \param id feature ID
      * \see addedFeatures()

@@ -79,9 +79,25 @@ class GUI_EXPORT QgsRelationWidgetRegistry
      */
     QgsAbstractRelationEditorConfigWidget *createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent = nullptr ) const SIP_TRANSFERBACK;
 
+
+    /**
+     * Sets the default editor widget type. Does nothing if the provided widget type is not present.
+     * \param widgetType The widget type to be used by default.
+     * \since QGIS 3.20
+     */
+    void setDefaultWidgetType( const QString &widgetType );
+
+    /**
+     * Returns the default editor widget type.
+     * \since QGIS 3.20
+     */
+    QString defaultWidgetType() const;
+
   private:
 
     QMap<QString, QgsAbstractRelationEditorWidgetFactory *> mRelationWidgetFactories;
+
+    QString mDefaultWidgetType;
 };
 
 #endif // QGSRELATIONWIDGETREGISTRY_H

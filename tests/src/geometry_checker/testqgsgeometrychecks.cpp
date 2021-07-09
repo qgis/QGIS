@@ -409,6 +409,7 @@ void TestQgsGeometryChecks::testDuplicateCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
+  layers.insert( "polygon_layer_empty_geometries.geojson", "" );
   auto testContext = createTestContext( dir, layers );
 
   // Test detection
@@ -1064,7 +1065,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   // Test fixes
   QgsFeature f;
 
-  int nextId = testContext.second[errs1[0]->layerId()]->layer()->featureCount();
+  QgsFeatureId nextId = testContext.second[errs1[0]->layerId()]->layer()->featureCount();
   QVERIFY( fixCheckError( testContext.second,  errs1[0],
                           QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed,
   {

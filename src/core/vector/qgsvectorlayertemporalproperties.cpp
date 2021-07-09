@@ -428,7 +428,7 @@ QString dateTimeExpressionLiteral( const QDateTime &datetime )
          .arg( datetime.time().second() + datetime.time().msec() / 1000.0 );
 }
 
-QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLayerTemporalContext &, const QgsDateTimeRange &range ) const
+QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayerTemporalContext, const QgsDateTimeRange &filterRange ) const
 {
   if ( !isActive() )
     return QString();
@@ -444,24 +444,24 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       if ( mAccumulateFeatures )
       {
         return QStringLiteral( "(%1 %2 %3) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ) );
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ) );
       }
       else if ( qgsDoubleNear( mFixedDuration, 0.0 ) )
       {
         return QStringLiteral( "(%1 %2 %3 AND %1 %4 %5) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-               dateTimeExpressionLiteral( range.begin() ),
-               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ) );
+               filterRange.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+               dateTimeExpressionLiteral( filterRange.begin() ),
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ) );
       }
       else
       {
         // Working with features with events with a duration, so taking this duration into account (+ QgsInterval( -mFixedDuration, mDurationUnit ) ))
-        // Then we are NOT taking the range.includeBeginning() and range.includeEnd() into account (deliberately, see #38468)
-        return QStringLiteral( "(%1 > %2 AND %1 < %3) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               dateTimeExpressionLiteral( range.begin() + QgsInterval( -mFixedDuration, mDurationUnit ) ),
-               dateTimeExpressionLiteral( range.end() ) );
+        return QStringLiteral( "(%1 > %2 AND %1 %3 %4) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               dateTimeExpressionLiteral( filterRange.begin() + QgsInterval( -mFixedDuration, mDurationUnit ) ),
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ) );
       }
     }
 
@@ -514,38 +514,34 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
         case QgsUnitTypes::TemporalIrregularStep:
           return QString();
       }
-      return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-             range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-             dateTimeExpressionLiteral( range.end() ),
+      return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 > %5) OR %6 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+             filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+             dateTimeExpressionLiteral( filterRange.end() ),
              intervalExpression,
-             range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-             dateTimeExpressionLiteral( range.begin() ),
+             dateTimeExpressionLiteral( filterRange.begin() ),
              QgsExpression::quotedColumnRef( mDurationFieldName ) );
-      break;
     }
 
     case ModeFeatureDateTimeStartAndEndFromFields:
     {
       if ( !mStartFieldName.isEmpty() && !mEndFieldName.isEmpty() )
       {
-        return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND (%4 %5 %6 OR %4 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ),
+        return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND (%4 > %5 OR %4 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ),
                QgsExpression::quotedColumnRef( mEndFieldName ),
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-               dateTimeExpressionLiteral( range.begin() ) );
+               dateTimeExpressionLiteral( filterRange.begin() ) );
       }
       else if ( !mStartFieldName.isEmpty() )
       {
         return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
-               range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ) );
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ) );
       }
       else if ( !mEndFieldName.isEmpty() )
       {
-        return QStringLiteral( "%1 %2 %3 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-               dateTimeExpressionLiteral( range.begin() ) );
+        return QStringLiteral( "%1 > %2 OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mEndFieldName ),
+               dateTimeExpressionLiteral( filterRange.begin() ) );
       }
       break;
     }
@@ -554,24 +550,22 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
     {
       if ( !mStartExpression.isEmpty() && !mEndExpression.isEmpty() )
       {
-        return QStringLiteral( "((%1) %2 %3) AND ((%4) %5 %6)" ).arg( mStartExpression,
-               range.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ),
+        return QStringLiteral( "((%1) %2 %3) AND ((%4) > %5)" ).arg( mStartExpression,
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ),
                mEndExpression,
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-               dateTimeExpressionLiteral( range.begin() ) );
+               dateTimeExpressionLiteral( filterRange.begin() ) );
       }
       else if ( !mStartExpression.isEmpty() )
       {
         return QStringLiteral( "(%1) %2 %3" ).arg( mStartExpression,
-               range.includeBeginning() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
-               dateTimeExpressionLiteral( range.end() ) );
+               filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
+               dateTimeExpressionLiteral( filterRange.end() ) );
       }
       else if ( !mEndExpression.isEmpty() )
       {
-        return QStringLiteral( "(%1) %2 %3" ).arg( mEndExpression,
-               range.includeBeginning() ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-               dateTimeExpressionLiteral( range.begin() ) );
+        return QStringLiteral( "(%1) > %2" ).arg( mEndExpression,
+               dateTimeExpressionLiteral( filterRange.begin() ) );
       }
       break;
     }

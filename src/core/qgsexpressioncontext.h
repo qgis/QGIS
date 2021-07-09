@@ -715,6 +715,29 @@ class CORE_EXPORT QgsExpressionContext
      */
     void clearCachedValues() const;
 
+    /**
+     * Attach a \a feedback object that can be queried regularly by the expression engine to check
+     * if expression evaluation should be canceled.
+     *
+     * Ownership of \a feedback is NOT transferred, and the caller must take care that it exists
+     * for the lifetime of the expression context.
+     *
+     * \see feedback()
+     *
+     * \since QGIS 3.20
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the feedback object that can be queried regularly by the expression to check
+     * if evaluation should be canceled, if set.
+     *
+     * \see setFeedback()
+     *
+     * \since QGIS 3.20
+     */
+    QgsFeedback *feedback() const;
+
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
     //! Inbuilt variable name for value original value variable
@@ -747,6 +770,8 @@ class CORE_EXPORT QgsExpressionContext
     QList< QgsExpressionContextScope * > mStack;
     QStringList mHighlightedVariables;
     QStringList mHighlightedFunctions;
+
+    QgsFeedback *mFeedback = nullptr;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
     mutable QMap< QString, QVariant > mCachedValues;

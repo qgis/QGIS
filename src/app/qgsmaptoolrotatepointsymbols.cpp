@@ -158,7 +158,7 @@ bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol *ma
 
 void QgsMapToolRotatePointSymbols::noCompatibleSymbols()
 {
-  emit messageEmitted( tr( "The selected point does not have a rotation attribute set." ), Qgis::Critical );
+  emit messageEmitted( tr( "The selected point does not have a rotation attribute set." ), Qgis::MessageLevel::Critical );
 }
 
 void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )

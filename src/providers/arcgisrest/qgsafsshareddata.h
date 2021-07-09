@@ -32,7 +32,7 @@ class QgsAfsSharedData : public QObject
     Q_OBJECT
   public:
     QgsAfsSharedData() = default;
-    long featureCount() const { return mObjectIds.size(); }
+    long long featureCount() const { return mObjectIds.size(); }
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const { return mExtent; }
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }

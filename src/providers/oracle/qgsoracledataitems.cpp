@@ -313,7 +313,8 @@ void QgsOracleConnectionItem::deleteConnection()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsOracleConn::deleteConnection( mName );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
+  providerMetadata->deleteConnection( mName );
 
   // the parent should be updated
   if ( mParent )

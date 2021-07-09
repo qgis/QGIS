@@ -32,8 +32,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileprovidermetadata.h"
 #include "qgsproject.h"
+#include "qgsprovidersublayerdetails.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
+#include "providers/ogr/qgsogrprovidermetadata.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 
@@ -202,7 +204,7 @@ void QgsProviderRegistry::init()
 #if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif defined(ANDROID)
-  mLibraryDirectory.setNameFilters( QStringList( "*provider*.so" ) );
+  mLibraryDirectory.setNameFilters( QStringList( "*provider_*.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
@@ -892,4 +894,16 @@ bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
       return true;
   }
   return false;
+}
+
+QList<QgsProviderSublayerDetails> QgsProviderRegistry::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
+{
+  QList<QgsProviderSublayerDetails> res;
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    res.append( it->second->querySublayers( uri, flags, feedback ) );
+    if ( feedback && feedback->isCanceled() )
+      break;
+  }
+  return res;
 }

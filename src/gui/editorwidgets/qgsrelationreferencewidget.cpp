@@ -90,11 +90,6 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mComboBox = new QgsFeatureListComboBox();
   mChooserContainer->layout()->addWidget( mComboBox );
 
-  // read-only line edit
-  mLineEdit = new QLineEdit();
-  mLineEdit->setReadOnly( true );
-  editLayout->addWidget( mLineEdit );
-
   // open form button
   mOpenFormButton = new QToolButton();
   mOpenFormButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
@@ -151,7 +146,6 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mTopLayout->addWidget( mInvalidLabel );
 
   // default mode is combobox, no geometric relation and no embed form
-  mLineEdit->hide();
   mMapIdentificationButton->hide();
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
@@ -235,7 +229,7 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
   }
 
   mFilterContainer->setEnabled( editable );
-  mComboBox->setEnabled( editable );
+  mComboBox->setEnabled( editable && !mReadOnlySelector );
   mComboBox->setEditable( true );
   mMapIdentificationButton->setEnabled( editable );
   mRemoveFKButton->setEnabled( editable );
@@ -262,65 +256,22 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
   if ( !mReferencedLayer )
     return;
 
-  if ( mReadOnlySelector )
+  mComboBox->setIdentifierValues( values );
+
+  if ( mEmbedForm || mChainFilters )
   {
-    // Attributes from the referencing layer
-    QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
-    // Set the value on the foreign key fields of the referencing record
-
-    const QList<QgsRelation::FieldPair> fieldPairs = mRelation.fieldPairs();
-    int fieldCount = std::min( fieldPairs.count(), values.count() );
-    for ( int i = 0; i < fieldCount; i++ )
-    {
-      int idx = mReferencingLayer->fields().lookupField( fieldPairs.at( i ).referencingField() );
-      attrs[idx] = values.at( i );
-    }
-
-    QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
-
+    QgsFeatureRequest request = mComboBox->currentFeatureRequest();
     mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
-
-    if ( !mFeature.isValid() )
-    {
-      return;
-    }
-
-    mForeignKeys.clear();
-    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
-      mForeignKeys << mFeature.attribute( fieldName );
-
-    QgsExpression expr( mReferencedLayer->displayExpression() );
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencedLayer ) );
-    context.setFeature( mFeature );
-    QString title = expr.evaluate( &context ).toString();
-    if ( expr.hasEvalError() )
-    {
-      QStringList titleFields;
-      for ( const QString &fieldName : std::as_const( mReferencedFields ) )
-        titleFields << mFeature.attribute( fieldName ).toString();
-      title = titleFields.join( QLatin1Char( ' ' ) );
-    }
-    mLineEdit->setText( title );
   }
-  else
+  if ( mChainFilters )
   {
-    mComboBox->setIdentifierValues( values );
-
-    if ( mEmbedForm || mChainFilters )
+    QVariant nullValue = QgsApplication::nullRepresentation();
+    const int count = std::min( mFilterComboBoxes.size(), mFilterFields.size() );
+    for ( int i = 0; i < count; i++ )
     {
-      QgsFeatureRequest request = mComboBox->currentFeatureRequest();
-      mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
-    }
-    if ( mChainFilters )
-    {
-      QVariant nullValue = QgsApplication::nullRepresentation();
-      const int count = std::min( mFilterComboBoxes.size(), mFilterFields.size() );
-      for ( int i = 0; i < count; i++ )
-      {
-        QVariant v = mFeature.attribute( mFilterFields[i] );
-        QString f = v.isNull() ? nullValue.toString() : v.toString();
-        mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
-      }
+      QVariant v = mFeature.attribute( mFilterFields[i] );
+      QString f = v.isNull() ? nullValue.toString() : v.toString();
+      mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
     }
   }
 
@@ -341,29 +292,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
     disableChainedComboBoxes( cb );
   }
 
-  if ( mReadOnlySelector )
-  {
-    const QString nullValue = QgsApplication::nullRepresentation();
-
-    QString nullText;
-    if ( mAllowNull )
-    {
-      nullText = tr( "%1 (no selection)" ).arg( nullValue );
-    }
-    mLineEdit->setText( nullText );
-    QVariantList nullAttributes;
-    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
-    {
-      Q_UNUSED( fieldName );
-      nullAttributes << QVariant( QVariant::Int );
-    }
-    mForeignKeys = nullAttributes;
-    mFeature.setValid( false );
-  }
-  else
-  {
-    mComboBox->setIdentifierValuesToNull();
-  }
+  mComboBox->setIdentifierValuesToNull();
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
 
@@ -375,30 +304,14 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature() const
   QgsFeature f;
   if ( mReferencedLayer )
   {
-    QgsFeatureRequest request;
-    if ( mReadOnlySelector )
-    {
-      request = QgsFeatureRequest().setFilterFid( mFeature.id() );
-    }
-    else
-    {
-      request = mComboBox->currentFeatureRequest();
-    }
-    mReferencedLayer->getFeatures( request ).nextFeature( f );
+    mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( f );
   }
   return f;
 }
 
 void QgsRelationReferenceWidget::showIndeterminateState()
 {
-  if ( mReadOnlySelector )
-  {
-    whileBlocking( mLineEdit )->setText( QString() );
-  }
-  else
-  {
-    whileBlocking( mComboBox )->setIdentifierValuesToNull();
-  }
+  whileBlocking( mComboBox )->setIdentifierValuesToNull();
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
 }
@@ -414,14 +327,7 @@ QVariant QgsRelationReferenceWidget::foreignKey() const
 
 QVariantList QgsRelationReferenceWidget::foreignKeys() const
 {
-  if ( mReadOnlySelector )
-  {
-    return mForeignKeys;
-  }
-  else
-  {
-    return mComboBox->identifierValues();
-  }
+  return mComboBox->identifierValues();
 }
 
 void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar )
@@ -455,8 +361,7 @@ void QgsRelationReferenceWidget::setEmbedForm( bool display )
 
 void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
 {
-  mChooserContainer->setHidden( readOnly );
-  mLineEdit->setVisible( readOnly );
+  mComboBox->setEnabled( !readOnly );
   mRemoveFKButton->setVisible( mAllowNull && readOnly );
   mReadOnlySelector = readOnly;
 }
@@ -505,7 +410,7 @@ void QgsRelationReferenceWidget::showEvent( QShowEvent *e )
 
 void QgsRelationReferenceWidget::init()
 {
-  if ( !mReadOnlySelector && mReferencedLayer )
+  if ( mReferencedLayer )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -760,30 +665,8 @@ QgsRelation QgsRelationReferenceWidget::relation() const
 
 void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
 {
-  if ( mReadOnlySelector )
-  {
-    QgsExpression expr( mReferencedLayer->displayExpression() );
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencedLayer ) );
-    context.setFeature( feature );
-    QString title = expr.evaluate( &context ).toString();
-    if ( expr.hasEvalError() )
-    {
-      QStringList titleFields;
-      for ( const QString &fieldName : std::as_const( mReferencedFields ) )
-        titleFields << mFeature.attribute( fieldName ).toString();
-      title = titleFields.join( QLatin1Char( ' ' ) );
-    }
-    mLineEdit->setText( title );
-    mForeignKeys.clear();
-    mFeature = feature;
-    for ( const QString &fieldName : std::as_const( mReferencedFields ) )
-      mForeignKeys << mFeature.attribute( fieldName );
-  }
-  else
-  {
-    mComboBox->setCurrentFeature( feature );
-    mFeature = feature;
-  }
+  mComboBox->setCurrentFeature( feature );
+  mFeature = feature;
 
   mRemoveFKButton->setEnabled( mIsEditable );
   highlightFeature( feature );

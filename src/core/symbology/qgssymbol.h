@@ -127,7 +127,9 @@ class CORE_EXPORT QgsSymbol
 #else
 
     /**
-     * Returns the symbol layer at the specified index. An IndexError will be raised if no layer with the specified index exists.
+     * Returns the symbol layer at the specified index.
+     *
+     * \throws IndexError if no layer with the specified index exists.
      *
      * \see symbolLayers
      * \see symbolLayerCount
@@ -174,10 +176,12 @@ class CORE_EXPORT QgsSymbol
     % End
 
     /**
-    * Returns the symbol layer at the specified ``index``. An IndexError will be raised if no layer with the specified ``index`` exists.
+    * Returns the symbol layer at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
     * corresponds to the last layer in the symbol.
+    *
+    * \throws IndexError if no layer with the specified ``index`` exists.
     *
     * \since QGIS 3.10
     */
@@ -200,10 +204,12 @@ class CORE_EXPORT QgsSymbol
     % End
 
     /**
-     * Deletes the layer at the specified ``index``. A layer at the ``index`` must already exist or an IndexError will be raised.
+     * Deletes the layer at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
      * corresponds to the last layer in the symbol.
+     *
+     * \throws IndexError if no layer at the specified ``index`` exists
      *
      * \since QGIS 3.10
      */
@@ -354,7 +360,12 @@ class CORE_EXPORT QgsSymbol
      * \see asImage()
      * \see drawPreviewIcon()
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) SIP_PYNAME( bigSymbolPreviewImageV2 );
+
+    /**
+     * \deprecated use bigSymbolPreviewImageV2 instead.
+     */
+    Q_DECL_DEPRECATED QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) SIP_DEPRECATED;
 
     /**
      * Returns a string dump of the symbol's properties.

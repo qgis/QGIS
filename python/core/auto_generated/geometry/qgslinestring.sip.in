@@ -274,10 +274,12 @@ Returns a new linestring from a QPolygonF ``polygon`` input.
 
     SIP_PYOBJECT pointN( int i ) const /TypeHint="QgsPoint"/;
 %Docstring
-Returns the point at the specified index. An IndexError will be raised if no point with the specified index exists.
+Returns the point at the specified index.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -303,10 +305,10 @@ corresponds to the last point in the line.
 %Docstring
 Returns the x-coordinate of the specified node in the line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -330,10 +332,10 @@ corresponds to the last point in the line.
 %Docstring
 Returns the y-coordinate of the specified node in the line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -360,12 +362,12 @@ corresponds to the last point in the line.
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 If the LineString does not have a z-dimension then ``nan`` will be returned.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -388,12 +390,12 @@ corresponds to the last point in the line.
 %Docstring
 Returns the m-coordinate of the specified node in the line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 If the LineString does not have a m-dimension then ``nan`` will be returned.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 %End
 %MethodCode
     const int count = sipCpp->numPoints();
@@ -417,10 +419,10 @@ corresponds to the last point in the line.
 Sets the x-coordinate of the specified node in the line string.
 The corresponding node must already exist in line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 
 .. seealso:: :py:func:`xAt`
 %End
@@ -446,10 +448,10 @@ corresponds to the last point in the line.
 Sets the y-coordinate of the specified node in the line string.
 The corresponding node must already exist in line string.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 
 .. seealso:: :py:func:`yAt`
 %End
@@ -475,10 +477,10 @@ corresponds to the last point in the line.
 Sets the z-coordinate of the specified node in the line string.
 The corresponding node must already exist in line string and the line string must have z-dimension.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 
 .. seealso:: :py:func:`zAt`
 %End
@@ -504,10 +506,10 @@ corresponds to the last point in the line.
 Sets the m-coordinate of the specified node in the line string.
 The corresponding node must already exist in line string and the line string must have m-dimension.
 
-An IndexError will be raised if no point with the specified index exists.
-
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified index exists.
 
 .. seealso:: :py:func:`mAt`
 %End
@@ -590,6 +592,8 @@ segment in the line.
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
     virtual bool isClosed() const /HoldGIL/;
+
+    virtual bool isClosed2D() const /HoldGIL/;
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
@@ -734,10 +738,12 @@ of the curve.
 
     SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsPoint"/;
 %Docstring
-Returns the point at the specified ``index``. An IndexError will be raised if no point with the specified ``index`` exists.
+Returns the point at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified ``index`` exists.
 
 .. versionadded:: 3.6
 %End
@@ -761,10 +767,12 @@ corresponds to the last point in the line.
 
     void __setitem__( int index, const QgsPoint &point );
 %Docstring
-Sets the point at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+Sets the point at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified ``index`` exists.
 
 .. versionadded:: 3.6
 %End
@@ -791,10 +799,12 @@ corresponds to the last point in the line.
 
     void __delitem__( int index );
 %Docstring
-Deletes the vertex at the specified ``index``. A point at the ``index`` must already exist or an IndexError will be raised.
+Deletes the vertex at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to positions from the end of the line. E.g. an index of -1
 corresponds to the last point in the line.
+
+:raises IndexError: if no point with the specified ``index`` exists.
 
 .. versionadded:: 3.6
 %End

@@ -42,6 +42,7 @@ struct Vertex
     , fid( fid )
     , vertexId( vertexId ) {}
 
+  // TODO c++20 - replace with = default
   bool operator==( const Vertex &other ) const
   {
     return layer == other.layer && fid == other.fid && vertexId == other.vertexId;
@@ -220,6 +221,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch );
 
     void deleteVertex();
+
+    void toggleVertexCurve();
 
     typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > VertexEdits;
 

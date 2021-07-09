@@ -110,6 +110,8 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsSt
   if ( !mRenderer )
   {
     mRenderer = std::make_unique< QgsHeatmapRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   btnColorRamp->setShowGradientOnly( true );

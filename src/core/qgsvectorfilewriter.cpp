@@ -3148,7 +3148,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Pre
   QgsWkbTypes::Type destWkbType = details.destWkbType;
 
   int lastProgressReport = 0;
-  long total = details.featureCount;
+  long long total = details.featureCount;
 
   // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )

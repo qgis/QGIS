@@ -16,8 +16,7 @@
 
 use strict;
 use warnings;
-use Locale::Language;
-use Locale::Country;
+use Locales;
 
 my @lang;
 
@@ -94,10 +93,12 @@ my $translators= {
 	'uk' => 'Alexander Bruy, Daria Svidzinska, Svitlana Shulik, Alesya Shushova',
 	'vi' => 'Phùng Văn Doanh, Bùi Hữu Mạnh, Nguyễn Văn Thanh, Nguyễn Hữu Phúc, Cao Minh Tu',
 	'zh-Hant' => 'Calvin Ngei, Zhang Jun, Richard Xie, Dennis Raylin Chen',
-	'zh-Hans' => 'Calvin Ngei, Lisashen, Wang Shuai',
+	'zh-Hans' => 'Calvin Ngei, Lisashen, Wang Shuai, Xu Baocai',
 };
 
 my $maxn;
+
+my $locale = Locales->new("en_US");
 
 for my $i (<i18n/qgis_*.ts>) {
 	my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
@@ -121,15 +122,8 @@ for my $i (<i18n/qgis_*.ts>) {
                 $charset = " traditional";
                 $langcode = $1;
         }
-	my $name;
-	if($langcode =~ /(.*)_(.*)/) {
-		my $lang = code2language(lc $1);
-		my $country = code2country(lc $2);
-		$name = "$lang ($country)";
-	} else {
-		$name = code2language(lc $langcode);
-	}
 
+	my $name = $locale->get_language_from_code($langcode);
 	$name .= $charset;
 
 	open F, "lrelease $i|";

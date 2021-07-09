@@ -140,8 +140,10 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Marks the current selected projection for push to front of recent projections list.
+     *
+     * \deprecated Has no effect since QGIS 3.20
      */
-    void pushProjectionToFront();
+    Q_DECL_DEPRECATED void pushProjectionToFront() SIP_DEPRECATED;
 
   signals:
 
@@ -291,8 +293,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
     int mSearchColumn = QgsProjectionSelectionTreeWidget::None;
     QString mSearchValue;
-
-    bool mPushProjectionToFront = false;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;

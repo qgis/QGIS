@@ -89,7 +89,9 @@ Returns the list of symbol layers contained in the symbol.
 
     SIP_PYOBJECT symbolLayer( int layer ) /TypeHint="QgsSymbolLayer"/;
 %Docstring
-Returns the symbol layer at the specified index. An IndexError will be raised if no layer with the specified index exists.
+Returns the symbol layer at the specified index.
+
+:raises IndexError: if no layer with the specified index exists.
 
 .. seealso:: :py:func:`symbolLayers`
 
@@ -140,10 +142,12 @@ Returns the number of symbol layers contained in the symbol.
 
     SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsSymbolLayer"/;
 %Docstring
-Returns the symbol layer at the specified ``index``. An IndexError will be raised if no layer with the specified ``index`` exists.
+Returns the symbol layer at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
 corresponds to the last layer in the symbol.
+
+:raises IndexError: if no layer with the specified ``index`` exists.
 
 .. versionadded:: 3.10
 %End
@@ -166,10 +170,12 @@ corresponds to the last layer in the symbol.
 
     void __delitem__( int index );
 %Docstring
-Deletes the layer at the specified ``index``. A layer at the ``index`` must already exist or an IndexError will be raised.
+Deletes the layer at the specified ``index``.
 
 Indexes can be less than 0, in which case they correspond to layers from the end of the symbol. E.g. an index of -1
 corresponds to the last layer in the symbol.
+
+:raises IndexError: if no layer at the specified ``index`` exists
 
 .. versionadded:: 3.10
 %End
@@ -325,7 +331,7 @@ matches the settings from that context.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) /PyName=bigSymbolPreviewImageV2/;
 %Docstring
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
@@ -336,6 +342,13 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 .. seealso:: :py:func:`asImage`
 
 .. seealso:: :py:func:`drawPreviewIcon`
+%End
+
+ QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated/;
+%Docstring
+
+.. deprecated::
+   use bigSymbolPreviewImageV2 instead.
 %End
 
     QString dump() const;

@@ -49,10 +49,10 @@
         <x>0</x>
         <y>0</y>
         <width>577</width>
-        <height>413</height>
+        <height>663</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout" rowstretch="0,1">
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -65,9 +65,6 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="1" column="0">
-        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
-       </item>
        <item row="0" column="0">
         <widget class="QGroupBox" name="mTemporalGroupBox">
          <property name="enabled">
@@ -87,13 +84,10 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="2" column="0" colspan="2">
-           <widget class="QRadioButton" name="mModeFixedRangeRadio">
+          <item row="4" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeRedrawLayer">
             <property name="text">
-             <string>Fixed time range (only show this layer if animation time is within this range)</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
+             <string>Redraw layer only</string>
             </property>
            </widget>
           </item>
@@ -125,6 +119,9 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
              <number>0</number>
             </property>
             <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,2,0,3">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
              <property name="topMargin">
               <number>0</number>
              </property>
@@ -181,8 +178,52 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             </layout>
            </widget>
           </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mModeFixedRangeRadio">
+            <property name="text">
+             <string>Fixed time range (only show this layer if animation time is within this range)</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="mLabelRedrawLayer">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer will automatically be redrawn whenever the temporal range is changed, but no time based filtering will be applied to the layer.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This configuration is useful when the layer has renderer settings which vary based on the temporal range. For instance, when it is using time-dependent data-defined renderer expressions.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
          </layout>
         </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QWidget" name="mExtraWidgetContainer" native="true"/>
        </item>
       </layout>
      </widget>

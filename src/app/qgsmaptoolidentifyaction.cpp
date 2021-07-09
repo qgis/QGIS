@@ -94,7 +94,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   resultsDialog()->clear();
 
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vl )
+  if ( !vl || !vl->dataProvider() )
     return;
 
   QString filter = QStringLiteral( "$id IN (" );

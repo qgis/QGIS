@@ -60,6 +60,19 @@ Returns the end point of the curve.
     virtual bool isClosed() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is closed.
+
+.. seealso:: :py:func:`isClosed2D`
+%End
+
+    virtual bool isClosed2D() const /HoldGIL/;
+%Docstring
+Returns true if the curve is closed.
+
+Unlike isClosed. It looks only for XY coordinates.
+
+.. seealso:: :py:func:`isClosed`
+
+.. versionadded:: 3.20
 %End
 
     virtual bool isRing() const /HoldGIL/;

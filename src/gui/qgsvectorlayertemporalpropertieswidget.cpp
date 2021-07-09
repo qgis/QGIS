@@ -159,16 +159,10 @@ void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
 
   mFixedDurationSpinBox->setValue( properties->fixedDuration() );
 
-  if ( !properties->startField().isEmpty() )
-  {
-    mSingleFieldComboBox->setField( properties->startField() );
-    mStartFieldComboBox->setField( properties->startField() );
-    mDurationStartFieldComboBox->setField( properties->startField() );
-  }
-  if ( !properties->endField().isEmpty() )
-  {
-    mEndFieldComboBox->setField( properties->endField() );
-  }
+  mSingleFieldComboBox->setField( properties->startField() );
+  mStartFieldComboBox->setField( properties->startField() );
+  mDurationStartFieldComboBox->setField( properties->startField() );
+  mEndFieldComboBox->setField( properties->endField() );
   mDurationFieldComboBox->setField( properties->durationField() );
   mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );
   mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( properties->durationUnits() ) );

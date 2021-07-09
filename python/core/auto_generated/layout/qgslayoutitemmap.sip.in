@@ -508,12 +508,17 @@ be used instead.
 
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Sets the stored ``layers`` set. If empty, the current project layers will
-be used instead.
+Sets the stored ``layers`` set. If empty, the current project layers will be used.
+If the map item is set to follow a map theme (via :py:func:`~QgsLayoutItemMap.followVisibilityPreset` and :py:func:`~QgsLayoutItemMap.followVisibilityPresetName` ),
+then this method will have no effect and the layers rendered in the map will always follow the map theme.
 
 .. seealso:: :py:func:`layers`
 
 .. seealso:: :py:func:`keepLayerSet`
+
+.. seealso:: :py:func:`followVisibilityPreset`
+
+.. seealso:: :py:func:`followVisibilityPresetName`
 %End
 
     bool keepLayerStyles() const;
@@ -867,6 +872,15 @@ Returns map rendering errors
 :return: list of errors
 %End
 
+    QgsLabelingResults *previewLabelingResults() const;
+%Docstring
+Returns the labeling results of the most recent preview map render. May be ``None`` if no map preview has been rendered in the item.
+
+The map item retains ownership of the returned results.
+
+.. versionadded:: 3.20
+%End
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
@@ -995,6 +1009,13 @@ Emitted when the map's associated ``theme`` is changed.
 Emitted when the map's coordinate reference system is changed.
 
 .. versionadded:: 3.18
+%End
+
+    void previewRefreshed();
+%Docstring
+Emitted whenever the item's map preview has been refreshed.
+
+.. versionadded:: 3.20
 %End
 
   public slots:

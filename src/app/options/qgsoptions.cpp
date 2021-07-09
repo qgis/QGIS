@@ -475,6 +475,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
+  mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
+
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() );
 
@@ -823,6 +825,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
   Qgis::PythonMacroMode pyMacroMode = mSettings->enumValue( QStringLiteral( "/qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
   mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyMacroMode ) ) );
+
+  mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast< int >( Qgis::FilePathType::Absolute ) );
+  mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast< int >( Qgis::FilePathType::Relative ) );
+  mDefaultPathsComboBox->setCurrentIndex(
+    mDefaultPathsComboBox->findData(
+      static_cast< int >(
+        mSettings->value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute )
+    )
+  );
 
   QgsProject::FileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
   mFileFormatQgzButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgz );
@@ -1584,6 +1595,8 @@ void QgsOptions::saveOptions()
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
                        cmbScanZipInBrowser->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), mCheckMonitorDirectories->isChecked() );
+
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
   mSettings->setValue( QStringLiteral( "/qgis/legendsymbolMinimumSize" ), mLegendSymbolMinimumSizeSpinBox->value() );
@@ -1648,6 +1661,9 @@ void QgsOptions::saveOptions()
     QgisApp::instance()->updateProjectFromTemplates();
   }
   mSettings->setEnumValue( QStringLiteral( "/qgis/enableMacros" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonMacroMode>() );
+
+  mSettings->setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ),
+                       static_cast< Qgis::FilePathType >( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
   mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? QgsProject::FileFormat::Qgs : QgsProject::FileFormat::Qgz );
 

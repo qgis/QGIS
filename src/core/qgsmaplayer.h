@@ -551,8 +551,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     virtual void setSubLayerVisibility( const QString &name, bool visible );
 
+    /**
+     * Returns whether the layer supports editing or not.
+     * \returns FALSE if the layer is read only or the data provider has no editing capabilities.
+     * \note default implementation returns FALSE.
+     * \since QGIS 3.22 in the base class QgsMapLayer.
+     */
+    virtual bool supportsEditing() const;
+
     //! Returns TRUE if the layer can be edited.
     virtual bool isEditable() const;
+
+    /**
+     * Returns TRUE if the layer has been modified since last commit/save.
+     * \note default implementation returns FALSE.
+     * \since QGIS 3.22 in the base class QgsMapLayer.
+     */
+    virtual bool isModified() const;
 
     /**
      * Returns TRUE if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
@@ -1264,6 +1279,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
 
+    /**
+     * Returns path to the placeholder image or an empty string if a generated legend is shown
+     * \return placholder image path
+     * \since QGIS 3.22
+     */
+    QString legendPlaceholderImage() const { return mLegendPlaceholderImage;}
+
+    /**
+     * Set placeholder image for legend. If the string is empty, a generated legend will be shown.
+     * \param imgPath file path to the placeholder image
+     * \since QGIS 3.22
+     */
+    void setLegendPlaceholderImage( const QString &imgPath ) { mLegendPlaceholderImage = imgPath; }
+
   public slots:
 
     /**
@@ -1529,6 +1558,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.18
      */
     void customPropertyChanged( const QString &key );
+
+    /**
+     * Emitted when editing on this layer has started.
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void editingStarted();
+
+    /**
+     * Emitted when edited changes have been successfully written to the data provider.
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void editingStopped();
+
+    /**
+     * Emitted when modifications has been done on layer
+     * \since QGIS 3.22 in the QgsMapLayer base class
+     */
+    void layerModified();
 
   private slots:
 
@@ -1833,6 +1880,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
+
+    //! Path to placeholder image for layer legend. If the string is empty, a generated legend is shown
+    QString mLegendPlaceholderImage;
 
     friend class QgsVectorLayer;
 };

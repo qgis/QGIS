@@ -63,6 +63,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+  }
+  if ( !config( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
+  {
     mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );

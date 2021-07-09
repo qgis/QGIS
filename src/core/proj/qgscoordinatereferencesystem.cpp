@@ -1835,7 +1835,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
       d->mEllipsoidAcronym = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-      d->mIsGeographic = node.toElement().text().compare( QLatin1String( "true" ) );
+      d->mIsGeographic = node.toElement().text() == QLatin1String( "true" );
 
       d->mWktPreferred.clear();
 
@@ -2122,8 +2122,7 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
 
   thread_local const QRegularExpression ellipseRegExp( QStringLiteral( "\\+(?:ellps|datum)=(\\S+)" ) );
   const QRegularExpressionMatch ellipseMatch = projRegExp.match( proj );
-  QString ellps;
-  if ( !ellipseMatch.hasMatch() )
+  if ( ellipseMatch.hasMatch() )
   {
     ellipsoid = ellipseMatch.captured( 1 );
   }
@@ -2134,7 +2133,7 @@ void getOperationAndEllipsoidFromProjString( const QString &proj, QString &opera
     // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
     // set for these CRSes). Better just hack around and make the constraint happy for now,
     // and hope that the definitions get corrected in future.
-    ellipsoid.clear();
+    ellipsoid = "";
   }
 }
 
@@ -2355,8 +2354,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   PROJ_STRING_LIST authorities = proj_get_authorities_from_database( pjContext );
 
-  int nextSrsId = 63321;
-  int nextSrId = 520003321;
+  int nextSrsId = 63560;
+  int nextSrId = 520003560;
   for ( auto authIter = authorities; authIter && *authIter; ++authIter )
   {
     const QString authority( *authIter );

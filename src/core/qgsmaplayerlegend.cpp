@@ -14,7 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-
+#include "qgsiconutils.h"
+#include "qgsimagecache.h"
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
@@ -359,6 +360,18 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
+  if ( mLayer )
+  {
+    QString placeholderImage = mLayer->legendPlaceholderImage();
+    if ( !placeholderImage.isEmpty() )
+    {
+      bool fitsInCache;
+      QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+      nodes << new QgsImageLegendNode( nodeLayer, img );
+      return nodes;
+    }
+  }
+
   QgsFeatureRenderer *r = mLayer->renderer();
   if ( !r )
     return nodes;
@@ -502,7 +515,14 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
 
-  if ( mLayer->renderer() )
+  QString placeholderImage = mLayer->legendPlaceholderImage();
+  if ( !placeholderImage.isEmpty() )
+  {
+    bool fitsInCache;
+    QImage img = QgsApplication::imageCache()->pathAsImage( placeholderImage, QSize(), false, 1.0, fitsInCache );
+    nodes << new QgsImageLegendNode( nodeLayer, img );
+  }
+  else if ( mLayer->renderer() )
     nodes.append( mLayer->renderer()->createLegendNodes( nodeLayer ) );
   return nodes;
 }
@@ -519,10 +539,6 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  QgsMeshDataProvider *provider = mLayer->dataProvider();
-  if ( !provider )
-    return nodes;
-
   QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
 
   int indexScalar = rendererSettings.activeScalarDatasetGroup();
@@ -530,11 +546,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   QString name;
   if ( indexScalar > -1 && indexVector > -1 && indexScalar != indexVector )
-    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar ).name(), provider->datasetGroupMetadata( indexVector ).name() );
+    name = QString( "%1 / %2" ).arg( mLayer->datasetGroupMetadata( indexScalar ).name(), mLayer->datasetGroupMetadata( indexVector ).name() );
   else if ( indexScalar > -1 )
-    name = provider->datasetGroupMetadata( indexScalar ).name();
+    name = mLayer->datasetGroupMetadata( indexScalar ).name();
   else if ( indexVector > -1 )
-    name = provider->datasetGroupMetadata( indexVector ).name();
+    name = mLayer->datasetGroupMetadata( indexVector ).name();
   else
   {
     // neither contours nor vectors get rendered - no legend needed

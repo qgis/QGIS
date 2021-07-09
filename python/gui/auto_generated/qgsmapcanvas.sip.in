@@ -234,7 +234,7 @@ Sets the canvas to the specified ``extent``.
 
 :return: ``True`` if the zoom was successful.
 
-:raises :: py:class:`QgsCsException` if a transformation error occurred.
+:raises QgsCsException: if a transformation error occurred.
 
 .. versionadded:: 3.10
 %End
@@ -1220,7 +1220,7 @@ Emitted when the canvas has been assigned a different map theme.
 .. versionadded:: 3.0
 %End
 
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 %Docstring
 emit a message (usually to be displayed in a message bar)
 %End
@@ -1302,6 +1302,8 @@ Can be used to extend the context menu.
     virtual void paintEvent( QPaintEvent *e );
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
+
+    virtual bool viewportEvent( QEvent *event );
 
 
     void moveCanvasContents( bool reset = false );

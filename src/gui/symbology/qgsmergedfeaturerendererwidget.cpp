@@ -63,6 +63,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   {
     // use default embedded renderer
     mRenderer.reset( new QgsMergedFeatureRenderer( QgsFeatureRenderer::defaultRenderer( type ) ) );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   int currentEmbeddedIdx = 0;

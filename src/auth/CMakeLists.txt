@@ -18,7 +18,6 @@ add_subdirectory(identcert)
 add_subdirectory(pkipaths)
 add_subdirectory(pkipkcs12)
 
-set(WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
 if (WITH_OAUTH2_PLUGIN)
   add_subdirectory(oauth2)
 endif()

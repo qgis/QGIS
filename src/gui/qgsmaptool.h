@@ -134,6 +134,13 @@ class GUI_EXPORT QgsMapTool : public QObject
     virtual bool gestureEvent( QGestureEvent *e );
 
     /**
+     * Tooltip event for overriding. Default implementation does nothing.
+     * Returns whether the event was handled by the tool and should not be propagated further.
+     * \since QGIS 3.22
+     */
+    virtual bool canvasToolTipEvent( QHelpEvent *e );
+
+    /**
      * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
@@ -176,6 +183,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     /**
      * Emit map tool changed with the old tool
+     * \see setToolName()
      * \since QGIS 2.3
      */
     QString toolName() { return mToolName; }
@@ -240,7 +248,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   signals:
     //! emit a message
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 
     //! emit signal to clear previous message
     void messageDiscarded();
@@ -283,6 +291,14 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Transforms a \a point from map coordinates to screen coordinates.
     QPoint toCanvasCoordinates( const QgsPointXY &point ) const;
+
+    /**
+     * Sets the tool's \a name.
+     *
+     * \see toolName()
+     * \since QGIS 3.20
+     */
+    void setToolName( const QString &name );
 
     //! The pointer to the map canvas
     QgsMapCanvas *mCanvas = nullptr;

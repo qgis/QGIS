@@ -166,6 +166,7 @@ void QgsCodeEditorExpression::updateApis()
 QgsLexerExpression::QgsLexerExpression( QObject *parent )
   : QsciLexerSQL( parent )
 {
+  setBackslashEscapes( true );
 }
 
 const char *QgsLexerExpression::language() const

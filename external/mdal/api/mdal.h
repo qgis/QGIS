@@ -112,6 +112,18 @@ MDAL_EXPORT const char *MDAL_Version();
 MDAL_EXPORT MDAL_Status MDAL_LastStatus();
 
 /**
+ * Resets the last status message
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_ResetStatus();
+
+/*
+ * Sets the last status message
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT void MDAL_SetStatus( MDAL_LogLevel Level, MDAL_Status status, const char *message );
+
+/**
  * Sets custom callback for logging output
  *
  * By default standard stdout is used as output.
@@ -170,6 +182,14 @@ MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( MDAL_DriverH driver, MDAL_Data
  * \since MDAL 0.7.0
  */
 MDAL_EXPORT const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver );
+
+/**
+ * Returns the file suffix used to save mesh frame on file
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.9.0
+ */
+MDAL_EXPORT const char *MDAL_DR_saveMeshSuffix( MDAL_DriverH driver );
 
 /**
  * Returns whether driver has capability to save mesh

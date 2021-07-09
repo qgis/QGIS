@@ -120,13 +120,13 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   const QStringList parts { interval.split( '/' ) };
   if ( parts.length() != 2 )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ), Qgis::Critical );
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval." ).arg( interval ), QStringLiteral( "Server" ) );
   }
   T result { parseDate( parts[0] ), parseDate( parts[1] ) };
   // Check validity
   if ( result.isEmpty() )
   {
-    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ), Qgis::Critical );
+    throw QgsServerApiBadRequestException( QStringLiteral( "%1 is not a valid datetime interval (empty)." ).arg( interval ), QStringLiteral( "Server" ) );
   }
   return result;
 }
@@ -544,7 +544,7 @@ json QgsServerApiUtils::temporalExtent( const QgsVectorLayer *layer )
     catch ( std::exception &ex )
     {
       const QString errorMessage { QStringLiteral( "Error creating temporal extent: %1" ).arg( ex.what() ) };
-      QgsMessageLog::logMessage( errorMessage, QStringLiteral( "Server" ), Qgis::Critical );
+      QgsMessageLog::logMessage( errorMessage, QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
       throw  QgsServerApiInternalServerError( errorMessage );
     }
   }
@@ -618,12 +618,12 @@ QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs 
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI %1: (not OGC or EPSG)" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::Critical );
+      QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI %1: (not OGC or EPSG)" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI: %1" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Error converting published CRS to URI: %1" ).arg( crs.authid() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
   }
   return QString();
 }

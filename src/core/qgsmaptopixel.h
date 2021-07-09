@@ -237,9 +237,25 @@ class CORE_EXPORT QgsMapToPixel
      * \param widthPixels Output width, in pixels
      * \param heightPixels Output height, in pixels
      * \param rotation clockwise rotation in degrees
+     *
+     * \note if the specified parameters result in an invalid transform then no changes will be applied to the object
      * \since QGIS 2.8
      */
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
+
+    /**
+     * Set parameters for use in transforming coordinates
+     * \param mapUnitsPerPixel Map units per pixel
+     * \param centerX X coordinate of map center, in geographical units
+     * \param centerY Y coordinate of map center, in geographical units
+     * \param widthPixels Output width, in pixels
+     * \param heightPixels Output height, in pixels
+     * \param rotation clockwise rotation in degrees
+     * \param ok will be set to TRUE if the specified parameters result in a valid transform, otherwise the changes are ignored and ok will be set to FALSE.
+     *
+     * \since QGIS 3.20
+     */
+    void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation, bool *ok ) SIP_SKIP;
 
     //! String representation of the parameters used in the transform
     QString showParameters() const;

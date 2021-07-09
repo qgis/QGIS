@@ -24,7 +24,7 @@
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
 #include "qgsattributeeditorelement.h"
-#include "qgsattributeeditorrelation.h"
+#include "qgsfieldproxymodel.h"
 
 /**
  * \ingroup UnitTests
@@ -451,13 +451,13 @@ void TestQgis::testQgsEnumKeyToValue()
 
 void TestQgis::testQgsFlagValueToKeys()
 {
-  QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature;
-  QCOMPARE( qgsFlagValueToKeys( buttons ), QStringLiteral( "Link|AddChildFeature" ) );
+  QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double;
+  QCOMPARE( qgsFlagValueToKeys( filters ), QStringLiteral( "String|Double" ) );
 }
 void TestQgis::testQgsFlagKeysToValue()
 {
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "Link|AddChildFeature" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Button::Link | QgsAttributeEditorRelation::Button::AddChildFeature );
-  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) ), QgsAttributeEditorRelation::Buttons( QgsAttributeEditorRelation::Button::AllButtons ) );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "String|Double" ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) ), QgsFieldProxyModel::Filter::String | QgsFieldProxyModel::Filter::Double );
+  QCOMPARE( qgsFlagKeysToValue( QStringLiteral( "UnknownKey" ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) ), QgsFieldProxyModel::Filters( QgsFieldProxyModel::Filter::AllTypes ) );
 }
 
 void TestQgis::testQMapQVariantList()

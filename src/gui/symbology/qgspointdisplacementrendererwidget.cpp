@@ -76,6 +76,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   if ( !mRenderer )
   {
     mRenderer = std::make_unique< QgsPointDisplacementRenderer >();
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   blockAllSignals( true );

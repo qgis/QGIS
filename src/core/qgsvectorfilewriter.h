@@ -958,7 +958,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QgsWkbTypes::Type sourceWkbType = QgsWkbTypes::Unknown;
       QgsFields sourceFields;
       QString providerType;
-      long featureCount = 0;
+      long long featureCount = 0;
       QgsFeatureIds selectedFeatureIds;
       QString dataSourceUri;
       QString storageType;

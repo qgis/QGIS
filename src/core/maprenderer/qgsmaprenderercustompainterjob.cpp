@@ -75,7 +75,7 @@ QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
   //cancel();
 }
 
-void QgsMapRendererCustomPainterJob::start()
+void QgsMapRendererCustomPainterJob::startPrivate()
 {
   if ( isActive() )
     return;

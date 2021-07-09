@@ -20,6 +20,7 @@
 %Include auto_generated/qgscacheindexfeatureid.sip
 %Include auto_generated/qgscadutils.sip
 %Include auto_generated/qgsclipper.sip
+%Include auto_generated/qgscommandlineutils.sip
 %Include auto_generated/qgscolorramp.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
@@ -184,6 +185,7 @@
 %Include auto_generated/qgstransactiongroup.sip
 %Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsunittypes.sip
+%Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
@@ -411,6 +413,7 @@
 %Include auto_generated/maprenderer/qgsmaprenderersequentialjob.sip
 %Include auto_generated/maprenderer/qgsmaprenderertask.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
+%Include auto_generated/mesh/qgsmesheditor.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip
@@ -512,6 +515,10 @@
 %Include auto_generated/providers/qgsdataprovider.sip
 %Include auto_generated/providers/qgsprovidermetadata.sip
 %Include auto_generated/providers/qgsproviderregistry.sip
+%Include auto_generated/providers/qgsprovidersublayerdetails.sip
+%Include auto_generated/providers/qgsprovidersublayermodel.sip
+%Include auto_generated/providers/qgsprovidersublayertask.sip
+%Include auto_generated/providers/qgsproviderutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
@@ -522,6 +529,7 @@
 %Include auto_generated/raster/qgscontrastenhancement.sip
 %Include auto_generated/raster/qgscontrastenhancementfunction.sip
 %Include auto_generated/raster/qgscubicrasterresampler.sip
+%Include auto_generated/raster/qgsexiftools.sip
 %Include auto_generated/raster/qgshillshaderenderer.sip
 %Include auto_generated/raster/qgshuesaturationfilter.sip
 %Include auto_generated/raster/qgslinearminmaxenhancement.sip
@@ -658,4 +666,3 @@
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
-%Include auto_generated/qgsuserprofile.sip

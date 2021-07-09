@@ -71,7 +71,8 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mStrokeWidthSpinBox_valueChanged );
   connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
   connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged );
-  connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsLayoutPictureWidget::sourceChanged );
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgSelected, this, &QgsLayoutPictureWidget::sourceChanged );
+
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsLayoutPictureWidget::setSvgDynamicParameters );
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsLayoutPictureWidget::modeChanged );
@@ -472,7 +473,7 @@ void QgsLayoutPictureWidget::sourceChanged( const QString &source )
   if ( mPicture )
   {
     mPicture->beginCommand( tr( "Change Picture" ) );
-    mPicture->setPicturePath( source, QgsLayoutItemPicture::FormatSVG );
+    mPicture->setPicturePath( source, mRadioSVG->isChecked() ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
     mPicture->update();
     mPicture->endCommand();
     updateSvgParamGui();

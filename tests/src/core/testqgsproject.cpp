@@ -39,6 +39,7 @@ class TestQgsProject : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
+    void testDirtySet();
     void testReadPath();
     void testPathResolver();
     void testPathResolverSvg();
@@ -53,6 +54,10 @@ class TestQgsProject : public QObject
     void projectSaveUser();
     void testCrsExpressions();
     void testCrsValidAfterReadingProjectFile();
+    void testFilePathType();
+    void testDefaultRelativePaths();
+    void testAttachmentsQgs();
+    void testAttachmentsQgz();
 };
 
 void TestQgsProject::init()
@@ -83,6 +88,15 @@ void TestQgsProject::cleanupTestCase()
 {
   // Runs once after all tests are run
   QgsApplication::exitQgis();
+}
+
+void TestQgsProject::testDirtySet()
+{
+  QgsProject p;
+  bool dirtySet = false;
+  connect( &p, &QgsProject::dirtySet, [&] { dirtySet = true; } );
+  p.setDirty( true );
+  QVERIFY( dirtySet );
 }
 
 void TestQgsProject::testReadPath()
@@ -647,6 +661,16 @@ void TestQgsProject::testCrsValidAfterReadingProjectFile()
   QCOMPARE( crsChangedSpy.count(), 2 );
 }
 
+void TestQgsProject::testFilePathType()
+{
+  QgsProject p;
+  p.setFilePathStorage( Qgis::FilePathType::Absolute );
+  QCOMPARE( p.filePathStorage(), Qgis::FilePathType::Absolute );
+
+  p.setFilePathStorage( Qgis::FilePathType::Relative );
+  QCOMPARE( p.filePathStorage(), Qgis::FilePathType::Relative );
+}
+
 void TestQgsProject::testCrsExpressions()
 {
   QgsProject p;
@@ -688,6 +712,178 @@ void TestQgsProject::testCrsExpressions()
   r = e9.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
 }
+
+void TestQgsProject::testDefaultRelativePaths()
+{
+  QgsSettings s;
+  bool bk_defaultRelativePaths = s.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool();
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true );
+  QgsProject p1;
+  const bool p1PathsAbsolute = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const Qgis::FilePathType p1Type = p1.filePathStorage();
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), false );
+  p1.clear();
+  const bool p1PathsAbsolute_2 = p1.readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  const Qgis::FilePathType p2Type = p1.filePathStorage();
+
+  s.setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), bk_defaultRelativePaths );
+
+  QCOMPARE( p1PathsAbsolute, false );
+  QCOMPARE( p1PathsAbsolute_2, true );
+  QCOMPARE( p1Type, Qgis::FilePathType::Relative );
+  QCOMPARE( p2Type, Qgis::FilePathType::Absolute );
+}
+
+void TestQgsProject::testAttachmentsQgs()
+{
+  // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
+  {
+    QgsProject p;
+
+    QString fileName = p.createAttachedFile( "myattachment" );
+    QVERIFY( QFile( fileName ).exists() );
+    QVERIFY( p.attachedFiles().contains( fileName ) );
+    QVERIFY( p.removeAttachedFile( fileName ) );
+    QVERIFY( !p.attachedFiles().contains( fileName ) );
+    QVERIFY( !p.removeAttachedFile( fileName ) );
+  }
+
+  // Verify that attachment is exists after re-reading project
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
+    projFile.open();
+
+    QgsProject p;
+    QFile file;
+    QString fileName = p.createAttachedFile( "myattachment" );
+
+    file.setFileName( fileName );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
+    file.write( "Attachment" );
+    file.close();
+
+    p.write( projFile.fileName() );
+
+    QFileInfo finfo( projFile.fileName() );
+    QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+    QVERIFY( QFile( attachmentsZip ).exists() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+
+    file.setFileName( p2.attachedFiles().at( 0 ) );
+    QVERIFY( file.open( QIODevice::ReadOnly ) );
+    QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
+  }
+
+  // Verify that attachment paths can be used as layer filenames
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
+    projFile.open();
+
+    QgsProject p;
+    QString fileName = p.createAttachedFile( "testlayer.gpx" );
+    QFile file( fileName );
+    file.open( QIODevice::WriteOnly );
+    file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
+    file.write( "<gpx version=\"1.0\">" );
+    file.write( "<name>Example gpx</name>" );
+    file.write( "<wpt lat=\"0.0\" lon=\"0.0\">" );
+    file.write( "<name>NULL Island</name>" );
+    file.write( "</wpt>" );
+    file.write( "</gpx>" );
+    file.close();
+
+    QgsVectorLayer *layer = new QgsVectorLayer( fileName, "gpx" );
+    p.addMapLayer( layer );
+    p.write( projFile.fileName() );
+
+    QFileInfo finfo( projFile.fileName() );
+    QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
+    QVERIFY( QFile( attachmentsZip ).exists() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+    QVERIFY( p2.mapLayers().size() == 1 );
+    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+  }
+
+}
+
+void TestQgsProject::testAttachmentsQgz()
+{
+  // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
+  {
+    QgsProject p;
+
+    QString fileName = p.createAttachedFile( "myattachment" );
+    QVERIFY( QFile( fileName ).exists() );
+    QVERIFY( p.attachedFiles().contains( fileName ) );
+    QVERIFY( p.removeAttachedFile( fileName ) );
+    QVERIFY( !p.attachedFiles().contains( fileName ) );
+    QVERIFY( !p.removeAttachedFile( fileName ) );
+  }
+
+  // Verify that attachment is exists after re-reading project
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    QFile file;
+    QString fileName = p.createAttachedFile( "myattachment" );
+
+    file.setFileName( fileName );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
+    file.write( "Attachment" );
+    file.close();
+
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+
+    file.setFileName( p2.attachedFiles().at( 0 ) );
+    QVERIFY( file.open( QIODevice::ReadOnly ) );
+    QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
+  }
+
+  // Verify that attachment paths can be used as layer filenames
+  {
+    QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
+    projFile.open();
+
+    QgsProject p;
+    QString fileName = p.createAttachedFile( "testlayer.gpx" );
+    QFile file( fileName );
+    file.open( QIODevice::WriteOnly );
+    file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
+    file.write( "<gpx version=\"1.0\">" );
+    file.write( "<name>Example gpx</name>" );
+    file.write( "<wpt lat=\"0.0\" lon=\"0.0\">" );
+    file.write( "<name>NULL Island</name>" );
+    file.write( "</wpt>" );
+    file.write( "</gpx>" );
+    file.close();
+
+    QgsVectorLayer *layer = new QgsVectorLayer( fileName, "gpx" );
+    p.addMapLayer( layer );
+    p.write( projFile.fileName() );
+
+    QgsProject p2;
+    p2.read( projFile.fileName() );
+    QVERIFY( p2.attachedFiles().size() == 1 );
+    QVERIFY( p2.mapLayers().size() == 1 );
+    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+  }
+
+}
+
 
 QGSTEST_MAIN( TestQgsProject )
 #include "testqgsproject.moc"

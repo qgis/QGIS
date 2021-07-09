@@ -245,7 +245,7 @@ Saves ``metadata`` to the layer corresponding to the specified ``uri``.
          - errorMessage: descriptive string of error if encountered
 
 
-:raises :: py:class:`QgsNotSupportedException` if the provider does not support saving layer metadata for the
+:raises QgsNotSupportedException: if the provider does not support saving layer metadata for the
    specified ``uri``.
 
 
@@ -510,6 +510,19 @@ This method tests whether any of the registered providers return ``True`` for th
 :py:func:`QgsProviderMetadata.uriIsBlocklisted()` implementation for the specified URI.
 
 .. versionadded:: 3.18
+%End
+
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = 0 ) const;
+%Docstring
+Queries the specified ``uri`` and returns a list of any valid sublayers found in the dataset which can be handled by any registered data provider.
+
+This method iteratively queries each registered data provider and returns the complete collated list of all valid sublayers found in the dataset which can be opened by the data providers.
+
+The optional ``flags`` argument can be used to control the behavior of the query.
+
+The optional ``feedback`` argument can be used to provide cancellation support for long-running queries.
+
+.. versionadded:: 3.22
 %End
 
     QString fileVectorFilters() const;

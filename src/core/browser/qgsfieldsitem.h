@@ -55,6 +55,14 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 
     ~QgsFieldsItem() override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     QVector<QgsDataItem *> createChildren() override;
 
     QIcon icon() override;
@@ -115,6 +123,14 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
                   const QgsField &field );
 
     ~QgsFieldItem() override;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     QIcon icon() override;
 

@@ -53,7 +53,14 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
       break;
 
     default:
-      mFeatureIds = mVectorLayerCache->mCacheOrderedKeys;
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      mFeatureIds.clear();
+      mFeatureIds.reserve( static_cast< int >( mVectorLayerCache->mCacheOrderedKeys.size() ) );
+      for ( auto it = mVectorLayerCache->mCacheOrderedKeys.begin(); it != mVectorLayerCache->mCacheOrderedKeys.end(); ++it )
+        mFeatureIds << *it;
+#else
+      mFeatureIds = QList( mVectorLayerCache->mCacheOrderedKeys.begin(), mVectorLayerCache->mCacheOrderedKeys.end() );
+#endif
       break;
   }
 

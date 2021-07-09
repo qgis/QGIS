@@ -113,12 +113,12 @@ Query the provider for features specified in request.
 Returns the geometry type which is returned by this layer
 %End
 
-    virtual long featureCount() const = 0;
+    virtual long long featureCount() const = 0;
 
 %Docstring
 Number of features in the layer
 
-:return: long containing number of features
+:return: number of features
 %End
 
     virtual bool empty() const;

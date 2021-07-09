@@ -164,7 +164,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QFont currentLabelFont();
 
     //! Returns a data defined attribute column name for particular property or empty string if not defined
-    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings ) const;
+    QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *layer ) const;
 
     /**
      * Returns a data defined attribute column index

@@ -51,12 +51,6 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mAreaCanvas->setVisible( mShowMap );
 
-  if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
-  {
-    // mark selected projection for push to front if parent dialog is accepted
-    connect( dlg, &QDialog::accepted, this, &QgsProjectionSelectionTreeWidget::pushProjectionToFront );
-  }
-
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
@@ -100,20 +94,13 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
-  if ( !mPushProjectionToFront )
-  {
-    return;
-  }
-
-  // Push current projection to front, only if set
-  long crsId = selectedCrsId();
-  if ( crsId == 0 )
-    return;
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
 
-  QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( crs() );
+  // Push current projection to front, only if set
+  const QgsCoordinateReferenceSystem selectedCrs = crs();
+  if ( selectedCrs.isValid() )
+    QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( selectedCrs );
 }
 
 void QgsProjectionSelectionTreeWidget::resizeEvent( QResizeEvent *event )
@@ -359,7 +346,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
   {
     QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
                                "Because of this the projection selector will not work…" ).arg( databaseFileName ),
-                               Qgis::Critical );
+                               Qgis::MessageLevel::Critical );
     return QString();
   }
 
@@ -795,7 +782,7 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 
 void QgsProjectionSelectionTreeWidget::updateFilter()
 {
-  QString filterTxtCopy = leSearch->text();
+  QString filterTxtCopy = QRegExp::escape( leSearch->text() );
   filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
   QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
 
@@ -850,13 +837,9 @@ void QgsProjectionSelectionTreeWidget::updateFilter()
   filterTreeWidget( lstCoordinateSystems );
 }
 
-
 void QgsProjectionSelectionTreeWidget::pushProjectionToFront()
 {
-  // set flag to push selected projection to front in destructor
-  mPushProjectionToFront = true;
 }
-
 
 long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql )
 {

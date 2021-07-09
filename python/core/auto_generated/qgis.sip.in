@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -81,7 +82,7 @@ The development version
       Warning,
       Critical,
       Success,
-      None,
+      NoLevel,
     };
 
     enum class DataType
@@ -102,8 +103,8 @@ The development version
       ARGB32_Premultiplied
     };
 
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode
+      {
       Never,
       Ask,
       SessionOnly,
@@ -202,6 +203,13 @@ The development version
       PointCloud
     };
 
+    enum class BrowserDirectoryMonitoring
+    {
+      Default,
+      NeverMonitor,
+      AlwaysMonitor,
+    };
+
     enum class VectorExportResult
       {
       Success,
@@ -233,6 +241,50 @@ The development version
     {
       FollowEngineSetting,
       NeverShow,
+    };
+
+    enum class SublayerQueryFlag
+    {
+      FastScan,
+      ResolveGeometryType,
+      CountFeatures,
+    };
+    typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
+
+
+    enum class RasterPipeInterfaceRole
+      {
+      Unknown,
+      Provider,
+      Renderer,
+      Brightness,
+      Resampler,
+      Projector,
+      Nuller,
+      HueSaturation,
+    };
+
+    enum class RasterResamplingStage
+      {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+
+    enum class MeshEditingErrorType
+    {
+      NoError,
+      InvalidFace,
+      FlatFace,
+      UniqueSharedVertex,
+      InvalidVertex,
+    };
+
+    enum class FilePathType
+    {
+      Absolute,
+      Relative,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -308,6 +360,7 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
+QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
 
 
 

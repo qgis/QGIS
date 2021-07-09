@@ -28,7 +28,7 @@
 #include "qgssymbollayerutils.h" // QgsStringMap
 #include "qgstextformat.h"
 #include "qgspallabeling.h"
-#include "layertree/qgslegendpatchshape.h"
+#include "qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;

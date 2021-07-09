@@ -31,10 +31,10 @@
 #include <QVector>
 
 #include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsraster.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
@@ -43,6 +43,10 @@ class QgsMapToPixel;
 class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRasterLayerTemporalProperties;
+class QgsRasterPipe;
+class QgsRasterResampleFilter;
+class QgsBrightnessContrastFilter;
+class QgsHueSaturationFilter;
 
 class QImage;
 class QPixmap;
@@ -237,7 +241,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * \see setRenderer()
      */
-    QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
+    QgsRasterRenderer *renderer() const;
 
     /**
      * Returns the raster's resample filter.
@@ -245,7 +249,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see brightnessFilter()
      * \see hueSaturationFilter()
      */
-    QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
+    QgsRasterResampleFilter *resampleFilter() const;
 
     /**
      * Returns the raster's brightness/contrast filter.
@@ -253,7 +257,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see resampleFilter()
      * \see hueSaturationFilter()
      */
-    QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+    QgsBrightnessContrastFilter *brightnessFilter() const;
 
     /**
      * Returns the raster's hue/saturation filter.
@@ -261,7 +265,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see resampleFilter()
      * \see brightnessFilter()
      */
-    QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+    QgsHueSaturationFilter *hueSaturationFilter() const;
 
     /**
      * Select which stage of the pipe should apply resampling.
@@ -270,7 +274,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * \since QGIS 3.16
      */
-    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
 
     /**
      * Returns which stage of the pipe should apply resampling.
@@ -279,12 +283,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * \since QGIS 3.16
      */
-    QgsRasterPipe::ResamplingStage resamplingStage() const { return mPipe.resamplingStage(); }
+    Qgis::RasterResamplingStage resamplingStage() const;
 
     /**
      * Returns the raster pipe.
      */
-    QgsRasterPipe *pipe() { return &mPipe; }
+    QgsRasterPipe *pipe() { return mPipe.get(); }
 
     /**
      * Returns the width of the (unclipped) raster.
@@ -554,7 +558,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     LayerType mRasterType;
 
-    QgsRasterPipe mPipe;
+    std::unique_ptr< QgsRasterPipe > mPipe;
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;

@@ -81,7 +81,7 @@ Returns a list of all known celestial bodies.
    This method requires PROJ 8.1 or later
 
 
-:raises :: py:class:`QgsNotSupportedException` on QGIS builds based on PROJ 8.0 or earlier.
+:raises QgsNotSupportedException: on QGIS builds based on PROJ 8.0 or earlier.
 
 
 .. versionadded:: 3.20

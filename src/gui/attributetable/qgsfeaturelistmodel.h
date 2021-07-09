@@ -68,7 +68,14 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     //! Constructor for QgsFeatureListModel
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Returns the vector layer cache which is being used to populate the model.

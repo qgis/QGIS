@@ -321,6 +321,11 @@ void QgsSourceFieldsProperties::editingToggled()
 
 void QgsSourceFieldsProperties::addAttributeClicked()
 {
+  if ( !mLayer || !mLayer->dataProvider() )
+  {
+    return;
+  }
+
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -364,7 +369,7 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
 
 void QgsSourceFieldsProperties::calculateFieldClicked()
 {
-  if ( !mLayer )
+  if ( !mLayer || !mLayer->dataProvider() )
   {
     return;
   }

@@ -75,7 +75,7 @@ my $LINE_IDX = 0;
 my $LINE;
 my @OUTPUT = ();
 my @OUTPUT_PYTHON = ();
-
+my $DOXY_INSIDE_SIP_RUN = 0;
 
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
@@ -182,6 +182,27 @@ sub create_class_links {
 
 sub processDoxygenLine {
     my $line = $_[0];
+
+    if ( $line =~ m/\s*#ifdef SIP_RUN/ ) {
+      $DOXY_INSIDE_SIP_RUN = 1;
+      return "";
+    }
+    elsif ( $line =~ m/\s*#ifndef SIP_RUN/ ) {
+      $DOXY_INSIDE_SIP_RUN = 2;
+      return "";
+    }
+    elsif ($DOXY_INSIDE_SIP_RUN != 0 && $line =~ m/\s*#else/ ) {
+      $DOXY_INSIDE_SIP_RUN = $DOXY_INSIDE_SIP_RUN == 1 ? 2 : 1;
+      return "";
+    }
+    elsif ($DOXY_INSIDE_SIP_RUN != 0 && $line =~ m/\s*#endif/ ) {
+      $DOXY_INSIDE_SIP_RUN = 0;
+      return "";
+    }
+
+    if ($DOXY_INSIDE_SIP_RUN == 2) {
+      return "";
+    }
 
     # detect code snippet
     if ( $line =~ m/\\code(\{\.?(\w+)\})?/ ) {
@@ -344,9 +365,9 @@ sub processDoxygenLine {
             }
         }
     }
-    else
-    {
+    elsif ( $line !~ m/\\throws.*/ ) {
         # create links in plain text too (less performant)
+        # we don't do this for "throws" lines, as Sphinx does not format these correctly
         $line = create_class_links($line)
     }
 
@@ -384,7 +405,7 @@ sub detect_and_remove_following_body_or_initializerlist {
     # https://regex101.com/r/ZaP3tC/8
     my $python_signature = '';
     do {no warnings 'uninitialized';
-        if ( $LINE =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( +(?:const|SIP_[\w_]+?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\}\s*(?:SIP_[\w_]+)?;?|(?!;))(\s*\/\/.*)?$/
+        if ( $LINE =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([(?:long )\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( +(?:const|SIP_[\w_]+?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\}\s*(?:SIP_[\w_]+)?;?|(?!;))(\s*\/\/.*)?$/
              || $LINE =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
              || $LINE =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
@@ -1086,10 +1107,12 @@ while ($LINE_IDX < $LINE_COUNT){
                         if ( $monkeypatch eq 1 and $enum_mk_base ne ""){
                           if ( $ACTUAL_CLASS ne "" ) {
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.is_monkey_patched = True\n";
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
                             push @enum_members_doc, "'* ``$compat_name``: ' + $ACTUAL_CLASS.$enum_qualname.$enum_member.__doc__";
                           } else {
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name = $enum_qualname.$enum_member\n";
+                            push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.is_monkey_patched = True\n";
                             push @OUTPUT_PYTHON, "$enum_mk_base.$compat_name.__doc__ = \"$comment\"\n";
                             push @enum_members_doc, "'* ``$compat_name``: ' + $enum_qualname.$enum_member.__doc__";
                           }
@@ -1097,6 +1120,7 @@ while ($LINE_IDX < $LINE_COUNT){
                             if ( $monkeypatch eq 1 )
                             {
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name = $ACTUAL_CLASS.$enum_qualname.$enum_member\n";
+                                push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$compat_name.is_monkey_patched = True\n";
                             }
                             if ( $ACTUAL_CLASS ne "" ){
                                 push @OUTPUT_PYTHON, "$ACTUAL_CLASS.$enum_qualname.$compat_name.__doc__ = \"$comment\"\n";
@@ -1227,12 +1251,12 @@ while ($LINE_IDX < $LINE_COUNT){
         $PYTHON_SIGNATURE = detect_and_remove_following_body_or_initializerlist();
 
         # remove inline declarations
-        if ( $LINE =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
+        if ( $LINE =~  m/^(\s*)?(static |const )*(([(?:long )\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
             my $newline = "$1$3;";
             $LINE = $newline;
         }
 
-        if ( $LINE =~  m/^\s*(?:const |virtual |static |inline )*(?!explicit)([\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$/ ){
+        if ( $LINE =~  m/^\s*(?:const |virtual |static |inline )*(?!explicit)([(?:long )\w:]+(?:<.*?>)?)\s+(?:\*|&)?(?:\w+|operator.{1,2})\(.*$/ ){
             if ($1 !~ m/(void|SIP_PYOBJECT|operator|return|QFlag)/ ){
                 $RETURN_TYPE = $1;
                 # replace :: with . (changes c++ style namespace/class directives to Python style)

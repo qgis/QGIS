@@ -115,7 +115,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
 
   // Output debug infos
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  if ( logLevel <= Qgis::Info )
+  if ( logLevel <= Qgis::MessageLevel::Info )
   {
     printRequestInfos( url );
   }
@@ -193,7 +193,7 @@ void QgsFcgiServerRequest::readData()
     else
     {
       QgsMessageLog::logMessage( "fcgi: Failed to parse CONTENT_LENGTH",
-                                 QStringLiteral( "Server" ), Qgis::Critical );
+                                 QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
       mHasError = true;
     }
   }
@@ -205,7 +205,7 @@ void QgsFcgiServerRequest::readData()
 
 void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
 {
-  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
   const QStringList envVars
   {
@@ -247,15 +247,15 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
     QStringLiteral( "SERVER_PROTOCOL" )
   };
 
-  QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( QStringLiteral( "Environment:" ), QStringLiteral( "Server" ), Qgis::Info );
-  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Request URL: %2" ).arg( url.url() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "Environment:" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "------------------------------------------------" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 
   for ( const auto &envVar : envVars )
   {
     if ( getenv( envVar.toStdString().c_str() ) )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( envVar ).arg( QString( getenv( envVar.toStdString().c_str() ) ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     }
   }
 }

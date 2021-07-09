@@ -82,6 +82,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 #endif
 
   protected:
+
     QgsMapLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 };

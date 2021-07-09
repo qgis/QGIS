@@ -15,6 +15,7 @@
 #include "qgsfileutils.h"
 #include "qgis.h"
 #include "qgsexception.h"
+#include "qgsconfig.h"
 #include <QObject>
 #include <QRegularExpression>
 #include <QFileInfo>
@@ -337,6 +338,11 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 
 bool QgsFileUtils::pathIsSlowDevice( const QString &path )
 {
+#ifdef ENABLE_TESTS
+  if ( path.contains( QLatin1String( "fake_slow_path_for_unit_tests" ) ) )
+    return true;
+#endif
+
   try
   {
     const Qgis::DriveType type = driveType( path );

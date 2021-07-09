@@ -37,6 +37,7 @@ struct QgsMesh;
 class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
+class QgsMeshEditor;
 
 /**
  * \ingroup core
@@ -178,6 +179,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void reload() override;
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
+    bool isEditable() const override;
+    bool supportsEditing() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -719,6 +722,84 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 
+    /**
+    * Starts edition of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
+    * This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+    *
+    * \since QGIS 3.22
+    */
+    bool startFrameEditing( const QgsCoordinateTransform &transform );
+
+    /**
+    * Commits edition of the mesh frame,
+    * Rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is True
+    *
+    * \return TRUE if the commit succeeds
+    * \since QGIS 3.22
+    */
+    bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+
+    /**
+    * Rolls Back edition of the mesh frame.
+    * Reload mesh from file, rebuilds the triangular mesh and its spatial index with \a transform,
+    * Continue editing with the same mesh editor if \a continueEditing is TRUE
+    *
+    * \return TRUE if the rollback succeeds
+    * \since QGIS 3.22
+    */
+    bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+
+    /**
+    * Stops edition of the mesh, re-indexes the faces and vertices,
+    * rebuilds the triangular mesh and its spatial index with \a transform,
+    * clean the undostack
+    *
+    * \since QGIS 3.22
+    */
+    void stopFrameEditing( const QgsCoordinateTransform &transform );
+
+    /**
+    * Returns a pointer to the mesh editor own by the mesh layer
+    *
+    * \since QGIS 3.22
+    */
+    QgsMeshEditor *meshEditor();
+
+    /**
+    * Returns whether the mesh frame has been modified since the last save
+    *
+    * \since QGIS 3.22
+    */
+    bool isModified() const override;
+
+    /**
+     *  Returns whether the mesh contains at mesh elements of given type
+     *  \since QGIS 3.22
+     */
+    bool contains( const QgsMesh::ElementType &type ) const;
+
+    /**
+    * Returns the vertices count of the mesh frame
+    *
+    *  \since QGIS 3.22
+    */
+    int meshVertexCount() const;
+
+    /**
+    * Returns the faces count of the mesh frame
+    *
+    * \since QGIS 3.22
+    */
+    int meshFaceCount() const;
+
+    /**
+    * Returns the edges count of the mesh frame
+    *
+    * \since QGIS 3.22
+    */
+    int meshEdgeCount() const;
+
   public slots:
 
     /**
@@ -783,6 +864,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private slots:
     void onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes );
+    void onMeshEdited();
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
@@ -818,6 +900,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     int mStaticScalarDatasetIndex = 0;
     int mStaticVectorDatasetIndex = 0;
+
+    QgsMeshEditor *mMeshEditor = nullptr;
 
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 

@@ -252,7 +252,11 @@ void QgsMeasureTool::undo()
 
 void QgsMeasureTool::keyPressEvent( QKeyEvent *e )
 {
-  if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
+  if ( e->key() == Qt::Key_Escape )
+  {
+    mDialog->restart();
+  }
+  else if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
     if ( !mDone )
     {

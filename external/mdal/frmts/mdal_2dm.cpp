@@ -327,6 +327,9 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     //check that we have distinct nodes
   }
 
+  if ( edges.empty() && faces.empty() )
+    maxVerticesPerFace = 4; //to allow empty mesh that can have a least 4 vertices per face when writing in.
+
   std::unique_ptr< Mesh2dm > mesh(
     new Mesh2dm(
       maxVerticesPerFace,
@@ -446,4 +449,9 @@ void MDAL::Driver2dm::save( const std::string &uri, MDAL::Mesh *mesh )
   }
 
   file.close();
+}
+
+std::string MDAL::Driver2dm::saveMeshOnFileSuffix() const
+{
+  return "2dm";
 }

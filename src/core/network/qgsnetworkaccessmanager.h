@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
+#include <QNetworkCookie>
+#include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 #include <QMutex>
@@ -515,6 +517,71 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
+     * Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
+     *
+     * The \a processor function takes the QNetworkRequest as its argument, and can mutate the request if necessary.
+     *
+     * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
+     * used to remove the preprocessor (via a call to removeRequestPreprocessor()).
+     *
+     * \see removeRequestPreprocessor()
+     * \since QGIS 3.22
+     */
+#ifndef SIP_RUN
+    static QString setRequestPreprocessor( const std::function< void( QNetworkRequest *request )> &processor );
+#else
+    static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
+    Py_BEGIN_ALLOW_THREADS
+    Py_XINCREF( a0 );
+    QString id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
+    {
+      QString res;
+      SIP_BLOCK_THREADS
+      PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
+      int state;
+      int sipIsError = 0;
+      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QString( *t1 );
+      }
+      sipReleaseType( t1, sipType_QString, state );
+      SIP_UNBLOCK_THREADS
+      return res;
+    } );
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    Py_END_ALLOW_THREADS
+    return s;
+    % End
+#endif
+
+    /**
+     * Removes the custom pre-processor function with matching \a id.
+     *
+     * The \a id must correspond to a pre-processor previously added via a call to setRequestPreprocessor().
+     *
+     * Returns TRUE if processor existed and was removed.
+     *
+     * \see setRequestPreprocessor()
+     * \since QGIS 3.22
+     */
+#ifndef SIP_RUN
+    static bool removeRequestPreprocessor( const QString &id );
+#else
+    static void removeRequestPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
+    /**
      * Forwards an external browser login \a url opening request to the authentication handler.
      *
      * \note If called by a background thread, the request will be forwarded to the network manager on the main thread.
@@ -544,6 +611,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static const inline QgsSettingsEntryInteger settingsNetworkTimeout = QgsSettingsEntryInteger( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), QgsSettings::NoSection, 60000, QObject::tr( "Network timeout" ) );
 #endif
 
+    /**
+     * Preprocesses request
+     * \param req the request to preprocess
+     * \since QGIS 3.22
+     */
+    void preprocessRequest( QNetworkRequest *req ) const;
 
   signals:
 
@@ -694,6 +767,13 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      */
     void authBrowserAborted();
 
+    /**
+     * Emitted when the cookies changed.
+     * \since QGIS 3.22
+     */
+
+    void cookiesChanged( const QList<QNetworkCookie> &cookies );
+
   private slots:
     void abortRequest();
 
@@ -708,6 +788,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     void onAuthRequired( QNetworkReply *reply, QAuthenticator *auth );
     void handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth );
+
+    void syncCookies( const QList<QNetworkCookie> &cookies );
 
   protected:
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
@@ -746,7 +828,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QMutex mAuthRequestHandlerMutex;
     // only in use by worker threads, unused in main thread
     QWaitCondition mAuthRequestWaitCondition;
-
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

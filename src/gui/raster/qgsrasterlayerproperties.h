@@ -29,6 +29,7 @@
 #include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
 #include "qgsresamplingutils.h"
+#include "qgsrasterpipe.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -43,6 +44,7 @@ class QgsWebView;
 class QgsProviderSourceWidget;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
+class QgsPropertyOverrideButton;
 
 
 /**
@@ -52,7 +54,7 @@ class QgsMapLayerConfigWidget;
  * \since QGIS 3.12 (in the GUI API)
  */
 
-class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
+class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -85,11 +87,42 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     void addPropertiesPageFactory( const QgsMapLayerConfigWidgetFactory *factory );
 
+    QgsExpressionContext createExpressionContext() const override;
+
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
+  private:
+
+    // TODO -- consider moving these to a common raster widget base class
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * \param button button to register
+     * \param key corresponding data defined property key
+     * \since QGIS 3.22
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key );
+
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     * \since QGIS 3.22
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    //! Temporary property collection
+    QgsPropertyCollection mPropertyCollection;
+
   private slots:
+
+    void updateProperty();
 
     //! \brief Applies the settings made in the dialog without closing the box
     void apply();
@@ -274,6 +307,10 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsResamplingUtils mResamplingUtils;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
+
+    QgsWebView *mMetadataViewer = nullptr;
+
+    QgsExpressionContext mContext;
 
     friend class QgsAppScreenShots;
 };

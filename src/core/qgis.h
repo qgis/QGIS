@@ -18,6 +18,7 @@
 #ifndef QGIS_H
 #define QGIS_H
 
+
 #include <QMetaEnum>
 #include <cfloat>
 #include <memory>
@@ -107,8 +108,9 @@ class CORE_EXPORT Qgis
       Warning = 1, //!< Warning message
       Critical = 2, //!< Critical/error message
       Success = 3, //!< Used for reporting a successful operation
-      None = 4, //!< No level
+      NoLevel = 4, //!< No level
     };
+    Q_ENUM( MessageLevel )
 
     /**
      * Raster data types.
@@ -137,8 +139,8 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Macros
      * \since QGIS 3.10
      */
-    enum PythonMacroMode
-    {
+    enum class PythonMacroMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+      {
       Never = 0, //!< Macros are never run
       Ask = 1, //!< User is prompt before running
       SessionOnly = 2, //!< Only during this session
@@ -157,6 +159,7 @@ class CORE_EXPORT Qgis
       Uncounted = -2, //!< Feature count not yet computed
       UnknownCount = -1, //!< Provider returned an unknown feature count
     };
+    Q_ENUM( FeatureCountState )
 
     /**
      * \brief Symbol types
@@ -169,6 +172,7 @@ class CORE_EXPORT Qgis
       Fill, //!< Fill symbol
       Hybrid //!< Hybrid symbol
     };
+    Q_ENUM( SymbolType )
 
     /**
      * \brief Scale methods
@@ -180,6 +184,7 @@ class CORE_EXPORT Qgis
       ScaleArea,     //!< Calculate scale by the area
       ScaleDiameter  //!< Calculate scale by the diameter
     };
+    Q_ENUM( ScaleMethod )
 
     /**
      * \brief Flags controlling behavior of symbols during rendering
@@ -190,6 +195,7 @@ class CORE_EXPORT Qgis
       {
       DynamicRotation = 2, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
     };
+    Q_ENUM( SymbolRenderHint )
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint )
 
     /**
@@ -201,6 +207,7 @@ class CORE_EXPORT Qgis
     {
       RendererShouldUseSymbolLevels = 1 << 0, //!< If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results
     };
+    Q_ENUM( SymbolFlag )
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
 
     /**
@@ -212,6 +219,7 @@ class CORE_EXPORT Qgis
       {
       FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
     };
+    Q_ENUM( SymbolPreviewFlag )
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag )
 
     /**
@@ -261,6 +269,7 @@ class CORE_EXPORT Qgis
       Rename = 1 << 4, //!< Item can be renamed
       Delete = 1 << 5, //!< Item can be deleted
     };
+    Q_ENUM( BrowserItemCapability )
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability )
 
     /**
@@ -285,6 +294,19 @@ class CORE_EXPORT Qgis
       PointCloud //!< Point cloud layer
     };
     Q_ENUM( BrowserLayerType )
+
+    /**
+     * Browser directory item monitoring switches.
+     *
+     * \since QGIS 3.20
+     */
+    enum class BrowserDirectoryMonitoring : int
+    {
+      Default, //!< Use default logic to determine whether directory should be monitored
+      NeverMonitor, //!< Never monitor the directory, regardless of the default logic
+      AlwaysMonitor, //!< Always monitor the directory, regardless of the default logic
+    };
+    Q_ENUM( BrowserDirectoryMonitoring )
 
     /**
      * Vector layer export result codes.
@@ -334,6 +356,79 @@ class CORE_EXPORT Qgis
       FollowEngineSetting, //!< Respect the label engine setting
       NeverShow, //!< Never show unplaced labels, regardless of the engine setting
     };
+    Q_ENUM( UnplacedLabelVisibility )
+
+    /**
+     * Flags which control how data providers will scan for sublayers in a dataset.
+     *
+     * \since QGIS 3.22
+     */
+    enum class SublayerQueryFlag : int
+    {
+      FastScan = 1 << 0, //!< Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider
+      ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
+      CountFeatures = 1 << 2, //!< Count features in vector sublayers
+    };
+    Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
+    Q_ENUM( SublayerQueryFlag )
+
+    /**
+     * Raster pipe interface roles.
+     *
+     * \since QGIS 3.22
+     */
+    enum class RasterPipeInterfaceRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, Role ) : int
+      {
+      Unknown SIP_MONKEYPATCH_COMPAT_NAME( UnknownRole ) = 0, //!< Unknown role
+      Provider SIP_MONKEYPATCH_COMPAT_NAME( ProviderRole ) = 1, //!< Data provider role
+      Renderer SIP_MONKEYPATCH_COMPAT_NAME( RendererRole ) = 2, //!< Raster renderer role
+      Brightness SIP_MONKEYPATCH_COMPAT_NAME( BrightnessRole ) = 3, //!< Brightness filter role
+      Resampler SIP_MONKEYPATCH_COMPAT_NAME( ResamplerRole ) = 4, //!< Resampler role
+      Projector SIP_MONKEYPATCH_COMPAT_NAME( ProjectorRole ) = 5, //!< Projector role
+      Nuller SIP_MONKEYPATCH_COMPAT_NAME( NullerRole ) = 6, //!< Raster nuller role
+      HueSaturation SIP_MONKEYPATCH_COMPAT_NAME( HueSaturationRole ) = 7, //!< Hue/saturation filter role (also applies grayscale/color inversion)
+    };
+    Q_ENUM( RasterPipeInterfaceRole )
+
+    /**
+     * Stage at which raster resampling occurs.
+     * \since QGIS 3.22
+     */
+    enum class RasterResamplingStage SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, ResamplingStage ) : int
+      {
+      //! Resampling occurs in ResamplingFilter
+      ResampleFilter,
+      //! Resampling occurs in Provider
+      Provider
+    };
+    Q_ENUM( RasterResamplingStage )
+
+    /**
+     * Type of error that can occur during mesh frame editing.
+     *
+     * \since QGIS 3.22
+     */
+    enum class MeshEditingErrorType : int
+    {
+      NoError, //!< No type
+      InvalidFace, //!< An error occurs due to an invalid face (for example, vertex indexes are unordered)
+      FlatFace, //!< A flat face is present
+      UniqueSharedVertex, //!< A least two faces share only one vertices
+      InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
+    };
+    Q_ENUM( MeshEditingErrorType )
+
+    /**
+     * File path types.
+     *
+     * \since QGIS 3.22
+     */
+    enum class FilePathType : int
+    {
+      Absolute, //!< Absolute path
+      Relative, //!< Relative path
+    };
+    Q_ENUM( FilePathType )
 
     /**
      * Identify search radius in mm
@@ -452,7 +547,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

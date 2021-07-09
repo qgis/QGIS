@@ -328,6 +328,7 @@ namespace MDAL
       void save( const std::string &uri, Mesh *mesh ) override;
 
       std::string writeDatasetOnFileSuffix() const override;
+      std::string saveMeshOnFileSuffix() const override;
 
     private:
       bool saveDatasetGroupOnFile( DatasetGroup *datasetGroup );

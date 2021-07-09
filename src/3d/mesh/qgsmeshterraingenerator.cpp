@@ -86,15 +86,13 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
 void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 {
-  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
-  updateTriangularMesh();
+  setLayer( qobject_cast<QgsMeshLayer *>( project.mapLayer( mLayer.layerId ) ) );
 }
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
   mIsValid = layer != nullptr;
-
   updateTriangularMesh();
 }
 
@@ -108,7 +106,7 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
 {
   QgsMeshTerrainGenerator *cloned = new QgsMeshTerrainGenerator();
   cloned->mLayer = mLayer;
-  cloned->mTerrainTilingScheme = QgsTilingScheme();
+  cloned->mTerrainTilingScheme = mTerrainTilingScheme;
   cloned->mCrs = mCrs;
   cloned->mSymbol.reset( mSymbol->clone() );
   cloned->mTransformContext = mTransformContext;
@@ -182,7 +180,10 @@ void QgsMeshTerrainGenerator::updateTriangularMesh()
     QgsCoordinateTransform transform( mCrs, meshLayer()->crs(), mTransformContext );
     meshLayer()->updateTriangularMesh( transform );
     mTriangularMesh = *meshLayer()->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
+    mTerrainTilingScheme = QgsTilingScheme( mTriangularMesh.extent(), mCrs );
   }
+  else
+    mTerrainTilingScheme = QgsTilingScheme();
 }
 
 QgsMesh3DSymbol *QgsMeshTerrainGenerator::symbol() const

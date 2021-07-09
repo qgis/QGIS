@@ -106,8 +106,8 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount();
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
 
   return outputs;

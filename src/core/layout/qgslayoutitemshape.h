@@ -125,8 +125,11 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     /**
      * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
      * its selection bounds.
+     *
+     * If \a redraw is FALSE than the symbol bounds will be recalculated only, without redrawing
+     * the item.
     */
-    void refreshSymbol();
+    void refreshSymbol( bool redraw );
 
     //! Updates the bounding rect of this item
     void updateBoundingRect();

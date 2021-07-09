@@ -1805,11 +1805,13 @@ void TestQgsGeometry::circularString()
 
   //isClosed
   QgsCircularString l11;
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   l11.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
                  << QgsPoint( 11, 2 )
                  << QgsPoint( 11, 22 )
                  << QgsPoint( 1, 22 ) );
+  QVERIFY( !l11.isClosed2D() );
   QVERIFY( !l11.isClosed() );
   QCOMPARE( l11.numPoints(), 4 );
   QCOMPARE( l11.area(), 0.0 );
@@ -1820,7 +1822,18 @@ void TestQgsGeometry::circularString()
                  << QgsPoint( QgsWkbTypes::PointM, 11, 2, 0, 4 )
                  << QgsPoint( QgsWkbTypes::PointM, 11, 22, 0, 5 )
                  << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 6 ) );
+  QVERIFY( l11.isClosed2D() );
   QVERIFY( l11.isClosed() );
+
+  // test with z
+  l11.addZValue( 123.0 );
+  QVERIFY( l11.isClosed2D() );
+  QVERIFY( l11.isClosed() );
+  QgsPoint pEnd = l11.endPoint();
+  pEnd.setZ( 234.0 );
+  l11.moveVertex( QgsVertexId( 0, 0, l11.numPoints() - 1 ), pEnd );
+  QVERIFY( l11.isClosed2D() );
+  QVERIFY( !l11.isClosed() );
 
   //polygonf
   QgsCircularString l13;
@@ -2576,7 +2589,7 @@ void TestQgsGeometry::circularString()
 
   //centroid
   QgsCircularString l34;
-  QCOMPARE( l34.centroid(), QgsPoint( 0, 0 ) );
+  QCOMPARE( l34.centroid(), QgsPoint() );
   l34.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   QCOMPARE( l34.centroid(), QgsPoint( 5, 10 ) );
   l34.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 20, 10 ) << QgsPoint( 2, 9 ) );
@@ -11982,7 +11995,7 @@ void TestQgsGeometry::compoundCurve()
   //centroid
   QgsCircularString l34;
   QgsCompoundCurve c34;
-  QCOMPARE( c34.centroid(), QgsPoint( 0, 0 ) );
+  QCOMPARE( c34.centroid(), QgsPoint() );
   l34.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   c34.addCurve( l34.clone() );
   QCOMPARE( c34.centroid(), QgsPoint( 5, 10 ) );
@@ -15816,6 +15829,10 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( dn1.removeDuplicateNodes( 0.001, false ) );
   QVERIFY( !dn1.removeDuplicateNodes( 0.001, false ) );
   QCOMPARE( dn1.asWkt(), QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
+
+  // test centroid of empty multipolygon
+  QgsMultiPolygon empty;
+  QCOMPARE( empty.centroid().asWkt(), QStringLiteral( "Point EMPTY" ) );
 }
 
 void TestQgsGeometry::geometryCollection()

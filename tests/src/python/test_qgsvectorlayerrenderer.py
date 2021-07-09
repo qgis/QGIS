@@ -30,7 +30,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsCentroidFillSymbolLayer,
-                       QgsMarkerSymbol
+                       QgsMarkerSymbol,
+                       QgsLineSymbol
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -663,6 +664,57 @@ class TestQgsVectorLayerRenderer(unittest.TestCase):
         renderchecker.setControlPathPrefix('vectorlayerrenderer')
         renderchecker.setControlName('expected_multiple_renderers_selection')
         result = renderchecker.runTest('expected_multiple_renderers_selection')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+    def test_reference_scale(self):
+        """
+        Test rendering a layer with a reference scale set
+        """
+        layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'lines.shp'), 'Lines', 'ogr')
+        self.assertTrue(layer.isValid())
+
+        sym1 = QgsLineSymbol.createSimple({'line_color': '#4dbf6f', 'line_width': 4, 'line_width_unit': "points"})
+
+        renderer = QgsSingleSymbolRenderer(sym1)
+        layer.setRenderer(renderer)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setExtent(layer.extent())
+        mapsettings.setLayers([layer])
+        self.assertAlmostEqual(mapsettings.scale(), 22738556, -5)
+
+        # Setup rendering check
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_reference_scale_not_set')
+        result = renderchecker.runTest('expected_reference_scale_not_set')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # Set the reference scale as half the map scale -- the lines should be double as wide
+        # as their preset width
+        renderer.setReferenceScale(22738556 * 2)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_reference_scale_double')
+        result = renderchecker.runTest('expected_reference_scale_double')
+        self.report += renderchecker.report()
+        self.assertTrue(result)
+
+        # Set the reference scale as double the map scale -- the lines should be half as wide
+        # as their preset width
+        renderer.setReferenceScale(22738556 / 2)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('vectorlayerrenderer')
+        renderchecker.setControlName('expected_reference_scale_half')
+        result = renderchecker.runTest('expected_reference_scale_half')
         self.report += renderchecker.report()
         self.assertTrue(result)
 

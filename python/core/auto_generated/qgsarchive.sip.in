@@ -88,6 +88,13 @@ Returns the list of files within this archive
 Returns the current temporary directory.
 %End
 
+    bool exists() const;
+%Docstring
+Returns ``True`` if the archive exists on the filesystem, ``False`` otherwise.
+
+.. versionadded:: 3.20
+%End
+
 };
 
 class QgsProjectArchive : QgsArchive

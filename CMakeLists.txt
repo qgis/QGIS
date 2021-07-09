@@ -17,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "19")
+set(CPACK_PACKAGE_VERSION_MINOR "21")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -94,25 +94,19 @@ endif(NOT MSVC)
 
 if (IOS)
     set (DEFAULT_FORCE_STATIC_LIBS TRUE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS TRUE)
 else()
     set (DEFAULT_FORCE_STATIC_LIBS FALSE)
-    set (DEFAULT_FORCE_STATIC_PROVIDERS FALSE)
 endif()
 
 set (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
 mark_as_advanced(FORCE_STATIC_LIBS)
 if (FORCE_STATIC_LIBS)
   set (LIBRARY_TYPE STATIC)
-else()
-  set (LIBRARY_TYPE SHARED)
-endif()
-
-set (FORCE_STATIC_PROVIDERS ${DEFAULT_FORCE_STATIC_PROVIDERS} CACHE BOOL "Determines whether data providers should be static only")
-mark_as_advanced(FORCE_STATIC_PROVIDERS)
-if (FORCE_STATIC_PROVIDERS)
   # following variable is used in qgsconfig.h
   set (HAVE_STATIC_PROVIDERS TRUE)
+else()
+  set (LIBRARY_TYPE SHARED)
+  unset(HAVE_STATIC_PROVIDERS)
 endif()
 
 # in generated makefiles use relative paths so the project dir is moveable
@@ -143,6 +137,11 @@ if(WITH_CORE)
   endforeach (GRASS_SEARCH_VERSION)
 
   set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
+
+  set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Build OAuth2 authentication method plugin")
+  if(WITH_OAUTH2_PLUGIN)
+    set(HAVE_OAUTH2_PLUGIN TRUE)
+  endif()
 
   set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
 
@@ -217,7 +216,7 @@ if(WITH_CORE)
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
     add_custom_target(qgis_desktop
-      DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer resources svg doc icons
+      DEPENDS qgis qgispython pycore pygui pyanalysis provider_postgres staged-plugins pyplugin-installer resources svg doc icons
     )
   endif()
 
@@ -271,16 +270,6 @@ if(WITH_CORE)
     set(HAVE_EPT TRUE)
   endif()
 
-  #BUILD WITH QtMobility by default on android only. Other platform can force it
-  if (ANDROID)
-      set (DEFAULT_WITH_QTMOBILITY TRUE)
-  else()
-      set (DEFAULT_WITH_QTMOBILITY FALSE)
-  endif()
-  set (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
-
-  set (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -322,25 +311,8 @@ if(WITH_CORE)
     set (USING_NINJA TRUE)
   endif()
 
-  #############################################################
-  # check if lexer and parser are not missing
-  # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
-
-  include(Flex)
-
-  FIND_FLEX()
-
-  if (NOT FLEX_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Flex")
-  endif()
-
-  include(Bison)
-
-  FIND_BISON()
-
-  if (NOT BISON_EXECUTABLE)
-    message(FATAL_ERROR "Couldn't find Bison")
-  endif()
+  find_package(FLEX 2.6 REQUIRED)
+  find_package(BISON REQUIRED)
 
   #############################################################
   # search for dependencies
@@ -383,6 +355,8 @@ if(WITH_CORE)
   endif()
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+
+  find_package(EXIV2 REQUIRED)
 
   # optional
   if (WITH_POSTGRESQL)
@@ -508,10 +482,6 @@ if(WITH_CORE)
 
   if(WITH_QTWEBKIT)
     set(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
-  endif()
-
-  if (WITH_QTMOBILITY)
-    find_package(QtMobility 1.1.0)
   endif()
 
   # search for QScintilla2 (C++ lib)
@@ -650,7 +620,7 @@ if (PEDANTIC)
     # add_definitions( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
+       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Woverloaded-virtual -Wimplicit-fallthrough")
     endif()
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
@@ -705,8 +675,11 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 
-if (WITH_GEOREFERENCER OR WITH_ANALYSIS)
+set(WITH_GSL TRUE CACHE BOOL "Determines whether GSL library should be used")
+
+if (WITH_ANALYSIS AND WITH_GSL)
   find_package(GSL REQUIRED)
+  set(HAVE_GSL TRUE)
   set(HAVE_GEOREFERENCER TRUE)
 endif()
 
@@ -968,7 +941,7 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 13)
+  set(SIP_CONCAT_PARTS 14)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)

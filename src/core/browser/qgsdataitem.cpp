@@ -525,6 +525,11 @@ bool QgsDataItem::rename( const QString & )
   return false;
 }
 
+void QgsDataItem::setCapabilities( int capabilities )
+{
+  setCapabilities( static_cast< Qgis::BrowserItemCapabilities >( capabilities ) );
+}
+
 Qgis::BrowserItemState QgsDataItem::state() const
 {
   return mState;

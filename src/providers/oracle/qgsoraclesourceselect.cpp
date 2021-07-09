@@ -268,7 +268,8 @@ void QgsOracleSourceSelect::on_btnDelete_clicked()
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
-  QgsOracleConn::deleteConnection( cmbConnections->currentText() );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
+  providerMetadata->deleteConnection( cmbConnections->currentText() );
 
   QgsOracleTableCache::removeFromCache( cmbConnections->currentText() );
 

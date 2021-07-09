@@ -103,7 +103,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
 
                   // boolean
-                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool )
+                  << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "boolean" ), QVariant::Bool )
 
                   // blob
                   << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
@@ -367,14 +367,14 @@ QgsWkbTypes::Type QgsMemoryProvider::wkbType() const
   return mWkbType;
 }
 
-long QgsMemoryProvider::featureCount() const
+long long QgsMemoryProvider::featureCount() const
 {
   if ( mSubsetString.isEmpty() )
     return mFeatures.count();
 
   // subset string set, no alternative but testing each feature
   QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setNoAttributes() ) );
-  int count = 0;
+  long long count = 0;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -556,28 +556,39 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QgsField field : attributes )
   {
-    switch ( it->type() )
+    if ( !supportedType( field ) )
+      continue;
+
+    // Make sure added attributes typeName correspond to a native type name
+    bool isNativeTypeName = false;
+    NativeType nativeTypeCandidate( QString(), QString(), QVariant::Invalid );
+    for ( const NativeType &nativeType : nativeTypes() )
     {
-      case QVariant::Int:
-      case QVariant::Double:
-      case QVariant::String:
-      case QVariant::Date:
-      case QVariant::Time:
-      case QVariant::DateTime:
-      case QVariant::LongLong:
-      case QVariant::StringList:
-      case QVariant::List:
-      case QVariant::Bool:
-      case QVariant::ByteArray:
+      if ( nativeType.mTypeName.toLower() == field.typeName().toLower() )
+      {
+        isNativeTypeName = true;
         break;
-      default:
-        QgsDebugMsg( "Field type not supported: " + it->typeName() );
-        continue;
+      }
+
+      if ( nativeType.mType == field.type()
+           && nativeTypeCandidate.mType == QVariant::Invalid )
+        nativeTypeCandidate = nativeType;
     }
+    if ( !isNativeTypeName )
+    {
+      if ( nativeTypeCandidate.mType == QVariant::Invalid )
+      {
+        QgsDebugMsg( "Field type not supported: " + field.typeName() );
+        continue;
+      }
+
+      field.setTypeName( nativeTypeCandidate.mTypeName );
+    }
+
     // add new field as a last one
-    mFields.append( *it );
+    mFields.append( field );
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {

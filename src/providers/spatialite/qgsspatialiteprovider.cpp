@@ -3762,7 +3762,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 /**
  * Returns the feature type
  */
-long QgsSpatiaLiteProvider::featureCount() const
+long long QgsSpatiaLiteProvider::featureCount() const
 {
   return mNumberFeatures;
 }
@@ -5831,7 +5831,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
     for ( i = 1; i <= rows; i++ )
     {
       QString count = results[( i * columns ) + 0];
-      mNumberFeatures = count.toLong();
+      mNumberFeatures = count.toLongLong();
 
       if ( mGeometryColumn.isEmpty() )
       {
@@ -6444,7 +6444,7 @@ QgsTransaction *QgsSpatiaLiteProviderMetadata::createTransaction( const QString 
   if ( !ds )
   {
     QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
-                               QObject::tr( "spatialite" ), Qgis::Critical );
+                               QObject::tr( "spatialite" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }
   return new QgsSpatiaLiteTransaction( connString, ds );

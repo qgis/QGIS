@@ -1052,7 +1052,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
     virtual bool readSld( const QDomNode &node, QString &errorMessage ) ${SIP_FINAL};
 
 
-    long featureCount( const QString &legendKey ) const;
+    long long featureCount( const QString &legendKey ) const;
 %Docstring
 Number of features rendered with specified legend key. Features must be first
 calculated by :py:func:`~QgsVectorLayer.countSymbolFeatures`
@@ -1630,7 +1630,13 @@ Adds topological points for every vertex of the geometry.
 
 :param geom: the geometry where each vertex is added to segments of other features
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1653,7 +1659,13 @@ editing.
 
 :param p: position of the vertex
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1675,7 +1687,13 @@ editing.
 
 :param p: position of the vertex
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1696,7 +1714,13 @@ editing.
 
 :param ps: point sequence of the vertices
 
+:return: -1 in case of layer error (invalid or non editable)
+
 :return: 0 in case of success
+
+:return: 1 in case of geometry error (non spatial or null geometry)
+
+:return: 2 in case no vertices needed to be added
 
 .. note::
 
@@ -1742,6 +1766,7 @@ Returns ``True`` if this is a geometry layer and ``False`` in case of NoGeometry
 %End
 
     virtual bool isModified() const;
+
 %Docstring
 Returns ``True`` if the provider has been modified since the last commit
 %End
@@ -1792,7 +1817,7 @@ Returns list of attribute indexes. i.e. a list from 0 ... :py:func:`~QgsVectorLa
 Returns the list of attributes which make up the layer's primary keys.
 %End
 
-    virtual long featureCount() const ${SIP_FINAL};
+    virtual long long featureCount() const ${SIP_FINAL};
 
 %Docstring
 Returns feature count including changes which have not yet been committed
@@ -1808,7 +1833,8 @@ Makes layer read-only (editing disabled) or not
 :return: ``False`` if the layer is in editing yet
 %End
 
-    bool supportsEditing();
+    virtual bool supportsEditing() const;
+
 %Docstring
 Returns whether the layer supports editing or not
 
@@ -2458,7 +2484,8 @@ and maximum values are required.
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = 0,
                         bool *ok = 0,
-                        QgsFeatureIds *fids = 0 ) const;
+                        QgsFeatureIds *fids = 0,
+                        QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates an aggregated value from the layer's features.
 Currently any filtering expression provided will override filters in the FeatureRequest.
@@ -2469,6 +2496,7 @@ Currently any filtering expression provided will override filters in the Feature
 :param context: expression context for expressions and filters
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
 :param fids: list of fids to filter, otherwise will use all fids
+:param feedback: optional feedback argument for early cancellation (since QGIS 3.22)
 
 :return: calculated aggregate value
 
@@ -2727,11 +2755,6 @@ Emitted when selection was changed
 :param clearAndSelect: In case this is set to ``True``, the old selection was dismissed and the new selection corresponds to selected
 %End
 
-    void layerModified();
-%Docstring
-Emitted when modifications has been done on layer
-%End
-
     void allowCommitChanged();
 %Docstring
 Emitted whenever the :py:func:`~QgsVectorLayer.allowCommitChanged` property of this layer changes.
@@ -2747,16 +2770,6 @@ Emitted when the layer is checked for modifications. Use for last-minute additio
     void beforeEditingStarted();
 %Docstring
 Emitted before editing on this layer is started.
-%End
-
-    void editingStarted();
-%Docstring
-Emitted when editing on this layer has started.
-%End
-
-    void editingStopped();
-%Docstring
-Emitted when edited changes have been successfully written to the data provider.
 %End
 
     void beforeCommitChanges( bool stopEditing );

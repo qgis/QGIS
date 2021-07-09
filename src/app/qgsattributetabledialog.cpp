@@ -56,6 +56,7 @@
 #include "qgsproxyprogresstask.h"
 #include "qgisapp.h"
 #include "qgsorganizetablecolumnsdialog.h"
+#include "qgsvectorlayereditbuffer.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -193,6 +194,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   {
     r.setFilterFids( layer->selectedFeatureIds() );
   }
+  else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
+  {
+    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+  }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );
 
@@ -315,6 +320,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
       mFeatureFilterWidget->filterSelected();
       break;
 
+    case QgsAttributeTableFilterModel::ShowEdited:
+      mFeatureFilterWidget->filterEdited();
+      break;
+
     case QgsAttributeTableFilterModel::ShowAll:
     default:
       mFeatureFilterWidget->filterShowAll();
@@ -378,7 +387,7 @@ void QgsAttributeTableDialog::updateTitle()
                : qobject_cast<QWidget *>( this );
   w->setWindowTitle( tr( " %1 — Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
-                     .arg( std::max( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
+                     .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
                    );
@@ -708,6 +717,8 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
       featureStore.addFeature( featureMap[id] );
     }
 
+    featureStore.setCrs( mLayer->crs() );
+
     QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
   }
   else
@@ -894,7 +905,7 @@ void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
     }
     else
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), Qgis::Warning );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), Qgis::MessageLevel::Warning );
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
@@ -965,7 +976,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
       feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
       deletedCount += context.handledFeatures( contextLayer ).size();
     }
-    QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
   }
 }
 

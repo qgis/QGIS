@@ -73,6 +73,7 @@ class TestQgsVertexTool : public QObject
     void testAddVertexDoubleClickWithShift();
     void testAvoidIntersections();
     void testDeleteVertex();
+    void testConvertVertex();
     void testMoveMultipleVertices();
     void testMoveMultipleVertices2();
     void testMoveVertexTopo();
@@ -799,6 +800,34 @@ void TestQgsVertexTool::testDeleteVertex()
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 }
 
+
+void TestQgsVertexTool::testConvertVertex()
+{
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+
+  // convert vertex in compoundCurve while moving vertex
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
+  mouseClick( 10, 10, Qt::LeftButton );
+  keyClick( Qt::Key_O );
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((14 14, 10 10, 17 10))" ) );
+  mLayerCompoundCurve->undoStack()->undo();
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
+
+  // convert vertex in compoundCurve by selection
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
+  mousePress( 9.5, 9.5, Qt::LeftButton );
+  mouseMove( 10.5, 10.5 );
+  mouseRelease( 10.5, 10.5, Qt::LeftButton );
+  keyClick( Qt::Key_O );
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ((14 14, 10 10, 17 10))" ) );
+  mLayerCompoundCurve->undoStack()->undo();
+  QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 10 10, 17 10))" ) );
+}
+
 void TestQgsVertexTool::testMoveMultipleVertices()
 {
   // select two vertices
@@ -1321,6 +1350,7 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
   QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry(), QgsGeometry::fromWkt( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
 }
+
 
 QGSTEST_MAIN( TestQgsVertexTool )
 #include "testqgsvertextool.moc"

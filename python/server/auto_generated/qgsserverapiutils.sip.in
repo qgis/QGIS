@@ -46,7 +46,7 @@ Returns a list of temporal dimensions information for the given ``layer`` (eithe
 %Docstring
 Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 
-:raises :: py:class:`QgsServerApiBadRequestException` if interval cannot be parsed
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
 
 .. versionadded:: 3.12
 %End
@@ -55,7 +55,7 @@ Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 %Docstring
 Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
-:raises :: py:class:`QgsServerApiBadRequestException` if interval cannot be parsed
+:raises QgsServerApiBadRequestException: if interval cannot be parsed
 
 .. versionadded:: 3.12
 %End

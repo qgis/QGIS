@@ -256,7 +256,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   // set data source
   mnl = layerElement.namedItem( QStringLiteral( "datasource" ) );
   mne = mnl.toElement();
-  mDataSource = mne.text();
+  mDataSource = context.pathResolver().readPath( mne.text() );
 
   // if the layer needs authentication, ensure the master password is set
   QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
@@ -406,6 +406,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
       mWgs84Extent = QgsXmlUtils::readRectangle( wgs84ExtentNode.toElement() );
   }
 
+  mLegendPlaceholderImage = layerElement.attribute( QStringLiteral( "legendPlaceholderImage" ) );
+
   return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
@@ -453,7 +455,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-  QString src = encodedSource( source(), context );
+  QString src = context.pathResolver().writePath( encodedSource( source(), context ) );
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
   layerElement.appendChild( dataSource );
@@ -575,6 +577,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
+
+  layerElement.setAttribute( QStringLiteral( "legendPlaceholderImage" ), mLegendPlaceholderImage );
 
   // now append layer node to map layer node
   return writeXml( layerElement, document, context );
@@ -816,6 +820,11 @@ void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
   Q_UNUSED( name )
   Q_UNUSED( vis )
   // NOOP
+}
+
+bool QgsMapLayer::supportsEditing() const
+{
+  return false;
 }
 
 QgsCoordinateReferenceSystem QgsMapLayer::crs() const
@@ -1897,6 +1906,11 @@ QgsError QgsMapLayer::error() const
 
 
 bool QgsMapLayer::isEditable() const
+{
+  return false;
+}
+
+bool QgsMapLayer::isModified() const
 {
   return false;
 }

@@ -75,6 +75,7 @@ class _3D_EXPORT QgsCameraPose
     //! Reads configuration from a DOM element previously written using writeXml()
     void readXml( const QDomElement &elem );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsCameraPose &other ) const
     {
       return mCenterPoint == other.mCenterPoint &&

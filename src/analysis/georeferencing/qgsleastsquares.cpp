@@ -12,16 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <cmath>
-#include <stdexcept>
 
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_blas.h>
+#include "qgsleastsquares.h"
+#include "qgsconfig.h"
+#include "qgsexception.h"
 
 #include <QObject>
 
-#include "qgsleastsquares.h"
+#include <cmath>
+#include <stdexcept>
 
+#ifdef HAVE_GSL
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
+#endif
 
 void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
                               const QVector<QgsPointXY> &destinationCoordinates,
@@ -67,6 +71,14 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
                                QgsPointXY &origin, double &pixelSize,
                                double &rotation )
 {
+#ifndef HAVE_GSL
+  ( void )sourceCoordinates;
+  ( void )destinationCoordinates;
+  ( void )origin;
+  ( void )pixelSize;
+  ( void )rotation;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating a helmert transformation requires a QGIS build based GSL" ) );
+#else
   int n = destinationCoordinates.size();
   if ( n < 2 )
   {
@@ -125,6 +137,7 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
   pixelSize = std::sqrt( std::pow( gsl_vector_get( x, 0 ), 2 ) +
                          std::pow( gsl_vector_get( x, 1 ), 2 ) );
   rotation = std::atan2( gsl_vector_get( x, 1 ), gsl_vector_get( x, 0 ) );
+#endif
 }
 
 #if 0
@@ -245,6 +258,12 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
                                   const QVector<QgsPointXY> &destinationCoordinates,
                                   double H[9] )
 {
+#ifndef HAVE_GSL
+  ( void )sourceCoordinates;
+  ( void )destinationCoordinates;
+  ( void )H;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating a projective transformation requires a QGIS build based GSL" ) );
+#else
   Q_ASSERT( sourceCoordinates.size() == destinationCoordinates.size() );
 
   if ( destinationCoordinates.size() < 4 )
@@ -341,4 +360,5 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
   gsl_matrix_free( V );
   gsl_vector_free( singular_values );
   gsl_vector_free( work );
+#endif
 }

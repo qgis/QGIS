@@ -2383,6 +2383,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature.setGeometry(geom)
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('b29560_gid_seq'::regclass)")
+
         del (vl)
 
         # Verify
@@ -2634,6 +2636,95 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.crs().description(), 'my_projection')
+
+    def testSingleMultiColumnPkSmallData(self):
+        """Test Single and Multi Column PK, `Small` Data"""
+        from itertools import combinations
+
+        def test_for_pk_combinations(test_type_list, pk_column_name_list, fids_get_count):
+            pk_column_name = ','.join(pk_column_name_list)
+            set_new_pk = '''
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table DROP CONSTRAINT multi_column_pk_small_data_pk;
+                ALTER TABLE qgis_test.multi_column_pk_small_data_table
+                    ADD CONSTRAINT multi_column_pk_small_data_pk PRIMARY KEY ({});'''
+            set_new_layer = ' sslmode=disable key=\'{}\' srid=3857 type=POLYGON table="qgis_test"."multi_column_pk_small_data_{}" (geom) sql='
+            error_string = 'from {} with PK - {} : expected {}, got {}'
+
+            if 'table' in test_type_list:
+                self.execSQLCommand(set_new_pk.format(pk_column_name))
+            for test_type in test_type_list:
+                vl = QgsVectorLayer(self.dbconn + set_new_layer.format(pk_column_name, test_type), 'test_multi_column_pk_small_data', 'postgres')
+                fids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setLimit(fids_get_count))]
+                fids2 = [f.id() for f in vl.getFeatures(fids)]
+                self.assertEqual(fids_get_count, len(fids), "Get with limit " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids)))
+                self.assertEqual(fids_get_count, len(fids2), "Get by fids " +
+                                 error_string.format(test_type, pk_column_name, fids_get_count, len(fids2)))
+
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.multi_column_pk_small_data_table CASCADE;')
+        self.execSQLCommand('''
+        CREATE TABLE qgis_test.multi_column_pk_small_data_table (
+          id_serial serial NOT NULL,
+          id_uuid uuid NOT NULL,
+          id_int int NOT NULL,
+          id_bigint bigint NOT NULL,
+          id_str character varying(20) NOT NULL,
+          id_inet4 inet NOT NULL,
+          id_inet6 inet NOT NULL,
+          id_cidr4 cidr NOT NULL,
+          id_cidr6 cidr NOT NULL,
+          id_macaddr macaddr NOT NULL,
+          id_macaddr8 macaddr8 NOT NULL,
+          id_timestamp timestamp with time zone NOT NULL,
+          id_half_null_uuid uuid,
+          id_all_null_uuid uuid,
+          geom geometry(Polygon,3857),
+          CONSTRAINT multi_column_pk_small_data_pk
+            PRIMARY KEY (id_serial, id_uuid, id_int, id_bigint, id_str) );''')
+        self.execSQLCommand('''
+        CREATE OR REPLACE VIEW qgis_test.multi_column_pk_small_data_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;
+        DROP MATERIALIZED VIEW IF EXISTS qgis_test.multi_column_pk_small_data_mat_view;
+        CREATE MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view AS
+          SELECT * FROM qgis_test.multi_column_pk_small_data_table;''')
+        self.execSQLCommand('''
+        TRUNCATE qgis_test.multi_column_pk_small_data_table;
+        INSERT INTO qgis_test.multi_column_pk_small_data_table(
+          id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
+            id_macaddr, id_macaddr8, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
+          SELECT
+            ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+            dx + 1000000 * dy,                                                    --id_int
+            dx + 1000000 * dy,                                                    --id_bigint
+            dx || E\' ot\\'her \' || dy,                                          --id_str
+            (\'192.168.0.1\'::inet + dx + 100 * dy )::inet,                       --id_inet4
+            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::inet + dx + 100 * dy )::inet,  --id_inet6
+            (\'192.168.0.1\'::cidr + dx + 100 * dy )::cidr,                       --id_cidr4
+            (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::cidr + dx + 100 * dy )::cidr,  --id_cidr6
+            ((112233445566 + dx + 100 * dy)::text)::macaddr,                      --id_macaddr
+            ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
+            now() - ((dx||\' hour\')::text)::interval - ((dy||\' day\')::text)::interval,
+            NULLIF( ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
+              ( (10000000)::text || (100000000000 + dy + dy%2)::text || (100000000000 + dx)::text )::uuid ),
+            NULL,
+            ST_Translate(
+              ST_GeomFromText(\'POLYGON((3396900.0 6521800.0,3396900.0 6521870.0,
+                  3396830.0 6521870.0,3396830.0 6521800.0,3396900.0 6521800.0))\', 3857 ),
+              100.0 * dx,
+              100.0 * dy )
+          FROM generate_series(1,3) dx, generate_series(1,3) dy;
+        REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
+
+        pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
+        test_type_list = ["table", "view", "mat_view"]
+        for n in [1, 2, len(pk_col_list)]:
+            pk_col_set_list = list(combinations(pk_col_list, n))
+            for pk_col_set in pk_col_set_list:
+                test_for_pk_combinations(test_type_list, pk_col_set, 7)
+
+        for col_name in ["id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4"]:
+            test_for_pk_combinations(["view", "mat_view"], ["id_half_null_uuid", col_name], 7)
+            test_for_pk_combinations(["view", "mat_view"], ["id_all_null_uuid", col_name], 7)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
@@ -3202,6 +3293,32 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(vl.startEditing())
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 0, feature))
         self.assertTrue(QgsVectorLayerUtils.fieldIsEditable(vl, 1, feature))
+
+    def testPkeyIntArray(self):
+        """
+        Test issue #42778 when pkey is an int array
+        """
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+        conn.executeSql('DROP TABLE IF EXISTS public.test_pkey_intarray')
+        conn.executeSql('CREATE TABLE public.test_pkey_intarray (id _int8 PRIMARY KEY, name VARCHAR(64))')
+        conn.executeSql("""INSERT INTO public.test_pkey_intarray (id, name) VALUES('{0,0,19111815}', 'test')""")
+
+        uri = QgsDataSourceUri(self.dbconn +
+                               ' sslmode=disable  key=\'id\' table="public"."test_pkey_intarray" sql=')
+        vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
+
+        fid = feat.id()
+        self.assertTrue(fid > 0)
+
+        feat = vl.getFeature(fid)
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["name"], "test")
 
 
 if __name__ == '__main__':

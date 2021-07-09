@@ -32,27 +32,27 @@ include_directories(
 )
 
 
-add_library(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
+add_library(provider_mssql MODULE ${MSSQL_SRCS} ${MSSQL_HDRS})
 
 # require c++17
-target_compile_features(mssqlprovider PRIVATE cxx_std_17)
+target_compile_features(provider_mssql PRIVATE cxx_std_17)
 
-target_link_libraries(mssqlprovider
+target_link_libraries(provider_mssql
   qgis_core
   ${Qt5Sql_LIBRARIES}
 )
 
 if (WITH_GUI)
-  target_link_libraries (mssqlprovider
+  target_link_libraries (provider_mssql
     qgis_gui
   )
-  add_dependencies(mssqlprovider ui)
+  add_dependencies(provider_mssql ui)
 endif()
 
 ########################################################
 # Install
 
-install (TARGETS mssqlprovider
+install (TARGETS provider_mssql
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

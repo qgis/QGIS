@@ -37,6 +37,14 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      */
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLayerItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     // --- reimplemented from QgsDataItem ---
 
     bool equal( const QgsDataItem *other ) override;

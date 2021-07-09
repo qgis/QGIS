@@ -91,6 +91,19 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return mExteriorRing.get();
     }
 
+    /**
+     * Returns a non-const pointer to the curve polygon's exterior ring.
+     * Ownership stays with this QgsCurve.
+     *
+     * \see interiorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *exteriorRing() SIP_SKIP
+    {
+      return mExteriorRing.get();
+    }
+
 #ifndef SIP_RUN
 
     /**
@@ -107,12 +120,29 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       }
       return mInteriorRings.at( i );
     }
+
+    /**
+     * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
+     *
+     * \see numInteriorRings()
+     * \see exteriorRing()
+     * \note Not available in Python.
+     * \since QGIS 3.20
+     */
+    QgsCurve *interiorRing( int i ) SIP_SKIP
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
 #else
 
     /**
      * Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see numInteriorRings()
      * \see exteriorRing()
@@ -170,7 +200,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * The corresponding ring is removed from the polygon and deleted.
      * It is not possible to remove the exterior ring using this method.
      *
-     * An IndexError will be raised if no interior ring with the specified index exists.
+     * \throws IndexError if no interior ring with the specified index exists.
      *
      * \see removeInteriorRings()
      */

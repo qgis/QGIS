@@ -93,24 +93,24 @@ bool QgsMeshDatasetGroupStore::addPersistentDatasets( const QString &path )
 
 bool QgsMeshDatasetGroupStore::addDatasetGroup( QgsMeshDatasetGroup *group )
 {
-  if ( !mPersistentProvider || !mExtraDatasets )
+  if ( !mExtraDatasets && !mLayer )
     return false;
 
   switch ( group->dataType() )
   {
     case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      if ( ! group->checkValueCountPerDataset( mPersistentProvider->faceCount() ) )
+      if ( ! group->checkValueCountPerDataset( mLayer->meshFaceCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVertices:
-      if ( ! group->checkValueCountPerDataset( mPersistentProvider->vertexCount() ) )
+      if ( ! group->checkValueCountPerDataset( mLayer->meshVertexCount() ) )
         return false;
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVolumes:
       return false; // volume not supported for extra dataset
       break;
     case QgsMeshDatasetGroupMetadata::DataOnEdges:
-      if ( ! group->checkValueCountPerDataset( mPersistentProvider->edgeCount() ) )
+      if ( ! group->checkValueCountPerDataset( mLayer->meshEdgeCount() ) )
         return false;
       break;
   }
@@ -231,7 +231,7 @@ QgsMeshDatasetIndex QgsMeshDatasetGroupStore::datasetIndexAtTime(
   if ( !group.first )
     return QgsMeshDatasetIndex();
 
-  const QDateTime &referenceTime = mPersistentProvider->temporalCapabilities()->referenceTime();
+  const QDateTime &referenceTime = mPersistentProvider ? mPersistentProvider->temporalCapabilities()->referenceTime() : QDateTime();
 
   return QgsMeshDatasetIndex( groupIndex,
                               group.first->datasetIndexAtTime( referenceTime, group.second, time, method ).dataset() );

@@ -126,6 +126,11 @@ QStringList QgsArchive::files() const
   return mFiles;
 }
 
+bool QgsArchive::exists() const
+{
+  return QFileInfo::exists( mDir->path() );
+}
+
 QString QgsProjectArchive::projectFile() const
 {
   const auto constFiles = files();

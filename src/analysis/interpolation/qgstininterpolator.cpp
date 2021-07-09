@@ -92,8 +92,8 @@ void QgsTinInterpolator::initialize()
   }
 
   //get number of features if we use a progress bar
-  int nFeatures = 0;
-  int nProcessedFeatures = 0;
+  long long nFeatures = 0;
+  long long nProcessedFeatures = 0;
   if ( mFeedback )
   {
     for ( const LayerData &layer :  std::as_const( mLayerData ) )
@@ -184,7 +184,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
     case ValueAttribute:
     {
       QVariant attributeVariant = f.attribute( attr );
-      if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+      if ( !attributeVariant.isValid() || attributeVariant.isNull() ) //attribute not found, something must be wrong (e.g. NULL value)
       {
         return 3;
       }

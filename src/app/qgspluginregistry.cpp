@@ -315,7 +315,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::Info );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
 
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
@@ -375,7 +375,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::Info );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -522,7 +522,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           QObject::tr( "Plugin %1" ).arg( baseName ),
           QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
           btnEnablePlugin,
-          Qgis::Warning,
+          Qgis::MessageLevel::Warning,
           0,
           mQgisInterface->messageBar() );
         watchdogMsg->layout()->addWidget( btnIgnore );
@@ -567,6 +567,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     corePlugins << QStringLiteral( "db_manager" );
     corePlugins << QStringLiteral( "processing" );
     corePlugins << QStringLiteral( "MetaSearch" );
+    corePlugins << QStringLiteral( "sagaprovider" );
+    corePlugins << QStringLiteral( "grassprovider" );
 
     // make the required core plugins enabled by default:
     const auto constCorePlugins = corePlugins;
@@ -611,7 +613,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           QObject::tr( "Plugin %1" ).arg( packageName ),
           QObject::tr( "This plugin is disabled because it previously crashed QGIS." ),
           btnEnablePlugin,
-          Qgis::Warning,
+          Qgis::MessageLevel::Warning,
           0,
           mQgisInterface->messageBar() );
         watchdogMsg->layout()->addWidget( btnIgnore );

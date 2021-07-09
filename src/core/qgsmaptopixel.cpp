@@ -118,7 +118,8 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
                                    double yc,
                                    int width,
                                    int height,
-                                   double rotation )
+                                   double rotation,
+                                   bool *ok )
 {
   double oldMUPP = mMapUnitsPerPixel;
   double oldXCenter = mXCenter;
@@ -148,7 +149,23 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
     mRotation = oldRotation;
     mXMin = oldXMin;
     mYMin = oldYMin;
+    *ok = false;
   }
+  else
+  {
+    *ok = true;
+  }
+}
+
+void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
+                                   double xc,
+                                   double yc,
+                                   int width,
+                                   int height,
+                                   double rotation )
+{
+  bool ok;
+  setParameters( mapUnitsPerPixel, xc, yc, width, height, rotation, &ok );
 }
 
 QString QgsMapToPixel::showParameters() const
@@ -185,3 +202,4 @@ QTransform QgsMapToPixel::transform() const
            .translate( -mXCenter, -mYCenter );
   }
 }
+

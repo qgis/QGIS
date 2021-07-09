@@ -50,8 +50,8 @@ set_target_properties(${QGIS_QUICK_APP_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
 target_compile_definitions(${QGIS_QUICK_APP_NAME} PRIVATE "-DQT_NO_FOREACH")
 add_dependencies(${QGIS_QUICK_APP_NAME}
     qgis_quick_plugin
-    spatialiteprovider
-    virtuallayerprovider)
+    provider_spatialite
+    provider_virtuallayer)
 
 install(TARGETS ${QGIS_QUICK_APP_NAME}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}

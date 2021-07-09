@@ -53,6 +53,13 @@ void QgsNewAuxiliaryLayerDialog::accept()
     {
       mLayer->setAuxiliaryLayer( alayer );
     }
+    else
+    {
+      QDialog::close();
+      const QString errMsg = QgsProject::instance()->auxiliaryStorage()->errorString();
+      QMessageBox::critical( this, tr( "New Auxiliary Layer" ), errMsg );
+      return;
+    }
   }
 
   QDialog::accept();

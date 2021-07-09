@@ -46,6 +46,11 @@ void QgsPanelWidget::setDockMode( bool dockMode )
   mDockMode = dockMode;
 }
 
+bool QgsPanelWidget::applySizeConstraintsToStack() const
+{
+  return false;
+}
+
 QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
 {
   QWidget *p = widget;

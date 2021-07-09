@@ -1107,7 +1107,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void themeChanged( const QString &theme );
 
     //! emit a message (usually to be displayed in a message bar)
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 
     /**
      * Emitted whenever an error is encountered during a map render operation.
@@ -1174,6 +1174,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void resizeEvent( QResizeEvent *e ) override;
     void paintEvent( QPaintEvent *e ) override;
     void dragEnterEvent( QDragEnterEvent *e ) override;
+    bool viewportEvent( QEvent *event ) override;
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );

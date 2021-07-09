@@ -100,6 +100,7 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 {
 #ifdef HAVE_STATIC_PROVIDERS
+  Q_UNUSED( pluginPath )
   QgsDebugMsg( QStringLiteral( "Forced only static GUI providers" ) );
 #else
   typedef QgsProviderGuiMetadata *factory_function( );

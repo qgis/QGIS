@@ -60,6 +60,7 @@ class CORE_EXPORT QgsVector3D
       mZ = z;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsVector3D &other ) const
     {
       return mX == other.mX && mY == other.mY && mZ == other.mZ;

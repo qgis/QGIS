@@ -85,7 +85,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QgsWkbTypes::Type wkbType() const override;
 
-    long featureCount() const override;
+    long long featureCount() const override;
 
     //! Update the extent, feature count, wkb type and srid for this layer
     void UpdateStatistics( bool estimate ) const;
@@ -184,7 +184,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     bool mSkipFailures = false;
     bool mUseGeometryColumnsTableForExtent = false;
 
-    long mNumberFeatures = 0;
+    long long mNumberFeatures = 0;
 
     /**
       *

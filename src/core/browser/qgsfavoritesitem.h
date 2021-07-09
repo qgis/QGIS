@@ -40,6 +40,14 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
      */
     QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsFavoritesItem: \"%1\">" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
     QVector<QgsDataItem *> createChildren() override;
 
     /**

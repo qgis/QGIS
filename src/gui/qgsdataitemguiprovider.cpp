@@ -84,7 +84,7 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     switch ( level )
     {
       case Qgis::MessageLevel::Info:
-      case Qgis::MessageLevel::None:
+      case Qgis::MessageLevel::NoLevel:
       {
         QMessageBox::information( parent, title, message );
         break;

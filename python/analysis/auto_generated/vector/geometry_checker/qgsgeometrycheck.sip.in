@@ -132,6 +132,7 @@ Create a new Change
       QgsGeometryCheck::ChangeType type;
 
       QgsVertexId vidx;
+
       bool operator==( const QgsGeometryCheck::Change &other );
     };
 

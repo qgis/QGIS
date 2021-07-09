@@ -47,6 +47,7 @@
 #include "qgsmapcanvas.h"
 
 #include <QDragEnterEvent>
+#include <functional>
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
@@ -109,6 +110,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiMo
   connect( mBrowserView, &QgsDockBrowserTreeView::customContextMenuRequested, this, &QgsBrowserDockWidget::showContextMenu );
   connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::itemDoubleClicked );
   connect( mSplitter, &QSplitter::splitterMoved, this, &QgsBrowserDockWidget::splitterMoved );
+
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsBrowserDockWidget::onOptionsChanged );
 }
 
 QgsBrowserDockWidget::~QgsBrowserDockWidget()
@@ -191,6 +194,30 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
       mBrowserView->collapse( index );
     else
       mBrowserView->expand( index );
+  }
+}
+
+void QgsBrowserDockWidget::onOptionsChanged()
+{
+  std::function< void( const QModelIndex &index ) > updateItem;
+  updateItem = [this, &updateItem]( const QModelIndex & index )
+  {
+    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( mModel->dataItem( index ) ) )
+    {
+      dirItem->reevaluateMonitoring();
+    }
+
+    const int rowCount = mModel->rowCount( index );
+    for ( int i = 0; i < rowCount; ++i )
+    {
+      const QModelIndex child = mModel->index( i, 0, index );
+      updateItem( child );
+    }
+  };
+
+  for ( int i = 0; i < mModel->rowCount(); ++i )
+  {
+    updateItem( mModel->index( i, 0 ) );
   }
 }
 

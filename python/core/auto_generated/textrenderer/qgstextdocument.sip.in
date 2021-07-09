@@ -62,9 +62,12 @@ Appends a ``block`` to the document.
 Reserves the specified ``count`` of blocks for optimised block appending.
 %End
 
+
     const QgsTextBlock &at( int index ) const /Factory/;
 %Docstring
 Returns the block at the specified ``index``.
+
+:raises KeyError: if no block exists at the specified index.
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->size() )

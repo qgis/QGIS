@@ -127,7 +127,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
     QString layerId() const { return mLayerId; }
 
-    //! Returns the associated layer, or NULLPTR if no layer is associated with the provider.
+    /**
+     * Returns the associated layer, or NULLPTR if no layer is associated with the provider.
+     *
+     * \warning Accessing the layer is not thread safe, and this should never be called while the labeling engine is running from a background thread!
+     */
     QgsMapLayer *layer() const { return mLayer.data(); }
 
     /**
@@ -152,6 +156,20 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! How to handle labels that would be upside down
     QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
 
+    /**
+     * Returns the expression context scope created from the layer associated with this provider.
+     *
+     * \since QGIS 3.22
+     */
+    QgsExpressionContextScope *layerExpressionContextScope() const;
+
+    /**
+     * Returns the symbology reference scale of the layer associated with this provider.
+     *
+     * \since QGIS 3.22
+     */
+    double layerReferenceScale() const { return mLayerReferenceScale; }
+
   protected:
     //! Associated labeling engine
     const QgsLabelingEngine *mEngine = nullptr;
@@ -174,6 +192,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
     //! How to handle labels that would be upside down
     QgsPalLayerSettings::UpsideDownLabels mUpsidedownLabels;
+
+  private:
+
+    std::unique_ptr< QgsExpressionContextScope > mLayerExpressionContextScope;
+    double mLayerReferenceScale = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )

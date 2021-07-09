@@ -39,26 +39,26 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS})
+add_library (provider_db2 MODULE ${DB2_SRCS} ${DB2_HDRS})
 
 # require c++17
-target_compile_features(db2provider PRIVATE cxx_std_17)
+target_compile_features(provider_db2 PRIVATE cxx_std_17)
 
-target_link_libraries (db2provider
+target_link_libraries (provider_db2
   qgis_core
   ${Qt5Sql_LIBRARIES}
 )
 
 if (WITH_GUI)
-  target_link_libraries (db2provider
+  target_link_libraries (provider_db2
     qgis_gui
   )
-  add_dependencies(db2provider ui)
+  add_dependencies(provider_db2 ui)
 endif()
 
 ########################################################
 # Install
 
-install(TARGETS db2provider
+install(TARGETS provider_db2
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

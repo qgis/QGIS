@@ -97,6 +97,7 @@
      </property>
      <addaction name="mActionMeasure"/>
      <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureBearing"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
     <widget class="QMenu" name="mMenuDecorations">
@@ -201,6 +202,14 @@
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
     </widget>
+    <widget class="QMenu" name="mMenuFilterTable">
+     <property name="title">
+      <string>Filter Attribute Table</string>
+     </property>
+     <addaction name="mActionOpenTableSelected"/>
+     <addaction name="mActionOpenTableVisible"/>
+     <addaction name="mActionOpenTableEdited"/>
+    </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mAddLayerMenu"/>
@@ -214,8 +223,7 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
-    <addaction name="mActionOpenTableSelected"/>
-    <addaction name="mActionOpenTableVisible"/>
+    <addaction name="mMenuFilterTable"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -499,7 +507,6 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionVertexTool"/>
    <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -1689,7 +1696,7 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table (Selected items)</string>
+    <string>Open Attribute Table (Selected Features)</string>
    </property>
    <property name="shortcut">
     <string>Shift+F6</string>
@@ -1701,10 +1708,19 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table (Visible items)</string>
+    <string>Open Attribute Table (Visible Features)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableEdited">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableEdited.svg</normaloff>:/images/themes/default/mActionOpenTableEdited.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Edited and New Features)</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
@@ -3517,8 +3533,24 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Toggles stream digitizing mode</string>
    </property>
   </action>
+  <action name="mActionMeasureBearing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureBearing.svg</normaloff>:/images/themes/default/mActionMeasureBearing.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Bearing</string>
+   </property>
+   <property name="toolTip">
+    <string>Measure Bearing</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

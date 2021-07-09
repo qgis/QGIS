@@ -41,6 +41,8 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
+static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
+
 static void _fixQPictureDPI( QPainter *p )
 {
   // QPicture makes an assumption that we drawing to it with system DPI.
@@ -223,7 +225,7 @@ void QgsSimpleMarkerSymbolLayerBase::renderPoint( QPointF point, QgsSymbolRender
   {
     context.setOriginalValueVariable( encodeShape( symbol ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
     {
       Shape decoded = decodeShape( exprVal.toString(), &ok );
       if ( ok )
@@ -3266,8 +3268,20 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
     mFont.setStyleName( QgsFontUtils::translateNamedStyle( mFontStyle ) );
   }
 
-  const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+  double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
   mNonZeroFontSize = !qgsDoubleNear( sizePixels, 0.0 );
+
+  if ( mNonZeroFontSize && sizePixels > MAX_FONT_CHARACTER_SIZE_IN_PIXELS )
+  {
+    // if font is too large (e.g using map units and map is very zoomed in), then we limit
+    // the font size and instead scale up the painter.
+    // this avoids issues with massive font sizes (eg https://github.com/qgis/QGIS/issues/42270)
+    mFontSizeScale = sizePixels / MAX_FONT_CHARACTER_SIZE_IN_PIXELS;
+    sizePixels = MAX_FONT_CHARACTER_SIZE_IN_PIXELS;
+  }
+  else
+    mFontSizeScale = 1.0;
+
   // if a non zero, but small pixel size results, round up to 2 pixels so that a "dot" is at least visible
   // (if we set a <=1 pixel size here Qt will reset the font to a default size, leading to much too large symbols)
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
@@ -3489,6 +3503,9 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     transform.scale( s, s );
   }
 
+  if ( !qgsDoubleNear( mFontSizeScale, 1.0 ) )
+    transform.scale( mFontSizeScale, mFontSizeScale );
+
   if ( mUseCachedPath )
   {
     p->drawPath( transform.map( mCachedPath ) );
@@ -3598,6 +3615,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   {
     chrWidth *= scaledSize / mOrigSize;
   }
+  chrWidth *= mFontSizeScale;
 
   bool hasDataDefinedRotation = false;
   QPointF offset;

@@ -23,6 +23,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 
 #include <QStandardItemModel>
 #include <QPushButton>
@@ -32,6 +33,10 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   , mLayer( layer )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  } );
 
   if ( !mLayer )
   {

@@ -467,7 +467,7 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Could not load model %1" ).arg( path ), tr( "Processing" ), Qgis::Critical );
+    QgsMessageLog::logMessage( tr( "Could not load model %1" ).arg( path ), tr( "Processing" ), Qgis::MessageLevel::Critical );
     QMessageBox::critical( this, tr( "Open Model" ), tr( "The selected model could not be loaded.\n"
                            "See the log for more information." ) );
   }
@@ -640,7 +640,7 @@ void QgsModelDesignerDialog::exportToImage()
 
   img.save( filename );
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as image to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as image to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::MessageLevel::Success, 0 );
   repaintModel( true );
 }
 
@@ -668,7 +668,7 @@ void QgsModelDesignerDialog::exportToPdf()
   mView->scene()->render( &painter, printerRect, totalRect );
   painter.end();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as PDF to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as PDF to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::MessageLevel::Success, 0 );
   repaintModel( true );
 }
 
@@ -696,7 +696,7 @@ void QgsModelDesignerDialog::exportToSvg()
   mView->scene()->render( &painter, svgRect, totalRect );
   painter.end();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as SVG to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as SVG to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::MessageLevel::Success, 0 );
   repaintModel( true );
 }
 
@@ -719,7 +719,7 @@ void QgsModelDesignerDialog::exportAsPython()
   fout << text;
   outFile.close();
 
-  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 0 );
+  mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::MessageLevel::Success, 0 );
 }
 
 void QgsModelDesignerDialog::toggleComments( bool show )
@@ -918,7 +918,7 @@ void QgsModelDesignerDialog::validate()
     } );
     messageWidget->layout()->addWidget( detailsButton );
     mMessageBar->clearWidgets();
-    mMessageBar->pushWidget( messageWidget, Qgis::Warning, 0 );
+    mMessageBar->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   }
 }
 

@@ -39,6 +39,7 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   connect( mModeFixedRangeRadio, &QRadioButton::toggled, mFixedTimeRangeFrame, &QWidget::setEnabled );
 
   connect( mTemporalGroupBox, &QGroupBox::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::temporalGroupBoxChecked );
+  connect( mModeRedrawLayer, &QRadioButton::toggled, mLabelRedrawLayer, &QWidget::setEnabled );
 
   mStartTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
   mEndTemporalDateTimeEdit->setDisplayFormat( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
@@ -66,6 +67,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
     temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
   else if ( mModeFixedRangeRadio->isChecked() )
     temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  else if ( mModeRedrawLayer->isChecked() )
+    temporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly );
   temporalProperties->setFixedTemporalRange( normalRange );
 
   for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
@@ -85,12 +88,17 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
     case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
       mModeFixedRangeRadio->setChecked( true );
       break;
+    case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
+      mModeRedrawLayer->setChecked( true );
+      break;
   }
 
   mStartTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( temporalProperties->fixedTemporalRange().end() );
 
   mTemporalGroupBox->setChecked( temporalProperties->isActive() );
+
+  mLabelRedrawLayer->setEnabled( mModeRedrawLayer->isChecked() );
 
   for ( QgsMapLayerConfigWidget *widget : std::as_const( mExtraWidgets ) )
   {

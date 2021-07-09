@@ -1109,7 +1109,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * calculated by countSymbolFeatures()
      * \returns number of features rendered by symbol or -1 if failed or counts are not available
      */
-    long featureCount( const QString &legendKey ) const;
+    long long featureCount( const QString &legendKey ) const;
 
     /**
      * Ids of features rendered with specified legend key. Features must be first
@@ -1580,7 +1580,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
+     * \returns -1 in case of layer error (invalid or non editable)
      * \returns 0 in case of success
+     * \returns 1 in case of geometry error (non spatial or null geometry)
+     * \returns 2 in case no vertices needed to be added
      * \note geom is not going to be modified by the function
      * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
@@ -1595,7 +1598,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
+     * \returns -1 in case of layer error (invalid or non editable)
      * \returns 0 in case of success
+     * \returns 1 in case of geometry error (non spatial or null geometry)
+     * \returns 2 in case no vertices needed to be added
      * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1610,7 +1616,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
+     * \returns -1 in case of layer error (invalid or non editable)
      * \returns 0 in case of success
+     * \returns 1 in case of geometry error (non spatial or null geometry)
+     * \returns 2 in case no vertices needed to be added
      * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1625,7 +1634,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param ps point sequence of the vertices
+     * \returns -1 in case of layer error (invalid or non editable)
      * \returns 0 in case of success
+     * \returns 1 in case of geometry error (non spatial or null geometry)
+     * \returns 2 in case no vertices needed to be added
      * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
@@ -1663,7 +1675,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isSpatial() const FINAL;
 
     //! Returns TRUE if the provider has been modified since the last commit
-    virtual bool isModified() const;
+    bool isModified() const override;
 
     /**
      * Returns TRUE if the field comes from the auxiliary layer,
@@ -1708,7 +1720,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * If you need only the count of committed features call this method on this layer's provider.
      * \returns the number of features on this layer or -1 if unknown.
      */
-    long featureCount() const FINAL;
+    long long featureCount() const FINAL;
 
     /**
      * Makes layer read-only (editing disabled) or not
@@ -1721,7 +1733,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \return FALSE if the layer is read only or the data provider has no editing capabilities
      * \since QGIS 3.18
      */
-    bool supportsEditing();
+    bool supportsEditing() const override;
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer
@@ -2272,6 +2284,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context expression context for expressions and filters
      * \param ok if specified, will be set to TRUE if aggregate calculation was successful
      * \param fids list of fids to filter, otherwise will use all fids
+     * \param feedback optional feedback argument for early cancellation (since QGIS 3.22)
      * \returns calculated aggregate value
      * \since QGIS 2.16
      */
@@ -2280,7 +2293,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         const QgsAggregateCalculator::AggregateParameters &parameters = QgsAggregateCalculator::AggregateParameters(),
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr,
-                        QgsFeatureIds *fids = nullptr ) const;
+                        QgsFeatureIds *fids = nullptr,
+                        QgsFeedback *feedback = nullptr ) const;
 
     //! Sets the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -2549,9 +2563,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
-    //! Emitted when modifications has been done on layer
-    void layerModified();
-
     /**
      * Emitted whenever the allowCommitChanged() property of this layer changes.
      *
@@ -2564,12 +2575,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Emitted before editing on this layer is started.
     void beforeEditingStarted();
-
-    //! Emitted when editing on this layer has started.
-    void editingStarted();
-
-    //! Emitted when edited changes have been successfully written to the data provider.
-    void editingStopped();
 
     /**
      * Emitted before changes are committed to the data provider.
@@ -2977,7 +2982,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mSymbolFeatureCounted = false;
 
     // Feature counts for each renderer legend key
-    QHash<QString, long> mSymbolFeatureCountMap;
+    QHash<QString, long long> mSymbolFeatureCountMap;
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
 
     //! True while an undo command is active

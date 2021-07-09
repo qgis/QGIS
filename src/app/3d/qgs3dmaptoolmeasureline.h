@@ -17,13 +17,8 @@
 #define QGS3DMAPTOOLMEASURELINE_H
 
 #include "qgs3dmaptool.h"
-#include "qgsvectorlayer.h"
 #include "qgsvector3d.h"
-#include "qgslinestring.h"
-#include "qgsfeature.h"
-#include "qgsline3dsymbol.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer3drenderer.h"
 
 #include <memory>
 
@@ -34,6 +29,7 @@ namespace Qt3DRender
 
 class Qgs3DMapToolMeasureLinePickHandler;
 class Qgs3DMeasureDialog;
+class QgsRubberBand3D;
 
 
 class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
@@ -78,7 +74,6 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     friend class Qgs3DMapToolMeasureLinePickHandler;
 
-    QgsVectorLayer *mMeasurementLayer = nullptr;
     bool mIsAlreadyActivated = false;
 
     //! Store points
@@ -87,11 +82,10 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     //! Indicates whether we've just done a right mouse click
     bool mDone = true;
 
-    //! Update line layer
-    void updateMeasurementLayer();
-
     //! Dialog
     Qgs3DMeasureDialog *mDialog = nullptr;
+
+    std::unique_ptr<QgsRubberBand3D> mRubberBand;
 
 };
 

@@ -30,6 +30,8 @@
 #include "qgsmeshlayertemporalproperties.h"
 
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsprovidermetadata.h"
+#include "qgsprovidersublayerdetails.h"
 
 /**
  * \ingroup UnitTests
@@ -92,6 +94,8 @@ class TestQgsMeshLayer : public QObject
     void test_memory_dataset_group_1d();
 
     void test_setDataSource();
+
+    void testMdalProviderQuerySublayers();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -129,6 +133,7 @@ void TestQgsMeshLayer::initTestCase()
   QCOMPARE( mMemoryLayer->datasetGroupTreeRootItem()->childCount(), 5 );
   QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
+  QVERIFY( !mMemoryLayer->supportsEditing() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
 
@@ -148,6 +153,7 @@ void TestQgsMeshLayer::initTestCase()
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_vector.dat" );
   QCOMPARE( mMdalLayer->datasetGroupTreeRootItem()->childCount(), 5 );
+  QVERIFY( mMdalLayer->supportsEditing() );
 
   QVERIFY( mMdalLayer->isValid() );
   QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
@@ -223,6 +229,7 @@ void TestQgsMeshLayer::test_read_flower_mesh()
   QVERIFY( layer.dataProvider()->isValid() );
   QCOMPARE( 8, layer.dataProvider()->vertexCount() );
   QCOMPARE( 5, layer.dataProvider()->faceCount() );
+  QVERIFY( layer.supportsEditing() );
 }
 
 void TestQgsMeshLayer::test_read_1d_mesh()
@@ -1580,6 +1587,53 @@ void TestQgsMeshLayer::test_setDataSource()
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 1, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0, 1.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 2, 0 ), 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 2.0 ), layerWithBadDataSource.datasetValue( QgsMeshDatasetIndex( 4, 0 ), 1 ) );
+}
+
+void TestQgsMeshLayer::testMdalProviderQuerySublayers()
+{
+  // test querying sub layers for a mesh layer
+  QgsProviderMetadata *mdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  // invalid uri
+  QList< QgsProviderSublayerDetails >res = mdalMetadata->querySublayers( QString() );
+  QVERIFY( res.empty() );
+
+  // not a mesh
+  res = mdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  QVERIFY( res.empty() );
+
+  // single layer mesh
+  res = mdalMetadata->querySublayers( mDataDir + "/quad_and_triangle.2dm" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QString( ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "2DM:\"%1/quad_and_triangle.2dm\"" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+
+  // make sure result is valid to load layer from
+  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsMeshLayer > ml( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
+  // mesh with two layers
+  res = mdalMetadata->querySublayers( mDataDir + "/manzese_1d2d_small_map.nc" );
+  QCOMPARE( res.count(), 2 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mesh1d" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh1d" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::MeshLayer );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "mesh2d" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "Ugrid:\"%1/manzese_1d2d_small_map.nc\":mesh2d" ).arg( mDataDir ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "mdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::MeshLayer );
+  ml.reset( qgis::down_cast< QgsMeshLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( ml->isValid() );
+
 }
 
 void TestQgsMeshLayer::test_temporal()

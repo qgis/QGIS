@@ -82,6 +82,12 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mFieldType = DataType::Numeric;
   mPreviousFieldType = DataType::Numeric;
   refreshStatisticsMenu();
+
+  connect( this, &QgsDockWidget::visibilityChanged, this, [ = ]( bool visible )
+  {
+    if ( mPendingCalculate && visible )
+      refreshStatistics();
+  } );
 }
 
 QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
@@ -136,6 +142,16 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     mStatisticsTable->setRowCount( 0 );
     return;
   }
+
+  if ( !isUserVisible() )
+  {
+    //defer calculation until dock is visible -- no point calculating stats if the user can't
+    //see them!
+    mPendingCalculate = true;
+    return;
+  }
+
+  mPendingCalculate = false;
 
   // determine field type
   mFieldType = DataType::Numeric;
@@ -567,7 +583,7 @@ QgsStatisticalSummaryDockWidget::DataType QgsStatisticalSummaryDockWidget::field
 }
 
 QgsStatisticsValueGatherer::QgsStatisticsValueGatherer( QgsVectorLayer *layer, const QgsFeatureIterator &fit, long featureCount, const QString &sourceFieldExp )
-  : QgsTask( tr( "Fetching statistic values" ) )
+  : QgsTask( tr( "Fetching statistic values" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
   , mFeatureIterator( fit )
   , mFeatureCount( featureCount )
   , mFieldExpression( sourceFieldExp )

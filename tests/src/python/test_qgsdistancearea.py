@@ -63,6 +63,20 @@ class TestQgsDistanceArea(unittest.TestCase):
                      (4, length))
         assert length == 4, myMessage
 
+    def testBearing(self):
+        """
+        Test bearing calculation
+        """
+        da = QgsDistanceArea()
+        self.assertAlmostEqual(da.bearing(QgsPointXY(145.047, -37.578), QgsPointXY(168.38, -16.95)), 0.84685, 5)
+        self.assertAlmostEqual(da.bearing(QgsPointXY(-19.57, 65.12), QgsPointXY(-2.63, 54.97)), 2.11060792, 5)
+
+        da.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance().transformContext())
+        da.setEllipsoid(da.sourceCrs().ellipsoidAcronym())
+        self.assertTrue(da.willUseEllipsoid())
+        self.assertAlmostEqual(da.bearing(QgsPointXY(16198544, -4534850), QgsPointXY(18736872, -1877769)), 0.8723168079, 5)
+        self.assertAlmostEqual(da.bearing(QgsPointXY(-2074453, 9559553), QgsPointXY(-55665, 6828252)), 2.35691008, 5)
+
     def testMeasureLineProjected(self):
         #   +-+
         #   | |

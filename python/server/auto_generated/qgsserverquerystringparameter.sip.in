@@ -76,7 +76,7 @@ Validation steps:
 
 :return: the parameter value or an invalid QVariant if not found (and not required)
 
-:raises :: py:class:`QgsServerApiBadRequestError` if validation fails
+:raises QgsServerApiBadRequestError: if validation fails
 %End
 
 

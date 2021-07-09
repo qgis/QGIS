@@ -194,7 +194,6 @@ QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointDisplacement" ) );
   rendererElement.setAttribute( QStringLiteral( "labelAttributeName" ), mLabelAttributeName );
   rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFontProperties" ) ) );
@@ -220,16 +219,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
     rendererElement.appendChild( centerSymbolElem );
   }
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElement );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElement.appendChild( orderBy );
-  }
-  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElement, context );
 
   return rendererElement;
 }
@@ -486,6 +476,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else if ( renderer->type() == QLatin1String( "pointCluster" ) )
@@ -499,6 +490,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
     pointRenderer->setToleranceMapUnitScale( clusterRenderer->toleranceMapUnitScale() );
     if ( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol() )
       pointRenderer->setCenterSymbol( const_cast< QgsPointClusterRenderer * >( clusterRenderer )->clusterSymbol()->clone() );
+    renderer->copyRendererData( pointRenderer );
     return pointRenderer;
   }
   else

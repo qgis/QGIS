@@ -37,6 +37,7 @@
 #include "qgsfontutils.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgslabelingresults.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -75,6 +76,7 @@ class TestQgsLayoutMap : public QObject
     void testLayeredExport();
     void testLayeredExportLabelsByLayer();
     void testTemporal();
+    void testLabelResults();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -1942,6 +1944,107 @@ void TestQgsLayoutMap::testTemporal()
   renderContext = QgsRenderContext::fromMapSettings( settings );
   QVERIFY( renderContext.isTemporal() );
   QCOMPARE( renderContext.temporalRange(), QgsDateTimeRange( begin, end, true, false ) );
+}
+
+void TestQgsLayoutMap::testLabelResults()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+
+  // test retrieval of labeling results
+  QgsPalLayerSettings settings;
+
+  settings.fieldName = QStringLiteral( "\"id\"" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.priority = 10;
+  settings.displayAll = true;
+
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -6.250851540391068, 53.335006994584944 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 8888 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -21.950014487179544, 64.150023619739216 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  f.setAttributes( QgsAttributes() << 33333 );
+  f.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( -0.118667702475932, 51.5019405883275 ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+  vl2->updateExtents();
+
+  p.addMapLayer( vl2 );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl2->setLabelsEnabled( true );
+
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( false );
+  map->setBackgroundEnabled( false );
+  map->setCrs( vl2->crs() );
+  map->zoomToExtent( vl2->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << vl2 );
+  l.addLayoutItem( map );
+
+  l.renderContext().mIsPreviewRender = false;
+  QImage im( 600, 600, QImage::Format_ARGB32_Premultiplied );
+  QPainter painter( &im );
+  map->paint( &painter, nullptr, nullptr );
+  painter.end();
+
+  // retrieve label results
+  std::unique_ptr< QgsLabelingResults > results = std::move( map->mExportLabelingResults );
+  QVERIFY( results );
+  QList<QgsLabelPosition> labels = results->allLabels();
+  QCOMPARE( labels.count(), 3 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.labelText.compare( b.labelText ) < 0;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+
+  // with unplaced labels
+  QgsVectorLayer *vl3( vl2->clone() );
+  p.addMapLayer( vl3 );
+  // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
+  settings.priority = 1;
+  settings.displayAll = false;
+  vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl3->setLabelsEnabled( true );
+  map->setLayers( { vl2, vl3 } );
+
+  painter.begin( &im );
+  map->paint( &painter, nullptr, nullptr );
+  painter.end();
+
+  results = std::move( map->mExportLabelingResults );
+  QVERIFY( results );
+  labels = results->allLabels();
+  QCOMPARE( labels.count(), 6 );
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
+    return a.isUnplaced == b.isUnplaced ? a.labelText.compare( b.labelText ) < 0 : a.isUnplaced < b.isUnplaced;
+  } );
+  QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( !labels.at( 0 ).isUnplaced );
+  QCOMPARE( labels.at( 1 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( !labels.at( 1 ).isUnplaced );
+  QCOMPARE( labels.at( 2 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( !labels.at( 2 ).isUnplaced );
+  QCOMPARE( labels.at( 3 ).labelText, QStringLiteral( "1" ) );
+  QVERIFY( labels.at( 3 ).isUnplaced );
+  QCOMPARE( labels.at( 4 ).labelText, QStringLiteral( "33333" ) );
+  QVERIFY( labels.at( 4 ).isUnplaced );
+  QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
+  QVERIFY( labels.at( 5 ).isUnplaced );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

@@ -92,7 +92,6 @@ bool QgsEmbeddedSymbolRenderer::usesEmbeddedSymbols() const
 QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::clone() const
 {
   QgsEmbeddedSymbolRenderer *r = new QgsEmbeddedSymbolRenderer( mDefaultSymbol->clone() );
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   copyRendererData( r );
   return r;
 }
@@ -126,6 +125,7 @@ QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const
   else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
   {
     std::unique_ptr< QgsEmbeddedSymbolRenderer > symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
+    renderer->copyRendererData( symbolRenderer.get() );
     return symbolRenderer.release();
   }
   else
@@ -138,24 +138,13 @@ QDomElement QgsEmbeddedSymbolRenderer::save( QDomDocument &doc, const QgsReadWri
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "embeddedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mDefaultSymbol.get();
   QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }

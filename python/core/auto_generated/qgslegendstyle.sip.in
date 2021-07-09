@@ -105,6 +105,24 @@ Sets the alignment for the legend component.
 .. versionadded:: 3.10
 %End
 
+    double indent();
+%Docstring
+Returns the indent (in mm) of a group or subgroup.
+
+.. seealso:: :py:func:`indent`
+
+.. versionadded:: 3.22
+%End
+
+    void setIndent( double indent );
+%Docstring
+Sets the indent (in mm) of a group or subgroup.
+
+.. seealso:: :py:func:`indent`
+
+.. versionadded:: 3.22
+%End
+
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Writes the component's style definition to an XML element.

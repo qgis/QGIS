@@ -42,6 +42,12 @@ The ``schema`` and ``tableName`` are used to retrieve the layer and field inform
 
     ~QgsFieldsItem();
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
     virtual QVector<QgsDataItem *> createChildren();
 
 
@@ -104,6 +110,12 @@ Constructor for QgsFieldItem, with the specified ``parent`` item and ``field``.
 %End
 
     ~QgsFieldItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
     virtual QIcon icon();
 

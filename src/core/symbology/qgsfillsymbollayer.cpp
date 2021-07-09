@@ -117,7 +117,7 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeBrushStyle( mBrushStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyFillStyle, context.renderContext().expressionContext() );
-    if ( exprVal.isValid() )
+    if ( !exprVal.isNull() )
       brush.setStyle( QgsSymbolLayerUtils::decodeBrushStyle( exprVal.toString() ) );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
@@ -131,12 +131,15 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( mStrokeWidth );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
-    double width = exprVal.toDouble( &ok );
-    if ( ok )
+    if ( !exprVal.isNull() )
     {
-      width = context.renderContext().convertToPainterUnits( width, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
-      pen.setWidthF( width );
-      selPen.setWidthF( width );
+      double width = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        width = context.renderContext().convertToPainterUnits( width, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
+        pen.setWidthF( width );
+        selPen.setWidthF( width );
+      }
     }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )

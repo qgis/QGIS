@@ -178,6 +178,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   private slots:
     void itemDoubleClicked( const QModelIndex &index );
+    void onOptionsChanged();
 
   private:
     //! Refresh the model

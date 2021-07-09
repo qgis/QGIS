@@ -9,7 +9,7 @@
 
 
 
-class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob
+class QgsMapRendererAbstractCustomPainterJob : QgsMapRendererJob /Abstract/
 {
 %Docstring(signature="appended")
 Abstract base class for map renderer jobs which use custom painters.
@@ -57,8 +57,6 @@ platforms).
   public:
     QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
     ~QgsMapRendererCustomPainterJob();
-
-    virtual void start();
 
     virtual void cancel();
 
@@ -124,6 +122,7 @@ and an alternative to :py:func:`~QgsMapRendererCustomPainterJob.renderSynchronou
 
 .. versionadded:: 3.10
 %End
+
 
 };
 

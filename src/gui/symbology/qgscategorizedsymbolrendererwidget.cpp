@@ -509,6 +509,8 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   if ( !mRenderer )
   {
     mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( QString(), QgsCategoryList() );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   QString attrName = mRenderer->classAttribute();

@@ -69,6 +69,7 @@ Returns the key associated to the symbol
 Returns the symbol layer index path inside the symbol
 %End
 
+
     bool operator==( const QgsSymbolLayerId &other ) const;
 
     bool operator<( const QgsSymbolLayerId &other ) const;

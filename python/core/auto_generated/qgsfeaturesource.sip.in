@@ -75,7 +75,7 @@ if the feature count is unknown.
     sipRes = true;
 %End
 
-    virtual long featureCount() const = 0;
+    virtual long long featureCount() const = 0;
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.

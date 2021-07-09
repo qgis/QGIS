@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinateformatter.h"
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
 

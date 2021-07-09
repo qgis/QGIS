@@ -97,7 +97,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
           <item row="1" column="0" colspan="2">
            <widget class="QStackedWidget" name="mStackedWidget">
             <property name="currentIndex">
-             <number>4</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page_3">
              <layout class="QGridLayout" name="gridLayout_6">
@@ -215,7 +215,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               <item row="0" column="0" colspan="3">
                <widget class="QLabel" name="label_28">
                 <property name="text">
-                 <string>&lt;p&gt;&lt;b&gt;Individual features from the layer will be rendered if the field's value falls within the map's temporal range.&lt;/b&gt;&lt;/p&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the field's value falls within the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If a duration is set for the events then the event will be considered as occurring from &lt;span style=&quot; font-style:italic;&quot;&gt;Field ≤ t &amp;lt; Field + duration&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -272,8 +272,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               <item row="0" column="0" colspan="2">
                <widget class="QLabel" name="label_29">
                 <property name="text">
-                 <string>&lt;p&gt;&lt;b&gt;Individual features from the layer will be rendered if the range specified by the &lt;i&gt;Start&lt;/i&gt; and &lt;i&gt;End&lt;/i&gt; fields overlaps the map's temporal range.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;If the &lt;i&gt;Start&lt;/i&gt; field choice is empty, then features will be treated as having no start date. Similarly if the &lt;i&gt;End&lt;/i&gt; field choice is empty, then features will be treated as having no end date.&lt;/p&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the range specified by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;End&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; fields overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from &lt;span style=&quot; font-style:italic;&quot;&gt;Start field ≤ t &amp;lt; End field&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;If the &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; field choice is empty, then features will be treated as having no start date. Similarly if the &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; field choice is empty, then features will be treated as having no end date.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -340,7 +339,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               <item row="0" column="0" colspan="2">
                <widget class="QLabel" name="label_30">
                 <property name="text">
-                 <string>&lt;p&gt;&lt;b&gt;Individual features from the layer will be rendered if the temporal range defined by the &lt;i&gt;Start&lt;/i&gt; and &lt;i&gt;Event Duration&lt;/i&gt; fields overlaps the map's temporal range.&lt;/b&gt;&lt;/p&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the temporal range defined by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Event Duration&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; fields overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from S&lt;span style=&quot; font-style:italic;&quot;&gt;tart field ≤ t &amp;lt; Start field + Event duration&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
@@ -354,9 +353,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               <item row="0" column="0" colspan="2">
                <widget class="QLabel" name="label_33">
                 <property name="text">
-                 <string>&lt;p&gt;&lt;b&gt;Individual features from the layer will be rendered if the range specified by the &lt;i&gt;Start&lt;/i&gt; and &lt;i&gt;End&lt;/i&gt; expressions overlaps the map's temporal range.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;If the &lt;i&gt;Start&lt;/i&gt; expression choice is empty, then features will be treated as having no start date. Similarly if the &lt;i&gt;End&lt;/i&gt; expression choice is empty, then features will be treated as having no end date.&lt;/p&gt;
-&lt;p&gt;The &lt;i&gt;Start&lt;/i&gt; and &lt;i&gt;End&lt;/i&gt; expressions must return date or datetime values.&lt;/p&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Individual features from the layer will be rendered if the range specified by the &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;Start&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;End&lt;/span&gt;&lt;span style=&quot; font-weight:600;&quot;&gt; expressions overlaps the map's temporal range.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Each event will be considered as occurring from S&lt;span style=&quot; font-style:italic;&quot;&gt;tart expression ≤ t &amp;lt; End expression&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;If the &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; expression choice is empty, then features will be treated as having no start date. Similarly if the &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; expression choice is empty, then features will be treated as having no end date.&lt;/p&gt;&lt;p&gt;The &lt;span style=&quot; font-style:italic;&quot;&gt;Start&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;End&lt;/span&gt; expressions must return date or datetime values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>

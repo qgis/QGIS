@@ -1203,7 +1203,7 @@ static QString quotedList( const QVariantList &list )
     }
 
     QString inner = i->toString();
-    if ( inner.startsWith( '{' ) )
+    if ( inner.startsWith( '{' ) || i->type() == QVariant::Int || i->type() == QVariant::LongLong )
     {
       ret.append( inner );
     }
@@ -1869,6 +1869,9 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
   QString table;
   QString query;
 
+  // Limit table row scan if useEstimatedMetadata
+  const QString tableScanLimit { useEstimatedMetadata ? QStringLiteral( " LIMIT %1" ).arg( GEOM_TYPE_SELECT_LIMIT ) : QString() };
+
   int i = 0;
   for ( auto *layerPropertyPtr : layerProperties )
   {
@@ -1909,7 +1912,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         if ( useEstimatedMetadata )
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( srid || ':RASTER:-1') "
+                                "array_agg(srid || ':RASTER:-1') "
                                 "FROM raster_columns "
                                 "WHERE r_raster_column = %2 AND r_table_schema = %3 AND r_table_name = %4" )
                 .arg( i - 1 )
@@ -1920,16 +1923,16 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
         else
         {
           sql = QStringLiteral( "SELECT %1, "
-                                "array_agg( DISTINCT ST_SRID( %2 ) || ':RASTER:-1' ) "
+                                "array_agg(DISTINCT st_srid(%2) || ':RASTER:-1') "
                                 "FROM %3 "
                                 "%2 IS NOT NULL "
-                                "%4 "   // SQL clause
-                                "LIMIT %5" )
+                                "%4"   // SQL clause
+                                "%5" )
                 .arg( i - 1 )
                 .arg( quotedIdentifier( layerProperty.geometryColName ) )
                 .arg( table )
                 .arg( layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) )
-                .arg( GEOM_TYPE_SELECT_LIMIT );
+                .arg( tableScanLimit );
         }
       }
 
@@ -1941,11 +1944,11 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       // our estimation ignores that a where clause might restrict the feature type or srid
       if ( useEstimatedMetadata )
       {
-        table = QStringLiteral( "(SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL LIMIT %4) AS t" )
+        table = QStringLiteral( "(SELECT %1 FROM %2 WHERE %3%1 IS NOT NULL%4) AS t" )
                 .arg( quotedIdentifier( layerProperty.geometryColName ),
                       table,
                       layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " (%1) AND " ).arg( layerProperty.sql ) )
-                .arg( GEOM_TYPE_SELECT_LIMIT );
+                .arg( tableScanLimit );
       }
       else if ( !layerProperty.sql.isEmpty() )
       {
@@ -1999,10 +2002,10 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       if ( type == QgsWkbTypes::Unknown )
       {
         // Subselect to limit the "array_agg(DISTINCT", see previous comment.
-        sql += QStringLiteral( " FROM (SELECT %1 from %2 LIMIT %3) as _unused" )
+        sql += QStringLiteral( " FROM (SELECT %1 FROM %2%3) AS _unused" )
                .arg( quotedIdentifier( layerProperty.geometryColName ) )
                .arg( table )
-               .arg( GEOM_TYPE_SELECT_LIMIT );
+               .arg( tableScanLimit );
       }
       else
       {

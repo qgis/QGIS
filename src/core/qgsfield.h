@@ -346,7 +346,7 @@ class CORE_EXPORT QgsField
      *
      * \param v  The value to convert
      *
-     * \returns   TRUE if the conversion was successful
+     * \throws ValueError if the value could not be converted to a compatible format
      */
     bool convertCompatible( QVariant &v ) const;
     % MethodCode
