@@ -529,22 +529,19 @@ class TestPyQgsProviderConnectionBase():
             print(f"FIXME: {self.providerKey} data provider does not support query layers!")
             return
 
-        try:
-            schema = getattr(self, 'sqlVectorLayerSchema')
-        except:  # noqa: E722
+        schema = getattr(self, 'sqlVectorLayerSchema', None)
+        if schema is None:
             print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerSchema for query layers test!")
             return
 
-        try:
-            table = getattr(self, 'sqlVectorLayerTable')
-        except:  # noqa: E722
+        table = getattr(self, 'sqlVectorLayerTable', None)
+        if table is None:
             print(f"FIXME: {self.providerKey} data provider test case does not define self.sqlVectorLayerTable for query layers test!")
             return
 
         sql_layer_capabilities = conn.sqlLayerDefinitionCapabilities()
 
         # Try a simple select first
-
         table_info = conn.table(schema, table)
 
         options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
