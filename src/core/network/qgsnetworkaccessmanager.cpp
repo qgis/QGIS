@@ -67,7 +67,13 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
       // iterate proxies factories and take first non empty list
-      const auto constProxyFactories = nam->proxyFactories();
+      QList<QNetworkProxyFactory *> proxyFactories = QgsNetworkAccessManager::sMainNAM->proxyFactories();
+      if ( nam != QgsNetworkAccessManager::sMainNAM )
+      {
+        proxyFactories.append( nam->proxyFactories() );
+      }
+      const auto constProxyFactories = proxyFactories;
+
       for ( QNetworkProxyFactory *f : constProxyFactories )
       {
         QList<QNetworkProxy> systemproxies = f->systemProxyForQuery( query );

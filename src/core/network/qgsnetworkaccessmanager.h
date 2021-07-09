@@ -795,6 +795,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
+    friend class QgsNetworkProxyFactory;
+
 #ifndef QT_NO_SSL
     void unlockAfterSslErrorHandled();
     void afterSslErrorHandled( QNetworkReply *reply );
