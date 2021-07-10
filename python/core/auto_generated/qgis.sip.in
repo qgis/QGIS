@@ -226,6 +226,29 @@ The development version
       UserCanceled,
     };
 
+    enum class SqlLayerDefinitionCapability
+    {
+      SubsetStringFilter,
+      GeometryColumn,
+      PrimaryKeys,
+      UnstableFeatureIds
+    };
+    typedef QFlags<Qgis::SqlLayerDefinitionCapability> SqlLayerDefinitionCapabilities;
+
+
+    enum class SqlKeywordCategory
+    {
+      Keyword,
+      Constant,
+      Function,
+      Geospatial,
+      Operator,
+      Math,
+      Aggregate,
+      String,
+      Identifier
+    };
+
     enum class DriveType
     {
       Unknown,
@@ -361,6 +384,8 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 QFlags<Qgis::BrowserItemCapability> operator|(Qgis::BrowserItemCapability f1, QFlags<Qgis::BrowserItemCapability> f2);
 
 QFlags<Qgis::SublayerQueryFlag> operator|(Qgis::SublayerQueryFlag f1, QFlags<Qgis::SublayerQueryFlag> f2);
+
+QFlags<Qgis::SqlLayerDefinitionCapability> operator|(Qgis::SqlLayerDefinitionCapability f1, QFlags<Qgis::SqlLayerDefinitionCapability> f2);
 
 
 

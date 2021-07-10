@@ -212,6 +212,10 @@ class QgsPostgresConn : public QObject
      */
     static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
+
+    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
+    ~QgsPostgresConn() override;
+
     void ref();
     void unref();
 
@@ -403,8 +407,6 @@ class QgsPostgresConn : public QObject
     void unlock() { mLock.unlock(); }
 
   private:
-    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
-    ~QgsPostgresConn() override;
 
     int mRef;
     int mOpenCursors;

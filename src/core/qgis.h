@@ -331,6 +331,39 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorExportResult )
 
     /**
+     * SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.
+     * \since QGIS 3.22
+     */
+    enum class SqlLayerDefinitionCapability : int
+    {
+      SubsetStringFilter = 1 << 1,  //!< SQL layer definition supports subset string filter
+      GeometryColumn = 1 << 2,      //!< SQL layer definition supports geometry column
+      PrimaryKeys = 1 << 3,         //!< SQL layer definition supports primary keys
+      UnstableFeatureIds = 1 << 4   //!< SQL layer definition supports disabling select at id
+    };
+    Q_ENUM( SqlLayerDefinitionCapability )
+    Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
+
+    /**
+     * SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
+     * \note The category has currently no usage, but it was planned for future uses.
+     * \since QGIS 3.22
+     */
+    enum class SqlKeywordCategory : int
+    {
+      Keyword,      //!< SQL keyword
+      Constant,     //!< SQL constant
+      Function,     //!< SQL generic function
+      Geospatial,   //!< SQL spatial function
+      Operator,     //!< SQL operator
+      Math,         //!< SQL math function
+      Aggregate,    //!< SQL aggregate function
+      String,       //!< SQL string function
+      Identifier    //!< SQL identifier
+    };
+    Q_ENUM( SqlKeywordCategory )
+
+    /**
      * Drive types
      * \since QGIS 3.20
      */
@@ -548,6 +581,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::BrowserItemCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SublayerQueryFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SqlLayerDefinitionCapabilities )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

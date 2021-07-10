@@ -27,6 +27,8 @@
 #include "qgsfeedback.h"
 #include <QIcon>
 
+#include <chrono>
+
 const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS
 {
   QStringLiteral( "geometryColumnsOnly" ),
@@ -98,6 +100,13 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
     GeometryColumnCapability::Curves
+  };
+  mSqlLayerDefinitionCapabilities =
+  {
+    Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
+    Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
+    Qgis::SqlLayerDefinitionCapability::GeometryColumn,
+    Qgis::SqlLayerDefinitionCapability::UnstableFeatureIds,
   };
 }
 
@@ -253,6 +262,8 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
     QSqlQuery q = QSqlQuery( db );
     q.setForwardOnly( true );
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     if ( ! q.exec( sql ) )
     {
       const QString errorMessage { q.lastError().text() };
@@ -263,15 +274,16 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
     if ( q.isActive() )
     {
+      std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
       auto iterator = std::make_shared<QgssMssqlProviderResultIterator>( resolveTypes, numCols, q );
       QgsAbstractDatabaseProviderConnection::QueryResult results( iterator );
+      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
       for ( int idx = 0; idx < numCols; ++idx )
       {
         results.appendColumn( rec.field( idx ).name() );
       }
-      iterator->nextRow();
       return results;
     }
 
@@ -279,6 +291,15 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
+
+QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+  : mResolveTypes( resolveTypes )
+  , mColumnCount( columnCount )
+  , mQuery( query )
+{
+  // Load first row
+  nextRow();
+}
 
 QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 {
@@ -314,6 +335,11 @@ QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
     mQuery.finish();
   }
   return row;
+}
+
+long long QgssMssqlProviderResultIterator::rowCountPrivate() const
+{
+  return mQuery.size();
 }
 
 

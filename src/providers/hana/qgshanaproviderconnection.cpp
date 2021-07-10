@@ -28,6 +28,8 @@
 
 #include "odbc/PreparedStatement.h"
 
+#include <chrono>
+
 QgsHanaProviderResultIterator::QgsHanaProviderResultIterator( QgsHanaResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
   , mNumColumns( mResultSet->getMetadata().getColumnCount() )
@@ -50,6 +52,12 @@ QVariantList QgsHanaProviderResultIterator::nextRowPrivate()
 bool QgsHanaProviderResultIterator::hasNextRowPrivate() const
 {
   return mNextRow;
+}
+
+long long QgsHanaProviderResultIterator::rowCountPrivate() const
+{
+  // TODO: hana team, this is for you.
+  return static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
 }
 
 QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
@@ -258,6 +266,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
 
   try
   {
+
     odbc::PreparedStatementRef stmt = conn->prepareStatement( sql );
     bool isQuery = stmt->getMetaDataUnicode()->getColumnCount() > 0;
     if ( isQuery )
@@ -272,9 +281,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsHanaProviderConnection::ex
     }
     else
     {
+      std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
       conn->execute( sql );
       conn->commit();
-      return QueryResult( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
+      std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+      QueryResult results( std::make_shared<QgsHanaEmptyProviderResultIterator>() );
+      results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
+      return results;
     }
   }
   catch ( const QgsHanaException &ex )

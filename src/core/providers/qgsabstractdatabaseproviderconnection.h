@@ -117,7 +117,14 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          *
          * \see rowCount()
          */
-        qlonglong fetchedRowCount( ) const;
+        long long fetchedRowCount( ) const;
+
+        /**
+         * Returns the number of rows returned by a SELECT query or Qgis::FeatureCountState::UnknownCount if unknown.
+         *
+         * \see fetchedRowCount()
+         */
+        long long rowCount( ) const;
 
 
 #ifdef SIP_RUN
@@ -154,15 +161,26 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         struct CORE_EXPORT QueryResultIterator SIP_SKIP
         {
+            //! Returns the next result row
             QVariantList nextRow();
+
+            //! Returns TRUE if there is another row to fetch
             bool hasNextRow() const;
-            qlonglong fetchedRowCount();
+
+            //! Returns the number of actually fetched rows
+            long long fetchedRowCount();
+
+            //! Returns the total number of rows returned by a SELECT query or Qgis::FeatureCountState::UnknownCount ( -1 ) if this is not supported by the provider.
+            long long rowCount();
+
             virtual ~QueryResultIterator() = default;
 
           private:
 
             virtual QVariantList nextRowPrivate() = 0;
             virtual bool hasNextRowPrivate() const = 0;
+            virtual long long rowCountPrivate() const = 0;
+
             mutable qlonglong mFetchedRowCount = 0;
             mutable QMutex mMutex;
 
@@ -188,15 +206,42 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         QueryResult( ) = default SIP_SKIP;
 
+        /**
+         * Returns the query execution time in milliseconds.
+         */
+        double queryExecutionTime( );
+
+        /**
+         * Sets the query execution time to \a queryExecutionTime milliseconds.
+         */
+        void setQueryExecutionTime( double queryExecutionTime );
+
 ///@endcond private
 
       private:
 
         mutable std::shared_ptr<QueryResultIterator> mResultIterator;
         QStringList mColumns;
+        //! Query execution time in milliseconds
+        double mQueryExecutionTime = 0;
 
     };
 
+    /**
+     * \brief The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
+     * \see createSqlVectorLayer()
+     *
+     * \since QGIS 3.22
+     */
+    struct CORE_EXPORT SqlVectorLayerOptions
+    {
+      QString sql; //!< The SQL expression that defines the SQL (query) layer
+      QString filter; //!< Additional subset string (provider-side filter), not all data providers support this feature: check support with SqlLayerDefinitionCapability::Filters capability
+      QString layerName; //!< Optional name for the new layer
+      QStringList primaryKeyColumns; //!< List of primary key column names
+      QString geometryColumn; //!< Name of the geometry column
+      bool disableSelectAtId = false; //!< If SelectAtId is disabled (default is false), not all data providers support this feature: check support with SqlLayerDefinitionCapability::SelectAtId capability
+    };
 
     /**
      * The TableProperty class represents a database table or view.
@@ -392,7 +437,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       private:
 
         //! Holds the list of geometry wkb types and srids supported by the table
-        QList<GeometryColumnType>    mGeometryColumnTypes;
+        QList<GeometryColumnType>     mGeometryColumnTypes;
         //! Table schema
         QString                       mSchema;
         //! Table name
@@ -410,31 +455,42 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     };
 
     /**
+     * \brief The SpatialIndexOptions contains extra options relating to spatial index creation.
+     *
+     * \since QGIS 3.14
+     */
+    struct CORE_EXPORT SpatialIndexOptions
+    {
+      //! Specifies the name of the geometry column to create the index for
+      QString geometryColumnName;
+    };
+
+    /**
      * The Capability enum represents the operations supported by the connection.
      */
     enum Capability
     {
-      CreateVectorTable = 1 << 1,   //!< Can CREATE a vector (or aspatial) table/layer
-      DropRasterTable = 1 << 2,     //!< Can DROP a raster table/layer
-      DropVectorTable = 1 << 3,     //!< Can DROP a vector (or aspatial) table/layer
-      RenameVectorTable = 1 << 4,   //!< Can RENAME a vector (or aspatial) table/layer
-      RenameRasterTable = 1 << 5,   //!< Can RENAME a raster table/layer
-      CreateSchema = 1 << 6,        //!< Can CREATE a schema
-      DropSchema = 1 << 7,          //!< Can DROP a schema
-      RenameSchema = 1 << 8,        //!< Can RENAME a schema
-      ExecuteSql = 1 << 9,          //!< Can execute raw SQL queries (without returning results)
-      Vacuum = 1 << 10,             //!< Can run vacuum
-      Tables = 1 << 11,             //!< Can list tables
-      Schemas = 1 << 12,            //!< Can list schemas (if not set, the connection does not support schemas)
-      SqlLayers = 1 << 13,          //!< Can create vector layers from SQL SELECT queries
-      TableExists = 1 << 14,        //!< Can check if table exists
-      Spatial = 1 << 15,            //!< The connection supports spatial tables
-      CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
-      SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
-      DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
-      DeleteField = 1 << 19,        //!< Can delete an existing field/column
-      DeleteFieldCascade = 1 << 20, //!< Can delete an existing field/column with cascade
-      AddField = 1 << 21,           //!< Can add a new field/column
+      CreateVectorTable = 1 << 1,                     //!< Can CREATE a vector (or aspatial) table/layer
+      DropRasterTable = 1 << 2,                       //!< Can DROP a raster table/layer
+      DropVectorTable = 1 << 3,                       //!< Can DROP a vector (or aspatial) table/layer
+      RenameVectorTable = 1 << 4,                     //!< Can RENAME a vector (or aspatial) table/layer
+      RenameRasterTable = 1 << 5,                     //!< Can RENAME a raster table/layer
+      CreateSchema = 1 << 6,                          //!< Can CREATE a schema
+      DropSchema = 1 << 7,                            //!< Can DROP a schema
+      RenameSchema = 1 << 8,                          //!< Can RENAME a schema
+      ExecuteSql = 1 << 9,                            //!< Can execute raw SQL queries (without returning results)
+      Vacuum = 1 << 10,                               //!< Can run vacuum
+      Tables = 1 << 11,                               //!< Can list tables
+      Schemas = 1 << 12,                              //!< Can list schemas (if not set, the connection does not support schemas)
+      SqlLayers = 1 << 13,                            //!< Can create vector layers from SQL SELECT queries
+      TableExists = 1 << 14,                          //!< Can check if table exists
+      Spatial = 1 << 15,                              //!< The connection supports spatial tables
+      CreateSpatialIndex = 1 << 16,                   //!< The connection can create spatial indices
+      SpatialIndexExists = 1 << 17,                   //!< The connection can determine if a spatial index exists
+      DeleteSpatialIndex = 1 << 18,                   //!< The connection can delete spatial indices for tables
+      DeleteField = 1 << 19,                          //!< Can delete an existing field/column
+      DeleteFieldCascade = 1 << 20,                   //!< Can delete an existing field/column with cascade
+      AddField = 1 << 21,                             //!< Can add a new field/column
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -447,10 +503,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     enum GeometryColumnCapability
     {
-      Z = 1 << 1,                    //! Supports Z dimension
-      M = 1 << 2,                    //! Supports M dimension
-      SinglePart = 1 << 3,           //! Multi and single part types are distinct types
-      Curves = 1 << 4                //! Supports curves
+      Z = 1 << 1,                    //!< Supports Z dimension
+      M = 1 << 2,                    //!< Supports M dimension
+      SinglePart = 1 << 3,           //!< Multi and single part types are distinct types
+      Curves = 1 << 4                //!< Supports curves
     };
 
     Q_ENUM( GeometryColumnCapability )
@@ -486,6 +542,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.16
      */
     virtual GeometryColumnCapabilities geometryColumnCapabilities();
+
+    /**
+     * Returns SQL layer definition capabilities (Filters, GeometryColumn, PrimaryKeys).
+     * \since QGIS 3.22
+     */
+    virtual Qgis::SqlLayerDefinitionCapabilities sqlLayerDefinitionCapabilities();
 
     // Operations interface
 
@@ -546,7 +608,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Creates a new schema with the specified \a name.
      *
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void createSchema( const QString &name ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -585,12 +647,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
 
-
     /**
      * Renames a schema with the specified \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
@@ -601,6 +662,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Creates and returns a (possibly invalid) vector layer based on the \a sql statement and optional \a options.
+     * \throws QgsProviderConnectionException if any errors are encountered or if SQL layer creation is not supported.
+     * \since QGIS 3.22
+     */
+    virtual QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Executes raw \a sql and returns the (possibly empty) query results, optionally \a feedback can be provided.
@@ -617,17 +685,6 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException if any errors are encountered.
      */
     virtual void vacuum( const QString &schema, const QString &name ) const SIP_THROW( QgsProviderConnectionException );
-
-    /**
-     * Contains extra options relating to spatial index creation.
-     *
-     * \since QGIS 3.14
-     */
-    struct CORE_EXPORT SpatialIndexOptions
-    {
-      //! Specifies the name of the geometry column to create the index for
-      QString geometryColumnName;
-    };
 
     /**
      * Creates a spatial index for the database table with given \a schema and \a name (schema is ignored if not supported by the backend).
@@ -698,8 +755,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns the fields of a \a table and \a schema.
      *
-     * \note The default implementation creates a temporary vector layer, providers may
-     * choose to override this method for a greater efficiency.
+     * \note the default implementation creates a temporary vector layer, providers may
+     * choose to override this method for a greater efficiency of to overcome provider's
+     * behavior when the layer does not expose all fields (GPKG for example hides geometry
+     * and primary key column).
      * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.16
      */
@@ -708,7 +767,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     /**
      * Returns a list of native types supported by the connection.
      *
-     * \throws QgsProviderConnectionException
+     * \throws QgsProviderConnectionException if any errors are encountered.
      * \since QGIS 3.16
      */
     virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException ) = 0;
@@ -719,6 +778,17 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.16
      */
     QString providerKey() const;
+
+    /**
+    * Returns a dictionary of SQL keywords supported by the provider.
+    * The default implementation returns an list of common reserved words under the
+    * "Keyword" and "Constant" categories.
+    *
+    * Subclasses should add provider- and/or connection- specific words.
+    *
+    * \since QGIS 3.22
+    */
+    virtual QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 
   protected:
 
@@ -734,6 +804,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     Capabilities mCapabilities = Capabilities() SIP_SKIP;
     GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
+    Qgis::SqlLayerDefinitionCapabilities mSqlLayerDefinitionCapabilities = Qgis::SqlLayerDefinitionCapabilities() SIP_SKIP;
     QString mProviderKey;
 
 };

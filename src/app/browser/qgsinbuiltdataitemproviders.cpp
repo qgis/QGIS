@@ -51,6 +51,7 @@
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
 #include "qgsconnectionsitem.h"
+#include "qgsqueryresultwidget.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1059,6 +1060,73 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         } );
         menu->addAction( newTableAction );
       }
+    }
+
+    // SQL dialog
+    if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
+    {
+      QAction *sqlAction = new QAction( QObject::tr( "Execute SQL …" ), menu );
+
+      QObject::connect( sqlAction, &QAction::triggered, item, [ item, context ]
+      {
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
+        // This should never happen but let's play safe
+        if ( ! conn2 )
+        {
+          QgsMessageLog::logMessage( tr( "Connection to the database (%1) was lost." ).arg( item->name() ) );
+          return;
+        }
+
+        // Create the SQL dialog: this might become an independent class dialog in the future, for now
+        // we are still prototyping the features that this dialog will have.
+
+        QgsDialog dialog;
+        dialog.setObjectName( QStringLiteral( "SQLCommandsDialog" ) );
+        dialog.setWindowTitle( tr( "%1 — Execute SQL" ).arg( item->name() ) );
+
+        // If this is a layer item (or below the hierarchy) we can pre-set the query to something
+        // meaningful
+        QString sql;
+
+        if ( qobject_cast<QgsLayerItem *>( item ) )
+        {
+          if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+          {
+            // Ok, this is gross: we lack a connection API for quoting properly...
+            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( item->name() ) );
+          }
+          else
+          {
+            // Ok, this is gross: we lack a connection API for quoting properly...
+            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->name() ) );
+          }
+        }
+
+        QgsGui::enableAutoGeometryRestore( &dialog );
+        QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
+        widget->setQuery( sql );
+        widget->layout()->setMargin( 0 );
+        dialog.layout()->addWidget( widget );
+
+        connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( item->databaseConnection() );
+          try
+          {
+            QgsMapLayer *sqlLayer { conn3->createSqlVectorLayer( options ) };
+            QgsProject::instance()->addMapLayers( { sqlLayer } );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            notify( QObject::tr( "New SQL Layer Creation Error" ), QObject::tr( "Error creating new SQL layer: %1" ).arg( ex.what() ), context, Qgis::MessageLevel::Critical );
+          }
+
+        } );
+        dialog.exec();
+
+
+      } );
+      menu->addAction( sqlAction );
     }
   }
 }

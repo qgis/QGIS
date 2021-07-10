@@ -570,6 +570,7 @@ set(QGIS_GUI_SRCS
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
+  qgsqueryresultwidget.cpp
   qgsrangeslider.cpp
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
@@ -819,6 +820,7 @@ set(QGIS_GUI_HDRS
   qgsprovidersourcewidgetproviderregistry.h
   qgsproxystyle.h
   qgsquerybuilder.h
+  qgsqueryresultwidget.h
   qgsrangeslider.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
@@ -1322,6 +1324,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h

@@ -20,9 +20,8 @@
 
 struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
-    QgsPostgresProviderResultIterator( bool resolveTypes, std::shared_ptr<QgsPoolPostgresConn> pgConn )
+    QgsPostgresProviderResultIterator( bool resolveTypes )
       : mResolveTypes( resolveTypes )
-      , mConn( pgConn )
     {}
 
     QMap<int, QVariant::Type> typeMap;
@@ -32,11 +31,10 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
 
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
+    long long rowCountPrivate() const override;
 
     bool mResolveTypes = true;
-    std::shared_ptr<QgsPoolPostgresConn> mConn;
-    qlonglong mRowIndex = 0;
-
+    long long mRowIndex = 0;
 };
 
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
@@ -78,6 +76,8 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 

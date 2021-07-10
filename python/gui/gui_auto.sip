@@ -175,6 +175,7 @@
 %Include auto_generated/qgsprovidersourcewidgetproviderregistry.sip
 %Include auto_generated/qgsproxystyle.sip
 %Include auto_generated/qgsquerybuilder.sip
+%Include auto_generated/qgsqueryresultwidget.sip
 %Include auto_generated/qgsrangeslider.sip
 %Include auto_generated/qgsrasterformatsaveoptionswidget.sip
 %Include auto_generated/qgsrasterlayersaveasdialog.sip
