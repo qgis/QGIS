@@ -135,8 +135,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
       // If no match -> use string as type
       QVariant::Type type = QVariant::String;
       QVariant::Type subType = QVariant::Invalid;
-      QString typeName = QStringLiteral( "string" );
-      int length = -1;
+      QString typeName( QStringLiteral( "string" ) );
+      int length = 255;
       int precision = 0;
 
       if ( regularExpressionMatch.hasMatch() )
@@ -183,6 +183,13 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
             type = QVariant::String;
             typeName = QStringLiteral( "string" );
           }
+        }
+
+        // Set default length/precision for double/real
+        if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
+        {
+          length = 20;
+          precision = 5;
         }
 
         if ( !regularExpressionMatch.captured( 2 ).isEmpty() )
