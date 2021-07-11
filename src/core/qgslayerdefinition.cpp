@@ -95,14 +95,13 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   // IDs of layers should be changed otherwise we may have more then one layer with the same id
   // We have to replace the IDs before we load them because it's too late once they are loaded
   const QDomNodeList treeLayerNodes = doc.elementsByTagName( QStringLiteral( "layer-tree-layer" ) );
-  QDomNode treeLayerNode = treeLayerNodes.at( 0 );
-  for ( int i = 0; ! treeLayerNode.isNull(); ++i )
+  for ( int i = 0; i < treeLayerNodes.length(); ++i )
   {
-    treeLayerNode = treeLayerNodes.at( i );
+    const QDomNode treeLayerNode = treeLayerNodes.item( i );
     QDomElement treeLayerElem = treeLayerNode.toElement();
-    QString oldid = treeLayerElem.attribute( QStringLiteral( "id" ) );
-    QString layername = treeLayerElem.attribute( QStringLiteral( "name" ) );
-    QString newid = QgsMapLayer::generateId( layername );
+    const QString oldid = treeLayerElem.attribute( QStringLiteral( "id" ) );
+    const QString layername = treeLayerElem.attribute( QStringLiteral( "name" ) );
+    const QString newid = QgsMapLayer::generateId( layername );
     treeLayerElem.setAttribute( QStringLiteral( "id" ), newid );
 
     // Replace IDs for map layers

@@ -9,7 +9,7 @@
         <layer-tree-layer expanded="1" providerKey="wms" checked="Qt::Checked" id="DTK_D8502016120170201702017020170201702017201801241314424672312" source="IgnoreGetMapUrl=1&amp;contextualWMSLegend=0&amp;crs=EPSG:25832&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=dtk_d850&amp;styles=&amp;url=http://kortforsyningen.kms.dk/service?servicename%3Dtopo_basis%26client%3DQGIS%26version%3D1.1.1%26login%3Dj%26password%3Dj" name="DTK/D850">
           <customproperties/>
         </layer-tree-layer>
-        <layer-tree-layer providerKey="memory" checked="Qt::Checked" expanded="1" name="NewMemory" source="NoGeometry?crs=EPSG:4326&amp;uid={64c9bcbf-cabe-4bd9-9058-2b80ebf87a72}" id="NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd">
+        <layer-tree-layer providerKey="memory" checked="Qt::Checked" expanded="1" name="NewMemory" source="NoGeometry?crs=EPSG:4326&amp;field=BA_ART_LAT:string&amp;uid={64c9bcbf-cabe-4bd9-9058-2b80ebf87a72}" id="NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd">
         <customproperties/>
       </layer-tree-layer>
       </layer-tree-group>
@@ -63,7 +63,7 @@
     </maplayer>
     <maplayer refreshOnNotifyEnabled="0" readOnly="0" minScale="1e+8" type="vector" autoRefreshTime="0" hasScaleBasedVisibilityFlag="0" geometry="No geometry" autoRefreshEnabled="0" refreshOnNotifyMessage="" maxScale="0">
       <id>NewMemory_ffa4d8a4_e5be_46a9_a0e0_fb6ee924f3cd</id>
-      <datasource>memory?geometry=NoGeometry&amp;crs=EPSG:4326</datasource>
+      <datasource>memory?geometry=NoGeometry&amp;field=BA_ART_LAT:string&amp;crs=EPSG:4326</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -115,7 +115,29 @@
         <map-layer-style name="predefinito"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <fieldConfiguration/>
+      <fieldConfiguration>
+        <field name="BA_ART_LAT" configurationFlags="None">
+          <editWidget type="ValueRelation">
+            <config>
+              <Option type="Map">
+                <Option value="false" name="AllowMulti" type="bool"/>
+                <Option value="false" name="AllowNull" type="bool"/>
+                <Option value="" name="Description" type="QString"/>
+                <Option value="" name="FilterExpression" type="QString"/>
+                <Option value="Wert" name="Key" type="QString"/>
+                <Option value="SL_BA_ART_LAT_c020f946_145a_485c_b7a5_70fede18d31c" name="Layer" type="QString"/>
+                <Option value="SL_BA_ART_LAT" name="LayerName" type="QString"/>
+                <Option value="ogr" name="LayerProviderName" type="QString"/>
+                <Option value="D:/z_VB-BW/Bearbeitung/20201207_Datenmodell/BA_DAT_test.gpkg|layername=SL_BA_ART_LAT" name="LayerSource" type="QString"/>
+                <Option value="1" name="NofColumns" type="int"/>
+                <Option value="false" name="OrderByValue" type="bool"/>
+                <Option value="false" name="UseCompleter" type="bool"/>
+                <Option value="Bezeichnung" name="Value" type="QString"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
       <aliases/>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
