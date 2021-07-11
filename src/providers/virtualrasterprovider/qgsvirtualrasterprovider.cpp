@@ -134,6 +134,8 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
 
     //HARDCODED DATA--------------------------------------------------------------------------------------------
+
+    /*
     QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
     QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
     QFileInfo demRasterFileInfo( demFileName );
@@ -141,13 +143,17 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
           demRasterFileInfo.filePath(),
           demRasterFileInfo.completeBaseName()
         );
+*/
 
     //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
+
+    /*
     QgsRasterCalculatorEntry entry;
     entry.raster = mdemRasterLayer.get();
     entry.bandNumber = 1;
     entry.ref = QStringLiteral( "dem@1" );
     mRasterEntries<<entry;
+    */
 
     //mFormulaString = "\"dem@1\" + 200";
     QString mLastError = "last error";
@@ -192,10 +198,10 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     {
         std::unique_ptr< QgsRasterBlock > block;
 
-        if ( it->raster->crs() != mOutputCrs )
+        if ( it->raster->crs() != mCrs )
         {
             QgsRasterProjector proj;
-            proj.setCrs( it->raster->crs(), mOutputCrs, it->raster->transformContext() );
+            proj.setCrs( it->raster->crs(), mCrs, it->raster->transformContext() );
             proj.setInput( it->raster->dataProvider() );
             proj.setPrecision( QgsRasterProjector::Exact );
 
@@ -227,7 +233,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     {
         if ( feedback )
         {
-          feedback->setProgress( 100.0 * static_cast< double >( i ) / mHeight );
+          feedback->setProgress( 100.0 * static_cast< double >( i ) / height );
         }
 
         if ( feedback && feedback->isCanceled() )
@@ -255,18 +261,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 
     }
 
-
-    /*
-    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::UInt32, width, height );
-    unsigned int* outputData = ( unsigned int* )( tblock->bits() );
-
-    for ( int i = 0; i < width * height; ++i )
-    {
-        //QgsDebugMsg("inside for loop");
-        outputData[i] = 42;
-
-    }
-    */
     Q_ASSERT( tblock );
     return tblock.release();
     //return tblock;

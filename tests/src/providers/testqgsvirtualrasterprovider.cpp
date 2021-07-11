@@ -232,12 +232,17 @@ void TestQgsVirtualRasterProvider::testConstructor()
                                                                                     QStringLiteral( "layer" ),
                                                                                     QStringLiteral( "virtualrasterprovider" ) );
 
+    QVERIFY( layer->dataProvider()->isValid());
+    QVERIFY( layer->isValid());
+
     qDebug() << QStringLiteral("crs check in the provider: ") % layer->dataProvider()->crs().authid();
     qDebug() << QStringLiteral("name of the provider: ") % layer->dataProvider()->name();
     qDebug() << QStringLiteral("crs check in the raster layer: ") % layer->crs().authid();
 
-    QVERIFY( layer->dataProvider()->isValid());
-    QVERIFY( layer->isValid());
+    double sampledValue= layer->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
+
+    qDebug() <<"VALUE IS "<< sampledValue;
+
 
 }
 
