@@ -395,7 +395,7 @@ void Qgs3DMapScene::updateScene()
   updateSceneState();
 }
 
-static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projMatrix, float &fnear, float &ffar )
+static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &viewMatrix, float &fnear, float &ffar )
 {
   for ( QgsChunkNode *node : activeNodes )
   {
@@ -409,12 +409,6 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
 
       QVector4D pc = viewMatrix * p;
-      QVector4D pointInProjectionCoords = projMatrix * pc;
-      pointInProjectionCoords /= pointInProjectionCoords.w();
-      if ( pointInProjectionCoords.x() < -1 || pointInProjectionCoords.x() > 1 || pointInProjectionCoords.y() < -1 || pointInProjectionCoords.y() > 1 )
-        continue;
-      if ( pointInProjectionCoords.z() < 0 || pointInProjectionCoords.z() > 1 )
-        continue;
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
       fnear = std::min( fnear, dst );
@@ -439,91 +433,53 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   Qt3DRender::QCamera *camera = cameraController()->camera();
   QMatrix4x4 viewMatrix = camera->viewMatrix();
-  QMatrix4x4 projMatrix = camera->projectionMatrix();
   float fnear = 1e9;
   float ffar = 0;
+  QList<QgsChunkNode *> activeNodes;
   if ( mTerrain )
+    activeNodes = mTerrain->activeNodes();
+
+  // it could be that there are no active nodes - they could be all culled or because root node
+  // is not yet loaded - we still need at least something to understand bounds of our scene
+  // so lets use the root node
+  if ( mTerrain && activeNodes.isEmpty() )
+    activeNodes << mTerrain->rootNode();
+
+  _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+
+  // Also involve all the other chunked entities to make sure that they will not get
+  // clipped by the near or far plane
+  for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
   {
-    QList<QgsChunkNode *> activeNodes = mTerrain->activeNodes();
-
-    // it could be that there are no active nodes - they could be all culled or because root node
-    // is not yet loaded - we still need at least something to understand bounds of our scene
-    // so lets use the root node
-    if ( activeNodes.isEmpty() )
-      activeNodes << mTerrain->rootNode();
-
-    _updateNearFarPlane( activeNodes, viewMatrix, projMatrix, fnear, ffar );
-
-    // Also involve all the other chunked entities to make sure that they will not get
-    // clipped by the near or far plane
-    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
+    if ( e != mTerrain )
     {
-      if ( e != mTerrain )
-      {
-        QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
-        if ( activeEntityNodes.empty() )
-          activeEntityNodes << e->rootNode();
-        _updateNearFarPlane( activeEntityNodes, viewMatrix, projMatrix, fnear, ffar );
-      }
-    }
-
-    if ( fnear < 1 )
-      fnear = 1;  // does not really make sense to use negative far plane (behind camera)
-
-    if ( fnear == 1e9 && ffar == 0 )
-    {
-      // the update didn't work out... this should not happen
-      // well at least temporarily use some conservative starting values
-      qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-      fnear = 1;
-      ffar = 1e9;
-    }
-
-    // set near/far plane - with some tolerance in front/behind expected near/far planes
-    float newFar = ffar * 2;
-    float newNear = fnear / 2;
-    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
-    {
-      camera->setFarPlane( newFar );
-      camera->setNearPlane( newNear );
-      return true;
+      QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
+      if ( activeEntityNodes.empty() )
+        activeEntityNodes << e->rootNode();
+      _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
     }
   }
-  else
+
+  if ( fnear < 1 )
+    fnear = 1;  // does not really make sense to use negative far plane (behind camera)
+
+  if ( fnear == 1e9 && ffar == 0 )
   {
-    QList<QgsChunkNode *> activeNodes;
-    // clipped by the near or far plane
-    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
-    {
-      if ( e != mTerrain )
-      {
-        QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
-        if ( activeEntityNodes.empty() )
-          activeEntityNodes << e->rootNode();
-        _updateNearFarPlane( activeEntityNodes, viewMatrix, projMatrix, fnear, ffar );
-      }
-    }
-    if ( fnear < 0.01 )
-      fnear = 0.01;  // does not really make sense to use negative far plane (behind camera)
+    // the update didn't work out... this should not happen
+    // well at least temporarily use some conservative starting values
+    qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+    fnear = 1;
+    ffar = 1e9;
+  }
 
-    if ( fnear == 1e9 && ffar == 0 )
-    {
-      // the update didn't work out... this should not happen
-      // well at least temporarily use some conservative starting values
-      // qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-      fnear = 1;
-      ffar = 1e9;
-    }
-
-    // set near/far plane - with some tolerance in front/behind expected near/far planes
-    float newFar = ffar * 2;
-    float newNear = fnear / 2;
-    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
-    {
-      camera->setFarPlane( newFar );
-      camera->setNearPlane( newNear );
-      return true;
-    }
+  // set near/far plane - with some tolerance in front/behind expected near/far planes
+  float newFar = ffar;// * 2;
+  float newNear = fnear;// / 2;
+  if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
+  {
+    camera->setFarPlane( newFar );
+    camera->setNearPlane( newNear );
+    return true;
   }
 
   return false;
