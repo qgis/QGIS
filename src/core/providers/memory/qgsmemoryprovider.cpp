@@ -153,7 +153,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
       QVariant::Type subType = QVariant::Invalid;
       QString typeName( regularExpressionMatch.captured( 1 ).toLower() );
 
-      // Search typname correspondance in native types
+      // Search typeName correspondence in native types
       bool isNativeType = false;
       for ( const NativeType &nativeType : nativeTypesList )
       {
