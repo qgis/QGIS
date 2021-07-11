@@ -103,7 +103,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MoveVertex, //!< The user can select vertices and start to move if there is a least one vertices selected
+      MoveVertices, //!< The user can select vertices and start to move if there is a least one vertices selected
       MovingVertex //!< Moving vertex or vertices is in process
     };
 

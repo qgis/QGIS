@@ -367,10 +367,10 @@ class CORE_EXPORT QgsMeshVertexCirculator
     bool goBoundaryCounterClockwise() const;
 
     //! Returns the opposite vertex of the current face and on the edge on the side turning clockwise
-    int oppositeVertexClockWise() const;
+    int oppositeVertexClockwise() const;
 
     //! Returns the opposite vertex of the current face and on the edge on the side turning counter clockwise
-    int oppositeVertexCounterClockWise() const;
+    int oppositeVertexCounterClockwise() const;
 
     //! Returns  whether the vertex circulator is valid
     bool isValid() const;

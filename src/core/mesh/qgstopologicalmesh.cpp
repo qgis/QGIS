@@ -176,7 +176,7 @@ bool QgsMeshVertexCirculator::goBoundaryCounterClockwise() const
   return ( turnClockwise() != -1 );
 }
 
-int QgsMeshVertexCirculator::oppositeVertexClockWise() const
+int QgsMeshVertexCirculator::oppositeVertexClockwise() const
 {
   if ( mCurrentFace == -1 )
     return -1;
@@ -194,7 +194,7 @@ int QgsMeshVertexCirculator::oppositeVertexClockWise() const
   return face.at( ( vertexPosition + 1 ) % face.count() );
 }
 
-int QgsMeshVertexCirculator::oppositeVertexCounterClockWise() const
+int QgsMeshVertexCirculator::oppositeVertexCounterClockwise() const
 {
   if ( mCurrentFace == -1 )
     return -1;
@@ -246,13 +246,13 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
     QgsMeshVertexCirculator newFacesCirculator( topologicalFaces, indexOfStartinFace, boundary );
     //search for face boundary on clockwise side of new faces
     newFacesCirculator.goBoundaryClockwise();
-    int oppositeVertexForNewFace = newFacesCirculator.oppositeVertexClockWise();
+    int oppositeVertexForNewFace = newFacesCirculator.oppositeVertexClockwise();
     if ( mVertexToFace.at( oppositeVertexForNewFace ) == -1 )
       continue;
 
     QgsMeshVertexCirculator meshCirculator = vertexCirculator( boundary );
     meshCirculator.goBoundaryCounterClockwise();
-    int oppositeVertexForMeshFace = meshCirculator.oppositeVertexCounterClockWise();
+    int oppositeVertexForMeshFace = meshCirculator.oppositeVertexCounterClockwise();
 
     const QgsMeshFace &newFaceBoundary = newFacesCirculator.currentFace();
     int boundaryPositionInNewFace = vertexPositionInFace( boundary, newFaceBoundary );
@@ -264,7 +264,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::addFaces( const QgsTopologicalMe
     else
     {
       const QgsMeshFace &meshFaceBoundary = meshCirculator.currentFace();
-      int boundaryPositionInMeshFace = vertexPositionInFace( meshCirculator.oppositeVertexCounterClockWise(), meshFaceBoundary );
+      int boundaryPositionInMeshFace = vertexPositionInFace( meshCirculator.oppositeVertexCounterClockwise(), meshFaceBoundary );
 
       changes.mNeighborhoodChanges.append( std::array<int, 4>(
       {
@@ -743,7 +743,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
   do
   {
     removedFacesIndexes.append( circulator.currentFaceIndex() );
-    boundariesVertexIndex.append( circulator.oppositeVertexClockWise() );
+    boundariesVertexIndex.append( circulator.oppositeVertexClockwise() );
     const QgsMeshFace &currentFace = circulator.currentFace();
     associateFaceToBoundaries.append( mFacesNeighborhood.at( circulator.currentFaceIndex() ).at(
                                         vertexPositionInFace( boundariesVertexIndex.last(), currentFace ) ) );
@@ -767,7 +767,7 @@ QgsTopologicalMesh::Changes QgsTopologicalMesh::removeVertexFillHole( int vertex
     boundaryFill = true;
     //we need to add last vertex/boundary faces that was not added because we are on mesh boundary
     circulator.goBoundaryCounterClockwise();
-    boundariesVertexIndex.append( circulator.oppositeVertexCounterClockWise() );
+    boundariesVertexIndex.append( circulator.oppositeVertexCounterClockwise() );
     associateFaceToBoundaries.append( -1 );
 
   }
@@ -1042,7 +1042,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     {
       // Face can be joined
       // Remove other common vertex before continuing
-      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexClockWise() );
+      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexClockwise() );
       continue;
     }
 
@@ -1066,7 +1066,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     {
       // Face can be joined
       // Remove other common vertex before continuing
-      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexCounterClockWise() );
+      boundaryToCheck.removeOne( newFacescirculator.oppositeVertexCounterClockwise() );
       continue;
     }
 
@@ -1346,30 +1346,30 @@ bool QgsTopologicalMesh::eitherSideFacesAndVertices( int vertexIndex1,
   circulator2.goBoundaryClockwise();
   int firstFace2 = circulator2.currentFaceIndex();
 
-  if ( circulator1.oppositeVertexCounterClockWise() != vertexIndex2 )
+  if ( circulator1.oppositeVertexCounterClockwise() != vertexIndex2 )
     while ( circulator1.turnCounterClockwise() != -1 &&
             circulator1.currentFaceIndex() != firstFace1 &&
-            circulator1.oppositeVertexCounterClockWise() != vertexIndex2 ) {}
+            circulator1.oppositeVertexCounterClockwise() != vertexIndex2 ) {}
 
-  if ( circulator2.oppositeVertexCounterClockWise() != vertexIndex1 )
+  if ( circulator2.oppositeVertexCounterClockwise() != vertexIndex1 )
     while ( circulator2.turnCounterClockwise() != -1 &&
             circulator2.currentFaceIndex() != firstFace2 &&
-            circulator2.oppositeVertexCounterClockWise() != vertexIndex1 ) {}
+            circulator2.oppositeVertexCounterClockwise() != vertexIndex1 ) {}
 
-  if ( circulator1.oppositeVertexCounterClockWise() != vertexIndex2
-       || circulator2.oppositeVertexCounterClockWise() != vertexIndex1 )
+  if ( circulator1.oppositeVertexCounterClockwise() != vertexIndex2
+       || circulator2.oppositeVertexCounterClockwise() != vertexIndex1 )
     return false;
 
   face1 = circulator1.currentFaceIndex();
   face2 = circulator2.currentFaceIndex();
 
-  neighborVertex1InFace1 = circulator1.oppositeVertexClockWise();
+  neighborVertex1InFace1 = circulator1.oppositeVertexClockwise();
   circulator1.turnCounterClockwise();
-  neighborVertex1InFace2 = circulator1.oppositeVertexCounterClockWise();
+  neighborVertex1InFace2 = circulator1.oppositeVertexCounterClockwise();
 
-  neighborVertex2inFace2 = circulator2.oppositeVertexClockWise();
+  neighborVertex2inFace2 = circulator2.oppositeVertexClockwise();
   circulator2.turnCounterClockwise();
-  neighborVertex2inFace1 = circulator2.oppositeVertexCounterClockWise();
+  neighborVertex2inFace1 = circulator2.oppositeVertexCounterClockwise();
 
   return true;
 }
