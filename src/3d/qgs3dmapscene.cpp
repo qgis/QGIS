@@ -473,8 +473,8 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   }
 
   // set near/far plane - with some tolerance in front/behind expected near/far planes
-  float newFar = ffar;// * 2;
-  float newNear = fnear;// / 2;
+  float newFar = ffar * 2;
+  float newNear = fnear / 2;
   if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
   {
     camera->setFarPlane( newFar );

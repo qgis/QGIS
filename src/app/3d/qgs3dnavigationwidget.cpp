@@ -236,7 +236,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   gridLayout->addWidget( mMoveDownButton, 3, 1, 1, 2, Qt::AlignCenter );
   gridLayout->addWidget( mMoveLeftButton, 1, 0, 2, 1, Qt::AlignCenter );
 
-  QHBoxLayout *layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget( mCameraInfo );
   mCameraInfo->setVisible( false );
 
