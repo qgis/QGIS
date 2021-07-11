@@ -112,105 +112,92 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
   {
-    QStringList parseTypes;
-    const QList<QgsVectorDataProvider::NativeType> nativeTypesList( nativeTypes() );
-    for ( const NativeType &nativeType : nativeTypesList )
-      parseTypes.append( nativeType.mTypeName );
-
-    // Additional supported types (will be converted to native)
-    parseTypes.append( QLatin1String( "int" ) );
-    parseTypes.append( QLatin1String( "long" ) );
-    parseTypes.append( QLatin1String( "bool" ) );
-
     QList<QgsField> attributes;
-    QRegularExpression reFieldDef( QString( "\\:"
-                                            "(%1)"                       // type
-                                            "(?:\\((\\-?\\d+)"           // length
-                                            "(?:\\,(\\-?\\d+))?"         // precision
-                                            "\\))?(\\[\\])?"             // array
-                                            "$" ).arg( parseTypes.join( '|' ) ),
+    QRegularExpression reFieldDef( "\\:"
+                                   "([\\w\\s]+)"                // type
+                                   "(?:\\((\\-?\\d+)"           // length
+                                   "(?:\\,(\\-?\\d+))?"         // precision
+                                   "\\))?(\\[\\])?"             // array
+                                   "$",
                                    QRegularExpression::CaseInsensitiveOption );
     QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
       QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
       QRegularExpressionMatch regularExpressionMatch = reFieldDef.match( name );
-      if ( !regularExpressionMatch.hasMatch() )
-      {
-        QgsLogger::warning( tr( "Could not correctly parse field '%1' from uri '%2'" ).arg( name, uri ) );
-        continue;
-      }
 
-      name = name.mid( 0, regularExpressionMatch.capturedStart() );
-
+      // If no match -> use string as type
       QVariant::Type type = QVariant::String;
       QVariant::Type subType = QVariant::Invalid;
-      QString typeName( regularExpressionMatch.captured( 1 ).toLower() );
-
-      // Search typeName correspondence in native types
-      bool isNativeType = false;
-      for ( const NativeType &nativeType : nativeTypesList )
-      {
-        if ( nativeType.mTypeName.toLower() == typeName )
-        {
-          isNativeType = true;
-          type = nativeType.mType;
-          subType = nativeType.mSubType;
-          typeName = nativeType.mTypeName;
-          break;
-        }
-      }
-
-      // Not a native type -> check other supported types:
-      if ( isNativeType == false )
-      {
-        if ( typeName == QLatin1String( "int" ) )
-        {
-          type = QVariant::Int;
-          typeName = QStringLiteral( "integer" );
-        }
-        else if ( typeName == QLatin1String( "long" ) )
-        {
-          type = QVariant::LongLong;
-          typeName = QStringLiteral( "int8" );
-        }
-        else if ( typeName == QLatin1String( "bool" ) )
-        {
-          type = QVariant::Bool;
-          typeName = QStringLiteral( "boolean" );
-        }
-        else
-        {
-          QgsLogger::warning( tr( "Unsupported typeName '%1'. Will be handled as string." ).arg( typeName ) );
-          type = QVariant::String;
-          typeName = QStringLiteral( "string" );
-        }
-      }
-
+      QString typeName = QStringLiteral( "string" );
       int length = -1;
-      if ( !regularExpressionMatch.captured( 2 ).isEmpty() )
-      {
-        length = regularExpressionMatch.captured( 2 ).toInt();
-      }
-
       int precision = 0;
-      if ( !regularExpressionMatch.captured( 3 ).isEmpty() )
+
+      if ( regularExpressionMatch.hasMatch() )
       {
-        precision = regularExpressionMatch.captured( 3 ).toInt();
-      }
+        name = name.mid( 0, regularExpressionMatch.capturedStart() );
+        typeName = regularExpressionMatch.captured( 1 ).toLower();
 
-      // Array
-      if ( !regularExpressionMatch.captured( 4 ).isEmpty() )
-      {
-        if ( subType == QVariant::Invalid )
-          subType = type;
+        // Search typeName correspondence in native types
+        bool isNativeType = false;
+        const QList<QgsVectorDataProvider::NativeType> nativeTypesList( nativeTypes() );
+        for ( const NativeType &nativeType : nativeTypesList )
+        {
+          if ( nativeType.mTypeName.toLower() == typeName )
+          {
+            isNativeType = true;
+            type = nativeType.mType;
+            subType = nativeType.mSubType;
+            typeName = nativeType.mTypeName;
+            break;
+          }
+        }
 
-        if ( type != QVariant::List && type != QVariant::StringList )
-          type = type == QVariant::String ? QVariant::StringList : QVariant::List;
+        // Not a native type -> check other supported types:
+        if ( isNativeType == false )
+        {
+          if ( typeName == QLatin1String( "int" ) )
+          {
+            type = QVariant::Int;
+            typeName = QStringLiteral( "integer" );
+          }
+          else if ( typeName == QLatin1String( "long" ) )
+          {
+            type = QVariant::LongLong;
+            typeName = QStringLiteral( "int8" );
+          }
+          else if ( typeName == QLatin1String( "bool" ) )
+          {
+            type = QVariant::Bool;
+            typeName = QStringLiteral( "boolean" );
+          }
+          else
+          {
+            QgsLogger::warning( tr( "Unsupported typeName '%1'. Will be handled as string." ).arg( typeName ) );
+            type = QVariant::String;
+            typeName = QStringLiteral( "string" );
+          }
+        }
 
-        const QLatin1String listSuffix( "list" );
-        if ( !typeName.endsWith( listSuffix ) )
-          typeName += QLatin1String( "list" );
+        if ( !regularExpressionMatch.captured( 2 ).isEmpty() )
+          length = regularExpressionMatch.captured( 2 ).toInt();
+
+        if ( !regularExpressionMatch.captured( 3 ).isEmpty() )
+          precision = regularExpressionMatch.captured( 3 ).toInt();
+
+        // Array
+        if ( !regularExpressionMatch.captured( 4 ).isEmpty() )
+        {
+          if ( subType == QVariant::Invalid )
+            subType = type;
+
+          if ( type != QVariant::List && type != QVariant::StringList )
+            type = type == QVariant::String ? QVariant::StringList : QVariant::List;
+
+          const QLatin1String listSuffix( "list" );
+          if ( !typeName.endsWith( listSuffix ) )
+            typeName += QLatin1String( "list" );
+        }
       }
 
       attributes.append( QgsField( name, type, typeName, length, precision, QString(), subType ) );
