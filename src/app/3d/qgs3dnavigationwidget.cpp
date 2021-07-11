@@ -17,6 +17,7 @@
 #include <QToolButton>
 #include <QObject>
 #include <QHeaderView>
+#include <QCheckBox>
 #include "qgis.h"
 
 Q_NOWARN_DEPRECATED_PUSH
@@ -237,8 +238,23 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
 
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->addWidget( mCameraInfo );
+  mCameraInfo->setVisible( false );
 
-  gridLayout->addLayout( layout, 4, 0, 1, 4, Qt::AlignCenter );
+  QCheckBox *cameraInfoCheckBox = new QCheckBox( this );
+  cameraInfoCheckBox->setText( "Show camera info" );
+  cameraInfoCheckBox->setChecked( false );
+  QObject::connect( cameraInfoCheckBox, &QCheckBox::stateChanged, parent,
+                    [ = ]( int state )
+  {
+    if ( state == Qt::CheckState::Checked )
+      mCameraInfo->setVisible( true );
+    else
+      mCameraInfo->setVisible( false );
+  }
+                  );
+
+  gridLayout->addWidget( cameraInfoCheckBox, 4, 0, 1, 4, Qt::AlignLeft );
+  gridLayout->addLayout( layout, 5, 0, 1, 4, Qt::AlignCenter );
 
   gridLayout->setAlignment( Qt::AlignTop );
 }
