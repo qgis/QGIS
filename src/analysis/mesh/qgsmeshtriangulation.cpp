@@ -94,6 +94,11 @@ bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterato
   return true;
 }
 
+int QgsMeshTriangulation::addVertex( const QgsPoint &vertex )
+{
+  return mTriangulation->addPoint( vertex );
+}
+
 QgsMesh QgsMeshTriangulation::triangulatedMesh( QgsFeedback *feedback ) const
 {
   return mTriangulation->triangulationToMesh( feedback );

@@ -72,6 +72,11 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      */
     bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, long featureCount = 1 );
 
+    /**
+     * Adds a new vertex in the triangulation and returns the index of the new vertex
+     */
+    int addVertex( const QgsPoint &vertex );
+
     //! Returns the triangulated mesh
     QgsMesh triangulatedMesh( QgsFeedback *feedback = nullptr ) const;
 

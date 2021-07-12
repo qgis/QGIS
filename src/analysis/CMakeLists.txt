@@ -247,6 +247,7 @@ set(QGIS_ANALYSIS_SRCS
 
   mesh/qgsmeshcontours.cpp
   mesh/qgsmeshtriangulation.cpp
+  mesh/qgsmesheditingdelaunaytriangulation.cpp
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
@@ -318,6 +319,7 @@ set(QGIS_ANALYSIS_HDRS
 
   mesh/qgsmeshcontours.h
   mesh/qgsmeshtriangulation.h
+  mesh/qgsmesheditingdelaunaytriangulation.h
 
   network/qgsgraph.h
   network/qgsgraphanalyzer.h
