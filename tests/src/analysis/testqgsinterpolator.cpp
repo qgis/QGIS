@@ -332,26 +332,46 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
   QgsIDWInterpolator idw( layerDataList );
 
   double resultTIN = -1;
-  double resutlIDW = -1;
+  double resultIDW = -1;
   QCOMPARE( tin.interpolatePoint( 0.5, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 1.75, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 1.6176470588, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.6176470588, 0.00000001 ) );
+
+  resultTIN = tin.interpolatedPoint( { 0.5, 0.5 }, nullptr );
+  resultIDW = idw.interpolatedPoint( { 0.5, 0.5 }, nullptr );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.75, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.6176470588, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 0.25, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 1.625, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 1.41999627456, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.41999627456, 0.00000001 ) );
+
+  resultTIN = tin.interpolatedPoint( { 0.25, 0.5 }, nullptr );
+  resultIDW = idw.interpolatedPoint( { 0.25, 0.5 }, nullptr );
+  QVERIFY( qgsDoubleNear( resultTIN, 1.625, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.41999627456, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 1, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 1, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 2.0, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 2.05555555556, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.05555555556, 0.00000001 ) );
+
+  resultTIN = tin.interpolatedPoint( { 1, 0.5 }, nullptr );
+  resultIDW = idw.interpolatedPoint( { 1, 0.5 }, nullptr );
+  QVERIFY( qgsDoubleNear( resultTIN, 2.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.05555555556, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 1, 1.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 1, 1.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 1.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 3.0, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 2.94444444444, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.94444444444, 0.00000001 ) );
+
+  resultTIN = tin.interpolatedPoint( { 1, 1.5 }, nullptr );
+  resultIDW = idw.interpolatedPoint( { 1, 1.5 }, nullptr );
+  QVERIFY( qgsDoubleNear( resultTIN, 3.0, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.94444444444, 0.00000001 ) );
 
   //! Outside the hull, TIN interpolator has to return an error
   QVERIFY( tin.interpolatePoint( 2.5, 1.5, resultTIN, nullptr ) != 0 );
@@ -414,31 +434,31 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
   QgsIDWInterpolator idw( layerDataList );
 
   double resultTIN = -1;
-  double resutlIDW = -1;
+  double resultIDW = -1;
   QCOMPARE( tin.interpolatePoint( 0.5, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.5, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 1.75, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 1.6176470588, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.6176470588, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 0.25, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 0.25, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 1.625, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 1.41999627456, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 1.41999627456, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 1, 0.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 1, 0.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 0.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 2.0, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 2.05555555556, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.05555555556, 0.00000001 ) );
 
   QCOMPARE( tin.interpolatePoint( 1, 1.5, resultTIN, nullptr ), 0 );
-  QCOMPARE( idw.interpolatePoint( 1, 1.5, resutlIDW, nullptr ), 0 );
+  QCOMPARE( idw.interpolatePoint( 1, 1.5, resultIDW, nullptr ), 0 );
   QVERIFY( qgsDoubleNear( resultTIN, 3.0, 0.00000001 ) );
-  QVERIFY( qgsDoubleNear( resutlIDW, 2.94444444444, 0.00000001 ) );
+  QVERIFY( qgsDoubleNear( resultIDW, 2.94444444444, 0.00000001 ) );
 
   //! Outside the hull, TIN interpolator has to return an error
   QVERIFY( tin.interpolatePoint( 2.5, 1.5, resultTIN, nullptr ) != 0 );
-  QCOMPARE( idw.interpolatePoint( 2.5, 1.5, resutlIDW, nullptr ), 0 );
-  QVERIFY( qgsDoubleNear( resutlIDW, 3.5108401084, 0.00000001 ) );
+  QCOMPARE( idw.interpolatePoint( 2.5, 1.5, resultIDW, nullptr ), 0 );
+  QVERIFY( qgsDoubleNear( resultIDW, 3.5108401084, 0.00000001 ) );
 }
 
 QGSTEST_MAIN( TestQgsInterpolator )
