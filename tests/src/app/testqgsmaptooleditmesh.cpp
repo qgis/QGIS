@@ -1,5 +1,5 @@
 /***************************************************************************
-  testqgsmaptooleditmesh.cpp - %{Cpp:License:ClassName}
+  testqgsmaptooleditmesh.cpp
 
  ---------------------
  begin                : 25.6.2021

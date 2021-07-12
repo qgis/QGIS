@@ -487,6 +487,8 @@ void QgsTopologicalMesh::dereferenceAsFreeVertex( int vertexIndex )
 
 void QgsTopologicalMesh::referenceAsFreeVertex( int vertexIndex )
 {
+  // QSet used to retrieve free vertex without going through all the vertices container.
+  // But maybe later we could use more sophisticated reference (spatial index?), to retrieve free vertex in an extent
   mFreeVertices.insert( vertexIndex );
 }
 

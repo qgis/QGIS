@@ -279,7 +279,7 @@ class CORE_EXPORT QgsTopologicalMesh
      */
     void reindex();
 
-    //! method used for test and debug
+    //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
     bool checkConsistency() const;
 
   private:
@@ -298,11 +298,10 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
     QSet<int> concernedFacesBy( const QList<int> faceIndexes ) const;
 
-    // Following methods are used to retrieve free vertex without going through all the vertices container.
-    // For now, we use only QSet<int> with vertex indexes, but,
-    // maybe later we could use more sophisticated reference (spatial index?), to retrieve fre vertex in an extent
-    void dereferenceAsFreeVertex( int vertexIndex );
+    //! References the vertex as a free vertex to be able to access to all free vertices
     void referenceAsFreeVertex( int vertexIndex );
+    //! References the vertex as a free vertex
+    void dereferenceAsFreeVertex( int vertexIndex );
 
     /**
      * Returns faces that are either side of th edge (\a vertexIndex1, \a vertexIndex2)
@@ -321,7 +320,9 @@ class CORE_EXPORT QgsTopologicalMesh
     QgsMesh *mMesh = nullptr;
     QVector<int> mVertexToFace;
     QVector<FaceNeighbors> mFacesNeighborhood;
+
     QSet<int> mFreeVertices;
+
     int mMaximumVerticesPerFace = 0;
 
     friend class QgsMeshVertexCirculator;

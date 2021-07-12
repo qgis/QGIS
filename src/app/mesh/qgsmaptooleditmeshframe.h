@@ -106,7 +106,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
       MovingVertex //!< Moving vertex or vertices is processing
     };
 
-    typedef std::array<int, 2> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
+    typedef QPair<int, int> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
 
     // methods
     void initialize();
@@ -170,8 +170,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     State mPreviousState = Digitizing; //used to store a state and restore it after a particular action as selecting
     bool mLeftButtonPressed = false;
 
-    QPointer<QgsMeshLayer> mCurrentLayer = nullptr;
-    QPointer<QgsMeshEditor> mCurrentEditor = nullptr;
+    QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
+    QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
     int mCurrentFaceIndex = -1;
     Edge mCurrentEdge = {-1, -1};
@@ -181,58 +181,58 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsPointXY mLastClickPoint;
     double mCurrentZValue = 0;
 
-    //! Rubber band used to highlight a face that is on mouse over and not dragging anything
+    //! Rubber band used to highlight a face that is on mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mFaceRubberBand = nullptr;
-    //! Rubber band used to highlight vertex of the face that is on mouse over and not dragging anything
+    //! Rubber band used to highlight vertex of the face that is on mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mFaceVerticesBand = nullptr;
-    //! Rubber band used to highlight the vertex that is in mouse over and not dragging anything
+    //! Rubber band used to highlight the vertex that is in mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mVertexBand = nullptr;
-    //! Rubber band used to highlight the edge that is in mouse over
+    //! Rubber band used to highlight the edge that is in mouse over, own by map canvas
     QgsRubberBand *mEdgeBand = nullptr;
-    //! Marker used to propose to add a new face when a boundary vertex is highlight
+    //! Marker used to propose to add a new face when a boundary vertex is highlight, own by map canvas
     QgsVertexMarker *mNewFaceMarker = nullptr;
-    //! Rubber band used when adding a new face
+    //! Rubber band used when adding a new face, own by map canvas
     QgsRubberBand *mNewFaceBand = nullptr;
     QColor mInvalidFaceColor;
     QColor mValidFaceColor;
 
-    //! Markers that makes visible free vertices
+    //! Markers that makes visible free vertices, own by map canvas
     QList<QgsVertexMarker *> mFreeVertexMarker;
 
     //! members for selection of vertices/faces
     QMap<int, SelectedVertexData> mSelectedVertices;
     QSet<int> mSelectedFaces;
     QSet<int> mConcernedFaceBySelection;
-    QgsVertexMarker *mSelectFaceMarker = nullptr;
-    QgsVertexMarker *mSelectEdgeMarker = nullptr;
-    QgsRubberBand *mSelectionBand = nullptr;
+    QgsVertexMarker *mSelectFaceMarker = nullptr; //own by map canvas
+    QgsVertexMarker *mSelectEdgeMarker = nullptr; //own by map canvas
+    QgsRubberBand *mSelectionBand = nullptr; //own by map canvas
     QPoint mStartSelectionPos;
     QColor mSelectionBandPartiallyFillColor = QColor( 0, 215, 120, 63 );
     QColor mSelectionBandPartiallyStrokeColor = QColor( 0, 204, 102, 100 );
     QColor mSelectionBandTotalFillColor = QColor( 0, 120, 215, 63 );
     QColor mSelectionBandTotalStrokeColor = QColor( 0, 102, 204, 100 );
-    QgsRubberBand *mSelectedFacesRubberband = nullptr;
+    QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
     QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
     bool mSelectPartiallyContainedFace = false;
 
     //! members for moving vertices
     QgsPointXY mStartMovingPoint;
     bool mCanMovingStart = false;
-    QgsRubberBand *mMovingEdgesRubberband = nullptr;
-    QgsRubberBand *mMovingFacesRubberband = nullptr;
-    QgsRubberBand *mMovingVerticesRubberband = nullptr;
+    QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingVerticesRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 
     //! members for edge flip
-    QgsVertexMarker *mFlipEdgeMarker = nullptr;
+    QgsVertexMarker *mFlipEdgeMarker = nullptr; //own by map canvas
 
     //! members for merge face
-    QgsVertexMarker *mMergeFaceMarker = nullptr;
+    QgsVertexMarker *mMergeFaceMarker = nullptr; //own by map canvas
 
     //! members for split face
     int mSplittableFaceCount = 0;
 
-    QgsZValueWidget *mZValueWidget = nullptr;
+    QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
 
     QAction *mActionRemoveVerticesFillingHole = nullptr;
     QAction *mActionRemoveVerticesWithoutFillingHole = nullptr;

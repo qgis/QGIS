@@ -403,7 +403,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           mCanMovingStart = true;
         }
 
-        if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 &&
+        if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 &&
              mSelectEdgeMarker->isVisible() &&
              mapPoint.distance( mSelectEdgeMarker->center() ) < tolerance )
         {
@@ -502,16 +502,16 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         const SelectedVertexData &vertexData = it.value();
         for ( int i = 0; i < vertexData.meshFixedEdges.count(); ++i )
         {
-          const QgsPointXY point2 = mapVertexXY( vertexData.meshFixedEdges.at( i ).at( 1 ) );
+          const QgsPointXY point2 = mapVertexXY( vertexData.meshFixedEdges.at( i ).second );
           QgsGeometry edge( new QgsLineString( {point1, point2} ) );
           mMovingEdgesRubberband->addGeometry( edge );
           if ( mIsMovingAllowed )
-            mIsMovingAllowed &= testBorderMovingFace( nativeFace( vertexData.meshFixedEdges.at( i ).at( 0 ) ), translation );
+            mIsMovingAllowed &= testBorderMovingFace( nativeFace( vertexData.meshFixedEdges.at( i ).first ), translation );
         }
 
         for ( int i = 0; i < vertexData.selectedEdges.count(); ++i )
         {
-          const QgsPointXY point2 = mapVertexXY( vertexData.selectedEdges.at( i ).at( 1 ) ) + translation;
+          const QgsPointXY point2 = mapVertexXY( vertexData.selectedEdges.at( i ).second ) + translation;
           const QgsPointXY middlePoint( ( point1.x() + point2.x() ) / 2, ( point1.y() + point2.y() ) / 2 );
           if ( !faceGeom.contains( &middlePoint ) )
           {
@@ -606,7 +606,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         else if ( mFlipEdgeMarker->isVisible() &&
                   e->mapPoint().distance( mFlipEdgeMarker->center() ) < tolerance &&
-                  mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+                  mCurrentEdge.first != -1 && mCurrentEdge.second != -1 )
         {
           clearSelection();
           QVector<int> edgeVert = edgeVertices( mCurrentEdge );
@@ -616,7 +616,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         else if ( mMergeFaceMarker->isVisible() &&
                   e->mapPoint().distance( mMergeFaceMarker->center() ) < tolerance &&
-                  mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+                  mCurrentEdge.first != -1 && mCurrentEdge.second != -1 )
         {
           clearSelection();
           QVector<int> edgeVert = edgeVertices( mCurrentEdge );
@@ -707,7 +707,7 @@ void QgsMapToolEditMeshFrame::select( const QgsPointXY &mapPoint, Qt::KeyboardMo
   }
   else if ( mSelectEdgeMarker->isVisible() &&
             mapPoint.distance( mSelectEdgeMarker->center() ) < tolerance &&
-            mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+            mCurrentEdge.first != -1 && mCurrentEdge.second != -1 )
   {
     QVector<int> edgeVert = edgeVertices( mCurrentEdge );
     setSelectedVertices( edgeVert.toList(), modifiers );
@@ -1017,11 +1017,11 @@ QVector<QgsPointXY> QgsMapToolEditMeshFrame::edgeGeometry( const QgsMapToolEditM
 
 QVector<int> QgsMapToolEditMeshFrame::edgeVertices( const QgsMapToolEditMeshFrame::Edge &edge ) const
 {
-  const QgsMeshFace &face = nativeFace( edge.at( 0 ) );
+  const QgsMeshFace &face = nativeFace( edge.first );
   int faceSize = face.count();
-  int posInface = ( face.indexOf( edge.at( 1 ) ) + faceSize - 1 ) % faceSize;
+  int posInface = ( face.indexOf( edge.second ) + faceSize - 1 ) % faceSize;
 
-  return {face.at( posInface ), edge.at( 1 )};
+  return {face.at( posInface ), edge.second};
 }
 
 QgsPointXY QgsMapToolEditMeshFrame::newFaceMarkerPosition( int vertexIndex )
@@ -1570,7 +1570,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
   mFlipEdgeMarker->setVisible( false );
   mMergeFaceMarker->setVisible( false );
   mSelectEdgeMarker->setVisible( false );
-  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 &&  mCurrentState == Digitizing )
+  if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 &&  mCurrentState == Digitizing )
   {
     const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
     mEdgeBand->addPoint( edgeGeom.at( 0 ) );
@@ -1770,7 +1770,7 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
 
   double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
-  if ( mCurrentEdge.at( 0 ) != -1 && mCurrentEdge.at( 1 ) != -1 )
+  if ( mCurrentEdge.first != -1 && mCurrentEdge.second  != -1 )
   {
     const QVector<int> &edge = edgeVertices( mCurrentEdge );
 
