@@ -139,9 +139,8 @@ class ANALYSIS_EXPORT QgsInterpolator
      * Calculates interpolation value for a point
      * \param point the point to interpolate
      * \param feedback optional feedback object for progress and cancellation support
-     * \returns the interpolated value in case of success
+     * \returns the interpolated value
      * \warning this method is called by multiple threads: implementation must be thread safe
-     * \see cacheBaseData()
      * \since QGIS 3.22
      */
     virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback = nullptr ) const = 0;

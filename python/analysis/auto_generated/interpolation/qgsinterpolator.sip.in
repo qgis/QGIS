@@ -105,13 +105,11 @@ Calculates interpolation value for a point
 :param point: the point to interpolate
 :param feedback: optional feedback object for progress and cancellation support
 
-:return: the interpolated value in case of success
+:return: the interpolated value
 
 .. warning::
 
    this method is called by multiple threads: implementation must be thread safe
-
-.. seealso:: :py:func:`cacheBaseData`
 
 .. versionadded:: 3.22
 %End
