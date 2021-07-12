@@ -461,6 +461,9 @@ QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
 
   for ( const auto &face : triangles() )
   {
+    if ( face.isEmpty() )
+      continue;
+
     for ( int i = 0; i < 3; i++ )
     {
       int index1( face.at( i ) );

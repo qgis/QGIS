@@ -707,6 +707,7 @@ void QgsMeshLayer::onMeshEdited()
   mRendererCache.reset( new QgsMeshLayerRendererCache() );
   emit layerModified();
   triggerRepaint();
+  trigger3DUpdate();
 }
 
 QgsMeshDatasetGroupTreeItem *QgsMeshLayer::datasetGroupTreeRootItem() const

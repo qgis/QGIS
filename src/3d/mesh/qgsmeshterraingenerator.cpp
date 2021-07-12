@@ -91,9 +91,17 @@ void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
+  if ( mLayer.get() )
+    disconnect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+
   mLayer = QgsMapLayerRef( layer );
   mIsValid = layer != nullptr;
   updateTriangularMesh();
+  if ( mIsValid )
+  {
+    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::updateTriangularMesh );
+    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+  }
 }
 
 
