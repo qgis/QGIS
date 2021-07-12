@@ -135,29 +135,22 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
 
-    virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback = nullptr ) = 0;
+    /**
+     * Calculates interpolation value for a point
+     * \param point the point to interpolate
+     * \param feedback optional feedback object for progress and cancellation support
+     * \returns the interpolated value in case of success
+     * \warning this method is called by multiple threads: implementation must be thread safe
+     * \see cacheBaseData()
+     * \since QGIS 3.22
+     */
+    virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback = nullptr ) const = 0;
 
     //! \note not available in Python bindings
     QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
 
-    /**
-     * Caches the vertex and value data from the provider. All the vertex data
-     * will be held in virtual memory.
-     *
-     * An optional \a feedback argument may be specified to allow cancellation and
-     * progress reports from the cache operation.
-     *
-     * \returns Success in case of success
-    */
-    Result cacheBaseData( QgsFeedback *feedback = nullptr );
 
   protected:
-
-    //! Cached vertex data for input sources
-    QVector<QgsInterpolatorVertexData> mCachedBaseData;
-
-    //! Flag that tells if the cache already has been filled
-    bool mDataIsCached = false;
 
     //! Information about the input vector layers and the attributes (or z-values) that are used for interpolation
     QList<LayerData> mLayerData;
@@ -165,14 +158,6 @@ class ANALYSIS_EXPORT QgsInterpolator
   private:
     QgsInterpolator() = delete;
 
-    /**
-     * Helper method that adds the vertices of a geometry to the mCachedBaseData
-     * \param geom the geometry
-     * \param source source for values to interpolate from the feature
-     * \param attributeValue the attribute value for interpolation (if interpolating from attribute value)
-     *\returns 0 in case of success
-    */
-    bool addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue );
 };
 
 #endif

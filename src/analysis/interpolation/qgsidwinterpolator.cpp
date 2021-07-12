@@ -17,15 +17,157 @@
 
 #include "qgsidwinterpolator.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsfeaturesource.h"
+#include "qgsfeatureiterator.h"
 #include "qgis.h"
 #include <cmath>
 #include <limits>
 
 QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData )
   : QgsInterpolator( layerData )
-{}
+{
+  cacheBaseData( );
+}
 
-double QgsIDWInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback )
+QgsInterpolator::Result QgsIDWInterpolator::cacheBaseData( QgsFeedback *feedback )
+{
+  if ( mLayerData.empty() )
+  {
+    return Success;
+  }
+
+  //reserve initial memory for 100000 vertices
+  mCachedBaseData.clear();
+  mCachedBaseData.reserve( 100000 );
+
+  const QgsCoordinateReferenceSystem crs = !mLayerData.empty() ? mLayerData.at( 0 ).source->sourceCrs() : QgsCoordinateReferenceSystem();
+
+  double layerStep = !mLayerData.empty() ? 100.0 / mLayerData.count() : 1;
+  int layerCount = 0;
+  for ( const LayerData &layer : std::as_const( mLayerData ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      return Canceled;
+
+    QgsFeatureSource *source = layer.source;
+    if ( !source )
+    {
+      return InvalidSource;
+    }
+
+    QgsAttributeList attList;
+    switch ( layer.valueSource )
+    {
+      case ValueAttribute:
+        attList.push_back( layer.interpolationAttribute );
+        break;
+
+      case ValueZ:
+      case ValueM:
+        break;
+    }
+
+    double attributeValue = 0.0;
+    bool attributeConversionOk = false;
+    double progress = layerCount * layerStep;
+
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ).setDestinationCrs( crs, layer.transformContext ) );
+    double featureStep = source->featureCount() > 0 ? layerStep / source->featureCount() : layerStep;
+
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
+    {
+      if ( feedback && feedback->isCanceled() )
+        return Canceled;
+
+      progress += featureStep;
+      if ( feedback )
+        feedback->setProgress( progress );
+
+      switch ( layer.valueSource )
+      {
+        case ValueAttribute:
+        {
+          QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
+          if ( !attributeVariant.isValid() || attributeVariant.isNull() ) //attribute not found, something must be wrong (e.g. NULL value)
+          {
+            continue;
+          }
+          attributeValue = attributeVariant.toDouble( &attributeConversionOk );
+          if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+          {
+            continue;
+          }
+          break;
+        }
+
+        case ValueZ:
+        case ValueM:
+          break;
+      }
+
+      if ( !addVerticesToCache( feature.geometry(), layer.valueSource, attributeValue ) )
+        return FeatureGeometryError;
+    }
+    layerCount++;
+  }
+
+  return Success;
+}
+
+bool QgsIDWInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
+{
+
+  if ( geom.isNull() || geom.isEmpty() )
+    return true; // nothing to do
+
+  //validate source
+  switch ( source )
+  {
+    case ValueAttribute:
+      break;
+
+    case ValueM:
+      if ( !geom.constGet()->isMeasure() )
+        return false;
+      else
+        break;
+
+    case ValueZ:
+      if ( !geom.constGet()->is3D() )
+        return false;
+      else
+        break;
+  }
+
+  for ( auto point = geom.vertices_begin(); point != geom.vertices_end(); ++point )
+  {
+    switch ( source )
+    {
+      case ValueM:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).m() ) );
+        break;
+
+      case ValueZ:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
+        break;
+
+      case ValueAttribute:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
+        break;
+    }
+  }
+  return true;
+}
+
+QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData, QgsFeedback *feedback )
+  : QgsInterpolator( layerData )
+{
+  cacheBaseData( feedback );
+}
+
+double QgsIDWInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback ) const
 {
   double sumCounter = 0;
   double sumDenominator = 0;
@@ -56,10 +198,6 @@ double QgsIDWInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedba
 
 int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback *feedback )
 {
-  if ( !mDataIsCached )
-  {
-    cacheBaseData( feedback );
-  }
 
   double sumCounter = 0;
   double sumDenominator = 0;

@@ -58,8 +58,6 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   double currentYValue = mInterpolationExtent.yMaximum() - mCellSizeY / 2.0; //calculate value in the center of the cell
   double currentXValue;
 
-  mInterpolator->cacheBaseData( feedback );
-
   // Builds the list of coords
   for ( int i = 0; i < mNumRows; ++i )
   {
@@ -77,7 +75,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
         }
         feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
       }
-      points.push_back( {currentXValue, currentYValue } );
+      points.push_back( { currentXValue, currentYValue } );
       currentXValue += mCellSizeX;
     }
 

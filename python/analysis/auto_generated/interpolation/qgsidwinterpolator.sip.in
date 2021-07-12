@@ -25,6 +25,11 @@ Inverse distance weight interpolator.
 Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
 %End
 
+    QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData, QgsFeedback *feedback );
+%Docstring
+Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
+%End
+
     virtual int interpolatePoint( double x, double y, double &result /Out/, QgsFeedback *feedback = 0 );
 
 
@@ -53,8 +58,9 @@ Point values are weighted by 1 / ( distance ^ coefficient ).
 .. versionadded:: 3.0
 %End
 
-  public:
-    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
+    virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback ) const;
+
+
 };
 
 /************************************************************************

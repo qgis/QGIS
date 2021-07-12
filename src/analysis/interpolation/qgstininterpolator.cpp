@@ -38,6 +38,7 @@ QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, TinIn
   , mFeedback( feedback )
   , mInterpolation( interpolation )
 {
+  initialize();
 }
 
 QgsTinInterpolator::~QgsTinInterpolator()
@@ -48,10 +49,6 @@ QgsTinInterpolator::~QgsTinInterpolator()
 
 int QgsTinInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback * )
 {
-  if ( !mIsInitialized )
-  {
-    initialize();
-  }
 
   if ( !mTriangleInterpolator )
   {
@@ -356,7 +353,18 @@ int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource
   return 0;
 }
 
-double QgsTinInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback )
+double QgsTinInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback ) const
 {
-  return 0;
+  Q_UNUSED( feedback )
+  if ( !mTriangleInterpolator )
+  {
+    return -9999;
+  }
+
+  QgsPoint r( 0, 0, 0 );
+  if ( !mTriangleInterpolator->calcPoint( point.x(), point.y(), r ) )
+  {
+    return -9999;
+  }
+  return  r.z();
 }

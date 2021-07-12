@@ -35,6 +35,11 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
      */
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
+    /**
+     * Constructor for QgsIDWInterpolator, with the specified \a layerData sources.
+     */
+    QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData, QgsFeedback *feedback );
+
     int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) override;
 
     /**
@@ -60,15 +65,38 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     */
     double distanceCoefficient() const { return mDistanceCoefficient; }
 
+    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback ) const override;
+
   private:
 
     QgsIDWInterpolator() = delete;
 
     double mDistanceCoefficient = 2.0;
 
-    // QgsInterpolator interface
-  public:
-    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
+    //! Cached vertex data for input sources
+    QVector<QgsInterpolatorVertexData> mCachedBaseData;
+
+    /**
+     * Caches the vertex and value data from the provider. All the vertex data
+     * will be held in virtual memory.
+     *
+     * An optional \a feedback argument may be specified to allow cancellation and
+     * progress reports from the cache operation.
+     *
+     * \returns Success in case of success
+    */
+    Result cacheBaseData( QgsFeedback *feedback = nullptr );
+
+
+    /**
+     * Helper method that adds the vertices of a geometry to the mCachedBaseData
+     * \param geom the geometry
+     * \param source source for values to interpolate from the feature
+     * \param attributeValue the attribute value for interpolation (if interpolating from attribute value)
+     *\returns 0 in case of success
+    */
+    bool addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue );
+
 };
 
 #endif
