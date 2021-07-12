@@ -77,9 +77,10 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
 
   QEventLoop loop;
   QTimer timer;
+  QStringList errors;
   QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true );
   connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
-  connect( downloader, &QgsFileDownloader::downloadError, this, &QgsFileDownloaderAlgorithm::reportErrors );
+  connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList & e ) { errors = e; loop.exit(); } );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
   connect( downloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
   connect( &timer, &QTimer::timeout, this, &QgsFileDownloaderAlgorithm::sendProgressFeedback );
@@ -89,6 +90,9 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   loop.exec();
 
   timer.stop();
+  if ( errors.size() > 0 )
+    throw QgsProcessingException( errors.join( '\n' ) );
+
   bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
@@ -96,11 +100,6 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), exists ? outputFile : QString() );
   return outputs;
-}
-
-void QgsFileDownloaderAlgorithm::reportErrors( const QStringList &errors )
-{
-  throw QgsProcessingException( errors.join( '\n' ) );
 }
 
 void QgsFileDownloaderAlgorithm::sendProgressFeedback()
