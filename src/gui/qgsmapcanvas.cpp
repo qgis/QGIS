@@ -987,7 +987,8 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
   // TODO: QGIS 4 -> always respect screen dpi
   if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
-    mSettings.setOutputDpi( screen()->physicalDotsPerInch() );
+    if ( window()->windowHandle() )
+      mSettings.setOutputDpi( window()->windowHandle()->screen()->physicalDotsPerInch() );
   }
   else
   {
