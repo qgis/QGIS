@@ -310,6 +310,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnativealgorithms.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
+#include "qgsnewmeshlayerdialog.h"
 #include "options/qgsoptions.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
@@ -2672,6 +2673,7 @@ void QgisApp::createActions()
 #endif
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
   connect( mActionNewMemoryLayer, &QAction::triggered, this, &QgisApp::newMemoryLayer );
+  connect( mActionNewMeshLayer, &QAction::triggered, this, &QgisApp::newMeshLayer );
   connect( mActionNewVirtualLayer, &QAction::triggered, this, &QgisApp::addVirtualLayer );
   connect( mActionShowRasterCalculator, &QAction::triggered, this, &QgisApp::showRasterCalculator );
   connect( mActionShowMeshCalculator, &QAction::triggered, this, &QgisApp::showMeshCalculator );
@@ -6808,6 +6810,13 @@ void QgisApp::newSpatialiteLayer()
 void QgisApp::newGeoPackageLayer()
 {
   QgsNewGeoPackageLayerDialog dialog( this );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.exec();
+}
+
+void QgisApp::newMeshLayer()
+{
+  QgsNewMeshLayerDialog dialog( this );
   dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
   dialog.exec();
 }
