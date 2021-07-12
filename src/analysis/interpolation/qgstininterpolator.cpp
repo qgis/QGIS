@@ -355,3 +355,8 @@ int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource
   }
   return 0;
 }
+
+double QgsTinInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback )
+{
+  return 0;
+}

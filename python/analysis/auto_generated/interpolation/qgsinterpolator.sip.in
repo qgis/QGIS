@@ -98,7 +98,8 @@ Calculates interpolation value for map coordinates x, y
 %End
 
 
-  protected:
+    virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback = 0 ) = 0;
+
 
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring
@@ -110,6 +111,8 @@ progress reports from the cache operation.
 
 :return: Success in case of success
 %End
+
+  protected:
 
 
 

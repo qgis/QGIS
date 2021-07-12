@@ -65,6 +65,10 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     QgsIDWInterpolator() = delete;
 
     double mDistanceCoefficient = 2.0;
+
+    // QgsInterpolator interface
+  public:
+    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
 };
 
 #endif

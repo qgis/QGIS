@@ -63,6 +63,8 @@ those returned by :py:func:`~QgsTinInterpolator.triangulationFields`.
 .. versionadded:: 3.0
 %End
 
+  public:
+    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
 };
 
 /************************************************************************

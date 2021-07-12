@@ -100,6 +100,10 @@ class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
     int insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, SourceType type );
 
     int addPointsFromGeometry( const QgsGeometry &g, ValueSource source, double attributeValue );
+
+    // QgsInterpolator interface
+  public:
+    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
 };
 
 #endif

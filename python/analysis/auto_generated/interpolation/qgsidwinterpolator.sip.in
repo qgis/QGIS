@@ -53,6 +53,8 @@ Point values are weighted by 1 / ( distance ^ coefficient ).
 .. versionadded:: 3.0
 %End
 
+  public:
+    double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback );
 };
 
 /************************************************************************

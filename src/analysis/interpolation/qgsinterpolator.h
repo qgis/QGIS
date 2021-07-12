@@ -134,10 +134,11 @@ class ANALYSIS_EXPORT QgsInterpolator
      */
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
+
+    virtual double interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback = nullptr ) = 0;
+
     //! \note not available in Python bindings
     QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
-
-  protected:
 
     /**
      * Caches the vertex and value data from the provider. All the vertex data
@@ -149,6 +150,8 @@ class ANALYSIS_EXPORT QgsInterpolator
      * \returns Success in case of success
     */
     Result cacheBaseData( QgsFeedback *feedback = nullptr );
+
+  protected:
 
     //! Cached vertex data for input sources
     QVector<QgsInterpolatorVertexData> mCachedBaseData;

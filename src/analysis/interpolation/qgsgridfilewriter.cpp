@@ -21,6 +21,7 @@
 #include "qgsfeedback.h"
 #include <QFile>
 #include <QFileInfo>
+#include <QtConcurrent>
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows )
   : mInterpolator( i )
@@ -56,36 +57,46 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 
   double currentYValue = mInterpolationExtent.yMaximum() - mCellSizeY / 2.0; //calculate value in the center of the cell
   double currentXValue;
-  double interpolatedValue;
 
+  mInterpolator->cacheBaseData( feedback );
+
+  // Builds the list of coords
   for ( int i = 0; i < mNumRows; ++i )
   {
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
+    QVector<QgsPointXY> points;
+    points.reserve( mNumColumns );
     for ( int j = 0; j < mNumColumns; ++j )
     {
-      if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue, feedback ) == 0 )
+      if ( feedback )
       {
-        outStream << interpolatedValue << ' ';
+        if ( feedback->isCanceled() )
+        {
+          outputFile.remove();
+          return 3;
+        }
+        feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
       }
-      else
-      {
-        outStream << "-9999 ";
-      }
+      points.push_back( {currentXValue, currentYValue } );
       currentXValue += mCellSizeX;
+    }
+
+
+    std::function<double( const QgsPointXY & )> interpolate = [ = ]( const QgsPointXY & point )
+    {
+      return mInterpolator->interpolatedPoint( point, feedback );
+    };
+
+    QFuture< double > interpolated = QtConcurrent::mapped( points, interpolate );
+    interpolated.waitForFinished();
+    for ( const auto &interpolatedValue : std::as_const( interpolated ) )
+    {
+      outStream << interpolatedValue << ' ';
     }
     outStream << endl;
     currentYValue -= mCellSizeY;
-
-    if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-      {
-        outputFile.remove();
-        return 3;
-      }
-      feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
-    }
   }
+
 
   // create prj file
   QgsInterpolator::LayerData ld;

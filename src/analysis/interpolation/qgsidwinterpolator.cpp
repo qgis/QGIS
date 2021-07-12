@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsidwinterpolator.h"
+#include "qgsfeedback.h"
 #include "qgis.h"
 #include <cmath>
 #include <limits>
@@ -23,6 +24,35 @@
 QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData> &layerData )
   : QgsInterpolator( layerData )
 {}
+
+double QgsIDWInterpolator::interpolatedPoint( const QgsPointXY &point, QgsFeedback *feedback )
+{
+  double sumCounter = 0;
+  double sumDenominator = 0;
+
+  for ( const QgsInterpolatorVertexData &vertex : std::as_const( mCachedBaseData ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return 1;
+    }
+    double distance = std::sqrt( ( vertex.x - point.x() ) * ( vertex.x - point.x() ) + ( vertex.y - point.y() ) * ( vertex.y - point.y() ) );
+    if ( qgsDoubleNear( distance, 0.0 ) )
+    {
+      return vertex.z;
+    }
+    double currentWeight = 1 / ( std::pow( distance, mDistanceCoefficient ) );
+    sumCounter += ( currentWeight * vertex.z );
+    sumDenominator += currentWeight;
+  }
+
+  if ( sumDenominator == 0.0 )
+  {
+    return -9999;
+  }
+
+  return sumCounter / sumDenominator;
+}
 
 int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback *feedback )
 {
@@ -36,6 +66,10 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result, Qg
 
   for ( const QgsInterpolatorVertexData &vertex : std::as_const( mCachedBaseData ) )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return 1;
+    }
     double distance = std::sqrt( ( vertex.x - x ) * ( vertex.x - x ) + ( vertex.y - y ) * ( vertex.y - y ) );
     if ( qgsDoubleNear( distance, 0.0 ) )
     {
