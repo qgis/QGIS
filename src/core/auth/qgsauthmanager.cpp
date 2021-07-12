@@ -33,6 +33,7 @@
 #include <QSqlDriver>
 #include <QDomElement>
 #include <QDomDocument>
+#include <QRegularExpression>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
@@ -917,8 +918,7 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
 
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
-  QRegExp rx( AUTH_CFG_REGEX );
-  return rx.indexIn( txt ) != -1;
+  return txt.indexOf( QRegularExpression( AUTH_CFG_REGEX ) ) != -1;
 }
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
@@ -2437,8 +2437,9 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
 bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors )
 {
   QMutexLocker locker( mMutex.get() );
-  QRegExp rx( "\\S+:\\S+:\\d+" );
-  if ( !rx.exactMatch( shahostport ) )
+  const QRegularExpression rx( QRegularExpression::anchoredPattern( "\\S+:\\S+:\\d+" ) );
+  const QRegularExpressionMatch match = rx.match( shahostport );
+  if ( !match.hasMatch() )
   {
     QgsDebugMsg( "Passed shahostport does not match \\S+:\\S+:\\d+, "
                  "e.g. 74a4ef5ea94512a43769b744cda0ca5049a72491:www.example.com:443" );

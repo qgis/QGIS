@@ -26,6 +26,7 @@
 
 #include <QNetworkProxy>
 #include <QMutexLocker>
+#include <QRegularExpression>
 #include <QUuid>
 
 const QString QgsAuthBasicMethod::AUTH_METHOD_KEY = QStringLiteral( "Basic" );
@@ -112,7 +113,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   QString sslMode = QStringLiteral( "prefer" );
-  int sslModeIdx = connectionItems.indexOf( QRegExp( "^sslmode=.*" ) );
+  int sslModeIdx = connectionItems.indexOf( QRegularExpression( "^sslmode=.*" ) );
   if ( sslModeIdx != -1 )
   {
     sslMode = connectionItems.at( sslModeIdx ).split( '=' ).at( 1 );
@@ -171,7 +172,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QLatin1String( "SDE:" ) ) )
         {
-          uri = uri.replace( QRegExp( ",$" ), QStringLiteral( ",%1,%2" ).arg( username, password ) );
+          uri = uri.replace( QRegularExpression( ",$" ), QStringLiteral( ",%1,%2" ).arg( username, password ) );
         }
         else if ( uri.startsWith( QLatin1String( "IDB" ) ) )
         {
@@ -209,7 +210,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QLatin1String( "ODBC:" ) ) )
         {
-          uri = uri.replace( QRegExp( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
+          uri = uri.replace( QRegularExpression( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
         }
         else if ( uri.startsWith( QLatin1String( "couchdb" ) )
                   || uri.startsWith( QLatin1String( "DODS" ) )
@@ -240,7 +241,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   else // Not-ogr
   {
     QString userparam = "user='" + escapeUserPass( username ) + '\'';
-    int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+    int userindx = connectionItems.indexOf( QRegularExpression( "^user='.*" ) );
     if ( userindx != -1 )
     {
       connectionItems.replace( userindx, userparam );
@@ -251,7 +252,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     }
 
     QString passparam = "password='" + escapeUserPass( password ) + '\'';
-    int passindx = connectionItems.indexOf( QRegExp( "^password='.*" ) );
+    int passindx = connectionItems.indexOf( QRegularExpression( "^password='.*" ) );
     if ( passindx != -1 )
     {
       connectionItems.replace( passindx, passparam );
@@ -263,7 +264,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     // add extra CAs
     if ( ! caparam.isEmpty() )
     {
-      int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+      int sslcaindx = connectionItems.indexOf( QRegularExpression( "^sslrootcert='.*" ) );
       if ( sslcaindx != -1 )
       {
         connectionItems.replace( sslcaindx, caparam );

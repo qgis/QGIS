@@ -16,16 +16,6 @@
 
 #include "qgsauthpkcs12method.h"
 
-#include <QDir>
-#include <QFile>
-#include <QUuid>
-#ifndef QT_NO_SSL
-#include <QtCrypto>
-#include <QSslConfiguration>
-#include <QSslError>
-#endif
-#include <QMutexLocker>
-
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -33,6 +23,17 @@
 #ifdef HAVE_GUI
 #include "qgsauthpkcs12edit.h"
 #endif
+
+#include <QDir>
+#include <QFile>
+#include <QRegularExpression>
+#include <QUuid>
+#ifndef QT_NO_SSL
+#include <QtCrypto>
+#include <QSslConfiguration>
+#include <QSslError>
+#endif
+#include <QMutexLocker>
 
 const QString QgsAuthPkcs12Method::AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
 const QString QgsAuthPkcs12Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "PKI PKCS#12 authentication" );
@@ -192,7 +193,7 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // add uri parameters
   QString userparam = "user='" + commonName + "'";
-  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+  int userindx = connectionItems.indexOf( QRegularExpression( "^user='.*" ) );
   if ( userindx != -1 )
   {
     connectionItems.replace( userindx, userparam );
@@ -203,7 +204,7 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   }
 
   QString certparam = "sslcert='" + certFilePath + "'";
-  int sslcertindx = connectionItems.indexOf( QRegExp( "^sslcert='.*" ) );
+  int sslcertindx = connectionItems.indexOf( QRegularExpression( "^sslcert='.*" ) );
   if ( sslcertindx != -1 )
   {
     connectionItems.replace( sslcertindx, certparam );
@@ -214,7 +215,7 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   }
 
   QString keyparam = "sslkey='" + keyFilePath + "'";
-  int sslkeyindx = connectionItems.indexOf( QRegExp( "^sslkey='.*" ) );
+  int sslkeyindx = connectionItems.indexOf( QRegularExpression( "^sslkey='.*" ) );
   if ( sslkeyindx != -1 )
   {
     connectionItems.replace( sslkeyindx, keyparam );
@@ -225,7 +226,7 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   }
 
   QString caparam = "sslrootcert='" + caFilePath + "'";
-  int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+  int sslcaindx = connectionItems.indexOf( QRegularExpression( "^sslrootcert='.*" ) );
   if ( sslcaindx != -1 )
   {
     connectionItems.replace( sslcaindx, caparam );

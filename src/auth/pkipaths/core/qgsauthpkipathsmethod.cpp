@@ -26,6 +26,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QRegularExpression>
 #include <QUuid>
 #ifndef QT_NO_SSL
 #include <QtCrypto>
@@ -193,7 +194,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
 
   // add uri parameters
   QString userparam = "user='" + commonName + "'";
-  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+  int userindx = connectionItems.indexOf( QRegularExpression( "^user='.*" ) );
   if ( userindx != -1 )
   {
     connectionItems.replace( userindx, userparam );
@@ -205,7 +206,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
 
   // add uri parameters
   QString certparam = "sslcert='" + certFilePath + "'";
-  int sslcertindx = connectionItems.indexOf( QRegExp( "^sslcert='.*" ) );
+  int sslcertindx = connectionItems.indexOf( QRegularExpression( "^sslcert='.*" ) );
   if ( sslcertindx != -1 )
   {
     connectionItems.replace( sslcertindx, certparam );
@@ -216,7 +217,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   }
 
   QString keyparam = "sslkey='" + keyFilePath + "'";
-  int sslkeyindx = connectionItems.indexOf( QRegExp( "^sslkey='.*" ) );
+  int sslkeyindx = connectionItems.indexOf( QRegularExpression( "^sslkey='.*" ) );
   if ( sslkeyindx != -1 )
   {
     connectionItems.replace( sslkeyindx, keyparam );
@@ -227,7 +228,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   }
 
   QString caparam = "sslrootcert='" + caFilePath + "'";
-  int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+  int sslcaindx = connectionItems.indexOf( QRegularExpression( "^sslrootcert='.*" ) );
   if ( sslcaindx != -1 )
   {
     connectionItems.replace( sslcaindx, caparam );
