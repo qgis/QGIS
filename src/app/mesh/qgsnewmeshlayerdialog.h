@@ -23,7 +23,9 @@
 #include "qgis_app.h"
 
 /**
- * @brief A Dialog Widget that is used to create and load in the project a new Mesh Layer from scratch or derived from another mesh
+ * \brief A Dialog Widget that is used to create and load in the project a new Mesh Layer from scratch or derived from another mesh
+ *
+ * \since QGIS 3.22
  */
 class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshLayerDialogBase
 {
