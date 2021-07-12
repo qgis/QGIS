@@ -138,7 +138,7 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseClick( 1501, 3501, Qt::LeftButton );
   tool.mouseMove( 1500, 3250 );
   tool.mouseMove( 2500, 3500 );
-  tool.mouseClick( 2500, 3500, Qt::LeftButton, Qt::ControlModifier );
+  tool.mouseClick( 2500, 3500, Qt::LeftButton, Qt::ShiftModifier );
   tool.keyClick( Qt::Key_Delete, Qt::ControlModifier | Qt::ShiftModifier ); //remove without filling hole
 
   QCOMPARE( meshLayerQuadFlower->nativeMesh()->vertex( 7 ), QgsMeshVertex() );
@@ -210,14 +210,14 @@ void TestQgsMapToolEditMesh::editMesh()
   // add a face to the selection (click on centroid)
   tool.mouseMove( 800, 2500 );
   tool.mouseMove( 833, 2500 );
-  tool.mouseClick( 833, 2500, Qt::LeftButton, Qt::ControlModifier );
+  tool.mouseClick( 833, 2500, Qt::LeftButton, Qt::ShiftModifier );
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 9 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 8 );
 
-  // remove a vertex from the selection (click on centroid)
+  // remove a vertex from the selection
   tool.mouseMove( 2500, 2400 );
   tool.mouseMove( 2500, 2500 );
-  tool.mouseClick( 2500, 2500, Qt::LeftButton, Qt::ShiftModifier );
+  tool.mouseClick( 2500, 2500, Qt::LeftButton, Qt::ControlModifier );
 
   QCOMPARE( editMeshMapTool->mSelectedVertices.count(), 8 );
   QCOMPARE( editMeshMapTool->mSelectedFaces.count(), 6 );
@@ -225,11 +225,10 @@ void TestQgsMapToolEditMesh::editMesh()
   // move some vertices with invalid resulting faces
   QgsPointXY centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
   QVERIFY( centroid.compare( QgsPointXY( 1500, 1833.333 ), 1e-2 ) );
-  editMeshMapTool->mActionMoveVertices->trigger();
-  // first, select vertices by using the center of the face (all vertices of face are selected
+  // first, select vertices by using the center of the face (all vertices of face are selected)
   tool.mouseMove( 1501, 1833.33 );
   tool.mouseClick( 1501, 1833.33, Qt::LeftButton );
-  tool.mousePress( 1510, 1810, Qt::LeftButton );
+  tool.mousePress( 1500, 1833.33, Qt::LeftButton );
   tool.mouseMove( 2500, 3000 );
   tool.mouseRelease( 2500, 3000, Qt::LeftButton );
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
@@ -237,25 +236,50 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // move some vertices
   QVERIFY( centroid.compare( QgsPointXY( 1500, 1833.333 ), 1e-2 ) );
-  editMeshMapTool->mActionMoveVertices->trigger();
-  // first, select vertices by using the center of the face (all vertices of face are selected
   tool.mouseMove( 1501, 1833.33 );
   tool.mouseClick( 1501, 1833.33, Qt::LeftButton );
-  tool.mousePress( 1510, 1810, Qt::LeftButton );
-  tool.mouseMove( 1520, 1820 );
-  tool.mouseRelease( 1520, 1820, Qt::LeftButton );
+  tool.mousePress( 1502, 1833, Qt::LeftButton );
+  tool.mouseMove( 1520, 1850 );
+  tool.mouseRelease( 1520, 1850, Qt::LeftButton );
   centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1500, 1600 ), 10 );
-  QVERIFY( centroid.compare( QgsPointXY( 1510, 1843.333 ), 1e-2 ) );
+  QVERIFY( centroid.compare( QgsPointXY( 1520, 1850 ), 1e-2 ) );
 
   // select only one vertex
-  tool.mouseMove( 1510, 1510 );
-  tool.mouseClick( 1510, 1510, Qt::LeftButton );
-  tool.mouseMove( 1512, 1509 );
-  tool.mousePress( 1512, 1509, Qt::LeftButton );
+  tool.mouseMove( 1520, 1516.66 );
+  tool.mouseClick( 1520,  1516.66, Qt::LeftButton );
+  tool.mouseMove( 1521, 1516.66 );
+  tool.mousePress( 1520, 1516.66, Qt::LeftButton );
   tool.mouseMove( 1500, 1500 );
   tool.mouseRelease( 1500, 1500, Qt::LeftButton );
   QgsPointXY vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1520, 1480 ), 30 );
   QVERIFY( vertexPosition.compare( QgsPointXY( 1500, 1500 ), 1e-2 ) );
+
+  // select an edge and move it
+  tool.mouseMove( 1760, 1758 );
+  tool.mouseClick( 1760,  1758, Qt::LeftButton );
+  tool.mouseMove( 1760, 1758 );
+  tool.mousePress( 1760, 1760, Qt::LeftButton );
+  tool.mouseMove( 1800, 1760 );
+  tool.mouseRelease( 1800, 1760, Qt::LeftButton );
+  vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1543, 1501 ), 10 );
+  QVERIFY( vertexPosition.compare( QgsPointXY( 1540, 1501.666 ), 1e-2 ) );
+  vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 2059, 2014 ), 10 );
+  QVERIFY( vertexPosition.compare( QgsPointXY( 2060, 2018.3333 ), 1e-2 ) );
+
+  // flip an edge
+  centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1100, 3050 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 3166.666 ), 1e-2 ) );
+  tool.mouseMove( 1500, 3000 );
+  tool.mouseMove( 1250, 3000 );
+  tool.mouseClick( 1250, 3000, Qt::LeftButton );
+  centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1100, 3050 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1333.33, 3100 ), 1e-2 ) );
+  // merge faces on flipped edge
+  tool.mouseMove( 1500, 2900 );
+  tool.mouseMove( 1500, 3325 );
+  tool.mouseClick( 1500, 3324, Qt::LeftButton );
+  centroid = meshLayerQuadFlower->snapOnElement( QgsMesh::Face, QgsPointXY( 1100, 3050 ), 10 );
+  QVERIFY( centroid.compare( QgsPointXY( 1500, 3100 ), 1e-2 ) );
 }
 
 

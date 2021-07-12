@@ -922,7 +922,6 @@
         <file>themes/default/mIconFolderHomeParams.svg</file>
         <file>themes/default/mActionMeasureBearing.svg</file>
         <file>themes/default/mActionMeshDigitizing.svg</file>
-        <file>themes/default/mActionMeshMoveVertex.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

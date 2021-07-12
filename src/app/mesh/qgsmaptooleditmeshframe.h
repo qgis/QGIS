@@ -100,11 +100,10 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     enum State
     {
-      Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces)
+      Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
       Selecting, //!< Selection is in process
-      MoveVertices, //!< The user can select vertices and start to move if there is a least one vertices selected
-      MovingVertex //!< Moving vertex or vertices is in process
+      MovingVertex //!< Moving vertex or vertices is processing
     };
 
     typedef std::array<int, 2> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
@@ -154,6 +153,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectInGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
     void applyZValueOnSelectedVertices();
     void prepareSelection();
+    void updateSelectecVerticesMarker();
 
     bool testBorderMovingFace( const QgsMeshFace &borderMovingfaces, const QgsVector &translation ) const;
 
@@ -240,7 +240,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSplitFaces = nullptr;
 
     QAction *mActionDigitizing = nullptr;
-    QAction *mActionMoveVertices = nullptr;
 
     friend class TestQgsMapToolEditMesh;
 };
