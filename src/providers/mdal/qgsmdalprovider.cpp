@@ -230,6 +230,7 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   MDAL_DriverH mdalDriver = MDAL_driverFromName( name.toStdString().c_str() );
   QString longName = MDAL_DR_longName( mdalDriver );
   QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
+  QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
 
   QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
   bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -244,7 +245,7 @@ QgsMeshDriverMetadata QgsMdalProvider::driverMetadata() const
   bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
   if ( hasMeshSaveCapability )
     capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix );
+  const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix );
 
   return meta;
 }
@@ -1140,6 +1141,7 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     QString name = MDAL_DR_name( mdalDriver );
     QString longName = MDAL_DR_longName( mdalDriver );
     QString writeDatasetSuffix = MDAL_DR_writeDatasetsSuffix( mdalDriver );
+    QString writeMeshFrameSuffix = MDAL_DR_saveMeshSuffix( mdalDriver );
 
     QgsMeshDriverMetadata::MeshDriverCapabilities capabilities;
     bool hasSaveFaceDatasetsCapability = MDAL_DR_writeDatasetsCapability( mdalDriver, MDAL_DataLocation::DataOnFaces );
@@ -1154,7 +1156,7 @@ QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()
     bool hasMeshSaveCapability = MDAL_DR_saveMeshCapability( mdalDriver );
     if ( hasMeshSaveCapability )
       capabilities |= QgsMeshDriverMetadata::CanWriteMeshData;
-    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix );
+    const QgsMeshDriverMetadata meta( name, longName, capabilities, writeDatasetSuffix, writeMeshFrameSuffix );
     ret.push_back( meta );
   }
   return ret;

@@ -85,11 +85,29 @@ class CORE_EXPORT QgsMeshDriverMetadata
      * \param description short description of the driver
      * \param capabilities driver's capabilities
      * \param writeDatasetOnFileSuffix suffix used to write datasets on file
+     * \param writeMeshFrameOnFileSuffix suffix used to write mesh frame on file
+     */
+    Q_DECL_DEPRECATED QgsMeshDriverMetadata( const QString &name,
+        const QString &description,
+        const MeshDriverCapabilities &capabilities,
+        const QString &writeDatasetOnFileSuffix ); SIP_DEPRECATED
+
+    /**
+     * Constructs driver metadata with selected capabilities
+     *
+     * \param name name/key of the driver
+     * \param description short description of the driver
+     * \param capabilities driver's capabilities
+     * \param writeDatasetOnFileSuffix suffix used to write datasets on file
+     * \param writeMeshFrameOnFileSuffix suffix used to write mesh frame on file
+     *
+     * \since QGIS 3.22
      */
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
                            const MeshDriverCapabilities &capabilities,
-                           const QString &writeDatasetOnFileSuffix );
+                           const QString &writeDatasetOnFileSuffix,
+                           const QString &writeMeshFrameOnFileSuffix );
 
     /**
      * Returns the capabilities for this driver.
@@ -111,11 +129,19 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString writeDatasetOnFileSuffix() const;
 
+    /**
+     * Returns the suffix used to write mesh on file
+     *
+     * \since QGIS 3.22
+     */
+    QString writeMeshFrameOnFileSuffix() const;
+
   private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;
     QString mWriteDatasetOnFileSuffix;
+    QString mWriteMeshFrameOnFileSuffix;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )

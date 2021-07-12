@@ -46,7 +46,8 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
   private slots:
     void updateDialog();
     void updateSourceMeshframe();
-
+    void onFormatChanged();
+    void onFilePathChanged();
     void updateSourceMeshInformation();
 
   private:
@@ -54,6 +55,8 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
 
     std::unique_ptr<QgsMeshLayer> mSourceMeshFromFile;
     bool mSourceMeshFrameReady;
+    QMap<QString, QString> mDriverSuffixes;
+    QMap<QString, QString> mDriverFileFilters;
 };
 
 #endif // QGSNEWMESHLAYERDIALOG_H

@@ -46,10 +46,10 @@ Holds metadata about mesh driver
 Constructs default metadata without any capabilities
 %End
 
-    QgsMeshDriverMetadata( const QString &name,
-                           const QString &description,
-                           const MeshDriverCapabilities &capabilities,
-                           const QString &writeDatasetOnFileSuffix );
+ QgsMeshDriverMetadata( const QString &name,
+        const QString &description,
+        const MeshDriverCapabilities &capabilities,
+        const QString &writeDatasetOnFileSuffix ); /Deprecated/;
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -57,6 +57,23 @@ Constructs driver metadata with selected capabilities
 :param description: short description of the driver
 :param capabilities: driver's capabilities
 :param writeDatasetOnFileSuffix: suffix used to write datasets on file
+:param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
+%End
+    QgsMeshDriverMetadata( const QString &name,
+                           const QString &description,
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix,
+                           const QString &writeMeshFrameOnFileSuffix );
+%Docstring
+Constructs driver metadata with selected capabilities
+
+:param name: name/key of the driver
+:param description: short description of the driver
+:param capabilities: driver's capabilities
+:param writeDatasetOnFileSuffix: suffix used to write datasets on file
+:param writeMeshFrameOnFileSuffix: suffix used to write mesh frame on file
+
+.. versionadded:: 3.22
 %End
 
     MeshDriverCapabilities capabilities() const;
@@ -77,6 +94,13 @@ Returns the description for this driver.
     QString writeDatasetOnFileSuffix() const;
 %Docstring
 Returns the suffix used to write datasets on file
+%End
+
+    QString writeMeshFrameOnFileSuffix() const;
+%Docstring
+Returns the suffix used to write mesh on file
+
+.. versionadded:: 3.22
 %End
 
 };

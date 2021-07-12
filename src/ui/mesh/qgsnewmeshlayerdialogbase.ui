@@ -54,7 +54,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Frame of the New Mesh</string>
+      <string>Initialize Mesh Using</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">

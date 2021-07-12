@@ -43,22 +43,29 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
     if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
     {
-      mFormatComboBox->addItem( driverMeta.description(), driverMeta.name() );
+      QString descritpion = driverMeta.description();
+      QString driverName = driverMeta.name();
+      QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
+      mFormatComboBox->addItem( descritpion, driverName );
+      mDriverSuffixes.insert( driverMeta.name(), suffix );
+      mDriverFileFilters.insert( driverMeta.name(), tr( "%1 files" ).arg( descritpion ) + QStringLiteral( " (*." ) + suffix + ')' );
     }
 
+  QStringList filters = mDriverFileFilters.values();
   mFormatComboBox->setCurrentIndex( -1 );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
+  mFileWidget->setFilter( filters.join( QStringLiteral( ";;" ) ) );
   mMeshProjectComboBox->setFilters( QgsMapLayerProxyModel::MeshLayer );
 
-  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewMeshLayerDialog::updateDialog );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsNewMeshLayerDialog::onFormatChanged );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::onFilePathChanged );
   connect( mEmptyMeshRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
 
   updateDialog();
-
 }
 
 void QgsNewMeshLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -124,8 +131,54 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
       QgsApplication::restoreOverrideCursor();
     }
   }
-
   updateSourceMeshInformation();
+}
+
+void QgsNewMeshLayerDialog::onFormatChanged()
+{
+  QString currentDriverName = mFormatComboBox->currentData().toString();
+  if ( currentDriverName.isEmpty() )
+    return;
+
+  QString currentFilter = mDriverFileFilters.value( currentDriverName );
+  mFileWidget->setSelectedFilter( currentFilter );
+
+  QString newSuffix = mDriverSuffixes.value( currentDriverName );
+
+  QString currentFilePath = mFileWidget->filePath();
+  if ( currentFilePath.isEmpty() )
+    return;
+  QFileInfo fileInfo( currentFilePath );
+  QString currentSuffix = fileInfo.suffix();
+
+  if ( !currentSuffix.isEmpty() )
+    currentFilePath =  currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
+
+  if ( currentFilePath.right( 1 ) == QString( '.' ) )
+    currentFilePath.remove( currentFilePath.count() - 1, 1 );
+
+  currentFilePath.append( '.' + newSuffix );
+
+  mFileWidget->setFilePath( currentFilePath );
+
+  updateDialog();
+}
+
+void QgsNewMeshLayerDialog::onFilePathChanged()
+{
+  QFileInfo fileInfo( mFileWidget->filePath() );
+  const QString &currentSuffix = fileInfo.suffix();
+
+  QStringList drivers = mDriverSuffixes.keys();
+  for ( const QString &driverName : drivers )
+  {
+    if ( mDriverSuffixes.value( driverName ) == currentSuffix )
+    {
+      whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( driverName ) );
+    }
+  }
+
+  updateDialog();
 }
 
 void QgsNewMeshLayerDialog::updateSourceMeshInformation()
@@ -194,7 +247,7 @@ bool QgsNewMeshLayerDialog::apply()
     }
   }
 
-  QMessageBox::warning( this, windowTitle(), tr( "Unable to create a new mesh layer" ) );
+  QMessageBox::warning( this, windowTitle(), tr( "Unable to create a new mesh layer with format \"%1\"" ).arg( mFormatComboBox->currentText() ) );
   return false;
 }
 
