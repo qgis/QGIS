@@ -121,6 +121,30 @@ Content-Type: text/xml; charset=utf-8
    <BoundingBox CRS="EPSG:4326" miny="-174.766579" minx="-69.957839" maxy="177.930822" maxx="84.307877"/>
    <BoundingBox CRS="EPSG:3857" miny="-11055007" minx="-20609694" maxy="19143773" maxx="20961936"/>
    <Layer queryable="1">
+    <Name>Towns</Name>
+    <Title>Towns</Title>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:3857</CRS>
+    <CRS>EPSG:4326</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>-9.15183</westBoundLongitude>
+     <eastBoundLongitude>3.09958</eastBoundLongitude>
+     <southBoundLatitude>37.3833</southBoundLatitude>
+     <northBoundLatitude>43.3562</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox miny="-9.15183" CRS="EPSG:4326" maxx="43.3562" minx="37.3833" maxy="3.09958"/>
+    <BoundingBox miny="4492669.386" CRS="EPSG:3857" maxx="345043.668" minx="-1018777.056" maxy="5366347.239"/>
+    <Style>
+     <Name>défaut</Name>
+     <Title>défaut</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+    <Dimension nearestValue="0" name="Locality" multipleValues="1">A Coruña, Argelès s&amp;#47; Mer, Arles s&amp;#47; Tech, Banyuls s&amp;#47; Mer, Benidorm, Beyrie s&amp;#47; Joyeuse, Bordères s&amp;#47; l'Échez, Cruïlles&amp;#44; Monells i Sant Sadurní de l'Heura, Germs s&amp;#47; l'Oussouet, Ille s&amp;#47; Têt, Lisbon, Madrid, Saint-Pée s&amp;#47; Nivelle, Saus&amp;#44; Camallera i Llampaies, Seville, Trie s&amp;#47; Baïse</Dimension>
+   </Layer>
+   <Layer queryable="1">
     <Name>Datetime_dim</Name>
     <Title>Datetime_dim</Title>
     <CRS>CRS:84</CRS>
