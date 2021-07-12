@@ -17,7 +17,7 @@
 #ifndef QGSSETTINGSREGISTRYGUI_H
 #define QGSSETTINGSREGISTRYGUI_H
 
-#include "qgis_core.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssettingsregistry.h"
 #include "qgssettingsentry.h"
@@ -30,7 +30,7 @@
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
+class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
   public:
 
