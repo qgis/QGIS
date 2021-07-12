@@ -120,7 +120,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary|bool|boolean)" // type
+                        "(int|integer|long|int8|real|double|string|text|date|time|datetime|binary|bool|boolean)" // type
                         "(?:\\((\\-?\\d+)"                // length
                         "(?:\\,(\\-?\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array

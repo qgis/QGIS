@@ -803,6 +803,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
+    def testStringTextField(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:text(0,0)&field=f2:string(100,0)',
+            'test', 'memory')
+        self.assertEqual(vl.fields.size(), 2)
+        self.assertEqual(vl.fields().at(0).name(), 'f1')
+        self.assertEqual(vl.fields().at(0).type(), QVariant.String)
+        self.assertEqual(vl.fields().at(1).name(), 'f2')
+        self.assertEqual(vl.fields().at(1).type(), QVariant.String)
+
     def testTypeValidation(self):
         """Test that incompatible types in attributes raise errors"""
 
