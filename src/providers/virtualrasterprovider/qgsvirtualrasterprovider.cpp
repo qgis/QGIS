@@ -18,61 +18,58 @@
 #define PROVIDER_KEY QStringLiteral( "virtualrasterprovider" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
 
-QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions)
-    : QgsRasterDataProvider( uri, providerOptions)
+QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
+  : QgsRasterDataProvider( uri, providerOptions )
 {
-    QgsDebugMsg("QgsVirtualRasterProvider was called constructor");
+  QgsDebugMsg( "QgsVirtualRasterProvider was called constructor" );
 
-    bool  ok = true;
-    //QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
-    QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri , & ok );
+  bool  ok = true;
+  //QgsRasterDataProvider::DecodedUriParameters decodedUriParams = decodeVirtualRasterProviderUri(uri, &ok);
+  QgsRasterDataProvider::DecodedUriParameters decodedUriParams = QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri, & ok );
 
-    if (! (ok == false) )
+  if ( !( ok == false ) )
+  {
+    mValid = true;
+  }
+
+  mCrs = decodedUriParams.crs;
+  mExtent = decodedUriParams.extent;
+  mWidth = decodedUriParams.width;
+  mHeight = decodedUriParams.height;
+  mFormulaString = decodedUriParams.formula;
+
+  QList<InputLayers>::iterator i;
+  for ( i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i )
+  {
+    QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( i->uri, i->name, i->provider );
+
+    if ( rProvidedLayer->isValid() )
     {
-        mValid = true;
+      if ( ! mRasterLayers.contains( rProvidedLayer ) ) mRasterLayers << rProvidedLayer;
+
+      for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+      {
+        QgsRasterCalculatorEntry entry;
+        entry.raster = rProvidedLayer;
+        entry.bandNumber = j + 1;
+        entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+        /*
+        if ( ! uniqueRasterBandIdentifier( entry ) )
+          break;
+        */
+        mRasterEntries.push_back( entry );
+      }
     }
-
-    mCrs = decodedUriParams.crs;
-    mExtent = decodedUriParams.extent;
-    mWidth = decodedUriParams.width;
-    mHeight = decodedUriParams.height;
-    mFormulaString = decodedUriParams.formula;
-
-    QList<InputLayers>::iterator i;
-    for (i = decodedUriParams.rInputLayers.begin(); i != decodedUriParams.rInputLayers.end(); ++i)
+    else
     {
-        QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( i->uri, i->name, i->provider );
-
-        if (rProvidedLayer->isValid() )
-        {
-            if (! mRasterLayers.contains( rProvidedLayer )) mRasterLayers << rProvidedLayer;
-            qDebug() << rProvidedLayer->name();
-
-            for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
-            {
-                  QgsRasterCalculatorEntry entry;
-                  entry.raster = rProvidedLayer;
-                  entry.bandNumber = j + 1;
-                  entry.ref = rProvidedLayer->name() % QStringLiteral("@") % QString::number(j+1);
-                  /*
-                  if ( ! uniqueRasterBandIdentifier( entry ) )
-                    break;
-                  */
-                  mRasterEntries.push_back( entry );
-
-                  qDebug() << entry.ref;
-            }
-        }
-        else
-        {
-            mValid = false;
-        }
+      mValid = false;
     }
+  }
 }
 
 
-QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvider &other)
-    : QgsRasterDataProvider (other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
+QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other )
+  : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
 
     /*
     , mValid( other.mValid )
@@ -87,30 +84,46 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider(const QgsVirtualRasterProvide
     , mYBlockSize( other.mYBlockSize )
     */
 {
-    mValid = other.mValid;
-    mCrs = other.mCrs;
-    mDataTypes = other.mDataTypes;
-    mExtent = other.mExtent;
-    mWidth = other.mWidth;
-    mHeight = other.mHeight;
-    mBandCount = other.mBandCount;
-    mXBlockSize = other.mXBlockSize;
-    mYBlockSize = other.mYBlockSize;
+  mValid = other.mValid;
+  mCrs = other.mCrs;
+  mDataTypes = other.mDataTypes;
+  mExtent = other.mExtent;
+  mWidth = other.mWidth;
+  mHeight = other.mHeight;
+  mBandCount = other.mBandCount;
+  mXBlockSize = other.mXBlockSize;
+  mYBlockSize = other.mYBlockSize;
+  mFormulaString = other.mFormulaString;
+  //mRasterEntries = other.mRasterEntries;
+
+  for ( const auto &it : other.mRasterLayers )
+  {
+      QgsRasterLayer *rcProvidedLayer = new QgsRasterLayer( it->publicSource(), it->name(), it->dataProvider()->name() );
+      for ( int j = 0; j < rcProvidedLayer->bandCount(); ++j )
+      {
+          QgsRasterCalculatorEntry entry;
+          entry.raster = rcProvidedLayer;
+          entry.bandNumber = j + 1;
+          entry.ref = rcProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+          mRasterEntries.push_back( entry );
+      }
+  }
+
 }
 
 QgsVirtualRasterProvider::~QgsVirtualRasterProvider()
 {
-    for (int i= 0; i < mRasterLayers.size(); ++i)
-    {
-        delete mRasterLayers[i];
-    }
+  for ( int i = 0; i < mRasterLayers.size(); ++i )
+  {
+    delete mRasterLayers[i];
+  }
 
 }
 
 QString QgsVirtualRasterProvider::dataSourceUri( bool expandAuthConfig ) const
 {
-    Q_UNUSED( expandAuthConfig )
-    return QgsDataProvider::dataSourceUri();
+  Q_UNUSED( expandAuthConfig )
+  return QgsDataProvider::dataSourceUri();
 }
 
 
@@ -130,140 +143,141 @@ bool QgsVirtualRasterProvider::readBlock( int bandNo, QgsRectangle  const &exten
 //works for displaying a black square
 QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-    Q_UNUSED(bandNo);
+  Q_UNUSED( bandNo );
 
 
-    //HARDCODED DATA--------------------------------------------------------------------------------------------
+  //HARDCODED DATA--------------------------------------------------------------------------------------------
 
-    /*
-    QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
-    QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
-    QFileInfo demRasterFileInfo( demFileName );
-    std::unique_ptr< QgsRasterLayer > mdemRasterLayer = std::make_unique< QgsRasterLayer >(
-          demRasterFileInfo.filePath(),
-          demRasterFileInfo.completeBaseName()
-        );
-*/
+  /*
+  QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
+  QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
+  QFileInfo demRasterFileInfo( demFileName );
+  std::unique_ptr< QgsRasterLayer > mdemRasterLayer = std::make_unique< QgsRasterLayer >(
+        demRasterFileInfo.filePath(),
+        demRasterFileInfo.completeBaseName()
+      );
+  */
 
-    //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
+  //from rastercalculator.cpp QgsRasterCalculatorEntry::rasterEntries
 
-    /*
-    QgsRasterCalculatorEntry entry;
-    entry.raster = mdemRasterLayer.get();
-    entry.bandNumber = 1;
-    entry.ref = QStringLiteral( "dem@1" );
-    mRasterEntries<<entry;
-    */
+  /*
+  QgsRasterCalculatorEntry entry;
+  entry.raster = mdemRasterLayer.get();
+  entry.bandNumber = 1;
+  entry.ref = QStringLiteral( "dem@1" );
+  mRasterEntries<<entry;
+  */
 
-    //mFormulaString = "\"dem@1\" + 200";
-    QString mLastError = "last error";
-    //END HARDCODED DATA--------------------------------------------------------------------------------------------
+  //mFormulaString = "\"dem@1\" + 200";
+  //QString mLastError = "last error";
+  //END HARDCODED DATA--------------------------------------------------------------------------------------------
 
-    std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
-    double * outputData = ( double * )( tblock->bits() );
+  std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
+  double *outputData = ( double * )( tblock->bits() );
 
-    //from rastercalculator.cpp processCalculation
+  //from rastercalculator.cpp processCalculation
 
-    mLastError.clear();
-    std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+  mLastError.clear();
+  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
-    //CHECKS--------------------------------------------------------------------------------------------
-    if ( !calcNode )
+  //CHECKS--------------------------------------------------------------------------------------------
+  if ( !calcNode )
+  {
+    QgsDebugMsg( "ParserError = 4, Error parsing formula" );
+  }
+
+  // Check input layers and bands
+  for ( const auto &entry : std::as_const( mRasterEntries ) )
+  {
+    if ( !entry.raster ) // no raster layer in entry
     {
-      QgsDebugMsg("ParserError = 4, Error parsing formula");
+      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
+      QgsDebugMsg( "InputLayerError = 2, Error reading input layer" );
     }
+    if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
+    {
+      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
+      QgsDebugMsg( "BandError = 6, Invalid band number for input" );
 
-    // Check input layers and bands
-      for ( const auto &entry : std::as_const( mRasterEntries ) )
+    }
+  }
+  //END CHECKS--------------------------------------------------------------------------------------------
+
+  //else  // Original code (memory inefficient route)
+  QMap< QString, QgsRasterBlock * > inputBlocks;
+  QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
+
+  for ( ; it != mRasterEntries.constEnd(); ++it )
+  {
+    std::unique_ptr< QgsRasterBlock > block;
+
+    if ( it->raster->crs() != mCrs )
+    {
+      QgsRasterProjector proj;
+      proj.setCrs( it->raster->crs(), mCrs, it->raster->transformContext() );
+      proj.setInput( it->raster->dataProvider() );
+      proj.setPrecision( QgsRasterProjector::Exact );
+
+      QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
+      QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
+      block.reset( proj.block( it->bandNumber, extent, width, height, rasterBlockFeedback ) );
+      if ( rasterBlockFeedback->isCanceled() )
       {
-        if ( !entry.raster ) // no raster layer in entry
-        {
-          mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
-          QgsDebugMsg("InputLayerError = 2, Error reading input layer");
-        }
-        if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
-        {
-          mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
-          QgsDebugMsg("BandError = 6, Invalid band number for input");
-
-        }
+        qDeleteAll( inputBlocks );
+        QgsDebugMsg( "Canceled = 3, User canceled calculation" );
       }
-    //END CHECKS--------------------------------------------------------------------------------------------
-
-    //else  // Original code (memory inefficient route)
-    QMap< QString, QgsRasterBlock * > inputBlocks;
-    QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
-
-    for ( ; it != mRasterEntries.constEnd(); ++it )
-    {
-        std::unique_ptr< QgsRasterBlock > block;
-
-        if ( it->raster->crs() != mCrs )
-        {
-            QgsRasterProjector proj;
-            proj.setCrs( it->raster->crs(), mCrs, it->raster->transformContext() );
-            proj.setInput( it->raster->dataProvider() );
-            proj.setPrecision( QgsRasterProjector::Exact );
-
-            QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
-            QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
-            block.reset( proj.block( it->bandNumber, extent, width, height, rasterBlockFeedback ) );
-            if ( rasterBlockFeedback->isCanceled() )
-            {
-                qDeleteAll( inputBlocks );
-                QgsDebugMsg("Canceled = 3, User canceled calculation");
-            }
-
-        }
-        else
-        {
-            block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
-        }
-
-        inputBlocks.insert( it->ref, block.release() );
-    }
-
-
-
-    QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
-    //QgsRasterMatrix resultMatrix;
-    //resultMatrix.setNodataValue( -FLT_MAX );
-
-    for ( int i = 0; i < height; ++i )
-    {
-        if ( feedback )
-        {
-          feedback->setProgress( 100.0 * static_cast< double >( i ) / height );
-        }
-
-        if ( feedback && feedback->isCanceled() )
-        {
-          break;
-        }
-
-        if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
-        {
-
-            for (int j = 0; j < width; ++j)
-            {
-
-                //tblock->setValue(i,j,resultMatrix.data()[j]);
-                outputData [ i * width + j ]= resultMatrix.data()[j];
-            }
-
-        }
-        else
-        {
-          qDeleteAll( inputBlocks );
-          inputBlocks.clear();
-          QgsDebugMsg("calcNode was not run in a correct way");
-        }
 
     }
+    else
+    {
+      block.reset( it->raster->dataProvider()->block( it->bandNumber, extent, width, height ) );
+    }
 
-    Q_ASSERT( tblock );
-    return tblock.release();
-    //return tblock;
+    inputBlocks.insert( it->ref, block.release() );
+  }
+
+
+
+  QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
+  //QgsRasterMatrix resultMatrix;
+  //resultMatrix.setNodataValue( -FLT_MAX );
+
+  for ( int i = 0; i < height; ++i )
+  {
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / height );
+    }
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
+    {
+
+      for ( int j = 0; j < width; ++j )
+      {
+
+        //tblock->setValue(i,j,resultMatrix.data()[j]);
+        outputData [ i * width + j ] = resultMatrix.data()[j];
+      }
+
+    }
+    else
+    {
+      qDeleteAll( inputBlocks );
+      inputBlocks.clear();
+      QgsDebugMsg( "calcNode was not run in a correct way" );
+    }
+
+  }
+
+  Q_ASSERT( tblock );
+  return tblock.release();
+  //return tblock;
 }
 
 
@@ -275,12 +289,12 @@ QgsRectangle QgsVirtualRasterProvider::extent() const
 
 int QgsVirtualRasterProvider::xSize() const
 {
-    return mWidth;
+  return mWidth;
 }
 
 int QgsVirtualRasterProvider::ySize() const
 {
-    return mHeight;
+  return mHeight;
 }
 
 
@@ -312,8 +326,8 @@ int QgsVirtualRasterProvider::yBlockSize() const
 }
 
 QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
-  //: QgsProviderMetadata( QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY, QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION )
-    : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+//: QgsProviderMetadata( QgsVirtualRasterProvider::VR_RASTER_PROVIDER_KEY, QgsVirtualRasterProvider::VR_RASTER_PROVIDER_DESCRIPTION )
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 
 }
@@ -322,8 +336,8 @@ QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
 //QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options)//, QgsDataProvider::ReadFlags flags )
 QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-    Q_UNUSED( flags );
-    return new QgsVirtualRasterProvider( uri, options);//, flags );
+  Q_UNUSED( flags );
+  return new QgsVirtualRasterProvider( uri, options ); //, flags );
 }
 
 
@@ -331,18 +345,17 @@ QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( cons
 
 QgsVirtualRasterProvider *QgsVirtualRasterProvider::clone() const
 {
-/*
-  QgsDataProvider::ProviderOptions options;
-  options.transformContext = transformContext();
-  QgsVirtualRasterProvider *provider = new QgsVirtualRasterProvider( *this, options );
-  provider->copyBaseSettings( *this );
-  return provider;
-*/
-    return new QgsVirtualRasterProvider( *this );
+  /*
+    QgsDataProvider::ProviderOptions options;
+    options.transformContext = transformContext();
+    QgsVirtualRasterProvider *provider = new QgsVirtualRasterProvider( *this, options );
+    provider->copyBaseSettings( *this );
+    return provider;
+  */
+  return new QgsVirtualRasterProvider( *this );
 }
 
 
-//__________________________________________________________________________________________________________________________________________________________
 
 Qgis::DataType QgsVirtualRasterProvider::sourceDataType( int bandNo ) const
 {
@@ -434,17 +447,7 @@ int QgsVirtualRasterProvider::capabilities() const
 
 QString QgsVirtualRasterProvider::formulaString()
 {
-    return mFormulaString;
-}
-
-QgsRasterDataProvider::DecodedUriParameters QgsVirtualRasterProviderMetadata::decodeUriVirtual(const QString &uri , bool *ok) const
-{
-    return QgsRasterDataProvider::decodeVirtualRasterProviderUri( uri , ok);
-}
-
-QString QgsVirtualRasterProviderMetadata::encodeUriVirtual( const QgsRasterDataProvider::DecodedUriParameters &parts ) const
-{
-    return  QgsRasterDataProvider::encodeVirtualRasterProviderUri( parts );
+  return mFormulaString;
 }
 
 QGISEXTERN QgsVirtualRasterProviderMetadata *providerMetadataFactory()

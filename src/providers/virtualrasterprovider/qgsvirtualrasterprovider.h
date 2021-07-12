@@ -12,9 +12,9 @@
 class QgsVirtualRasterProvider : public QgsRasterDataProvider
 {
     Q_OBJECT
-public:
+  public:
 
-    QgsVirtualRasterProvider ( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions);
+    QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     //QgsVirtualRasterProvider ( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     //virtual ~QgsVirtualRasterProvider() override = default;
@@ -25,11 +25,11 @@ public:
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
 
-     //since it was not useful at the moment i keep it away from the class
-   //bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override
+    //since it was not useful at the moment i keep it away from the class
+    //bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override
     //    { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return true; }
     bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
-        { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return true; }
+    { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return true; }
 
 
 
@@ -59,9 +59,9 @@ public:
     QString formulaString();
 
 
-private:
+  private:
 
-    QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other);
+    QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other );
 
     bool mValid = false;
 
@@ -83,6 +83,7 @@ private:
     //from qgsrastercalc
     QString mFormulaString;
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
+    QString mLastError;
 
     QVector <QgsRasterLayer *> mRasterLayers;
 
@@ -93,8 +94,6 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsVirtualRasterProviderMetadata();
-    QgsRasterDataProvider::DecodedUriParameters decodeUriVirtual(const QString &uri , bool *ok=nullptr ) const;
-    QString encodeUriVirtual( const QgsRasterDataProvider::DecodedUriParameters &parts ) const;
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 

@@ -541,19 +541,19 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     struct InputLayers
     {
-        QString name;
-        QString uri;
-        QString provider;
+      QString name;
+      QString uri;
+      QString provider;
     };
 
     struct DecodedUriParameters
     {
-        QgsCoordinateReferenceSystem crs;
-        QgsRectangle extent;
-        int width;
-        int height;
-        QString formula;
-        QList<InputLayers> rInputLayers;
+      QgsCoordinateReferenceSystem crs;
+      QgsRectangle extent;
+      int width;
+      int height;
+      QString formula;
+      QList<InputLayers> rInputLayers;
 
     };
 

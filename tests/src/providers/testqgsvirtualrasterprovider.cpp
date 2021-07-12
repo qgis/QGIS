@@ -40,6 +40,7 @@
 
 #include <QUrl>
 #include <QUrlQuery>
+
 /**
 * \ingroup UnitTests
 * This is a unit test for the virtualraster provider
@@ -48,24 +49,24 @@
 
 class TestQgsVirtualRasterProvider : public QObject
 {
-   Q_OBJECT
+    Q_OBJECT
 
- private slots:
+  private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
 
     void validLayer();
-    void testv();
-    void testRaster();
+    //void testv();
+    //void testRaster();
     //void testUrlDecoding();
     //void testUrlDecodingMinimal();
     void testUriProviderDecoding();
     void testUriEncoding();
     void testConstructor();
 
-private:
+  private:
     QString mTestDataDir;
     QString mReport;
     QgsRasterLayer *mdemRasterLayer = nullptr;
@@ -75,22 +76,22 @@ private:
 //runs before all tests
 void TestQgsVirtualRasterProvider::initTestCase()
 {
-    // init QGIS's paths - true means that all path will be inited from prefix
-    QgsApplication::init();
-    QgsApplication::initQgis();
+  // init QGIS's paths - true means that all path will be inited from prefix
+  QgsApplication::init();
+  QgsApplication::initQgis();
 
-    mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-    mReport = QStringLiteral( "<h1>Virtual Raster Provider Tests</h1>\n" );
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mReport = QStringLiteral( "<h1>Virtual Raster Provider Tests</h1>\n" );
 
-    QString demFileName = mTestDataDir + "raster/dem.tif";
-    QFileInfo demRasterFileInfo( demFileName );
-    /*
-    mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
-                                          demRasterFileInfo.completeBaseName() );
+  QString demFileName = mTestDataDir + "raster/dem.tif";
+  QFileInfo demRasterFileInfo( demFileName );
 
-    QgsProject::instance()->addMapLayers(
-      QList<QgsMapLayer *>() << mdemRasterLayer );
-      */
+  mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
+                                        demRasterFileInfo.completeBaseName() );
+  /*
+  QgsProject::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mdemRasterLayer );
+    */
 }
 
 void TestQgsVirtualRasterProvider::validLayer()
@@ -122,15 +123,15 @@ void TestQgsVirtualRasterProvider::cleanupTestCase()
   }
 }
 
-void TestQgsVirtualRasterProvider::testv()
+//void TestQgsVirtualRasterProvider::testv()
+//{
+/*
+if ( mdemRasterLayer->extent().xMaximum()== 45.8117014376000000 )
 {
-    /*
-    if ( mdemRasterLayer->extent().xMaximum()== 45.8117014376000000 )
-    {
-        QgsDebugMsg("testv is starting");
-    }
+    QgsDebugMsg("testv is starting");
+}
 
-    */
+*/
 
 /* ------------------------------
     QgsRasterCalculatorEntry entry1;
@@ -146,103 +147,100 @@ void TestQgsVirtualRasterProvider::testv()
     QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
 */ //----------------------------------------
 
-    /*
-    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-    QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
-    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "virtualrasterprovider" ), demFileName, QgsDataProvider::ProviderOptions() );
-    QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
-    QVERIFY( rp );
-    QVERIFY( rp->isValid() );
-    if ( rp )
-      {
-        std::unique_ptr<QgsRasterBlock> block( rp->block( 1, extent, 373, 350 ) );
+/*
+QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
+QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
+QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "virtualrasterprovider" ), demFileName, QgsDataProvider::ProviderOptions() );
+QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+QVERIFY( rp );
+QVERIFY( rp->isValid() );
+if ( rp )
+  {
+    std::unique_ptr<QgsRasterBlock> block( rp->block( 1, extent, 373, 350 ) );
 
-        qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
-        qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
-        qDebug() << "bandCount result: " << rp->bandCount();
-        QVERIFY( block );
-        QCOMPARE( block->width(),  373 );
-        QCOMPARE( block->height(), 350 );
+    qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
+    qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
+    qDebug() << "bandCount result: " << rp->bandCount();
+    QVERIFY( block );
+    QCOMPARE( block->width(),  373 );
+    QCOMPARE( block->height(), 350 );
 
-        QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
+    QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
 
-        QCOMPARE( rp->bandCount(), 1 );
-      }
-    delete provider;
-    */
+    QCOMPARE( rp->bandCount(), 1 );
+  }
+delete provider;
+*/
 
-}
+//}
 
-void TestQgsVirtualRasterProvider::testRaster()
-{
-    /*
-    QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
-    QgsDebugMsg("NAME of LAYER: "+r->name());
+//void TestQgsVirtualRasterProvider::testRaster()
+//{
+/*
+QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
+QgsDebugMsg("NAME of LAYER: "+r->name());
 
-    double sampledValue= r->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
+double sampledValue= r->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
 
-    qDebug() <<"VALUE IS "<< sampledValue;
+qDebug() <<"VALUE IS "<< sampledValue;
 
-    delete r;
-    */
+delete r;
+*/
 
-}
+//}
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {
 
-    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal"));
+  QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri( QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=path/to/file&dem:provider=gdal&landsat:uri=path/to/landsat&landsat:provider=gdal" ) );
 
 
-    QCOMPARE( decodedParams.width , 373);
-    QCOMPARE( decodedParams.height , 350);
-    QCOMPARE( decodedParams.extent , QgsRectangle(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000) );
-    QCOMPARE( decodedParams.crs , QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
-    QCOMPARE( decodedParams.formula , QStringLiteral( "\"dem@1\" + 200" ) );
+  QCOMPARE( decodedParams.width, 373 );
+  QCOMPARE( decodedParams.height, 350 );
+  QCOMPARE( decodedParams.extent, QgsRectangle( 18.6662979442000001, 45.7767014376000034, 18.7035979441999984, 45.8117014376000000 ) );
+  QCOMPARE( decodedParams.crs, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( decodedParams.formula, QStringLiteral( "\"dem@1\" + 200" ) );
 
 
-    QCOMPARE( decodedParams.rInputLayers.at(1).provider , QStringLiteral( "gdal" ) );
-    QCOMPARE( decodedParams.rInputLayers.at(0).provider , QStringLiteral( "gdal" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 1 ).provider, QStringLiteral( "gdal" ) );
+  QCOMPARE( decodedParams.rInputLayers.at( 0 ).provider, QStringLiteral( "gdal" ) );
 
-    qDebug() << endl;
-    qDebug() << QStringLiteral("Raster layer: name, uri, provider");
-    for (int i = 0; i < decodedParams.rInputLayers.size() ; ++i)
-    {
-        qDebug() << decodedParams.rInputLayers.at(i).name << ", " <<
-                    decodedParams.rInputLayers.at(i).uri  << ", " <<
-                    decodedParams.rInputLayers.at(i).provider;
-    }
-    qDebug() << endl;
+  qDebug() << endl;
+  qDebug() << QStringLiteral( "Raster layer: name, uri, provider" );
+  for ( int i = 0; i < decodedParams.rInputLayers.size() ; ++i )
+  {
+    qDebug() << decodedParams.rInputLayers.at( i ).name << ", " <<
+             decodedParams.rInputLayers.at( i ).uri  << ", " <<
+             decodedParams.rInputLayers.at( i ).provider;
+  }
+  qDebug() << endl;
 
 }
 
 void TestQgsVirtualRasterProvider::testUriEncoding()
 {
 
-    QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri(QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal"));
-    qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams ) << endl;
+  QgsRasterDataProvider::DecodedUriParameters decodedParams = QgsVirtualRasterProvider::decodeVirtualRasterProviderUri( QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&rband:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/band1_byte_ct_epsg4326.tif&rband:provider=gdal" ) );
+  qDebug() << QgsVirtualRasterProvider::encodeVirtualRasterProviderUri( decodedParams ) << endl;
 
 }
 
 void TestQgsVirtualRasterProvider::testConstructor()
 {
 
-    QString uri = QStringLiteral("?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&landsat:uri=/home/franc/dev/cpp/QGIS/tests/testdata/landsat.tif&landsat:provider=gdal");
-    std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >(   uri,
-                                                                                    QStringLiteral( "layer" ),
-                                                                                    QStringLiteral( "virtualrasterprovider" ) );
+  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&landsat:uri=/home/franc/dev/cpp/QGIS/tests/testdata/landsat.tif&landsat:provider=gdal" );
+  std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( uri,
+      QStringLiteral( "layer" ),
+      QStringLiteral( "virtualrasterprovider" ) );
 
-    QVERIFY( layer->dataProvider()->isValid());
-    QVERIFY( layer->isValid());
+  QVERIFY( layer->dataProvider()->isValid() );
+  QVERIFY( layer->isValid() );
 
-    qDebug() << QStringLiteral("crs check in the provider: ") % layer->dataProvider()->crs().authid();
-    qDebug() << QStringLiteral("name of the provider: ") % layer->dataProvider()->name();
-    qDebug() << QStringLiteral("crs check in the raster layer: ") % layer->crs().authid();
+  double sampledValueCalc = layer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+  double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
 
-    double sampledValue= layer->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
-
-    qDebug() <<"VALUE IS "<< sampledValue;
-
+  QCOMPARE( sampledValueCalc, sampledValue + 200. );
+  QCOMPARE( layer->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
 }
 
