@@ -98,6 +98,23 @@ void QgsSettingsRegistry::addSubRegistry( const QgsSettingsRegistry *settingsReg
   mSettingsRegistryChildList.append( settingsRegistry );
 }
 
+void QgsSettingsRegistry::removeSubRegistry( const QgsSettingsRegistry *settingsRegistry )
+{
+  if ( !settingsRegistry )
+  {
+    QgsDebugMsg( QStringLiteral( "Trying to unregister a nullptr child settings registry." ) );
+    return;
+  }
+
+  if ( mSettingsRegistryChildList.contains( settingsRegistry ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Child register is not registered." ) );
+    return;
+  }
+
+  mSettingsRegistryChildList.removeAll( settingsRegistry );
+}
+
 QList<const QgsSettingsRegistry *> QgsSettingsRegistry::subRegistries() const
 {
   return mSettingsRegistryChildList;

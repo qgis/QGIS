@@ -91,7 +91,7 @@ email                : sherman at mrcc.com
 #include "qgscoordinatereferencesystemregistry.h"
 #include "qgslabelingresults.h"
 #include "qgsmaplayerutils.h"
-#include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 
 /**
  * \ingroup gui
@@ -985,7 +985,7 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
 {
   mSettings.setDevicePixelRatio( devicePixelRatio() );
   // TODO: QGIS 4 -> always respect screen dpi
-  if ( QgsSettingsRegistryCore::settingsRespectScreenDPI.value() )
+  if ( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() )
   {
     mSettings.setOutputDpi( screen()->physicalDotsPerInch() );
   }

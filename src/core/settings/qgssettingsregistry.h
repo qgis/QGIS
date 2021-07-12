@@ -63,6 +63,11 @@ class CORE_EXPORT QgsSettingsRegistry
     void addSubRegistry( const QgsSettingsRegistry *settingsRegistry );
 
     /**
+     * Remove a child \a settingsRegistry from the register.
+     */
+    void removeSubRegistry( const QgsSettingsRegistry *settingsRegistry );
+
+    /**
      * Returns the list of registered child QgsSettingsRegistry.
      */
     QList<const QgsSettingsRegistry *> subRegistries() const;
