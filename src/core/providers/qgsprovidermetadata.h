@@ -85,12 +85,13 @@ class CORE_EXPORT QgsMeshDriverMetadata
      * \param description short description of the driver
      * \param capabilities driver's capabilities
      * \param writeDatasetOnFileSuffix suffix used to write datasets on file
-     * \param writeMeshFrameOnFileSuffix suffix used to write mesh frame on file
+     *
+     * \deprecated QGIS 3.22
      */
     Q_DECL_DEPRECATED QgsMeshDriverMetadata( const QString &name,
         const QString &description,
         const MeshDriverCapabilities &capabilities,
-        const QString &writeDatasetOnFileSuffix ); SIP_DEPRECATED
+        const QString &writeDatasetOnFileSuffix ) SIP_DEPRECATED;
 
     /**
      * Constructs driver metadata with selected capabilities

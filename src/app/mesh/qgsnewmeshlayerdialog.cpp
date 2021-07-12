@@ -43,12 +43,12 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
     if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
     {
-      QString descritpion = driverMeta.description();
+      QString description = driverMeta.description();
       QString driverName = driverMeta.name();
       QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
-      mFormatComboBox->addItem( descritpion, driverName );
+      mFormatComboBox->addItem( description, driverName );
       mDriverSuffixes.insert( driverMeta.name(), suffix );
-      mDriverFileFilters.insert( driverMeta.name(), tr( "%1 files" ).arg( descritpion ) + QStringLiteral( " (*." ) + suffix + ')' );
+      mDriverFileFilters.insert( driverMeta.name(), tr( "%1 files" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
     }
 
   QStringList filters = mDriverFileFilters.values();
