@@ -34,19 +34,19 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
   QStringList rasterRefs;
   std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-  if ( !calcNode || calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).size() == 0)
+  if ( !calcNode || calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).size() == 0 )
   {
-      mValid = false;
+    mValid = false;
   }
   else
   {
 
-      QList<const QgsRasterCalcNode *>::iterator i = calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).begin();
-      for (; i != calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).end(); ++i)
-      {
-          QString r = (*i)->toString();
-          rasterRefs << r.mid( 1, r.size()-2);
-      }
+    QList<const QgsRasterCalcNode *>::iterator i = calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).begin();
+    for ( ; i != calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).end(); ++i )
+    {
+      QString r = ( *i )->toString();
+      rasterRefs << r.mid( 1, r.size() - 2 );
+    }
   }
 
   QList<InputLayers>::iterator i;
@@ -62,19 +62,19 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       {
         if ( rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
         {
-            QgsRasterCalculatorEntry entry;
-            entry.raster = rProvidedLayer;
-            entry.bandNumber = j + 1;
-            entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
-            /*
-            if ( ! uniqueRasterBandIdentifier( entry ) )
-              break;
-            */
-            mRasterEntries.push_back( entry );
+          QgsRasterCalculatorEntry entry;
+          entry.raster = rProvidedLayer;
+          entry.bandNumber = j + 1;
+          entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+          /*
+          if ( ! uniqueRasterBandIdentifier( entry ) )
+            break;
+          */
+          mRasterEntries.push_back( entry );
         }
         else
         {
-            mValid = false;
+          mValid = false;
         }
 
       }
@@ -89,16 +89,16 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
 QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other )
   : QgsRasterDataProvider( other.dataSourceUri(), QgsDataProvider::ProviderOptions() )
-    , mValid( other.mValid )
-    , mCrs( other.mCrs )
-    , mExtent( other.mExtent )
-    , mWidth( other.mWidth )
-    , mHeight( other.mHeight )
-    , mBandCount( other.mBandCount )
-    , mXBlockSize( other.mXBlockSize )
-    , mYBlockSize( other.mYBlockSize )
-    , mDataTypes( other.mDataTypes )
-    , mFormulaString( other.mFormulaString )
+  , mValid( other.mValid )
+  , mCrs( other.mCrs )
+  , mExtent( other.mExtent )
+  , mWidth( other.mWidth )
+  , mHeight( other.mHeight )
+  , mBandCount( other.mBandCount )
+  , mXBlockSize( other.mXBlockSize )
+  , mYBlockSize( other.mYBlockSize )
+  , mDataTypes( other.mDataTypes )
+  , mFormulaString( other.mFormulaString )
 
 {
   //mRasterEntries = other.mRasterEntries;
