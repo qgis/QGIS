@@ -17,10 +17,6 @@
 #include "qgsauthconfigselect.h"
 #include "ui_qgsauthconfigselect.h"
 
-#include <QHash>
-#include <QMessageBox>
-#include <QTimer>
-
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
@@ -28,6 +24,11 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsauthmethodmetadata.h"
+
+#include <QHash>
+#include <QMessageBox>
+#include <QTimer>
+#include <QRegularExpression>
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -382,8 +383,7 @@ void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
 
 int QgsAuthConfigUriEdit::authCfgIndex()
 {
-  QRegExp rx( QgsApplication::authManager()->configIdRegex() );
-  return rx.indexIn( mDataUri );
+  return mDataUri.indexOf( QRegularExpression( QgsApplication::authManager()->configIdRegex() ) );
 }
 
 QString QgsAuthConfigUriEdit::authCfgFromUri()
