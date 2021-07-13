@@ -56,12 +56,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
       QString layerId, vlayerName;
       if ( pos == -1 )
       {
-        layerId = value;
+        layerId = QUrl::fromPercentEncoding( value.toUtf8() );
         vlayerName = QStringLiteral( "vtab%1" ).arg( layerIdx );
       }
       else
       {
-        layerId = value.left( pos );
+        layerId = QUrl::fromPercentEncoding( value.left( pos ).toUtf8() );
         vlayerName = QUrl::fromPercentEncoding( value.mid( pos + 1 ).toUtf8() );
       }
       // add the layer to the list
