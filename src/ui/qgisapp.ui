@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -3573,22 +3573,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New Mesh Layer</string>
    </property>
   </action>
-  <action name="mActionEditMesh">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionMeshEditTool.svg</normaloff>:/images/themes/default/mActionMeshEditTool.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Edit Mesh</string>
-   </property>
-  </action>
  </widget>
  <resources/>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
  <connections/>
 </ui>
