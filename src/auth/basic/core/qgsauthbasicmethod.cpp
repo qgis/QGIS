@@ -113,7 +113,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   QString sslMode = QStringLiteral( "prefer" );
-  int sslModeIdx = connectionItems.indexOf( QRegularExpression( "^sslmode=.*" ) );
+  const thread_local QRegularExpression sslModeRegExp( "^sslmode=.*" );
+  int sslModeIdx = connectionItems.indexOf( sslModeRegExp );
   if ( sslModeIdx != -1 )
   {
     sslMode = connectionItems.at( sslModeIdx ).split( '=' ).at( 1 );
@@ -241,7 +242,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   else // Not-ogr
   {
     QString userparam = "user='" + escapeUserPass( username ) + '\'';
-    int userindx = connectionItems.indexOf( QRegularExpression( "^user='.*" ) );
+    const thread_local QRegularExpression userRegExp( "^user='.*" );
+    int userindx = connectionItems.indexOf( userRegExp );
     if ( userindx != -1 )
     {
       connectionItems.replace( userindx, userparam );
@@ -252,7 +254,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     }
 
     QString passparam = "password='" + escapeUserPass( password ) + '\'';
-    int passindx = connectionItems.indexOf( QRegularExpression( "^password='.*" ) );
+    const thread_local QRegularExpression passRegExp( "^password='.*" );
+    int passindx = connectionItems.indexOf( passRegExp );
     if ( passindx != -1 )
     {
       connectionItems.replace( passindx, passparam );
@@ -264,7 +267,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     // add extra CAs
     if ( ! caparam.isEmpty() )
     {
-      int sslcaindx = connectionItems.indexOf( QRegularExpression( "^sslrootcert='.*" ) );
+      const thread_local QRegularExpression sslcaRegExp( "^sslrootcert='.*" );
+      int sslcaindx = connectionItems.indexOf( sslcaRegExp );
       if ( sslcaindx != -1 )
       {
         connectionItems.replace( sslcaindx, caparam );

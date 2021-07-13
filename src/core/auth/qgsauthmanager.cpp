@@ -918,7 +918,8 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
 
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
-  return txt.indexOf( QRegularExpression( AUTH_CFG_REGEX ) ) != -1;
+  const thread_local QRegularExpression authCfgRegExp( AUTH_CFG_REGEX );
+  return txt.indexOf( authCfgRegExp ) != -1;
 }
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
@@ -2437,9 +2438,8 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
 bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors )
 {
   QMutexLocker locker( mMutex.get() );
-  const QRegularExpression rx( QRegularExpression::anchoredPattern( "\\S+:\\S+:\\d+" ) );
-  const QRegularExpressionMatch match = rx.match( shahostport );
-  if ( !match.hasMatch() )
+  const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern( "\\S+:\\S+:\\d+" ) );
+  if ( !rx.match( shahostport ).hasMatch() )
   {
     QgsDebugMsg( "Passed shahostport does not match \\S+:\\S+:\\d+, "
                  "e.g. 74a4ef5ea94512a43769b744cda0ca5049a72491:www.example.com:443" );
