@@ -339,8 +339,27 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
-  : mName( name ), mDescription( description ), mCapabilities( capabilities ), mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
+    const QString &description,
+    const MeshDriverCapabilities &capabilities,
+    const QString &writeDatasetOnfileSuffix )
+  : mName( name )
+  , mDescription( description )
+  , mCapabilities( capabilities )
+  , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
+{
+}
+
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name,
+    const QString &description,
+    const MeshDriverCapabilities &capabilities,
+    const QString &writeDatasetOnfileSuffix,
+    const QString &writeMeshFrameOnFileSuffix )
+  : mName( name )
+  , mDescription( description )
+  , mCapabilities( capabilities )
+  , mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
+  , mWriteMeshFrameOnFileSuffix( ( writeMeshFrameOnFileSuffix ) )
 {
 }
 
@@ -362,4 +381,9 @@ QString QgsMeshDriverMetadata::description() const
 QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
 {
   return mWriteDatasetOnFileSuffix;
+}
+
+QString QgsMeshDriverMetadata::writeMeshFrameOnFileSuffix() const
+{
+  return mWriteMeshFrameOnFileSuffix;
 }

@@ -1572,6 +1572,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();
 
+    //! Create a new empty mesh layer
+    void newMeshLayer();
+
     //! Create a new print layout
     void newPrintLayout();
 
