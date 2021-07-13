@@ -17,6 +17,7 @@
 #include <QStyle>
 #include <QtConcurrentMap>
 #include <QUrl>
+#include <QStorageInfo>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -120,7 +121,10 @@ void QgsBrowserModel::addRootItems()
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
+    const QString driveName = QStorageInfo( path ).displayName();
+    const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
     mDriveItems.insert( path, item );
 
@@ -502,7 +506,10 @@ void QgsBrowserModel::refreshDrives()
     // does an item for this drive already exist?
     if ( !mDriveItems.contains( path ) )
     {
-      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
+      const QString driveName = QStorageInfo( path ).displayName();
+      const QString name = driveName.isEmpty() || driveName == path ? path : QStringLiteral( "%1 (%2)" ).arg( path, driveName );
+
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, name, path, path, QStringLiteral( "special:Drives" ) );
       item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
       mDriveItems.insert( path, item );
