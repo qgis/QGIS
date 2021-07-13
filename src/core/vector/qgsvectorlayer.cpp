@@ -21,28 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-
-#include <QDir>
-#include <QFile>
-#include <QImage>
-#include <QPainter>
-#include <QPainterPath>
-#include <QPolygonF>
-#include <QProgressDialog>
-#include <QString>
-#include <QDomNode>
-#include <QVector>
-#include <QStringBuilder>
-#include <QUrl>
-#include <QUndoCommand>
-#include <QUrlQuery>
-#include <QUuid>
-
+#include "qgis.h" //for globals
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsactionmanager.h"
-#include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
 #include "qgsconditionalstyle.h"
@@ -107,6 +89,25 @@
 #include "qgsvectorlayerutils.h"
 
 #include "diagram/qgsdiagram.h"
+
+#include <QDir>
+#include <QFile>
+#include <QImage>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPolygonF>
+#include <QProgressDialog>
+#include <QString>
+#include <QDomNode>
+#include <QVector>
+#include <QStringBuilder>
+#include <QUrl>
+#include <QUndoCommand>
+#include <QUrlQuery>
+#include <QUuid>
+#include <QRegularExpression>
+
+#include <limits>
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -1835,10 +1836,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     QgsDebugMsgLevel( QStringLiteral( "Beautifying layer name %1" ).arg( name() ), 3 );
 
     // adjust the display name for postgres layers
-    QRegExp reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
-    if ( reg.indexIn( name() ) >= 0 )
+    const QRegularExpression reg( R"lit("[^"]+"\."([^"] + )"( \([^)]+\))?)lit" );
+    const QRegularExpressionMatch match = reg.match( name() );
+    if ( match.hasMatch() )
     {
-      QStringList stuff = reg.capturedTexts();
+      QStringList stuff = match.capturedTexts();
       QString lName = stuff[1];
 
       const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
