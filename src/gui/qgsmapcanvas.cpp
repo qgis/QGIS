@@ -219,17 +219,11 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
     {
       disconnect( mScreenDpiChangedConnection );
-      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal )
-      {
-        updateDevicePixelFromScreen();
-      } );
+      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
       updateDevicePixelFromScreen();
     } );
 
-    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal )
-    {
-      updateDevicePixelFromScreen();
-    } );
+    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
   }
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );

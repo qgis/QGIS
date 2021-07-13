@@ -981,6 +981,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! Renames the active map theme called \a theme to \a newTheme
     void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
+    void updateDevicePixelFromScreen();
+
   signals:
 
     /**
@@ -1429,8 +1431,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void clearElevationCache();
 
     void showContextMenu( QgsMapMouseEvent *event );
-
-    void updateDevicePixelFromScreen();
 
     friend class TestQgsMapCanvas;
 
