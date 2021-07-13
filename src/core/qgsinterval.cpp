@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsinterval.h"
+
 #include <QString>
 #include <QStringList>
 #include <QMap>
 #include <QObject>
 #include <QDebug>
 #include <QDateTime>
+#include <QRegularExpression>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -209,14 +211,15 @@ void QgsInterval::setSeconds( double seconds )
 QgsInterval QgsInterval::fromString( const QString &string )
 {
   double seconds = 0;
-  QRegExp rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
+  const thread_local QRegularExpression rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", QRegularExpression::CaseInsensitiveOption );
   QStringList list;
   int pos = 0;
-
-  while ( ( pos = rx.indexIn( string, pos ) ) != -1 )
+  QRegularExpressionMatch match = rx.match( string );
+  while ( match.hasMatch() )
   {
-    list << rx.cap( 1 );
-    pos += rx.matchedLength();
+    list << match.captured( 1 );
+    pos = match.capturedStart() + match.capturedLength();
+    match = rx.match( string, pos );
   }
 
   QMap<int, QStringList> map;
@@ -231,7 +234,8 @@ QgsInterval QgsInterval::fromString( const QString &string )
   const auto constList = list;
   for ( const QString &match : constList )
   {
-    QStringList split = match.split( QRegExp( "\\s+" ) );
+    const thread_local QRegularExpression splitRx( "\\s+" );
+    QStringList split = match.split( splitRx );
     bool ok;
     double value = split.at( 0 ).toDouble( &ok );
     if ( !ok )
