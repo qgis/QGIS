@@ -428,7 +428,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
         int idx = mPrimaryKeyAttrs[i];
         QgsField fld = field( idx );
 
-        whereClause += delim + QStringLiteral( "%3%1=$%2" ).arg( connectionRO()->fieldExpressionForWhereClause( fld ) ).arg( offset++ ).arg( aliased );
+        whereClause += delim + QStringLiteral( "%3%1 IS NOT DISTINCT FROM $%2" ).arg( connectionRO()->fieldExpressionForWhereClause( fld ) ).arg( offset++ ).arg( aliased );
         delim = QStringLiteral( " AND " );
       }
     }
