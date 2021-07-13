@@ -260,7 +260,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
 
   GDALDriverH hDriver;
-  hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+  hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_RASTER, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 
