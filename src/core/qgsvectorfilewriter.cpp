@@ -435,12 +435,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
     QgsDebugMsgLevel( "WKT to save as is " + srsWkt, 2 );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
-#if GDAL_VERSION_MAJOR >= 3
     if ( mOgrRef )
     {
       OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
     }
-#endif
   }
 
   // datasource created, now create the output layer
