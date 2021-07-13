@@ -314,9 +314,9 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_RASTER, nullptr, nullptr );
       CPLPopErrorHandler();
-      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "OGR_VRT" ) )
+      if ( !hDriver )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a GDAL VRT" ), 2 );
         return nullptr;

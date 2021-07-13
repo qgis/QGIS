@@ -589,7 +589,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
 
   // GDAL 3.1 Shapefile driver directly handles .shp.zip files
   if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
-       GDALIdentifyDriver( path.toUtf8().constData(), nullptr ) )
+       GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
     suffix = QStringLiteral( "shp.zip" );
   }
@@ -715,9 +715,9 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     {
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      GDALDriverH hDriver = GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
       CPLPopErrorHandler();
-      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "VRT" ) )
+      if ( !hDriver )
       {
         QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a OGR VRT" ), 2 );
         return nullptr;
