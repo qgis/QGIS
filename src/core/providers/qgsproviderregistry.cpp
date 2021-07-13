@@ -18,10 +18,6 @@
 
 #include "qgsproviderregistry.h"
 
-#include <QString>
-#include <QDir>
-#include <QLibrary>
-
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgsdataitemprovider.h"
@@ -50,6 +46,11 @@
 #include "qgswmsprovider.h"
 #include "qgspostgresprovider.h"
 #endif
+
+#include <QString>
+#include <QDir>
+#include <QLibrary>
+#include <QRegularExpression>
 
 static QgsProviderRegistry *sInstance = nullptr;
 
@@ -218,7 +219,7 @@ void QgsProviderRegistry::init()
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
   QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
-  QRegExp fileRegexp;
+  QRegularExpression fileRegexp;
   if ( !filePattern.isEmpty() )
   {
     fileRegexp.setPattern( filePattern );
@@ -229,9 +230,9 @@ void QgsProviderRegistry::init()
   const auto constEntryInfoList = mLibraryDirectory.entryInfoList();
   for ( const QFileInfo &fi : constEntryInfoList )
   {
-    if ( !fileRegexp.isEmpty() )
+    if ( !filePattern.isEmpty() )
     {
-      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      if ( fi.fileName().indexOf( fileRegexp ) == -1 )
       {
         QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
         continue;
