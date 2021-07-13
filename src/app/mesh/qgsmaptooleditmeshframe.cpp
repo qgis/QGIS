@@ -1733,6 +1733,7 @@ void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPo
   {
     double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
     mCurrentEditor->addVertices( points, tolerance );
+    clearCanvasHelpers();
   }
 }
 
