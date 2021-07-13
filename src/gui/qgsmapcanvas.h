@@ -1183,6 +1183,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     void dropEvent( QDropEvent *event ) override;
 
+    void showEvent( QShowEvent *event ) override;
 
     /// implementation struct
     class CanvasProperties;

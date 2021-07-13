@@ -1314,6 +1314,8 @@ called when panning is in action, reset indicates end of panning
     virtual void dropEvent( QDropEvent *event );
 
 
+    virtual void showEvent( QShowEvent *event );
+
 
 
 
