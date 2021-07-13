@@ -16,7 +16,6 @@
 #include "qgsstringutils.h"
 #include "qgslogger.h"
 #include <QVector>
-#include <QRegExp>
 #include <QStringList>
 #include <QTextBoundaryFinder>
 #include <QRegularExpression>
@@ -524,33 +523,38 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 
   // http://alanstorm.com/url_regex_explained
   // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
-  static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
-  static QRegExp protoRegEx( "^(?:f|ht)tps?://|file://" );
-  static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
+  static thread_local QRegularExpression urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
+  static thread_local QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
+  static thread_local QRegularExpression emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
 
   int offset = 0;
   bool found = false;
-  while ( urlRegEx.indexIn( converted, offset ) != -1 )
+  QRegularExpressionMatch match = urlRegEx.match( converted );
+  while ( match.hasMatch() )
   {
     found = true;
-    QString url = urlRegEx.cap( 1 );
+    QString url = match.captured( 1 );
     QString protoUrl = url;
-    if ( protoRegEx.indexIn( protoUrl ) == -1 )
+    if ( !protoRegEx.match( protoUrl ).hasMatch() )
     {
       protoUrl.prepend( "http://" );
     }
     QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
-    converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
-    offset = urlRegEx.pos( 1 ) + anchor.length();
+    converted.replace( match.capturedStart( 1 ), url.length(), anchor );
+    offset = match.capturedStart( 1 ) + anchor.length();
+    match = urlRegEx.match( converted, offset );
   }
+
   offset = 0;
-  while ( emailRegEx.indexIn( converted, offset ) != -1 )
+  match = emailRegEx.match( converted );
+  while ( match.hasMatch() )
   {
     found = true;
-    QString email = emailRegEx.cap( 1 );
+    QString email = match.captured( 1 );
     QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped() );
-    converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
-    offset = emailRegEx.pos( 1 ) + anchor.length();
+    converted.replace( match.capturedStart( 1 ), email.length(), anchor );
+    offset = match.capturedStart( 1 ) + anchor.length();
+    match = emailRegEx.match( converted, offset );
   }
 
   if ( foundLinks )
@@ -567,16 +571,19 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<b>" ), QLatin1String( "**" ) );
   converted.replace( QLatin1String( "</b>" ), QLatin1String( "**" ) );
 
-  static QRegExp hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+  static thread_local QRegularExpression hrefRegEx( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" );
+
   int offset = 0;
-  while ( hrefRegEx.indexIn( converted, offset ) != -1 )
+  QRegularExpressionMatch match = hrefRegEx.match( converted );
+  while ( match.hasMatch() )
   {
-    QString url = hrefRegEx.cap( 1 ).replace( QLatin1String( "\"" ), QString() );
+    QString url = match.captured( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
-    QString name = hrefRegEx.cap( 2 );
+    QString name = match.captured( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );
-    converted.replace( hrefRegEx, anchor );
-    offset = hrefRegEx.pos( 1 ) + anchor.length();
+    converted.replace( match.capturedStart(), match.capturedLength(), anchor );
+    offset = match.capturedStart() + anchor.length();
+    match = hrefRegEx.match( converted, offset );
   }
 
   return converted;
@@ -588,19 +595,18 @@ QString QgsStringUtils::wordWrap( const QString &string, const int length, const
     return string;
 
   QString newstr;
-  QRegExp rx;
+  QRegularExpression rx;
   int delimiterLength = 0;
 
   if ( !customDelimiter.isEmpty() )
   {
-    rx.setPatternSyntax( QRegExp::FixedString );
-    rx.setPattern( customDelimiter );
+    rx.setPattern( QRegularExpression::escape( customDelimiter ) );
     delimiterLength = customDelimiter.length();
   }
   else
   {
-    // \x200B is a ZERO-WIDTH SPACE, needed for worwrap to support a number of complex scripts (Indic, Arabic, etc.)
-    rx.setPattern( QStringLiteral( "[\\s\\x200B]" ) );
+    // \x{200B} is a ZERO-WIDTH SPACE, needed for worwrap to support a number of complex scripts (Indic, Arabic, etc.)
+    rx.setPattern( QStringLiteral( "[\\x{200B}\\s]" ) );
     delimiterLength = 1;
   }
 
@@ -689,8 +695,10 @@ QgsStringReplacement::QgsStringReplacement( const QString &match, const QString 
   , mWholeWordOnly( wholeWordOnly )
 {
   if ( mWholeWordOnly )
-    mRx = QRegExp( QString( "\\b%1\\b" ).arg( mMatch ),
-                   mCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
+  {
+    mRx.setPattern( QString( "\\b%1\\b" ).arg( mMatch ) );
+    mRx.setPatternOptions( mCaseSensitive ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption );
+  }
 }
 
 QString QgsStringReplacement::process( const QString &input ) const

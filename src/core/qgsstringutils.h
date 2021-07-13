@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgis_core.h"
+#include "qgis.h"
+
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 #include <QDomDocument>
 #include <QFont> // for enum values
-#include "qgis.h"
 
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H
@@ -101,7 +102,7 @@ class CORE_EXPORT QgsStringReplacement
 
     bool mWholeWordOnly;
 
-    QRegExp mRx;
+    QRegularExpression mRx;
 };
 
 
