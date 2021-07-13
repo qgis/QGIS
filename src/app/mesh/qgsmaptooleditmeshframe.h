@@ -169,6 +169,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     State mCurrentState = Digitizing;
     State mPreviousState = Digitizing; //used to store a state and restore it after a particular action as selecting
     bool mLeftButtonPressed = false;
+    bool mKeepSelectionOnEdit = false;
 
     QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer

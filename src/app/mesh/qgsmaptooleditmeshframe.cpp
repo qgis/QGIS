@@ -267,6 +267,8 @@ void QgsMapToolEditMeshFrame::deactivate()
   clearSelection();
   clearCanvasHelpers();
   deleteZvalueWidget();
+  qDeleteAll( mFreeVertexMarker );
+  mFreeVertexMarker.clear();
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -443,7 +445,9 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  if ( mLeftButtonPressed && mCurrentState != MovingVertex )
+  if ( mLeftButtonPressed &&
+       mCurrentState != MovingVertex  &&
+       mCurrentState != AddingNewFace )
   {
     if ( mCanMovingStart )
     {
@@ -677,6 +681,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           newPosition.append( mapVertexXY( verticesIndexes.at( i ) ) + translation );
         }
+        mKeepSelectionOnEdit = true;
         mCurrentEditor->changeXYValues( mSelectedVertices.keys(), newPosition );
       }
       updateSelectecVerticesMarker();
@@ -839,7 +844,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
     {
       if ( e->key() == Qt::Key_Backspace )
       {
-        mNewFaceBand->removeLastPoint();
+        mNewFaceBand->removePoint( -2, true );
         if ( !mNewFaceCandidate.isEmpty() )
           mNewFaceCandidate.removeLast();
         if ( mNewFaceCandidate.isEmpty() )
@@ -861,7 +866,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       break;
   }
 
-  if ( !consumned )
+  if ( !consumned && mZValueWidget )
     QgsApplication::sendEvent( mZValueWidget->keyboardEntryWidget(), e );
   else
     e->ignore();
@@ -994,6 +999,10 @@ void QgsMapToolEditMeshFrame::setCurrentLayer( QgsMapLayer *layer )
 
 void QgsMapToolEditMeshFrame::onEdit()
 {
+  if ( !mKeepSelectionOnEdit )
+    clearSelection();
+  mKeepSelectionOnEdit = false;
+  clearCanvasHelpers();
   updateFreeVertices();
 }
 
@@ -1149,11 +1158,6 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
       tr( "Mesh editing" ),
       tr( "removing the vertex %1 leads to a topological error, operation canceled." ).arg( error.elementIndex ) );
   }
-  else
-  {
-    clearSelection();
-    clearCanvasHelpers();
-  }
 }
 
 void QgsMapToolEditMeshFrame::removeFacesFromMesh()
@@ -1175,8 +1179,6 @@ void QgsMapToolEditMeshFrame::removeFacesFromMesh()
   else
   {
     clearSelectedvertex();
-    clearCanvasHelpers();
-    updateFreeVertices();
   }
 }
 
@@ -1665,7 +1667,7 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
 
   deleteZvalueWidget();
 
-  mZValueWidget = new QgsZValueWidget( tr( "Vertex elevation:" ) );
+  mZValueWidget = new QgsZValueWidget( tr( "Vertex Z value:" ) );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
 }
 
@@ -1700,10 +1702,7 @@ void QgsMapToolEditMeshFrame::clearCanvasHelpers()
   mFaceRubberBand->reset();
   mFaceVerticesBand->reset();
   mVertexBand->reset();
-  mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
 
-  qDeleteAll( mFreeVertexMarker );
-  mFreeVertexMarker.clear();
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
   mSelectFaceMarker->setVisible( false );
   clearEdgeHelpers();
@@ -1733,7 +1732,6 @@ void QgsMapToolEditMeshFrame::addVertex( const QgsPointXY &mapPoint, const QgsPo
   {
     double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
     mCurrentEditor->addVertices( points, tolerance );
-    clearCanvasHelpers();
   }
 }
 
@@ -1802,7 +1800,7 @@ int QgsMapToolEditMeshFrame::closeVertex( const QgsPointXY &mapPoint ) const
   for ( const int vertexIndex : freeVertexIndexes )
   {
     const QgsPointXY &meshVertex = mapVertexXY( vertexIndex );
-    if ( std::sqrt( meshVertex.sqrDist( mapPoint ) < tolerance ) )
+    if ( meshVertex.distance( mapPoint ) < tolerance )
       return vertexIndex;
   }
 
