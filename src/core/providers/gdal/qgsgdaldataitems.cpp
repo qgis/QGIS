@@ -30,9 +30,11 @@
 #include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
-#include <mutex>
+#include <QRegularExpression>
 #include <QUrlQuery>
 #include <QUrl>
+
+#include <mutex>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -225,8 +227,8 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     const auto constSWildcards = sWildcards;
     for ( const QString &wildcard : constSWildcards )
     {
-      QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( wildcard ), QRegularExpression::CaseInsensitiveOption );
+      if ( rx.match( info.fileName() ).hasMatch() )
       {
         matches = true;
         break;

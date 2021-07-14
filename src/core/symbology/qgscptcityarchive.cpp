@@ -15,15 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-#include <QDateTime>
-#include <QDir>
-#include <QFileInfo>
-#include <QVector>
-#include <QStyle>
-#include <QDomDocument>
-#include <QDomElement>
-
 #include "qgssettings.h"
 #include "qgscptcityarchive.h"
 #include "qgis.h"
@@ -33,6 +24,16 @@
 #include "qgsmimedatautils.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
+
+#include <QApplication>
+#include <QDateTime>
+#include <QDir>
+#include <QFileInfo>
+#include <QVector>
+#include <QStyle>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QRegularExpression>
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;
@@ -974,12 +975,12 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     else
     {
-      QRegExp rxVariant( "^(.*[^\\d])(\\d{1,3})$" );
-      int pos = rxVariant.indexIn( schemeName );
-      if ( pos > -1 )
+      const thread_local QRegularExpression rxVariant( "^(.*[^\\d])(\\d{1,3})$" );
+      const QRegularExpressionMatch match = rxVariant.match( schemeName );
+      if ( match.hasMatch() )
       {
-        curName = rxVariant.cap( 1 );
-        curVariant = rxVariant.cap( 2 );
+        curName = match.captured( 1 );
+        curVariant = match.captured( 2 );
       }
     }
 

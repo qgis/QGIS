@@ -499,14 +499,13 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
   int index = 0;
   while ( index < text.size() )
   {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
-
-    int pos = rx.indexIn( text, index );
-    if ( pos < 0 )
+    const thread_local QRegularExpression rx( "\\[%([^\\]]+)%\\]" );
+    const QRegularExpressionMatch match = rx.match( text );
+    if ( !match.hasMatch() )
       break;
 
-    index = pos + rx.matchedLength();
-    QString to_replace = rx.cap( 1 ).trimmed();
+    index = match.capturedStart() + match.capturedLength();
+    QString to_replace = match.captured( 1 ).trimmed();
 
     QgsExpression exp( to_replace );
     variables.unite( exp.referencedVariables() );

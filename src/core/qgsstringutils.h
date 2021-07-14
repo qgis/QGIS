@@ -307,6 +307,14 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString htmlToMarkdown( const QString &html );
 
+    /**
+     * Returns an escaped string matching the behavior of QRegExp::escape.
+     * \param string String to escape
+     * \returns Escaped string
+     * \since QGIS 3.22
+     */
+    static QString qRegExpEscape( const QString &string );
+
 };
 
 #endif //QGSSTRINGUTILS_H
