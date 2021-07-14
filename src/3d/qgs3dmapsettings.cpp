@@ -77,6 +77,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
   , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
+  , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -121,6 +122,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mCrs.readXml( elemCrs );
 
   QDomElement elemTerrain = elem.firstChildElement( QStringLiteral( "terrain" ) );
+  mTerrainRenderingEnabled = elemTerrain.attribute( QStringLiteral( "terrain-rendering-enabled" ), QStringLiteral( "1" ) ).toInt();
   mTerrainVerticalScale = elemTerrain.attribute( QStringLiteral( "exaggeration" ), QStringLiteral( "1" ) ).toFloat();
   mMapTileResolution = elemTerrain.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
   mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
@@ -323,6 +325,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemCrs );
 
   QDomElement elemTerrain = doc.createElement( QStringLiteral( "terrain" ) );
+  elemTerrain.setAttribute( QStringLiteral( "terrain-rendering-enabled" ), mTerrainRenderingEnabled ? 1 : 0 );
   elemTerrain.setAttribute( QStringLiteral( "exaggeration" ), QString::number( mTerrainVerticalScale ) );
   elemTerrain.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
   elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
@@ -829,4 +832,12 @@ void Qgs3DMapSettings::setIsFpsCounterEnabled( bool fpsCounterEnabled )
     return;
   mIsFpsCounterEnabled = fpsCounterEnabled;
   emit fpsCounterEnabledChanged( mIsFpsCounterEnabled );
+}
+
+void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled )
+{
+  if ( terrainRenderingEnabled == mTerrainRenderingEnabled )
+    return;
+  mTerrainRenderingEnabled = terrainRenderingEnabled;
+  emit terrainGeneratorChanged();
 }
