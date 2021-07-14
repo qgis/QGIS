@@ -87,6 +87,7 @@
 #include <QColorDialog>
 #include <QMenu>
 #include <QUrl>
+#include <QRegularExpressionValidator>
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
@@ -323,7 +324,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
