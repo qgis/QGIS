@@ -64,6 +64,7 @@ class TestQgsVirtualRasterProvider : public QObject
     //void testUrlDecodingMinimal();
     void testUriProviderDecoding();
     void testUriEncoding();
+    void testConstructorWrong();
     void testConstructor();
 
   private:
@@ -225,22 +226,51 @@ void TestQgsVirtualRasterProvider::testUriEncoding()
 
 }
 
-void TestQgsVirtualRasterProvider::testConstructor()
+void TestQgsVirtualRasterProvider::testConstructorWrong()
 {
-  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal" );
-  //QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&landsat:uri=/home/franc/dev/cpp/QGIS/tests/testdata/landsat.tif&landsat:provider=gdal" );
+  //Giving an invalid uri, with more raster referencies compared to the raster.ref that are present in the formula
+  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal&landsat:uri=/home/franc/dev/cpp/QGIS/tests/testdata/landsat.tif&landsat:provider=gdal" );
   std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( uri,
       QStringLiteral( "layer" ),
       QStringLiteral( "virtualrasterprovider" ) );
 
-  QVERIFY( layer->dataProvider()->isValid() );
-  QVERIFY( layer->isValid() );
+  if( layer->dataProvider()->isValid())
+  {
+      QVERIFY( layer->dataProvider()->isValid() );
+      QVERIFY( layer->isValid() );
 
-  double sampledValueCalc = layer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
-  double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+  }
+  else
+  {
+      QVERIFY( ! layer->dataProvider()->isValid() );
+      QVERIFY( ! layer->isValid() );
+      qDebug() << QStringLiteral("The dataprovider is not valid");
+  }
 
-  QCOMPARE( sampledValueCalc, sampledValue + 200. );
-  QCOMPARE( layer->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+}
+
+void TestQgsVirtualRasterProvider::testConstructor()
+{
+  QString uri = QStringLiteral( "?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:uri=/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif&dem:provider=gdal" );
+
+  std::unique_ptr< QgsRasterLayer > layer = std::make_unique< QgsRasterLayer >( uri,
+      QStringLiteral( "layer" ),
+      QStringLiteral( "virtualrasterprovider" ) );
+
+  if( layer->dataProvider()->isValid())
+  {
+      QVERIFY( layer->dataProvider()->isValid() );
+      QVERIFY( layer->isValid() );
+
+      double sampledValueCalc = layer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+      double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+
+      QCOMPARE( sampledValueCalc, sampledValue + 200. );
+      QCOMPARE( layer->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+      qDebug() << QStringLiteral("The computed value at random point X Y is: ") << sampledValueCalc;
+  }
+
 
 }
 

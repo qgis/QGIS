@@ -40,7 +40,6 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   }
   else
   {
-
     QList<const QgsRasterCalcNode *>::iterator i = calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).begin();
     for ( ; i != calcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef ).end(); ++i )
     {
@@ -56,27 +55,30 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
     if ( rProvidedLayer->isValid() )
     {
-      if ( ! mRasterLayers.contains( rProvidedLayer ) ) mRasterLayers << rProvidedLayer;
-
-      for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+      if ( ! mRasterLayers.contains( rProvidedLayer ) )
       {
-        if ( rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
-        {
-          QgsRasterCalculatorEntry entry;
-          entry.raster = rProvidedLayer;
-          entry.bandNumber = j + 1;
-          entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
-          /*
-          if ( ! uniqueRasterBandIdentifier( entry ) )
-            break;
-          */
-          mRasterEntries.push_back( entry );
-        }
-        else
-        {
-          mValid = false;
-        }
+          //this var is not useful right now except for the copy constructor
+          mRasterLayers << rProvidedLayer;
 
+          for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+          {
+            if ( rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
+            {
+              QgsRasterCalculatorEntry entry;
+              entry.raster = rProvidedLayer;
+              entry.bandNumber = j + 1;
+              entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+              /*
+              if ( ! uniqueRasterBandIdentifier( entry ) )
+                break;
+              */
+              mRasterEntries.push_back( entry );
+            }
+            else
+            {
+              mValid = false;
+            }
+          }
       }
     }
     else
@@ -84,6 +86,8 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
       mValid = false;
     }
   }
+
+
 }
 
 
@@ -115,6 +119,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
       entry.ref = rcProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
       mRasterEntries.push_back( entry );
     }
+
   }
 
 }
@@ -125,6 +130,7 @@ QgsVirtualRasterProvider::~QgsVirtualRasterProvider()
   {
     delete mRasterLayers[i];
   }
+
 
 }
 
