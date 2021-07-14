@@ -193,32 +193,14 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
 
   mCameraInfoItemModel = new QStandardItemModel( this );
 
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem, new QStandardItem } );
-
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 0, 0 ), QStringLiteral( "Near plane" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 1, 0 ), QStringLiteral( "Far plane" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 2, 0 ), QStringLiteral( "Camera X pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 3, 0 ), QStringLiteral( "Camera Y pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 4, 0 ), QStringLiteral( "Camera Z pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 5, 0 ), QStringLiteral( "Looking at X" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 6, 0 ), QStringLiteral( "Looking at Y" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 7, 0 ), QStringLiteral( "Looking at Z" ) );
-
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 0, 1 ), QStringLiteral( "Near plane" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 1, 1 ), QStringLiteral( "Far plane" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 2, 1 ), QStringLiteral( "Camera X pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 3, 1 ), QStringLiteral( "Camera Y pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 4, 1 ), QStringLiteral( "Camera Z pos" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 5, 1 ), QStringLiteral( "Looking at X" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 6, 1 ), QStringLiteral( "Looking at Y" ) );
-  mCameraInfoItemModel->setData( mCameraInfoItemModel->index( 7, 1 ), QStringLiteral( "Looking at Z" ) );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Near plane" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Far plane" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Camera X pos" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Camera Y pos" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Camera Z pos" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Looking at X" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Looking at Y" ) ), new QStandardItem } );
+  mCameraInfoItemModel->appendRow( QList<QStandardItem *> { new QStandardItem( QStringLiteral( "Looking at Z" ) ), new QStandardItem } );
 
   mCameraInfo->setModel( mCameraInfoItemModel );
   mCameraInfo->verticalHeader()->hide();
@@ -241,17 +223,9 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *parent ) : QWidget
   mCameraInfo->setVisible( false );
 
   QCheckBox *cameraInfoCheckBox = new QCheckBox( this );
-  cameraInfoCheckBox->setText( "Show camera info" );
+  cameraInfoCheckBox->setText( tr( "Show camera info (for debugging)" ) );
   cameraInfoCheckBox->setChecked( false );
-  QObject::connect( cameraInfoCheckBox, &QCheckBox::stateChanged, parent,
-                    [ = ]( int state )
-  {
-    if ( state == Qt::CheckState::Checked )
-      mCameraInfo->setVisible( true );
-    else
-      mCameraInfo->setVisible( false );
-  }
-                  );
+  QObject::connect( cameraInfoCheckBox, &QCheckBox::clicked, parent, [ = ]( bool enabled ) { mCameraInfo->setVisible( enabled ); } );
 
   gridLayout->addWidget( cameraInfoCheckBox, 4, 0, 1, 4, Qt::AlignLeft );
   gridLayout->addLayout( layout, 5, 0, 1, 4, Qt::AlignCenter );

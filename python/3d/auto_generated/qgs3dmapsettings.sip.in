@@ -633,7 +633,7 @@ Returns whether the 2D terrain surface will be rendered.
 
 .. seealso:: :py:func:`setTerrainRenderingEnabled`
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
     void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
@@ -642,7 +642,7 @@ Sets whether the 2D terrain surface will be rendered in.
 
 .. seealso:: :py:func:`terrainRenderingEnabled`
 
-.. versionadded:: 3.20
+.. versionadded:: 3.22
 %End
 
   signals:

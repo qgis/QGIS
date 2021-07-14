@@ -579,14 +579,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns whether the 2D terrain surface will be rendered.
      * \see setTerrainRenderingEnabled()
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     bool terrainRenderingEnabled() { return mTerrainRenderingEnabled; }
 
     /**
      * Sets whether the 2D terrain surface will be rendered in.
      * \see terrainRenderingEnabled()
-     * \since QGIS 3.20
+     * \since QGIS 3.22
      */
     void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
 
