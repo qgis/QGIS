@@ -168,7 +168,7 @@ void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
 float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings & ) const
 {
   QgsPointXY point( x, y );
-  int faceIndex = mTriangularMesh.faceIndexForPoint( point );
+  int faceIndex = mTriangularMesh.faceIndexForPoint_v2( point );
   if ( faceIndex < 0 || faceIndex >= mTriangularMesh.triangles().count() )
     return std::numeric_limits<float>::quiet_NaN();
 

@@ -981,8 +981,9 @@ void QgsMeshDatasetGroup::calculateStatistic()
   int count = datasetCount();
   for ( int i = 0; i < count; ++i )
   {
-    min = std::min( min,  datasetMetadata( i ).minimum() );
-    max = std::max( max, datasetMetadata( i ).maximum() );
+    const QgsMeshDatasetMetadata &meta = datasetMetadata( i );
+    min = std::min( min,  meta.minimum() );
+    max = std::max( max, meta.maximum() );
   }
   mMinimum = min;
   mMaximum = max;

@@ -299,6 +299,7 @@ The development version
     {
       NoError,
       InvalidFace,
+      TooManyVerticesInFace,
       FlatFace,
       UniqueSharedVertex,
       InvalidVertex,

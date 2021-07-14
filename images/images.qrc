@@ -921,6 +921,7 @@
         <file>themes/default/mIconFolderLinkParams.svg</file>
         <file>themes/default/mIconFolderHomeParams.svg</file>
         <file>themes/default/mActionMeasureBearing.svg</file>
+        <file>themes/default/mActionMeshDigitizing.svg</file>
         <file>themes/default/mActionNewMeshLayer.svg</file>
     </qresource>
     <qresource prefix="/images/tips">

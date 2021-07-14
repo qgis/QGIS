@@ -467,6 +467,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptooldigitizefeature.h"
 #include "qgsmaptooloffsetpointsymbol.h"
 #include "vertextool/qgsvertextool.h"
+#include "qgsmaptooleditmeshframe.h"
 
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationdock.h"
@@ -3737,6 +3738,13 @@ void QgisApp::createToolBars()
   pointSymbolAction->setObjectName( QStringLiteral( "ActionPointSymbolTools" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
+  QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
+  if ( editMeshMapTool )
+  {
+    mMeshToolBar->addActions( editMeshMapTool->actions() );
+    for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
+      mMapToolGroup->addAction( mapToolAction );
+  }
 }
 
 void QgisApp::createStatusBar()
@@ -11264,6 +11272,18 @@ void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
   }
 }
 
+void QgisApp::enableMeshEditingTools( bool enable )
+{
+  if ( !mMapTools )
+    return;
+  QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
+  if ( editMeshMapTool )
+  {
+    for ( QAction *action : editMeshMapTool->actions() )
+      action->setEnabled( enable );
+  }
+}
+
 void QgisApp::saveEdits()
 {
   const auto constSelectedLayers = mLayerTreeView->selectedLayers();
@@ -14843,6 +14863,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionZoomToLayers->setEnabled( false );
     mActionZoomToLayer->setEnabled( false );
 
+    enableMeshEditingTools( false );
     enableDigitizeTechniqueActions( false );
 
     return;
@@ -14891,6 +14912,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDiagramProperties->setEnabled( isSpatial );
       mActionReverseLine->setEnabled( false );
       mActionTrimExtendFeature->setEnabled( false );
+
+      enableMeshEditingTools( false );
 
       mActionSelectFeatures->setEnabled( isSpatial );
       mActionSelectPolygon->setEnabled( isSpatial );
@@ -15219,6 +15242,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionLabeling->setEnabled( false );
       mActionDiagramProperties->setEnabled( false );
 
+      enableMeshEditingTools( false );
       enableDigitizeTechniqueActions( false );
 
       //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
@@ -15281,8 +15305,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionOpenFieldCalc->setEnabled( false );
       mActionSaveLayerEdits->setEnabled( false );
       mUndoDock->widget()->setEnabled( false );
-      mActionUndo->setEnabled( false );
-      mActionRedo->setEnabled( false );
       mActionSaveLayerDefinition->setEnabled( true );
       mActionLayerSaveAs->setEnabled( false );
       mActionAddFeature->setEnabled( false );
@@ -15319,6 +15341,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       bool isEditable = mlayer->isEditable();
       mActionToggleEditing->setEnabled( canSupportEditing );
       mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+      enableMeshEditingTools( isEditable );
+      mActionUndo->setEnabled( canSupportEditing && isEditable );
+      mActionRedo->setEnabled( canSupportEditing && isEditable );
+      updateUndoActions();
     }
 
     break;
@@ -15390,6 +15416,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
       enableDigitizeTechniqueActions( false );
+      enableMeshEditingTools( false );
       break;
 
     case QgsMapLayerType::PointCloudLayer:
@@ -15459,6 +15486,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
       enableDigitizeTechniqueActions( false );
+      enableMeshEditingTools( false );
       break;
 
     case QgsMapLayerType::PluginLayer:
@@ -15839,21 +15867,10 @@ void QgisApp::updateUndoActions()
 {
   bool canUndo = false, canRedo = false;
   QgsMapLayer *layer = activeLayer();
-  if ( layer )
+  if ( layer  && layer->isEditable() )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer && vlayer->isEditable() )
-    {
-      canUndo = vlayer->undoStack()->canUndo();
-      canRedo = vlayer->undoStack()->canRedo();
-    }
-
-    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
-    if ( meshLayer && meshLayer->meshEditor() )
-    {
-      canUndo = meshLayer->undoStack()->canUndo();
-      canRedo = meshLayer->undoStack()->canRedo();
-    }
+    canUndo = layer->undoStack()->canUndo();
+    canRedo = layer->undoStack()->canRedo();
   }
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );

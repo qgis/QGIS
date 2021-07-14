@@ -113,6 +113,7 @@ class QgsAppMapTools
       ChangeLabelProperties,
       ReverseLine,
       TrimExtendFeature,
+      EditMeshFrame
     };
 
     QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );

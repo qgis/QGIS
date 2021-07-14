@@ -73,6 +73,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
     QgsMeshEditingError initialize();
 
+    //! Returns TRUE if a \a face can be added to the mesh
+    bool faceCanBeAdded( const QgsMeshFace &face );
+
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ); SIP_SKIP
 
@@ -81,6 +84,31 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     //! Removes faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
+
+    //! Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
+    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+
+    //! Flips edge (\a vertexIndex1, \a vertexIndex2)
+    void flipEdge( int vertexIndex1, int vertexIndex2 );
+
+    /**
+     * Returns TRUE if faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2 can be merged
+     */
+    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+
+    //! Merges faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2
+    void merge( int vertexIndex1, int vertexIndex2 );
+
+    /**
+     * Returns TRUE if face with index \a faceIndex can be split
+     */
+    bool faceCanBeSplit( int faceIndex ) const;
+
+    /**
+     * Splits faces with index \a faceIndexes. Only faces that can be split are split.
+     * Returns the count of faces effictively split
+     */
+    int splitFaces( const QList<int> &faceIndexes );
 
     /**
      *  Adds vertices in triangular mesh coordinate in the mesh. Vertex is effectivly added if the transform
@@ -110,6 +138,17 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     QgsMeshEditingError removeVertices( const QList<int> &verticesToRemoveIndexes, bool fillHoles = false );
 
+    /**
+     * Changes the Z values of the vertices with indexes in \a vertices indexes with the values in \a newValues
+     */
+    void changeZValues( const QList<int> &verticesIndexes, const QList<double> &newValues );
+
+    /**
+     * Changes the (X,Y) coordinates values of the vertices with indexes in \a vertices indexes with the values in \a newValues.
+     * The caller has the responsibility to check if changing the vertices coordinates does not lead to topological errors
+     */
+    void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+
     //! Stops editing
     void stopEditing();
 
@@ -119,6 +158,26 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Returns whether the mesh has been modified
     bool isModified() const;
 
+    //----------- access element methods
+
+    //! Returns all the free vertices indexes
+    QList<int> freeVerticesIndexes();
+
+    //! Returns whether the vertex with index \a vertexIndex is on a boundary
+    bool isVertexOnBoundary( int vertexIndex ) const;
+
+    //! Returns whether the vertex with index \a vertexIndex is a free vertex
+    bool isVertexFree( int vertexIndex ) const;
+
+    /**
+     *  Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex.
+     *  If the vertex does not exist or is a free vertex, the cirxulator is invalid.
+     *  If stopEditing() is called, circulator created before and new circulator are valid and must not be used.
+     *  It is recommended to destruct all circulator created before calling any edit methods or stopEditing() to save memory usage.
+     *  Calling initialize() allows creation of new circulator after stopEditing() is called.
+     */
+    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
+
   signals:
     //! Emitted when the mesh is edited
     void meshEdited();
@@ -127,6 +186,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMesh *mMesh = nullptr;
     QgsTopologicalMesh mTopologicalMesh;
     QgsTriangularMesh *mTriangularMesh = nullptr;
+    int mMaximumVerticesPerFace = 0;
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
 
@@ -142,11 +202,20 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void reverseEdit( Edit &edit );
 
     void applyAddVertex( Edit &edit, const QgsMeshVertex &vertex );
-    void applyRemoveVertex( Edit &edit, int vertexIndex, bool fillHole );
+    void applyRemoveVertexFillHole( Edit &edit, int vertexIndex );
+    void applyRemoveVerticesWithoutFillHole( QgsMeshEditor::Edit &edit, const QList<int> &verticesIndexes );
     void applyAddFaces( Edit &edit, const QgsTopologicalMesh::TopologicalFaces &faces );
-    void applyRemoveFaces( Edit &edit, const QList<int> faceToRemoveIndex );
+    void applyRemoveFaces( Edit &edit, const QList<int> &faceToRemoveIndex );
+    void applyChangeZValue( Edit &edit, const QList<int> &verticesIndexes, const QList<double> &newValues );
+    void applyChangeXYValue( Edit &edit, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+    void applyFlipEdge( Edit &edit, int vertexIndex1, int vertexIndex2 );
+    void applyMerge( Edit &edit, int vertexIndex1, int vertexIndex2 );
+    void applySplit( QgsMeshEditor::Edit &edit, int faceIndex );
 
     void applyEditOnTriangularMesh( Edit &edit, const QgsTopologicalMesh::Changes &topologicChanges );
+
+    //! method used for test and debug
+    bool checkConsistency() const;
 
     friend class TestQgsMeshEditor;
     friend class QgsMeshLayerUndoCommandMeshEdit;
@@ -154,6 +223,12 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     friend class QgsMeshLayerUndoCommandRemoveVertices;
     friend class QgsMeshLayerUndoCommandAddFaces;
     friend class QgsMeshLayerUndoCommandRemoveFaces;
+    friend class QgsMeshLayerUndoCommandSetZValue;
+    friend class QgsMeshLayerUndoCommandChangeZValue;
+    friend class QgsMeshLayerUndoCommandChangeXYValue;
+    friend class QgsMeshLayerUndoCommandFlipEdge;
+    friend class QgsMeshLayerUndoCommandMerge;
+    friend class QgsMeshLayerUndoCommandSplitFaces;
 };
 
 #ifndef SIP_RUN
@@ -254,6 +329,118 @@ class QgsMeshLayerUndoCommandRemoveFaces : public QgsMeshLayerUndoCommandMeshEdi
     void redo() override;
   private:
     QList<int> mfacesToRemoveIndexes;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for changing Z value of vertices
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandChangeZValue : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the Z value changed with \a newValues
+     */
+    QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesIndexes;
+    QList<double> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for changing (X,Y) value of vertices
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandChangeXYValue : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a verticesIndexes of the vertices that will have
+     * the (X,Y) values changed with \a newValues
+     */
+    QgsMeshLayerUndoCommandChangeXYValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
+    void redo() override;
+
+  private:
+    QList<int> mVerticesIndexes;
+    QList<QgsPointXY> mNewValues;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for flipping edge
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandFlipEdge : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and the vertex indexes of the edge (\a vertexIndex1, \a vertexIndex2)
+     */
+    QgsMeshLayerUndoCommandFlipEdge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
+    void redo() override;
+
+  private:
+    int mVertexIndex1 = -1;
+    int mVertexIndex2 = -1;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for merging face
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandMerge : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and the vertex indexes of
+     * the edge (\a vertexIndex1, \a vertexIndex2) that separate the face to merge
+     */
+    QgsMeshLayerUndoCommandMerge( QgsMeshEditor *meshEditor, int vertexIndex1, int vertexIndex2 );
+    void redo() override;
+
+  private:
+    int mVertexIndex1 = -1;
+    int mVertexIndex2 = -1;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief  Class for undo/redo command for splitting faces
+ *
+ * \since QGIS 3.22
+ */
+class QgsMeshLayerUndoCommandSplitFaces : public QgsMeshLayerUndoCommandMeshEdit
+{
+  public:
+
+    /**
+     * Constructor with the associated \a meshEditor and indexes \a faceIndexes of the faces to split
+     */
+    QgsMeshLayerUndoCommandSplitFaces( QgsMeshEditor *meshEditor, const QList<int> &faceIndexes );
+    void redo() override;
+
+  private:
+    QList<int> mFaceIndexes;
 };
 
 #endif //SIP_RUN

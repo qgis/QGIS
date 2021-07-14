@@ -165,6 +165,16 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     virtual int edgeCount() const = 0;
 
     /**
+     * \brief Returns the maximum number of vertices per face supported by the current mesh,
+     * if returns 0, the number of vertices is unlimited
+     *
+     * \returns Maximum number of vertices per face
+     *
+     * \since QGIS 3.22
+     */
+    virtual int maximumVerticesCountPerFace() const {return 0;};
+
+    /**
      * Populates the mesh vertices, edges and faces
      * \since QGIS 3.6
      */

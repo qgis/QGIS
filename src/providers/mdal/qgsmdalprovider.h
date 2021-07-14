@@ -77,6 +77,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
+    int maximumVerticesCountPerFace() const override;
 
     QgsMeshDriverMetadata driverMetadata() const override;
 

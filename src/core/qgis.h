@@ -445,6 +445,7 @@ class CORE_EXPORT Qgis
     {
       NoError, //!< No type
       InvalidFace, //!< An error occurs due to an invalid face (for example, vertex indexes are unordered)
+      TooManyVerticesInFace, //!< A face has more vertices than the maximum number supported per face
       FlatFace, //!< A flat face is present
       UniqueSharedVertex, //!< A least two faces share only one vertices
       InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
