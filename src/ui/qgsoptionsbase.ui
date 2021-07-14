@@ -3630,6 +3630,25 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_32">
+                 <property name="title">
+                  <string>DPI</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_38">
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mRespectScreenDpiCheckBox">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If respect screen DPI is activated, symbology on the map canvas will be rendered with appropriate screen DPI. This means that a symbol with 1mm size will be rendered with 1mm size on every screen (provided it is configured correctly at the system).&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This is only possible since QGIS 3.20.&lt;/p&gt;&lt;p&gt;Any earlier version of QGIS will render symbology on the map canvas smaller on HiDPI screens.&lt;/p&gt;&lt;p&gt;Requires a restart&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Respect screen DPI</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>

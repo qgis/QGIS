@@ -425,6 +425,7 @@
 %Include auto_generated/symbology/qgssymbolslistwidget.sip
 %Include auto_generated/symbology/qgssymbolwidgetcontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayerwidget.sip
+%Include auto_generated/settings/qgssettingsregistrygui.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip

@@ -61,6 +61,7 @@
 #include "qgssubsetstringeditorproviderregistry.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
 #include "qgsrelationwidgetregistry.h"
+#include "qgssettingsregistrygui.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -71,6 +72,11 @@ QgsGui *QgsGui::instance()
 QgsNative *QgsGui::nativePlatformInterface()
 {
   return instance()->mNative;
+}
+
+QgsSettingsRegistryGui *QgsGui::settingsRegistryGui()
+{
+  return instance()->mSettingsRegistryGui;
 }
 
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
@@ -204,6 +210,7 @@ QgsGui::~QgsGui()
   delete mSubsetStringEditorProviderRegistry;
   delete mProviderSourceWidgetProviderRegistry;
   delete mRelationEditorRegistry;
+  delete mSettingsRegistryGui;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -248,6 +255,8 @@ QgsGui::QgsGui()
 #else
   mNative = new QgsNative();
 #endif
+
+  mSettingsRegistryGui = new QgsSettingsRegistryGui();
 
   mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
