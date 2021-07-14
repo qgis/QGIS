@@ -82,7 +82,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         if not os.environ.get('TRAVIS', False):
             os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
 
-    def ___test_landing_page_redirects(self):
+    def test_landing_page_redirects(self):
         """Test landing page redirects"""
 
         request = QgsBufferServerRequest('http://server.qgis.org/')
@@ -213,6 +213,22 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
         _test_valid('http://server.qgis.org/mylanding')
         _test_valid('http://server.qgis.org/mylanding/')
         _test_valid('http://server.qgis.org/mylanding/index.json')
+
+        # Test redirects with prefix
+        os.environ['QGIS_SERVER_LANDING_PAGE_PREFIX'] = '/ows/catalog'
+        request = QgsBufferServerRequest('http://server.qgis.org/ows/catalog')
+        response = QgsBufferServerResponse()
+        request.setHeader('Accept', 'text/html')
+        self.server.handleRequest(request, response)
+        self.assertEqual(response.headers()[
+                         'Location'], 'http://server.qgis.org/ows/catalog/index.html')
+
+        request = QgsBufferServerRequest('http://server.qgis.org/ows/catalog/')
+        response = QgsBufferServerResponse()
+        request.setHeader('Accept', 'text/html')
+        self.server.handleRequest(request, response)
+        self.assertEqual(response.headers()[
+                         'Location'], 'http://server.qgis.org/ows/catalog/index.html')
 
 
 if __name__ == '__main__':
