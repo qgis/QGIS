@@ -404,8 +404,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to user's style.
     static QString userStylePath();
 
-    //! Returns the short name regular expression for line edit validator
-    static QRegExp shortNameRegExp();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
+    /**
+     * Returns the short name regular expression for line edit validator
+     * \deprecated since QGIS 3.22
+     */
+    static QRegExp shortNameRegExp() SIP_DEPRECATED;
+#endif
+
+    /**
+     * Returns the short name regular expression for line edit validator
+     * \since QGIS 3.22
+     */
+    static QRegularExpression shortNameRegularExpression();
 
     /**
      * Returns the user's operating system login account name.
