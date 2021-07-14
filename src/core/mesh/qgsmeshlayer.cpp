@@ -1532,19 +1532,19 @@ QString QgsMeshLayer::htmlMetadata() const
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Vertex count" ) + QStringLiteral( "</td><td>" )
-                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->vertexCount() ) ) )
+                  + ( locale.toString( static_cast<qlonglong>( meshVertexCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Face count" ) + QStringLiteral( "</td><td>" )
-                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->faceCount() ) ) )
+                  + ( locale.toString( static_cast<qlonglong>( meshFaceCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Edge count" ) + QStringLiteral( "</td><td>" )
-                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->edgeCount() ) ) )
+                  + ( locale.toString( static_cast<qlonglong>( meshEdgeCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Dataset groups count" ) + QStringLiteral( "</td><td>" )
-                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->datasetGroupCount() ) ) )
+                  + ( locale.toString( static_cast<qlonglong>( datasetGroupCount() ) ) )
                   + QStringLiteral( "</td></tr>\n" );
   }
 
