@@ -474,6 +474,35 @@ Returns a list of pyramid resampling method name and label pairs
 for given provider
 %End
 
+    struct InputLayers
+    {
+      QString name;
+      QString uri;
+      QString provider;
+    };
+
+    struct DecodedUriParameters
+    {
+      QgsCoordinateReferenceSystem crs;
+      QgsRectangle extent;
+      int width;
+      int height;
+      QString formula;
+      QList <QgsRasterDataProvider::InputLayers> rInputLayers;
+
+    };
+
+    static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = 0 );
+
+    static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
+%Docstring
+Encodes the URI starting from the struct .
+
+.. note::
+
+   used by Virtual Raster Provider only
+%End
+
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );
 %Docstring
 Validates creation options for a specific dataset and destination format.

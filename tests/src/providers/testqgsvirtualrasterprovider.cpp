@@ -234,17 +234,17 @@ void TestQgsVirtualRasterProvider::testConstructorWrong()
       QStringLiteral( "layer" ),
       QStringLiteral( "virtualrasterprovider" ) );
 
-  if( layer->dataProvider()->isValid())
+  if ( layer->dataProvider()->isValid() )
   {
-      QVERIFY( layer->dataProvider()->isValid() );
-      QVERIFY( layer->isValid() );
+    QVERIFY( layer->dataProvider()->isValid() );
+    QVERIFY( layer->isValid() );
 
   }
   else
   {
-      QVERIFY( ! layer->dataProvider()->isValid() );
-      QVERIFY( ! layer->isValid() );
-      qDebug() << QStringLiteral("The dataprovider is not valid");
+    QVERIFY( ! layer->dataProvider()->isValid() );
+    QVERIFY( ! layer->isValid() );
+    qDebug() << QStringLiteral( "The dataprovider is not valid" );
   }
 
 }
@@ -257,18 +257,18 @@ void TestQgsVirtualRasterProvider::testConstructor()
       QStringLiteral( "layer" ),
       QStringLiteral( "virtualrasterprovider" ) );
 
-  if( layer->dataProvider()->isValid())
+  if ( layer->dataProvider()->isValid() )
   {
-      QVERIFY( layer->dataProvider()->isValid() );
-      QVERIFY( layer->isValid() );
+    QVERIFY( layer->dataProvider()->isValid() );
+    QVERIFY( layer->isValid() );
 
-      double sampledValueCalc = layer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
-      double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+    double sampledValueCalc = layer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+    double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
 
-      QCOMPARE( sampledValueCalc, sampledValue + 200. );
-      QCOMPARE( layer->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+    QCOMPARE( sampledValueCalc, sampledValue + 200. );
+    QCOMPARE( layer->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
-      qDebug() << QStringLiteral("The computed value at random point X Y is: ") << sampledValueCalc;
+    qDebug() << QStringLiteral( "The computed value at random point X Y is: " ) << sampledValueCalc;
   }
 
 

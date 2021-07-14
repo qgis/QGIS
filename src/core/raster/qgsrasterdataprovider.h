@@ -553,18 +553,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       int width;
       int height;
       QString formula;
-      QList<InputLayers> rInputLayers;
+      QList <QgsRasterDataProvider::InputLayers> rInputLayers;
 
     };
 
-    static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
+    static QgsRasterDataProvider::DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri, bool *ok = nullptr );
     //static DecodedUriParameters decodeVirtualRasterProviderUri( const QString &uri);
 
     /**
      * Encodes the URI starting from the struct .
      * \note used by Virtual Raster Provider only
      */
-    static QString encodeVirtualRasterProviderUri( const DecodedUriParameters &parts );
+    static QString encodeVirtualRasterProviderUri( const QgsRasterDataProvider::DecodedUriParameters &parts );
 
     /**
      * Validates creation options for a specific dataset and destination format.

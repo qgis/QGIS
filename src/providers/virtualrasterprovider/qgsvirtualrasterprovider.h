@@ -75,6 +75,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
     QString mLastError;
 
+    std::unique_ptr< QgsRasterCalcNode > mCalcNode;//( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
     QVector <QgsRasterLayer *> mRasterLayers;
 };
 
