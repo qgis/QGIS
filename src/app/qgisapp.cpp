@@ -11274,6 +11274,8 @@ void QgisApp::cancelMeshLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
 void QgisApp::enableMeshEditingTools( bool enable )
 {
+  if ( !mMapTools )
+    return;
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
