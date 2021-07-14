@@ -169,25 +169,31 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
 {
   Q_ASSERT( nativeMesh );
 
+  bool needUpdateVerticesCoordinates = mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
+                                       ( ( mCoordinateTransform.isValid() || transform.isValid() ) &&
+                                         ( mCoordinateTransform.sourceCrs() != transform.sourceCrs() &&
+                                             mCoordinateTransform.destinationCrs() != transform.destinationCrs() &&
+                                             mCoordinateTransform.isValid() != transform.isValid() ) ) ;
+
+  bool needUpdateFrame =  mTriangularMesh.vertices.size() != nativeMesh->vertices.size() ||
+                          mNativeMeshFaceCentroids.size() != nativeMesh->faces.size() ||
+                          mTriangularMesh.faces.size() >= nativeMesh->faces.size() ||
+                          mTriangularMesh.edges.size() == nativeMesh->edges.size();
+
+
   // FIND OUT IF UPDATE IS NEEDED
-  if ( mTriangularMesh.vertices.size() == nativeMesh->vertices.size() &&
-       mNativeMeshFaceCentroids.size() == nativeMesh->faces.size() &&
-       mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
-       mTriangularMesh.edges.size() == nativeMesh->edges.size() &&
-       ( ( !mCoordinateTransform.isValid() && !transform.isValid() ) ||
-         ( mCoordinateTransform.sourceCrs() == transform.sourceCrs() &&
-           mCoordinateTransform.destinationCrs() == transform.destinationCrs() &&
-           mCoordinateTransform.isValid() == transform.isValid() ) ) )
+  if ( ! needUpdateVerticesCoordinates  && !needUpdateFrame )
     return false;
 
   // CLEAN-UP
   mTriangularMesh.vertices.clear();
-  mTriangularMesh.faces.clear();
-  mTriangularMesh.edges.clear();
-  mTrianglesToNativeFaces.clear();
-  mEdgesToNativeEdges.clear();
-  mNativeMeshFaceCentroids.clear();
-  mNativeMeshEdgeCentroids.clear();
+  if ( needUpdateFrame )
+  {
+    mTriangularMesh.faces.clear();
+    mTriangularMesh.edges.clear();
+    mEdgesToNativeEdges.clear();
+    mTrianglesToNativeFaces.clear();
+  }
 
   // TRANSFORM VERTICES
   mCoordinateTransform = transform;
@@ -199,11 +205,14 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
     mExtent.include( mTriangularMesh.vertices.at( i ) );
   }
 
-  // CREATE TRIANGULAR MESH
-  for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+  if ( needUpdateFrame )
   {
-    const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
-    triangulate( face, i );
+    // CREATE TRIANGULAR MESH
+    for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+    {
+      const QgsMeshFace &face = nativeMesh->faces.at( i ) ;
+      triangulate( face, i );
+    }
   }
 
   // CALCULATE CENTROIDS
@@ -217,20 +226,26 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   // CALCULATE SPATIAL INDEX
   mSpatialFaceIndex = QgsMeshSpatialIndex( mTriangularMesh, nullptr, QgsMesh::ElementType::Face );
 
-  // SET ALL TRIANGLE CCW AND COMPUTE AVERAGE SIZE
-  finalizeTriangles();
+  if ( needUpdateFrame )
+  {
+    // SET ALL TRIANGLE CCW AND COMPUTE AVERAGE SIZE
+    finalizeTriangles();
+  }
 
   // CREATE EDGES
   // remove all edges with invalid vertices
-  const QVector<QgsMeshEdge> edges = nativeMesh->edges;
-  for ( int nativeIndex = 0; nativeIndex < edges.size(); ++nativeIndex )
+  if ( needUpdateFrame )
   {
-    const QgsMeshEdge &edge = edges.at( nativeIndex );
-    if ( !( std::isnan( mTriangularMesh.vertex( edge.first ).x() )  ||
-            std::isnan( mTriangularMesh.vertex( edge.second ).x() ) ) )
+    const QVector<QgsMeshEdge> edges = nativeMesh->edges;
+    for ( int nativeIndex = 0; nativeIndex < edges.size(); ++nativeIndex )
     {
-      mTriangularMesh.edges.push_back( edge );
-      mEdgesToNativeEdges.push_back( nativeIndex );
+      const QgsMeshEdge &edge = edges.at( nativeIndex );
+      if ( !( std::isnan( mTriangularMesh.vertex( edge.first ).x() )  ||
+              std::isnan( mTriangularMesh.vertex( edge.second ).x() ) ) )
+      {
+        mTriangularMesh.edges.push_back( edge );
+        mEdgesToNativeEdges.push_back( nativeIndex );
+      }
     }
   }
 
