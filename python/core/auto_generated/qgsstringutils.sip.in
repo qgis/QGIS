@@ -317,6 +317,17 @@ Convert simple HTML to markdown. Only br, b and link are supported.
 .. versionadded:: 3.10
 %End
 
+    static QString qRegExpEscape( const QString &string );
+%Docstring
+Returns an escaped string matching the behavior of QRegExp.escape.
+
+:param string: String to escape
+
+:return: Escaped string
+
+.. versionadded:: 3.22
+%End
+
 };
 
 /************************************************************************

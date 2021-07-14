@@ -19,6 +19,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsfeaturerequest.h"
+#include "qgsstringutils.h"
 
 #include <QRegularExpression>
 
@@ -535,10 +536,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
-          // recreate QRegExp::escape function behavior
-          const thread_local QRegularExpression escapeRx( QStringLiteral( "([^\\\\]|^)([\\$\\(\\)\\*\\+\\.\\?\\[\\]\\^\\{\\|\\}])" ) );
-          QString esc_regexp = regexp;
-          esc_regexp.replace( escapeRx, QStringLiteral( "\\1\\\\2" ) );
+          QString esc_regexp = QgsStringUtils::qRegExpEscape( regexp );
           // manage escape % and _
           if ( esc_regexp.startsWith( '%' ) )
           {

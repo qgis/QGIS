@@ -688,6 +688,39 @@ QString QgsStringUtils::substituteVerticalCharacters( QString string )
   return string;
 }
 
+QString QgsStringUtils::qRegExpEscape( const QString &string )
+{
+  // code and logic taken from the Qt source code
+  const QLatin1Char backslash( '\\' );
+  const int count = string.count();
+
+  QString escaped;
+  escaped.reserve( count * 2 );
+  for ( int i = 0; i < count; i++ )
+  {
+    switch ( string.at( i ).toLatin1() )
+    {
+      case '$':
+      case '(':
+      case ')':
+      case '*':
+      case '+':
+      case '.':
+      case '?':
+      case '[':
+      case '\\':
+      case ']':
+      case '^':
+      case '{':
+      case '|':
+      case '}':
+        escaped.append( backslash );
+    }
+    escaped.append( string.at( i ) );
+  }
+  return escaped;
+}
+
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )
   : mMatch( match )
   , mReplacement( replacement )
