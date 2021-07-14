@@ -33,7 +33,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   mFormulaString = decodedUriParams.formula;
 
   QStringList rasterRefs;
-  //std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
+  mLastError.clear();
   mCalcNode.reset( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
   if ( !mCalcNode )
@@ -55,41 +55,40 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   {
     QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( it->uri, it->name, it->provider );
 
-    if ( rProvidedLayer->isValid() )
+    if (! rProvidedLayer->isValid() )
     {
-      if ( ! mRasterLayers.contains( rProvidedLayer ) )
-      {
-        //this var is not useful right now except for the copy constructor
-        mRasterLayers << rProvidedLayer;
+        mValid = false;
+        return;
+    }
 
-        for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+    if ( mRasterLayers.contains( rProvidedLayer ) )
+    {
+        continue;
+    }
+
+    //this var is not useful right now except for the copy constructor
+    mRasterLayers << rProvidedLayer;
+
+    for ( int j = 0; j < rProvidedLayer->bandCount(); ++j )
+    {
+        if ( ! rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
         {
-          if ( rasterRefs.contains( rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 ) ) )
-          {
-            QgsRasterCalculatorEntry entry;
-            entry.raster = rProvidedLayer;
-            entry.bandNumber = j + 1;
-            entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
+            mValid = false;
+            return;
+        }
+
+
+        QgsRasterCalculatorEntry entry;
+        entry.raster = rProvidedLayer;
+        entry.bandNumber = j + 1;
+        entry.ref = rProvidedLayer->name() % QStringLiteral( "@" ) % QString::number( j + 1 );
             /*
             if ( ! uniqueRasterBandIdentifier( entry ) )
               break;
             */
-            mRasterEntries.push_back( entry );
-          }
-          else
-          {
-            mValid = false;
-          }
-        }
-      }
-    }
-    else
-    {
-      mValid = false;
+        mRasterEntries.push_back( entry );
     }
   }
-
-
 }
 
 
@@ -150,32 +149,6 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
   Q_UNUSED( bandNo );
   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
   double *outputData = ( double * )( tblock->bits() );
-
-  //from rastercalculator.cpp processCalculation
-  mLastError.clear();
-  //std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
-
-  //CHECKS
-  if ( !mCalcNode )
-  {
-    QgsDebugMsg( "ParserError = 4, Error parsing formula" );
-  }
-
-  // Check input layers and bands
-  for ( const auto &entry : std::as_const( mRasterEntries ) )
-  {
-    if ( !entry.raster ) // no raster layer in entry
-    {
-      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( entry.ref );
-      QgsDebugMsg( "InputLayerError = 2, Error reading input layer" );
-    }
-    if ( entry.bandNumber <= 0 || entry.bandNumber > entry.raster->bandCount() )
-    {
-      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( entry.bandNumber ).arg( entry.ref );
-      QgsDebugMsg( "BandError = 6, Invalid band number for input" );
-
-    }
-  }
 
   //else  // Original code (memory inefficient route)
   QMap< QString, QgsRasterBlock * > inputBlocks;
@@ -292,9 +265,7 @@ int QgsVirtualRasterProvider::yBlockSize() const
 
 QgsVirtualRasterProviderMetadata::QgsVirtualRasterProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
-{
-
-}
+{}
 
 QgsVirtualRasterProvider *QgsVirtualRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {

@@ -15,7 +15,6 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
   public:
 
     QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
-    //QgsVirtualRasterProvider ( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     virtual ~QgsVirtualRasterProvider() override;
 
     QString dataSourceUri( bool expandAuthConfig = false ) const override;
