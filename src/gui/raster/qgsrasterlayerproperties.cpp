@@ -87,6 +87,7 @@
 #include <QUrl>
 #include <QMenu>
 #include <QScreen>
+#include <QRegularExpressionValidator>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -869,7 +870,7 @@ void QgsRasterLayerProperties::sync()
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract

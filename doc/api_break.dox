@@ -16,6 +16,16 @@ with too big impact should be deferred to a major version release.
 
 This page tries to maintain a list with incompatible changes that happened in previous releases.
 
+QGIS 3.22        {#qgis_api_break_3_22}
+=========
+
+QgsApplication       {#qgis_api_break_3_22_qgsapplication}
+--------------
+
+- QgsApplication::shortNameRegExp function was removed as part of a general code migration away from deprecated
+QRegExp class. It has been replaced with QgsApplication::shortNameRegularExpression which returns a
+QRegularExpression object.
+
 QGIS 3.20        {#qgis_api_break_3_20}
 =========
 

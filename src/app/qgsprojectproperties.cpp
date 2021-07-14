@@ -81,6 +81,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
+#include <QRegularExpressionValidator>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -467,7 +468,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
 
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mWMSName->setValidator( shortNameValidator );
 
   // WMS Contact Position
