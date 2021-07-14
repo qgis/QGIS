@@ -3,6 +3,11 @@ on:
   schedule:
   - cron: "30 1 * * *"
   workflow_dispatch:
+    inputs:
+      operation_count:
+        description: 'Operation count'
+        required: true
+        default: '100'
 
 jobs:
   stale:
@@ -42,4 +47,4 @@ jobs:
         only-labels: 'feedback'
         days-before-stale: 14
         days-before-close: 28
-        operations-per-run: 100
+        operations-per-run: ${{ github.event.inputs.operation_count }}" 
