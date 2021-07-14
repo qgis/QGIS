@@ -148,6 +148,20 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   // Precondition
   Q_ASSERT( static_cast<QgsFieldsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
+  const auto constraints { field.constraints().constraints() };
+  QStringList constraintsText;
+  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+  {
+    constraintsText.push_back( tr( "Not Null" ) );
+  }
+  if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
+  {
+    constraintsText.push_back( tr( "Unique" ) );
+  }
+  if ( ! constraintsText.isEmpty() )
+  {
+    setToolTip( QStringLiteral( "<ul><li>%1</li></ul>" ).arg( constraintsText.join( QStringLiteral( "</li><li>" ) ) ) );
+  }
 }
 
 QgsFieldItem::~QgsFieldItem()
