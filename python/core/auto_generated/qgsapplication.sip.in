@@ -384,6 +384,10 @@ Returns the path to user's style.
 %Docstring
 Returns the short name regular expression for line edit validator
 
+.. note::
+
+   This functionality was previously available as `shortNameRegExp` for QGIS <= 3.20
+
 .. versionadded:: 3.22
 %End
 

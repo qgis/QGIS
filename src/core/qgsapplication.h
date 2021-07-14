@@ -406,6 +406,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the short name regular expression for line edit validator
+     * \note This functionality was previously available as `shortNameRegExp` for QGIS <= 3.20
      * \since QGIS 3.22
      */
     static QRegularExpression shortNameRegularExpression();
