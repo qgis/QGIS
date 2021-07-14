@@ -57,7 +57,6 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
-    double mValue = 0;
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
@@ -131,7 +130,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     void clearAll();
 
-    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch );
+    void addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &mapPointMatch, Qt::KeyboardModifiers modifiers );
     void updateFreeVertices();
 
     //! Checks if we are closed to a vertex, if yes return the index of the vertex;
@@ -171,6 +170,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
 
+
     QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
@@ -180,7 +180,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<int> mNewFaceCandidate;
     bool mDoubleClicks = false;
     QgsPointXY mLastClickPoint;
-    double mCurrentZValue = 0;
+    double mOrdinaryZValue = 0;
+    bool mIsSelectedZValue = false;
+    double mSelectedZValue = 0;
 
     //! Rubber band used to highlight a face that is on mouse over and not dragging anything, own by map canvas
     QgsRubberBand *mFaceRubberBand = nullptr;
