@@ -101,6 +101,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsprovidersublayersdialog.h"
+#include "qgsmaplayerfactory.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -5438,6 +5439,8 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
 bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &enc, const QString &dataSourceType, const bool guiWarning )
 {
+  //note: this method ONLY supports vector layers from the OGR provider!
+
   QgsCanvasRefreshBlocker refreshBlocker;
 
   QList<QgsMapLayer *> layersToAdd;
@@ -13119,60 +13122,81 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
   // Not all providers implement decodeUri(), so use original uri if uriElements is empty
   const QString updatedUri = uriElements.isEmpty() ? uri : QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
 
-  // query sublayers
-  QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
-      QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
-      : QgsProviderRegistry::instance()->querySublayers( updatedUri );
-
-  // filter out non-matching sublayers
-  sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails & sublayer )
-  {
-    return sublayer.type() != type;
-  } ), sublayers.end() );
+  const bool canQuerySublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) &&
+                                 ( QgsProviderRegistry::instance()->providerMetadata( providerKey )->capabilities() & QgsProviderMetadata::QuerySublayers );
 
   T *result = nullptr;
-  if ( sublayers.empty() )
+  if ( canQuerySublayers )
   {
-    if ( guiWarnings )
-    {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
-      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
-    }
+    // query sublayers
+    QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->providerMetadata( providerKey ) ?
+        QgsProviderRegistry::instance()->providerMetadata( providerKey )->querySublayers( updatedUri )
+        : QgsProviderRegistry::instance()->querySublayers( updatedUri );
 
-    // since the layer is bad, stomp on it
-    return nullptr;
-  }
-  else if ( sublayers.size() > 1 )
-  {
-    // ask user for sublayers (unless user settings dictate otherwise!)
-    switch ( shouldAskUserForSublayers( sublayers ) )
+    // filter out non-matching sublayers
+    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails & sublayer )
     {
-      case SublayerHandling::AskUser:
+      return sublayer.type() != type;
+    } ), sublayers.end() );
+
+    if ( sublayers.empty() )
+    {
+      if ( guiWarnings )
       {
-        QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, {type}, this );
-        if ( dlg.exec() )
+        QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+        visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
+      }
+
+      // since the layer is bad, stomp on it
+      return nullptr;
+    }
+    else if ( sublayers.size() > 1 )
+    {
+      // ask user for sublayers (unless user settings dictate otherwise!)
+      switch ( shouldAskUserForSublayers( sublayers ) )
+      {
+        case SublayerHandling::AskUser:
         {
-          const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
-          if ( !selectedLayers.isEmpty() )
+          QgsProviderSublayersDialog dlg( updatedUri, path, sublayers, {type}, this );
+          if ( dlg.exec() )
           {
-            result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ).value( 0 ) );
+            const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
+            if ( !selectedLayers.isEmpty() )
+            {
+              result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ).value( 0 ) );
+            }
           }
+          break;
         }
-        break;
-      }
-      case SublayerHandling::LoadAll:
+        case SublayerHandling::LoadAll:
+        {
+          result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ).value( 0 ) );
+          break;
+        }
+        case SublayerHandling::AbortLoading:
+          break;
+      };
+    }
+    else
+    {
+      result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ).value( 0 ) );
+
+      if ( result )
       {
-        result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ).value( 0 ) );
-        break;
+        QString base( baseName );
+        if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+        {
+          base = QgsMapLayer::formatLayerName( base );
+        }
+        result->setName( base );
       }
-      case SublayerHandling::AbortLoading:
-        break;
-    };
+    }
   }
   else
   {
-    result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ).value( 0 ) );
-
+    QgsMapLayerFactory::LayerOptions options( QgsProject::instance()->transformContext() );
+    options.loadDefaultStyle = false;
+    result = qobject_cast< T * >( QgsMapLayerFactory::createLayer( uri, name, type, options, providerKey ) );
     if ( result )
     {
       QString base( baseName );
@@ -13181,6 +13205,10 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
         base = QgsMapLayer::formatLayerName( base );
       }
       result->setName( base );
+      QgsProject::instance()->addMapLayer( result );
+
+      askUserForDatumTransform( result->crs(), QgsProject::instance()->crs(), result );
+      postProcessAddedLayer( result );
     }
   }
 

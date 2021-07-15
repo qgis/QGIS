@@ -1012,6 +1012,11 @@ QString QgsOgrProviderMetadata::filters( FilterType type )
   return QString();
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsOgrProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
+
 bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
