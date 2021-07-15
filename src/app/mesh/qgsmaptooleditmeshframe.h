@@ -243,7 +243,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSplitFaces = nullptr;
 
     QAction *mActionDelaunayTriangulation = nullptr;
-    QAction *mActionRefinement = nullptr;
+    QAction *mActionFacesRefinement = nullptr;
 
     QAction *mActionDigitizing = nullptr;
 

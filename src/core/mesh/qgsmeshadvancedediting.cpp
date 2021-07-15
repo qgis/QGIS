@@ -72,7 +72,7 @@ QgsTopologicalMesh::Changes QgsMeshEditRefineFaces::apply( QgsMeshEditor *meshEd
     return QgsTopologicalMesh::Changes();
 
   // create new vertices
-  const QgsMesh &nativeMesh =  *meshEditor->topologicalMesh()->mesh();
+  const QgsMesh &nativeMesh =  *meshEditor->topologicalMesh().mesh();
   mAddedFacesFirstIndex = nativeMesh.faceCount();
 
   mFaceIndexesToRemove = facesRefinement.keys();
@@ -83,10 +83,10 @@ QgsTopologicalMesh::Changes QgsMeshEditRefineFaces::apply( QgsMeshEditor *meshEd
   {
     int  faceIndexToRemove = mFaceIndexesToRemove.at( i );
     mFacesToRemove[i] = nativeMesh.face( faceIndexToRemove );
-    mFacesNeighborhoodToRemove[i] = meshEditor->topologicalMesh()->neighborsOfFace( faceIndexToRemove );
+    mFacesNeighborhoodToRemove[i] = meshEditor->topologicalMesh().neighborsOfFace( faceIndexToRemove );
   }
 
-  meshEditor->topologicalMesh()->applyChanges( *this );
+  meshEditor->topologicalMesh().applyChanges( *this );
 
   return *this;
 }
@@ -95,8 +95,8 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
     QSet<int> &facesToRefine,
     QHash<int, FaceRefinement> &facesRefinement )
 {
-  const QgsTopologicalMesh &topology = *meshEditor->topologicalMesh();
-  const QgsMesh &mesh = *meshEditor->topologicalMesh()->mesh();
+  const QgsTopologicalMesh &topology = meshEditor->topologicalMesh();
+  const QgsMesh &mesh = *meshEditor->topologicalMesh().mesh();
 
   int startingVertexIndex = mesh.vertexCount();
   int startingGlobalFaceIndex = mesh.faceCount();
@@ -275,8 +275,8 @@ bool QgsMeshEditRefineFaces::createNewBorderFaces( QgsMeshEditor *meshEditor,
     QHash<int, FaceRefinement> &facesRefinement,
     QHash<int, BorderFace> &borderFaces )
 {
-  const QgsTopologicalMesh &topology = *meshEditor->topologicalMesh();
-  const QgsMesh &mesh = *meshEditor->topologicalMesh()->mesh();
+  const QgsTopologicalMesh &topology = meshEditor->topologicalMesh();
+  const QgsMesh &mesh = *meshEditor->topologicalMesh().mesh();
 
   int startingVertexIndex = mesh.vertexCount();
   int startingFaceChangesGlobalIndex = mesh.faceCount();

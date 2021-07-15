@@ -80,10 +80,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     bool faceCanBeAdded( const QgsMeshFace &face );
 
     /**
-     * Returns TRUE if the face is geometrically compatbile, that is not intersect or contins any other elements (faces or vertices).
+     * Returns TRUE if the face does not intersect or contains any other elements (faces or vertices)
      * The topological compatibility is not checked
      */
-
     bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
 
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
@@ -193,8 +192,8 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
 
-    //! Returns a pointer to the topological mesh
-    QgsTopologicalMesh *topologicalMesh(); SIP_SKIP
+    //! Returns a reference to the topological mesh
+    QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
 
     //! Return TRUE if the edited mesh is consistent
     bool checkConsistency() const;

@@ -449,7 +449,7 @@ class CORE_EXPORT Qgis
       FlatFace, //!< A flat face is present
       UniqueSharedVertex, //!< A least two faces share only one vertices
       InvalidVertex, //!< An error occurs due to an invalid vertex (for example, vertex index is out of range the available vertex)
-      FacesLinkWithSameClockwise, //!< Two faces are attempt to be link with common vertices with the same clockwise
+      ManifoldFace, //!< ManifoldFace
     };
     Q_ENUM( MeshEditingErrorType )
 

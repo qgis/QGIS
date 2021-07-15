@@ -361,12 +361,12 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
     QgsMeshTriangulation triangulation;
 
     QVector<int> triangulationVertexToMeshVertex( vertexIndextoTriangulate.count() );
-    const QgsMesh destinationMesh = *meshEditor->topologicalMesh()->mesh();
+    const QgsMesh *destinationMesh = meshEditor->topologicalMesh().mesh();
 
     for ( int i = 0; i < vertexIndextoTriangulate.count(); ++i )
     {
       triangulationVertexToMeshVertex[i] = vertexIndextoTriangulate.at( i );
-      triangulation.addVertex( destinationMesh.vertices.at( vertexIndextoTriangulate.at( i ) ) );
+      triangulation.addVertex( destinationMesh->vertices.at( vertexIndextoTriangulate.at( i ) ) );
     }
 
     QgsMesh resultingTriangulation = triangulation.triangulatedMesh();
@@ -393,10 +393,10 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
     while ( !facesReady && !giveUp )
     {
       QgsMeshEditingError error;
-      topologicFaces = meshEditor->topologicalMesh()->createNewTopologicalFaces( destinationFaces, true, error );
+      topologicFaces = meshEditor->topologicalMesh().createNewTopologicalFaces( destinationFaces, true, error );
 
       if ( error == QgsMeshEditingError() )
-        error = meshEditor->topologicalMesh()->canFacesBeAdded( topologicFaces );
+        error = meshEditor->topologicalMesh().canFacesBeAdded( topologicFaces );
 
       switch ( error.errorType )
       {
@@ -407,7 +407,7 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
         case Qgis::MeshEditingErrorType::InvalidFace:
         case Qgis::MeshEditingErrorType::FlatFace:
         case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
-        case Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise:
+        case Qgis::MeshEditingErrorType::ManifoldFace:
           if ( error.elementIndex != -1 )
             destinationFaces.remove( error.elementIndex );
           else
@@ -428,12 +428,12 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
     }
   }
 
-  Q_ASSERT( meshEditor->topologicalMesh()->checkConsistency() == QgsMeshEditingError() );
+  Q_ASSERT( meshEditor->topologicalMesh().checkConsistency() == QgsMeshEditingError() );
 
   mMessage = QObject::tr( "%1 vertices have not been included in the triangulation" ).arg( removedVerticesFromTriangulation.count() );
 
   if ( triangulationReady && !giveUp )
-    return meshEditor->topologicalMesh()->addFaces( topologicFaces );
+    return meshEditor->topologicalMesh().addFaces( topologicFaces );
   else
     return QgsTopologicalMesh::Changes();
 }

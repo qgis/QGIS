@@ -94,7 +94,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mActionRemoveVerticesFillingHole = new QAction( this );
   mActionDelaunayTriangulation = new QAction( tr( "Delaunay triangulation with selected vertices" ), this );
-  mActionRefinement = new QAction( tr( "Refine current face" ), this );
+  mActionFacesRefinement = new QAction( tr( "Refine current face" ), this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   mActionRemoveFaces = new QAction( tr( "Remove current face" ), this );
   mActionSplitFaces = new QAction( tr( "Split current face" ), this );
@@ -123,7 +123,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
     }
   } );
 
-  connect( mActionRefinement, &QAction::triggered, this, [this]
+  connect( mActionFacesRefinement, &QAction::triggered, this, [this]
   {
     QgsMeshEditRefineFaces refinement;
     if ( mCurrentEditor && mSelectedFaces.count() > 0 )
@@ -371,7 +371,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
       if ( !mSelectedFaces.isEmpty() || mCurrentFaceIndex != -1 )
       {
         newActions << mActionRemoveFaces;
-        lastActions << mActionRefinement;
+        lastActions << mActionFacesRefinement;
       }
 
       if ( mSplittableFaceCount > 0 ||
@@ -1420,17 +1420,17 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   if ( mSelectedFaces.count() == 1 )
   {
     mActionRemoveFaces->setText( tr( "Remove selected face" ) );
-    mActionRefinement->setText( tr( "Refine selected face" ) );
+    mActionFacesRefinement->setText( tr( "Refine selected face" ) );
   }
   else if ( mSelectedFaces.count() > 1 )
   {
     mActionRemoveFaces->setText( tr( "Remove %1 selected faces" ).arg( mSelectedFaces.count() ) );
-    mActionRefinement->setText( tr( "Refine %1 selected faces" ).arg( mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %1 selected faces" ).arg( mSelectedFaces.count() ) );
   }
   else
   {
     mActionRemoveFaces->setText( tr( "Remove current face" ) );
-    mActionRefinement->setText( tr( "Refine current face" ) );
+    mActionFacesRefinement->setText( tr( "Refine current face" ) );
   }
 
   mSplittableFaceCount = 0;

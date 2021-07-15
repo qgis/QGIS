@@ -72,10 +72,9 @@ Initialize the mesh editor and return errors if the internal native mesh have to
 Returns ``True`` if a ``face`` can be added to the mesh
 %End
 
-
     bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
 %Docstring
-Returns ``True`` if the face is geometrically compatbile, that is not intersect or contins any other elements (faces or vertices).
+Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
 The topological compatibility is not checked
 %End
 

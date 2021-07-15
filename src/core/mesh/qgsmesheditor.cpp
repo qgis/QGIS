@@ -260,11 +260,20 @@ void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvance
   emit meshEdited();
 }
 
-
 bool QgsMeshEditor::checkConsistency() const
 {
-  if ( mTopologicalMesh.checkConsistency() != QgsMeshEditingError() )
-    return false;
+  switch ( mTopologicalMesh.checkConsistency().errorType )
+  {
+    case Qgis::MeshEditingErrorType::NoError:
+      break;
+    case Qgis::MeshEditingErrorType::InvalidFace:
+    case Qgis::MeshEditingErrorType::TooManyVerticesInFace:
+    case Qgis::MeshEditingErrorType::FlatFace:
+    case Qgis::MeshEditingErrorType::UniqueSharedVertex:
+    case Qgis::MeshEditingErrorType::InvalidVertex:
+    case Qgis::MeshEditingErrorType::ManifoldFace:
+      return false;
+  }
 
   if ( mTriangularMesh->vertices().count() != mMesh->vertexCount() )
     return false;
@@ -636,9 +645,9 @@ QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const
   return mTopologicalMesh.vertexCirculator( vertexIndex );
 }
 
-QgsTopologicalMesh *QgsMeshEditor::topologicalMesh()
+QgsTopologicalMesh &QgsMeshEditor::topologicalMesh()
 {
-  return &mTopologicalMesh;
+  return mTopologicalMesh;
 }
 
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )

@@ -338,7 +338,7 @@ void TestQgsMeshEditor::editTopologicMesh()
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
   QVERIFY( error == QgsMeshEditingError() );
   error = topologicalMesh.canFacesBeAdded( topologicFaces );
-  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, 0 ) );
+  QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 0 ) );
 
   faces = {{5, 7, 6, 4}};
   topologicFaces = topologicalMesh.createNewTopologicalFaces( faces, true, error );
@@ -909,7 +909,7 @@ void TestQgsMeshEditor::particularCases()
     QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
-    QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, 2 ) );
+    QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 2 ) );
   }
 
   {
@@ -941,7 +941,7 @@ void TestQgsMeshEditor::particularCases()
     QgsTopologicalMesh::TopologicalFaces topologicFaces = meshEditor.mTopologicalMesh.createNewTopologicalFaces( facesToAdd, true, error );
     QVERIFY( error == QgsMeshEditingError() );
     error = meshEditor.mTopologicalMesh.canFacesBeAdded( topologicFaces );
-    QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, 4 ) );
+    QVERIFY( error == QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, 4 ) );
 
     QVERIFY( !meshEditor.isFaceGeometricallyCompatible( {1, 3, 2} ) );
   }

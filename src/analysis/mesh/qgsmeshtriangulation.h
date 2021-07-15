@@ -75,6 +75,8 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
 
     /**
      * Adds a new vertex in the triangulation and returns the index of the new vertex
+     *
+     * \since QGIS 3.22
      */
     int addVertex( const QgsPoint &vertex );
 

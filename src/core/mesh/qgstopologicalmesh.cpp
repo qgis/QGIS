@@ -1135,7 +1135,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
         int posInNewFace = vertexPositionInFace( boundary, newFaceOnBoundary );
         int previousVertexIndex = ( posInNewFace + faceSize - 1 ) % faceSize;
         if ( newFaceOnBoundary.at( previousVertexIndex ) == oppositeVertexCCWInMesh )
-          return QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, newFacescirculator.currentFaceIndex() );
+          return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
       }
 
       meshCirculator.goBoundaryClockwise();
@@ -1143,7 +1143,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
       int oppositeVertexCWInMesh = meshCirculator.oppositeVertexClockwise();
 
       if ( oppositeVertexCWInMesh == oppositeVertexInNewFaces )
-        return QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, newFacescirculator.currentFaceIndex() );
+        return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
 
       //if we are here we need more checks
       boundariesToCheckCounterClockwiseInNewFaces.append( {boundary, linkedFace} );
@@ -1178,7 +1178,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeAdded( const QgsTopologicalMes
     int oppositeVertexCCWInMesh = meshCirculator.oppositeVertexCounterClockwise();
 
     if ( oppositeVertexCCWInMesh == oppositeVertexInNewFaces )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, newFacescirculator.currentFaceIndex() );
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, newFacescirculator.currentFaceIndex() );
 
     uniqueSharedVertexBoundary.append( boundary );
   }
@@ -1257,7 +1257,6 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
 
 QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createNewTopologicalFaces( const QVector<QgsMeshFace> &faces,  bool uniqueSharedVertexAllowed, QgsMeshEditingError &error )
 {
-  QVector<int> vtf; //will not be used
   return createTopologicalFaces( faces, nullptr, error, uniqueSharedVertexAllowed );
 }
 
@@ -1290,7 +1289,7 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
       int v2 = face[( i + 1 ) % faceSize];
       if ( verticesToNeighbor[v2].contains( v1 ) )
       {
-        error = QgsMeshEditingError( Qgis::MeshEditingErrorType::FacesLinkWithSameClockwise, faceIndex );
+        error = QgsMeshEditingError( Qgis::MeshEditingErrorType::ManifoldFace, faceIndex );
         return ret;
       }
       else
