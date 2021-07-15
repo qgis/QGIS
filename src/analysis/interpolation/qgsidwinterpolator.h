@@ -74,7 +74,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     double mDistanceCoefficient = 2.0;
 
     //! Cached vertex data for input sources
-    QVector<QgsInterpolatorVertexData> mCachedBaseData;
+    std::vector<QgsInterpolatorVertexData> mCachedBaseData;
 
     /**
      * Caches the vertex and value data from the provider. All the vertex data

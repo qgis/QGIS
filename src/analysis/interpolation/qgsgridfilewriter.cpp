@@ -59,11 +59,11 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   double currentXValue;
 
   // Builds the list of coords
+  QVector<QgsPointXY> points;
+  points.reserve( mNumColumns );
   for ( int i = 0; i < mNumRows; ++i )
   {
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
-    QVector<QgsPointXY> points;
-    points.reserve( mNumColumns );
     for ( int j = 0; j < mNumColumns; ++j )
     {
       if ( feedback )
@@ -87,6 +87,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 
     QFuture< double > interpolated = QtConcurrent::mapped( points, interpolate );
     interpolated.waitForFinished();
+    points.clear();
     for ( const auto &interpolatedValue : std::as_const( interpolated ) )
     {
       outStream << interpolatedValue << ' ';
