@@ -2691,7 +2691,6 @@ void QgisApp::createActions()
   connect( mActionAddSpatiaLiteLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "spatialite" ) ); } );
 #endif
   connect( mActionAddMssqlLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
-  connect( mActionAddDb2Layer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "DB2" ) ); } );
   connect( mActionAddOracleLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "oracle" ) ); } );
   connect( mActionAddHanaLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "hana" ) ); } );
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
@@ -3506,9 +3505,7 @@ void QgisApp::createToolBars()
     bt->addAction( mActionAddPgLayer );
   if ( mActionAddMssqlLayer )
     bt->addAction( mActionAddMssqlLayer );
-  if ( mActionAddDb2Layer )
-    bt->addAction( mActionAddDb2Layer );
-  if ( mActionAddOracleLayer )
+   if ( mActionAddOracleLayer )
     bt->addAction( mActionAddOracleLayer );
   if ( mActionAddHanaLayer )
     bt->addAction( mActionAddHanaLayer );
@@ -3522,12 +3519,9 @@ void QgisApp::createToolBars()
       defAddDbLayerAction = mActionAddMssqlLayer;
       break;
     case 2:
-      defAddDbLayerAction = mActionAddDb2Layer;
-      break;
-    case 3:
       defAddDbLayerAction = mActionAddOracleLayer;
       break;
-    case 4:
+    case 3:
       defAddDbLayerAction = mActionAddHanaLayer;
       break;
   }
@@ -3987,7 +3981,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ) );
 #endif
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ) );
-  mActionAddDb2Layer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ) );
 #ifdef HAVE_ORACLE
   mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ) );
 #endif
@@ -16573,12 +16566,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 0 );
   else if ( mActionAddMssqlLayer && action == mActionAddMssqlLayer )
     settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 1 );
-  else if ( mActionAddDb2Layer && action == mActionAddDb2Layer )
-    settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 2 );
   else if ( mActionAddOracleLayer && action == mActionAddOracleLayer )
-    settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 3 );
+    settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 2 );
   else if ( mActionAddHanaLayer && action == mActionAddHanaLayer )
-    settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 4 );
+    settings.setValue( QStringLiteral( "UI/defaultAddDbLayerAction" ), 3 );
   else if ( action == mActionMoveFeature )
     settings.setValue( QStringLiteral( "UI/defaultMoveTool" ), 0 );
   else if ( action == mActionMoveFeatureCopy )
