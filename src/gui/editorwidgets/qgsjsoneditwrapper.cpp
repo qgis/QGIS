@@ -79,7 +79,7 @@ void QgsJsonEditWrapper::updateValues( const QVariant &value, const QVariantList
 
 void QgsJsonEditWrapper::setEnabled( bool enabled )
 {
-  if ( mJsonEditWidget )
-    mJsonEditWidget->setEnabled( enabled );
+  // No need to disable JsonEditWidget as it is already read only
+  Q_UNUSED( enabled )
 }
 
