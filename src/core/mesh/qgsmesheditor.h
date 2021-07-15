@@ -159,6 +159,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     void changeXYValues( const QList<int> &verticesIndexes, const QList<QgsPointXY> &newValues );
 
+    /**
+     * Applies an advance editing on the edited mesh, see QgsMeshAdvancedEditing
+     */
     void advancedEdit( QgsMeshAdvancedEditing *editing );
 
     //! Stops editing

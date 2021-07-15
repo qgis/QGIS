@@ -42,6 +42,8 @@ void QgsMeshAdvancedEditing::clear()
   mInputVertices.clear();
   mInputFaces.clear();
   mMessage.clear();
+
+  clear();
 }
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
@@ -227,7 +229,7 @@ void QgsMeshEditRefineFaces::createNewVerticesAndRefinedFaces( QgsMeshEditor *me
     }
   }
 
-  //all new refined faces are in place, we can build their neighborhood whith other new refined faces
+  //all new refined faces are in place, we can build their neighborhood with other new refined faces
   for ( QHash<int, FaceRefinement>::iterator it = facesRefinement.begin(); it != facesRefinement.end(); ++it )
   {
     int faceIndex = it.key();

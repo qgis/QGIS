@@ -168,7 +168,7 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
  * \class QgsMeshEditingDelaunayTriangulation
  *
  * \brief Class that can be used with QgsMeshEditor::advancedEdit() to add triangle faces to a mesh created by
- * a Delaunay triangulation on provided exisiting vertex.
+ * a Delaunay triangulation on provided existing vertex.
  *
  * \since QGIS 3.22
  */

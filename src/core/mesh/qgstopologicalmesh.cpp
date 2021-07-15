@@ -764,7 +764,7 @@ int QgsTopologicalMesh::Changes::removedFaceIndexInmesh( int internalIndex ) con
   return mFaceIndexesToRemove.at( internalIndex );
 }
 
-void QgsTopologicalMesh::Changes::clear()
+void QgsTopologicalMesh::Changes::clearChanges()
 {
   mAddedFacesFirstIndex = 0;
   mFaceIndexesToRemove.clear();

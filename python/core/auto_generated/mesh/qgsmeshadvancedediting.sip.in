@@ -47,7 +47,7 @@ Sets the input faces indexes that will be used for the editing
 Returns a message provided by the advanced editing after
 %End
 
-    virtual void clear();
+    void clear();
 %Docstring
 Removes all data provided to the editing or created by the editing
 %End

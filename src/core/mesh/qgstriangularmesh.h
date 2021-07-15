@@ -416,7 +416,7 @@ namespace QgsMeshUtils
    * Checks if the triangle is counter clockwise, if not sets it counter clockwise
    * \since QGIS 3.22
   */
-  void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v1, const QgsMeshVertex &v2, const QgsMeshVertex &v3 );
+  void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v0, const QgsMeshVertex &v1, const QgsMeshVertex &v2 );
 
 };
 

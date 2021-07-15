@@ -138,10 +138,12 @@ class CORE_EXPORT QgsTopologicalMesh
         QList<QgsPointXY> mOldXYValues;
         QList<int> mNativeFacesIndexesGeometryChanged;
 
+        //! Clears all changes
+        void clearChanges();
+
+      private:
         int addedFaceIndexInMesh( int internalIndex ) const;
         int removedFaceIndexInmesh( int internalIndex ) const;
-
-        void clear();
 
         friend class QgsTopologicalMesh;
     };
@@ -394,7 +396,7 @@ class CORE_EXPORT QgsMeshVertexCirculator
     //! Returns  whether the vertex circulator is valid
     bool isValid() const;
 
-    //! Returns all the faces indexes arround the vertex
+    //! Returns all the faces indexes around the vertex
     QList<int> facesAround() const;
 
   private:

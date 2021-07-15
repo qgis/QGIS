@@ -122,7 +122,7 @@ class QgsMeshEditingDelaunayTriangulation : QgsMeshAdvancedEditing
 %Docstring(signature="appended")
 
 Class that can be used with :py:func:`QgsMeshEditor.advancedEdit()` to add triangle faces to a mesh created by
-a Delaunay triangulation on provided exisiting vertex.
+a Delaunay triangulation on provided existing vertex.
 
 .. versionadded:: 3.22
 %End

@@ -53,7 +53,7 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
     QString message() const;
 
     //! Removes all data provided to the editing or created by the editing
-    virtual void clear();
+    void clear();
 
   protected:
     QList<int> mInputVertices;

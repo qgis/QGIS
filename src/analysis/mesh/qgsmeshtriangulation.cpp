@@ -380,7 +380,7 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
         vertexIndex = triangulationVertexToMeshVertex[vertexIndex];
     }
 
-    //The new triangulation may contains faces that intersect exisiting faces, we need to remove them
+    //The new triangulation may contains faces that intersect existing faces, we need to remove them
     QVector<QgsMeshFace> destinationFaces;
     for ( const QgsMeshFace &face : rawDestinationFaces )
     {
