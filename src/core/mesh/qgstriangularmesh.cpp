@@ -941,8 +941,8 @@ void QgsMeshUtils::setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVert
   //Check the clock wise, and if it is not counter clock wise, swap indexes to make the oientation counter clock wise
   double ux = v1.x() - v0.x();
   double uy = v1.y() - v0.y();
-  double vx = v0.x() - v0.x();
-  double vy = v0.y() - v0.y();
+  double vx = v2.x() - v0.x();
+  double vy = v2.y() - v0.y();
 
   double crossProduct = ux * vy - uy * vx;
   if ( crossProduct < 0 ) //CW -->change the orientation

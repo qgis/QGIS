@@ -43,7 +43,7 @@ void QgsMeshAdvancedEditing::clear()
   mInputFaces.clear();
   mMessage.clear();
 
-  clear();
+  clearChanges();
 }
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
