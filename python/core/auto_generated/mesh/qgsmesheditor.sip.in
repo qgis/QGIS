@@ -152,6 +152,9 @@ The caller has the responsibility to check if changing the vertices coordinates 
 %End
 
     void advancedEdit( QgsMeshAdvancedEditing *editing );
+%Docstring
+Applies an advance editing on the edited mesh, see :py:class:`QgsMeshAdvancedEditing`
+%End
 
     void stopEditing();
 %Docstring
