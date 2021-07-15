@@ -75,7 +75,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QgsSettings settings;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
   connect( actionRefresh, &QAction::triggered, this, [ = ] { directoryItem->refresh(); } );
   menu->addAction( actionRefresh );
 

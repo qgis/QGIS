@@ -30,32 +30,32 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 {
   if ( QgsVectorTileLayerItem *layerItem = qobject_cast< QgsVectorTileLayerItem * >( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit…" ), this );
+    QAction *actionEdit = new QAction( tr( "Edit…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
     menu->addAction( actionEdit );
 
-    QAction *actionDelete = new QAction( tr( "Delete" ), this );
+    QAction *actionDelete = new QAction( tr( "Delete" ), menu );
     connect( actionDelete, &QAction::triggered, this, [layerItem] { deleteConnection( layerItem ); } );
     menu->addAction( actionDelete );
   }
 
   if ( QgsVectorTileRootItem *rootItem = qobject_cast< QgsVectorTileRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Generic Connection…" ), this );
+    QAction *actionNew = new QAction( tr( "New Generic Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionNewArcGISConnection = new QAction( tr( "New ArcGIS Vector Tile Service Connection…" ), this );
+    QAction *actionNewArcGISConnection = new QAction( tr( "New ArcGIS Vector Tile Service Connection…" ), menu );
     connect( actionNewArcGISConnection, &QAction::triggered, this, [rootItem] { newArcGISConnection( rootItem ); } );
     menu->addAction( actionNewArcGISConnection );
 
     menu->addSeparator();
 
-    QAction *actionSaveXyzTilesServers = new QAction( tr( "Save Connections…" ), this );
+    QAction *actionSaveXyzTilesServers = new QAction( tr( "Save Connections…" ), menu );
     connect( actionSaveXyzTilesServers, &QAction::triggered, this, [] { saveXyzTilesServers(); } );
     menu->addAction( actionSaveXyzTilesServers );
 
-    QAction *actionLoadXyzTilesServers = new QAction( tr( "Load Connections…" ), this );
+    QAction *actionLoadXyzTilesServers = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoadXyzTilesServers, &QAction::triggered, this, [rootItem] { loadXyzTilesServers( rootItem ); } );
     menu->addAction( actionLoadXyzTilesServers );
   }
