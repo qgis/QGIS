@@ -13,42 +13,44 @@
  *                                                                         *
  ***************************************************************************/
 #include <QClipboard>
-
-#include "qgsapplayertreeviewmenuprovider.h"
+#include <QMessageBox>
 
 #include "qgisapp.h"
+#include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsclipboard.h"
-#include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgscolorwidgets.h"
+#include "qgsdialog.h"
 #include "qgsgui.h"
+#include "qgslayernotesmanager.h"
+#include "qgslayernotesutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbol.h"
-#include "qgsstyle.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgssymbolselectordialog.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgssymbollayerutils.h"
-#include "qgsxmlutils.h"
+#include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerutils.h"
 #include "qgsmessagebar.h"
 #include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsqueryresultwidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgslayernotesmanager.h"
-#include "qgslayernotesutils.h"
+#include "qgsxmlutils.h"
 
-#include <QMessageBox>
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -215,6 +217,32 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *stretch = menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
           stretch->setEnabled( rlayer->isValid() );
         }
+      }
+
+      if ( vlayer /* FIXME: no raster support in createSqlVectorLayer || rlayer */ )
+      {
+        std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn { QgsMapLayerUtils::databaseConnection( layer ) };
+        if ( conn )
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/dbmanager.svg" ) ), tr( "Update SQL Layer…" ), menu, [ layer ]
+        {
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection> conn { QgsMapLayerUtils::databaseConnection( layer ) };
+          if ( conn )
+          {
+            QgsDialog dialog;
+            dialog.setObjectName( QStringLiteral( "SQLUpdateDialog" ) );
+            dialog.setWindowTitle( tr( "%1 — Update SQL" ).arg( layer->name() ) );
+            QgsGui::enableAutoGeometryRestore( &dialog );
+            QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn.release() ) };
+            widget->setQuery( layer->dataProvider()->uri().sql() );
+            widget->layout()->setMargin( 0 );
+            dialog.layout()->addWidget( widget );
+
+            // FIXME! connecting to createSqlVectorLayer won't work because we have no QgsVectorLayer *createSqlVectorLayer UPDATE functionality
+            //        also, we'd need a raster equivalent.. and abstract out the QgsDataSourceUri manipulation part so that it can be used
+            //        for both layer creation and update.
+
+          }
+        } );
       }
 
       addCustomLayerActions( menu, layer );

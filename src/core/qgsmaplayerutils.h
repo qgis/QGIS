@@ -25,6 +25,7 @@ class QgsMapLayer;
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateTransformContext;
+class QgsAbstractDatabaseProviderConnection;
 
 /**
  * \ingroup core
@@ -42,6 +43,13 @@ class CORE_EXPORT QgsMapLayerUtils
      * The \a crs argument specifies the desired coordinate reference system for the combined extent.
      */
     static QgsRectangle combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+
+    /**
+     * Creates and returns the (possibly NULL) database connection for a \a layer.
+     * Ownership is transferred to the caller.
+     * \since QGIS 3.22
+     */
+    static QgsAbstractDatabaseProviderConnection *databaseConnection( const QgsMapLayer *layer ) SIP_FACTORY;
 
 };
 
