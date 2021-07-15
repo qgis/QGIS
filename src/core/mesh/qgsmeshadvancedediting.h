@@ -22,26 +22,100 @@
 #include "qgstriangularmesh.h"
 
 class QgsMeshEditor;
+class QgsProcessingFeedback;
 
-
-class CORE_EXPORT QgsMeshAdvancedEditing// : protected QgsTopologicalMesh::Changes
+/**
+ * \ingroup core
+ *
+ * \brief Abstract class that can be derived to implement advanced editing on mesh
+ *
+ * To apply the advanced editing, a pointer to and instance of a derived class is passed
+ * in the method QgsMeshEditor::advancedEdit().
+ *
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes SIP_ABSTRACT
 {
   public:
-    QgsMeshAdvancedEditing();
-    virtual ~QgsMeshAdvancedEditing();
-    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ); SIP_SKIP
 
+    //! Constructor
+    QgsMeshAdvancedEditing();
+    //! Destructor
+    virtual ~QgsMeshAdvancedEditing();
+
+    //! Sets the input vertices indexes that will be used for the editing
     void setInputVertices( const QList<int> verticesIndexes );
 
+    //! Sets the input faces indexes that will be used for the editing
     void setInputFaces( const QList<int> faceIndexes );
 
-    bool isFinished() const {return mIsFinished;}
+    //! Returns a message provided by the advanced editing after
+    QString message() const;
+
+    //! Removes all data provided to the editing or created by the editing
+    virtual void clear();
 
   protected:
-    bool mIsFinished = false;
     QList<int> mInputVertices;
     QList<int> mInputFaces;
+    QString mMessage;
 
+    /**
+     * Apply a change to \a mesh Editor. This method is called by the QgsMeshEditor to apply the editing on the topological mesh
+     *
+     * The method has to be implemented in the derived class to provide the changes of the advancd editing
+     */
+    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0; SIP_SKIP
+
+    friend class QgsMeshEditor;
+};
+
+/**
+ * \ingroup core
+ *
+ * \brief Class that can do a refinement of faces of a mesh
+ *
+ * \since QGIS 3.22
+ */
+class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
+{
+  public:
+
+    //! Constructor
+    QgsMeshEditRefineFaces();
+
+  private:
+    QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
+
+    struct FaceRefinement
+    {
+      QList<int> newVerticesLocalIndex; // new vertices in the same order of the vertex index (ccw)
+      QList<bool> refinedFaceNeighbor;
+      QList<bool> borderFaceNeighbor;
+      int newCenterVertexIndex;
+      QList<int> newFacesChangesIndex;
+    };
+
+    struct BorderFace
+    {
+      QList<bool> refinedFacesNeighbor;
+      QList<bool> borderFacesNeighbor;
+      QList<bool> unchangeFacesNeighbor;
+      QList<int> newVerticesLocalIndex;
+      QList<int> edgeFace; //global index of the dirst face exposed on edge
+    };
+
+    //! Create new vertices of the refinement and populate helper containers
+    void createNewVerticesAndRefinedFaces( QgsMeshEditor *meshEditor,
+                                           QSet<int> &facesToRefine,
+                                           QHash<int, FaceRefinement> &facesRefinement );
+
+    bool createNewBorderFaces( QgsMeshEditor *meshEditor,
+                               const QSet<int> &facesToRefine,
+                               QHash<int, FaceRefinement> &facesRefinement,
+                               QHash<int, BorderFace> &borderFaces );
+
+    friend class TestQgsMeshEditor;
 };
 
 

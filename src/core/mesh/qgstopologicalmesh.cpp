@@ -493,7 +493,6 @@ bool QgsTopologicalMesh::facesCanBeJoinedWithCommonIndex( const QgsMeshFace &fac
   bool canBejoined = ( face1.at( ( commonVertexPosition1 + 1 ) % face1.size() ) == face2.at( ( commonVertexPosition2 - 1 + face2.size() ) % face2.size() ) ) ||
                      ( face1.at( ( commonVertexPosition1 - 1 + face1.size() ) % face1.size() ) == face2.at( ( commonVertexPosition2 + 1 ) % face2.size() ) );
 
-
   return canBejoined;
 }
 
@@ -556,6 +555,13 @@ QgsMeshEditingError QgsTopologicalMesh::checkConsistency() const
 QgsMesh *QgsTopologicalMesh::mesh() const
 {
   return mMesh;
+}
+
+int QgsTopologicalMesh::firstFaceLinked( int vertexIndex ) const
+{
+  if ( vertexIndex < 0 || vertexIndex >= mMesh->vertexCount() )
+    return -1;
+  return mVertexToFace.at( vertexIndex );
 }
 
 bool QgsTopologicalMesh::isVertexOnBoundary( int vertexIndex ) const
@@ -1204,6 +1210,11 @@ void QgsTopologicalMesh::TopologicalFaces::clear()
   mBoundaries.clear();
 }
 
+QVector<QgsTopologicalMesh::FaceNeighbors> QgsTopologicalMesh::TopologicalFaces::facesNeighborhood() const
+{
+  return mFacesNeighborhood;
+}
+
 QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error )
 {
   QgsTopologicalMesh topologicMesh;
@@ -1231,7 +1242,7 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
 
   if ( error.errorType == Qgis::MeshEditingErrorType::NoError )
   {
-    TopologicalFaces subMesh = topologicMesh.createTopologicalFaces( mesh->faces, error, false, true );
+    TopologicalFaces subMesh = createTopologicalFaces( mesh->faces, &topologicMesh.mVertexToFace, error, false );
     topologicMesh.mFacesNeighborhood = subMesh.mFacesNeighborhood;
 
     for ( int i = 0; i < topologicMesh.mMesh->vertexCount(); ++i )
@@ -1246,15 +1257,16 @@ QgsTopologicalMesh QgsTopologicalMesh::createTopologicalMesh( QgsMesh *mesh, int
 
 QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createNewTopologicalFaces( const QVector<QgsMeshFace> &faces,  bool uniqueSharedVertexAllowed, QgsMeshEditingError &error )
 {
-  return createTopologicalFaces( faces, error, uniqueSharedVertexAllowed, false );
+  QVector<int> vtf; //will not be used
+  return createTopologicalFaces( faces, nullptr, error, uniqueSharedVertexAllowed );
 }
 
 
 QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
   const QVector<QgsMeshFace> &faces,
+  QVector<int> *globalVertexToFace,
   QgsMeshEditingError &error,
-  bool allowUniqueSharedVertex,
-  bool writeInVertices )
+  bool allowUniqueSharedVertex )
 {
   int facesCount = faces.count();
   QVector<FaceNeighbors> faceTopologies;
@@ -1302,10 +1314,10 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
       int v1 = face.at( i );
       int v2 = face.at( ( i + 1 ) % faceSize );
 
-      if ( writeInVertices )
+      if ( globalVertexToFace )
       {
-        if ( mVertexToFace[v1] == -1 )
-          mVertexToFace[v1] = faceIndex ;
+        if ( ( *globalVertexToFace )[v1] == -1 )
+          ( *globalVertexToFace )[v1] = faceIndex ;
       }
       else
       {
@@ -1340,9 +1352,9 @@ QgsTopologicalMesh::TopologicalFaces QgsTopologicalMesh::createTopologicalFaces(
   return ret;
 }
 
-QList<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const
+QVector<int> QgsTopologicalMesh::neighborsOfFace( int faceIndex ) const
 {
-  return mFacesNeighborhood.at( faceIndex ).toList();
+  return mFacesNeighborhood.at( faceIndex );
 }
 
 QList<int> QgsTopologicalMesh::facesAroundVertex( int vertexIndex ) const
@@ -1366,7 +1378,7 @@ QgsMeshEditingError QgsTopologicalMesh::canFacesBeRemoved( const QList<int> face
     remainingFaces.append( mMesh->face( f ) );
 
   QgsMeshEditingError error;
-  createTopologicalFaces( remainingFaces, error, false, false );
+  createTopologicalFaces( remainingFaces, nullptr, error, false );
 
   return error;
 }

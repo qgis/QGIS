@@ -376,6 +376,9 @@ namespace QgsMeshUtils
   //! Returns face as polygon geometry
   CORE_EXPORT QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
+  //! Returns the centroid of the \a face
+  CORE_EXPORT QgsMeshVertex centroid( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+
   //! Returns face as polygon geometry, caller is responsible for delete
   CORE_EXPORT std::unique_ptr< QgsPolygon > toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
 
@@ -408,6 +411,12 @@ namespace QgsMeshUtils
    * \since QGIS 3.12
   */
   bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
+
+  /**
+   * Checks if the triangle is counter clockwise, if not sets it counter clockwise
+   * \since QGIS 3.22
+  */
+  void setCounterClockwise( QgsMeshFace &triangle, const QgsMeshVertex &v1, const QgsMeshVertex &v2, const QgsMeshVertex &v3 );
 
 };
 

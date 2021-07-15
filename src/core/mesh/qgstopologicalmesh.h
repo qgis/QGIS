@@ -60,8 +60,11 @@ class CORE_EXPORT QgsTopologicalMesh
         //! Returns faces
         QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
 
-        //! Clear all data contained in the instance.
+        //! Clears all data contained in the instance.
         void clear();
+
+        //! Returns the face neighborhood of the faces, indexing is local
+        QVector<FaceNeighbors> facesNeighborhood() const;
 
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
@@ -150,18 +153,21 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsTopologicalMesh createTopologicalMesh( QgsMesh *mesh, int maxVerticesPerFace, QgsMeshEditingError &error );
 
     //! Creates new topological faces that are not yet included in the mesh
-    TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
+    static TopologicalFaces  createNewTopologicalFaces( const QVector<QgsMeshFace> &faces, bool uniqueSharedVertexAllowed, QgsMeshEditingError &error );
 
     //----------- access element methods
 
     //! Returns the indexes of neighbor faces of the face with index \a faceIndex
-    QList<int> neighborsOfFace( int faceIndex ) const;
+    QVector<int> neighborsOfFace( int faceIndex ) const;
 
     //! Returns the indexes of faces that are around the vertex with index \a vertexIndex
     QList<int> facesAroundVertex( int vertexIndex ) const;
 
     //! Returns a pointer to the wrapped mesh
     QgsMesh *mesh() const;
+
+    //! Returns the index of the first face linked, returns -1 if it is a free vertex or out of range index
+    int firstFaceLinked( int vertexIndex ) const;
 
     //! Returns whether the vertex is on a boundary
     bool isVertexOnBoundary( int vertexIndex ) const;
@@ -284,16 +290,16 @@ class CORE_EXPORT QgsTopologicalMesh
     void reindex();
 
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
-    bool checkConsistency() const;
+    QgsMeshEditingError checkConsistency() const;
 
   private:
 
     //! Creates topological faces from mesh faces
-    TopologicalFaces  createTopologicalFaces(
+    static TopologicalFaces  createTopologicalFaces(
       const QVector<QgsMeshFace> &faces,
+      QVector<int> *globalVertexToFace,
       QgsMeshEditingError &error,
-      bool allowUniqueSharedVertex,
-      bool writeInVertices );
+      bool allowUniqueSharedVertex );
 
 
     //! Returns whether the two faces can be joined sharing the index \a commonIndex

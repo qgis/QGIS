@@ -257,8 +257,7 @@ void QgsMeshEditor::applyAdvancedEdit( QgsMeshEditor::Edit &edit, QgsMeshAdvance
 {
   applyEditOnTriangularMesh( edit, editing->apply( this ) );
 
-  if ( editing->isFinished() )
-    emit meshEdited();
+  emit meshEdited();
 }
 
 
@@ -637,6 +636,11 @@ QgsMeshVertexCirculator QgsMeshEditor::vertexCirculator( int vertexIndex ) const
   return mTopologicalMesh.vertexCirculator( vertexIndex );
 }
 
+QgsTopologicalMesh *QgsMeshEditor::topologicalMesh()
+{
+  return &mTopologicalMesh;
+}
+
 QgsMeshLayerUndoCommandChangeZValue::QgsMeshLayerUndoCommandChangeZValue( QgsMeshEditor *meshEditor, const QList<int> &verticesIndexes, const QList<double> &newValues )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVerticesIndexes( verticesIndexes )
@@ -763,12 +767,9 @@ void QgsMeshLayerUndoCommandAdvancedEditing::redo()
 {
   if ( mAdvancedEditing )
   {
-    while ( !mAdvancedEditing->isFinished() )
-    {
-      QgsMeshEditor::Edit edit;
-      mMeshEditor->applyAdvancedEdit( edit, mAdvancedEditing );
-      mEdits.append( edit );
-    }
+    QgsMeshEditor::Edit edit;
+    mMeshEditor->applyAdvancedEdit( edit, mAdvancedEditing );
+    mEdits.append( edit );
     mAdvancedEditing = nullptr;
   }
   else
