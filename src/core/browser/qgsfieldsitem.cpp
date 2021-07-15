@@ -152,11 +152,11 @@ QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
   QStringList constraintsText;
   if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
   {
-    constraintsText.push_back( tr( "Not Null" ) );
+    constraintsText.push_back( tr( "NOT NULL" ) );
   }
   if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
   {
-    constraintsText.push_back( tr( "Unique" ) );
+    constraintsText.push_back( tr( "UNIQUE" ) );
   }
   if ( ! constraintsText.isEmpty() )
   {
@@ -202,5 +202,4 @@ QIcon QgsFieldItem::icon()
   }
   return icon;
 }
-
 
