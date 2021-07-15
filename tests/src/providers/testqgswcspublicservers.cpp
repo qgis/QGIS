@@ -21,6 +21,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
@@ -272,8 +273,8 @@ void TestQgsWcsPublicServers::test()
     QStringList myServerLog;
     myServerLog << "server:" + serverUrl;
     QString myServerDirName = serverUrl;
-    myServerDirName.replace( QRegExp( "[:/]+" ), QStringLiteral( "." ) );
-    myServerDirName.remove( QRegExp( "\\.$" ) );
+    myServerDirName.replace( QRegularExpression( "[:/]+" ), QStringLiteral( "." ) );
+    myServerDirName.remove( QRegularExpression( "\\.$" ) );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
 
     QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
