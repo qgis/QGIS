@@ -181,14 +181,14 @@ void TestQgsVirtualRasterProvider::testConstructor()
       QStringLiteral( "layer_1" ),
       QStringLiteral( "virtualrasterprovider" ) );
 
-    QVERIFY( layer_1->dataProvider()->isValid() );
-    QVERIFY( layer_1->isValid() );
+  QVERIFY( layer_1->dataProvider()->isValid() );
+  QVERIFY( layer_1->isValid() );
 
-    double sampledValueCalc_1 = layer_1->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
-    double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+  double sampledValueCalc_1 = layer_1->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
+  double sampledValue = mdemRasterLayer->dataProvider()->sample( QgsPointXY( 18.67714, 45.79202 ), 1 );
 
-    QCOMPARE( sampledValueCalc_1, sampledValue + 200. );
-    QCOMPARE( layer_1->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( sampledValueCalc_1, sampledValue + 200. );
+  QCOMPARE( layer_1->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
 
   QString uri_2 = QStringLiteral( "?crs=EPSG:32633&extent=781662.375,3339523.125,793062.375,3350923.125&width=200&height=200&formula=\"landsat@1\" + \"landsat@2\"&landsat:uri=/home/franc/dev/cpp/QGIS/tests/testdata/landsat.tif&landsat:provider=gdal" );
@@ -200,8 +200,8 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QVERIFY( layer_2->isValid() );
   QVERIFY( layer_2->dataProvider()->isValid() );
   QCOMPARE( layer_2->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) ) );
-  double sampledValueCalc_2 = layer_2->dataProvider()->sample( QgsPointXY( 790688,3349113 ), 1 );
-  qDebug() << layer_2->dataProvider()->sample( QgsPointXY( 790688,3349113 ), 1 );
+  double sampledValueCalc_2 = layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
+  qDebug() << layer_2->dataProvider()->sample( QgsPointXY( 790688, 3349113 ), 1 );
   QCOMPARE( sampledValueCalc_2, 267. );
 }
 

@@ -68,13 +68,13 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   const QList<const QgsRasterCalcNode *> rasterRefNodes = mCalcNode->findNodes( QgsRasterCalcNode::Type::tRasterRef );
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
-      QString layerRef( r->toString().remove( 0, 1 ) );
+    QString layerRef( r->toString().remove( 0, 1 ) );
 
-      layerRef.chop( 1 );
-      rasterRefs << layerRef;
+    layerRef.chop( 1 );
+    rasterRefs << layerRef;
 
-      layerRef.truncate(layerRef.lastIndexOf("@"));
-      rasterNames << layerRef;
+    layerRef.truncate( layerRef.lastIndexOf( "@" ) );
+    rasterNames << layerRef;
   }
 
 
@@ -82,10 +82,10 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
   for ( it = decodedUriParams.rInputLayers.begin(); it != decodedUriParams.rInputLayers.end(); ++it )
   {
 
-    if ( ! rasterNames.contains(it->name) )
+    if ( ! rasterNames.contains( it->name ) )
     {
-        mValid = false;
-        return;
+      mValid = false;
+      return;
     }
 
     QgsRasterLayer *rProvidedLayer = new QgsRasterLayer( it->uri, it->name, it->provider );
