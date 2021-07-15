@@ -400,7 +400,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   }
   else
   {
-    thread_local const QRegularExpression re_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+    thread_local const QRegularExpression re_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
     match = re_urn.match( wmsCrs );
     if ( match.hasMatch() )
     {
