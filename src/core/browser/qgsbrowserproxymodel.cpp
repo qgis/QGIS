@@ -117,28 +117,10 @@ void QgsBrowserProxyModel::updateFilter()
 
 bool QgsBrowserProxyModel::filterAcceptsString( const QString &value ) const
 {
-  switch ( mPatternSyntax )
+  for ( const QRegularExpression &rx : mREList )
   {
-    case Normal:
-    case Wildcards:
-    {
-      for ( const QRegularExpression &rx : mREList )
-      {
-        if ( rx.match( value ).hasMatch() )
-          return true;
-      }
-      break;
-    }
-
-    case RegularExpression:
-    {
-      for ( const QRegularExpression &rx : mREList )
-      {
-        if ( rx.match( value ).hasMatch() )
-          return true;
-      }
-      break;
-    }
+    if ( rx.match( value ).hasMatch() )
+      return true;
   }
 
   return false;
