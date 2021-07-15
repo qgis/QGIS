@@ -38,7 +38,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
   {
     // Messages are different for files and tables
     QString message = layerItem->isSubLayer() ? QObject::tr( "Delete Layer “%1”…" ).arg( layerItem->name() ) : QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
-    QAction *actionDeleteLayer = new QAction( message, layerItem->parent() );
+    QAction *actionDeleteLayer = new QAction( message, menu );
     QVariantMap data;
     data.insert( QStringLiteral( "isSubLayer" ), layerItem->isSubLayer() );
     data.insert( QStringLiteral( "uri" ), layerItem->uri() );
@@ -54,7 +54,7 @@ void QgsOgrItemGuiProvider::populateContextMenu(
     const bool isFolder = QFileInfo( collectionItem->path() ).isDir();
     // Messages are different for files and tables
     QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), collectionItem->name() );
-    QAction *actionDeleteCollection = new QAction( message, collectionItem->parent() );
+    QAction *actionDeleteCollection = new QAction( message, menu );
 
     QVariantMap data;
     data.insert( QStringLiteral( "path" ), collectionItem->path() );

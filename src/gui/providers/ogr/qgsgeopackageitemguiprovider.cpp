@@ -50,7 +50,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Check capabilities
     if ( layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
-      QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), this );
+      QAction *actionRenameLayer = new QAction( tr( "Rename Layer '%1'…" ).arg( layerItem->name() ), menu );
       QVariantMap data;
       const QString uri = layerItem->uri();
       const QString providerKey = layerItem->providerKey();
@@ -66,11 +66,11 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
   if ( QgsGeoPackageRootItem *rootItem = qobject_cast< QgsGeoPackageRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Connection…" ), rootItem->parent() );
+    QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, rootItem, &QgsGeoPackageRootItem::newConnection );
     menu->addAction( actionNew );
 
-    QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), rootItem->parent() );
+    QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), menu );
     QPointer< QgsGeoPackageRootItem > rootItemPointer( rootItem );
     connect( actionCreateDatabase, &QAction::triggered, this, [this, rootItemPointer ]
     {
@@ -83,24 +83,22 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
   {
     if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( collectionItem->name() ) )
     {
-      QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), collectionItem->parent() );
+      QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), menu );
       connect( actionDeleteConnection, &QAction::triggered, collectionItem, &QgsGeoPackageConnectionItem::deleteConnection );
       menu->addAction( actionDeleteConnection );
     }
     else
     {
       // Add to stored connections
-      QAction *actionAddConnection = new QAction( tr( "Add Connection" ), collectionItem->parent() );
+      QAction *actionAddConnection = new QAction( tr( "Add Connection" ), menu );
       connect( actionAddConnection, &QAction::triggered, collectionItem, &QgsGeoPackageCollectionItem::addConnection );
       menu->addAction( actionAddConnection );
     }
 
-    QAction *sep = new QAction( collectionItem->parent() );
-    sep->setSeparator( true );
-    menu->addAction( sep );
+    menu->addSeparator();
 
     QString message = QObject::tr( "Delete %1…" ).arg( collectionItem->name() );
-    QAction *actionDelete = new QAction( message, collectionItem->parent() );
+    QAction *actionDelete = new QAction( message, menu );
     QString collectionPath = collectionItem->path();
     QString collectionName = collectionItem->name();
     QPointer< QgsDataItem > parent( collectionItem->parent() );
@@ -111,7 +109,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     menu->addAction( actionDelete );
 
     // Run VACUUM
-    QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), collectionItem->parent() );
+    QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), menu );
     QVariantMap dataVacuum;
     const QString name = collectionItem->name();
     const QString path = collectionItem->path();
