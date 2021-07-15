@@ -3312,11 +3312,12 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         }
         const QRegularExpression rx( "[^" + QgsStringUtils::qRegExpEscape( escape ) + "](" + QgsStringUtils::qRegExpEscape( wildCard ) + ")" );
         QRegularExpressionMatch match = rx.match( oprValue );
-        int pos = 0;
+        int pos;
         while ( match.hasMatch() )
         {
+          pos = match.capturedStart();
           oprValue.replace( pos + 1, 1, QStringLiteral( "%" ) );
-          pos = match.capturedStart() + 1;
+          pos += 1;
           match = rx.match( oprValue, pos );
         }
         oprValue.replace( escape + wildCard, wildCard );
@@ -3330,11 +3331,12 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         }
         const QRegularExpression rx( "[^" + QgsStringUtils::qRegExpEscape( escape ) + "](" + QgsStringUtils::qRegExpEscape( singleChar ) + ")" );
         QRegularExpressionMatch match = rx.match( oprValue );
-        int pos = 0;
+        int pos;
         while ( match.hasMatch() )
         {
+          pos = match.capturedStart();
           oprValue.replace( pos + 1, 1, QStringLiteral( "_" ) );
-          pos = match.capturedStart() + 1;
+          pos += 1;
           match = rx.match( oprValue, pos );
         }
         oprValue.replace( escape + singleChar, singleChar );
