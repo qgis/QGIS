@@ -1055,6 +1055,11 @@ QgsProviderMetadata::ProviderCapabilities QgsMdalProviderMetadata::providerCapab
   return FileBasedUris;
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsMdalProviderMetadata::capabilities() const
+{
+  return QuerySublayers;
+}
+
 QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   if ( uri.isEmpty() )

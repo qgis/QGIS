@@ -179,6 +179,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     {
       PriorityForUri = 1 << 0, //!< Indicates that the metadata can calculate a priority for a URI
       LayerTypesForUri = 1 << 1, //!< Indicates that the metadata can determine valid layer types for a URI
+      QuerySublayers = 1 << 2, //!< Indicates that the metadata can query sublayers for a URI (since QGIS 3.22)
     };
     Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
 

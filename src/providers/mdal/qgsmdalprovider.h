@@ -154,6 +154,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     ProviderCapabilities providerCapabilities() const override;
+    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
 };
 

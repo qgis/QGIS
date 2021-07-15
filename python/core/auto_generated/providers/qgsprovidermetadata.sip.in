@@ -138,6 +138,7 @@ library object.
     {
       PriorityForUri,
       LayerTypesForUri,
+      QuerySublayers,
     };
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
 
