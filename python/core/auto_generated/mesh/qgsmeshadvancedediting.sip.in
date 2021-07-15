@@ -15,7 +15,7 @@ class QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes /Abstract/
 
 Abstract class that can be derived to implement advanced editing on mesh
 
-To apply the advanced editing, a pointer to and instance of a derived class is passed
+To apply the advanced editing, a pointer to an instance of a derived class is passed
 in the method :py:func:`QgsMeshEditor.advancedEdit()`.
 
 .. versionadded:: 3.22

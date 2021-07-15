@@ -29,7 +29,7 @@ class QgsProcessingFeedback;
  *
  * \brief Abstract class that can be derived to implement advanced editing on mesh
  *
- * To apply the advanced editing, a pointer to and instance of a derived class is passed
+ * To apply the advanced editing, a pointer to an instance of a derived class is passed
  * in the method QgsMeshEditor::advancedEdit().
  *
  * \since QGIS 3.22
