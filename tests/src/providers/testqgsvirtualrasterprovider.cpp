@@ -58,10 +58,6 @@ class TestQgsVirtualRasterProvider : public QObject
     void cleanup() {}// will be called after every testfunction.
 
     void validLayer();
-    //void testv();
-    //void testRaster();
-    //void testUrlDecoding();
-    //void testUrlDecodingMinimal();
     void testUriProviderDecoding();
     void testUriEncoding();
     void testConstructorWrong();
@@ -89,10 +85,6 @@ void TestQgsVirtualRasterProvider::initTestCase()
 
   mdemRasterLayer = new QgsRasterLayer( demRasterFileInfo.filePath(),
                                         demRasterFileInfo.completeBaseName() );
-  /*
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mdemRasterLayer );
-    */
 }
 
 void TestQgsVirtualRasterProvider::validLayer()
@@ -123,72 +115,6 @@ void TestQgsVirtualRasterProvider::cleanupTestCase()
     myFile.close();
   }
 }
-
-//void TestQgsVirtualRasterProvider::testv()
-//{
-/*
-if ( mdemRasterLayer->extent().xMaximum()== 45.8117014376000000 )
-{
-    QgsDebugMsg("testv is starting");
-}
-
-*/
-
-/* ------------------------------
-    QgsRasterCalculatorEntry entry1;
-    entry1.bandNumber = 1;
-    entry1.raster = mdemRasterLayer;
-    entry1.ref = QStringLiteral( "dem@1" );
-
-    QVector<QgsRasterCalculatorEntry> entries;
-    entries << entry1;
-
-    //QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:32633" ) );
-    QgsCoordinateReferenceSystem mOutputCrs( QStringLiteral( "EPSG:4326" ) );
-    QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-*/ //----------------------------------------
-
-/*
-QgsRectangle extent(18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000);
-QString demFileName = "/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif";
-QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "virtualrasterprovider" ), demFileName, QgsDataProvider::ProviderOptions() );
-QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
-QVERIFY( rp );
-QVERIFY( rp->isValid() );
-if ( rp )
-  {
-    std::unique_ptr<QgsRasterBlock> block( rp->block( 1, extent, 373, 350 ) );
-
-    qDebug() << "VALUE BLOCK at row 0, col 0: " << block->value( 0, 0 );
-    qDebug() << "VALUE BLOCK at  row 350, col 373: " << block->value(349,372);
-    qDebug() << "bandCount result: " << rp->bandCount();
-    QVERIFY( block );
-    QCOMPARE( block->width(),  373 );
-    QCOMPARE( block->height(), 350 );
-
-    QCOMPARE( block->value( 0, 0 ), 292.86041259765625 );
-
-    QCOMPARE( rp->bandCount(), 1 );
-  }
-delete provider;
-*/
-
-//}
-
-//void TestQgsVirtualRasterProvider::testRaster()
-//{
-/*
-QgsRasterLayer *r = new QgsRasterLayer("/home/franc/dev/cpp/QGIS/tests/testdata/raster/dem.tif","dem","virtualrasterprovider");
-QgsDebugMsg("NAME of LAYER: "+r->name());
-
-double sampledValue= r->dataProvider()->sample(QgsPointXY(18.67714, 45.79202),1);
-
-qDebug() <<"VALUE IS "<< sampledValue;
-
-delete r;
-*/
-
-//}
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()
 {

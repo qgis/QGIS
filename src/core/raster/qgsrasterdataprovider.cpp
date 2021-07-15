@@ -651,7 +651,6 @@ QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const
 }
 
 QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri( const QString &uri, bool *ok )
-//QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtualRasterProviderUri(const QString &uri)
 {
   QUrl url = QUrl::fromEncoded( uri.toLatin1() );
   const QUrlQuery query( url.query() );
@@ -659,82 +658,60 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
 
   if ( ! query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
-      QgsDebugMsg( "crs is missing" );
-      *ok = false;
-      return components;
+    QgsDebugMsg( "crs is missing" );
+    *ok = false;
+    return components;
   }
   components.crs.createFromString( query.queryItemValue( QStringLiteral( "crs" ) ) );
-  if ( ! components.crs.isValid() )
-    {
-      QgsDebugMsg( "crs is not valid" );
-      *ok = false;
-      return components;
-    }
 
-
-    if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
-    {
-        QgsDebugMsg( "extent is missing" );
-        *ok = false;
-        return components;
-    }
-    QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
-    components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
-                                      pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
-    if ( components.extent.isNull() )
-    {
-      QgsDebugMsg( "extent is null" );
-      *ok = false;
-      return components;
-    }
-
-
-  if (! query.hasQueryItem( QStringLiteral( "width" ) ) )
+  if ( ! query.hasQueryItem( QStringLiteral( "extent" ) ) )
   {
-      QgsDebugMsg( "width is missing" );
-      *ok = false;
-      return components;
+    QgsDebugMsg( "extent is missing" );
+    *ok = false;
+    return components;
+  }
+  QStringList pointValuesList = query.queryItemValue( QStringLiteral( "extent" ) ).split( ',' );
+  components.extent = QgsRectangle( pointValuesList.at( 0 ).toDouble(), pointValuesList.at( 1 ).toDouble(),
+                                    pointValuesList.at( 2 ).toDouble(), pointValuesList.at( 3 ).toDouble() );
+
+  if ( ! query.hasQueryItem( QStringLiteral( "width" ) ) )
+  {
+    QgsDebugMsg( "width is missing" );
+    *ok = false;
+    return components;
   }
   bool flagW;
   components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
   if ( !flagW ||  components.width < 0 || components.width > INT_MAX )
   {
-      QgsDebugMsg( "invalid or negative width input" );
-      *ok = false;
-      return components;
+    QgsDebugMsg( "invalid or negative width input" );
+    *ok = false;
+    return components;
   }
 
 
   if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
   {
-      QgsDebugMsg( "height is missing" );
-      *ok = false;
-      return components;
+    QgsDebugMsg( "height is missing" );
+    *ok = false;
+    return components;
   }
   bool flagH;
   components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
-    if ( !flagH ||  components.height < 0 || components.height > INT_MAX )
-    {
-      QgsDebugMsg( "invalid or negative width input" );
-      *ok = false;
-      return components;
-    }
+  if ( !flagH ||  components.height < 0 || components.height > INT_MAX )
+  {
+    QgsDebugMsg( "invalid or negative width input" );
+    *ok = false;
+    return components;
+  }
 
-
-    if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
-    {
-        QgsDebugMsg( "formula is missing" );
-        *ok = false;
-        return components;
-    }
-    components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
-    if ( components.formula.isNull() )
-    {
-      QgsDebugMsg( "formula string provided is null" );
-      *ok = false;
-      return components;
-    }
-
+  if ( ! query.hasQueryItem( QStringLiteral( "formula" ) ) )
+  {
+    QgsDebugMsg( "formula is missing" );
+    *ok = false;
+    return components;
+  }
+  components.formula = query.queryItemValue( QStringLiteral( "formula" ) );
 
   QSet<QString> rLayerName;
   for ( const auto &item : query.queryItems() )
@@ -751,8 +728,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
 
   if ( rLayerName.isEmpty() )
   {
-    QgsDebugMsg( "Raster entries are missing" );
-    *ok = false;
+    return components;
   }
   QSet<QString>::iterator i;
   for ( i = rLayerName.begin(); i != rLayerName.end(); ++i )
@@ -768,9 +744,8 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
     {
       QgsDebugMsg( "One or more raster information are missing" );
       *ok = false;
-      break;
+      return components;
     }
-
   }
 
   return components;
