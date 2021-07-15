@@ -88,8 +88,8 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ) );
-        rx.setPatternOptions( mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ),
+                                     mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }
       break;
@@ -99,16 +99,15 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( f.trimmed() ) );
-        rx.setPatternOptions( mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( f.trimmed() ),
+                                     mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }
       break;
     }
     case RegularExpression:
     {
-      QRegularExpression rx( mFilter.trimmed() );
-      rx.setPatternOptions( mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
+      const QRegularExpression rx( mFilter.trimmed(), mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
       mREList.append( rx );
       break;
     }

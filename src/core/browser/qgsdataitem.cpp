@@ -89,7 +89,8 @@ QgsDataItem::~QgsDataItem()
 
 QString QgsDataItem::pathComponent( const QString &string )
 {
-  return QString( string ).replace( QRegularExpression( "[\\\\/]" ), QStringLiteral( "|" ) );
+  const thread_local QRegularExpression rx( "[\\\\/]" );
+  return QString( string ).replace( rx, QStringLiteral( "|" ) );
 }
 
 QVariant QgsDataItem::sortKey() const
