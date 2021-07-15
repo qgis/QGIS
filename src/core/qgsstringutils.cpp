@@ -522,7 +522,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   QString converted = string;
 
   // http://alanstorm.com/url_regex_explained
-  // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
+  // note - there's more robust implementations available
   static thread_local QRegularExpression urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
   static thread_local QRegularExpression protoRegEx( "^(?:f|ht)tps?://|file://" );
   static thread_local QRegularExpression emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
