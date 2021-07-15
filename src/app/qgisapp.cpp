@@ -3506,7 +3506,7 @@ void QgisApp::createToolBars()
     bt->addAction( mActionAddPgLayer );
   if ( mActionAddMssqlLayer )
     bt->addAction( mActionAddMssqlLayer );
-   if ( mActionAddOracleLayer )
+  if ( mActionAddOracleLayer )
     bt->addAction( mActionAddOracleLayer );
   if ( mActionAddHanaLayer )
     bt->addAction( mActionAddHanaLayer );
