@@ -689,7 +689,6 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
     return components;
   }
 
-
   if ( ! query.hasQueryItem( QStringLiteral( "height" ) ) )
   {
     QgsDebugMsg( "height is missing" );
