@@ -16,23 +16,6 @@
  ***************************************************************************/
 
 
-#include <QDir>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomImplementation>
-#include <QDomNode>
-#include <QFile>
-#include <QFileInfo>
-#include <QTextStream>
-#include <QUrl>
-#include <QTimer>
-#include <QStandardPaths>
-#include <QUuid>
-
-#include <sqlite3.h>
-
-#include "qgssqliteutils.h"
-
 #include "qgssqliteutils.h"
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
@@ -63,6 +46,22 @@
 #include "qgslayernotesutils.h"
 #include "qgsdatums.h"
 #include "qgsprojoperation.h"
+
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomImplementation>
+#include <QDomNode>
+#include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
+#include <QUrl>
+#include <QTimer>
+#include <QStandardPaths>
+#include <QUuid>
+#include <QRegularExpression>
+
+#include <sqlite3.h>
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -259,8 +258,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   mDataSource = context.pathResolver().readPath( mne.text() );
 
   // if the layer needs authentication, ensure the master password is set
-  QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if ( ( rx.indexIn( mDataSource ) != -1 )
+  const thread_local QRegularExpression rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
+  if ( rx.match( mDataSource ).hasMatch()
        && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
@@ -2067,7 +2066,7 @@ QString QgsMapLayer::generateId( const QString &layerName )
   // underscore) with an underscore.
   // Note that the first backslash in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  id.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
+  id.replace( QRegularExpression( "[\\W]" ), QStringLiteral( "_" ) );
   return id;
 }
 

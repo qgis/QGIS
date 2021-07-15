@@ -15,6 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsdataitem.h"
+#include "qgsapplication.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
+#include "qgsdataprovider.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
+#include "qgsconfig.h"
+#include "qgssettings.h"
+#include "qgsanimatedicon.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsprovidermetadata.h"
+
 #include <QApplication>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
@@ -31,21 +46,6 @@
 #include <QTimer>
 #include <mutex>
 #include <QRegularExpression>
-
-#include "qgis.h"
-#include "qgsdataitem.h"
-#include "qgsapplication.h"
-#include "qgsdataitemprovider.h"
-#include "qgsdataitemproviderregistry.h"
-#include "qgsdataprovider.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
-#include "qgsconfig.h"
-#include "qgssettings.h"
-#include "qgsanimatedicon.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsprovidermetadata.h"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -89,7 +89,7 @@ QgsDataItem::~QgsDataItem()
 
 QString QgsDataItem::pathComponent( const QString &string )
 {
-  return QString( string ).replace( QRegExp( "[\\\\/]" ), QStringLiteral( "|" ) );
+  return QString( string ).replace( QRegularExpression( "[\\\\/]" ), QStringLiteral( "|" ) );
 }
 
 QVariant QgsDataItem::sortKey() const

@@ -209,7 +209,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     QStringList mHiddenDataItemsKeys;
     QStringList mShownDataItemsKeys;
     QString mFilter; //filter string provided
-    QVector<QRegExp> mREList; //list of filters, separated by "|"
+    QVector<QRegularExpression> mREList; //list of filters, separated by "|"
     FilterSyntax mPatternSyntax = Normal;
     Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
 

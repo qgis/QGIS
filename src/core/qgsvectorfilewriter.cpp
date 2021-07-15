@@ -3750,10 +3750,11 @@ QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &c
   if ( codecName == QLatin1String( "System" ) )
     return QStringLiteral( "LDID/0" );
 
-  QRegExp re = QRegExp( QString( "(CP|windows-|ISO[ -])(.+)" ), Qt::CaseInsensitive );
-  if ( re.exactMatch( codecName ) )
+  const QRegularExpression re( QRegularExpression::anchoredPattern( QString( "(CP|windows-|ISO[ -])(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  const QRegularExpressionMatch match = re.match( codecName );
+  if ( match.hasMatch() )
   {
-    QString c = re.cap( 2 ).remove( '-' );
+    QString c = match.captured( 2 ).remove( '-' );
     bool isNumber;
     ( void ) c.toInt( &isNumber );
     if ( isNumber )

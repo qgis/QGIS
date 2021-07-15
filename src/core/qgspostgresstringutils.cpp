@@ -15,7 +15,9 @@
 
 #include "qgspostgresstringutils.h"
 #include "qgsmessagelog.h"
-#include <QDebug>
+
+#include <QRegularExpression>
+
 #include <nlohmann/json.hpp>
 
 using namespace nlohmann;
@@ -32,13 +34,14 @@ QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const
   QString cur = txt.mid( i );
   if ( cur.startsWith( '"' ) )
   {
-    QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-    if ( !stringRe.exactMatch( cur ) )
+    const QRegularExpression stringRe( QRegularExpression::anchoredPattern( "^\"((?:\\\\.|[^\"\\\\])*)\".*" ) );
+    const QRegularExpressionMatch match = stringRe.match( cur );
+    if ( !match.hasMatch() )
     {
       QgsMessageLog::logMessage( QObject::tr( "Cannot find end of double quoted string: %1" ).arg( txt ), QObject::tr( "PostgresStringUtils" ) );
       return QString();
     }
-    i += stringRe.cap( 1 ).length() + 2;
+    i += match.captured( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !QStringView{txt}.mid( i ).startsWith( sep ) && i < txt.length() )
     {
@@ -46,7 +49,7 @@ QString QgsPostgresStringUtils::getNextString( const QString &txt, int &i, const
       return QString();
     }
     i += sep.length();
-    return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+    return match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
   }
   else
   {
