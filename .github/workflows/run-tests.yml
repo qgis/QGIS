@@ -286,7 +286,7 @@ jobs:
       matrix:
         distro-version: [20.04]
         qt-version: [5]
-        test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
+        test-batch: [ALL_BUT_PROVIDERS, HANA]
         docker-target: [binary-only]
 
         include:
@@ -300,6 +300,39 @@ jobs:
           #   test-batch: ALL_BUT_PROVIDERS
           #   docker-target: single
 
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'kartoza/postgis:9.5-2.2'
+            exclude-pgver-test: 'PyQgsAuthManagerPKIPostgresTest|PyQgsAuthManagerPasswordPostgresTest|PyQgsProviderConnectionPostgres'
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'postgis/postgis:9.6-2.5'
+            exclude-pgver-test: 'PyQgsAuthManagerPKIPostgresTest|PyQgsAuthManagerPasswordPostgresTest|PyQgsProviderConnectionPostgres'
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'kartoza/postgis:11.5-2.8'
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'kartoza/postgis:12.4'
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'kartoza/postgis:13-3.1'
+          - distro-version: 20.04
+            qt-version: 5
+            test-batch: POSTGRES
+            docker-target: binary-only
+            postgis-ver: 'postgis/postgis:13-3.1'
+            exclude-pgver-test: 'PyQgsAuthManagerPKIPostgresTest|PyQgsAuthManagerPasswordPostgresTest|PyQgsProviderConnectionPostgres'
       fail-fast: false
 
     services:
@@ -382,6 +415,8 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
+          POSTGIS_VER: ${{matrix.postgis-ver}}
+          EXCLUDE_PGVER_TEST: ${{matrix.exclude-pgver-test}}
           QGIS_HTTPBIN_HOST: "localhost:8082"
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
@@ -390,4 +425,4 @@ jobs:
           [[ ${{ matrix.test-batch }} == "ORACLE" ]] && sudo rm -rf /usr/share/dotnet/sdk
           echo "TEST_BATCH=$TEST_BATCH"
           echo "DOCKERFILE=$DOCKERFILE"
-          docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+          docker-compose -f .docker/$DOCKERFILE run -e EXCLUDE_PGVER_TEST=$EXCLUDE_PGVER_TEST qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH

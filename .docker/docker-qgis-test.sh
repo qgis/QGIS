@@ -88,18 +88,29 @@ if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
 
   # wait for the DB to be available
   echo "Wait a moment while loading PostGreSQL database."
-  while ! PGPASSWORD='docker' psql -h postgres -U docker -p 5432 -l &> /dev/null
+  COUNT=0
+  while ! PGPASSWORD='docker' psql -h postgres -d postgres -U docker -p 5432 -l
   do
     printf "🐘"
-    sleep 1
+    sleep 5
+    if [[ $(( COUNT++ )) -eq 40 ]]; then
+      break
+    fi
   done
-  echo " done 🥩"
-
-  pushd /root/QGIS > /dev/null
-  echo "Restoring postgres test data ..."
-  /root/QGIS/tests/testdata/provider/testdata_pg.sh
-  echo "Postgres test data restored ..."
-  popd > /dev/null # /root/QGIS
+  if [[ ${COUNT} -eq 41 ]]; then
+    echo " timeout, no postgres, no 🐘"
+    echo "Print disk space"
+    df -h
+    exit 1
+  else
+    echo " done 🥩"
+    echo $EXCLUDE_PGVER_TEST
+    pushd /root/QGIS > /dev/null
+    echo "Restoring postgres test data ..."
+    /root/QGIS/tests/testdata/provider/testdata_pg.sh
+    echo "Postgres test data restored ..."
+    popd > /dev/null # /root/QGIS
+  fi
 
 fi
 
@@ -182,6 +193,7 @@ if ! [[ ${RUN_FLAKY_TESTS} == true ]]; then
 else
   echo "Flaky tests are run!"
 fi
+EXCLUDE_TESTS=${EXCLUDE_TESTS}${EXCLUDE_PGVER_TEST:+"|"}${EXCLUDE_PGVER_TEST}
 echo "List of skipped tests: $EXCLUDE_TESTS"
 
 echo "Print disk space"

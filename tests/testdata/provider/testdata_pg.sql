@@ -660,13 +660,19 @@ CREATE VIEW qgis_test.some_poly_data_shift_bbox AS
         ) AS shiftbox
    FROM qgis_test.some_poly_data;
 
-
 ---------------------------------------------
 --
 -- View with tid PK field
 --
 
-CREATE TABLE qgis_test.b31799_test_table AS (SELECT (ST_DumpPoints(ST_GeneratePoints(ST_Expand('SRID=4326;POINT(0 0)'::geometry,90),10))).geom, random());
+-- ST_GeneratePoints(...) were introduced in PostGIS 2.3.0
+-- CREATE TABLE qgis_test.b31799_test_table AS (SELECT (ST_DumpPoints(ST_GeneratePoints(ST_Expand('SRID=4326;POINT(0 0)'::geometry,90),10))).geom, random());
+CREATE TABLE qgis_test.b31799_test_table AS (
+  SELECT ('SRID=4326;POINT(' || x || ' ' || y ||')')::geometry AS geom, random FROM
+      (SELECT 180 * random() - 90 AS x, 180 * random() - 90 AS y, random() FROM
+        generate_series(1,10) ser
+      ) AS foo_row
+);
 CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM qgis_test.b31799_test_table, pg_sleep(0.1));
 
 ---------------------------------------------
@@ -677,20 +683,6 @@ CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM
 CREATE VIEW qgis_test.b32523 AS
   SELECT pk, random()
   FROM qgis_test.some_poly_data;
-
-----------------------------------------------
---
--- IDENTITY pk
--- See https://github.com/qgis/QGIS/issues/29560
---
-
-CREATE TABLE qgis_test.b29560 (
-    gid int8 NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    geom geometry(polygon)
-);
-
-INSERT INTO qgis_test.b29560 (geom)
-VALUES ('POLYGON EMPTY'::geometry);
 
 
 ---------------------------------------------

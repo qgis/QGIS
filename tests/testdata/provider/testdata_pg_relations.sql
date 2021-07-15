@@ -881,7 +881,7 @@ CREATE TABLE "spaced schema"."spaced child" (
 --
 
 CREATE SEQUENCE "spaced schema"."spaced child_id_seq"
-    AS integer
+    -- AS integer -- CREATE ... SEQUENCE ... [ AS data_type ] were introduced in PostgreSQL 10
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -911,7 +911,7 @@ CREATE TABLE "spaced schema"."spaced parent" (
 --
 
 CREATE SEQUENCE "spaced schema"."spaced parent_id_seq"
-    AS integer
+    -- AS integer -- CREATE ... SEQUENCE ... [ AS data_type ] were introduced in PostgreSQL 10
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

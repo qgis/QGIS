@@ -284,7 +284,10 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         foreign_table_definition = """
 CREATE EXTENSION IF NOT EXISTS file_fdw;
-CREATE SERVER IF NOT EXISTS file_fdw_test_server FOREIGN DATA WRAPPER file_fdw;
+-- CREATE SERVER [IF NOT EXISTS]... were introduced in PostgreSQL 10
+-- CREATE SERVER IF NOT EXISTS file_fdw_test_server FOREIGN DATA WRAPPER file_fdw;
+DROP SERVER IF EXISTS file_fdw_test_server;
+CREATE SERVER file_fdw_test_server FOREIGN DATA WRAPPER file_fdw;
 CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
     id integer not null,
     name text,

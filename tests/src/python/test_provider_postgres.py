@@ -140,16 +140,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def partiallyCompiledFilters(self):
         return set([])
 
+    def getPgVersion(self):
+        cur = self.con.cursor()
+        cur.execute("SHOW server_version_num")
+        return int(cur.fetchone()[0])
+
     def getGeneratedColumnsData(self):
         """
         return a tuple with the generated column test layer and the expected generated value
         """
-        cur = self.con.cursor()
-        cur.execute("SHOW server_version_num")
-        pgversion = int(cur.fetchone()[0])
 
         # don't trigger this test when PostgreSQL versions earlier than 12.
-        if pgversion < 120000:
+        if self.getPgVersion() < 120000:
             return (None, None)
         else:
             return (QgsVectorLayer(self.dbconn + ' sslmode=disable table="qgis_test"."generated_columns"', 'test', 'postgres'),
@@ -2372,6 +2374,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testIdentityPk(self):
         """Test a table with identity pk, see GH #29560"""
 
+        # ..GENERATED ALWAYS AS IDENTITY.. were introduced in PostgreSQL 10
+        if self.getPgVersion() < 100000:
+            return
+
+        self.execSQLCommand('''
+          CREATE TABLE qgis_test.b29560 (
+              gid int8 NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+              geom geometry(polygon)
+          );
+          INSERT INTO qgis_test.b29560 (geom)
+          VALUES ('POLYGON EMPTY'::geometry);''')
+
         vl = QgsVectorLayer(
             self.dbconn +
             ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=',
@@ -2674,7 +2688,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
           id_cidr4 cidr NOT NULL,
           id_cidr6 cidr NOT NULL,
           id_macaddr macaddr NOT NULL,
-          id_macaddr8 macaddr8 NOT NULL,
+          -- type macaddr8 were introduced in PostgreSQL 10
+          -- id_macaddr8 macaddr8 NOT NULL,
           id_timestamp timestamp with time zone NOT NULL,
           id_half_null_uuid uuid,
           id_all_null_uuid uuid,
@@ -2691,7 +2706,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         TRUNCATE qgis_test.multi_column_pk_small_data_table;
         INSERT INTO qgis_test.multi_column_pk_small_data_table(
           id_uuid, id_int, id_bigint, id_str, id_inet4, id_inet6, id_cidr4, id_cidr6,
-            id_macaddr, id_macaddr8, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
+            id_macaddr, id_timestamp, id_half_null_uuid, id_all_null_uuid, geom)
           SELECT
             ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
             dx + 1000000 * dy,                                                    --id_int
@@ -2702,7 +2717,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             (\'192.168.0.1\'::cidr + dx + 100 * dy )::cidr,                       --id_cidr4
             (\'2001:4f8:3:ba:2e0:81ff:fe22:d1f1\'::cidr + dx + 100 * dy )::cidr,  --id_cidr6
             ((112233445566 + dx + 100 * dy)::text)::macaddr,                      --id_macaddr
-            ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
+            -- ((1122334455667788 + dx + 100 * dy)::text)::macaddr8,                 --id_macaddr8
             now() - ((dx||\' hour\')::text)::interval - ((dy||\' day\')::text)::interval,
             NULLIF( ( (10000000)::text || (100000000000 + dy)::text || (100000000000 + dx)::text )::uuid,
               ( (10000000)::text || (100000000000 + dy + dy%2)::text || (100000000000 + dx)::text )::uuid ),
@@ -2715,7 +2730,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
           FROM generate_series(1,3) dx, generate_series(1,3) dy;
         REFRESH MATERIALIZED VIEW qgis_test.multi_column_pk_small_data_mat_view;''')
 
-        pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr", "id_macaddr8")
+        pk_col_list = ("id_serial", "id_uuid", "id_int", "id_bigint", "id_str", "id_inet4", "id_inet6", "id_cidr4", "id_cidr6", "id_macaddr")
         test_type_list = ["table", "view", "mat_view"]
         for n in [1, 2, len(pk_col_list)]:
             pk_col_set_list = list(combinations(pk_col_list, n))
