@@ -81,6 +81,11 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
 
   if ( QgsGeoPackageCollectionItem *collectionItem = qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
   {
+    QAction *actionRefresh = new QAction( QObject::tr( "Refresh" ), menu );
+    connect( actionRefresh, &QAction::triggered, collectionItem, [collectionItem] { collectionItem->refresh(); } );
+    menu->addAction( actionRefresh );
+    menu->addSeparator();
+
     if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( collectionItem->name() ) )
     {
       QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), menu );
