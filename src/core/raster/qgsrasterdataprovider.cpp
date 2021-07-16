@@ -32,6 +32,7 @@
 
 #include <QUrl>
 #include <QUrlQuery>
+#include <QSet>
 
 #define ERR(message) QgsError(message, "Raster provider")
 
