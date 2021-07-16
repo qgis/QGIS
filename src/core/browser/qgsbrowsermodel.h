@@ -17,41 +17,17 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QMimeData>
 #include <QMovie>
-#include <QFuture>
-#include <QFutureWatcher>
 
-class QgsDataItemProvider;
 class QgsDataItem;
+class QgsDataItemProvider;
 class QgsDirectoryItem;
 class QgsFavoriteItem;
 class QgsFavoritesItem;
-
-/**
- * \ingroup core
- * \class QgsBrowserWatcher
- * \note not available in Python bindings
-*/
-#ifndef SIP_RUN
-class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
-{
-    Q_OBJECT
-
-  public:
-    QgsBrowserWatcher( QgsDataItem *item );
-
-    QgsDataItem *item() const { return mItem; }
-
-  signals:
-    void finished( QgsDataItem *item, const QVector <QgsDataItem *> &items );
-
-  private:
-    QgsDataItem *mItem = nullptr;
-};
-#endif
 
 /**
  * \ingroup core
