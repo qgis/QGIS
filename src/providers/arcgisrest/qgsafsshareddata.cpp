@@ -38,7 +38,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
   // Fetch 100 features at the time
   int startId = ( id / 100 ) * 100;
-  int stopId = std::min( startId + 100, mObjectIds.length() );
+  int stopId = std::min< size_t >( startId + 100, mObjectIds.length() );
   QList<quint32> objectIds;
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
