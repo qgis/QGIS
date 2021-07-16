@@ -6690,7 +6690,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "exif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tag" ), true ),
                                             fcnExif, QStringLiteral( "Files and Paths" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "exif_geotag" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
-                                            fcnExifGeoTag, QStringLiteral( "Geometry" ) )
+                                            fcnExifGeoTag, QStringLiteral( "GeometryGroup" ) )
 
         // hash
         << new QgsStaticExpressionFunction( QStringLiteral( "hash" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "method" ) ),
