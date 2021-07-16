@@ -27,6 +27,7 @@
 #include "qgsvectorlayerref.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsjsonutils.h"
 
 /**
  * \ingroup UnitTests
@@ -236,13 +237,13 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString(), firstFeatureBeforeAction.attribute( QStringLiteral( "Cabin Crew" ) ).toString() );
 
   //check converted lists values
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffNames" ) ), QStringLiteral( "Bob,Alice" ) );
-  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffAges" ) ), QStringLiteral( "22,33" ) );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffNames" ) ), QVariantList() << QStringLiteral( "Bob" ) << QStringLiteral( "Alice" ) );
+  QCOMPARE( firstFeatureInAction.attribute( QStringLiteral( "StaffAges" ) ), QVariantList() << 22 << 33 );
 
   QgsFeature newFeature( mpLayer->dataProvider()->fields() );
   newFeature.setAttribute( QStringLiteral( "Class" ), QStringLiteral( "Superjet" ) );
-  newFeature.setAttribute( QStringLiteral( "StaffNames" ), QStringLiteral( "Sebastien, Naomi, And\\, many\\, more" ) );
-  newFeature.setAttribute( QStringLiteral( "StaffAges" ), QStringLiteral( "0,2" ) );
+  newFeature.setAttribute( QStringLiteral( "StaffNames" ), QgsJsonUtils::parseArray( QStringLiteral( "[ \"Sebastien\", \"Naomi\", \"And, many, more\" ]" ) ) );
+  newFeature.setAttribute( QStringLiteral( "StaffAges" ), QgsJsonUtils::parseArray( QStringLiteral( "[ 0, 2 ]" ) ) );
   mpLayer->startEditing();
   mpLayer->addFeature( newFeature );
   mpLayer->commitChanges();

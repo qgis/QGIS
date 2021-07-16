@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QThread>
+#include <QLocale>
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
@@ -427,6 +428,61 @@ class QgsExpressionUtils
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
         return QVariantMap();
+      }
+    }
+
+    /**
+     * Returns the localized string representation of a QVariant, converting numbers according to locale settings.
+     * \param value the QVariant to convert.
+     * \returns the string representation of the value.
+     * \since QGIS 3.20
+     */
+    static QString toLocalizedString( const QVariant &value )
+    {
+      if ( value.type() == QVariant::Int || value.type() == QVariant::UInt || value.type() == QVariant::LongLong || value.type() == QVariant::ULongLong )
+      {
+        bool ok;
+        QString res;
+
+        if ( value.type() == QVariant::ULongLong )
+        {
+          res = QLocale().toString( value.toULongLong( &ok ) );
+        }
+        else
+        {
+          res = QLocale().toString( value.toLongLong( &ok ) );
+        }
+
+        if ( ok )
+        {
+          return res;
+        }
+        else
+        {
+          return value.toString();
+        }
+      }
+      // Qt madness with QMetaType::Float :/
+      else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
+      {
+        bool ok;
+        const QString strVal { value.toString() };
+        const int dotPosition { strVal.indexOf( '.' ) };
+        const int precision { dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0 };
+        const QString res { QLocale().toString( value.toDouble( &ok ), 'f', precision ) };
+
+        if ( ok )
+        {
+          return res;
+        }
+        else
+        {
+          return value.toString();
+        }
+      }
+      else
+      {
+        return value.toString();
       }
     }
 };

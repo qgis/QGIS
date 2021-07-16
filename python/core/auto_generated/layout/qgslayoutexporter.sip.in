@@ -348,6 +348,16 @@ Returns the file name corresponding to the last error encountered during
 an export.
 %End
 
+    QMap< QString, QgsLabelingResults * > labelingResults();
+%Docstring
+Returns the labeling results for all map items included in the export. Map keys are the item UUIDs (see :py:func:`QgsLayoutItem.uuid()`).
+
+Ownership of the results remains with the layout exporter.
+
+.. versionadded:: 3.20
+%End
+
+
     bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = 0,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 %Docstring

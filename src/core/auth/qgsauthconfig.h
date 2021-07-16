@@ -18,8 +18,11 @@
 #define QGSAUTHCONFIG_H
 
 #include "qgis_core.h"
+
 #include <QHash>
 #include <QString>
+#include <QDomElement>
+#include <QDomDocument>
 
 #ifndef QT_NO_SSL
 #include <QSslCertificate>
@@ -45,6 +48,8 @@ class CORE_EXPORT QgsAuthMethodConfig
      * \param version Version of the configuration (for updating previously saved configs later on)
      */
     QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
+
+    // TODO c++20 - replace with = default
 
     //! Operator used to compare configs' equality
     bool operator==( const QgsAuthMethodConfig &other ) const;
@@ -159,6 +164,22 @@ class CORE_EXPORT QgsAuthMethodConfig
      * \param withpath Whether to include the URI's path in output
      */
     static bool uriToResource( const QString &accessurl, QString *resource, bool withpath = false );
+
+    /**
+     * Stores the configuration in a DOM
+     * \param parentElement parent DOM element
+     * \param document DOM document
+     * \see readXml()
+     * \since QGIS 3.20
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document );
+
+    /**
+     *  from a DOM element.
+     * \param element is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+     * \since QGIS 3.20
+     */
+    bool readXml( const QDomElement &element );
 
   private:
     QString mId;

@@ -85,7 +85,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     void setNavigationMode( const NavigationMode mode );
 
     /**
-     * Returns the currenttemporal navigation mode.
+     * Returns the current temporal navigation mode.
      *
      * \see setNavigationMode()
      */
@@ -134,8 +134,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Sets the current animation \a frame number.
      *
-     * Caling this method will change the controllers current datetime range to match, based on the
-     * temporalExtents() and frameDuration() values.
+     * Calling this method will change the controllers current datetime range to match,
+     * based on the temporalExtents() and frameDuration() values.
      *
      * \see currentFrameNumber()
      */

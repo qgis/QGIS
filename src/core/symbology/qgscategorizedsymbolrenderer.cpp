@@ -37,6 +37,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsembeddedsymbolrenderer.h"
+#include "qgsmarkersymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -65,6 +66,8 @@ QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
   swap( cat );
   return *this;
 }
+
+QgsRendererCategory::~QgsRendererCategory() = default;
 
 void QgsRendererCategory::swap( QgsRendererCategory &cat )
 {
@@ -503,7 +506,6 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::clone() const
   {
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
-  r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
 
   copyRendererData( r );
@@ -751,7 +753,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                               sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
     }
-    if ( r->mSourceSymbol && r->mSourceSymbol->type() == QgsSymbol::Marker )
+    if ( r->mSourceSymbol && r->mSourceSymbol->type() == Qgis::SymbolType::Marker )
     {
       convertSymbolSizeScale( r->mSourceSymbol.get(),
                               QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
@@ -774,8 +776,6 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   // clazy:skip
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "categorizedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
 
   // categories
@@ -817,7 +817,6 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
     // save symbols
     QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
     rendererElem.appendChild( symbolsElem );
-
   }
 
   // save source symbol
@@ -842,23 +841,14 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   QDomElement sizeScaleElem = doc.createElement( QStringLiteral( "sizescale" ) );
   rendererElem.appendChild( sizeScaleElem );
 
-  if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
-    mPaintEffect->saveProperties( doc, rendererElem );
-
-  if ( !mOrderBy.isEmpty() )
-  {
-    QDomElement orderBy = doc.createElement( QStringLiteral( "orderby" ) );
-    mOrderBy.save( orderBy );
-    rendererElem.appendChild( orderBy );
-  }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
-
   if ( mDataDefinedSizeLegend )
   {
     QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
     mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
     rendererElem.appendChild( ddsLegendElem );
   }
+
+  saveRendererData( doc, rendererElem, context );
 
   return rendererElem;
 }
@@ -877,7 +867,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
-  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == Qgis::SymbolType::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -1117,8 +1107,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     }
   }
 
-  r->setOrderBy( renderer->orderBy() );
-  r->setOrderByEnabled( renderer->orderByEnabled() );
+  renderer->copyRendererData( r.get() );
 
   return r.release();
 }
@@ -1133,7 +1122,7 @@ QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() 
   return mDataDefinedSizeLegend.get();
 }
 
-int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymbol::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
 {
   if ( !style )
     return 0;

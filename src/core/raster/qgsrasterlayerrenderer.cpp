@@ -26,6 +26,7 @@
 #include "qgsexception.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
+#include "qgsrasterpipe.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -253,12 +254,15 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
   }
 
+  mPipe->evaluateDataDefinedProperties( rendererContext.expressionContext() );
+
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
   if ( temporalProperties->isActive() && renderContext()->isTemporal() )
   {
     switch ( temporalProperties->mode() )
     {
       case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      case QgsRasterLayerTemporalProperties::ModeRedrawLayerOnly:
         break;
 
       case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
@@ -316,7 +320,7 @@ bool QgsRasterLayerRenderer::render()
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
-  QgsRasterPipe::ResamplingStage oldResamplingState = mPipe->resamplingStage();
+  Qgis::RasterResamplingStage oldResamplingState = mPipe->resamplingStage();
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
@@ -325,10 +329,10 @@ bool QgsRasterLayerRenderer::render()
     // Force provider resampling if reprojection is needed
     if ( ( mPipe->provider()->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
          mRasterViewPort->mSrcCRS != mRasterViewPort->mDestCRS &&
-         oldResamplingState != QgsRasterPipe::ResamplingStage::Provider )
+         oldResamplingState != Qgis::RasterResamplingStage::Provider )
     {
       restoreOldResamplingStage = true;
-      mPipe->setResamplingStage( QgsRasterPipe::ResamplingStage::Provider );
+      mPipe->setResamplingStage( Qgis::RasterResamplingStage::Provider );
     }
     projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }

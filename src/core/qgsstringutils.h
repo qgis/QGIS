@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgis_core.h"
+#include "qgis.h"
+
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QList>
 #include <QDomDocument>
 #include <QFont> // for enum values
-#include "qgis.h"
 
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H
@@ -101,7 +102,7 @@ class CORE_EXPORT QgsStringReplacement
 
     bool mWholeWordOnly;
 
-    QRegExp mRx;
+    QRegularExpression mRx;
 };
 
 
@@ -305,6 +306,14 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.10
      */
     static QString htmlToMarkdown( const QString &html );
+
+    /**
+     * Returns an escaped string matching the behavior of QRegExp::escape.
+     * \param string String to escape
+     * \returns Escaped string
+     * \since QGIS 3.22
+     */
+    static QString qRegExpEscape( const QString &string );
 
 };
 

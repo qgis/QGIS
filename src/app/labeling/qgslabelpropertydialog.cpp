@@ -30,14 +30,16 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QColorDialog>
 #include <QFontDatabase>
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qt::WindowFlags f )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
+  , mCanvas( canvas )
   , mLabelFont( labelFont )
   , mIsPinned( isPinned )
 {
@@ -289,6 +291,47 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mLabelAllPartsCheckBox->blockSignals( block );
 }
 
+int QgsLabelPropertyDialog::dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsVectorLayer *vlayer, const QgsExpressionContext &context ) const
+{
+  if ( !mDataDefinedProperties.isActive( p ) )
+    return -1;
+
+  const QgsProperty property = mDataDefinedProperties.property( p );
+
+  QString fieldName;
+  switch ( property.propertyType() )
+  {
+    case QgsProperty::InvalidProperty:
+    case QgsProperty::StaticProperty:
+      break;
+
+    case QgsProperty::FieldBasedProperty:
+      fieldName = property.field();
+      break;
+
+    case QgsProperty::ExpressionBasedProperty:
+    {
+      // an expression based property may still be a effectively a single field reference in the map canvas context.
+      // e.g. if it is a expression like '"some_field"', or 'case when @some_project_var = 'a' then "field_a" else "field_b" end'
+      QgsExpression expression( property.expressionString() );
+      if ( expression.prepare( &context ) )
+      {
+        const QgsExpressionNode *node = expression.rootNode()->effectiveNode();
+        if ( node->nodeType() == QgsExpressionNode::ntColumnRef )
+        {
+          const QgsExpressionNodeColumnRef *columnRef = qgis::down_cast<const QgsExpressionNodeColumnRef *>( node );
+          fieldName = columnRef->name();
+        }
+      }
+      break;
+    }
+  }
+
+  if ( !fieldName.isEmpty() )
+    return vlayer->fields().lookupField( fieldName );
+  return -1;
+}
+
 void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
@@ -444,30 +487,24 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
 void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
 {
+  QgsExpressionContext context = mCanvas->createExpressionContext();
+  context.appendScope( vlayer->createExpressionContextScope() );
+
   //loop through data defined properties, this time setting whether or not the widgets are enabled
   //this can only be done for properties which are assigned to fields
   const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();
   for ( int key : constPropertyKeys )
   {
     QgsProperty prop = mDataDefinedProperties.property( key );
-    if ( !prop || !prop.isActive() || prop.propertyType() != QgsProperty::FieldBasedProperty )
+    if ( !prop || !prop.isActive() )
     {
+      continue;
+    }
+
+    int ddIndex = dataDefinedColumnIndex( static_cast< QgsPalLayerSettings::Property >( key ), vlayer, context );
+    mPropertyToFieldMap[ key ] = ddIndex;
+    if ( ddIndex < 0 )
       continue; // can only modify attributes with an active data definition of a mapped field
-    }
-
-    QString ddField = prop.field();
-    if ( ddField.isEmpty() )
-    {
-      continue;
-    }
-
-    int ddIndx = vlayer->fields().lookupField( ddField );
-    if ( ddIndx == -1 )
-    {
-      continue;
-    }
-
-    QgsDebugMsg( QStringLiteral( "ddField: %1" ).arg( ddField ) );
 
     switch ( key )
     {
@@ -801,9 +838,9 @@ void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p
   if ( mDataDefinedProperties.isActive( p ) )
   {
     QgsProperty prop = mDataDefinedProperties.property( p );
-    if ( prop.propertyType() == QgsProperty::FieldBasedProperty )
+    if ( int index = mPropertyToFieldMap.value( p ); index >= 0 )
     {
-      mChangedProperties.insert( mCurLabelFeat.fieldNameIndex( prop.field() ), value );
+      mChangedProperties.insert( index, value );
     }
   }
 }

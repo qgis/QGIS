@@ -132,7 +132,7 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
 %End
 
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
-                        QgsExpressionContext *context = 0, bool *ok = 0 ) const;
+                        QgsExpressionContext *context = 0, bool *ok = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
 Calculates the value of an aggregate.
 
@@ -141,6 +141,8 @@ Calculates the value of an aggregate.
                           If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to ``True`` if aggregate calculation was successful
+:param feedback: optional feedback argument for early cancellation (since QGIS 3.22). If set, this will take precedence over any feedback object
+                 set on the expression ``context``.
 
 :return: calculated aggregate value
 %End

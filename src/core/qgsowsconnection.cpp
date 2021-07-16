@@ -27,8 +27,6 @@
 #include "qgsowsconnection.h"
 #include "qgssettings.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
 #include <QPicture>
 #include <QUrl>
 #include <QNetworkRequest>

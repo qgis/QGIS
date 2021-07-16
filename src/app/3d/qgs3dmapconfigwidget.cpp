@@ -102,6 +102,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
   cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
 
+  groupTerrain->setChecked( mMap->terrainRenderingEnabled() );
+
   QgsTerrainGenerator *terrainGen = mMap->terrainGenerator();
   if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Dem )
   {
@@ -129,7 +131,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
     spinTerrainScale->setValue( meshTerrain->symbol()->verticalScale() );
   }
-  else
+  else if ( terrainGen )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Flat ) );
     cboTerrainLayer->setLayer( nullptr );
@@ -235,6 +237,7 @@ void Qgs3DMapConfigWidget::apply()
 
   QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
 
+  mMap->setTerrainRenderingEnabled( groupTerrain->isChecked() );
   switch ( terrainType )
   {
     case QgsTerrainGenerator::Flat:
@@ -311,12 +314,9 @@ void Qgs3DMapConfigWidget::apply()
     break;
   }
 
-  if ( needsUpdateOrigin )
+  if ( needsUpdateOrigin && mMap->terrainGenerator() )
   {
-    // reproject terrain's extent to map CRS
-    QgsRectangle te = mMap->terrainGenerator()->extent();
-    QgsCoordinateTransform terrainToMapTransform( mMap->terrainGenerator()->crs(), mMap->crs(), QgsProject::instance() );
-    te = terrainToMapTransform.transformBoundingBox( te );
+    QgsRectangle te = m3DMapCanvas->scene()->sceneExtent();
 
     QgsPointXY center = te.center();
     mMap->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
@@ -433,7 +433,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   }
   else  // flat or online
   {
-    te = mMainCanvas->fullExtent();
+    te = mMainCanvas->projectExtent();
   }
 
   double tile0width = std::max( te.width(), te.height() );
@@ -452,7 +452,7 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::Critical );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::MessageLevel::Critical );
       }
       break;
 
@@ -460,7 +460,7 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::Critical );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::MessageLevel::Critical );
       }
       break;
 
@@ -471,7 +471,7 @@ void Qgs3DMapConfigWidget::validate()
 
   if ( valid && widgetLights->directionalLights().empty() && widgetLights->pointLights().empty() )
   {
-    mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::MessageLevel::Warning );
   }
 
   emit isValidChanged( valid );

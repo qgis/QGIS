@@ -32,7 +32,7 @@ Create a new feature counter for ``layer``.
 :param context: Specific :py:class:`QgsExpressionContext` to use during the rendering step.
 :param storeSymbolFids: If ``True`` will store the feature ids (fids), otherwise will only count the number of features per symbol. Default ``False``.
 %End
-
+    ~QgsVectorLayerFeatureCounter();
 
     virtual bool run();
 
@@ -40,8 +40,11 @@ Create a new feature counter for ``layer``.
 Calculates the feature count and Ids per symbol
 %End
 
+    virtual void cancel();
 
-    long featureCount( const QString &legendKey ) const;
+
+
+    long long featureCount( const QString &legendKey ) const;
 %Docstring
 Returns the feature count for a particular ``legendKey``.
 If the key has not been found, -1 will be returned.

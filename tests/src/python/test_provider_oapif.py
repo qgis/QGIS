@@ -20,6 +20,7 @@ import tempfile
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QVariant
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (
     QgsWkbTypes,
@@ -36,7 +37,8 @@ from qgis.core import (
     QgsExpressionContextUtils,
     QgsExpressionContext,
     QgsCoordinateReferenceSystem,
-    QgsBox3d
+    QgsBox3d,
+    QgsMessageLog
 )
 from qgis.testing import (start_app,
                           unittest
@@ -702,10 +704,16 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&apikey=mykey&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(first_items).encode('UTF-8'))
 
+        app_log = QgsApplication.messageLog()
+
+        # signals should be emitted by application log
+        app_spy = QSignalSpy(app_log.messageReceived)
+
         vl = QgsVectorLayer("url='http://" + endpoint + "?apikey=mykey' typename='mycollection'", 'test', 'OAPIF')
         self.assertTrue(vl.isValid())
         values = [f['id'] for f in vl.getFeatures()]
         self.assertEqual(values, ['feat.1'])
+        self.assertEqual(len(app_spy), 0, list(app_spy))
 
 
 if __name__ == '__main__':

@@ -1,8 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgis.sip
 %Include auto_generated/qgsabstractcontentcache.sip
-%Include auto_generated/qgsabstractdatabaseproviderconnection.sip
-%Include auto_generated/qgsabstractproviderconnection.sip
 %Include auto_generated/qgsaction.sip
 %Include auto_generated/qgsactionmanager.sip
 %Include auto_generated/qgsactionscope.sip
@@ -17,13 +15,12 @@
 %Include auto_generated/qgsbearingutils.sip
 %Include auto_generated/qgsbookmarkmanager.sip
 %Include auto_generated/qgsbookmarkmodel.sip
-%Include auto_generated/qgsbrowsermodel.sip
-%Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscachedfeatureiterator.sip
 %Include auto_generated/qgscacheindex.sip
 %Include auto_generated/qgscacheindexfeatureid.sip
 %Include auto_generated/qgscadutils.sip
 %Include auto_generated/qgsclipper.sip
+%Include auto_generated/qgscommandlineutils.sip
 %Include auto_generated/qgscolorramp.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
@@ -35,10 +32,6 @@
 %Include auto_generated/qgsdatabaseschemamodel.sip
 %Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
-%Include auto_generated/qgsdataitem.sip
-%Include auto_generated/qgsdataitemprovider.sip
-%Include auto_generated/qgsdataitemproviderregistry.sip
-%Include auto_generated/qgsdataprovider.sip
 %Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
@@ -83,6 +76,7 @@
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
 %Include auto_generated/qgshtmlutils.sip
+%Include auto_generated/qgsiconutils.sip
 %Include auto_generated/qgsidentifycontext.sip
 %Include auto_generated/qgsimagecache.sip
 %Include auto_generated/qgsinterval.sip
@@ -111,12 +105,7 @@
 %Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmaplayerelevationproperties.sip
 %Include auto_generated/qgsmaplayertemporalproperties.sip
-%Include auto_generated/qgsmaprenderercache.sip
-%Include auto_generated/qgsmaprenderercustompainterjob.sip
-%Include auto_generated/qgsmaprendererjob.sip
-%Include auto_generated/qgsmaprendererparalleljob.sip
-%Include auto_generated/qgsmaprenderersequentialjob.sip
-%Include auto_generated/qgsmaprenderertask.sip
+%Include auto_generated/qgsmaplayerutils.sip
 %Include auto_generated/qgsmapsettings.sip
 %Include auto_generated/qgsmapsettingsutils.sip
 %Include auto_generated/qgsmapthemecollection.sip
@@ -147,8 +136,6 @@
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
 %Include auto_generated/qgsproviderconnectionmodel.sip
-%Include auto_generated/qgsprovidermetadata.sip
-%Include auto_generated/qgsproviderregistry.sip
 %Include auto_generated/qgsproxyfeaturesink.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgspythonrunner.sip
@@ -198,6 +185,7 @@
 %Include auto_generated/qgstransactiongroup.sip
 %Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsunittypes.sip
+%Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
@@ -229,6 +217,20 @@
 %Include auto_generated/auth/qgsauthconfig.sip
 %Include auto_generated/auth/qgsauthmanager.sip
 %Include auto_generated/auth/qgsauthmethod.sip
+%Include auto_generated/browser/qgsbrowsermodel.sip
+%Include auto_generated/browser/qgsbrowserproxymodel.sip
+%Include auto_generated/browser/qgsconnectionsitem.sip
+%Include auto_generated/browser/qgsdatabaseschemaitem.sip
+%Include auto_generated/browser/qgsdatacollectionitem.sip
+%Include auto_generated/browser/qgsdataitem.sip
+%Include auto_generated/browser/qgsdataitemprovider.sip
+%Include auto_generated/browser/qgsdataitemproviderregistry.sip
+%Include auto_generated/browser/qgsdirectoryitem.sip
+%Include auto_generated/browser/qgsfavoritesitem.sip
+%Include auto_generated/browser/qgsfieldsitem.sip
+%Include auto_generated/browser/qgslayeritem.sip
+%Include auto_generated/browser/qgsprojectitem.sip
+%Include auto_generated/browser/qgszipitem.sip
 %Include auto_generated/callouts/qgscallout.sip
 %Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/classification/qgsclassificationcustom.sip
@@ -404,7 +406,14 @@
 %Include auto_generated/locator/qgslocatorfilter.sip
 %Include auto_generated/locator/qgslocatormodel.sip
 %Include auto_generated/locator/qgslocatormodelbridge.sip
+%Include auto_generated/maprenderer/qgsmaprenderercache.sip
+%Include auto_generated/maprenderer/qgsmaprenderercustompainterjob.sip
+%Include auto_generated/maprenderer/qgsmaprendererjob.sip
+%Include auto_generated/maprenderer/qgsmaprendererparalleljob.sip
+%Include auto_generated/maprenderer/qgsmaprenderersequentialjob.sip
+%Include auto_generated/maprenderer/qgsmaprenderertask.sip
 %Include auto_generated/mesh/qgsmesh3daveraging.sip
+%Include auto_generated/mesh/qgsmesheditor.sip
 %Include auto_generated/mesh/qgsmeshdataprovider.sip
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip
@@ -501,6 +510,15 @@
 %Include auto_generated/project/qgsprojecttranslator.sip
 %Include auto_generated/project/qgsprojectversion.sip
 %Include auto_generated/project/qgsprojectviewsettings.sip
+%Include auto_generated/providers/qgsabstractdatabaseproviderconnection.sip
+%Include auto_generated/providers/qgsabstractproviderconnection.sip
+%Include auto_generated/providers/qgsdataprovider.sip
+%Include auto_generated/providers/qgsprovidermetadata.sip
+%Include auto_generated/providers/qgsproviderregistry.sip
+%Include auto_generated/providers/qgsprovidersublayerdetails.sip
+%Include auto_generated/providers/qgsprovidersublayermodel.sip
+%Include auto_generated/providers/qgsprovidersublayertask.sip
+%Include auto_generated/providers/qgsproviderutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisportalutils.sip
 %Include auto_generated/providers/arcgis/qgsarcgisrestutils.sip
 %Include auto_generated/providers/memory/qgsmemoryproviderutils.sip
@@ -511,6 +529,7 @@
 %Include auto_generated/raster/qgscontrastenhancement.sip
 %Include auto_generated/raster/qgscontrastenhancementfunction.sip
 %Include auto_generated/raster/qgscubicrasterresampler.sip
+%Include auto_generated/raster/qgsexiftools.sip
 %Include auto_generated/raster/qgshillshaderenderer.sip
 %Include auto_generated/raster/qgshuesaturationfilter.sip
 %Include auto_generated/raster/qgslinearminmaxenhancement.sip
@@ -567,6 +586,7 @@
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip
 %Include auto_generated/symbology/qgsfeaturerenderergenerator.sip
+%Include auto_generated/symbology/qgsfillsymbol.sip
 %Include auto_generated/symbology/qgsfillsymbollayer.sip
 %Include auto_generated/symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include auto_generated/symbology/qgsgraduatedsymbolrenderer.sip
@@ -574,8 +594,10 @@
 %Include auto_generated/symbology/qgsinterpolatedlinerenderer.sip
 %Include auto_generated/symbology/qgsinvertedpolygonrenderer.sip
 %Include auto_generated/symbology/qgslegendsymbolitem.sip
+%Include auto_generated/symbology/qgslinesymbol.sip
 %Include auto_generated/symbology/qgslinesymbollayer.sip
 %Include auto_generated/symbology/qgsmapinfosymbolconverter.sip
+%Include auto_generated/symbology/qgsmarkersymbol.sip
 %Include auto_generated/symbology/qgsmarkersymbollayer.sip
 %Include auto_generated/symbology/qgsmergedfeaturerenderer.sip
 %Include auto_generated/symbology/qgsnullsymbolrenderer.sip
@@ -596,6 +618,7 @@
 %Include auto_generated/symbology/qgssymbollayerreference.sip
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip
+%Include auto_generated/symbology/qgssymbolrendercontext.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
 %Include auto_generated/textrenderer/qgstextbackgroundsettings.sip
 %Include auto_generated/textrenderer/qgstextblock.sip
@@ -643,4 +666,3 @@
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
-%Include auto_generated/qgsuserprofile.sip

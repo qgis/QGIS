@@ -93,7 +93,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   if ( firstValidLayers )
   {
     // if we are moving from zero to non-zero layers, let's zoom to those data (only consider valid layers here!)
-    mCanvas->zoomToFullExtent();
+    mCanvas->zoomToProjectExtent();
   }
 
   if ( !mFirstCRS.isValid() )
@@ -190,7 +190,7 @@ void QgsLayerTreeMapCanvasBridge::layersAdded( const QList<QgsMapLayer *> &layer
         {
           mHasValidLayersLoaded = true;
           // if we are moving from zero valid layers to non-zero VALID layers, let's zoom to those data
-          mCanvas->zoomToFullExtent();
+          mCanvas->zoomToProjectExtent();
         }
       } );
     }

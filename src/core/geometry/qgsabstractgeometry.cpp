@@ -199,6 +199,9 @@ json QgsAbstractGeometry::asJsonObject( int precision ) const
 
 QgsPoint QgsAbstractGeometry::centroid() const
 {
+  if ( isEmpty() )
+    return QgsPoint();
+
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
   // Pick the first ring of first part for the moment
 
@@ -278,6 +281,11 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   }
 
   return true;
+}
+
+const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
+{
+  return this;
 }
 
 void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )

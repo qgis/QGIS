@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmessagelog.h"
 #include "qgscompoundcurve.h"
 #include "qgsapplication.h"
 #include "qgscircularstring.h"
@@ -562,6 +563,14 @@ bool QgsCompoundCurve::boundingBoxIntersects( const QgsRectangle &rectangle ) co
   return QgsAbstractGeometry::boundingBoxIntersects( rectangle );
 }
 
+const QgsAbstractGeometry *QgsCompoundCurve::simplifiedTypeRef() const
+{
+  if ( mCurves.size() == 1 )
+    return mCurves.at( 0 );
+  else
+    return this;
+}
+
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
   if ( i < 0 || i >= mCurves.size() )
@@ -905,6 +914,99 @@ QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId 
 
   return curveIds;
 }
+
+bool QgsCompoundCurve::toggleCircularAtVertex( QgsVertexId position )
+{
+
+  // First we find out the sub-curves that are contain that vertex.
+
+  // If there is more than one, it means the vertex was at the beginning or end
+  // of an arc, which we don't support.
+
+  // If there is exactly one, we may either be on a LineString, or on a CircularString.
+
+  // If on CircularString, we need to check if the vertex is a CurveVertex (odd index).
+  // If so, we split the subcurve at vertex -1 and +1, , drop the middle part and insert a LineString/CircularString
+  // instead with the same points.
+
+  // At the end, we call condenseCurves() to merge successible line/circular strings
+
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+
+  // We cannot convert points at start/end of subcurves
+  if ( curveIds.length() != 1 )
+    return false;
+
+  int curveId = curveIds[0].first;
+  QgsVertexId subVertexId = curveIds[0].second;
+  QgsCurve *curve = mCurves[curveId];
+
+  // We cannot convert first/last point of curve
+  if ( subVertexId.vertex == 0 || subVertexId.vertex == curve->numPoints() - 1 )
+    return false;
+
+  if ( const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve ) )
+  {
+    // If it's a circular string, we convert to LineString
+
+    // We cannot convert start/end points of arcs
+    if ( subVertexId.vertex % 2 == 0 ) // for some reason, subVertexId.type is always SegmentVertex...
+      return false;
+
+    QgsPointSequence points;
+    circularString->points( points );
+
+    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+
+    std::unique_ptr<QgsCircularString> curveA = std::make_unique<QgsCircularString>();
+    curveA->setPoints( partA );
+    std::unique_ptr<QgsLineString> curveB = std::make_unique<QgsLineString>();
+    curveB->setPoints( partB );
+    std::unique_ptr<QgsCircularString> curveC = std::make_unique<QgsCircularString>();
+    curveC->setPoints( partC );
+
+    removeCurve( curveId );
+    if ( subVertexId.vertex < points.length() - 2 )
+      mCurves.insert( curveId, curveC.release() );
+    mCurves.insert( curveId, curveB.release() );
+    if ( subVertexId.vertex > 1 )
+      mCurves.insert( curveId, curveA.release() );
+  }
+  else if ( const QgsLineString *lineString = dynamic_cast<const QgsLineString *>( curve ) )
+  {
+    // If it's a linestring, we split and insert a curve
+
+    QgsPointSequence points;
+    lineString->points( points );
+
+    const QgsPointSequence partA  = points.mid( 0, subVertexId.vertex );
+    const QgsPointSequence partB  = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex] << points[subVertexId.vertex + 1];
+    const QgsPointSequence partC  = points.mid( subVertexId.vertex + 1 );
+
+    QgsLineString *curveA = new QgsLineString();
+    curveA->setPoints( partA );
+    QgsCircularString *curveB = new QgsCircularString();
+    curveB->setPoints( partB );
+    QgsLineString *curveC = new QgsLineString();
+    curveC->setPoints( partC );
+
+    removeCurve( curveId );
+    if ( subVertexId.vertex < points.length() - 2 )
+      mCurves.insert( curveId, curveC );
+    mCurves.insert( curveId, curveB );
+    if ( subVertexId.vertex > 1 )
+      mCurves.insert( curveId, curveA );
+  }
+
+  // We merge consecutive LineStrings
+  condenseCurves();
+
+  clearCache();
+  return true;
+}
+
 
 double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {

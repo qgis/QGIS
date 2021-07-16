@@ -17,10 +17,10 @@
  ***************************************************************************/
 
 #include "qgsdb2tablemodel.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
 {
@@ -77,7 +77,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( QgsLayerItem::iconForWkbType( wkbType ),
+  QStandardItem *typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ),
       needToDetect
       ? tr( "Detecting…" )
       : QgsWkbTypes::translatedDisplayString( wkbType ) );
@@ -270,7 +270,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         // update existing row
         QgsWkbTypes::Type wkbType = QgsDb2TableModel::wkbTypeFromDb2( typeList.at( 0 ) );
 
-        row[ DbtmType ]->setIcon( QgsLayerItem::iconForWkbType( wkbType ) );
+        row[ DbtmType ]->setIcon( QgsIconUtils::iconForWkbType( wkbType ) );
         row[ DbtmType ]->setText( QgsWkbTypes::translatedDisplayString( wkbType ) );
         row[ DbtmType ]->setData( false, Qt::UserRole + 1 );
         row[ DbtmType ]->setData( wkbType, Qt::UserRole + 2 );

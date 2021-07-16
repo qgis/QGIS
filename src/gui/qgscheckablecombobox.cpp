@@ -195,6 +195,7 @@ void QgsCheckableComboBox::toggleItemCheckState( int index )
     Qt::CheckState state = static_cast<Qt::CheckState>( value.toInt() );
     setItemData( index, ( state == Qt::Unchecked ? Qt::Checked : Qt::Unchecked ), Qt::CheckStateRole );
   }
+  updateCheckedItems();
 }
 
 void QgsCheckableComboBox::hidePopup()
@@ -262,7 +263,8 @@ bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
       {
         QgsCheckableItemModel *myModel = qobject_cast<QgsCheckableItemModel *>( model() );
         QStandardItem *item = myModel->itemFromIndex( index );
-        item->checkState() == Qt::Checked ? item->setCheckState( Qt::Unchecked ) : item->setCheckState( Qt::Checked );
+        item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+        updateCheckedItems();
       }
       return true;
     }

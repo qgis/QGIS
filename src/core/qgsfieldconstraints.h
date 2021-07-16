@@ -141,6 +141,7 @@ class CORE_EXPORT QgsFieldConstraints
      */
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsFieldConstraints &other ) const;
 
   private:

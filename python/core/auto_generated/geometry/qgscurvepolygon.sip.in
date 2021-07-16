@@ -91,11 +91,12 @@ Returns the curve polygon's exterior ring.
 %End
 
 
+
     SIP_PYOBJECT interiorRing( int i ) /HoldGIL,TypeHint="QgsCurve"/;
 %Docstring
 Retrieves an interior ring from the curve polygon. The first interior ring has index 0.
 
-An IndexError will be raised if no interior ring with the specified index exists.
+:raises IndexError: if no interior ring with the specified index exists.
 
 .. seealso:: :py:func:`numInteriorRings`
 
@@ -151,7 +152,7 @@ Removes an interior ring from the polygon. The first interior ring has index 0.
 The corresponding ring is removed from the polygon and deleted.
 It is not possible to remove the exterior ring using this method.
 
-An IndexError will be raised if no interior ring with the specified index exists.
+:raises IndexError: if no interior ring with the specified index exists.
 
 .. seealso:: :py:func:`removeInteriorRings`
 %End

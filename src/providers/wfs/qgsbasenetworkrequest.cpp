@@ -121,8 +121,16 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
   }
+  else
+  {
+    // Some servers don't like spaces not encoded
+    // e.g the following fails because of the space after fes%3AFilter and before xmlns%31:fes
+    // but works if replacing it with %20
+    // http://geocloud.vd.dk/NR/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=NR:nr_byggelinjer&STARTINDEX=0&COUNT=1&SRSNAME=urn:ogc:def:crs:EPSG::25832&FILTER=%3Cfes%3AFilter xmlns%3Afes%3D%22http%3A%2F%2Fwww.opengis.net%2Ffes%2F2.0%22%20xmlns%3Agml%3D%22http%3A%2F%2Fwww.opengis.net%2Fgml%2F3.2%22%3E%0A%3Cfes%3ADisjoint%3E%0A%3Cfes%3AValueReference%3EGEOMETRY%3C%2Ffes%3AValueReference%3E%0A%3Cgml%3APoint%20srsName%3D%22urn%3Aogc%3Adef%3Acrs%3AEPSG%3A%3A25832%22%20gml%3Aid%3D%22qgis_id_geom_1%22%3E%0A%3Cgml%3Apos%20srsDimension%3D%222%22%3E0%200%3C%2Fgml%3Apos%3E%0A%3C%2Fgml%3APoint%3E%0A%3C%2Ffes%3ADisjoint%3E%0A%3C%2Ffes%3AFilter%3E%0A&SORTBY=BESTEMMELSEN
+    modifiedUrl = modifiedUrl.adjusted( QUrl::EncodeSpaces );
+  }
 
-  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
   if ( !acceptHeader.isEmpty() )
@@ -440,6 +448,20 @@ void QgsBaseNetworkRequest::replyFinished()
     else
     {
       mErrorMessage = errorMessageWithReason( mReply->errorString() );
+      QString replyContent = mReply->readAll();
+      QDomDocument exceptionDoc;
+      QString errorMsg;
+      if ( exceptionDoc.setContent( replyContent, true, &errorMsg ) )
+      {
+        QDomElement exceptionElem = exceptionDoc.documentElement();
+        if ( !exceptionElem.isNull() && exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
+        {
+          QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+          mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" )
+                          .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ),
+                                exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() );
+        }
+      }
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
       logMessageIfEnabled();
       mResponse.clear();

@@ -35,7 +35,7 @@ Returns pointer to the renderer (no transfer of ownership)
 
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 %Docstring
-show a dialog with renderer's symbol level settings
+Show a dialog with renderer's symbol level settings.
 %End
 
     virtual void setContext( const QgsSymbolWidgetContext &context );
@@ -73,6 +73,7 @@ This method should be called whenever the renderer is actually set on the layer.
     virtual void setDockMode( bool dockMode );
 
 
+
   signals:
 
     void layerVariablesChanged();
@@ -82,9 +83,12 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
-    void symbolLevelsChanged();
+ void symbolLevelsChanged() /Deprecated/;
 %Docstring
 Emitted when the symbol levels settings have been changed.
+
+.. deprecated:: QGIS 3.20
+   -- no longer emitted.
 %End
 
   protected:
@@ -105,6 +109,17 @@ Creates widget to setup data-defined size legend.
 Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
 
 .. versionadded:: 3.0
+%End
+
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+%Docstring
+Sets the symbol levels for the renderer defined in the widget.
+
+The ``levels`` argument defines the updated list of symbols with rendering passes set.
+
+The ``enabled`` arguments specifies if symbol levels should be enabled for the renderer.
+
+.. versionadded:: 3.20
 %End
 
   protected slots:
@@ -235,6 +250,7 @@ class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 
     virtual double value( const QgsSymbol *symbol ) const;
 
+
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 
 
@@ -255,6 +271,7 @@ class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 
     virtual double value( const QgsSymbol *symbol ) const;
 
+
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 
 };
@@ -273,6 +290,7 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 
 
     virtual double value( const QgsSymbol *symbol ) const;
+
 
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 

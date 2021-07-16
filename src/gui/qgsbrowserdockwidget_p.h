@@ -39,7 +39,6 @@
 #include "ui_qgsbrowserdirectorypropertiesbase.h"
 #include "ui_qgsbrowserpropertiesdialogbase.h"
 
-#include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
 #include "qgsdataitemguiprovider.h"

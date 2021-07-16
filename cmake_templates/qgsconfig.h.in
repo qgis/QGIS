@@ -69,11 +69,16 @@
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
+#cmakedefine HAVE_OAUTH2_PLUGIN
+
 #cmakedefine HAVE_OPENCL
+#cmakedefine OPENCL_USE_NEW_HEADER
 
 #cmakedefine ENABLE_MODELTEST
 
 #cmakedefine HAVE_3D
+
+#cmakedefine HAVE_GSL
 
 #cmakedefine HAVE_GEOREFERENCER
 
@@ -96,6 +101,8 @@
 #define PDAL_VERSION_MAJOR "${PDAL_VERSION_MAJOR}"
 #define PDAL_VERSION_MINOR "${PDAL_VERSION_MINOR}"
 #define PDAL_VERSION_MICRO "${PDAL_VERSION_MICRO}"
+
+#cmakedefine ENABLE_TESTS
 
 #endif
 

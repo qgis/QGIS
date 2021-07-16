@@ -41,6 +41,8 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsshadoweffect.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 /**
  * \ingroup UnitTests

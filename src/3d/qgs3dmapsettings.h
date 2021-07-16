@@ -283,7 +283,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER ) SIP_SKIP;
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
-    QgsTerrainGenerator *terrainGenerator() const SIP_SKIP { return mTerrainGenerator.get(); }
+    QgsTerrainGenerator *terrainGenerator() const SIP_SKIP
+    {
+      if ( mTerrainRenderingEnabled )
+        return mTerrainGenerator.get();
+      return nullptr;
+    }
 
     /**
      * Sets whether terrain shading is enabled.
@@ -571,6 +576,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setIsFpsCounterEnabled( bool fpsCounterEnabled );
 
+    /**
+     * Returns whether the 2D terrain surface will be rendered.
+     * \see setTerrainRenderingEnabled()
+     * \since QGIS 3.22
+     */
+    bool terrainRenderingEnabled() { return mTerrainRenderingEnabled; }
+
+    /**
+     * Sets whether the 2D terrain surface will be rendered in.
+     * \see terrainRenderingEnabled()
+     * \since QGIS 3.22
+     */
+    void setTerrainRenderingEnabled( bool terrainRenderingEnabled );
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -732,7 +751,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Emitted when the FPS counter is enabled or disabled
-     *
      * \since QGIS 3.18
      */
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );
@@ -793,6 +811,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mDebugDepthMapEnabled = false;
     Qt::Corner mDebugDepthMapCorner = Qt::Corner::TopRightCorner;
     double mDebugDepthMapSize = 0.2;
+
+    bool mTerrainRenderingEnabled = true;
 };
 
 

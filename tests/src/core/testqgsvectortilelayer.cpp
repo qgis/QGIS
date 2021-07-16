@@ -27,6 +27,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsfontutils.h"
 #include "qgslinesymbollayer.h"
+#include "qgslinesymbol.h"
 
 /**
  * \ingroup UnitTests

@@ -40,7 +40,7 @@ Data can be populated by setMesh(const QString &vertices, const QString &faces),
 vertices and faces is comma separated coordinates and connections for mesh.
 E.g. to create mesh with one quad and one triangle
 
-.. code-block::
+.. code-block:: python
 
       uri = "1.0, 2.0 \n" \
           "2.0, 2.0 \n" \
@@ -59,10 +59,13 @@ MDAL data provider (mdal)
 Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
 is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
 
-.. code-block::
+
+.. code-block:: python
 
          uri = "test/land.2dm"
          scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
+
+
 
 .. note::
 
@@ -153,6 +156,10 @@ QgsMeshLayer cannot be copied.
     virtual QStringList subLayers() const;
 
     virtual QString htmlMetadata() const;
+
+    virtual bool isEditable() const;
+
+    virtual bool supportsEditing() const;
 
 
     QString providerType() const;
@@ -703,6 +710,88 @@ Returns the relative time of the dataset from the reference time of its group
 Returns the relative time (in milliseconds) of the dataset from the reference time of its group
 
 .. versionadded:: 3.16
+%End
+
+    bool startFrameEditing( const QgsCoordinateTransform &transform );
+%Docstring
+Starts edition of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
+This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+
+.. versionadded:: 3.22
+%End
+
+    bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+%Docstring
+Commits edition of the mesh frame,
+Rebuilds the triangular mesh and its spatial index with ``transform``,
+Continue editing with the same mesh editor if ``continueEditing`` is True
+
+:return: ``True`` if the commit succeeds
+
+.. versionadded:: 3.22
+%End
+
+    bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
+%Docstring
+Rolls Back edition of the mesh frame.
+Reload mesh from file, rebuilds the triangular mesh and its spatial index with ``transform``,
+Continue editing with the same mesh editor if ``continueEditing`` is ``True``
+
+:return: ``True`` if the rollback succeeds
+
+.. versionadded:: 3.22
+%End
+
+    void stopFrameEditing( const QgsCoordinateTransform &transform );
+%Docstring
+Stops edition of the mesh, re-indexes the faces and vertices,
+rebuilds the triangular mesh and its spatial index with ``transform``,
+clean the undostack
+
+.. versionadded:: 3.22
+%End
+
+    QgsMeshEditor *meshEditor();
+%Docstring
+Returns a pointer to the mesh editor own by the mesh layer
+
+.. versionadded:: 3.22
+%End
+
+    virtual bool isModified() const;
+
+%Docstring
+Returns whether the mesh frame has been modified since the last save
+
+.. versionadded:: 3.22
+%End
+
+    bool contains( const QgsMesh::ElementType &type ) const;
+%Docstring
+Returns whether the mesh contains at mesh elements of given type
+
+.. versionadded:: 3.22
+%End
+
+    int meshVertexCount() const;
+%Docstring
+Returns the vertices count of the mesh frame
+
+.. versionadded:: 3.22
+%End
+
+    int meshFaceCount() const;
+%Docstring
+Returns the faces count of the mesh frame
+
+.. versionadded:: 3.22
+%End
+
+    int meshEdgeCount() const;
+%Docstring
+Returns the edges count of the mesh frame
+
+.. versionadded:: 3.22
 %End
 
   public slots:

@@ -28,6 +28,7 @@
 #include "qgis_core.h"
 #include "qgspoint.h"
 #include "qgsdataprovider.h"
+#include "qgsprovidermetadata.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 
@@ -164,10 +165,31 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     virtual int edgeCount() const = 0;
 
     /**
+     * \brief Returns the maximum number of vertices per face supported by the current mesh,
+     * if returns 0, the number of vertices is unlimited
+     *
+     * \returns Maximum number of vertices per face
+     *
+     * \since QGIS 3.22
+     */
+    virtual int maximumVerticesCountPerFace() const {return 0;};
+
+    /**
      * Populates the mesh vertices, edges and faces
      * \since QGIS 3.6
      */
     virtual void populateMesh( QgsMesh *mesh ) const = 0;
+
+    /**
+     * Saves the \a mesh frame to the source.
+     *
+     * \param mesh the mesh to save
+     *
+     * \returns TRUE on success
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool saveMeshFrame( const QgsMesh &mesh ) = 0;
 };
 
 /**
@@ -414,6 +436,24 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      * \since QGIS 3.14
      */
     void setTemporalUnit( QgsUnitTypes::TemporalUnit unit );
+
+
+    /**
+     * Returns the mesh driver metadata of the provider
+     *
+     * \return the mesh driver metadata of the provider
+     *
+     * \since QGIS 3.22
+     */
+    virtual QgsMeshDriverMetadata driverMetadata()  const;
+
+
+    /**
+     * Closes the data provider and free every resources used
+     *
+     * \since QGIS 3.22
+     */
+    virtual void close() = 0;
 
   signals:
     //! Emitted when some new dataset groups have been added

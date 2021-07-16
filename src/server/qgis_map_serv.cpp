@@ -22,6 +22,7 @@
 #include "qgsfcgiserverresponse.h"
 #include "qgsfcgiserverrequest.h"
 #include "qgsapplication.h"
+#include "qgscommandlineutils.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>
@@ -43,6 +44,15 @@ int fcgi_accept()
 
 int main( int argc, char *argv[] )
 {
+  if ( argc >= 2 )
+  {
+    if ( argv[1] == QLatin1String( "--version" ) || argv[1] == QLatin1String( "-v" ) )
+    {
+      std::cout << QgsCommandLineUtils::allVersions().toStdString();
+      return 0;
+    }
+  }
+
   // Test if the environ variable DISPLAY is defined
   // if it's not, the server is running in offscreen mode
   // Qt supports using various QPA (Qt Platform Abstraction) back ends
@@ -58,7 +68,7 @@ int main( int argc, char *argv[] )
   {
     withDisplay = false;
     qputenv( "QT_QPA_PLATFORM", "offscreen" );
-    QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::Info );
+    QgsMessageLog::logMessage( "DISPLAY not set, running in offscreen mode, all printing capabilities will not be available.", "Server", Qgis::MessageLevel::Info );
   }
   // since version 3.0 QgsServer now needs a qApp so initialize QgsApplication
   QgsApplication app( argc, argv, withDisplay, QString(), QStringLiteral( "server" ) );

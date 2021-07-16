@@ -143,6 +143,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      */
     bool loadVariant( const QVariantMap &map );
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsRemappingSinkDefinition &other ) const;
     bool operator!=( const QgsRemappingSinkDefinition &other ) const;
 

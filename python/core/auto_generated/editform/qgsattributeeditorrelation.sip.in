@@ -165,7 +165,6 @@ Sets the relation editor configuration
 QFlags<QgsAttributeEditorRelation::Button> operator|(QgsAttributeEditorRelation::Button f1, QFlags<QgsAttributeEditorRelation::Button> f2);
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

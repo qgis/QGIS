@@ -23,6 +23,7 @@ and diagrams for the layer. Selected features will also be drawn with a default 
   public:
 
     QgsNullSymbolRenderer();
+    ~QgsNullSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 

@@ -40,20 +40,26 @@ Constructor for QgsRelationWidgetWrapper
 Constructor for QgsRelationWidgetWrapper
 %End
 
-    bool showLabel() const;
+ bool showLabel() const /Deprecated/;
 %Docstring
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.20
+   label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
-    void setShowLabel( bool showLabel );
+ void setShowLabel( bool showLabel ) /Deprecated/;
 %Docstring
 Defines if a title label should be shown for this widget.
 Only has an effect after :py:func:`~QgsRelationWidgetWrapper.widget` has been called at least once.
 
 .. versionadded:: 2.18
+
+.. deprecated:: QGIS 3.20
+   label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
  bool showLinkButton() const /Deprecated/;
@@ -185,19 +191,25 @@ If it's empty, then it's considered as a 1:M relationship.
 .. versionadded:: 3.16
 %End
 
-    QString label() const;
+ QString label() const /Deprecated/;
 %Docstring
 Determines the label of this element
 
 .. versionadded:: 3.16
+
+.. deprecated:: QGIS 3.20
+   label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
-    void setLabel( const QString &label = QString() );
+ void setLabel( const QString &label = QString() ) /Deprecated/;
 %Docstring
 Sets ``label`` for this element
 If it's empty it takes the relation id as label
 
 .. versionadded:: 3.16
+
+.. deprecated:: QGIS 3.20
+   label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
     QgsRelation relation() const;

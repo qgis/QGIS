@@ -18,7 +18,6 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include <QAction>
 #include <QIcon>
 #include <QString>
 #include <QVariant>
@@ -359,7 +358,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      *          since fetching results does not happen in the main thread.
      * \since QGIS 3.2
      */
-    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Returns the delay (in milliseconds) for the filter to wait prior to fetching results.

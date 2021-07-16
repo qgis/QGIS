@@ -36,6 +36,7 @@ The default relation widget in QGIS.
 
     enum Button
     {
+      NoButton,
       Link,
       Unlink,
       SaveChildEdits,
@@ -133,12 +134,6 @@ Returns the current configuration
 
 %Docstring
 Defines the current configuration
-%End
-
-    virtual void setTitle( const QString &title );
-
-%Docstring
-Sets the title of the root groupbox
 %End
 
   public slots:

@@ -37,7 +37,7 @@ struct QgsOracleProviderResultIterator: public QgsAbstractDatabaseProviderConnec
     QVariantList mNextRow;
 
     QVariantList nextRowInternal();
-
+    long long rowCountPrivate() const override;
 };
 
 class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
@@ -72,11 +72,14 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
 
   private:
 
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void setDefaultCapabilities();
+
 };
 
 

@@ -22,6 +22,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutundostack.h"
+#include "qgsfillsymbol.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )

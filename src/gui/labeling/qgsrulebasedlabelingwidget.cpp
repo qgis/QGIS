@@ -133,8 +133,7 @@ void QgsRuleBasedLabelingWidget::setDockMode( bool dockMode )
 
 void QgsRuleBasedLabelingWidget::addRule()
 {
-
-  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings );
+  QgsRuleBasedLabeling::Rule *newrule = new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) ) );
 
   QgsRuleBasedLabeling::Rule *current = currentRule();
   if ( current )
@@ -603,6 +602,10 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+
+  QButtonGroup *radioGroup = new QButtonGroup( this );
+  radioGroup->addButton( mFilterRadio );
+  radioGroup->addButton( mElseRadio );
 
   mElseRadio->setChecked( mRule->isElse() );
   mFilterRadio->setChecked( !mRule->isElse() );

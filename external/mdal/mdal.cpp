@@ -21,12 +21,33 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.8.0";
+  return "0.8.90";
 }
 
 MDAL_Status MDAL_LastStatus()
 {
   return MDAL::Log::getLastStatus();
+}
+
+MDAL_EXPORT void MDAL_ResetStatus()
+{
+  return MDAL::Log::resetLastStatus();
+}
+
+MDAL_EXPORT void MDAL_SetStatus( MDAL_LogLevel level, MDAL_Status status, const char *message )
+{
+  MDAL::Log::resetLastStatus();
+  switch ( level )
+  {
+    case MDAL_LogLevel::Error:
+      return MDAL::Log::error( status, message );
+    case MDAL_LogLevel::Warn:
+      return MDAL::Log::warning( status, message );
+    case MDAL_LogLevel::Info:
+      return MDAL::Log::info( message );
+    case MDAL_LogLevel::Debug:
+      return MDAL::Log::debug( message );
+  }
 }
 
 void MDAL_SetLoggerCallback( MDAL_LoggerCallback callback )
@@ -194,6 +215,7 @@ const char *MDAL_MeshNames( const char *uri )
 
 void MDAL_SaveMesh( MDAL_MeshH mesh, const char *meshFile, const char *driver )
 {
+  MDAL::Log::resetLastStatus();
   if ( !meshFile )
   {
     MDAL::Log::error( MDAL_Status::Err_FileNotFound, "Mesh file is not valid (null)" );
@@ -1215,6 +1237,18 @@ const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver )
   return _return_str( d->writeDatasetOnFileSuffix() );
 }
 
+const char *MDAL_DR_saveMeshSuffix( MDAL_DriverH driver )
+{
+  if ( !driver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid (null)" );
+    return EMPTY_STR;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return _return_str( d->saveMeshOnFileSuffix() );
+}
+
 MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver )
 {
   if ( !driver )
@@ -1285,3 +1319,4 @@ void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection )
 
   static_cast<MDAL::Mesh *>( mesh )->setSourceCrsFromWKT( std::string( projection ) );
 }
+

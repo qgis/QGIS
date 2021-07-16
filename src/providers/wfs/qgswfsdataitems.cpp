@@ -45,12 +45,12 @@
 //
 
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString, const QString &providerKey )
-  : QgsLayerItem( parent, title.isEmpty() ? featureType : title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, providerKey )
+  : QgsLayerItem( parent, title.isEmpty() ? featureType : title, parent->path() + '/' + name, QString(), Qgis::BrowserLayerType::Vector, providerKey )
 {
   QgsSettings settings;
   bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
   mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent );
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
@@ -96,7 +96,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        Qgis::Critical, messageTimeout() );
+        Qgis::MessageLevel::Critical, messageTimeout() );
 #endif
     return;
   }
@@ -114,7 +114,7 @@ void QgsWfsLayerItem::copyStyle()
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
         errorMsg,
-        Qgis::Critical, messageTimeout() );
+        Qgis::MessageLevel::Critical, messageTimeout() );
 #endif
     return;
   }
@@ -141,7 +141,7 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 
@@ -230,7 +230,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WFS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
   populate();
 }

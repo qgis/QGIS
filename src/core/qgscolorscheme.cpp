@@ -24,6 +24,7 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QRegularExpression>
 #include <QTextStream>
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
@@ -305,10 +306,11 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
     }
     if ( !in.atEnd() )
     {
-      QRegExp rx( "Name:\\s*(\\S.*)$" );
-      if ( rx.indexIn( line ) != -1 )
+      const QRegularExpression rx( "Name:\\s*(\\S.*)$" );
+      const QRegularExpressionMatch match = rx.match( line );
+      if ( match.hasMatch() )
       {
-        mName = rx.cap( 1 );
+        mName = match.captured( 1 );
       }
     }
   }

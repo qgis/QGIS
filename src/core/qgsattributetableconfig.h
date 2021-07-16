@@ -54,6 +54,7 @@ class CORE_EXPORT QgsAttributeTableConfig
       //! Constructor for ColumnConfig
       ColumnConfig() = default;
 
+      // TODO c++20 - replace with = default
       bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 
       QgsAttributeTableConfig::Type type = Field;    //!< The type of this column.

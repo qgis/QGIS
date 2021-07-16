@@ -48,8 +48,22 @@ void QgsMeshStaticDatasetWidget::apply()
   if ( !mLayer )
     return;
 
-  mLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( mScalarDatasetGroup, mScalarDatasetComboBox->currentIndex() - 1 ) );
-  mLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( mVectorDatasetGroup, mVectorDatasetComboBox->currentIndex() - 1 ) );
+  int scalarIndex;
+  // if only one item, there is no active dataset group.
+  // Set to 0 instead of -1 to avoid none dataset (item 0) when the group is reactivate
+  if ( mScalarDatasetComboBox->count() == 1 )
+    scalarIndex = 0;
+  else
+    scalarIndex = mScalarDatasetComboBox->currentIndex() - 1;
+  int vectorIndex;
+  // Same as scalar
+  if ( mVectorDatasetComboBox->count() == 1 )
+    vectorIndex = 0;
+  else
+    vectorIndex = mVectorDatasetComboBox->currentIndex() - 1;
+
+  mLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( mScalarDatasetGroup, scalarIndex ) );
+  mLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( mVectorDatasetGroup, vectorIndex ) );
 }
 
 void QgsMeshStaticDatasetWidget::setScalarDatasetGroup( int index )

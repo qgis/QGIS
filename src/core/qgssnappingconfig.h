@@ -219,6 +219,7 @@ class CORE_EXPORT QgsSnappingConfig
          */
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
+        // TODO c++20 - replace with = default
         bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:

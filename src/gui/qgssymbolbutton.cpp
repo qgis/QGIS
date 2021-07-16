@@ -29,6 +29,9 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgscolordialog.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 #include <QMenu>
 #include <QClipboard>
@@ -56,6 +59,8 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
+QgsSymbolButton::~QgsSymbolButton() = default;
+
 QSize QgsSymbolButton::minimumSizeHint() const
 {
 
@@ -67,25 +72,25 @@ QSize QgsSymbolButton::sizeHint() const
   return mSizeHint;
 }
 
-void QgsSymbolButton::setSymbolType( QgsSymbol::SymbolType type )
+void QgsSymbolButton::setSymbolType( Qgis::SymbolType type )
 {
   if ( type != mType )
   {
     switch ( type )
     {
-      case QgsSymbol::Marker:
+      case Qgis::SymbolType::Marker:
         mSymbol.reset( QgsMarkerSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Line:
+      case Qgis::SymbolType::Line:
         mSymbol.reset( QgsLineSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Fill:
+      case Qgis::SymbolType::Fill:
         mSymbol.reset( QgsFillSymbol::createSimple( QVariantMap() ) );
         break;
 
-      case QgsSymbol::Hybrid:
+      case Qgis::SymbolType::Hybrid:
         break;
     }
   }

@@ -35,7 +35,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, Q
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
-  mCapabilities |= Collapse;
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
 }
 
 QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
@@ -89,7 +89,7 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWcsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary )
-  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wcs" ) )
+  : QgsLayerItem( parent, name, path, QString(), Qgis::BrowserLayerType::Raster, QStringLiteral( "wcs" ) )
   , mCapabilities( capabilitiesProperty )
   , mDataSourceUri( dataSourceUri )
   , mCoverageSummary( coverageSummary )
@@ -111,7 +111,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   {
     mIconName = QStringLiteral( "mIconWcs.svg" );
   }
-  setState( Populated );
+  setState( Qgis::BrowserItemState::Populated );
 }
 
 QString QgsWCSLayerItem::createUri()
@@ -186,7 +186,7 @@ QString QgsWCSLayerItem::createUri()
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WCS" ) )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   mIconName = QStringLiteral( "mIconWcs.svg" );
   populate();
 }

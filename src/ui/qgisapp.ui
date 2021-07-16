@@ -97,6 +97,7 @@
      </property>
      <addaction name="mActionMeasure"/>
      <addaction name="mActionMeasureArea"/>
+     <addaction name="mActionMeasureBearing"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
     <widget class="QMenu" name="mMenuDecorations">
@@ -174,6 +175,7 @@
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
+     <addaction name="mActionNewMeshLayer"/>
      <addaction name="separator"/>
      <addaction name="mActionNewVirtualLayer"/>
     </widget>
@@ -188,7 +190,6 @@
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
-     <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
      <addaction name="mActionAddHanaLayer"/>
      <addaction name="mActionAddVirtualLayer"/>
@@ -200,6 +201,14 @@
      <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
+    </widget>
+    <widget class="QMenu" name="mMenuFilterTable">
+     <property name="title">
+      <string>Filter Attribute Table</string>
+     </property>
+     <addaction name="mActionOpenTableSelected"/>
+     <addaction name="mActionOpenTableVisible"/>
+     <addaction name="mActionOpenTableEdited"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -214,8 +223,7 @@
     <addaction name="mActionPasteLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
-    <addaction name="mActionOpenTableSelected"/>
-    <addaction name="mActionOpenTableVisible"/>
+    <addaction name="mMenuFilterTable"/>
     <addaction name="mActionToggleEditing"/>
     <addaction name="mActionSaveLayerEdits"/>
     <addaction name="mActionAllEdits"/>
@@ -499,7 +507,6 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionVertexTool"/>
    <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
@@ -739,6 +746,7 @@
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionNewSpatiaLiteLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
+   <addaction name="mActionNewMeshLayer"/>
    <addaction name="separator"/>
    <addaction name="mActionNewVirtualLayer"/>
    <addaction name="separator"/>
@@ -763,6 +771,17 @@
    </property>
    <property name="toolTip">
     <string>Selection Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="mMeshToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1626,18 +1645,6 @@ Shift+R to enable range selection.</string>
     <string>Add MSSQL Spatial Layer…</string>
    </property>
   </action>
-  <action name="mActionAddDb2Layer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddDb2Layer.svg</normaloff>:/images/themes/default/mActionAddDb2Layer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add DB2 Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+2</string>
-   </property>
-  </action>
   <action name="mActionAddOracleLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1657,9 +1664,6 @@ Shift+R to enable range selection.</string>
    </property>
    <property name="text">
     <string>Add SAP HANA Spatial Layer…</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">
@@ -1692,7 +1696,7 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionOpenTableSelected.svg</normaloff>:/images/themes/default/mActionOpenTableSelected.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table (Selected items)</string>
+    <string>Open Attribute Table (Selected Features)</string>
    </property>
    <property name="shortcut">
     <string>Shift+F6</string>
@@ -1704,10 +1708,19 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionOpenTableVisible.svg</normaloff>:/images/themes/default/mActionOpenTableVisible.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table (Visible items)</string>
+    <string>Open Attribute Table (Visible Features)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F6</string>
+   </property>
+  </action>
+  <action name="mActionOpenTableEdited">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOpenTableEdited.svg</normaloff>:/images/themes/default/mActionOpenTableEdited.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Attribute Table (Edited and New Features)</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
@@ -3520,9 +3533,34 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Toggles stream digitizing mode</string>
    </property>
   </action>
+  <action name="mActionMeasureBearing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMeasureBearing.svg</normaloff>:/images/themes/default/mActionMeasureBearing.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Measure Bearing</string>
+   </property>
+   <property name="toolTip">
+    <string>Measure Bearing</string>
+   </property>
+  </action>
+  <action name="mActionNewMeshLayer">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/images/themes/default/mActionNewMeshLayer.svg</normaloff>:/images/themes/default/mActionNewMeshLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New Mesh Layer</string>
+   </property>
+   <property name="toolTip">
+    <string>New Mesh Layer</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -17,16 +17,18 @@
 #include "qgsauthconfigselect.h"
 #include "ui_qgsauthconfigselect.h"
 
-#include <QHash>
-#include <QMessageBox>
-#include <QTimer>
-
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsauthmethodmetadata.h"
+
+#include <QHash>
+#include <QMessageBox>
+#include <QTimer>
+#include <QRegularExpression>
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -109,11 +111,12 @@ void QgsAuthConfigSelect::loadConfig()
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
     QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod *authmethod = QgsApplication::authManager()->configAuthMethod( mAuthCfg );
+    QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
-    if ( authmethod )
+    const QgsAuthMethodMetadata *meta = QgsApplication::authManager()->authMethodMetadata( authMethodKey );
+    if ( meta )
     {
-      methoddesc = authmethod->description();
+      methoddesc = meta->description();
     }
     cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
                                      "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );
@@ -380,8 +383,7 @@ void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
 
 int QgsAuthConfigUriEdit::authCfgIndex()
 {
-  QRegExp rx( QgsApplication::authManager()->configIdRegex() );
-  return rx.indexIn( mDataUri );
+  return mDataUri.indexOf( QRegularExpression( QgsApplication::authManager()->configIdRegex() ) );
 }
 
 QString QgsAuthConfigUriEdit::authCfgFromUri()

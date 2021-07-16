@@ -88,7 +88,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Coordinate transform error" ),
         tr( "Cannot transform the point to the layers coordinate system" ),
-        Qgis::Info );
+        Qgis::MessageLevel::Info );
       return;
     }
 
@@ -112,21 +112,21 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No parts were split" ),
         tr( "If there are selected parts, the split tool only applies to those. If you would like to split all parts under the split line, clear the selection." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
     else if ( returnCode == QgsGeometry::OperationResult::GeometryEngineError )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No part split done" ),
         tr( "Cut edges detected. Make sure the line splits parts into multiple parts." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
     else if ( returnCode == QgsGeometry::OperationResult::InvalidBaseGeometry )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No part split done" ),
         tr( "The geometry is invalid. Please repair before trying to split it." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
     else if ( returnCode != QgsGeometry::OperationResult::Success )
     {
@@ -134,7 +134,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Split error" ),
         tr( "An error occurred during splitting." ),
-        Qgis::Warning );
+        Qgis::MessageLevel::Warning );
     }
 
     stopCapturing();

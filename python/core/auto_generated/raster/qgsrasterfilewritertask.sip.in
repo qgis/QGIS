@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterFileWriterTask : QgsTask
 {
 %Docstring(signature="appended")
@@ -56,6 +57,8 @@ coordinate ``transformContext`` .
 Ownership of the ``pipe`` is transferred to the writer task, and will
 be deleted when the task completes.
 %End
+
+    ~QgsRasterFileWriterTask();
 
     virtual void cancel();
 

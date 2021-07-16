@@ -16,7 +16,6 @@
 
 #include "qgssymbollayerwidget.h"
 
-#include "qgsdataitem.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
@@ -45,6 +44,9 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsiconutils.h"
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -318,6 +320,8 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol );
 }
 
+QgsSimpleLineSymbolLayerWidget::~QgsSimpleLineSymbolLayerWidget() = default;
+
 void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
 {
   for ( int i = mAssistantPreviewSymbol->symbolLayerCount() - 1 ; i >= 0; --i )
@@ -434,16 +438,16 @@ void QgsSimpleLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mDrawInsideCheckBox->hide();
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -711,6 +715,8 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleMarkerSymbolLayerWidget::setOffset );
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
+
+QgsSimpleMarkerSymbolLayerWidget::~QgsSimpleMarkerSymbolLayerWidget() = default;
 
 void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -1148,6 +1154,8 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsFilledMarkerSymbolLayerWidget::setOffset );
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
+
+QgsFilledMarkerSymbolLayerWidget::~QgsFilledMarkerSymbolLayerWidget() = default;
 
 void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -2003,15 +2011,15 @@ void QgsMarkerLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -2258,15 +2266,15 @@ void QgsHashedLineSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &c
 
   switch ( context.symbolType() )
   {
-    case QgsSymbol::Marker:
-    case QgsSymbol::Line:
+    case Qgis::SymbolType::Marker:
+    case Qgis::SymbolType::Line:
       //these settings only have an effect when the symbol layers is part of a fill symbol
       mRingFilterComboBox->hide();
       mRingsLabel->hide();
       break;
 
-    case QgsSymbol::Fill:
-    case QgsSymbol::Hybrid:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
       break;
   }
 }
@@ -2460,6 +2468,8 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
     mHeightDDBtn->setSymbol( mAssistantPreviewSymbol );
   }
 }
+
+QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget() = default;
 
 #include <QTime>
 #include <QAbstractListModel>
@@ -3425,6 +3435,8 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol );
 }
 
+QgsFontMarkerSymbolLayerWidget::~QgsFontMarkerSymbolLayerWidget() = default;
+
 void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "FontMarker" ) )
@@ -4273,9 +4285,9 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( Qg
   modificationExpressionSelector->setMultiLine( true );
   modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer *>( vl ) );
   modificationExpressionSelector->registerExpressionContextGenerator( this );
-  cbxGeometryType->addItem( QgsLayerItem::iconPolygon(), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
-  cbxGeometryType->addItem( QgsLayerItem::iconLine(), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
-  cbxGeometryType->addItem( QgsLayerItem::iconPoint(), tr( "Point / MultiPoint" ), QgsSymbol::Marker );
+  cbxGeometryType->addItem( QgsIconUtils::iconPolygon(), tr( "Polygon / MultiPolygon" ), static_cast< int >( Qgis::SymbolType::Fill ) );
+  cbxGeometryType->addItem( QgsIconUtils::iconLine(), tr( "LineString / MultiLineString" ), static_cast< int >( Qgis::SymbolType::Line ) );
+  cbxGeometryType->addItem( QgsIconUtils::iconPoint(), tr( "Point / MultiPoint" ), static_cast< int >( Qgis::SymbolType::Marker ) );
   connect( modificationExpressionSelector, &QgsExpressionLineEdit::expressionChanged, this, &QgsGeometryGeneratorSymbolLayerWidget::updateExpression );
   connect( cbxGeometryType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType );
 }
@@ -4284,7 +4296,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *l )
 {
   mLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( l );
   modificationExpressionSelector->setExpression( mLayer->geometryExpression() );
-  cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
+  cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( static_cast< int >( mLayer->symbolType() ) ) );
 }
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
@@ -4301,7 +4313,7 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString &str
 
 void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
 {
-  mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->currentData().toInt() ) );
+  mLayer->setSymbolType( static_cast<Qgis::SymbolType>( cbxGeometryType->currentData().toInt() ) );
 
   emit symbolChanged();
 }

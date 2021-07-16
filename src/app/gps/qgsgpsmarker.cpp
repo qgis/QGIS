@@ -50,7 +50,7 @@ void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::MessageLevel::Warning );
       return;
     }
   }

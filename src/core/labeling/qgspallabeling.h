@@ -39,7 +39,6 @@
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
-#include "qgssymbol.h"
 #include "qgstextformat.h"
 #include "qgspropertycollection.h"
 #include "qgslabelobstaclesettings.h"
@@ -799,6 +798,18 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsWkbTypes::GeometryType layerType = QgsWkbTypes::UnknownGeometry;
 
     /**
+     * \brief setLegendString
+     * \param legendString the string to show in the legend and preview
+     */
+    void setLegendString( const QString &legendString ) { mLegendString = legendString; }
+
+    /**
+     * \brief legendString
+     * \return the string to show in the legend and in the preview icon
+     */
+    QString legendString() const { return mLegendString; }
+
+    /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
      * If the text orientation is set to rotation-based, the spaced taken to render
@@ -812,22 +823,37 @@ class CORE_EXPORT QgsPalLayerSettings
 #endif
 
     /**
-     * Register a feature for labeling.
+     * Registers a feature for labeling.
      * \param f feature to label
      * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * \param labelFeature if using QgsLabelingEngine, this will receive the label feature. Not available
-     * in Python bindings.
+     *
+     * \warning This method is designed for use by PyQGIS clients only. C++ code should use the
+     * variant with additional arguments.
+     */
+    void registerFeature( const QgsFeature &f, QgsRenderContext &context );
+
+#ifndef SIP_RUN
+
+    /**
+     * Registers a feature for labeling.
+     * \param feature feature to label
+     * \param context render context. The QgsExpressionContext contained within the render context
+     * must have already had the feature and fields set prior to calling this method.
      * \param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
      * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-     * the feature's original geometry will be used as an obstacle for labels. Not available
-     * in Python bindings.
+     * the feature's original geometry will be used as an obstacle for labels.
      * \param symbol feature symbol to label (ownership is not transferred, and \a symbol must exist until the labeling is complete)
+     *
+     * \returns QgsLabelFeature representing the registered feature, or NULLPTR if the feature will not be labeled
+     * in this context.
+     *
+     * \note Not available in Python bindings
      */
-    void registerFeature( const QgsFeature &f, QgsRenderContext &context,
-                          QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
-                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry(), const QgsSymbol *symbol SIP_PYARGREMOVE = nullptr );
+    std::unique_ptr< QgsLabelFeature > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context,
+        QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+#endif
 
     /**
      * Read settings from a DOM element
@@ -983,6 +1009,22 @@ class CORE_EXPORT QgsPalLayerSettings
     */
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );
 
+    /**
+     * Returns the layer's unplaced label visibility.
+     *
+     * \see setUnplacedVisibility()
+     * \since QGIS 3.20
+     */
+    Qgis::UnplacedLabelVisibility unplacedVisibility() const;
+
+    /**
+     * Sets the layer's unplaced label \a visibility.
+     *
+     * \see unplacedVisibility()
+     * \since QGIS 3.20
+     */
+    void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;
     QgsFields mCurFields;
@@ -996,6 +1038,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
+
   private:
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
@@ -1062,7 +1105,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
+    std::unique_ptr< QgsLabelFeature > registerObstacleFeature( const QgsFeature &f, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     QMap<Property, QVariant> dataDefinedValues;
 
@@ -1086,6 +1129,10 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsExpression mGeometryGeneratorExpression;
 
     bool mRenderStarted = false;
+
+    QString mLegendString = QObject::tr( "Aa" );
+
+    Qgis::UnplacedLabelVisibility mUnplacedVisibility = Qgis::UnplacedLabelVisibility::FollowEngineSetting;
 
     static void initPropertyDefinitions();
 };

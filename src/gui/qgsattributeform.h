@@ -331,6 +331,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
+    /**
+     * Returns TRUE if any of the form widgets need feature geometry
+     * \since QGIS 3.20
+     */
+    bool needsGeometry() const;
 
   private slots:
     void onAttributeChanged( const QVariant &value, const QVariantList &additionalFieldValues );
@@ -516,9 +521,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! List of updated fields to avoid recursion on the setting of defaultValues
     QList<int> mAlreadyUpdatedFields;
 
+    bool mNeedsGeometry = false;
+
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;
 };
 
 #endif // QGSATTRIBUTEFORM_H
-

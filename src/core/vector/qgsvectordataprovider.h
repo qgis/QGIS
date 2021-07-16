@@ -106,17 +106,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
                                            RenameAttributes;
 
     /**
-     * Enumeration of feature count states
-     */
-    enum FeatureCountState
-    {
-      //! Feature count not yet computed
-      Uncounted = -2,
-      //! Provider returned an unknown feature count
-      UnknownCount = -1,
-    };
-
-    /**
      * Constructor for a vector data provider.
      *
      * The \a uri argument specifies the uniform resource locator (URI) for the associated dataset.
@@ -164,9 +153,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Number of features in the layer
-     * \returns long containing number of features
+     * \returns number of features
      */
-    long featureCount() const override = 0;
+    long long featureCount() const override = 0;
 
     /**
      * Returns TRUE if the layer does not contain any feature.

@@ -196,7 +196,7 @@ namespace MDAL
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
       bool mIsPolar = false;
-      std::pair<double, double> mReferenceAngles = {-360, 0}; //default full rotation is negative to be consistent with usual geographical clockwise
+      std::pair<double, double> mReferenceAngles = { -360, 0}; //default full rotation is negative to be consistent with usual geographical clockwise
       MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;

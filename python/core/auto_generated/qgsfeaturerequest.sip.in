@@ -41,6 +41,7 @@ The options may be chained, e.g.:
 
 Examples:
 
+
 .. code-block:: python
 
        # fetch all features:
@@ -496,7 +497,7 @@ Set a list of order by clauses.
 .. versionadded:: 2.14
 %End
 
-    QgsFeatureRequest &setLimit( long limit );
+    QgsFeatureRequest &setLimit( long long limit );
 %Docstring
 Set the maximum number of features to request.
 
@@ -507,7 +508,7 @@ Set the maximum number of features to request.
 .. versionadded:: 2.14
 %End
 
-    long limit() const;
+    long long limit() const;
 %Docstring
 Returns the maximum number of features to request, or -1 if no limit set.
 
@@ -743,6 +744,29 @@ For example, this should be set on requests that are issued from an
 expression function.
 
 .. versionadded:: 3.4
+%End
+
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly by the iterator to check
+if it should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the feature request and feature iterators.
+
+.. seealso:: :py:func:`feedback`
+
+.. versionadded:: 3.20
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly by the iterator to check
+if it should be canceled, if set.
+
+.. seealso:: :py:func:`setFeedback`
+
+.. versionadded:: 3.20
 %End
 
   protected:

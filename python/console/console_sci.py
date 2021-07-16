@@ -23,7 +23,10 @@ from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
 from qgis.PyQt.Qsci import QsciScintilla
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditorColorScheme
+from qgis.gui import (
+    QgsCodeEditorPython,
+    QgsCodeEditorColorScheme
+)
 
 import sys
 import os
@@ -568,6 +571,9 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
                                                        "Python Console - Command History"))
         self.listView.setToolTip(QCoreApplication.translate("PythonConsole",
                                                             "Double-click on item to execute"))
+
+        self.listView.setFont(QgsCodeEditorPython.getMonospaceFont())
+
         self.model = QStandardItemModel(self.listView)
 
         self._reloadHistory()

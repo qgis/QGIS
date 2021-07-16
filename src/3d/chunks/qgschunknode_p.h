@@ -68,6 +68,7 @@ struct QgsChunkNodeId
       return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
   }
 
+  // TODO c++20 - replace with = default
   bool operator==( const QgsChunkNodeId &other ) const
   {
     return d == other.d && x == other.x && y == other.y && z == other.z;

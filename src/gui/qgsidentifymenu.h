@@ -20,6 +20,7 @@
 
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
+#include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 

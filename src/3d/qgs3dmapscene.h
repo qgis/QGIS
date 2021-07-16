@@ -121,6 +121,12 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     QVector<const QgsChunkNode *> getLayerActiveChunkNodes( QgsMapLayer *layer ) SIP_SKIP;
 
+    /**
+     * Returns the scene extent in the map's CRS
+     *
+     * \since QGIS 3.20
+     */
+    QgsRectangle sceneExtent();
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -163,6 +169,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
 
+    bool updateCameraNearFarPlanes();
+
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
@@ -170,7 +178,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void setSceneState( SceneState state );
     void updateSceneState();
     void updateScene();
-    bool updateCameraNearFarPlanes();
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
     int maximumTextureSize() const;
 

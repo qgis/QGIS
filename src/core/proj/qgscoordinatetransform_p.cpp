@@ -48,6 +48,9 @@ std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                      const QgsCoordinateReferenceSystem &destinationCrs,
                      const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransformPrivate::sMissingGridUsedByContextHandler = nullptr;
 
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs )> QgsCoordinateTransformPrivate::sDynamicCrsToDynamicCrsWarningHandler = nullptr;
+
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
 {
@@ -87,6 +90,11 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
   , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
   , mAllowFallbackTransforms( other.mAllowFallbackTransforms )
+  , mSourceIsDynamic( other.mSourceIsDynamic )
+  , mDestIsDynamic( other.mDestIsDynamic )
+  , mSourceCoordinateEpoch( other.mSourceCoordinateEpoch )
+  , mDestCoordinateEpoch( other.mDestCoordinateEpoch )
+  , mDefaultTime( other.mDefaultTime )
   , mIsReversed( other.mIsReversed )
   , mProjLock()
   , mProjProjections()
@@ -148,6 +156,30 @@ bool QgsCoordinateTransformPrivate::initialize()
     // circuit flag (no transform takes place)
     mShortCircuit = true;
     return true;
+  }
+
+  mSourceIsDynamic = mSourceCRS.isDynamic();
+  mSourceCoordinateEpoch = mSourceCRS.coordinateEpoch();
+  mDestIsDynamic = mDestCRS.isDynamic();
+  mDestCoordinateEpoch = mDestCRS.coordinateEpoch();
+
+  // Determine the default coordinate epoch.
+  // For time-dependent transformations, PROJ can currently only do
+  // staticCRS -> dynamicCRS or dynamicCRS -> staticCRS transformations, and
+  // in either case, the coordinate epoch of the dynamicCRS must be provided
+  // as the input time.
+  mDefaultTime = ( mSourceIsDynamic && !std::isnan( mSourceCoordinateEpoch ) && !mDestIsDynamic )
+                 ? mSourceCoordinateEpoch
+                 : ( mDestIsDynamic && !std::isnan( mDestCoordinateEpoch ) && !mSourceIsDynamic )
+                 ? mDestCoordinateEpoch : std::numeric_limits< double >::quiet_NaN();
+
+  if ( mSourceIsDynamic && mDestIsDynamic && !qgsNanCompatibleEquals( mSourceCoordinateEpoch, mDestCoordinateEpoch ) )
+  {
+    // transforms from dynamic crs to dynamic crs with different coordinate epochs are not yet supported by PROJ
+    if ( sDynamicCrsToDynamicCrsWarningHandler )
+    {
+      sDynamicCrsToDynamicCrsWarningHandler( mSourceCRS, mDestCRS );
+    }
   }
 
   // init the projections (destination and source)
@@ -271,7 +303,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         const QString err = QObject::tr( "Could not use operation specified in project between %1 and %2. (Wanted to use: %3)." ).arg( mSourceCRS.authid(),
                             mDestCRS.authid(),
                             mProjCoordinateOperation );
-        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+        QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
       }
 
       transform.reset();
@@ -354,7 +386,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                   const QString err = QObject::tr( "Cannot create transform between %1 and %2, missing required grid %3" ).arg( mSourceCRS.authid(),
                                       mDestCRS.authid(),
                                       shortName );
-                  QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+                  QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
                 }
                 break;
               }
@@ -369,7 +401,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
             {
               const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
                                   mDestCRS.authid() );
-              QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+              QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
             }
           }
         }
@@ -417,7 +449,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
                                 mDestCRS.authid(),
                                 available.proj,
                                 preferred.proj );
-            QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+            QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
           }
         }
 
@@ -428,7 +460,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         {
           const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
                               mDestCRS.authid() );
-          QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+          QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
         }
       }
       proj_list_destroy( ops );
@@ -470,7 +502,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       const QString err = QObject::tr( "Cannot create transform between %1 and %2: %3" ).arg( mSourceCRS.authid(),
                           mDestCRS.authid(),
                           nonAvailableError );
-      QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
+      QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
     }
   }
 
@@ -531,6 +563,11 @@ void QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHan
 void QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
 {
   sMissingGridUsedByContextHandler = handler;
+}
+
+void QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
+{
+  sDynamicCrsToDynamicCrsWarningHandler = handler;
 }
 
 void QgsCoordinateTransformPrivate::freeProj()

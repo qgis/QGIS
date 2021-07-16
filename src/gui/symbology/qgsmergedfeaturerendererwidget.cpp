@@ -63,6 +63,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   {
     // use default embedded renderer
     mRenderer.reset( new QgsMergedFeatureRenderer( QgsFeatureRenderer::defaultRenderer( type ) ) );
+    if ( renderer )
+      renderer->copyRendererData( mRenderer.get() );
   }
 
   int currentEmbeddedIdx = 0;
@@ -96,6 +98,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
     mRendererComboBox_currentIndexChanged( currentEmbeddedIdx );
   }
 }
+
+QgsMergedFeatureRendererWidget::~QgsMergedFeatureRendererWidget() = default;
 
 QgsFeatureRenderer *QgsMergedFeatureRendererWidget::renderer()
 {
@@ -134,6 +138,7 @@ void QgsMergedFeatureRendererWidget::mRendererComboBox_currentIndexChanged( int 
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsMergedFeatureRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );
+    mEmbeddedRendererWidget->disableSymbolLevels();
     mEmbeddedRendererWidget->setDockMode( this->dockMode() );
     connect( mEmbeddedRendererWidget.get(), &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 

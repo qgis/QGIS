@@ -18,10 +18,8 @@
 #include <QWidget>
 #include <QMenu>
 #include <QStackedWidget>
-#include "qgssymbol.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
-#include "qgssymbollayer.h"
 
 class QgsDataDefinedSizeLegend;
 class QgsDataDefinedSizeLegendWidget;
@@ -29,6 +27,8 @@ class QgsVectorLayer;
 class QgsStyle;
 class QgsFeatureRenderer;
 class QgsMapCanvas;
+class QgsMarkerSymbol;
+class QgsLegendSymbolItem;
 
 /**
  * \ingroup gui
@@ -51,7 +51,9 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! Returns pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer *renderer() = 0;
 
-    //! show a dialog with renderer's symbol level settings
+    /**
+     * Show a dialog with renderer's symbol level settings.
+     */
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 
     /**
@@ -82,6 +84,14 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     void setDockMode( bool dockMode ) override;
 
+    /**
+     * Disables symbol level modification on the widget.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.20
+     */
+    virtual void disableSymbolLevels() SIP_SKIP;
+
   signals:
 
     /**
@@ -93,8 +103,10 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 
     /**
      * Emitted when the symbol levels settings have been changed.
+     *
+     * \deprecated since QGIS 3.20 -- no longer emitted.
      */
-    void symbolLevelsChanged();
+    Q_DECL_DEPRECATED void symbolLevelsChanged() SIP_DEPRECATED;
 
   protected:
     QgsVectorLayer *mLayer = nullptr;
@@ -131,6 +143,17 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      * \since QGIS 3.0
      */
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) SIP_FACTORY;
+
+    /**
+     * Sets the symbol levels for the renderer defined in the widget.
+     *
+     * The \a levels argument defines the updated list of symbols with rendering passes set.
+     *
+     * The \a enabled arguments specifies if symbol levels should be enabled for the renderer.
+     *
+     * \since QGIS 3.20
+     */
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
@@ -261,21 +284,12 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
-    {
-      init( QgsSymbolLayer::PropertySize );
-      if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
-      {
-        mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
-        mDDBtn->setSymbol( mAssistantSymbol );
-      }
-    }
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->size(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 
@@ -292,16 +306,12 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
-    {
-      init( QgsSymbolLayer::PropertyAngle );
-    }
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->angle(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };
@@ -314,16 +324,12 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
-      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
-    {
-      init( QgsSymbolLayer::PropertyStrokeWidth );
-    }
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
     QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsLineSymbol *>( symbol )->width(); }
+    double value( const QgsSymbol *symbol ) const override;
 
     void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };

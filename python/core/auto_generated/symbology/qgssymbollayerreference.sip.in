@@ -43,12 +43,12 @@ path to symbol layers of the sub symbol are given by a list of indexes:
   public:
     QgsSymbolLayerId();
 
-    QgsSymbolLayerId( QString key, int index );
+    QgsSymbolLayerId( const QString &key, int index );
 %Docstring
 QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
 %End
 
-    QgsSymbolLayerId( QString key, const QVector<int> &indexPath );
+    QgsSymbolLayerId( const QString &key, const QVector<int> &indexPath );
 %Docstring
 QgsSymbolLayerId constructor with a symbol key and an index path
 %End
@@ -69,9 +69,22 @@ Returns the key associated to the symbol
 Returns the symbol layer index path inside the symbol
 %End
 
+
     bool operator==( const QgsSymbolLayerId &other ) const;
 
     bool operator<( const QgsSymbolLayerId &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 
@@ -109,6 +122,18 @@ The symbol layer's id
 %End
 
     bool operator==( const QgsSymbolLayerReference &other ) const;
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QStringList pathString;
+    for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
+    {
+      pathString.append( QString::number( path ) );
+    }
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

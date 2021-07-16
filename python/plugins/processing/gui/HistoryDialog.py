@@ -30,7 +30,7 @@ from qgis.core import QgsApplication
 from qgis.gui import QgsGui, QgsHelp
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDate
-from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem, QShortcut
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.Qsci import QsciScintilla
 
@@ -78,6 +78,8 @@ class HistoryDialog(BASE, WIDGET):
 
         self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.tree.currentItemChanged.connect(self.changeText)
+        shorcut = QShortcut(Qt.Key_Return, self.tree, context=Qt.WidgetShortcut, activated=self.executeAlgorithm)
+
         self.clearButton.clicked.connect(self.clearLog)
         self.saveButton.clicked.connect(self.saveLog)
         self.helpButton.clicked.connect(self.openHelp)
@@ -134,6 +136,10 @@ class HistoryDialog(BASE, WIDGET):
     def fillTree(self):
         self.tree.clear()
         entries = ProcessingLog.getLogEntries()
+
+        if not entries:
+            return
+
         names = {}
         icons = {}
         group_items = []
@@ -186,7 +192,9 @@ class HistoryDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             self.text.setText('"""\n' + self.tr('Double-click on the history item or paste the command below to re-run the algorithm') + '\n"""\n\n' +
-                              item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(').replace(LOG_SEPARATOR, '\n'))
+                              item.entry.text.replace(LOG_SEPARATOR, '\n'))
+        else:
+            self.text.setText('')
 
     def createTest(self):
         item = self.tree.currentItem()

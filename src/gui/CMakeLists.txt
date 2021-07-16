@@ -121,6 +121,7 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorcss.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
+  codeeditors/qgscodeeditorjson.cpp
   codeeditors/qgscodeeditorpython.cpp
   codeeditors/qgscodeeditorsql.cpp
   codeeditors/qgscodeeditorexpression.cpp
@@ -164,6 +165,10 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgshtmlwidgetwrapper.cpp
   editorwidgets/qgskeyvaluewidgetfactory.cpp
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
+  editorwidgets/qgsjsoneditconfigdlg.cpp
+  editorwidgets/qgsjsoneditwidgetfactory.cpp
+  editorwidgets/qgsjsoneditwrapper.cpp
+  editorwidgets/qgsjsoneditwidget.cpp
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
@@ -362,6 +367,8 @@ set(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  settings/qgssettingsregistrygui.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -565,6 +572,7 @@ set(QGIS_GUI_SRCS
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
+  qgsqueryresultwidget.cpp
   qgsrangeslider.cpp
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
@@ -814,6 +822,7 @@ set(QGIS_GUI_HDRS
   qgsprovidersourcewidgetproviderregistry.h
   qgsproxystyle.h
   qgsquerybuilder.h
+  qgsqueryresultwidget.h
   qgsrangeslider.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
@@ -915,6 +924,7 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhtml.h
   codeeditors/qgscodeeditorjs.h
+  codeeditors/qgscodeeditorjson.h
   codeeditors/qgscodeeditorpython.h
   codeeditors/qgscodeeditorsql.h
 
@@ -956,6 +966,10 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgshtmlwidgetwrapper.h
   editorwidgets/qgskeyvaluewidgetfactory.h
   editorwidgets/qgskeyvaluewidgetwrapper.h
+  editorwidgets/qgsjsoneditconfigdlg.h
+  editorwidgets/qgsjsoneditwidgetfactory.h
+  editorwidgets/qgsjsoneditwrapper.h
+  editorwidgets/qgsjsoneditwidget.h
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
@@ -1229,6 +1243,8 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
+  settings/qgssettingsregistrygui.h
+
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
@@ -1312,6 +1328,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsqueryresultwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
@@ -1368,7 +1385,7 @@ endif()
 #############################################################
 # qgis_gui library
 
-add_library(qgis_gui SHARED
+add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
 
@@ -1410,9 +1427,10 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/settings
+  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
-  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
 
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
@@ -1485,10 +1503,15 @@ target_link_libraries(qgis_gui
   ${Qt5QuickWidgets_LIBRARIES}
 )
 
-if (FORCE_STATIC_PROVIDERS)
+if (FORCE_STATIC_LIBS)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/src/providers/wms
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres
+  )
+
   target_link_libraries(qgis_gui
-    wmsprovider_gui_a
-    postgresprovider_gui_a
+    provider_wms_gui_a
+    provider_postgres_gui_a
   )
 endif()
 

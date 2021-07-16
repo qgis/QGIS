@@ -513,10 +513,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Sets the stored \a layers set. If empty, the current project layers will
-     * be used instead.
+     * Sets the stored \a layers set. If empty, the current project layers will be used.
+     * If the map item is set to follow a map theme (via followVisibilityPreset() and followVisibilityPresetName() ),
+     * then this method will have no effect and the layers rendered in the map will always follow the map theme.
      * \see layers()
      * \see keepLayerSet()
+     * \see followVisibilityPreset()
+     * \see followVisibilityPresetName()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
@@ -808,6 +811,15 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      */
     QgsMapRendererJob::Errors renderingErrors() const { return mRenderingErrors; }
 
+    /**
+     * Returns the labeling results of the most recent preview map render. May be NULLPTR if no map preview has been rendered in the item.
+     *
+     * The map item retains ownership of the returned results.
+     *
+     * \since QGIS 3.20
+     */
+    QgsLabelingResults *previewLabelingResults() const;
+
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -916,6 +928,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * \since QGIS 3.18
      */
     void crsChanged();
+
+    /**
+     * Emitted whenever the item's map preview has been refreshed.
+     *
+     * \since QGIS 3.20
+     */
+    void previewRefreshed();
 
   public slots:
 
@@ -1096,6 +1115,9 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     std::unique_ptr< QgsMapRendererStagedRenderJob > mStagedRendererJob;
 
+    std::unique_ptr< QgsLabelingResults > mPreviewLabelingResults;
+    std::unique_ptr< QgsLabelingResults > mExportLabelingResults;
+
     void init();
 
     //! Resets the item tooltip to reflect current map id
@@ -1169,6 +1191,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     friend class TestQgsLayoutMap;
     friend class QgsCompositionConverter;
     friend class QgsGeoPdfRenderedFeatureHandler;
+    friend class QgsLayoutExporter;
 
 };
 

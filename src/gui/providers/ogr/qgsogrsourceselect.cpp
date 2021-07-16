@@ -651,7 +651,7 @@ void QgsOgrSourceSelect::fillOpenOptions()
   if ( STARTS_WITH_CI( mDataSources[0].toUtf8().toStdString().c_str(), "PG:" ) )
     hDriver = GDALGetDriverByName( "PostgreSQL" ); // otherwise the PostgisRaster driver gets identified
   else
-    hDriver = GDALIdentifyDriver( mDataSources[0].toUtf8().toStdString().c_str(), nullptr );
+    hDriver = GDALIdentifyDriverEx( mDataSources[0].toUtf8().toStdString().c_str(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( hDriver == nullptr )
     return;
 

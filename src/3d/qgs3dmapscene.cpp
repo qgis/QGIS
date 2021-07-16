@@ -37,6 +37,7 @@
 #include <Qt3DRender/QDepthTest>
 #include <QSurface>
 #include <QUrl>
+#include <QtMath>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -238,9 +239,11 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
 void Qgs3DMapScene::viewZoomFull()
 {
-  QgsRectangle extent = mMap.terrainGenerator()->extent();
+  QgsRectangle extent = sceneExtent();
   float side = std::max( extent.width(), extent.height() );
-  mCameraController->resetView( side );  // assuming FOV being 45 degrees
+  float a =  side / 2.0f / std::sin( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2.0f );
+  // Note: the 1.5 multiplication is to move the view upwards to look better
+  mCameraController->resetView( 1.5 * std::sqrt( a * a - side * side ) );  // assuming FOV being 45 degrees
 }
 
 int Qgs3DMapScene::terrainPendingJobsCount() const
@@ -404,13 +407,12 @@ static void _updateNearFarPlane( const QList<QgsChunkNode *> &activeNodes, const
       QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
                    ( ( i >> 1 ) & 1 ) ? bbox.yMin : bbox.yMax,
                    ( ( i >> 2 ) & 1 ) ? bbox.zMin : bbox.zMax, 1 );
+
       QVector4D pc = viewMatrix * p;
 
       float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-      if ( dst < fnear )
-        fnear = dst;
-      if ( dst > ffar )
-        ffar = dst;
+      fnear = std::min( fnear, dst );
+      ffar = std::max( ffar, dst );
     }
   }
 }
@@ -429,55 +431,56 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   // 1. precision errors - if the range is too great
   // 2. unwanted clipping of scene - if the range is too small
 
+  Qt3DRender::QCamera *camera = cameraController()->camera();
+  QMatrix4x4 viewMatrix = camera->viewMatrix();
+  float fnear = 1e9;
+  float ffar = 0;
+  QList<QgsChunkNode *> activeNodes;
   if ( mTerrain )
+    activeNodes = mTerrain->activeNodes();
+
+  // it could be that there are no active nodes - they could be all culled or because root node
+  // is not yet loaded - we still need at least something to understand bounds of our scene
+  // so lets use the root node
+  if ( mTerrain && activeNodes.isEmpty() )
+    activeNodes << mTerrain->rootNode();
+
+  _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
+
+  // Also involve all the other chunked entities to make sure that they will not get
+  // clipped by the near or far plane
+  for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
   {
-    Qt3DRender::QCamera *camera = cameraController()->camera();
-    QMatrix4x4 viewMatrix = camera->viewMatrix();
-    float fnear = 1e9;
-    float ffar = 0;
-
-    QList<QgsChunkNode *> activeNodes = mTerrain->activeNodes();
-
-    // it could be that there are no active nodes - they could be all culled or because root node
-    // is not yet loaded - we still need at least something to understand bounds of our scene
-    // so lets use the root node
-    if ( activeNodes.isEmpty() )
-      activeNodes << mTerrain->rootNode();
-
-    _updateNearFarPlane( activeNodes, viewMatrix, fnear, ffar );
-
-    // Also involve all the other chunked entities to make sure that they will not get
-    // clipped by the near or far plane
-    for ( QgsChunkedEntity *e : std::as_const( mChunkEntities ) )
+    if ( e != mTerrain )
     {
-      if ( e != mTerrain )
-        _updateNearFarPlane( e->activeNodes(), viewMatrix, fnear, ffar );
-    }
-
-    if ( fnear < 1 )
-      fnear = 1;  // does not really make sense to use negative far plane (behind camera)
-
-    if ( fnear == 1e9 && ffar == 0 )
-    {
-      // the update didn't work out... this should not happen
-      // well at least temporarily use some conservative starting values
-      qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-      fnear = 1;
-      ffar = 1e9;
-    }
-
-    // set near/far plane - with some tolerance in front/behind expected near/far planes
-    float newFar = ffar * 2;
-    float newNear = fnear / 2;
-    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
-    {
-      camera->setFarPlane( newFar );
-      camera->setNearPlane( newNear );
-      return true;
+      QList<QgsChunkNode *> activeEntityNodes = e->activeNodes();
+      if ( activeEntityNodes.empty() )
+        activeEntityNodes << e->rootNode();
+      _updateNearFarPlane( activeEntityNodes, viewMatrix, fnear, ffar );
     }
   }
-  else
-    qWarning() << "no terrain - not setting near/far plane";
+
+  if ( fnear < 1 )
+    fnear = 1;  // does not really make sense to use negative far plane (behind camera)
+
+  if ( fnear == 1e9 && ffar == 0 )
+  {
+    // the update didn't work out... this should not happen
+    // well at least temporarily use some conservative starting values
+    qWarning() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
+    fnear = 1;
+    ffar = 1e9;
+  }
+
+  // set near/far plane - with some tolerance in front/behind expected near/far planes
+  float newFar = ffar * 2;
+  float newNear = fnear / 2;
+  if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
+  {
+    camera->setFarPlane( newFar );
+    camera->setNearPlane( newNear );
+    return true;
+  }
 
   return false;
 }
@@ -527,8 +530,6 @@ void Qgs3DMapScene::createTerrain()
 
     mTerrain->deleteLater();
     mTerrain = nullptr;
-
-    emit terrainEntityChanged();
   }
 
   if ( !mTerrainUpdateScheduled )
@@ -538,28 +539,38 @@ void Qgs3DMapScene::createTerrain()
     mTerrainUpdateScheduled = true;
     setSceneState( Updating );
   }
+  else
+  {
+    emit terrainEntityChanged();
+  }
 }
 
 void Qgs3DMapScene::createTerrainDeferred()
 {
-  double tile0width = mMap.terrainGenerator()->extent().width();
-  int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
-  QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
-  float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-  mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
+  if ( mMap.terrainGenerator() )
+  {
+    double tile0width = mMap.terrainGenerator()->extent().width();
+    int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+    QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+    float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
+    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
 
-  mTerrain = new QgsTerrainEntity( mMap );
-  //mTerrain->setEnabled(false);
-  mTerrain->setParent( this );
+    mTerrain = new QgsTerrainEntity( mMap );
+    mTerrain->setParent( this );
+    mTerrain->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
-  if ( mMap.showTerrainBoundingBoxes() )
-    mTerrain->setShowBoundingBoxes( true );
+    mCameraController->setTerrainEntity( mTerrain );
 
-  mCameraController->setTerrainEntity( mTerrain );
+    mChunkEntities << mTerrain;
 
-  mChunkEntities << mTerrain;
-
-  onCameraChanged();  // force update of the new terrain
+    connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+    connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+  }
+  else
+  {
+    mTerrain = nullptr;
+    mCameraController->setTerrainEntity( mTerrain );
+  }
 
   // make sure that renderers for layers are re-created as well
   const QList<QgsMapLayer *> layers = mMap.layers();
@@ -572,12 +583,9 @@ void Qgs3DMapScene::createTerrainDeferred()
     addLayerEntity( layer );
   }
 
-  mTerrainUpdateScheduled = false;
-
-  connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
-  connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
-
   emit terrainEntityChanged();
+  onCameraChanged();  // force update of the new terrain
+  mTerrainUpdateScheduled = false;
 }
 
 void Qgs3DMapScene::onBackgroundColorChanged()
@@ -1106,4 +1114,32 @@ QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLay
       chunks.push_back( n );
   }
   return chunks;
+}
+
+QgsRectangle Qgs3DMapScene::sceneExtent()
+{
+  QgsRectangle extent;
+  extent.setMinimal();
+
+  for ( QgsMapLayer *layer : mLayerEntities.keys() )
+  {
+    Qt3DCore::QEntity *layerEntity = mLayerEntities[ layer ];
+    QgsChunkedEntity *c = qobject_cast<QgsChunkedEntity *>( layerEntity );
+    if ( !c )
+      continue;
+    QgsChunkNode *chunkNode = c->rootNode();
+    QgsAABB bbox = chunkNode->bbox();
+    QgsRectangle layerExtent = Qgs3DUtils::worldToLayerExtent( bbox, layer->crs(), mMap.origin(), mMap.crs(), mMap.transformContext() );
+    extent.combineExtentWith( layerExtent );
+  }
+
+  if ( QgsTerrainGenerator *terrainGenerator = mMap.terrainGenerator() )
+  {
+    QgsRectangle terrainExtent = terrainGenerator->extent();
+    QgsCoordinateTransform terrainToMapTransform( terrainGenerator->crs(), mMap.crs(), QgsProject::instance() );
+    terrainExtent = terrainToMapTransform.transformBoundingBox( terrainExtent );
+    extent.combineExtentWith( terrainExtent );
+  }
+
+  return extent;
 }

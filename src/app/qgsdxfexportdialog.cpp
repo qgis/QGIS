@@ -45,11 +45,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 {
   Q_UNUSED( option )
 
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
-  if ( !m )
-    return nullptr;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return nullptr;
 
@@ -61,11 +57,7 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
 
 void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( index.model() );
-  if ( !m )
-    return;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
 
@@ -73,18 +65,14 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
   if ( !fcb )
     return;
 
-  int idx = m->attributeIndex( vl );
+  int idx = attributeIndex( index.model(), vl );
   if ( vl->fields().exists( idx ) )
     fcb->setField( vl->fields().at( idx ).name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsVectorLayerAndAttributeModel *m = qobject_cast< QgsVectorLayerAndAttributeModel *>( model );
-  if ( !m )
-    return;
-
-  QgsVectorLayer *vl = m->vectorLayer( index );
+  QgsVectorLayer *vl = indexToLayer( index.model(), index );
   if ( !vl )
     return;
 
@@ -93,6 +81,28 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
     return;
 
   model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
+}
+
+QgsVectorLayer *FieldSelectorDelegate::indexToLayer( const QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  const QgsLayerTreeProxyModel *proxy = qobject_cast< const QgsLayerTreeProxyModel *>( model );
+  Q_ASSERT( proxy );
+
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  Q_ASSERT( m );
+
+  return m->vectorLayer( proxy->mapToSource( index ) );
+}
+
+int FieldSelectorDelegate::attributeIndex( const QAbstractItemModel *model, const QgsVectorLayer *vl ) const
+{
+  const QgsLayerTreeProxyModel *proxy = qobject_cast< const QgsLayerTreeProxyModel *>( model );
+  Q_ASSERT( proxy );
+
+  const QgsVectorLayerAndAttributeModel *m = qobject_cast< const QgsVectorLayerAndAttributeModel *>( proxy->sourceModel() );
+  Q_ASSERT( m );
+
+  return m->attributeIndex( vl );
 }
 
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent )

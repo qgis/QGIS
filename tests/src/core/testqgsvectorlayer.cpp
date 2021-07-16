@@ -334,7 +334,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QVERIFY( layerLine->isValid() );
 
   QgsPolylineXY line1;
-  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
+  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 5 );
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
@@ -346,24 +346,71 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QCOMPARE( layerLine->undoStack()->index(), 1 );
 
   // outside of the linestring - nothing should happen
-  layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  int result = layerLine->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 2 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 5)" ).asWkt() );
 
   // add point at an existing vertex
-  layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+  result = layerLine->addTopologicalPoints( QgsPoint( 1, 1 ) );
+  QCOMPARE( result, 2 );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 5)" ).asWkt() );
 
   // add point on segment of linestring
-  layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+  result = layerLine->addTopologicalPoints( QgsPoint( 1, 2 ) );
+  QCOMPARE( result, 0 );
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ).asWkt() );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
+
+  // add points from disjoint geometry - nothing should happen
+  result = layerLine->addTopologicalPoints( QgsGeometry::fromWkt( "LINESTRING(2 0, 2 1, 2 2)" ) );
+  QCOMPARE( result, 2 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 5)" ).asWkt() );
+
+  // add 2 out of 3 points from intersecting geometry
+  result = layerLine->addTopologicalPoints( QgsGeometry::fromWkt( "LINESTRING(2 0, 2 1, 2 3, 1 3, 0 3, 0 4, 1 4)" ) );
+  QCOMPARE( result, 0 );
+
+  QCOMPARE( layerLine->undoStack()->index(), 2 );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3, 1 4, 1 5)" ).asWkt() );
 
   delete layerLine;
+
+  // Test error results -1: layer error, 1: geometry error
+  QgsVectorLayer *nonSpatialLayer = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "non spatial layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( nonSpatialLayer->isValid() );
+
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Non editable
+
+  nonSpatialLayer->startEditing();
+  result = nonSpatialLayer->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, 1 );  // Non spatial
+
+  delete nonSpatialLayer;
+
+  QgsVectorLayer *layerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerPoint->isValid() );
+
+  layerPoint->startEditing();
+  result = layerPoint->addTopologicalPoints( QgsGeometry() );
+  QCOMPARE( result, 1 );  // Null geometry
+
+  delete layerPoint;
+
+  QgsVectorLayer *layerInvalid = new QgsVectorLayer( QStringLiteral(), QStringLiteral( "layer invalid" ), QStringLiteral( "none" ) );
+  QVERIFY( !layerInvalid->isValid() );
+
+  result = layerInvalid->addTopologicalPoints( QgsPoint( 2, 2 ) );
+  QCOMPARE( result, -1 );  // Invalid layer
+
+  delete layerInvalid;
 }
 
 void TestQgsVectorLayer::testCopyPasteFieldConfiguration_data()

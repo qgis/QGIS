@@ -18,6 +18,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgssymbol.h"
 
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

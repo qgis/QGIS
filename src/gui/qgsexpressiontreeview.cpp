@@ -25,7 +25,7 @@
 #include "qgssettings.h"
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
-#include "qgsmaplayermodel.h"
+#include "qgsiconutils.h"
 
 
 //! Returns a HTML formatted string for use as a \a relation item help.
@@ -279,6 +279,7 @@ void QgsExpressionTreeView::updateFunctionTree()
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS" ), QStringLiteral( " IS " ) );
+  registerItem( QStringLiteral( "Operators" ), QStringLiteral( "IS NOT" ), QStringLiteral( " IS NOT " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "OR" ), QStringLiteral( " OR " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "AND" ), QStringLiteral( " AND " ) );
   registerItem( QStringLiteral( "Operators" ), QStringLiteral( "NOT" ), QStringLiteral( " NOT " ) );
@@ -412,7 +413,7 @@ void QgsExpressionTreeView::loadLayers()
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QIcon icon = QgsMapLayerModel::iconForLayer( layerIt.value() );
+    QIcon icon = QgsIconUtils::iconForLayer( layerIt.value() );
     registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
   }
 }

@@ -53,6 +53,12 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
     //! Sets the HTML code to \a htmlCode
     void setHtmlCode( const QString &htmlCode );
 
+    /**
+     * Returns true if the widget needs feature geometry
+     * \since QGIS 3.20
+     */
+    bool needsGeometry() const;
+
   public slots:
     void setFeature( const QgsFeature &feature ) override;
 
@@ -64,9 +70,16 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
 #endif
 
   private:
+
+    //! checks if HTML contains geometry related expression
+    void checkGeometryNeeds();
+
     QString mHtmlCode;
     QgsWebView *mWidget = nullptr;
     QgsFeature mFeature;
+    bool mNeedsGeometry = false;
+
+    friend class TestQgsHtmlWidgetWrapper;
 };
 
 
@@ -94,6 +107,34 @@ class HtmlExpression : public QObject
   private:
     QgsExpressionContext mExpressionContext;
 };
+
+/**
+ * \ingroup gui
+ * Evaluate expression when rendering the html content to determine whether we need feature
+ * geometry or not for later evaluation
+ * \since QGIS 3.20
+ */
+class NeedsGeometryEvaluator : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    //! Returns true if the widget needs feature geometry
+    bool needsGeometry() const { return mNeedsGeometry; }
+
+    //! set context use when evaluating expression
+    void setExpressionContext( const QgsExpressionContext &context );
+
+    //! evaluates the value regarding the \a expression and the context
+    Q_INVOKABLE void evaluate( const QString &expression );
+
+  private:
+    bool mNeedsGeometry = false;
+    QgsExpressionContext mExpressionContext;
+};
+
+
 ///@endcond
 #endif //SIP_RUN
 

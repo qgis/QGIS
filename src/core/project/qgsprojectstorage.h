@@ -59,6 +59,17 @@ class CORE_EXPORT QgsProjectStorage
      */
     virtual QString type() = 0;
 
+    /**
+     * Returns TRUE if the specified \a uri is supported by the storage provider.
+     *
+     * \note This method does not actually test whether the \a uri contains projects, but
+     * rather it is a quick test to determine if it is possible that the uri may
+     * contain projects.
+     *
+     * \since QGIS 3.22
+     */
+    virtual bool isSupportedUri( const QString &uri ) const;
+
     //! Returns list of all projects for given URI (specific to each storage backend)
     virtual QStringList listProjects( const QString &uri ) = 0;
 

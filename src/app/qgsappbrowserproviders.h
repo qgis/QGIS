@@ -21,6 +21,9 @@
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgslayeritem.h"
+#include "qgsprojectitem.h"
+#include "qgsdatacollectionitem.h"
 
 /**
  * Custom data item for QLR files.

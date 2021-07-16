@@ -93,7 +93,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       bool supportsHits;
       bool supportsPaging;
       bool supportsJoins;
-      int maxFeatures;
+      long long maxFeatures;
       QList<FeatureType> featureTypes;
       QList<Function> spatialPredicatesList;
       QList<Function> functionList;

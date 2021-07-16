@@ -303,7 +303,7 @@ QgsWkbTypes::Type QgsAfsProvider::wkbType() const
   return mSharedData->mGeometryType;
 }
 
-long QgsAfsProvider::featureCount() const
+long long QgsAfsProvider::featureCount() const
 {
   return mSharedData->mObjectIds.size();
 }

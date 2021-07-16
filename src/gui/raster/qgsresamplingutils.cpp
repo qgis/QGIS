@@ -70,19 +70,19 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   mCbEarlyResampling->setVisible(
     provider && ( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) );
-  mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider );
+  mCbEarlyResampling->setChecked( mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider );
 
   switch ( mRasterLayer->resamplingStage() )
   {
-    case QgsRasterPipe::ResamplingStage::ResampleFilter:
+    case Qgis::RasterResamplingStage::ResampleFilter:
       removeExtraEarlyResamplingMethodsFromCombos();
       break;
-    case QgsRasterPipe::ResamplingStage::Provider:
+    case Qgis::RasterResamplingStage::Provider:
       addExtraEarlyResamplingMethodsToCombos();
       break;
   }
 
-  if ( provider && mRasterLayer->resamplingStage() == QgsRasterPipe::ResamplingStage::Provider )
+  if ( provider && mRasterLayer->resamplingStage() == Qgis::RasterResamplingStage::Provider )
   {
     mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( provider->zoomedInResamplingMethod() ) ) );
     mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( provider->zoomedOutResamplingMethod() ) ) );
@@ -143,7 +143,7 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
     static_cast< QgsRasterDataProvider::ResamplingMethod >(
       mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt() );
 
-  mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? QgsRasterPipe::ResamplingStage::Provider : QgsRasterPipe::ResamplingStage::ResampleFilter );
+  mRasterLayer->setResamplingStage( mCbEarlyResampling->isChecked() ? Qgis::RasterResamplingStage::Provider : Qgis::RasterResamplingStage::ResampleFilter );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {

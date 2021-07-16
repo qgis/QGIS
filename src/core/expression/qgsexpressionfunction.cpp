@@ -21,6 +21,7 @@
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsexiftools.h"
 #include "qgsfeaturerequest.h"
 #include "qgsstringutils.h"
 #include "qgsmultipoint.h"
@@ -676,7 +677,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy );
     }
 
-    if ( context && context->hasCachedValue( cacheKey ) )
+    if ( context->hasCachedValue( cacheKey ) )
     {
       return context->cachedValue( cacheKey );
     }
@@ -685,7 +686,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
     subContext.appendScope( subScope );
-    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+    result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
     context->setCachedValue( cacheKey, result );
   }
@@ -807,7 +808,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
 
 
   QgsExpressionContext subContext( *context );
-  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+  result = childLayer->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
   if ( !ok )
   {
@@ -931,7 +932,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
   subContext.appendScope( subScope );
-  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
+  result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback() );
 
   if ( !ok )
   {
@@ -2356,6 +2357,20 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
   long long millisecs_since_epoch = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
   // no sense to check for strange values, as Qt behavior is undefined anyway (see docs)
   return QVariant( QDateTime::fromMSecsSinceEpoch( millisecs_since_epoch ) );
+}
+
+static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QString tag = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  return !tag.isNull() ? QgsExifTools::readTag( filepath, tag ) : QVariant( QgsExifTools::readTags( filepath ) );
+}
+
+static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString filepath = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  bool ok;
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsExifTools::getGeoTag( filepath, ok ) ) ) );
 }
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype) \
@@ -4488,7 +4503,7 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
 
   if ( values.length() >= 1 )
   {
-    double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
+    double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
     return QVariant( qlonglong( std::round( number ) ) );
   }
 
@@ -4979,7 +4994,7 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 }
 
 
-static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariant result;
   QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
@@ -4991,6 +5006,8 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
     req.setFilterFid( fid );
     req.setTimeout( 10000 );
     req.setRequestMayBeNested( true );
+    if ( context )
+      req.setFeedback( context->feedback() );
     QgsFeatureIterator fIt = vl->getFeatures( req );
 
     QgsFeature fet;
@@ -5034,6 +5051,8 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   req.setLimit( 1 );
   req.setTimeout( 10000 );
   req.setRequestMayBeNested( true );
+  if ( context )
+    req.setFeedback( context->feedback() );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
@@ -6069,6 +6088,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsFeatureRequest request;
   request.setTimeout( 10000 );
   request.setRequestMayBeNested( true );
+  request.setFeedback( context->feedback() );
 
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -6282,6 +6302,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsFeature feat2;
   QgsFeatureRequest request2;
   request2.setLimit( limit );
+  if ( context )
+    request2.setFeedback( context->feedback() );
   QgsFeatureIterator fi = targetLayer->getFeatures( request2 );
   while ( fi.nextFeature( feat2 ) )
   {
@@ -6585,7 +6607,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "rpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnRPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lpad" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "width" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "fill" ) ), fcnLPad, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format" ), -1, fcnFormatString, QStringLiteral( "String" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "format_number" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "number" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "places" ), true, 0 ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatNumber, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "format_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "format" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "language" ), true, QVariant() ), fcnFormatDate, QStringList() << QStringLiteral( "String" ) << QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_grayscale_average" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color" ) ), fcnColorGrayscaleAverage, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_mix_rgb" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "color1" ) )
@@ -6664,6 +6686,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnFilePath, QStringLiteral( "Files and Paths" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "file_size" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
                                             fcnFileSize, QStringLiteral( "Files and Paths" ) )
+
+        << new QgsStaticExpressionFunction( QStringLiteral( "exif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tag" ), true ),
+                                            fcnExif, QStringLiteral( "Files and Paths" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "exif_geotag" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                            fcnExifGeoTag, QStringLiteral( "Geometry" ) )
 
         // hash
         << new QgsStaticExpressionFunction( QStringLiteral( "hash" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "method" ) ),

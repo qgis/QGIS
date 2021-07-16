@@ -261,6 +261,22 @@ by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~Qg
 .. versionadded:: 3.2
 %End
 
+    bool showLabelLegend() const;
+%Docstring
+Returns whether the legend for the labeling is shown
+
+.. versionadded:: 3.20
+%End
+
+    void setShowLabelLegend( bool enabled );
+%Docstring
+Sets if a legend for the labeling should be shown
+
+:param enabled: true to show label legend entries
+
+.. versionadded:: 3.20
+%End
+
     QgsTextFormat textOnSymbolTextFormat() const;
 %Docstring
 Returns text format of symbol labels for "text on symbol" functionality.

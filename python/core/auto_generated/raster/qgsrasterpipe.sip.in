@@ -11,31 +11,26 @@
 
 
 
+
 class QgsRasterPipe
 {
 %Docstring(signature="appended")
-Base class for processing modules.
+Contains a pipeline of raster interfaces for sequential raster processing.
 %End
 
 %TypeHeaderCode
 #include "qgsrasterpipe.h"
 %End
   public:
-    enum Role
+
+    enum Property
     {
-      UnknownRole,
-      ProviderRole,
-      RendererRole,
-      BrightnessRole,
-      ResamplerRole,
-      ProjectorRole,
-      NullerRole,
-      HueSaturationRole,
+      RendererOpacity,
     };
 
     QgsRasterPipe();
 %Docstring
-Constructor for QgsRasterPipe.
+Constructor for an empty QgsRasterPipe.
 %End
 
 
@@ -44,8 +39,12 @@ Constructor for QgsRasterPipe.
 
     bool insert( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
-Try to insert interface at specified index and connect
+Attempts to insert interface at specified index and connect
 if connection would fail, the interface is not inserted and ``False`` is returned
+
+.. seealso:: :py:func:`set`
+
+.. seealso:: :py:func:`replace`
 %End
 %MethodCode
     sipRes = sipCpp->insert( a0, a1 );
@@ -60,75 +59,173 @@ if connection would fail, the interface is not inserted and ``False`` is returne
 
     bool replace( int idx, QgsRasterInterface *interface /Transfer/ );
 %Docstring
-Try to replace interface at specified index and connect
-if connection would fail, the interface is not inserted and ``False`` is returned
+Attempts to replace the interface at specified index and reconnect the pipe.
+
+If the connection would fail, the interface is not inserted and ``False`` is returned.
+
+.. seealso:: :py:func:`insert`
+
+.. seealso:: :py:func:`set`
 %End
 
     bool set( QgsRasterInterface *interface /Transfer/ );
 %Docstring
-Insert a new known interface in default place or replace interface of the same
-role if it already exists. Known interfaces are: :py:class:`QgsRasterDataProvider`,
-:py:class:`QgsRasterRenderer`, :py:class:`QgsRasterResampleFilter`, :py:class:`QgsRasterProjector` and their
-subclasses. For unknown interfaces it mus be explicitly specified position
-where it should be inserted using :py:func:`~QgsRasterPipe.insert` method.
+Inserts a new known interface in default place or replace interface of the same
+role if it already exists.
+
+Known interfaces are:
+
+- :py:class:`QgsRasterDataProvider`,
+- :py:class:`QgsRasterRenderer`
+- :py:class:`QgsRasterResampleFilter`
+- :py:class:`QgsRasterProjector`
+- :py:class:`QgsHueSaturationFilter`
+- :py:class:`QgsBrightnessContrastFilter`
+
+(and their subclasses).
+
+For other interfaces the position of the interface in the pipe must be explicitly
+specified using the :py:func:`~QgsRasterPipe.insert` method.
+
+.. seealso:: :py:func:`insert`
+
+.. seealso:: :py:func:`replace`
 %End
 
     bool remove( int idx );
 %Docstring
-Remove and delete interface at given index if possible
+Removes and deletes the interface at given index (if possible).
+
+Returns ``True`` if the interface was successfully removed.
 %End
 
     bool remove( QgsRasterInterface *interface );
 %Docstring
-Remove and delete interface from pipe if possible
+Removes and deletes interface from pipe (if possible).
+
+Returns ``True`` if the interface was successfully removed.
 %End
 
     int size() const;
+%Docstring
+Returns the size of the pipe (the number of interfaces contained in the pipe).
+%End
+
     QgsRasterInterface *at( int idx ) const;
+%Docstring
+Returns the interface at the specified index.
+%End
+
     QgsRasterInterface *last() const;
+%Docstring
+Returns last interface in the pipe.
+%End
 
     bool setOn( int idx, bool on );
 %Docstring
-Set interface at index on/off
-Returns ``True`` on success
+Set whether the interface at the specified index is enabled.
+
+Returns ``True`` on success.
 %End
 
     bool canSetOn( int idx, bool on );
 %Docstring
-Test if interface at index may be switched on/off
+Returns ``True`` if the interface at the specified index may be switched on or off.
 %End
 
+
     QgsRasterDataProvider *provider() const;
-    QgsRasterRenderer *renderer() const;
-    QgsRasterResampleFilter *resampleFilter() const;
-    QgsBrightnessContrastFilter *brightnessFilter() const;
-    QgsHueSaturationFilter *hueSaturationFilter() const;
-    QgsRasterProjector *projector() const;
-    QgsRasterNuller *nuller() const;
-
-    enum class ResamplingStage
-    {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
-    };
-
-    void setResamplingStage( ResamplingStage stage );
 %Docstring
-Select which stage of the pipe should apply resampling.
+Returns the data provider interface, or ``None`` if no data provider is present in the pipe.
+%End
+
+    QgsRasterRenderer *renderer() const;
+%Docstring
+Returns the raster renderer interface, or ``None`` if no raster renderer is present in the pipe.
+%End
+
+    QgsRasterResampleFilter *resampleFilter() const;
+%Docstring
+Returns the resample filter interface, or ``None`` if no resample filter is present in the pipe.
+%End
+
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+%Docstring
+Returns the brightness filter interface, or ``None`` if no brightness filter is present in the pipe.
+%End
+
+    QgsHueSaturationFilter *hueSaturationFilter() const;
+%Docstring
+Returns the hue/saturation interface, or ``None`` if no hue/saturation filter is present in the pipe.
+%End
+
+    QgsRasterProjector *projector() const;
+%Docstring
+Returns the projector interface, or ``None`` if no projector is present in the pipe.
+%End
+
+    QgsRasterNuller *nuller() const;
+%Docstring
+Returns the raster nuller interface, or ``None`` if no raster nuller is present in the pipe.
+%End
+
+    void setResamplingStage( Qgis::RasterResamplingStage stage );
+%Docstring
+Sets which stage of the pipe should apply resampling.
 
 Provider resampling is only supported if provider sets
 ProviderHintCanPerformProviderResampling in :py:func:`~QgsRasterPipe.providerCapabilities`.
 
+.. seealso:: :py:func:`resamplingStage`
+
 .. versionadded:: 3.16
 %End
 
-    ResamplingStage resamplingStage() const;
+    Qgis::RasterResamplingStage resamplingStage() const;
 %Docstring
 Returns which stage of the pipe should apply resampling
 
+.. seealso:: :py:func:`setResamplingStage`
+
 .. versionadded:: 3.16
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the pipe's property collection, used for data defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.22
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the pipe's property ``collection``, used for data defined overrides.
+
+Any existing properties will be discarded.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. seealso:: Property
+
+.. versionadded:: 3.22
+%End
+
+    void evaluateDataDefinedProperties( QgsExpressionContext &context );
+%Docstring
+Evaluates any data defined properties set on the pipe, applying their results
+to the corresponding interfaces in place.
+
+.. versionadded:: 3.22
+%End
+
+    static QgsPropertiesDefinition propertyDefinitions();
+%Docstring
+Returns the definitions for data defined properties available for use in raster pipes.
+
+.. versionadded:: 3.22
 %End
 
   private:

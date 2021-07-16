@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
@@ -74,7 +75,7 @@ Returns ``True`` if a symbol shape has a fill.
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                    QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                    Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerBase.
 
@@ -83,6 +84,8 @@ Constructor for QgsSimpleMarkerSymbolLayerBase.
 :param angle: symbol rotation angle
 :param scaleMethod: scaling method for data defined scaling
 %End
+
+    ~QgsSimpleMarkerSymbolLayerBase();
 
     QgsSimpleMarkerSymbolLayerBase::Shape shape() const;
 %Docstring
@@ -206,7 +209,7 @@ Simple marker symbol layer, consisting of a rendered shape with solid fill color
     QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
                                 const QColor &color = DEFAULT_SIMPLEMARKER_COLOR,
                                 const QColor &strokeColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
@@ -221,6 +224,8 @@ Constructor for QgsSimpleMarkerSymbolLayer.
 :param strokeColor: stroke color for symbol
 :param penJoinStyle: join style for stroke pen
 %End
+
+    ~QgsSimpleMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -511,7 +516,7 @@ the symbol to support advanced styling of the interior and stroke of the shape.
     QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayer.
 
@@ -520,6 +525,8 @@ Constructor for QgsFilledMarkerSymbolLayer.
 :param angle: symbol rotation angle
 :param scaleMethod: size scaling method
 %End
+
+    ~QgsFilledMarkerSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -575,10 +582,12 @@ class QgsSvgMarkerSymbolLayer : QgsMarkerSymbolLayer
     QgsSvgMarkerSymbolLayer( const QString &path,
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
-                             QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                             Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs SVG marker symbol layer with picture from given absolute path to a SVG file
 %End
+
+    ~QgsSvgMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -785,10 +794,12 @@ Raster marker symbol layer class.
     QgsRasterMarkerSymbolLayer( const QString &path = QString(),
                                 double size = DEFAULT_SVGMARKER_SIZE,
                                 double angle = DEFAULT_SVGMARKER_ANGLE,
-                                QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+                                Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructs raster marker symbol layer with picture from given absolute path to a raster image file
 %End
+
+    ~QgsRasterMarkerSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
@@ -950,6 +961,8 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 Constructs a font marker symbol layer.
 %End
 
+    ~QgsFontMarkerSymbolLayer();
+
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring
@@ -959,6 +972,14 @@ Creates a new QgsFontMarkerSymbolLayer from a property map (see :py:func:`~QgsFo
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
 Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
+%End
+
+    static void resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context );
+%Docstring
+Resolves fonts from a ``properties`` map, raising warnings in the specified ``context`` if the
+required fonts are not available on the system.
+
+.. versionadded:: 3.20
 %End
 
 

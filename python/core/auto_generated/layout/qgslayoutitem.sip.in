@@ -207,6 +207,8 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       UndoLegendWmsLegendHeight,
       UndoLegendTitleSpaceBottom,
       UndoLegendGroupSpace,
+      UndoLegendGroupIndent,
+      UndoLegendSubgroupIndent,
       UndoLegendLayerSpace,
       UndoLegendSymbolSpace,
       UndoLegendIconSymbolSpace,

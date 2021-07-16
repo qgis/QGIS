@@ -16,9 +16,10 @@
 #ifndef QGSOGRDATAITEMS_H
 #define QGSOGRDATAITEMS_H
 
-#include "qgsdataitem.h"
+#include "qgslayeritem.h"
 #include "qgsogrprovider.h"
 #include "qgsdataitemprovider.h"
+#include "qgsdatacollectionitem.h"
 #include "qgis_sip.h"
 
 ///@cond PRIVATE
@@ -35,7 +36,7 @@ class CORE_EXPORT QgsOgrDbLayerInfo
                        const QString &name,
                        const QString &theGeometryColumn,
                        const QString &theGeometryType,
-                       const QgsLayerItem::LayerType &theLayerType,
+                       const Qgis::BrowserLayerType &theLayerType,
                        const QString &driverName )
       : mPath( path )
       , mUri( uri )
@@ -51,7 +52,7 @@ class CORE_EXPORT QgsOgrDbLayerInfo
     const QString name() const { return mName; }
     const QString geometryColumn() const { return mGeometryColumn; }
     const QString geometryType() const { return mGeometryType; }
-    QgsLayerItem::LayerType layerType() const { return mLayerType; }
+    Qgis::BrowserLayerType layerType() const { return mLayerType; }
 
   private:
     QString mPath;
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsOgrDbLayerInfo
     QString mName;
     QString mGeometryColumn;
     QString mGeometryType;
-    QgsLayerItem::LayerType mLayerType = QgsLayerItem::LayerType::NoType;
+    Qgis::BrowserLayerType mLayerType = Qgis::BrowserLayerType::NoType;
     QString mDriverName;
 };
 
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &driverName = QString(), bool isSubLayer = false );
+    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &driverName = QString(), bool isSubLayer = false );
 
     QString layerName() const override;
 
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsOgrLayerItem final: public QgsLayerItem
      */
     static QList<QgsOgrDbLayerInfo *> subLayers( const QString &path, const QString &driver );
     //! Returns a LayerType from a geometry type string
-    static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
+    static Qgis::BrowserLayerType layerTypeFromDb( const QString &geometryType );
     bool isSubLayer() const;
 
     QVector<QgsDataItem *> createChildren() override;

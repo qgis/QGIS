@@ -10,24 +10,7 @@ set(QGIS_QUICK_PLUGIN_SRC
 )
 
 set(QGIS_QUICK_PLUGIN_RESOURCES
-  components/qgsquickicontextitem.qml
-  components/qgsquickcheckboxcomponent.qml
-  components/qgsquickswitch.qml
-  editor/qgsquickeditorwidgetcombobox.qml
-  editor/qgsquickcheckbox.qml
-  editor/qgsquickdatetime.qml
-  editor/qgsquickexternalresource.qml
-  editor/qgsquickrange.qml
-  editor/qgsquicktextedit.qml
-  editor/qgsquickvaluemap.qml
-  editor/qgsquickvaluerelation.qml
-  qgsquickfeatureform.qml
-  qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
-  qgsquickmessagelog.qml
-  qgsquickphotopanel.qml
-  qgsquickpositionmarker.qml
-  qgsquickscalebar.qml
 )
 
 if (IOS)
@@ -40,9 +23,7 @@ endif()
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-
   ${CMAKE_SOURCE_DIR}/src/quickgui
-
   ${CMAKE_BINARY_DIR}/src/quickgui
 )
 
@@ -94,30 +75,6 @@ foreach(qmlfile ${QGIS_QUICK_PLUGIN_RESOURCES} ${QGIS_QUICK_PLUGIN_QRC})
     DEPENDS ${qmlfile}
   )
 endforeach(qmlfile)
-
-if(QMLPLUGINDUMP_FOUND)
-  # To create typeinfo file, no qml files must be in the directory, otherwise
-  # bunch of "QObject: Cannot create children for a parent that is in a different thread." errors
-  # appear and typeinfo file is not generated
-  set(QGIS_QUICK_TYPEINFO_GENERATE_DIR ${CMAKE_CURRENT_BINARY_DIR}/QgsQuick)
-
-  # Extract QML Types Info from our QML plugin. This is useful for development with Qt Creator as it allows
-  # Qt Creator understand also the C++ classes registered in the plugin and thus available in QML code
-  # If the qmlplugindumpcommand fails, add -v argument to see detailed output for debugging
-  set(QGIS_QUICK_PLUGIN_TYPEINFO ${QGIS_QUICK_PLUGIN_RUNTIME_DIR}/qgsquick.qmltypes)
-  set(QGIS_QUICK_VERSION 0.1)
-  add_custom_command(
-      TARGET qgis_quick_plugin
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
-      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:qgis_quick_plugin> ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
-      COMMAND ${QMLPLUGINDUMP_EXECUTABLE}
-      ARGS QgsQuick ${QGIS_QUICK_VERSION} . -noinstantiate --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
-      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-      COMMENT "Generating qgsquick.qmltypes with qmlplugindump"
-      POST_BUILD
-  )
-endif()
 
 # Installation
 set(QUICK_PLUGIN_INSTALL_DIR ${QGIS_QML_DIR}/QgsQuick)

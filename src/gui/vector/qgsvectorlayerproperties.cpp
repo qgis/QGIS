@@ -87,6 +87,7 @@
 #include <QColorDialog>
 #include <QMenu>
 #include <QUrl>
+#include <QRegularExpressionValidator>
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
@@ -323,7 +324,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mLayer->shortName() );
   // WMS Name validator
-  QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
+  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
   mLayerShortNameLineEdit->setValidator( shortNameValidator );
 
   //layer title and abstract
@@ -539,6 +540,14 @@ void QgsVectorLayerProperties::syncToLayer()
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( mCanvas );
+
+  mUseReferenceScaleGroupBox->setChecked( mLayer->renderer() && mLayer->renderer()->referenceScale() > 0 );
+  mReferenceScaleWidget->setShowCurrentScaleButton( true );
+  mReferenceScaleWidget->setMapCanvas( mCanvas );
+  if ( mUseReferenceScaleGroupBox->isChecked() )
+    mReferenceScaleWidget->setScale( mLayer->renderer()->referenceScale() );
+  else if ( mCanvas )
+    mReferenceScaleWidget->setScale( mCanvas->scale() );
 
   // get simplify drawing configuration
   const QgsVectorSimplifyMethod &simplifyMethod = mLayer->simplifyMethod();
@@ -805,7 +814,10 @@ void QgsVectorLayerProperties::apply()
   mLayer->setSimplifyMethod( simplifyMethod );
 
   if ( mLayer->renderer() )
+  {
     mLayer->renderer()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
+    mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
+  }
 
   mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
@@ -1143,6 +1155,8 @@ void QgsVectorLayerProperties::loadDefaultMetadata()
 
 void QgsVectorLayerProperties::saveStyleAs()
 {
+  if ( !mLayer->dataProvider() )
+    return;
   QgsVectorLayerSaveStyleDialog dlg( mLayer );
   QgsSettings settings;
 
@@ -1189,11 +1203,11 @@ void QgsVectorLayerProperties::saveStyleAs()
 
         if ( !msgError.isNull() )
         {
-          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
+          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning );
         }
         else
         {
-          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Success );
+          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
         }
         break;
       }
@@ -1302,12 +1316,12 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
 
             if ( !msgError.isNull() )
             {
-              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
+              mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning );
             }
             else
             {
               mMessageBar->pushMessage( infoWindowTitle, tr( "Style '%1' saved" ).arg( styleName ),
-                                        Qgis::Success );
+                                        Qgis::MessageLevel::Success );
             }
             break;
           }
@@ -2108,6 +2122,6 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     const QString title = QObject::tr( "Delete Auxiliary Field" );
     const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
-    mMessageBar->pushMessage( title, msg, Qgis::Warning );
+    mMessageBar->pushMessage( title, msg, Qgis::MessageLevel::Warning );
   }
 }

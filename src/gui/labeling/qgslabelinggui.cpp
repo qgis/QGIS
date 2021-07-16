@@ -497,6 +497,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
+  // restore properties which aren't exposed in GUI
+  lyr.setUnplacedVisibility( mSettings.unplacedVisibility() );
+
   lyr.drawLabels = ( mMode == Labels ) || !mLayer;
 
   bool isExpression;
@@ -519,7 +522,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   if ( mQuadrantBtnGrp )
   {
-    lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+    lyr.quadOffset = static_cast< QgsPalLayerSettings::QuadrantPosition >( mQuadrantBtnGrp->checkedId() );
   }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -585,7 +588,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   if ( mUpsidedownBtnGrp )
   {
-    lyr.upsidedownLabels = ( QgsPalLayerSettings::UpsideDownLabels )mUpsidedownBtnGrp->checkedId();
+    lyr.upsidedownLabels = static_cast< QgsPalLayerSettings::UpsideDownLabels >( mUpsidedownBtnGrp->checkedId() );
   }
 
   lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();

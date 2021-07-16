@@ -23,7 +23,10 @@
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
 
+#include <optional>
 #include <QTextBoundaryFinder>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
@@ -265,7 +268,8 @@ QFontMetricsF QgsTextRenderer::fontMetrics( QgsRenderContext &context, const Qgs
   return QFontMetricsF( format.scaledFont( context, scaleFactor ), context.painter() ? context.painter()->device() : nullptr );
 }
 
-double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
+double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format,
+                                    DrawMode mode )
 {
   QPainter *p = context.painter();
 
@@ -291,7 +295,17 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   const double penSize = context.convertToPainterUnits( buffer.size(), buffer.sizeUnit(), buffer.sizeMapUnitScale() );
 
   const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+
+  std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+  if ( mode == Label )
+  {
+    // label size has already been calculated using any symbology reference scale factor -- we need
+    // to temporarily remove the reference scale here or we'll be applying the scaling twice
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+  }
+
   const QFont font = format.scaledFont( context, scaleFactor );
+  referenceScaleOverride.reset();
 
   QPainterPath path;
   path.setFillRule( Qt::WindingFill );
@@ -416,7 +430,8 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   return advance / scaleFactor;
 }
 
-void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
+void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format,
+                                DrawMode mode )
 {
   QgsTextMaskSettings mask = format.mask();
 
@@ -437,7 +452,17 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
   // TODO: vertical text mode was ignored when masking feature was added.
   // Hopefully Oslandia come back and fix this? Hint hint...
 
+  std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+  if ( mode == Label )
+  {
+    // label size has already been calculated using any symbology reference scale factor -- we need
+    // to temporarily remove the reference scale here or we'll be applying the scaling twice
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+  }
+
   const QFont font = format.scaledFont( context, scaleFactor );
+  referenceScaleOverride.reset();
+
   double xOffset = 0;
   for ( const QgsTextFragment &fragment : component.block )
   {
@@ -1253,9 +1278,20 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   if ( !fontMetrics )
   {
     fontScale = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
+
+    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+    if ( mode == Label )
+    {
+      // label size has already been calculated using any symbology reference scale factor -- we need
+      // to temporarily remove the reference scale here or we'll be applying the scaling twice
+      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+    }
+
     const QFont f = format.scaledFont( context, fontScale );
     tmpMetrics = std::make_unique< QFontMetricsF >( f );
     fontMetrics = tmpMetrics.get();
+
+    referenceScaleOverride.reset();
   }
 
   double rotation = 0;
@@ -1390,7 +1426,14 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
 
   if ( mode == Rect && vAlignment != AlignTop )
   {
-    // need to calculate overall text height in advance so that we can adjust for vertical alignment
+    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+    if ( mode == Label )
+    {
+      // label size has already been calculated using any symbology reference scale factor -- we need
+      // to temporarily remove the reference scale here or we'll be applying the scaling twice
+      referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+    }
+
     const double overallHeight = textHeight( context, format, textLines, Rect );
     switch ( vAlignment )
     {
@@ -1405,6 +1448,7 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         ascentOffset = -( component.size.height() - overallHeight ) + ascentOffset;
         break;
     }
+    referenceScaleOverride.reset();
   }
 
   for ( const QString &line : std::as_const( textLines ) )
@@ -1523,12 +1567,12 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     // draw the mask below the text (for preview)
     if ( format.mask().enabled() )
     {
-      QgsTextRenderer::drawMask( context, subComponent, format );
+      QgsTextRenderer::drawMask( context, subComponent, format, mode );
     }
 
     if ( drawType == QgsTextRenderer::Buffer )
     {
-      QgsTextRenderer::drawBuffer( context, subComponent, format );
+      QgsTextRenderer::drawBuffer( context, subComponent, format, mode );
     }
     else
     {
@@ -1537,7 +1581,17 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       QPainter textp;
       textp.begin( &textPict );
       textp.setPen( Qt::NoPen );
+
+      std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+      if ( mode == Label )
+      {
+        // label size has already been calculated using any symbology reference scale factor -- we need
+        // to temporarily remove the reference scale here or we'll be applying the scaling twice
+        referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+      }
       const QFont font = format.scaledFont( context, fontScale );
+      referenceScaleOverride.reset();
+
       textp.scale( 1 / fontScale, 1 / fontScale );
 
       double xOffset = 0;
@@ -1630,7 +1684,17 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
   const QStringList textLines = document.toPlainText();
 
+  std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+  if ( mode == Label )
+  {
+    // label size has already been calculated using any symbology reference scale factor -- we need
+    // to temporarily remove the reference scale here or we'll be applying the scaling twice
+    referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, -1.0 ) );
+  }
+
   const QFont font = format.scaledFont( context, fontScale );
+  referenceScaleOverride.reset();
+
   double letterSpacing = font.letterSpacing() / fontScale;
 
   double labelWidth = fontMetrics->maxWidth() / fontScale; // label width represents the width of one line of a multi-line label
@@ -1774,7 +1838,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
       if ( drawType == QgsTextRenderer::Buffer )
       {
-        fragmentYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format );
+        fragmentYOffset += QgsTextRenderer::drawBuffer( context, subComponent, format, mode );
       }
       else
       {

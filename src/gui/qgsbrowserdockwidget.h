@@ -20,7 +20,6 @@
 #include "ui_qgsbrowserdirectorypropertiesbase.h"
 #include "ui_qgsbrowserpropertiesdialogbase.h"
 
-#include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
 #include "qgis_gui.h"
@@ -179,6 +178,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   private slots:
     void itemDoubleClicked( const QModelIndex &index );
+    void onOptionsChanged();
 
   private:
     //! Refresh the model

@@ -22,10 +22,11 @@
 #include <QMap>
 #include <QAction>
 
-#include "qgsmaplayer.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
+class QgsMapLayer;
 
 /**
  * \ingroup gui

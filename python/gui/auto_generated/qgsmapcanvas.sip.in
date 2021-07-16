@@ -22,7 +22,7 @@
 
 
 
-class QgsMapCanvas : QGraphicsView
+class QgsMapCanvas : QGraphicsView, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Map canvas is a class for displaying all GIS data types on a canvas.
@@ -78,8 +78,9 @@ Gets access to properties used for map rendering
 
     void setTemporalController( QgsTemporalController *controller );
 %Docstring
-Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
-update the canvas temporal range.
+Sets the temporal ``controller`` for this canvas.
+
+The controller will be used to update the canvas' temporal range.
 
 .. versionadded:: 3.14
 %End
@@ -94,7 +95,7 @@ update the canvas temporal range.
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
-sets destination coordinate reference system
+Sets destination coordinate reference system
 
 .. versionadded:: 2.4
 %End
@@ -191,9 +192,27 @@ Returns the mapUnitsPerPixel (map units per pixel) for the canvas
 %Docstring
 Returns the current zoom extent of the map canvas
 %End
+
     QgsRectangle fullExtent() const;
 %Docstring
-Returns the combined extent for all layers on the map canvas
+Returns the combined extent for all layers on the map canvas.
+
+This method returns the combined extent for all layers which are currently visible in the map canvas.
+The returned extent will be in the same CRS as the map canvas.
+
+.. seealso:: :py:func:`projectExtent`
+%End
+
+    QgsRectangle projectExtent() const;
+%Docstring
+Returns the associated project's full extent, in the canvas' CRS.
+
+This method returns the full extent for the project associated with this canvas.
+Unlike :py:func:`~QgsMapCanvas.fullExtent`, this method does NOT consider which layers are actually visible in the map canvas.
+
+.. seealso:: :py:func:`fullExtent`
+
+.. versionadded:: 3.20
 %End
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
@@ -215,7 +234,7 @@ Sets the canvas to the specified ``extent``.
 
 :return: ``True`` if the zoom was successful.
 
-:raises :: py:class:`QgsCsException` if a transformation error occurred.
+:raises QgsCsException: if a transformation error occurred.
 
 .. versionadded:: 3.10
 %End
@@ -250,7 +269,19 @@ Gets map center, in geographical coordinates
 
     void zoomToFullExtent();
 %Docstring
-Zoom to the full extent of all layers
+Zoom to the full extent of all layers currently visible in the canvas.
+
+.. seealso:: :py:func:`zoomToProjectExtent`
+%End
+
+    void zoomToProjectExtent();
+%Docstring
+Zoom to the full extent the project associated with this canvas.
+
+This method zooms to the full extent for the project associated with this canvas.
+Unlike :py:func:`~QgsMapCanvas.zoomToFullExtent`, this method does NOT consider which layers are actually visible in the map canvas.
+
+.. versionadded:: 3.20
 %End
 
     void zoomToPreviousExtent();
@@ -707,7 +738,7 @@ overrides for expression evaluation for the map canvas render.
 %End
 
 
-    QgsExpressionContextScope *defaultExpressionContextScope() /Factory/;
+    QgsExpressionContextScope *defaultExpressionContextScope() const /Factory/;
 %Docstring
 Creates a new scope which contains default variables and functions relating to the map canvas.
 
@@ -717,6 +748,9 @@ Creates a new scope which contains default variables and functions relating to t
 
 .. versionadded:: 3.4
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
     void setSegmentationTolerance( double tolerance );
 %Docstring
@@ -1186,7 +1220,7 @@ Emitted when the canvas has been assigned a different map theme.
 .. versionadded:: 3.0
 %End
 
-    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::Info );
+    void messageEmitted( const QString &title, const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 %Docstring
 emit a message (usually to be displayed in a message bar)
 %End
@@ -1269,6 +1303,8 @@ Can be used to extend the context menu.
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 
+    virtual bool viewportEvent( QEvent *event );
+
 
     void moveCanvasContents( bool reset = false );
 %Docstring
@@ -1277,6 +1313,8 @@ called when panning is in action, reset indicates end of panning
 
     virtual void dropEvent( QDropEvent *event );
 
+
+    virtual void showEvent( QShowEvent *event );
 
 
 

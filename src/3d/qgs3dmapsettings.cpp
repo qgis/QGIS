@@ -77,6 +77,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapEnabled( other.mDebugDepthMapEnabled )
   , mDebugDepthMapCorner( other.mDebugDepthMapCorner )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
+  , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -121,6 +122,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mCrs.readXml( elemCrs );
 
   QDomElement elemTerrain = elem.firstChildElement( QStringLiteral( "terrain" ) );
+  mTerrainRenderingEnabled = elemTerrain.attribute( QStringLiteral( "terrain-rendering-enabled" ), QStringLiteral( "1" ) ).toInt();
   mTerrainVerticalScale = elemTerrain.attribute( QStringLiteral( "exaggeration" ), QStringLiteral( "1" ) ).toFloat();
   mMapTileResolution = elemTerrain.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
   mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
@@ -202,25 +204,25 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   {
     QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( demTerrainGenerator );
+    setTerrainGenerator( demTerrainGenerator );
   }
   else if ( terrainGenType == QLatin1String( "online" ) )
   {
     QgsOnlineTerrainGenerator *onlineTerrainGenerator = new QgsOnlineTerrainGenerator;
     onlineTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( onlineTerrainGenerator );
+    setTerrainGenerator( onlineTerrainGenerator );
   }
   else if ( terrainGenType == QLatin1String( "mesh" ) )
   {
     QgsMeshTerrainGenerator *meshTerrainGenerator = new QgsMeshTerrainGenerator;
     meshTerrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator.reset( meshTerrainGenerator );
+    setTerrainGenerator( meshTerrainGenerator );
   }
   else // "flat"
   {
     QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
     flatGen->setCrs( mCrs );
-    mTerrainGenerator.reset( flatGen );
+    setTerrainGenerator( flatGen );
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
@@ -323,6 +325,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemCrs );
 
   QDomElement elemTerrain = doc.createElement( QStringLiteral( "terrain" ) );
+  elemTerrain.setAttribute( QStringLiteral( "terrain-rendering-enabled" ), mTerrainRenderingEnabled ? 1 : 0 );
   elemTerrain.setAttribute( QStringLiteral( "exaggeration" ), QString::number( mTerrainVerticalScale ) );
   elemTerrain.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
   elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
@@ -626,10 +629,12 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
   if ( mTerrainGenerator )
   {
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+    disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::extentChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
+  connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
   emit terrainGeneratorChanged();
 }
@@ -827,4 +832,12 @@ void Qgs3DMapSettings::setIsFpsCounterEnabled( bool fpsCounterEnabled )
     return;
   mIsFpsCounterEnabled = fpsCounterEnabled;
   emit fpsCounterEnabledChanged( mIsFpsCounterEnabled );
+}
+
+void Qgs3DMapSettings::setTerrainRenderingEnabled( bool terrainRenderingEnabled )
+{
+  if ( terrainRenderingEnabled == mTerrainRenderingEnabled )
+    return;
+  mTerrainRenderingEnabled = terrainRenderingEnabled;
+  emit terrainGeneratorChanged();
 }

@@ -199,7 +199,7 @@ QgsWkbTypes::Type QgsOapifProvider::wkbType() const
   return mShared->mWKBType;
 }
 
-long QgsOapifProvider::featureCount() const
+long long QgsOapifProvider::featureCount() const
 {
   if ( mUpdateFeatureCountAtNextFeatureCountRequest )
   {
@@ -209,7 +209,7 @@ long QgsOapifProvider::featureCount() const
     QgsFeatureRequest request;
     request.setNoAttributes();
     auto iter = getFeatures( request );
-    int count = 0;
+    long long count = 0;
     bool countExact = true;
     while ( iter.nextFeature( f ) )
     {
@@ -612,14 +612,14 @@ void QgsOapifFeatureDownloaderImpl::createProgressDialog()
   CONNECT_PROGRESS_DIALOG( QgsOapifFeatureDownloaderImpl );
 }
 
-void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
+void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
 {
   QEventLoop loop;
   connect( this, &QgsOapifFeatureDownloaderImpl::doStop, &loop, &QEventLoop::quit );
 
   const bool useProgressDialog = ( !mShared->mHideProgressDialog && maxFeatures != 1 );
 
-  qint64 maxTotalFeatures = 0;
+  long long maxTotalFeatures = 0;
   if ( maxFeatures > 0 && mShared->mMaxFeatures > 0 )
   {
     maxTotalFeatures = std::min( maxFeatures, mShared->mMaxFeatures );
@@ -633,13 +633,13 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     maxTotalFeatures = mShared->mMaxFeatures;
   }
 
-  qint64 totalDownloadedFeatureCount = 0;
+  long long totalDownloadedFeatureCount = 0;
   bool interrupted = false;
   bool success = true;
   QString errorMessage;
   QString url;
 
-  int maxFeaturesThisRequest = maxTotalFeatures;
+  long long maxFeaturesThisRequest = maxTotalFeatures;
   if ( mShared->mPageSize > 0 )
   {
     if ( maxFeaturesThisRequest > 0 )
@@ -690,10 +690,9 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
   }
 
-  url = mShared->appendExtraQueryParameters( url );
-
   while ( !url.isEmpty() )
   {
+    url = mShared->appendExtraQueryParameters( url );
 
     if ( maxTotalFeatures > 0 && totalDownloadedFeatureCount >= maxTotalFeatures )
     {
@@ -721,7 +720,6 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
       break;
     }
     url = itemsRequest.nextUrl();
-    url = mShared->appendExtraQueryParameters( url );
 
     // Consider if we should display a progress dialog
     // We can only do that if we know how many features will be downloaded

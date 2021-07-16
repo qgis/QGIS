@@ -22,6 +22,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgssymbol.h"
+#include "qgslinesymbol.h"
 
 class TestQgsFeature: public QObject
 {

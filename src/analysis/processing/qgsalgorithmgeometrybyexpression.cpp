@@ -32,7 +32,7 @@ QString QgsGeometryByExpressionAlgorithm::displayName() const
 
 QStringList QgsGeometryByExpressionAlgorithm::tags() const
 {
-  return QObject::tr( "geometry,expression,create,modify" ).split( ',' );
+  return QObject::tr( "geometry,expression,create,modify,update" ).split( ',' );
 }
 
 QString QgsGeometryByExpressionAlgorithm::group() const

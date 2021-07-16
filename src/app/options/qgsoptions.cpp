@@ -55,6 +55,7 @@
 #include "qgsclipboard.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssettingsregistrygui.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
@@ -451,11 +452,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
   cmbPromptSublayers->clear();
-  cmbPromptSublayers->addItem( tr( "Always" ), QgsSublayersDialog::PromptAlways );
-  cmbPromptSublayers->addItem( tr( "If Needed" ), QgsSublayersDialog::PromptIfNeeded ); //this means, prompt if there are sublayers but no band in the main dataset
-  cmbPromptSublayers->addItem( tr( "Never" ), QgsSublayersDialog::PromptNever );
-  cmbPromptSublayers->addItem( tr( "Load All" ), QgsSublayersDialog::PromptLoadAll ); // check if this is true
-  cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( mSettings->enumValue( QStringLiteral( "/qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways ) ) );
+  cmbPromptSublayers->addItem( tr( "Always" ), static_cast< int >( Qgis::SublayerPromptMode::AlwaysAsk ) );
+  cmbPromptSublayers->addItem( tr( "If Needed" ), static_cast< int >( Qgis::SublayerPromptMode::AskExcludingRasterBands ) ); //this means, prompt if there are sublayers but no band in the main dataset
+  cmbPromptSublayers->addItem( tr( "Never" ), static_cast< int >( Qgis::SublayerPromptMode::NeverAskSkip ) );
+  cmbPromptSublayers->addItem( tr( "Load All" ), static_cast< int >( Qgis::SublayerPromptMode::NeverAskLoadAll ) );
+  cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( static_cast< int >( mSettings->enumValue( QStringLiteral( "/qgis/promptForSublayers" ), Qgis::SublayerPromptMode::AlwaysAsk ) ) ) );
 
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
@@ -474,6 +475,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   index = cmbScanZipInBrowser->findData( mSettings->value( QStringLiteral( "/qgis/scanZipInBrowser2" ), QString() ) );
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
+
+  mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
 
   // log rendering events, for userspace debugging
   mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() );
@@ -526,6 +529,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCrsAccuracySpin->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( '0' ) * 20 );
   mCrsAccuracySpin->setClearValue( 0.0, tr( "Always show" ) );
   mCrsAccuracySpin->setValue( crsAccuracyWarningThreshold );
+
+  const bool crsAccuracyIndicator = mSettings->value( QStringLiteral( "/projections/crsAccuracyIndicator" ), false, QgsSettings::App ).toBool();
+  mCrsAccuracyIndicatorCheck->setChecked( crsAccuracyIndicator );
 
   mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool() );
 
@@ -735,6 +741,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mMapTipsDelaySpinBox->setValue( mSettings->value( QStringLiteral( "qgis/mapTipsDelay" ), 850 ).toInt() );
   mMapTipsDelaySpinBox->setClearValue( 850 );
 
+  mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() );
+
   //
   // Raster properties
   //
@@ -820,6 +828,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
   Qgis::PythonMacroMode pyMacroMode = mSettings->enumValue( QStringLiteral( "/qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
   mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyMacroMode ) ) );
+
+  mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast< int >( Qgis::FilePathType::Absolute ) );
+  mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast< int >( Qgis::FilePathType::Relative ) );
+  mDefaultPathsComboBox->setCurrentIndex(
+    mDefaultPathsComboBox->findData(
+      static_cast< int >(
+        mSettings->value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), QVariant( true ) ).toBool() ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute )
+    )
+  );
 
   QgsProject::FileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
   mFileFormatQgzButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgz );
@@ -1575,12 +1592,14 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/promptForSublayers" ), ( QgsSublayersDialog::PromptMode )cmbPromptSublayers->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/promptForSublayers" ), static_cast< Qgis::SublayerPromptMode >( cmbPromptSublayers->currentData().toInt() ) );
 
   mSettings->setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
                        cmbScanZipInBrowser->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), mCheckMonitorDirectories->isChecked() );
+
   mSettings->setValue( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), mSnappingMainDialogComboBox->currentData() );
 
   mSettings->setValue( QStringLiteral( "/qgis/legendsymbolMinimumSize" ), mLegendSymbolMinimumSizeSpinBox->value() );
@@ -1590,6 +1609,8 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
+  QgsSettingsRegistryGui::settingsRespectScreenDPI.setValue( mRespectScreenDpiCheckBox->isChecked() );
+
   mSettings->setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), ( QgsClipboard::CopyFormat )mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
@@ -1645,6 +1666,9 @@ void QgsOptions::saveOptions()
     QgisApp::instance()->updateProjectFromTemplates();
   }
   mSettings->setEnumValue( QStringLiteral( "/qgis/enableMacros" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonMacroMode>() );
+
+  mSettings->setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ),
+                       static_cast< Qgis::FilePathType >( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
   mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? QgsProject::FileFormat::Qgs : QgsProject::FileFormat::Qgz );
 
@@ -1706,6 +1730,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ), radProjectUseCrsOfFirstLayer->isChecked() ? QgsGui::UseCrsOfFirstLayerAdded : QgsGui::UsePresetCrs, QgsSettings::App );
   mSettings->setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), mShowDatumTransformDialogCheckBox->isChecked(), QgsSettings::App );
   mSettings->setValue( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), mCrsAccuracySpin->value(), QgsSettings::App );
+  mSettings->setValue( QStringLiteral( "/projections/crsAccuracyIndicator" ), mCrsAccuracyIndicatorCheck->isChecked(), QgsSettings::App );
 
   //measurement settings
   mSettings->setValue( QStringLiteral( "measure/planimetric" ), mPlanimetricMeasurementsComboBox->isChecked(), QgsSettings::Core );

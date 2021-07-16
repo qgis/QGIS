@@ -84,8 +84,8 @@ bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType 
   return true;
 }
 
-bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
-                 const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition )
+bool __serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
+                  const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition )
 {
   if ( outputType == inputType )
   {
@@ -182,9 +182,9 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   {
     for ( const AttributeData &attribute : attributeData )
     {
-      _serialize( destinationBuffer, outputOffset,
-                  attribute.requestedType, s,
-                  attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
+      __serialize( destinationBuffer, outputOffset,
+                   attribute.requestedType, s,
+                   attribute.inputType, attribute.inputSize, i * pointRecordSize + attribute.inputOffset );
 
       outputOffset += attribute.requestedSize;
     }
@@ -287,7 +287,9 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   const size_t count = f.get_header().point_count;
   QgsVector3D scale( f.get_header().scale.x, f.get_header().scale.y, f.get_header().scale.z );
   QgsVector3D offset( f.get_header().offset.x, f.get_header().offset.y, f.get_header().offset.z );
-  char buf[sizeof( laszip::formats::las::point10 ) + sizeof( laszip::formats::las::gpstime ) + sizeof( laszip::formats::las::rgb ) ]; // a buffer large enough to hold our point
+
+  QByteArray bufArray( f.get_header().point_record_length, 0 );
+  char *buf = bufArray.data();
 
   const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   QByteArray data;

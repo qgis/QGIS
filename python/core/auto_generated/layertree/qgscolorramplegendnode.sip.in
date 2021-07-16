@@ -8,6 +8,7 @@
 
 
 
+
 class QgsColorRampLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring(signature="appended")

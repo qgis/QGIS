@@ -75,9 +75,12 @@ Renames a name of field. The field must have unique name, otherwise change is re
 Appends an expression field. The field must have unique name, otherwise it is rejected (returns ``False``)
 %End
 
+
     void remove( int fieldIdx );
 %Docstring
-Removes a field with the given index
+Removes the field with the given index.
+
+:raises KeyError: if no field with the specified index exists
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -148,9 +151,12 @@ Returns if a field index is valid
       sipRes = new QgsField( sipCpp->operator[]( idx ) );
 %End
 
+
     QgsField at( int i ) const /Factory/;
 %Docstring
-Gets field at particular index (must be in range 0..N-1)
+Returns the field at particular index (must be in range 0..N-1).
+
+:raises KeyError: if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -164,9 +170,12 @@ Gets field at particular index (must be in range 0..N-1)
     }
 %End
 
+
     QgsField field( int fieldIdx ) const /Factory/;
 %Docstring
-Gets field at particular index (must be in range 0..N-1)
+Returns the field at particular index (must be in range 0..N-1).
+
+:raises KeyError: if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -180,9 +189,12 @@ Gets field at particular index (must be in range 0..N-1)
     }
 %End
 
+
     QgsField field( const QString &name ) const /Factory/;
 %Docstring
-Gets field with matching name
+Returns the field with matching name.
+
+:raises KeyError: if no matching field was found.
 %End
 %MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
@@ -197,9 +209,12 @@ Gets field with matching name
     }
 %End
 
+
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 %Docstring
-Gets field's origin (value from an enumeration)
+Returns the field's origin (value from an enumeration).
+
+:raises KeyError: if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -213,9 +228,12 @@ Gets field's origin (value from an enumeration)
     }
 %End
 
+
     int fieldOriginIndex( int fieldIdx ) const;
 %Docstring
-Gets field's origin index (its meaning is specific to each type of origin)
+Returns the field's origin index (its meaning is specific to each type of origin).
+
+:raises KeyError: if no field exists at the specified index
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -232,8 +250,10 @@ Gets field's origin index (its meaning is specific to each type of origin)
     int indexFromName( const QString &fieldName ) const;
 %Docstring
 Gets the field index from the field name.
+
 This method is case sensitive and only matches the data source
 name of the field.
+
 Alias for indexOf
 
 :param fieldName: The name of the field.
@@ -246,6 +266,7 @@ Alias for indexOf
     int indexOf( const QString &fieldName ) const;
 %Docstring
 Gets the field index from the field name.
+
 This method is case sensitive and only matches the data source
 name of the field.
 
@@ -291,12 +312,15 @@ Utility function to return a list of :py:class:`QgsField` instances
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
 
+
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
 %Docstring
 Returns an icon corresponding to a field index, based on the field's type and source
 
 :param fieldIdx: the field index
 :param considerOrigin: if ``True`` the icon will the origin of the field
+
+:raises KeyError: if no field exists at the specified index
 
 .. versionadded:: 2.14
 %End
@@ -311,7 +335,6 @@ Returns an icon corresponding to a field index, based on the field's type and so
       sipRes = new QIcon( sipCpp->iconForField( a0 ) );
     }
 %End
-
 
     static QIcon iconForFieldType( const QVariant::Type &type ) /Factory/;
 %Docstring

@@ -19,6 +19,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayercache.h"
 
 #include <QItemSelection>
 #include <QSettings>

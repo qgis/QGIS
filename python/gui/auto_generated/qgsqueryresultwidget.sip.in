@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsqueryresultwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsQueryResultWidget: QWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsQueryResultWidget` class allows users to enter and run an SQL query on a
+DB connection (an instance of :py:class:`QgsAbstractDatabaseProviderConnection`).
+
+Query results are displayed in a table view.
+Query execution and result fetching can be interrupted by pressing the "Stop" push button.
+
+.. note::
+
+   the ownership of the connection is transferred to the widget.
+
+.. versionadded:: 3.22
+%End
+
+%TypeHeaderCode
+#include "qgsqueryresultwidget.h"
+%End
+  public:
+
+    QgsQueryResultWidget( QWidget *parent = 0, QgsAbstractDatabaseProviderConnection *connection /Transfer/ = 0 );
+%Docstring
+Creates a QgsQueryResultWidget with the given ``connection``, ownership is transferred to the widget.
+%End
+
+    virtual ~QgsQueryResultWidget();
+
+    void setConnection( QgsAbstractDatabaseProviderConnection *connection /Transfer/ );
+%Docstring
+Sets the connection to ``connection``, ownership is transferred to the widget.
+%End
+
+    void setQuery( const QString &sql );
+%Docstring
+Convenience method to set the SQL editor text to ``sql``.
+%End
+
+
+  public slots:
+
+    void executeQuery();
+%Docstring
+Starts executing the query.
+%End
+
+    void showError( const QString &title, const QString &message, bool isSqlError = false );
+%Docstring
+Hides the result table and shows the error ``title`` and ``message`` in the message bar or
+in the SQL error panel is ``isSqlError`` is set.
+%End
+
+    void tokensReady( const QStringList &tokens );
+%Docstring
+Triggered when the threaded API fetcher has new ``tokens`` to add.
+%End
+
+  signals:
+
+    void createSqlVectorLayer( const QString &providerKey, const QString &connectionUri, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+%Docstring
+Emitted when a new vector SQL (query) layer must be created.
+
+:param providerKey: name of the data provider
+:param connectionUri: the connection URI as returned by :py:func:`QgsAbstractProviderConnection.uri()`
+:param options:
+%End
+
+    void firstResultBatchFetched();
+%Docstring
+Emitted when the first batch of results has been fetched.
+
+.. note::
+
+   If the query returns no results this signal is not emitted.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsqueryresultwidget.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

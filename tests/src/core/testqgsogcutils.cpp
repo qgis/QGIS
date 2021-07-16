@@ -23,6 +23,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
+#include <QRegularExpression>
+
 /**
  * \ingroup UnitTests
  * This is a unit test for OGC utilities
@@ -103,9 +105,9 @@ void TestQgsOgcUtils::testGeometryFromGML()
 static bool compareElements( QDomElement &element1, QDomElement &element2 )
 {
   QString tag1 = element1.tagName();
-  tag1.replace( QRegExp( ".*:" ), QString() );
+  tag1.replace( QRegularExpression( ".*:" ), QString() );
   QString tag2 = element2.tagName();
-  tag2.replace( QRegExp( ".*:" ), QString() );
+  tag2.replace( QRegularExpression( ".*:" ), QString() );
   if ( tag1 != tag2 )
   {
     qDebug( "Different tag names: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );

@@ -64,6 +64,7 @@ Will be called when live update is enabled.
 
 
   protected:
+
 };
 
 /************************************************************************

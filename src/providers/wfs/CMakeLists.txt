@@ -53,26 +53,26 @@ if (WITH_GUI)
   )
 endif()
 
-add_library (wfsprovider MODULE ${WFS_SRCS})
+add_library (provider_wfs MODULE ${WFS_SRCS})
 
 # require c++17
-target_compile_features(wfsprovider PRIVATE cxx_std_17)
+target_compile_features(provider_wfs PRIVATE cxx_std_17)
 
-target_link_libraries (wfsprovider
+target_link_libraries (provider_wfs
   ${EXPAT_LIBRARY}
   qgis_core
 )
 
 if (WITH_GUI)
-  target_link_libraries (wfsprovider
+  target_link_libraries (provider_wfs
     qgis_gui
   )
-  add_dependencies(wfsprovider ui)
+  add_dependencies(provider_wfs ui)
 endif()
 
 ########################################################
 # Install
 
-install(TARGETS wfsprovider
+install(TARGETS provider_wfs
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

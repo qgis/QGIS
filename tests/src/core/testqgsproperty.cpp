@@ -95,6 +95,7 @@ class TestQgsProperty : public QObject
     void asVariant();
     void isProjectColor();
     void referencedFieldsIgnoreContext();
+    void mapToMap();
 
   private:
 
@@ -1939,6 +1940,22 @@ void TestQgsProperty::checkCurveResult( const QList<QgsPointXY> &controlPoints, 
   {
     QGSCOMPARENEAR( results.at( i ), y.at( i ), 0.0001 );
   }
+}
+
+void TestQgsProperty::mapToMap()
+{
+  QgsProperty p1 = QgsProperty::fromExpression( "project_color('burnt marigold')" );
+  QgsProperty p2 = QgsProperty::fromValue( 1 );
+
+  QMap<QString, QgsProperty> propertyMap;
+  propertyMap.insert( "key1", p1 );
+  propertyMap.insert( "key2", p2 );
+
+  const QVariantMap variantMap = QgsProperty::propertyMapToVariantMap( propertyMap );
+  QCOMPARE( variantMap.value( "key1" ).toMap().value( "expression" ).toString(), "project_color('burnt marigold')" );
+  QCOMPARE( variantMap.value( "key2" ).toMap().value( "val" ).toInt(), 1 );
+
+  QCOMPARE( QgsProperty::variantMapToPropertyMap( variantMap ), propertyMap );
 }
 
 QGSTEST_MAIN( TestQgsProperty )

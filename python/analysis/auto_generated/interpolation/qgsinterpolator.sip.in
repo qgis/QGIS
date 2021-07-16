@@ -11,6 +11,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgsinterpolator.h"
+%End
+
 struct QgsInterpolatorVertexData
 {
 

@@ -48,6 +48,11 @@ The ``searchChildRegistries`` parameter specifies if child registries should be 
 Append a child ``settingsRegistry`` to the register.
 %End
 
+    void removeSubRegistry( const QgsSettingsRegistry *settingsRegistry );
+%Docstring
+Remove a child ``settingsRegistry`` from the register.
+%End
+
     QList<const QgsSettingsRegistry *> subRegistries() const;
 %Docstring
 Returns the list of registered child QgsSettingsRegistry.

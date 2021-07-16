@@ -25,6 +25,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
+#include "qgsstringutils.h"
 
 #include <QColor>
 #include <QStringList>
@@ -3309,12 +3310,15 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         {
           oprValue.replace( 0, 1, QStringLiteral( "%" ) );
         }
-        QRegExp rx( "[^" + QRegExp::escape( escape ) + "](" + QRegExp::escape( wildCard ) + ")" );
-        int pos = 0;
-        while ( ( pos = rx.indexIn( oprValue, pos ) ) != -1 )
+        const QRegularExpression rx( "[^" + QgsStringUtils::qRegExpEscape( escape ) + "](" + QgsStringUtils::qRegExpEscape( wildCard ) + ")" );
+        QRegularExpressionMatch match = rx.match( oprValue );
+        int pos;
+        while ( match.hasMatch() )
         {
+          pos = match.capturedStart();
           oprValue.replace( pos + 1, 1, QStringLiteral( "%" ) );
           pos += 1;
+          match = rx.match( oprValue, pos );
         }
         oprValue.replace( escape + wildCard, wildCard );
       }
@@ -3325,12 +3329,15 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         {
           oprValue.replace( 0, 1, QStringLiteral( "_" ) );
         }
-        QRegExp rx( "[^" + QRegExp::escape( escape ) + "](" + QRegExp::escape( singleChar ) + ")" );
-        int pos = 0;
-        while ( ( pos = rx.indexIn( oprValue, pos ) ) != -1 )
+        const QRegularExpression rx( "[^" + QgsStringUtils::qRegExpEscape( escape ) + "](" + QgsStringUtils::qRegExpEscape( singleChar ) + ")" );
+        QRegularExpressionMatch match = rx.match( oprValue );
+        int pos;
+        while ( match.hasMatch() )
         {
+          pos = match.capturedStart();
           oprValue.replace( pos + 1, 1, QStringLiteral( "_" ) );
           pos += 1;
+          match = rx.match( oprValue, pos );
         }
         oprValue.replace( escape + singleChar, singleChar );
       }

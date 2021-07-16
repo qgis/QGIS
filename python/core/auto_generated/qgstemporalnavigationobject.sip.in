@@ -67,7 +67,7 @@ Sets the temporal navigation ``mode``.
 
     NavigationMode navigationMode() const;
 %Docstring
-Returns the currenttemporal navigation mode.
+Returns the current temporal navigation mode.
 
 .. seealso:: :py:func:`setNavigationMode`
 %End
@@ -120,8 +120,8 @@ which together describe the complete range of times which contain data.
 %Docstring
 Sets the current animation ``frame`` number.
 
-Caling this method will change the controllers current datetime range to match, based on the
-:py:func:`~QgsTemporalNavigationObject.temporalExtents` and :py:func:`~QgsTemporalNavigationObject.frameDuration` values.
+Calling this method will change the controllers current datetime range to match,
+based on the :py:func:`~QgsTemporalNavigationObject.temporalExtents` and :py:func:`~QgsTemporalNavigationObject.frameDuration` values.
 
 .. seealso:: :py:func:`currentFrameNumber`
 %End

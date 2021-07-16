@@ -18,7 +18,6 @@
 #include "qgsidentifymenu.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
-#include "qgsdataitem.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsactionmenu.h"
@@ -27,6 +26,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsiconutils.h"
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
@@ -328,7 +328,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   // case 1 or 2
   if ( layerAction )
   {
-    layerAction->setIcon( QgsLayerItem::iconForWkbType( layer->wkbType() ) );
+    layerAction->setIcon( QgsIconUtils::iconForWkbType( layer->wkbType() ) );
 
     // add layer action to the top menu
     layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );

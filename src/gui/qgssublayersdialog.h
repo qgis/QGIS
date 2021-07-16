@@ -21,10 +21,12 @@
 #include "ui_qgssublayersdialogbase.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 /**
  * \ingroup gui
  * \class QgsSublayersDialog
+ * \deprecated Will be removed in QGIS 4.0
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
 {
@@ -33,7 +35,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     /**
      * Prompt behavior of the QgsSublayersDialog
-     * \since QGIS 3.14
+     * \deprecated Use Qgis::SublayerPromptMode instead
      */
     enum PromptMode
     {
@@ -97,12 +99,14 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * \param parent parent widget of the dialog
      * \param fl window flags
      * \param dataSourceUri data source URI
+     *
+     * \deprecated Will be removed in QGIS 4.0
      */
-    QgsSublayersDialog( ProviderType providerType,
-                        const QString &name,
-                        QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        Qt::WindowFlags fl = Qt::WindowFlags(),
-                        const QString &dataSourceUri = QString() );
+    Q_DECL_DEPRECATED QgsSublayersDialog( ProviderType providerType,
+                                          const QString &name,
+                                          QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                          Qt::WindowFlags fl = Qt::WindowFlags(),
+                                          const QString &dataSourceUri = QString() ) SIP_DEPRECATED;
 
     ~QgsSublayersDialog() override;
 

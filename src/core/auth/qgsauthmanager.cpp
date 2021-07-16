@@ -31,6 +31,9 @@
 #include <QTimer>
 #include <QVariant>
 #include <QSqlDriver>
+#include <QDomElement>
+#include <QDomDocument>
+#include <QRegularExpression>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
@@ -840,7 +843,7 @@ bool QgsAuthManager::registerCoreAuthMethods()
   const QStringList methods = QgsAuthMethodRegistry::instance()->authMethodList();
   for ( const auto &authMethodKey : methods )
   {
-    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ).release() );
+    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->createAuthMethod( authMethodKey ) );
   }
 
   return !mAuthMethods.isEmpty();
@@ -915,8 +918,8 @@ bool QgsAuthManager::configIdUnique( const QString &id ) const
 
 bool QgsAuthManager::hasConfigId( const QString &txt ) const
 {
-  QRegExp rx( AUTH_CFG_REGEX );
-  return rx.indexIn( txt ) != -1;
+  const thread_local QRegularExpression authCfgRegExp( AUTH_CFG_REGEX );
+  return txt.indexOf( authCfgRegExp ) != -1;
 }
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
@@ -1034,6 +1037,18 @@ QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
   return mAuthMethods.value( authMethodKey );
 }
 
+const QgsAuthMethodMetadata *QgsAuthManager::authMethodMetadata( const QString &authMethodKey )
+{
+  if ( !mAuthMethods.contains( authMethodKey ) )
+  {
+    QgsDebugMsg( QStringLiteral( "No auth method registered for auth method key: %1" ).arg( authMethodKey ) );
+    return nullptr;
+  }
+
+  return QgsAuthMethodRegistry::instance()->authMethodMetadata( authMethodKey );
+}
+
+
 QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
 {
   if ( dataprovider.isEmpty() )
@@ -1056,10 +1071,16 @@ QgsAuthMethodsMap QgsAuthManager::authMethodsMap( const QString &dataprovider )
   return filteredmap;
 }
 
+#ifdef HAVE_GUI
 QWidget *QgsAuthManager::authMethodEditWidget( const QString &authMethodKey, QWidget *parent )
 {
-  return QgsAuthMethodRegistry::instance()->editWidget( authMethodKey, parent );
+  QgsAuthMethod *method = authMethod( authMethodKey );
+  if ( method )
+    return method->editWidget( parent );
+  else
+    return nullptr;
 }
+#endif
 
 QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString &authcfg )
 {
@@ -1074,7 +1095,7 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
   return QgsAuthMethod::Expansions();
 }
 
-bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
+bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig, bool overwrite )
 {
   QMutexLocker locker( mMutex.get() );
   if ( !setMasterPassword( true ) )
@@ -1097,10 +1118,16 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
   }
   else if ( configIds().contains( uid ) )
   {
-    const char *err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID is not unique" );
-    QgsDebugMsg( err );
-    emit messageOut( tr( err ), authManTag(), WARNING );
-    return false;
+    if ( !overwrite )
+    {
+      const char *err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID %1 is not unique" );
+      QgsDebugMsg( err );
+      emit messageOut( tr( err ), authManTag(), WARNING );
+      return false;
+    }
+    locker.unlock();
+    removeAuthenticationConfig( uid );
+    locker.relock();
   }
 
   QString configstring = mconfig.configString();
@@ -1140,7 +1167,7 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
   if ( !authDbCommit() )
     return false;
 
-  // passed-in config should now be like as if it was just loaded from db
+// passed-in config should now be like as if it was just loaded from db
   if ( !passedinID )
     mconfig.setId( uid );
 
@@ -1148,7 +1175,6 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
 
   QgsDebugMsgLevel( QStringLiteral( "Store config SUCCESS for authcfg: %1" ).arg( uid ), 2 );
   return true;
-
 }
 
 bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &config )
@@ -1320,6 +1346,116 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString &authcfg )
 
   QgsDebugMsgLevel( QStringLiteral( "REMOVED config for authcfg: %1" ).arg( authcfg ), 2 );
 
+  return true;
+}
+
+bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password )
+{
+  if ( filename.isEmpty() )
+    return false;
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  QDomElement root = document.createElement( QStringLiteral( "qgis_authentication" ) );
+  document.appendChild( root );
+
+  QString civ;
+  if ( !password.isEmpty() )
+  {
+    QString salt;
+    QString hash;
+    QgsAuthCrypto::passwordKeyHash( password, &salt, &hash, &civ );
+    root.setAttribute( QStringLiteral( "salt" ), salt );
+    root.setAttribute( QStringLiteral( "hash" ), hash );
+    root.setAttribute( QStringLiteral( "civ" ), civ );
+  }
+
+  QDomElement configurations = document.createElement( QStringLiteral( "configurations" ) );
+  for ( const QString &authcfg : authcfgs )
+  {
+    QgsAuthMethodConfig authMethodConfig;
+
+    bool ok = loadAuthenticationConfig( authcfg, authMethodConfig, true );
+    if ( ok )
+    {
+      authMethodConfig.writeXml( configurations, document );
+    }
+  }
+  if ( !password.isEmpty() )
+  {
+    QString configurationsString;
+    QTextStream ts( &configurationsString );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    ts.setCodec( "UTF-8" );
+#endif
+    configurations.save( ts, 2 );
+    root.appendChild( document.createTextNode( QgsAuthCrypto::encrypt( password, civ, configurationsString ) ) );
+  }
+  else
+  {
+    root.appendChild( configurations );
+  }
+
+  QFile file( filename );
+  if ( !file.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    return false;
+
+  QTextStream ts( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  ts.setCodec( "UTF-8" );
+#endif
+  document.save( ts, 2 );
+  file.close();
+  return true;
+}
+
+bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename, const QString &password, bool overwrite )
+{
+  QFile file( filename );
+  if ( !file.open( QFile::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QDomDocument document( QStringLiteral( "qgis_authentication" ) );
+  if ( !document.setContent( &file ) )
+  {
+    file.close();
+    return false;
+  }
+  file.close();
+
+  QDomElement root = document.documentElement();
+  if ( root.tagName() != QLatin1String( "qgis_authentication" ) )
+  {
+    return false;
+  }
+
+  QDomElement configurations;
+  if ( root.hasAttribute( QStringLiteral( "salt" ) ) )
+  {
+    QString salt = root.attribute( QStringLiteral( "salt" ) );
+    QString hash = root.attribute( QStringLiteral( "hash" ) );
+    QString civ = root.attribute( QStringLiteral( "civ" ) );
+    if ( !QgsAuthCrypto::verifyPasswordKeyHash( password, salt, hash ) )
+      return false;
+
+    document.setContent( QgsAuthCrypto::decrypt( password, civ, root.text() ) );
+    configurations = document.firstChild().toElement();
+  }
+  else
+  {
+    configurations = root.firstChildElement( QStringLiteral( "configurations" ) );
+  }
+
+  QDomElement configuration = configurations.firstChildElement();
+  while ( !configuration.isNull() )
+  {
+    QgsAuthMethodConfig authMethodConfig;
+    authMethodConfig.readXml( configuration );
+    storeAuthenticationConfig( authMethodConfig, overwrite );
+
+    configuration = configuration.nextSiblingElement();
+  }
   return true;
 }
 
@@ -2302,8 +2438,8 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
 bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors )
 {
   QMutexLocker locker( mMutex.get() );
-  QRegExp rx( "\\S+:\\S+:\\d+" );
-  if ( !rx.exactMatch( shahostport ) )
+  const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern( "\\S+:\\S+:\\d+" ) );
+  if ( !rx.match( shahostport ).hasMatch() )
   {
     QgsDebugMsg( "Passed shahostport does not match \\S+:\\S+:\\d+, "
                  "e.g. 74a4ef5ea94512a43769b744cda0ca5049a72491:www.example.com:443" );

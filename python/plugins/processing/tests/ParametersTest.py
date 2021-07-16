@@ -619,17 +619,15 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        # QgsProcessingParameterVectorLayer multi data types does not work
-        # as QgsProcessingParameterFeatureSource
-        # desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorPoint'
-        # param = getParameterFromString(desc)
-        # self.assertIsNotNone(param)
-        # self.assertEqual(param.type(), 'vector')
-        # self.assertEqual(param.name(), 'in_vector')
-        # self.assertEqual(param.description(), 'Input Vector')
-        # self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorPoint])
-        # self.assertIsNone(param.defaultValue())
-        # self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorPoint'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vector')
+        self.assertEqual(param.name(), 'in_vector')
+        self.assertEqual(param.description(), 'Input Vector')
+        self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorPoint])
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
         desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|1'
         param = getParameterFromString(desc)
@@ -641,17 +639,15 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        # QgsProcessingParameterVectorLayer multi data types does not work
-        # as QgsProcessingParameterFeatureSource
-        # desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorLine'
-        # param = getParameterFromString(desc)
-        # self.assertIsNotNone(param)
-        # self.assertEqual(param.type(), 'vector')
-        # self.assertEqual(param.name(), 'in_vector')
-        # self.assertEqual(param.description(), 'Input Vector')
-        # self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorLine])
-        # self.assertIsNone(param.defaultValue())
-        # self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorLine'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vector')
+        self.assertEqual(param.name(), 'in_vector')
+        self.assertEqual(param.description(), 'Input Vector')
+        self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorLine])
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
         desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|2'
         param = getParameterFromString(desc)
@@ -663,17 +659,15 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        # QgsProcessingParameterVectorLayer multi data types does not work
-        # as QgsProcessingParameterFeatureSource
-        # desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorPolygon'
-        # param = getParameterFromString(desc)
-        # self.assertIsNotNone(param)
-        # self.assertEqual(param.type(), 'vector')
-        # self.assertEqual(param.name(), 'in_vector')
-        # self.assertEqual(param.description(), 'Input Vector')
-        # self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorPolygon])
-        # self.assertIsNone(param.defaultValue())
-        # self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorPolygon'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vector')
+        self.assertEqual(param.name(), 'in_vector')
+        self.assertEqual(param.description(), 'Input Vector')
+        self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorPolygon])
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
         desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|5'
         param = getParameterFromString(desc)
@@ -685,17 +679,15 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        # QgsProcessingParameterVectorLayer multi data types does not work
-        # as QgsProcessingParameterFeatureSource
-        # desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVector'
-        # param = getParameterFromString(desc)
-        # self.assertIsNotNone(param)
-        # self.assertEqual(param.type(), 'vector')
-        # self.assertEqual(param.name(), 'in_vector')
-        # self.assertEqual(param.description(), 'Input Vector')
-        # self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVector])
-        # self.assertIsNone(param.defaultValue())
-        # self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVector'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vector')
+        self.assertEqual(param.name(), 'in_vector')
+        self.assertEqual(param.description(), 'Input Vector')
+        self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVector])
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
         desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|1;2'
         param = getParameterFromString(desc)
@@ -707,17 +699,15 @@ class ParametersTest(unittest.TestCase):
         self.assertIsNone(param.defaultValue())
         self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
-        # QgsProcessingParameterVectorLayer multi data types does not work
-        # as QgsProcessingParameterFeatureSource
-        # desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorLine;QgsProcessing.TypeVectorPolygon'
-        # param = getParameterFromString(desc)
-        # self.assertIsNotNone(param)
-        # self.assertEqual(param.type(), 'vector')
-        # self.assertEqual(param.name(), 'in_vector')
-        # self.assertEqual(param.description(), 'Input Vector')
-        # self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon])
-        # self.assertIsNone(param.defaultValue())
-        # self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
+        desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|QgsProcessing.TypeVectorLine;QgsProcessing.TypeVectorPolygon'
+        param = getParameterFromString(desc)
+        self.assertIsNotNone(param)
+        self.assertEqual(param.type(), 'vector')
+        self.assertEqual(param.name(), 'in_vector')
+        self.assertEqual(param.description(), 'Input Vector')
+        self.assertListEqual(param.dataTypes(), [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon])
+        self.assertIsNone(param.defaultValue())
+        self.assertFalse(param.flags() & QgsProcessingParameterDefinition.FlagOptional)
 
         desc = 'QgsProcessingParameterVectorLayer|in_vector|Input Vector|-1|None|True'
         param = getParameterFromString(desc)

@@ -18,14 +18,15 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QDir>
-#include <QString>
-#include <QRegExp>
-#include <QList>
 
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
 #include "qgsdartmeasurement.h"
+
+#include <QDir>
+#include <QString>
+#include <QRegularExpression>
+#include <QList>
 
 class QImage;
 
@@ -262,7 +263,7 @@ class CORE_EXPORT QgsRenderChecker
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
   QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
-  QRegExp re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+  QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );
@@ -275,14 +276,21 @@ inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0
 
   QList<double> al, bl;
 
-  int pos;
-  for ( pos = 0; ( pos = re.indexIn( a, pos ) ) != -1; pos += re.matchedLength() )
+  int pos = 0;
+  QRegularExpressionMatch match = re.match( a );
+  while ( match.hasMatch() )
   {
-    al << re.cap( 0 ).toDouble();
+    al << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( a, pos );
   }
-  for ( pos = 0; ( pos = re.indexIn( b, pos ) ) != -1; pos += re.matchedLength() )
+  pos = 0;
+  match = re.match( b );
+  while ( match.hasMatch() )
   {
-    bl << re.cap( 0 ).toDouble();
+    bl << match.captured( 0 ).toDouble();
+    pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
+    match = re.match( b, pos );
   }
 
   if ( al.size() != bl.size() )

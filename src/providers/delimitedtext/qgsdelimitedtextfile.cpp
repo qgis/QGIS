@@ -43,7 +43,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
 
   // For tests
   QString bufferSizeStr( getenv( "QGIS_DELIMITED_TEXT_FILE_BUFFER_SIZE" ) );
-  mMaxBufferSize = bufferSizeStr.isEmpty() ? 1024 * 1024 : bufferSizeStr.toInt();
+  mMaxBufferSize = bufferSizeStr.isEmpty() ? 10 * 1024 * 1024 : bufferSizeStr.toInt();
 }
 
 

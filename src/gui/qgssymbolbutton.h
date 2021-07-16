@@ -17,7 +17,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgssymbol.h"
+#include "qgis.h"
+
 #include <QToolButton>
 #include <QPointer>
 #include <memory>
@@ -28,6 +29,7 @@ class QgsExpressionContextGenerator;
 class QgsPanelWidget;
 class QgsMessageBar;
 class QMimeData;
+class QgsSymbol;
 
 /**
  * \ingroup gui
@@ -52,6 +54,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
      */
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
+    ~QgsSymbolButton();
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
@@ -62,13 +65,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * to a default symbol style of the new type.
      * \see symbolType()
      */
-    void setSymbolType( QgsSymbol::SymbolType type );
+    void setSymbolType( Qgis::SymbolType type );
 
     /**
      * Returns the symbol type which the button requires.
      * \see setSymbolType()
      */
-    QgsSymbol::SymbolType symbolType() const { return mType; }
+    Qgis::SymbolType symbolType() const { return mType; }
 
     /**
      * Sets the \a title for the symbol settings dialog window.
@@ -255,7 +258,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QString mDialogTitle;
 
-    QgsSymbol::SymbolType mType = QgsSymbol::Fill;
+    Qgis::SymbolType mType = Qgis::SymbolType::Fill;
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;

@@ -52,12 +52,11 @@ QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   mActionStoredFilterExpressions->setMenu( mStoredFilterExpressionMenu );
 
   // Set filter icon in a couple of places
-  QIcon filterIcon = QgsApplication::getThemeIcon( "/mActionFilter2.svg" );
-  mActionShowAllFilter->setIcon( filterIcon );
-  mActionAdvancedFilter->setIcon( filterIcon );
-  mActionSelectedFilter->setIcon( filterIcon );
-  mActionVisibleFilter->setIcon( filterIcon );
-  mActionEditedFilter->setIcon( filterIcon );
+  mActionShowAllFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ) );
+  mActionAdvancedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
+  mActionSelectedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableSelected.svg" ) );
+  mActionVisibleFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableVisible.svg" ) );
+  mActionEditedFilter->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTableEdited.svg" ) );
 
 
   // Set button to store or delete stored filter expressions
@@ -451,7 +450,7 @@ void QgsFeatureFilterWidget::setFilterExpression( const QString &filterString, Q
   QgsExpression filterExpression( filter );
   if ( filterExpression.hasParserError() )
   {
-    mMessageBar->pushMessage( tr( "Parsing error" ), filterExpression.parserErrorString(), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Parsing error" ), filterExpression.parserErrorString(), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -459,7 +458,7 @@ void QgsFeatureFilterWidget::setFilterExpression( const QString &filterString, Q
 
   if ( !filterExpression.prepare( &context ) )
   {
-    mMessageBar->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), Qgis::MessageLevel::Warning );
   }
 
   mMainView->filterFeatures( filterExpression, context );

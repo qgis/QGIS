@@ -98,7 +98,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     /**
      * Returns a geometry from within the collection.
-     * \param n index of geometry to return. An IndexError will be raised if no geometry with the specified index exists.
+     * \param n index of geometry to return.
+     * \throws IndexError if no geometry with the specified index exists.
      */
     SIP_PYOBJECT geometryN( int n ) SIP_TYPEHINT( QgsAbstractGeometry );
     % MethodCode
@@ -160,9 +161,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Removes a geometry from the collection by index.
      *
-     * An IndexError will be raised if no geometry with the specified index exists.
-     *
      * \returns TRUE if removal was successful.
+     * \throws IndexError if no geometry with the specified index exists.
      */
     virtual bool removeGeometry( int nr );
     % MethodCode
@@ -237,6 +237,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool dropMValue() override;
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
+    const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
@@ -263,10 +264,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #ifdef SIP_RUN
 
     /**
-    * Returns the geometry at the specified ``index``. An IndexError will be raised if no geometry with the specified ``index`` exists.
+    * Returns the geometry at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
     * corresponds to the last geometry in the collection.
+    *
+    * \throws IndexError if no geometry with the specified ``index`` exists.
     *
     * \since QGIS 3.6
     */
@@ -289,10 +292,12 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     % End
 
     /**
-     * Deletes the geometry at the specified ``index``. A geometry at the ``index`` must already exist or an IndexError will be raised.
+     * Deletes the geometry at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
      * corresponds to the last geometry in the collection.
+     *
+     * \throws IndexError if no geometry at the ``index`` exists
      *
      * \since QGIS 3.6
      */

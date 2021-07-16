@@ -56,6 +56,7 @@ class QgsAppMapTools
       MeasureDistance,
       MeasureArea,
       MeasureAngle,
+      MeasureBearing,
       AddFeature,
       CircularStringCurvePoint,
       CircularStringRadius,
@@ -112,6 +113,7 @@ class QgsAppMapTools
       ChangeLabelProperties,
       ReverseLine,
       TrimExtendFeature,
+      EditMeshFrame
     };
 
     QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );

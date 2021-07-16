@@ -4000,7 +4000,13 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
 QgsProcessingParameterDefinition *QgsProcessingFieldParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   QgsProcessingParameterField::DataType dataType = static_cast< QgsProcessingParameterField::DataType >( mDataTypeComboBox->currentData().toInt() );
-  auto param = std::make_unique< QgsProcessingParameterField >( name, description, mDefaultLineEdit->text(), mParentLayerComboBox->currentData().toString(), dataType, mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
+
+  QVariant defaultValue;
+  if ( !mDefaultLineEdit->text().trimmed().isEmpty() )
+  {
+    defaultValue = mDefaultLineEdit->text();
+  }
+  auto param = std::make_unique< QgsProcessingParameterField >( name, description, defaultValue, mParentLayerComboBox->currentData().toString(), dataType, mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
   param->setFlags( flags );
   return param.release();
 }
@@ -4207,7 +4213,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     {
       widgetContext().messageBar()->clearWidgets();
       widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
-          Qgis::Info );
+          Qgis::MessageLevel::Info );
     }
     return;
   }
@@ -6342,7 +6348,7 @@ void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstra
     {
       widgetContext().messageBar()->clearWidgets();
       widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent bands could not be populated" ),
-          Qgis::Info );
+          Qgis::MessageLevel::Info );
     }
   }
 
@@ -6511,14 +6517,17 @@ void QgsProcessingMultipleLayerPanelWidget::setValue( const QVariant &value )
 void QgsProcessingMultipleLayerPanelWidget::setProject( QgsProject *project )
 {
   mProject = project;
-  connect( mProject, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
+  if ( mProject )
   {
-    if ( mValue.removeAll( layerId ) )
+    connect( mProject, &QgsProject::layerRemoved, this, [&]( const QString & layerId )
     {
-      updateSummaryText();
-      emit changed();
-    }
-  } );
+      if ( mValue.removeAll( layerId ) )
+      {
+        updateSummaryText();
+        emit changed();
+      }
+    } );
+  }
 }
 
 void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorithm *model, const QString &modelChildAlgorithmID )
@@ -6725,7 +6734,8 @@ QWidget *QgsProcessingMultipleLayerWidgetWrapper::createWidget()
   mPanel = new QgsProcessingMultipleLayerPanelWidget( nullptr, layerParam );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->setProject( widgetContext().project() );
-  mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  if ( type() == QgsProcessingGui::Modeler )
+    mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
   connect( mPanel, &QgsProcessingMultipleLayerPanelWidget::changed, this, [ = ]
   {
     emit widgetValueHasChanged( this );
@@ -6739,7 +6749,8 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcess
   if ( mPanel )
   {
     mPanel->setProject( context.project() );
-    mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+    if ( type() == QgsProcessingGui::Modeler )
+      mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
   }
 }
 

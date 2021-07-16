@@ -253,7 +253,7 @@ void QgsGeoreferencerMainWindow::openRaster( const QString &fileName )
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
   {
     mMessageBar->pushMessage( tr( "Open Raster" ), tr( "%1 is not a supported raster data source.%2" ).arg( mRasterFileName,
-                              !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::Critical );
+                              !errMsg.isEmpty() ? QStringLiteral( " (%1)" ).arg( errMsg ) : QString() ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -342,16 +342,16 @@ void QgsGeoreferencerMainWindow::doGeoreference()
 {
   if ( georeference() )
   {
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::Success );
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::MessageLevel::Success );
     if ( mLoadInQgis )
     {
       if ( mModifiedRasterFileName.isEmpty() )
       {
-        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).completeBaseName(), QString() );
       }
       else
       {
-        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName() );
+        QgisApp::instance()->addRasterLayer( mModifiedRasterFileName, QFileInfo( mModifiedRasterFileName ).completeBaseName(), QString() );
       }
 
       //      showMessageInLog(tr("Modified raster saved in"), mModifiedRasterFileName);
@@ -435,7 +435,7 @@ void QgsGeoreferencerMainWindow::generateGDALScript()
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                 .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) )
-                                , Qgis::Critical );
+                                , Qgis::MessageLevel::Critical );
   }
 }
 
@@ -663,11 +663,11 @@ void QgsGeoreferencerMainWindow::loadGCPsDialog()
 
   if ( !loadGCPs() )
   {
-    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::MessageLevel::Critical );
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "GCP file successfully loaded." ), Qgis::Success );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "GCP file successfully loaded." ), Qgis::MessageLevel::Success );
   }
 }
 
@@ -675,7 +675,7 @@ void QgsGeoreferencerMainWindow::saveGCPsDialog()
 {
   if ( mPoints.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "Save GCP Points" ), tr( "No GCP points are available to save." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Save GCP Points" ), tr( "No GCP points are available to save." ), Qgis::MessageLevel::Warning );
     return;
   }
 
@@ -702,7 +702,7 @@ void QgsGeoreferencerMainWindow::showRasterPropertiesDialog()
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
   }
 }
 
@@ -1323,7 +1323,7 @@ void QgsGeoreferencerMainWindow::saveGCPs()
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::MessageLevel::Critical );
     return;
   }
 
@@ -1371,7 +1371,7 @@ bool QgsGeoreferencerMainWindow::georeference()
     double pixelXSize, pixelYSize, rotation;
     if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), Qgis::Critical );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), Qgis::MessageLevel::Critical );
       return false;
     }
 
@@ -1419,7 +1419,7 @@ bool QgsGeoreferencerMainWindow::georeference()
     if ( res == 0 ) // fault to compute GCP transform
     {
       //TODO: be more specific in the error message
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Critical );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
       return false;
     }
     else if ( res == -1 ) // operation canceled
@@ -1454,7 +1454,7 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   QFile file( mWorldFileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mMessageBar->pushMessage( tr( "Save World File" ), tr( "Could not write to %1." ).arg( mWorldFileName ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Save World File" ), tr( "Could not write to %1." ).arg( mWorldFileName ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -1958,7 +1958,7 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
 {
   if ( mRasterFileName.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::Warning );
+    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -1981,14 +1981,14 @@ bool QgsGeoreferencerMainWindow::checkReadyGeoref()
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
                               .arg( QgsGcpTransformerInterface::methodToString( mTransformParam ) ).arg( mGeorefTransform.minimumGcpCount() )
-                              , Qgis::Critical );
+                              , Qgis::MessageLevel::Critical );
     return false;
   }
 
   // Update the transform if necessary
   if ( !updateGeorefTransform() )
   {
-    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Critical );
+    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::MessageLevel::Critical );
     //    logRequaredGCPs();
     return false;
   }

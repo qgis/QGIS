@@ -92,10 +92,12 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
-  int count = 0;
-  int total = sourceA->featureCount() + sourceB->featureCount();
+  long count = 0;
+  const long total = sourceA->featureCount() + sourceB->featureCount();
 
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  if ( feedback->isCanceled() )
+    return outputs;
 
   QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
 

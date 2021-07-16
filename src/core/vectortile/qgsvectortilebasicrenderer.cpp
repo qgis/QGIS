@@ -23,6 +23,9 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectortileutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 
 QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString &stName, const QString &laName, QgsWkbTypes::GeometryType geomType )
   : mStyleName( stName )

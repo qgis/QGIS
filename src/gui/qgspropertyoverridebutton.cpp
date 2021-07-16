@@ -152,12 +152,14 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractProperty
 void QgsPropertyOverrideButton::updateFieldLists()
 {
   mFieldNameList.clear();
-  mFieldTypeList.clear();
+  mFieldDisplayNameList.clear();
+  mFieldIcons.clear();
 
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
     const QgsFields fields = mVectorLayer->fields();
+    int idx = 0;
     for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
@@ -201,8 +203,10 @@ void QgsPropertyOverrideButton::updateFieldLists()
       if ( fieldMatch )
       {
         mFieldNameList << f.name();
-        mFieldTypeList << fieldType;
+        mFieldDisplayNameList << f.displayNameWithAlias();
+        mFieldIcons << fields.iconForField( idx, true );
       }
+      idx++;
     }
   }
 }
@@ -395,7 +399,8 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
       for ( int j = 0; j < mFieldNameList.count(); ++j )
       {
         QString fldname = mFieldNameList.at( j );
-        QAction *act = mFieldsMenu->addAction( fldname + "    (" + mFieldTypeList.at( j ) + ')' );
+        QAction *act = mFieldsMenu->addAction( mFieldDisplayNameList.at( j ) );
+        act->setIcon( mFieldIcons.at( j ) );
         act->setData( QVariant( fldname ) );
         if ( mFieldName == fldname )
         {
@@ -600,6 +605,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
     mProperty.setStaticValue( QVariant() );
     mProperty.setTransformer( nullptr );
     mExpressionString.clear();
+    mFieldName.clear();
     updateSiblingWidgets( isActive() );
     updateGui();
     emit changed();
@@ -715,7 +721,8 @@ void QgsPropertyOverrideButton::showAssistant()
     } );
 
     // if the source layer is removed, we need to dismiss the assistant immediately
-    connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
+    if ( mVectorLayer )
+      connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
 
     connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [ = ] { updateGui(); } );
 

@@ -179,6 +179,62 @@ class TestSelectiveMasking(unittest.TestCase):
 
                 print("=== Rendering took {}s".format(float(t) / 1000.0))
 
+    def test_save_restore_references(self):
+        """
+        Test saving and restoring symbol layer references
+        """
+
+        # simple ids
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setMasks([
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
+        ])
+
+        props = mask_layer.properties()
+
+        mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
+        self.assertEqual(mask_layer2.masks(), [
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
+        ])
+
+        # complex ids
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setMasks([
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some id, #1", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other id, like, this", [4, 5])),
+        ])
+
+        props = mask_layer.properties()
+
+        mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
+        self.assertEqual(mask_layer2.masks(), [
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some id, #1", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other id, like, this", [4, 5])),
+        ])
+
+        # complex ids, v2
+        mask_layer = QgsMaskMarkerSymbolLayer()
+        mask_layer.setMasks([
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("a string; with bits", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some; id, #1", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other; id, lik;e, this", [4, 5])),
+        ])
+
+        props = mask_layer.properties()
+
+        mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
+        self.assertEqual(mask_layer2.masks(), [
+            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("a string; with bits", 0)),
+            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some; id, #1", [1, 3, 5, 19])),
+            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other; id, lik;e, this", [4, 5])),
+        ])
+
     def test_label_mask(self):
         # modify labeling settings
         label_settings = self.polys_layer.labeling().settings()

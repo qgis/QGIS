@@ -64,6 +64,7 @@ RUN  apt-get update \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
     python3-pyqt5.qtwebkit \
+    python3-pyqt5.qtpositioning \
     python3-sip \
     python3-termcolor \
     python3-yaml \
@@ -124,6 +125,7 @@ FROM binary-for-oracle as binary-only
 RUN  apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     grass \
+    iproute2 \
     postgresql-client \
     spawn-fcgi \
   && pip3 install \

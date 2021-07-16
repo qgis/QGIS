@@ -34,6 +34,7 @@ class TestQgsProjectStorage : public QObject
     void cleanup();// will be called after every testfunction.
 
     void testMemoryStorage();
+    void testSupportedUri();
 };
 
 void TestQgsProjectStorage::init()
@@ -91,7 +92,7 @@ class MemoryStorage : public QgsProjectStorage
 
       if ( !mProjects.contains( projectName ) )
       {
-        context.pushMessage( "project not found", Qgis::Critical );
+        context.pushMessage( "project not found", Qgis::MessageLevel::Critical );
         return false;
       }
 
@@ -239,6 +240,17 @@ void TestQgsProjectStorage::testMemoryStorage()
   QCOMPARE( memStorage->listProjects( QString() ).count(), 0 );
 
   QgsApplication::projectStorageRegistry()->unregisterProjectStorage( memStorage );
+}
+
+void TestQgsProjectStorage::testSupportedUri()
+{
+  QgsProjectStorage *gpkgStorage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "geopackage" ) );
+  QVERIFY( gpkgStorage );
+
+  QVERIFY( gpkgStorage->isSupportedUri( QStringLiteral( "%1/mixed_layers.gpkg" ).arg( TEST_DATA_DIR ) ) );
+  QVERIFY( !gpkgStorage->isSupportedUri( QStringLiteral( "%1/mixed_types.TAB" ).arg( TEST_DATA_DIR ) ) );
+
+  QCOMPARE( QgsApplication::projectStorageRegistry()->projectStorageFromUri( QStringLiteral( "%1/mixed_layers.gpkg" ).arg( TEST_DATA_DIR ) )->type(), QStringLiteral( "geopackage" ) );
 }
 
 

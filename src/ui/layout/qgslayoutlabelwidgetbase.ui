@@ -62,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>358</width>
-        <height>682</height>
+        <height>680</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -110,6 +110,15 @@
             </property>
             <property name="text">
              <string>Insert/Edit Expression…</string>
+            </property>
+            <property name="popupMode">
+             <enum>QToolButton::MenuButtonPopup</enum>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextOnly</enum>
+            </property>
+            <property name="arrowType">
+             <enum>Qt::DownArrow</enum>
             </property>
            </widget>
           </item>

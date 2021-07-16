@@ -100,7 +100,7 @@ QString QgsServerOgcApiHandler::contentTypeForAccept( const QString &accept ) co
   // Log level info because this is not completely unexpected
   QgsMessageLog::logMessage( QStringLiteral( "Content type for accept %1 not found!" ).arg( accept ),
                              QStringLiteral( "Server" ),
-                             Qgis::Info );
+                             Qgis::MessageLevel::Info );
 
   return QString();
 }
@@ -274,14 +274,14 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
   auto path { templatePath( context ) };
   if ( ! QFile::exists( path ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Template not found error: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Template not found error: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     throw QgsServerApiBadRequestException( QStringLiteral( "Template not found: %1" ).arg( QFileInfo( path ).fileName() ) );
   }
 
   QFile f( path );
   if ( ! f.open( QFile::ReadOnly | QFile::Text ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not open template file: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Could not open template file: %1" ).arg( path ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     throw QgsServerApiInternalServerError( QStringLiteral( "Could not open template file: %1" ).arg( QFileInfo( path ).fileName() ) );
   }
 
@@ -420,7 +420,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
   }
   catch ( std::exception &e )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error parsing template file: %1 - %2" ).arg( path, e.what() ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Error parsing template file: %1 - %2" ).arg( path, e.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     throw QgsServerApiInternalServerError( QStringLiteral( "Error parsing template file: %1" ).arg( e.what() ) );
   }
 }
@@ -444,7 +444,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::Warning );
+      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported extension: %1" ).arg( extension ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
     }
   }
   // ... then "Accept"
@@ -469,7 +469,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::Warning );
+      QgsMessageLog::logMessage( QStringLiteral( "The client requested an unsupported content type in Accept header: %1" ).arg( accept ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
     }
   }
   // Validation: check if the requested content type (or an alias) is supported by the handler
@@ -493,7 +493,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
 
     if ( ! found )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsServerOgcApi::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsServerOgcApi::contentTypeToString( result ) ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       throw QgsServerApiBadRequestException( QStringLiteral( "Unsupported Content-Type: %1" ).arg( QgsServerOgcApi::contentTypeToString( result ) ) );
     }
   }

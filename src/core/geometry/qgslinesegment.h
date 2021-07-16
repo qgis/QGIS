@@ -218,6 +218,8 @@ class CORE_EXPORT QgsLineSegment2D
       std::swap( mStart, mEnd );
     }
 
+    // TODO c++20 - replace with = default
+
     //! Equality operator
     bool operator==( const QgsLineSegment2D &other ) const SIP_HOLDGIL
     {

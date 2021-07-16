@@ -257,6 +257,13 @@ class TestQgsWmsProvider: public QObject
       return myResultFlag;
     }
 
+    void testParseWmstUriWithoutTemporalExtent()
+    {
+      // test fix for https://github.com/qgis/QGIS/issues/43158
+      // we just check we don't crash
+      QgsWmsProvider provider( QStringLiteral( "allowTemporalUpdates=true&temporalSource=provider&type=wmst&layers=foostyles=bar&crs=EPSG:3857&format=image/png&url=file:///dummy" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+    }
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 

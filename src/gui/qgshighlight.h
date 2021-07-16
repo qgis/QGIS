@@ -15,9 +15,11 @@
 #ifndef QGSHIGHLIGHT_H
 #define QGSHIGHLIGHT_H
 
+#include "qgis_gui.h"
+#include "qgsfeature.h"
+#include "qgsrendercontext.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsgeometry.h"
-#include "qgssymbol.h"
 #include <QBrush>
 #include <QColor>
 #include <QList>
@@ -25,11 +27,12 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPointer>
-#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbol;
+class QgsFeatureRenderer;
+
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

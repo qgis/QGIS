@@ -360,9 +360,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>843</width>
-                <height>959</height>
+                <y>-536</y>
+                <width>856</width>
+                <height>1223</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -772,8 +772,8 @@
                  <property name="title">
                   <string>Project Files</string>
                  </property>
-                 <layout class="QVBoxLayout">
-                  <item>
+                 <layout class="QGridLayout" name="gridLayout_38">
+                  <item row="0" column="0">
                    <layout class="QGridLayout" name="gridLayout_4">
                     <item row="0" column="2" colspan="2">
                      <widget class="QComboBox" name="mProjectOnLaunchCmbBx">
@@ -882,14 +882,14 @@
                     </item>
                    </layout>
                   </item>
-                  <item>
+                  <item row="1" column="0">
                    <widget class="QCheckBox" name="cbxProjectDefaultNew">
                     <property name="text">
                      <string>Create new project from default project</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="2" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
                      <spacer name="horizontalSpacer_22">
@@ -936,7 +936,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item>
+                  <item row="3" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
                     <item>
                      <widget class="QLabel" name="label_31">
@@ -982,28 +982,28 @@
                     </item>
                    </layout>
                   </item>
-                  <item>
+                  <item row="4" column="0">
                    <widget class="QCheckBox" name="chbAskToSaveProjectChanges">
                     <property name="text">
                      <string>Prompt to save project and data source changes when required</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="5" column="0">
                    <widget class="QCheckBox" name="mLayerDeleteConfirmationChkBx">
                     <property name="text">
                      <string>Prompt for confirmation when a layer is to be removed</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="6" column="0">
                    <widget class="QCheckBox" name="chbWarnOldProjectVersion">
                     <property name="text">
                      <string>Warn when opening a project file saved with an older version of QGIS</string>
                     </property>
                    </widget>
                   </item>
-                  <item>
+                  <item row="7" column="0">
                    <layout class="QHBoxLayout" name="horizontalLayout_21">
                     <item>
                      <widget class="QLabel" name="label_33">
@@ -1037,7 +1037,34 @@
                     </item>
                    </layout>
                   </item>
-                  <item>
+                  <item row="8" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_2">
+                    <item>
+                     <widget class="QLabel" name="mDefaultPathsLabel">
+                      <property name="text">
+                       <string>Default paths</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="mDefaultPathsComboBox"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_24">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="9" column="0">
                    <layout class="QGridLayout" name="gridLayout_31">
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_67">
@@ -1133,8 +1160,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1068</height>
+                <width>617</width>
+                <height>1135</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1672,8 +1699,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>695</height>
+                <width>673</width>
+                <height>575</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1774,7 +1801,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -1837,6 +1864,19 @@
                   <string>Accuracy Warnings</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_37" columnstretch="0,1,2">
+                  <item row="0" column="2">
+                   <spacer name="horizontalSpacer_23">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
                   <item row="0" column="1">
                    <widget class="QgsDoubleSpinBox" name="mCrsAccuracySpin">
                     <property name="toolTip">
@@ -1857,18 +1897,15 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="2">
-                   <spacer name="horizontalSpacer_23">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
+                  <item row="1" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mCrsAccuracyIndicatorCheck">
+                    <property name="toolTip">
+                     <string>If checked, a warning icon will show next to any map layers with CRS accuracy warnings</string>
                     </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
+                    <property name="text">
+                     <string>Show CRS accuracy warnings for layers in project legend</string>
                     </property>
-                   </spacer>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1906,8 +1943,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>596</width>
-                <height>105</height>
+                <width>648</width>
+                <height>118</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -1989,8 +2026,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>637</width>
-                <height>717</height>
+                <width>702</width>
+                <height>895</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2126,25 +2163,8 @@
                   <string>Data Source Handling</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Prompt for sublayers when opening</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>Scan for valid items in the browser dock</string>
-                    </property>
-                   </widget>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
                   </item>
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
@@ -2156,6 +2176,13 @@
                       <string/>
                      </property>
                     </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
                    </widget>
                   </item>
                   <item row="1" column="1">
@@ -2171,13 +2198,30 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Prompt for sublayers when opening</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_29">
                     <property name="text">
                      <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0" colspan="3">
+                   <widget class="QCheckBox" name="mCheckMonitorDirectories">
+                    <property name="text">
+                     <string>Automatically refresh directories in browser dock when their contents change</string>
                     </property>
                    </widget>
                   </item>
@@ -2381,8 +2425,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>719</width>
-                <height>1132</height>
+                <width>772</width>
+                <height>1396</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3186,8 +3230,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>508</width>
-                <height>357</height>
+                <width>523</width>
+                <height>435</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3586,6 +3630,25 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_32">
+                 <property name="title">
+                  <string>DPI</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_381">
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mRespectScreenDpiCheckBox">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If respect screen DPI is activated, symbology on the map canvas will be rendered with appropriate screen DPI. This means that a symbol with 1mm size will be rendered with 1mm size on every screen (provided it is configured correctly at the system).&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;This is only possible since QGIS 3.20.&lt;/p&gt;&lt;p&gt;Any earlier version of QGIS will render symbology on the map canvas smaller on HiDPI screens.&lt;/p&gt;&lt;p&gt;Requires a restart&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Respect screen DPI</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer>
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -3631,8 +3694,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>630</width>
-                <height>686</height>
+                <width>678</width>
+                <height>850</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -4148,8 +4211,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>147</width>
-                <height>251</height>
+                <width>155</width>
+                <height>320</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4328,8 +4391,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>555</width>
-                <height>968</height>
+                <width>608</width>
+                <height>1229</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4407,7 +4470,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </item>
                   <item row="3" column="2">
                    <widget class="QgsDoubleSpinBox" name="mDefaultZValueSpinBox">
-		    <property name="toolTip">
+                    <property name="toolTip">
                      <string>Default Z Value</string>
                     </property>
                     <property name="decimals">
@@ -4426,7 +4489,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </item>
                   <item row="4" column="2">
                    <widget class="QgsDoubleSpinBox" name="mDefaultMValueSpinBox">
-		    <property name="toolTip">
+                    <property name="toolTip">
                      <string>Default Measure Value</string>
                     </property>
                     <property name="decimals">
@@ -5031,8 +5094,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>494</width>
-                <height>539</height>
+                <width>546</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -5312,8 +5375,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
-                <height>419</height>
+                <width>498</width>
+                <height>455</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5584,8 +5647,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>657</width>
-                <height>669</height>
+                <width>712</width>
+                <height>828</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -6065,8 +6128,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </item>
@@ -6328,6 +6391,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptSublayers</tabstop>
+  <tabstop>mCheckMonitorDirectories</tabstop>
   <tabstop>mLocalizedDataPathAddButton</tabstop>
   <tabstop>mLocalizedDataPathRemoveButton</tabstop>
   <tabstop>mLocalizedDataPathUpButton</tabstop>
@@ -6474,6 +6538,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
   <tabstop>mCbEarlyResampling</tabstop>
+  <tabstop>mCrsAccuracySpin</tabstop>
+  <tabstop>mCrsAccuracyIndicatorCheck</tabstop>
+  <tabstop>mLegendSymbolMinimumSizeSpinBox</tabstop>
+  <tabstop>mLegendSymbolMaximumSizeSpinBox</tabstop>
+  <tabstop>mDefaultMValueSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

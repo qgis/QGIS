@@ -22,7 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgssymbol.h"
+class QgsFillSymbol;
 
 /**
  * \ingroup core
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
      * transferred to the renderer. If no \a symbol is specified a default one will be created instead.
      */
     QgsPointCloudExtentRenderer( QgsFillSymbol *symbol SIP_TRANSFER = nullptr );
+    ~QgsPointCloudExtentRenderer() override;
 
     QString type() const override;
     QgsPointCloudRenderer *clone() const override;

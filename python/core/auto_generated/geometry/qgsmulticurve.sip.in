@@ -28,7 +28,7 @@ Multi curve geometry collection.
 %Docstring
 Returns the curve with the specified ``index``.
 
-An IndexError will be raised if no curve with the specified index exists.
+:raises IndexError: if no curve with the specified index exists.
 
 .. versionadded:: 3.16
 %End

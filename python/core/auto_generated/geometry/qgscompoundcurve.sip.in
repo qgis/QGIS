@@ -85,6 +85,8 @@ of the curve.
 
     virtual bool boundingBoxIntersects( const QgsRectangle &rectangle ) const /HoldGIL/;
 
+    virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
+
 
     int nCurves() const /HoldGIL/;
 %Docstring
@@ -123,6 +125,17 @@ Adds a vertex to the end of the geometry.
 %Docstring
 Condenses the curves in this geometry by combining adjacent linestrings a to a single continuous linestring,
 and combining adjacent circularstrings to a single continuous circularstring.
+
+.. versionadded:: 3.20
+%End
+
+    bool toggleCircularAtVertex( QgsVertexId position );
+%Docstring
+Converts the vertex at the given position from/to circular
+
+:return: ``False`` if atVertex does not correspond to a valid vertex
+         on this geometry (including if this geometry is a Point),
+         or if the specified vertex can't be converted (e.g. start/end points).
 
 .. versionadded:: 3.20
 %End

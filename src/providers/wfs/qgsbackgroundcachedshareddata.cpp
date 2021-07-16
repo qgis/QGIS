@@ -742,7 +742,7 @@ const QgsRectangle &QgsBackgroundCachedSharedData::computedExtent() const
 }
 
 //! Called by QgsFeatureDownloaderImpl::run() at the end of the download process.
-void QgsBackgroundCachedSharedData::endOfDownload( bool success, int featureCount,
+void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featureCount,
     bool truncatedResponse,
     bool interrupted,
     const QString &errorMsg )
@@ -1160,7 +1160,7 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   return hash.result().toHex();
 }
 
-void QgsBackgroundCachedSharedData::setFeatureCount( int featureCount, bool featureCountExact )
+void QgsBackgroundCachedSharedData::setFeatureCount( long long featureCount, bool featureCountExact )
 {
   QMutexLocker locker( &mMutex );
   mFeatureCountRequestIssued = true;
@@ -1168,13 +1168,13 @@ void QgsBackgroundCachedSharedData::setFeatureCount( int featureCount, bool feat
   mFeatureCount = featureCount;
 }
 
-int QgsBackgroundCachedSharedData::getFeatureCount( bool issueRequestIfNeeded )
+long long QgsBackgroundCachedSharedData::getFeatureCount( bool issueRequestIfNeeded )
 {
   if ( !mFeatureCountRequestIssued && !mFeatureCountExact &&
        supportsFastFeatureCount() && issueRequestIfNeeded )
   {
     mFeatureCountRequestIssued = true;
-    int featureCount = getFeatureCountFromServer();
+    long long featureCount = getFeatureCountFromServer();
     {
       QMutexLocker locker( &mMutex );
       // Check the return value. Might be -1 in case of error, or might be

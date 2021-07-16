@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
+#include "qgsfillsymbol.h"
 
 class TestQgsLayoutAtlas : public QObject
 {

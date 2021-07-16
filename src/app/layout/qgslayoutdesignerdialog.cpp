@@ -113,7 +113,10 @@ bool QgsLayoutDesignerDialog::sInitializedRegistry = false;
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
   , mDesigner( dialog )
-{}
+{
+  connect( mDesigner, &QgsLayoutDesignerDialog::layoutExported, this, &QgsLayoutDesignerInterface::layoutExported );
+  connect( mDesigner, &QgsLayoutDesignerDialog::mapPreviewRefreshed, this, &QgsLayoutDesignerInterface::mapPreviewRefreshed );
+}
 
 QWidget *QgsAppLayoutDesignerInterface::window()
 {
@@ -245,6 +248,11 @@ void QgsAppLayoutDesignerInterface::activateTool( QgsLayoutDesignerInterface::St
       break;
 
   }
+}
+
+QgsLayoutDesignerInterface::ExportResults *QgsAppLayoutDesignerInterface::lastExportResults() const
+{
+  return mDesigner->lastExportResults().release();
 }
 
 void QgsAppLayoutDesignerInterface::close()
@@ -1010,6 +1018,9 @@ QgsLayoutDesignerDialog::~QgsLayoutDesignerDialog()
     settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksTitle" ), QgsSettings::App );
     settings.remove( QStringLiteral( "LayoutDesigner/hiddenDocksActive" ), QgsSettings::App );
   }
+
+  qDeleteAll( mLastExportLabelingResults );
+  mLastExportLabelingResults.clear();
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -1101,6 +1112,11 @@ QgsLayoutGuideWidget *QgsLayoutDesignerDialog::guideWidget()
 void QgsLayoutDesignerDialog::showGuideDock( bool show )
 {
   mGuideDock->setUserVisible( show );
+}
+
+std::unique_ptr<QgsLayoutDesignerInterface::ExportResults> QgsLayoutDesignerDialog::lastExportResults() const
+{
+  return mLastExportResults ? std::make_unique< QgsLayoutDesignerInterface::ExportResults>( *mLastExportResults ) : nullptr;
 }
 
 QgsLayout *QgsLayoutDesignerDialog::currentLayout()
@@ -1195,6 +1211,13 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     if ( mLayout )
     {
       disconnect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
+      QList< QgsLayoutItemMap * > maps;
+      mLayout->layoutItems( maps );
+      for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+      {
+        disconnect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
+      }
+      disconnect( mLayout, &QgsLayout::itemAdded, this, &QgsLayoutDesignerDialog::onItemAdded );
     }
 
     layout->deselectAll();
@@ -1239,6 +1262,14 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #endif
 
     connect( mLayout, &QgsLayout::backgroundTaskCountChanged, this, &QgsLayoutDesignerDialog::backgroundTaskCountChanged );
+
+    QList< QgsLayoutItemMap * > maps;
+    mLayout->layoutItems( maps );
+    for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+    {
+      connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
+    }
+    connect( mLayout, &QgsLayout::itemAdded, this, &QgsLayoutDesignerDialog::onItemAdded );
 
     createLayoutPropertiesWidget();
     toggleActions( true );
@@ -2097,6 +2128,7 @@ void QgsLayoutDesignerDialog::print()
   QgsLayoutExporter::ExportResult result = exporter.print( *p, printSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2113,7 +2145,7 @@ void QgsLayoutDesignerDialog::print()
       }
       mMessageBar->pushMessage( tr( "Print layout" ),
                                 message,
-                                Qgis::Success );
+                                Qgis::MessageLevel::Success );
       break;
     }
 
@@ -2211,13 +2243,14 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgsLayoutExporter::ExportResult result = exporter.exportToImage( fileNExt.first, settings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
 
     case QgsLayoutExporter::PrintError:
@@ -2324,6 +2357,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QgsLayoutExporter::ExportResult result = exporter.exportToPdf( outputFileName, pdfSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2331,7 +2365,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
     }
 
@@ -2435,6 +2469,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QgsLayoutExporter::ExportResult result = exporter.exportToSvg( outputFileName, svgSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result, &exporter );
 
   switch ( result )
   {
@@ -2442,7 +2477,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
     }
 
@@ -2709,6 +2744,7 @@ void QgsLayoutDesignerDialog::printAtlas()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( printAtlas, *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   switch ( result )
   {
@@ -2725,7 +2761,7 @@ void QgsLayoutDesignerDialog::printAtlas()
       }
       mMessageBar->pushMessage( tr( "Print atlas" ),
                                 message,
-                                Qgis::Success );
+                                Qgis::MessageLevel::Success );
       break;
     }
 
@@ -2914,6 +2950,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, fileName, fileExt, settings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
 
@@ -2922,7 +2959,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export atlas" ),
                                 tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
 
     case QgsLayoutExporter::IteratorError:
@@ -3079,6 +3116,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, filename, svgSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
   switch ( result )
@@ -3087,7 +3125,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     {
       mMessageBar->pushMessage( tr( "Export atlas" ),
                                 tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
     }
 
@@ -3317,6 +3355,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   }
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   cursorOverride.release();
   switch ( result )
@@ -3327,13 +3366,13 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
                                   tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                  Qgis::Success, 0 );
+                                  Qgis::MessageLevel::Success, 0 );
       }
       else
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
                                   tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                  Qgis::Success, 0 );
+                                  Qgis::MessageLevel::Success, 0 );
       }
       break;
     }
@@ -3446,6 +3485,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( static_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
 
   switch ( result )
@@ -3453,7 +3493,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
 
     case QgsLayoutExporter::IteratorError:
@@ -3563,6 +3603,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( static_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
   switch ( result )
   {
@@ -3570,7 +3611,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     {
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
     }
 
@@ -3696,6 +3737,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( static_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
   cursorOverride.release();
 
   switch ( result )
@@ -3704,7 +3746,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     {
       mMessageBar->pushMessage( tr( "Export report" ),
                                 tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
-                                Qgis::Success, 0 );
+                                Qgis::MessageLevel::Success, 0 );
       break;
     }
 
@@ -3804,6 +3846,7 @@ void QgsLayoutDesignerDialog::printReport()
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
+  storeExportResults( result );
 
   switch ( result )
   {
@@ -3820,7 +3863,7 @@ void QgsLayoutDesignerDialog::printReport()
       }
       mMessageBar->pushMessage( tr( "Print report" ),
                                 message,
-                                Qgis::Success );
+                                Qgis::MessageLevel::Success );
       break;
     }
 
@@ -4862,6 +4905,42 @@ void QgsLayoutDesignerDialog::backgroundTaskCountChanged( int total )
       mStatusProgressBar->show();
     }
   }
+}
+
+void QgsLayoutDesignerDialog::onMapPreviewRefreshed()
+{
+  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( sender() );
+  if ( !map )
+    return;
+
+  emit mapPreviewRefreshed( map );
+}
+
+void QgsLayoutDesignerDialog::onItemAdded( QgsLayoutItem *item )
+{
+  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item ) )
+  {
+    connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
+  }
+}
+
+void QgsLayoutDesignerDialog::storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter )
+{
+  mLastExportResults = std::make_unique< QgsLayoutDesignerInterface::ExportResults >();
+  mLastExportResults->result = result;
+
+  if ( exporter )
+  {
+    mLastExportLabelingResults = exporter->takeLabelingResults();
+    mLastExportResults->labelingResults = mLastExportLabelingResults;
+  }
+  else
+  {
+    qDeleteAll( mLastExportLabelingResults );
+    mLastExportLabelingResults.clear();
+  }
+
+  emit layoutExported();
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )

@@ -187,7 +187,10 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     }
     else if ( ( reuseAllLastValues || mLayer->editFormConfig().reuseLastValue( idx ) ) && sLastUsedValues()->contains( mLayer ) && ( *sLastUsedValues() )[ mLayer ].contains( idx ) )
     {
-      initialAttributeValues.insert( idx, ( *sLastUsedValues() )[ mLayer ][idx] );
+      // Only set initial attribute value if it's different from the default clause or we may trigger
+      // unique constraint checks for no reason, see https://github.com/qgis/QGIS/issues/42909
+      if ( mLayer->dataProvider() && mLayer->dataProvider()->defaultValueClause( idx ) != ( *sLastUsedValues() )[ mLayer ][idx] )
+        initialAttributeValues.insert( idx, ( *sLastUsedValues() )[ mLayer ][idx] );
     }
   }
 
@@ -315,4 +318,3 @@ QgsFeature QgsFeatureAction::feature() const
 {
   return mFeature ? *mFeature : QgsFeature();
 }
-

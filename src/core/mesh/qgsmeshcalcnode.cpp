@@ -241,6 +241,11 @@ bool QgsMeshCalcNode::isNonTemporal() const
 
   switch ( mOperator )
   {
+    case QgsMeshCalcNode::opIF:
+      return ( mLeft && mLeft->isNonTemporal() ) &&
+             ( mRight && mRight->isNonTemporal() &&
+               mCondition->isNonTemporal() );
+      break;
     case QgsMeshCalcNode::opPLUS:
     case QgsMeshCalcNode::opMINUS:
     case QgsMeshCalcNode::opMUL:
@@ -255,7 +260,6 @@ bool QgsMeshCalcNode::isNonTemporal() const
     case QgsMeshCalcNode::opAND:
     case QgsMeshCalcNode::opOR:
     case QgsMeshCalcNode::opNOT:
-    case QgsMeshCalcNode::opIF:
     case QgsMeshCalcNode::opSIGN:
     case QgsMeshCalcNode::opMIN:
     case QgsMeshCalcNode::opMAX:

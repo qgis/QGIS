@@ -785,6 +785,29 @@ Clears all cached values from the context.
 .. versionadded:: 2.16
 %End
 
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Attach a ``feedback`` object that can be queried regularly by the expression engine to check
+if expression evaluation should be canceled.
+
+Ownership of ``feedback`` is NOT transferred, and the caller must take care that it exists
+for the lifetime of the expression context.
+
+.. seealso:: :py:func:`feedback`
+
+.. versionadded:: 3.20
+%End
+
+    QgsFeedback *feedback() const;
+%Docstring
+Returns the feedback object that can be queried regularly by the expression to check
+if evaluation should be canceled, if set.
+
+.. seealso:: :py:func:`setFeedback`
+
+.. versionadded:: 3.20
+%End
+
     static const QString EXPR_FIELDS;
     static const QString EXPR_ORIGINAL_VALUE;
     static const QString EXPR_SYMBOL_COLOR;

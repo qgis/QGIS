@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
 #include "qgstextformatwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgscharacterselectordialog.h"
@@ -36,6 +35,10 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgshelp.h"
+#include "qgsmarkersymbol.h"
+#include "qgsfillsymbol.h"
+#include "qgsiconutils.h"
+#include "qgssymbollayerreference.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -187,11 +190,11 @@ void QgsTextFormatWidget::initWidget()
 
   updateAvailableShadowPositions();
 
-  mBackgroundMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
   mBackgroundMarkerSymbolButton->setDialogTitle( tr( "Background Symbol" ) );
   mBackgroundMarkerSymbolButton->registerExpressionContextGenerator( this );
   mBackgroundMarkerSymbolButton->setMapCanvas( mMapCanvas );
-  mBackgroundFillSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mBackgroundFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
   mBackgroundFillSymbolButton->setDialogTitle( tr( "Background Symbol" ) );
   mBackgroundFillSymbolButton->registerExpressionContextGenerator( this );
   mBackgroundFillSymbolButton->setMapCanvas( mMapCanvas );
@@ -478,9 +481,9 @@ void QgsTextFormatWidget::initWidget()
     updateCalloutFrameStatus();
   } );
 
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
-  mGeometryGeneratorType->addItem( QgsLayerItem::iconForWkbType( QgsWkbTypes::Point ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
+  mGeometryGeneratorType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );

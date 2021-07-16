@@ -280,7 +280,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
 #ifndef Q_OS_WIN
   if ( sEditedCount > 0 && !mEditBuffer )
   {
-    return nullptr;
+    return QgsVectorDataProvider::Capabilities();
   }
 #endif
   // for now, only one map may be edited at time
@@ -288,7 +288,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
   {
     return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
   }
-  return nullptr;
+  return QgsVectorDataProvider::Capabilities();
 }
 
 bool QgsGrassProvider::openLayer()
@@ -428,7 +428,7 @@ QgsWkbTypes::Type QgsGrassProvider::wkbType() const
   return mQgisType;
 }
 
-long QgsGrassProvider::featureCount() const
+long long QgsGrassProvider::featureCount() const
 {
   return mNumberFeatures;
 }

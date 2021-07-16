@@ -61,7 +61,7 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
 
 void QgsPointCloudSourceSelect::addButtonClicked()
 {
-  if ( mDataSourceType == QStringLiteral( "file" ) )
+  if ( mDataSourceType == QLatin1String( "file" ) )
   {
     if ( mPath.isEmpty() )
     {
@@ -82,7 +82,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 ).metadata()->key() ) ;
     }
   }
-  else if ( mDataSourceType == QStringLiteral( "remote" ) )
+  else if ( mDataSourceType == QLatin1String( "remote" ) )
   {
     if ( mPath.isEmpty() )
     {
@@ -92,7 +92,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       return;
     }
 
-    if ( !mPath.endsWith( QStringLiteral( "/ept.json" ) ) )
+    if ( !mPath.endsWith( QLatin1String( "/ept.json" ) ) )
     {
       QMessageBox::information( this,
                                 tr( "Add Point Cloud Layers" ),

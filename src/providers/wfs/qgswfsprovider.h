@@ -80,7 +80,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     QgsWkbTypes::Type wkbType() const override;
-    long featureCount() const override;
+    long long featureCount() const override;
 
     QgsFields fields() const override;
 

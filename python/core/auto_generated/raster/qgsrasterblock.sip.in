@@ -64,7 +64,7 @@ This method does not return ``True`` if size is not zero and all values are
 'no data' (null).
 %End
 
-    static int typeSize( int dataType ) /HoldGIL/;
+    static int typeSize( Qgis::DataType dataType ) /HoldGIL/;
 %Docstring
 Returns the size in bytes for the specified ``dataType``.
 %End

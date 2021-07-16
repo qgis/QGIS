@@ -104,6 +104,12 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 
     /**
+     * Returns a vector of indices for use in join based on field names from the join layer's fields.
+     * \since QGIS 3.20
+     */
+    static QVector<int> joinSubsetIndices( const QgsFields &joinLayerFields, const QStringList &joinFieldsSubset );
+
+    /**
      * Returns joins where the field of a target layer is considered as an id.
      * \param field the field of a target layer
      * \returns a list of vector joins

@@ -666,6 +666,39 @@ Returns the coordinate transform from layer's CRS to destination CRS
 :return: transform - may be invalid if the transform is not needed
 %End
 
+    QgsRectangle computeExtentForScale( const QgsPointXY &center, double scale ) const;
+%Docstring
+Compute the extent such that its ``center`` is at the specified
+position (mapped to the destinatonCrs) and the zoom factor corresponds
+to the specified ``scale``
+
+:param center: the center, in map coordinates
+:param scale: the desired zoom factor (the x part of 1:x)
+
+:return: an extent which can be passed to :py:class:`QgsMapCanvas`.setExtent
+
+.. seealso:: :py:func:`computeScaleForExtent`
+
+.. versionadded:: 3.22
+%End
+
+    double computeScaleForExtent( const QgsRectangle &extent ) const;
+%Docstring
+Compute the scale that corresponds to the specified ``extent``
+
+:param extent: the extent, as passed to :py:func:`QgsMapCanvas.setExtent`
+
+:return: the scale denominator
+
+.. seealso:: :py:func:`computeExtentForScale`
+
+.. note::
+
+   This function does not consider any map rotation
+
+.. versionadded:: 3.22
+%End
+
     QgsRectangle fullExtent() const;
 %Docstring
 returns current extent of layer set

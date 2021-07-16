@@ -162,6 +162,20 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 
 void QgsPythonUtilsImpl::init()
 {
+#if defined(PY_MAJOR_VERSION) && defined(PY_MINOR_VERSION) && ((PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION >= 8) || PY_MAJOR_VERSION > 3)
+  PyStatus status;
+  PyPreConfig preconfig;
+  PyPreConfig_InitPythonConfig( &preconfig );
+
+  preconfig.utf8_mode = 1;
+
+  status = Py_PreInitialize( &preconfig );
+  if ( PyStatus_Exception( status ) )
+  {
+    Py_ExitStatusException( status );
+  }
+#endif
+
   // initialize python
   Py_Initialize();
 

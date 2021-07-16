@@ -15,7 +15,7 @@
 
 #include "qgsdiscoverrelationsdialog.h"
 #include "qgsrelationadddlg.h"
-#include "qgsrelationaddpolymorphicdlg.h"
+#include "qgsrelationaddpolymorphicdialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgspolymorphicrelation.h"
@@ -240,7 +240,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 
 void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
 {
-  QgsRelationAddPolymorphicDlg addDlg( false );
+  QgsRelationAddPolymorphicDialog addDlg( false );
 
   if ( addDlg.exec() )
   {
@@ -268,7 +268,7 @@ void QgsRelationManagerDialog::mActionAddPolymorphicRelation_triggered()
 
 void QgsRelationManagerDialog::mActionEditPolymorphicRelation_triggered()
 {
-  QgsRelationAddPolymorphicDlg addDlg( true );
+  QgsRelationAddPolymorphicDialog addDlg( true );
   const QModelIndexList rows = mRelationsTree->selectionModel()->selectedRows();
 
   if ( rows.size() != 1 )

@@ -123,7 +123,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool embedForm() { return mEmbedForm; }
     void setEmbedForm( bool display );
 
-    //! determines if the foreign key is shown in a combox box or a read-only line edit
+    //! determines if the drop-down is enabled
     bool readOnlySelector() { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
@@ -361,7 +361,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QHBoxLayout *mFilterLayout = nullptr;
     QgsCollapsibleGroupBox *mAttributeEditorFrame = nullptr;
     QVBoxLayout *mAttributeEditorLayout = nullptr;
-    QLineEdit *mLineEdit = nullptr;
     QLabel *mInvalidLabel = nullptr;
 
     friend class TestQgsRelationReferenceWidget;

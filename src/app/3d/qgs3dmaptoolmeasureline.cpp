@@ -30,6 +30,7 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmaplayer.h"
 #include "qgs3dmeasuredialog.h"
+#include "qgsrubberband3d.h"
 
 #include "qgs3dmapscenepickhandler.h"
 
@@ -59,6 +60,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
 
   // Update scale if the terrain vertical scale changed
   connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolMeasureLine::onMapSettingsChanged );
+
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -72,6 +74,8 @@ void Qgs3DMapToolMeasureLine::activate()
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 
+  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->map(), mCanvas->cameraController(), mCanvas->scene() ) );
+
   if ( mIsAlreadyActivated )
   {
     restart();
@@ -79,22 +83,6 @@ void Qgs3DMapToolMeasureLine::activate()
   }
   else
   {
-    QgsLineString *measurementLine = new QgsLineString();
-    measurementLine->addZValue();
-
-    QgsFeature measurementFeature( QgsFeatureId( 1 ) );
-    measurementFeature.setGeometry( QgsGeometry( measurementLine ) );
-
-    // Initialize the line layer
-    QString mapCRS = mCanvas->map()->crs().authid();
-    mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
-    QgsProject::instance()->addMapLayer( mMeasurementLayer );
-
-    // Add feature to layer
-    mMeasurementLayer->startEditing();
-    mMeasurementLayer->addFeature( measurementFeature );
-    mMeasurementLayer->commitChanges();
-
     // Set style
     updateSettings();
     mIsAlreadyActivated = true;
@@ -114,6 +102,8 @@ void Qgs3DMapToolMeasureLine::deactivate()
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 
+  mRubberBand.reset();
+
   // Hide dialog
   mDialog->hide();
 }
@@ -128,9 +118,6 @@ void Qgs3DMapToolMeasureLine::onMapSettingsChanged()
   if ( !mIsAlreadyActivated )
     return;
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
-
-  // Update scale if the terrain vertical scale changed
-  connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
 }
 
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
@@ -178,62 +165,17 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
   }
 }
 
-void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
-{
-  if ( !mMeasurementLayer )
-    return;
-  double verticalScale = canvas()->map()->terrainVerticalScale();
-  QgsLineString *line;
-  if ( verticalScale != 1.0 )
-  {
-    QVector<QgsPoint> descaledPoints;
-    QVector<QgsPoint>::const_iterator it;
-    QgsPoint point;
-    for ( it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
-    {
-      point = *it;
-      descaledPoints.append(
-        QgsPoint( it->x(), it->y(), it->z() / verticalScale )
-      );
-    }
-    line = new QgsLineString( descaledPoints );
-  }
-  else
-  {
-    line = new QgsLineString( mPoints );
-  }
-  QgsGeometry lineGeometry( line );
 
-  QgsGeometryMap geometryMap;
-  geometryMap.insert( 1, lineGeometry );
-  mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
-  mMeasurementLayer->reload();
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
-}
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
-  if ( !mMeasurementLayer )
-    return;
-  // Line style
-  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
-  lineSymbol->setRenderAsSimpleLines( true );
-  lineSymbol->setWidth( 4 );
-  lineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
-
-  std::unique_ptr< QgsPhongMaterialSettings > phongMaterial = std::make_unique< QgsPhongMaterialSettings >();
   QgsSettings settings;
   int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
   int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  phongMaterial->setAmbient( QColor( myRed, myGreen, myBlue ) );
-  lineSymbol->setMaterial( phongMaterial.release() );
 
-  // Set renderer
-  QgsVectorLayer3DRenderer *lineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );
-  mMeasurementLayer->setRenderer3D( lineSymbolRenderer );
-  lineSymbolRenderer->setLayer( mMeasurementLayer );
-  mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
+  mRubberBand->setWidth( 3 );
+  mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
 }
 
 void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
@@ -247,16 +189,18 @@ void Qgs3DMapToolMeasureLine::addPoint( const QgsPoint &point )
   QgsPoint addedPoint( point );
 
   mPoints.append( addedPoint );
-  updateMeasurementLayer();
   mDialog->addPoint();
+
+  mRubberBand->addPoint( QgsPoint( point.x(), point.y(), point.z() / canvas()->map()->terrainVerticalScale() ) );
 }
 
 void Qgs3DMapToolMeasureLine::restart()
 {
   mPoints.clear();
   mDone = true;
-  updateMeasurementLayer();
   mDialog->resetTable();
+
+  mRubberBand->reset();
 }
 
 void Qgs3DMapToolMeasureLine::undo()
@@ -274,8 +218,9 @@ void Qgs3DMapToolMeasureLine::undo()
   else
   {
     mPoints.removeLast();
-    updateMeasurementLayer();
     mDialog->removeLastPoint();
+
+    mRubberBand->removeLastPoint();
   }
 }
 

@@ -108,6 +108,11 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
 
     active_layer = parameters[in_place_input_parameter_name]
 
+    # prepare expression context for feature iteration
+    alg_context = context.expressionContext()
+    alg_context.appendScope(active_layer.createExpressionContextScope())
+    context.setExpressionContext(alg_context)
+
     # Run some checks and prepare the layer for in-place execution by:
     # - getting the active layer and checking that it is a vector
     # - making the layer editable if it was not already
@@ -187,6 +192,9 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                 # need a deep copy, because python processFeature implementations may return
                 # a shallow copy from processFeature
                 input_feature = QgsFeature(f)
+
+                context.expressionContext().setFeature(input_feature)
+
                 new_features = alg.processFeature(input_feature, context, feedback)
                 new_features = QgsVectorLayerUtils.makeFeaturesCompatible(new_features, active_layer)
 

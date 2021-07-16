@@ -46,7 +46,7 @@ void QgsServerStaticHandler::handleRequest( const QgsServerApiContext &context )
   filePath += '/' + staticFilePath;
   if ( ! QFile::exists( filePath ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::Info );
+    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
     throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
   }
 

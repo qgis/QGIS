@@ -1,6 +1,7 @@
 {
   "name": "IN",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Returns 1 if value is found within a list of values.",
   "arguments": [
 	{"arg":"a","description":"value"},

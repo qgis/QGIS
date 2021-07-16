@@ -49,8 +49,8 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
     // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
     layerIds.removeOne( layerFeatureA.layer()->id() );
 
-    QgsGeometry geomA = layerFeatureA.geometry();
-    QgsRectangle bboxA = geomA.boundingBox();
+    const QgsGeometry geomA = layerFeatureA.geometry();
+    const QgsRectangle bboxA = geomA.boundingBox();
     std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( geomA.constGet(), mContext->tolerance );
     if ( !geomEngineA->isValid() )
     {
@@ -59,19 +59,20 @@ void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePoo
     }
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
-    QgsWkbTypes::GeometryType geomType = geomA.type();
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, {geomType}, mContext );
+    const QgsWkbTypes::GeometryType geomType = geomA.type();
+    const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, {geomType}, mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
-      // > : only report overlaps within same layer once
+      // only report overlaps within same layer once
       if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
       {
         continue;
       }
+
+      const QgsGeometry geomB = layerFeatureB.geometry();
       QString errMsg;
-      QgsGeometry geomB = layerFeatureB.geometry();
-      std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngineA->symDifference( geomB.constGet(), &errMsg ) );
-      if ( errMsg.isEmpty() && ( !diffGeom || diffGeom->isEmpty() ) )
+      const bool equal = geomEngineA->isEqual( geomB.constGet(), &errMsg );
+      if ( equal && errMsg.isEmpty() )
       {
         duplicates[layerFeatureB.layer()->id()].append( layerFeatureB.feature().id() );
       }

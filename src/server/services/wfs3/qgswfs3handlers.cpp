@@ -130,7 +130,7 @@ void QgsWfs3APIHandler::handleRequest( const QgsServerApiContext &context ) cons
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not find schema.json in %1, please check your server configuration" ).arg( f.fileName() ), QStringLiteral( "Server" ), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Could not find schema.json in %1, please check your server configuration" ).arg( f.fileName() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     throw QgsServerApiInternalServerError( QStringLiteral( "Could not find schema.json" ) );
   }
 
@@ -1900,7 +1900,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
 
       if ( changedAttributes.isEmpty() && changedGeometries.isEmpty() )
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Changeset is empty: no features have been modified" ), QStringLiteral( "Server" ), Qgis::Info );
+        QgsMessageLog::logMessage( QStringLiteral( "Changeset is empty: no features have been modified" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
       }
 
       if ( ! mapLayer->dataProvider()->changeFeatures( changedAttributes, changedGeometries ) )

@@ -172,6 +172,16 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
       value = nullValue;
     else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
       value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
+    else if ( var.type() == QVariant::List || var.type() == QVariant::StringList )
+    {
+      const QVariantList list = var.toList();
+      for ( const QVariant &val : list )
+      {
+        if ( !value.isEmpty() )
+          value.append( ", " );
+        value.append( val.isNull() ? nullValue : val.toString() );
+      }
+    }
     else
       value = var.toString();
 
@@ -237,7 +247,7 @@ void QgsQueryBuilder::test()
 
   if ( mLayer->setSubsetString( mTxtSql->text() ) )
   {
-    const long featureCount { mLayer->featureCount() };
+    const long long featureCount { mLayer->featureCount() };
     // Check for errors
     if ( featureCount < 0 )
     {
@@ -249,7 +259,7 @@ void QgsQueryBuilder::test()
     {
       QMessageBox::information( this,
                                 tr( "Query Result" ),
-                                tr( "The where clause returned %n row(s).", "returned test rows", featureCount ) );
+                                tr( "The where clause returned %1 row(s).", "returned test rows" ). arg( featureCount ) );
     }
   }
   else if ( mLayer->dataProvider()->hasErrors() )

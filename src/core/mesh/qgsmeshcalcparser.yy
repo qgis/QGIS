@@ -29,15 +29,15 @@
   QgsMeshCalcNode* parseMeshCalcString(const QString& str, QString& parserErrorMsg);
 
   //! from lex.yy.c
-  extern int meshlex();
-  extern char* meshtext;
+  extern int mesh_lex();
+  extern char* mesh_text;
   extern void set_mesh_input_buffer(const char* buffer);
 
   //! variable where the parser error will be stored
   QString rMeshParserErrorMsg;
 
   //! sets gParserErrorMsg
-  void mesherror(const char* msg);
+  void mesh_error(const char* msg);
 
   //! temporary list for nodes without parent (if parsing fails these nodes are removed)
   QList<QgsMeshCalcNode*> gMeshTmpNodes;
@@ -102,7 +102,7 @@ mesh_exp:
   | '+' mesh_exp %prec UMINUS { $$ = $2; }
   | '-' mesh_exp %prec UMINUS { $$ = new QgsMeshCalcNode( QgsMeshCalcNode::opSIGN, $2, 0 ); joinTmpNodes($$, $2, 0, 0); }
   | NUMBER { $$ = new QgsMeshCalcNode($1); addToTmpNodes($$); }
-  | DATASET_REF { $$ = new QgsMeshCalcNode(QString::fromUtf8(meshtext)); addToTmpNodes($$); }
+  | DATASET_REF { $$ = new QgsMeshCalcNode(QString::fromUtf8(mesh_text)); addToTmpNodes($$); }
   | NODATA { $$ = new QgsMeshCalcNode(); addToTmpNodes($$); }
 ;
 
@@ -141,7 +141,7 @@ QgsMeshCalcNode* localParseMeshCalcString(const QString& str, QString& parserErr
   Q_ASSERT(gMeshTmpNodes.count() == 0);
 
   set_mesh_input_buffer(str.toUtf8().constData());
-  int res = meshparse();
+  int res = mesh_parse();
 
   // list should be empty when parsing was OK
   if (res == 0) // success?
@@ -159,7 +159,7 @@ QgsMeshCalcNode* localParseMeshCalcString(const QString& str, QString& parserErr
   }
 }
 
-void mesherror(const char* msg)
+void mesh_error(const char* msg)
 {
   rMeshParserErrorMsg = msg;
 }

@@ -43,12 +43,14 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      * \param storeSymbolFids If TRUE will store the feature ids (fids), otherwise will only count the number of features per symbol. Default FALSE.
      */
     QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), bool storeSymbolFids = false );
-
+    ~QgsVectorLayerFeatureCounter() override;
 
     /**
      * Calculates the feature count and Ids per symbol
      */
     bool run() override;
+
+    void cancel() override;
 
     /**
      * Returns the count for each symbol. Only valid after the symbolsCounted()
@@ -56,13 +58,13 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      *
      * \note Not available in Python bindings.
      */
-    QHash<QString, long> symbolFeatureCountMap() const SIP_SKIP;
+    QHash<QString, long long> symbolFeatureCountMap() const SIP_SKIP;
 
     /**
      * Returns the feature count for a particular \a legendKey.
      * If the key has not been found, -1 will be returned.
      */
-    long featureCount( const QString &legendKey ) const;
+    long long featureCount( const QString &legendKey ) const;
 
     /**
      * Returns the QgsFeatureIds for each symbol. Only valid after the symbolsCounted()
@@ -93,10 +95,11 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
     QgsExpressionContext mExpressionContext;
-    QHash<QString, long> mSymbolFeatureCountMap;
+    QHash<QString, long long> mSymbolFeatureCountMap;
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
+    std::unique_ptr< QgsFeedback > mFeedback;
     bool mWithFids = false;
-    int mFeatureCount;
+    long mFeatureCount = 0;
 
 };
 

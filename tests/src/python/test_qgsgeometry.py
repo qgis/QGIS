@@ -441,6 +441,100 @@ class TestQgsGeometry(unittest.TestCase):
         with self.assertRaises(IndexError):
             del ls[-3]
 
+    def testQgsLineStringPythonConstructors(self):
+        """
+        Test various constructors for QgsLineString in Python
+        """
+        line = QgsLineString()
+        self.assertEqual(line.asWkt(), 'LineString EMPTY')
+
+        # empty array
+        line = QgsLineString([])
+        self.assertEqual(line.asWkt(), 'LineString EMPTY')
+
+        # invalid array
+        with self.assertRaises(TypeError):
+            line = QgsLineString([1, 2, 3])
+
+        # array of QgsPoint
+        line = QgsLineString([QgsPoint(1, 2), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 11 12)')
+
+        # array of QgsPoint with Z
+        line = QgsLineString([QgsPoint(1, 2, 11), QgsPoint(3, 4, 13), QgsPoint(11, 12, 14)])
+        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 13, 11 12 14)')
+
+        # array of QgsPoint with Z, only first has z
+        line = QgsLineString([QgsPoint(1, 2, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 nan, 11 12 nan)')
+
+        # array of QgsPoint with M
+        line = QgsLineString([QgsPoint(1, 2, None, 11), QgsPoint(3, 4, None, 13), QgsPoint(11, 12, None, 14)])
+        self.assertEqual(line.asWkt(), 'LineStringM (1 2 11, 3 4 13, 11 12 14)')
+
+        # array of QgsPoint with M, only first has M
+        line = QgsLineString([QgsPoint(1, 2, None, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(line.asWkt(), 'LineStringM (1 2 11, 3 4 nan, 11 12 nan)')
+
+        # array of QgsPoint with ZM
+        line = QgsLineString([QgsPoint(1, 2, 22, 11), QgsPoint(3, 4, 23, 13), QgsPoint(11, 12, 24, 14)])
+        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 22 11, 3 4 23 13, 11 12 24 14)')
+
+        # array of QgsPoint with ZM, only first has ZM
+        line = QgsLineString([QgsPoint(1, 2, 33, 11), QgsPoint(3, 4), QgsPoint(11, 12)])
+        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 33 11, 3 4 nan nan, 11 12 nan nan)')
+
+        # array of QgsPointXY
+        line = QgsLineString([QgsPointXY(1, 2), QgsPointXY(3, 4), QgsPointXY(11, 12)])
+        self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 11 12)')
+
+        # array of array of bad values
+        with self.assertRaises(TypeError):
+            line = QgsLineString([[QgsPolygon(), QgsPoint()]])
+
+        with self.assertRaises(TypeError):
+            line = QgsLineString([[1, 2], [QgsPolygon(), QgsPoint()]])
+
+        # array of array of 1d floats
+        with self.assertRaises(TypeError):
+            line = QgsLineString([[1], [3], [5]])
+
+        # array of array of floats
+        line = QgsLineString([[1, 2], [3, 4], [5, 6]])
+        self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 5 6)')
+
+        # tuple of tuple of floats
+        line = QgsLineString(((1, 2), (3, 4), (5, 6)))
+        self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 5 6)')
+
+        # sequence
+        line = QgsLineString([[c + 10, c + 11] for c in range(5)])
+        self.assertEqual(line.asWkt(), 'LineString (10 11, 11 12, 12 13, 13 14, 14 15)')
+
+        # array of array of 3d floats
+        line = QgsLineString([[1, 2, 11], [3, 4, 12], [5, 6, 13]])
+        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 12, 5 6 13)')
+
+        # array of array of inconsistent 3d floats
+        line = QgsLineString([[1, 2, 11], [3, 4], [5, 6]])
+        self.assertEqual(line.asWkt(), 'LineStringZ (1 2 11, 3 4 nan, 5 6 nan)')
+
+        # array of array of 4d floats
+        line = QgsLineString([[1, 2, 11, 21], [3, 4, 12, 22], [5, 6, 13, 23]])
+        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 11 21, 3 4 12 22, 5 6 13 23)')
+
+        # array of array of inconsistent 4d floats
+        line = QgsLineString([[1, 2, 11, 21], [3, 4, 12], [5, 6]])
+        self.assertEqual(line.asWkt(), 'LineStringZM (1 2 11 21, 3 4 12 nan, 5 6 nan nan)')
+
+        # array of array of 5 floats
+        with self.assertRaises(TypeError):
+            line = QgsLineString([[1, 2, 11, 21, 22], [3, 4, 12, 22, 23], [5, 6, 13, 23, 24]])
+
+        # mixed array, because hey, why not?? :D
+        line = QgsLineString([QgsPoint(1, 2), QgsPointXY(3, 4), [5, 6], (7, 8)])
+        self.assertEqual(line.asWkt(), 'LineString (1 2, 3 4, 5 6, 7 8)')
+
     def testGeometryCollectionPythonAdditions(self):
         """
         Tests Python specific additions to the QgsGeometryCollection API
@@ -4459,6 +4553,36 @@ class TestQgsGeometry(unittest.TestCase):
         expected_wkt = "CurvePolygon (CompoundCurve (CircularString (0 0, 1 1, 2 0),(2 0, 0 0)))"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
+    def testConvertVertex(self):
+
+        # WKT BEFORE -> WKT AFTER A CONVERT ON POINT AT 10,10
+        test_setup = {
+            # Curve
+            'LINESTRING(0 0, 10 0, 10 10, 0 10, 0 0)': 'COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0))',
+            'COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0))': 'COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0))',
+            'COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0))': 'COMPOUNDCURVE((0 0, 10 0, 10 10, 0 10, 0 0))',
+
+            # Multicurve
+            'MULTICURVE(LINESTRING(0 0, 10 0, 10 10, 0 10, 0 0), LINESTRING(5 15, 10 20, 0 20, 5 15))': 'MULTICURVE(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), LINESTRING(5 15, 10 20, 0 20, 5 15))',
+            'MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING(5 15, 10 20, 0 20, 5 15))': 'MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING(5 15, 10 20, 0 20, 5 15))',
+            'MULTICURVE(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), LINESTRING(5 15, 10 20, 0 20, 5 15))': 'MULTICURVE(COMPOUNDCURVE((0 0, 10 0, 10 10, 0 10, 0 0)), LINESTRING(5 15, 10 20, 0 20, 5 15))',
+
+            # Polygon
+            'CURVEPOLYGON(LINESTRING(0 0, 10 0, 10 10, 0 10, 0 0), LINESTRING(3 3, 7 3, 7 7, 3 7, 3 3))': 'CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), LINESTRING(3 3, 7 3, 7 7, 3 7, 3 3))',
+            'CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE(CIRCULARSTRING(3 3, 7 3, 7 7, 3 7, 3 3)))': 'CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE(CIRCULARSTRING(3 3, 7 3, 7 7, 3 7, 3 3)))',
+            'CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), COMPOUNDCURVE((3 3, 7 3), CIRCULARSTRING(7 3, 7 7, 3 7), (3 7, 3 3)))': 'CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE((3 3, 7 3), CIRCULARSTRING(7 3, 7 7, 3 7), (3 7, 3 3)))',
+
+            # Multipolygon
+            'MULTISURFACE(CURVEPOLYGON(LINESTRING(0 0, 10 0, 10 10, 0 10, 0 0), LINESTRING(3 3, 7 3, 7 7, 3 7, 3 3)), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))': 'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), LINESTRING(3 3, 7 3, 7 7, 3 7, 3 3)), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))',
+            'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE(CIRCULARSTRING(3 3, 7 3, 7 7, 3 7, 3 3))), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))': 'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE(CIRCULARSTRING(3 3, 7 3, 7 7, 3 7, 3 3))), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))',
+            'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0), CIRCULARSTRING(10 0, 10 10, 0 10), (0 10, 0 0)), COMPOUNDCURVE((3 3, 7 3), CIRCULARSTRING(7 3, 7 7, 3 7), (3 7, 3 3))), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))': 'MULTISURFACE(CURVEPOLYGON(COMPOUNDCURVE((0 0, 10 0, 10 10, 0 10, 0 0)), COMPOUNDCURVE((3 3, 7 3), CIRCULARSTRING(7 3, 7 7, 3 7), (3 7, 3 3))), CURVEPOLYGON(LINESTRING(5 15, 10 20, 0 20, 5 15)))',
+        }
+
+        for wkt_before, wkt_expected in test_setup.items():
+            geom = QgsGeometry.fromWkt(wkt_before)
+            geom.toggleCircularAtVertex(geom.closestVertex(QgsPointXY(10, 10))[1])
+            self.assertTrue(QgsGeometry.equals(geom, QgsGeometry.fromWkt(wkt_expected)), f'toggleCircularAtVertex() did not create expected geometry.\nconverted wkt : {geom.asWkt()}\nexpected wkt :  {wkt_expected}\ninput wkt :     {wkt_before}).')
+
     def testSingleSidedBuffer(self):
 
         wkt = "LineString( 0 0, 10 0)"
@@ -5613,8 +5737,11 @@ class TestQgsGeometry(unittest.TestCase):
             ["LINESTRING(-13151357.927248 3913656.64539871,-13151419.0845266 3913664.12016378,-13151441.323537 3913666.61175286,-13151456.8908442 3913666.61175286,-13151476.9059536 3913666.61175286,-13151496.921063 3913666.61175287,-13151521.3839744 3913666.61175287,-13151591.4368571 3913665.36595828)",
              "CompoundCurve ((-13151357.92724799923598766 3913656.64539870992302895, -13151419.08452660031616688 3913664.12016378017142415, -13151441.32353699952363968 3913666.61175285978242755, -13151456.8908441998064518 3913666.61175285978242755, -13151476.90595359914004803 3913666.61175285978242755, -13151496.92106300033628941 3913666.61175287002697587, -13151521.38397439941763878 3913666.61175287002697587, -13151591.43685710057616234 3913665.36595827993005514))", 0.000001, 0.0000001],
             ["Point( 1 2 )", "Point( 1 2 )", 0.00001, 0.00001],
-            ["MultiPoint( 1 2, 3 4 )", "MultiPoint( (1 2 ), (3 4 ))", 0.00001, 0.00001]
-
+            ["MultiPoint( 1 2, 3 4 )", "MultiPoint( (1 2 ), (3 4 ))", 0.00001, 0.00001],
+            # A polygon converts to curve
+            ["POLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))", "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001, 0.00000001],
+            # The same polygon, even if already CURVEPOLYGON, still converts to curve
+            ["CURVEPOLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))", "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001, 0.00000001],
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])

@@ -30,11 +30,11 @@ void QgsDb2DataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
 
-    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), menu );
     connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
     menu->addAction( actionSaveServers );
 
-    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), menu );
     connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
     menu->addAction( actionLoadServers );
   }

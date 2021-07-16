@@ -975,15 +975,15 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
     table += " WHERE " + mSqlWhereClause;
   }
 
+  // This is tricky: in case of SQL query layers we have a generated uid in the form "qgis_generated_uid_%1_" which cannot be quoted as identifier.
+
   QString sql = QString( "SELECT (SELECT count(distinct %1) FROM %2)-(SELECT count(%1) FROM %2) FROM dual" )
-                .arg( quotedIdentifier( colName ) )
-                .arg( mQuery );
+                .arg( colName.startsWith( QStringLiteral( "qgis_generated_uid_" ) ) ? colName : quotedIdentifier( colName ), mQuery );
 
   if ( !exec( qry, sql, QVariantList() ) || !qry.next() )
   {
     QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                               .arg( qry.lastError().text() )
-                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                               .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
     return false;
   }
 
@@ -1002,8 +1002,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     // get the field name
     QgsField fld = field( index );
     QString sql = QString( "SELECT min(%1) FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
-                  .arg( mQuery );
+                  .arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1015,8 +1014,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QVariant( QString() );
     }
 
@@ -1046,8 +1044,7 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
     // get the field name
     QgsField fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
-                  .arg( mQuery );
+                  .arg( quotedIdentifier( fld.name() ), mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -1067,8 +1064,7 @@ QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QSet<QVariant>();
     }
 
@@ -1110,8 +1106,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     if ( !exec( qry, sql, QVariantList() ) )
     {
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
-                                 .arg( qry.lastError().text() )
-                                 .arg( qry.lastQuery() ), tr( "Oracle" ) );
+                                 .arg( qry.lastError().text(), qry.lastQuery() ), tr( "Oracle" ) );
       return QVariant( QString() );
     }
 
@@ -1266,7 +1261,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         defaultValues << defaultValueClause( idx );
       }
 
-      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys ).arg( mQuery ) ) )
+      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys, mQuery ) ) )
       {
         throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
       }
@@ -1451,7 +1446,7 @@ bool QgsOracleProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       QVariantList args;
       QString sql = QString( "DELETE FROM %1 WHERE %2" )
-                    .arg( mQuery ).arg( whereClause( *it, args ) );
+                    .arg( mQuery, whereClause( *it, args ) );
       QgsDebugMsgLevel( "delete sql: " + sql, 2 );
 
       if ( !exec( qry, sql, args ) )
@@ -1522,9 +1517,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       }
 
       QString sql = QString( "ALTER TABLE %1 ADD %2 %3" )
-                    .arg( mQuery )
-                    .arg( quotedIdentifier( iter->name() ) )
-                    .arg( type );
+                    .arg( mQuery, quotedIdentifier( iter->name() ), type );
       QgsDebugMsgLevel( sql, 2 );
 
       if ( !exec( qry, sql, QVariantList() ) )
@@ -1533,8 +1526,7 @@ bool QgsOracleProvider::addAttributes( const QList<QgsField> &attributes )
       if ( !iter->comment().isEmpty() )
       {
         sql = QString( "COMMENT ON COLUMN %1.%2 IS ?" )
-              .arg( mQuery )
-              .arg( quotedIdentifier( iter->name() ) );
+              .arg( mQuery, quotedIdentifier( iter->name() ) );
         if ( !exec( qry, sql, QVariantList() << iter->comment() ) )
           throw OracleException( tr( "Setting comment on %1 failed" ).arg( iter->name() ), qry );
       }
@@ -1597,8 +1589,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
       QgsField fld = mAttributeFields.at( id );
 
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
-                    .arg( mQuery )
-                    .arg( quotedIdentifier( fld.name() ) );
+                    .arg( mQuery, quotedIdentifier( fld.name() ) );
 
       //send sql statement and do error handling
       if ( !exec( qry, sql, QVariantList() ) )
@@ -1816,7 +1807,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
         }
       }
 
-      for ( const auto &arg : args )
+      for ( const auto &arg : std::as_const( args ) )
         qry.addBindValue( arg );
 
       if ( !qry.exec() )
@@ -2387,7 +2378,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 /**
  * Returns the feature count
  */
-long QgsOracleProvider::featureCount() const
+long long QgsOracleProvider::featureCount() const
 {
   QgsOracleConn *conn = connectionRO();
   if ( mFeaturesCounted >= 0 || !conn )
@@ -2418,7 +2409,7 @@ long QgsOracleProvider::featureCount() const
   QSqlQuery qry( *conn );
   if ( exec( qry, sql, args ) && qry.next() )
   {
-    mFeaturesCounted = qry.value( 0 ).toInt();
+    mFeaturesCounted = qry.value( 0 ).toLongLong();
   }
   qry.finish();
 
@@ -2633,7 +2624,7 @@ bool QgsOracleProvider::getGeometryDetails()
       // no data - so take what's requested
       if ( mRequestedGeomType == QgsWkbTypes::Unknown )
       {
-        QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn ).arg( mQuery ) );
+        QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn, mQuery ) );
       }
 
       detectedType = QgsWkbTypes::Unknown;
@@ -2821,7 +2812,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
   return true;
 }
 
-QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
+Qgis::VectorExportResult QgsOracleProvider::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
@@ -2845,7 +2836,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( !conn )
   {
     errorMessage = QObject::tr( "Connection to database failed" );
-    return QgsVectorLayerExporter::ErrConnectionFailed;
+    return Qgis::VectorExportResult::ErrorConnectionFailed;
   }
 
   if ( ownerName.isEmpty() )
@@ -2856,7 +2847,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( ownerName.isEmpty() )
   {
     errorMessage = QObject::tr( "No owner name found" );
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QString tableName = dsUri.table();
@@ -2874,7 +2865,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( geometryColumn.isEmpty() && fields.isEmpty() )
   {
     errorMessage = QObject::tr( "Cannot create a table with no columns" );
-    return QgsVectorLayerExporter::ErrCreateDataSource;
+    return Qgis::VectorExportResult::ErrorCreatingDataSource;
   }
 
   // get the pk's name and type
@@ -3001,7 +2992,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
     conn->disconnect();
 
-    return QgsVectorLayerExporter::ErrCreateLayer;
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
   conn->disconnect();
@@ -3019,7 +3010,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
   if ( !provider->isValid() )
   {
     errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( ownerTableName );
-    return QgsVectorLayerExporter::ErrInvalidLayer;
+    return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
   QgsDebugMsgLevel( QStringLiteral( "layer loaded" ), 2 );
@@ -3058,7 +3049,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
         if ( j == 3 )
         {
           errorMessage = QObject::tr( "Field name clash found (%1 not remappable)" ).arg( fld.name() );
-          return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+          return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
         }
       }
 
@@ -3091,7 +3082,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
       if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && ! convertField( fld ) )
       {
         errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
-        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
+        return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Field #%1 name %2 type %3 typename %4 width %5 precision %6" )
@@ -3106,7 +3097,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     if ( !provider->addAttributes( flist ) )
     {
       errorMessage = QObject::tr( "Creation of fields failed" );
-      return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+      return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
     QgsDebugMsgLevel( QStringLiteral( "Done creating fields" ), 2 );
@@ -3120,10 +3111,10 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
        && !provider->deleteAttributes( QgsAttributeIds { provider->fields().indexOf( fakeColumn ) } ) )
   {
     errorMessage = QObject::tr( "Remove of temporary column '%1' failed" ).arg( fakeColumn );
-    return QgsVectorLayerExporter::ErrAttributeCreationFailed;
+    return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
   }
 
-  return QgsVectorLayerExporter::NoError;
+  return Qgis::VectorExportResult::Success;
 }
 
 void QgsOracleProvider::insertGeomMetadata( QgsOracleConn *conn, const QString &tableName, const QString &geometryColumn, const QgsCoordinateReferenceSystem &srs )
@@ -3295,7 +3286,7 @@ QgsTransaction *QgsOracleProviderMetadata::createTransaction( const QString &con
 
 // ---------------------------------------------------------------------------
 
-QgsVectorLayerExporter::ExportError QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
+Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,

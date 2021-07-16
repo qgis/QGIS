@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <memory>
 
+class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
@@ -83,6 +84,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \note Not available in Python bindings
      */
     SIP_SKIP static QgsNative *nativePlatformInterface();
+
+    /**
+     * Returns the gui's settings registry, used for managing gui settings.
+     * \since QGIS 3.22
+     */
+    static QgsSettingsRegistryGui *settingsRegistryGui() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
@@ -261,6 +268,7 @@ class GUI_EXPORT QgsGui : public QObject
 
     QgsGui();
 
+    QgsSettingsRegistryGui *mSettingsRegistryGui = nullptr;
     QgsProviderGuiRegistry *mProviderGuiRegistry = nullptr;
     QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;

@@ -26,7 +26,6 @@
 #include "ui_qgspropertygenericnumericassistantwidget.h"
 #include "qgsproperty.h"
 #include "qgslayertreegroup.h"
-#include "qgssymbol.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgis_gui.h"
 #include <QStandardItemModel>

@@ -242,6 +242,21 @@ class CORE_EXPORT QgsProperty
     };
 
     /**
+     * Convert a map of QgsProperty to a map of QVariant
+     * This is useful to save a map of properties
+     * \since QGIS 3.20
+     */
+    static QVariantMap propertyMapToVariantMap( const QMap<QString, QgsProperty> &propertyMap );
+
+    /**
+     * Convert a map of QVariant to a map of QgsProperty
+     * This is useful to restore a map of properties.
+     * The properties are created using QgsProperty::loadVariant
+     * \since QGIS 3.20
+     */
+    static QMap<QString, QgsProperty> variantMapToPropertyMap( const QVariantMap &variantMap );
+
+    /**
      * Constructor for a QgsProperty. The property will be set to an InvalidProperty type.
      */
     QgsProperty();

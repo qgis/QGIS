@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaskidprovider.h"
+#include "qgssymbollayerreference.h"
 
 int QgsMaskIdProvider::insertLabelLayer( const QString &layerId, const QString &ruleId, const QSet<QgsSymbolLayerReference> &maskedSymbolLayers )
 {

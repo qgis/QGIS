@@ -89,6 +89,17 @@ Returns the type of mesh elements that are indexed
 .. versionadded:: 3.14
 %End
 
+    void addFace( int faceIndex, const QgsMesh &mesh );
+%Docstring
+Adds a face with ``faceIndex`` from the ``mesh`` in the spatial index
+%End
+
+    void removeFace( int faceIndex, const QgsMesh &mesh );
+%Docstring
+Removes a face with ``faceIndex`` from the ``mesh`` in the spatial index
+%End
+
+
 };
 
 /************************************************************************

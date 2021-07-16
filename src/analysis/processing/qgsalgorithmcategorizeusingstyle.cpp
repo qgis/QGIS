@@ -224,9 +224,9 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
 
-  const QgsSymbol::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
-                                     : mLayerGeometryType == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
-                                     : QgsSymbol::Fill;
+  const Qgis::SymbolType type = mLayerGeometryType == QgsWkbTypes::PointGeometry ? Qgis::SymbolType::Marker
+                                : mLayerGeometryType == QgsWkbTypes::LineGeometry ? Qgis::SymbolType::Line
+                                : Qgis::SymbolType::Fill;
 
   QVariantList unmatchedCategories;
   QStringList unmatchedSymbols;

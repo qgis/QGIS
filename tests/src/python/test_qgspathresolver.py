@@ -157,6 +157,43 @@ class TestQgsPathResolver(unittest.TestCase):
         self.assertEqual(resolver.readPath('testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
         os.chdir(curdir)
 
+    def __test__path_writer(self, path):
+        if path.startswith(TEST_DATA_DIR):
+            return os.path.join("@TEST_DATA_DIR@", os.path.basename(path))
+        return path
+
+    def __test_path_reader(self, path):
+        if path.startswith("@TEST_DATA_DIR@"):
+            return os.path.join(TEST_DATA_DIR, os.path.basename(path))
+        return path
+
+    def testPathWriter(self):
+        readerId = QgsPathResolver.setPathPreprocessor(self.__test_path_reader)
+        writerId = QgsPathResolver.setPathWriter(self.__test__path_writer)
+
+        lines_shp_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+
+        lines_layer = QgsVectorLayer(lines_shp_path, 'Lines', 'ogr')
+        self.assertTrue(lines_layer.isValid())
+        p = QgsProject()
+        p.addMapLayer(lines_layer)
+        # save project to a temporary file
+        temp_path = tempfile.mkdtemp()
+        temp_project_path = os.path.join(temp_path, 'temp.qgs')
+        self.assertTrue(p.write(temp_project_path))
+
+        with open(temp_project_path) as f:
+            self.assertTrue("@TEST_DATA_DIR@" in f.read())
+
+        p2 = QgsProject()
+        self.assertTrue(p2.read(temp_project_path))
+        l = p2.mapLayersByName('Lines')[0]
+        self.assertEqual(l.isValid(), True)
+        self.assertEqual(l.source(), lines_shp_path)
+
+        QgsPathResolver.removePathPreprocessor(readerId)
+        QgsPathResolver.removePathWriter(writerId)
+
 
 if __name__ == '__main__':
     unittest.main()

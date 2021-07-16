@@ -16,7 +16,6 @@
 
 #include "qgsmimedatautils.h"
 
-#include "qgsdataitem.h"
 #include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgspluginlayer.h"

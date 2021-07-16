@@ -24,6 +24,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractproviderconnection.h"
+#include "qgsdataitem.h"
 
 class TestQgsNewDatabaseTableNameWidget: public QObject
 {
@@ -80,7 +81,7 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
                                  true,
                                  m,
                                  errCause,
-                                 &options ) == QgsVectorLayerExporter::ExportError::NoError );
+                                 &options ) == Qgis::VectorExportResult::Success );
   QVERIFY( errCause.isEmpty() );
   mGpkgConn.reset( md->createConnection( mDir.filePath( QStringLiteral( "test.gpkg" ) ), { } ) );
   md->saveConnection( mGpkgConn.get(), QStringLiteral( "GPKG_1" ) );

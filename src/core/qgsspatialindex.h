@@ -243,10 +243,11 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 #else
 
     /**
-     * Returns the stored geometry for the indexed feature with matching \a id. A KeyError will be raised if no
-     * geometry with the specified feature id exists in the index.
+     * Returns the stored geometry for the indexed feature with matching \a id.
      *
      * Geometry is only stored if the QgsSpatialIndex was created with the FlagStoreFeatureGeometries flag.
+     *
+     * \throws KeyError if no geometry with the specified feature id exists in the index.
      *
      * \since QGIS 3.6
      */

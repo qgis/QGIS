@@ -1,6 +1,7 @@
 {
   "name": "||",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Joins two values together into a string.<br><br>If one of the values is NULL the result will be NULL. See the CONCAT function for a different behavior.",
   "arguments": [
         { "arg": "a", "description": "value" },

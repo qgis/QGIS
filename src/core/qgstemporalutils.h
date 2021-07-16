@@ -65,9 +65,10 @@ class CORE_EXPORT QgsTimeDuration
              !hours && !minutes && !seconds;
     }
 
+    // TODO c++20 - replace with = default
     bool operator==( const QgsTimeDuration &other ) const
     {
-      return years == other.years && months == other.months &&
+      return years == other.years && months == other.months && weeks == other.weeks &&
              days == other.days && hours == other.hours &&
              minutes == other.minutes && seconds == other.seconds;
     }
@@ -208,7 +209,7 @@ class CORE_EXPORT QgsTemporalUtils
      *
      * \since QGIS 3.18
      */
-    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval interval );
+    static QDateTime calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval );
 
     /**
      * Calculates a complete list of datetimes between \a start and \a end, using the specified ISO8601 \a duration string (eg "PT12H").

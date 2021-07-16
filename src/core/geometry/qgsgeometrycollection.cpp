@@ -1020,6 +1020,14 @@ QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
   return newCollection.release();
 }
 
+const QgsAbstractGeometry *QgsGeometryCollection::simplifiedTypeRef() const
+{
+  if ( mGeometries.size() == 1 )
+    return mGeometries.at( 0 )->simplifiedTypeRef();
+  else
+    return this;
+}
+
 bool QgsGeometryCollection::transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback )
 {
   if ( !transformer )

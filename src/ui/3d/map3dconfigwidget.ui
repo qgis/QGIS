@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
+                <width>709</width>
                 <height>604</height>
                </rect>
               </property>
@@ -226,6 +226,12 @@
                 <widget class="QGroupBox" name="groupTerrain">
                  <property name="title">
                   <string>Terrain</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout1">
                   <item row="3" column="0">
@@ -410,8 +416,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
-                <height>604</height>
+                <width>77</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -494,8 +500,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
-                <height>604</height>
+                <width>149</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -584,8 +590,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
-                <height>604</height>
+                <width>234</width>
+                <height>220</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -724,7 +730,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>696</width>
+                <width>305</width>
                 <height>661</height>
                </rect>
               </property>
@@ -1041,14 +1047,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>

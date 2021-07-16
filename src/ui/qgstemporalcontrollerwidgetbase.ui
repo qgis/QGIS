@@ -123,7 +123,7 @@
    <item>
     <widget class="QStackedWidget" name="mNavigationModeStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="p1">
       <layout class="QVBoxLayout" name="verticalLayoutP1">
@@ -426,7 +426,7 @@
          <item>
           <widget class="QLabel" name="mRangeLabel">
            <property name="text">
-            <string>Range</string>
+            <string>Animation range</string>
            </property>
           </widget>
          </item>
@@ -629,6 +629,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

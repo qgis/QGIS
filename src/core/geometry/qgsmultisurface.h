@@ -51,7 +51,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     /**
      * Returns the surface with the specified \a index.
      *
-     * An IndexError will be raised if no surface with the specified index exists.
+     * \throws IndexError if no surface with the specified index exists.
      *
      * \since QGIS 3.16
      */

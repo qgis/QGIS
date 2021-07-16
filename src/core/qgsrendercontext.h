@@ -34,7 +34,6 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
-#include "qgssymbollayerreference.h"
 #include "qgstemporalrangeobject.h"
 
 class QPainter;
@@ -385,6 +384,24 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     double rendererScale() const {return mRendererScale;}
 
+
+    /**
+     * Returns the symbology reference scale.
+     *
+     * This represents the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * A value of -1 indicates that symbology scaling by reference scale is disabled.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if the scale is 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see setSymbologyReferenceScale()
+     * \see rendererScale()
+     * \since QGIS 3.22
+     */
+    double symbologyReferenceScale() const { return mSymbologyReferenceScale; }
+
     /**
      * Gets access to new labeling engine (may be NULLPTR)
      * \note not available in Python bindings
@@ -498,6 +515,23 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see rendererScale()
      */
     void setRendererScale( double scale ) {mRendererScale = scale;}
+
+    /**
+     * Sets the symbology reference \a scale.
+     *
+     * This should match the desired scale denominator for the rendered map, eg 1000.0 for a 1:1000 map render.
+     * Set to -1 to disable symbology scaling by reference scale.
+     *
+     * The symbology reference scale is an optional property which specifies the reference
+     * scale at which symbology in paper units (such a millimeters or points) is fixed
+     * to. For instance, if \a scale is set to 1000 then a 2mm thick line will be rendered at
+     * exactly 2mm thick when a map is rendered at 1:1000, or 1mm thick when rendered at 1:2000, or 4mm thick at 1:500.
+     *
+     * \see symbologyReferenceScale()
+     * \see rendererScale()
+     * \since QGIS 3.22
+     */
+    void setSymbologyReferenceScale( double scale ) { mSymbologyReferenceScale = scale; }
 
     /**
      * Sets the destination QPainter for the render operation. Ownership of the painter
@@ -950,6 +984,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     //! Map scale
     double mRendererScale = 1.0;
 
+    double mSymbologyReferenceScale = -1;
+
     //! Newer labeling engine implementation (can be NULLPTR)
     QgsLabelingEngine *mLabelingEngine = nullptr;
 
@@ -1181,6 +1217,59 @@ class QgsScopedQPainterState
 
     QPainter *mPainter = nullptr;
 };
+
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for temporary override of the symbologyReferenceScale property of a QgsRenderContext.
+ *
+ * Temporarily changes the symbologyReferenceScale, before returning it to the original value on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.22
+ */
+class QgsScopedRenderContextReferenceScaleOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextReferenceScaleOverride.
+     *
+     * Temporarily sets the render \a context symbologyReferenceScale to \a scale for the lifetime of this object.
+     */
+    QgsScopedRenderContextReferenceScaleOverride( QgsRenderContext &context, double scale )
+      : mContext( &context )
+      , mOriginalScale( context.symbologyReferenceScale() )
+    {
+      mContext->setSymbologyReferenceScale( scale );
+    }
+
+    /**
+     * Move constructor.
+     */
+    QgsScopedRenderContextReferenceScaleOverride( QgsScopedRenderContextReferenceScaleOverride &&o ) noexcept
+      : mContext( o.mContext )
+      , mOriginalScale( o.mOriginalScale )
+    {
+      o.mContext = nullptr;
+    }
+
+    /**
+     * Returns the render context back to the original reference scale.
+     */
+    ~QgsScopedRenderContextReferenceScaleOverride()
+    {
+      if ( mContext )
+        mContext->setSymbologyReferenceScale( mOriginalScale );
+    }
+
+  private:
+
+    QgsRenderContext *mContext = nullptr;
+    double mOriginalScale = 0;
+};
+
 
 #endif
 

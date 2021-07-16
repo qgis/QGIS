@@ -16,13 +16,32 @@ with too big impact should be deferred to a major version release.
 
 This page tries to maintain a list with incompatible changes that happened in previous releases.
 
+QGIS 3.22        {#qgis_api_break_3_22}
+=========
+
+QgsApplication       {#qgis_api_break_3_22_qgsapplication}
+--------------
+
+- QgsApplication::shortNameRegExp function was removed as part of a general code migration away from deprecated
+QRegExp class. It has been replaced with QgsApplication::shortNameRegularExpression which returns a
+QRegularExpression object.
+
 QGIS 3.20        {#qgis_api_break_3_20}
 =========
 
-setDataSource       {#qgis_api_break_3_20_setdatasource}
+QgsMapRendererJob       {#qgis_api_break_3_20_qgsmaprendererjob}
+-----------------
+
+- QgsMapRendererJob::start is no longer virtual. It has been replaced with QgsMapRendererJob::startPrivate. The method QgsMapRendererJob::start checks if the map can be rendered before calling QgsMapRendererJob::startPrivate.
+Subclasses have to implement the virtual method startPrivate to start the rendering of the map. For the actual subclasses (QgsMapRendererParallelJob, QgsMapRendererSequentialJob, ...), the start method
+is replaced by startPrivate method without change.
+
+QgsMapLayer       {#qgis_api_break_3_20_qgsmaplayer}
 -------------
 
-- QgsMapLayer::setDataSource is no longer virtual. If has been replaced with QgsMapLayer::setDataSourcePrivate. This is only relevant for subclassing QgsMapLayer, for code that only uses the subclasses (QgsVectorLayer, QgsRasterLayer, ...) this has no effect.
+- QgsMapLayer::setDataSource is no longer virtual. It has been replaced with QgsMapLayer::setDataSourcePrivate. This is only relevant for subclassing QgsMapLayer, for code that only uses the subclasses (QgsVectorLayer, QgsRasterLayer, ...) this has no effect.
+
+- QgsVectorLayerFeatureIterator::FetchJoinInfo::joinLayer was removed. This layer pointer was dangerous and not safe to access in any situation. 
 
 QGIS 3.4        {#qgis_api_break_3_4}
 ========

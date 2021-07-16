@@ -592,3 +592,13 @@ void QgsExpressionContext::clearCachedValues() const
 {
   mCachedValues.clear();
 }
+
+void QgsExpressionContext::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QgsFeedback *QgsExpressionContext::feedback() const
+{
+  return mFeedback;
+}

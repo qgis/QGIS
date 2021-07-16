@@ -14,17 +14,6 @@
 
 
 
-enum class QgsMapLayerType
-  {
-  VectorLayer,
-  RasterLayer,
-  PluginLayer,
-  MeshLayer,
-  VectorTileLayer,
-  AnnotationLayer,
-  PointCloudLayer,
-};
-
 class QgsMapLayer : QObject
 {
 %Docstring(signature="appended")
@@ -36,7 +25,7 @@ This is the base class for all map layer types (vector, raster).
 #include "qgsmaplayer.h"
 %End
 %ConvertToSubClassCode
-    QgsMapLayer * layer = qobject_cast<QgsMapLayer *>( sipCpp );
+    QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
     sipType = 0;
 
@@ -563,9 +552,33 @@ Set the visibility of the given sublayer name.
 :param visible: sublayer visibility
 %End
 
+    virtual bool supportsEditing() const;
+%Docstring
+Returns whether the layer supports editing or not.
+
+:return: ``False`` if the layer is read only or the data provider has no editing capabilities.
+
+.. note::
+
+   default implementation returns ``False``.
+
+.. versionadded:: 3.22
+%End
+
     virtual bool isEditable() const;
 %Docstring
 Returns ``True`` if the layer can be edited.
+%End
+
+    virtual bool isModified() const;
+%Docstring
+Returns ``True`` if the layer has been modified since last commit/save.
+
+.. note::
+
+   default implementation returns ``False``.
+
+.. versionadded:: 3.22
 %End
 
     virtual bool isSpatial() const;
@@ -590,6 +603,7 @@ or layer with temporary data (as temporary mesh layer dataset)
     {
       FlagDontResolveLayers,
       FlagTrustLayerMetadata,
+      FlagReadExtentFromXml,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
@@ -1417,6 +1431,24 @@ Returns the layer's elevation properties. This may be ``None``, depending on the
 .. versionadded:: 3.18
 %End
 
+    QString legendPlaceholderImage() const;
+%Docstring
+Returns path to the placeholder image or an empty string if a generated legend is shown
+
+:return: placholder image path
+
+.. versionadded:: 3.22
+%End
+
+    void setLegendPlaceholderImage( const QString &imgPath );
+%Docstring
+Set placeholder image for legend. If the string is empty, a generated legend will be shown.
+
+:param imgPath: file path to the placeholder image
+
+.. versionadded:: 3.22
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1622,6 +1654,11 @@ Signal emitted whenever a change affects the layer's style. Ie this may be trigg
 by renderer changes, label style changes, or other style changes such as blend
 mode or layer opacity changes.
 
+.. warning::
+
+   This signal should never be manually emitted. Instead call the :py:func:`~QgsMapLayer.emitStyleChanged` method
+   to ensure that the signal is only emitted when appropriate.
+
 .. seealso:: :py:func:`rendererChanged`
 
 .. versionadded:: 2.16
@@ -1729,6 +1766,27 @@ Emitted when the validity of this layer changed.
 Emitted when a custom property of the layer has been changed or removed.
 
 .. versionadded:: 3.18
+%End
+
+    void editingStarted();
+%Docstring
+Emitted when editing on this layer has started.
+
+.. versionadded:: 3.22
+%End
+
+    void editingStopped();
+%Docstring
+Emitted when edited changes have been successfully written to the data provider.
+
+.. versionadded:: 3.22
+%End
+
+    void layerModified();
+%Docstring
+Emitted when modifications has been done on layer
+
+.. versionadded:: 3.22
 %End
 
   protected:
@@ -1874,6 +1932,7 @@ this method is now deprecated and always return ``False``, because circular depe
 
 .. deprecated:: QGIS 3.10
 %End
+
 
 
 

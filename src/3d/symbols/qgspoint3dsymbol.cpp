@@ -23,6 +23,7 @@
 #include "qgsmaterialregistry.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
+#include "qgsmarkersymbol.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -50,6 +51,8 @@ QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
 {
   setDataDefinedProperties( other.dataDefinedProperties() );
 }
+
+QgsPoint3DSymbol::~QgsPoint3DSymbol() = default;
 
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
@@ -222,4 +225,14 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
     return true;
   }
   return false;
+}
+
+QgsMarkerSymbol *QgsPoint3DSymbol::billboardSymbol() const
+{
+  return mBillboardSymbol.get();
+}
+
+void QgsPoint3DSymbol::setBillboardSymbol( QgsMarkerSymbol *symbol )
+{
+  mBillboardSymbol.reset( symbol );
 }

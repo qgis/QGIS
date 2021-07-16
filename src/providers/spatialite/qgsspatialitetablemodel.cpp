@@ -17,7 +17,7 @@
 
 #include "qgsspatialitetablemodel.h"
 #include "qgsapplication.h"
-#include "qgsdataitem.h" // for icons
+#include "qgsiconutils.h"
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel()
 {
@@ -163,17 +163,17 @@ QIcon QgsSpatiaLiteTableModel::iconForType( QgsWkbTypes::Type type ) const
 {
   if ( type == QgsWkbTypes::Point || type == QgsWkbTypes::Point25D || type == QgsWkbTypes::MultiPoint || type == QgsWkbTypes::MultiPoint25D )
   {
-    return QgsLayerItem::iconPoint();
+    return QgsIconUtils::iconPoint();
   }
   else if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D || type == QgsWkbTypes::MultiLineString
             || type == QgsWkbTypes::MultiLineString25D )
   {
-    return QgsLayerItem::iconLine();
+    return QgsIconUtils::iconLine();
   }
   else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D || type == QgsWkbTypes::MultiPolygon
             || type == QgsWkbTypes::MultiPolygon25D )
   {
-    return QgsLayerItem::iconPolygon();
+    return QgsIconUtils::iconPolygon();
   }
   else
     return QIcon();

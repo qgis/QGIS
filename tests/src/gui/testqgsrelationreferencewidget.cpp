@@ -573,22 +573,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
 
   w.setReadOnlySelector( true );
-
-  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
-  QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
-  w.featureIdentified( feature );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "11" ) );
-  QCOMPARE( w.mForeignKeys.count(), 1 );
-  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 11 );
-
-  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
-  QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
-  w.featureIdentified( feature );
-  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "10" ) );
-  QCOMPARE( w.mForeignKeys.count(), 1 );
-  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 10 );
+  QVERIFY( !w.mComboBox->isEnabled() );
 
   mLayer1->rollBack();
 }

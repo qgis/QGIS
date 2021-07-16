@@ -245,22 +245,48 @@ int QgsChunkedEntity::pendingJobsCount() const
   return mChunkLoaderQueue->count() + mActiveJobs.count();
 }
 
+struct ResidencyRequest
+{
+  QgsChunkNode *node = nullptr;
+  float dist = 0.0;
+  int level = -1;
+  ResidencyRequest() = default;
+  ResidencyRequest(
+    QgsChunkNode *n,
+    float d,
+    int l )
+    : node( n )
+    , dist( d )
+    , level( l )
+  {}
+};
+
+struct
+{
+  bool operator()( const ResidencyRequest &request, const ResidencyRequest &otherRequest ) const
+  {
+    if ( request.level == otherRequest.level )
+      return request.dist > otherRequest.dist;
+    return request.level > otherRequest.level;
+  }
+} ResidencyRequestSorter;
+
 void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
 {
   QSet<QgsChunkNode *> nodes;
-  QVector<std::tuple<QgsChunkNode *, float, int>> residencyRequests;
+  QVector<ResidencyRequest> residencyRequests;
 
-  using slot = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( slot & p1, slot & p2 )
+  using slotItem = std::pair<QgsChunkNode *, float>;
+  auto cmp_funct = []( slotItem & p1, slotItem & p2 )
   {
     return p1.second <= p2.second;
   };
   int renderedCount = 0;
-  std::priority_queue<slot, std::vector<slot>, decltype( cmp_funct )> pq( cmp_funct );
+  std::priority_queue<slotItem, std::vector<slotItem>, decltype( cmp_funct )> pq( cmp_funct );
   pq.push( std::make_pair( root, screenSpaceError( root, state ) ) );
   while ( !pq.empty() && renderedCount <= mPrimitivesBudget )
   {
-    slot s = pq.top();
+    slotItem s = pq.top();
     pq.pop();
     QgsChunkNode *node = s.first;
 
@@ -277,7 +303,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     // make sure all nodes leading to children are always loaded
     // so that zooming out does not create issues
     double dist = node->bbox().center().distanceToPoint( state.cameraPos );
-    residencyRequests.push_back( std::make_tuple( node, dist, node->level() ) );
+    residencyRequests.push_back( ResidencyRequest( node, dist, node->level() ) );
 
     if ( !node->entity() )
     {
@@ -286,7 +312,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
     }
     bool becomesActive = false;
 
-    //QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileX() ).arg( node->tileY() ).arg( node->tileZ() ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
+    // QgsDebugMsgLevel( QStringLiteral( "%1|%2|%3  %4  %5" ).arg( node->tileId().x ).arg( node->tileId().y ).arg( node->tileId().z ).arg( mTau ).arg( screenSpaceError( node, state ) ), 2 );
     if ( node->childCount() == 0 )
     {
       // there's no children available for this node, so regardless of whether it has an acceptable error
@@ -321,7 +347,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       for ( int i = 0; i < node->childCount(); ++i )
       {
         double dist = children[i]->bbox().center().distanceToPoint( state.cameraPos );
-        residencyRequests.push_back( std::make_tuple( children[i], dist, children[i]->level() ) );
+        residencyRequests.push_back( ResidencyRequest( children[i], dist, children[i]->level() ) );
       }
     }
     if ( becomesActive )
@@ -337,15 +363,11 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneState &state )
       nodes.insert( node );
     }
   }
+
   // sort nodes by their level and their distance from the camera
-  std::sort( residencyRequests.begin(), residencyRequests.end(), [&]( std::tuple<QgsChunkNode *, float, int> &n1, std::tuple<QgsChunkNode *, float, int> &n2 )
-  {
-    if ( std::get<2>( n1 ) == std::get<2>( n2 ) )
-      return std::get<1>( n1 ) >= std::get<1>( n1 );
-    return std::get<2>( n1 ) >= std::get<2>( n2 );
-  } );
-  for ( std::tuple<QgsChunkNode *, float, int> n : residencyRequests )
-    requestResidency( std::get<0>( n ) );
+  std::sort( residencyRequests.begin(), residencyRequests.end(), ResidencyRequestSorter );
+  for ( const auto &request : residencyRequests )
+    requestResidency( request.node );
 }
 
 void QgsChunkedEntity::requestResidency( QgsChunkNode *node )

@@ -12,6 +12,9 @@
 #include <algorithm>
 #include <cmath>
 
+#define FILL_COORDINATES_VALUE -999.0
+#define FILL_FACE2D_VALUE -999
+
 MDAL::DriverUgrid::DriverUgrid()
   : DriverCF(
       "Ugrid",
@@ -286,6 +289,18 @@ void MDAL::DriverUgrid::populateVertices( MDAL::Vertices &vertices )
     verticesZ = mNcFile->readDoubleArr( nodeZVariableName(), vertexCount );
   }
 
+  if ( verticesX.size() == 1 &&
+       verticesY.size() == 1 &&
+       verticesZ.size() == 1 &&
+       verticesX.at( 0 ) == FILL_COORDINATES_VALUE &&
+       verticesY.at( 0 ) == FILL_COORDINATES_VALUE &&
+       verticesZ.at( 0 ) == FILL_COORDINATES_VALUE )
+  {
+    vertexCount = 0;
+    vertices.clear();
+  }
+
+
   for ( size_t i = 0; i < vertexCount; ++i, ++vertexPtr )
   {
     vertexPtr->x = verticesX[i];
@@ -361,6 +376,9 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
     }
     faces[i] = idxs;
   }
+
+  if ( faces.size() == 1 && faces.at( 0 ).size() == 0 )
+    faces.clear();
 }
 
 void MDAL::DriverUgrid::addBedElevation( MDAL::MemoryMesh *mesh )
@@ -681,15 +699,21 @@ void MDAL::DriverUgrid::save( const std::string &uri, MDAL::Mesh *mesh )
   }
 }
 
+std::string MDAL::DriverUgrid::saveMeshOnFileSuffix() const
+{
+  return "nc";
+}
+
 void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
 {
   // Global dimensions
-  int dimNodeCountId = mNcFile->defineDimension( "nmesh2d_node", mesh->verticesCount() );
-  int dimFaceCountId = mNcFile->defineDimension( "nmesh2d_face", mesh->facesCount() );
+  ;
+  int dimNodeCountId = mNcFile->defineDimension( "nmesh2d_node", mesh->verticesCount() == 0 ? 1 : mesh->verticesCount() ); //if no vertices, set 1 since 0==NC_UNLIMITED
+  int dimFaceCountId = mNcFile->defineDimension( "nmesh2d_face", mesh->facesCount() == 0 ? 1 : mesh->facesCount() ); //if no vertices, set 1 since 0==NC_UNLIMITED
   mNcFile->defineDimension( "nmesh2d_edge", 1 ); // no data on edges, cannot be 0, since 0==NC_UNLIMITED
   int dimTimeId = mNcFile->defineDimension( "time", NC_UNLIMITED );
   int dimMaxNodesPerFaceId = mNcFile->defineDimension( "max_nmesh2d_face_nodes",
-                             mesh->faceVerticesMaximumCount() );
+                             mesh->faceVerticesMaximumCount() == 0 ? 1 : mesh->faceVerticesMaximumCount() ); //if 0, set 1 since 0==NC_UNLIMITED
 
   // Mesh 2D Definition
   int mesh2dId = mNcFile->defineVar( "mesh2d", NC_INT, 0, nullptr );
@@ -725,8 +749,7 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
   mNcFile->putAttrStr( mesh2dNodeZId, "standard_name", "altitude" );
   mNcFile->putAttrStr( mesh2dNodeZId, "long_name", "z-coordinate of mesh nodes" );
   mNcFile->putAttrStr( mesh2dNodeZId, "grid_mapping", "projected_coordinate_system" );
-  double fillNodeZCoodVal = -999.0;
-  mNcFile->putAttrDouble( mesh2dNodeZId, "_FillValue", fillNodeZCoodVal );
+  mNcFile->putAttrDouble( mesh2dNodeZId, "_FillValue", FILL_COORDINATES_VALUE );
 
   // Faces 2D Variable
   int mesh2FaceNodesId_dimIds [] { dimFaceCountId, dimMaxNodesPerFaceId };
@@ -736,8 +759,7 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
   mNcFile->putAttrStr( mesh2FaceNodesId, "location", "face" );
   mNcFile->putAttrStr( mesh2FaceNodesId, "long_name", "Mapping from every face to its corner nodes (counterclockwise)" );
   mNcFile->putAttrInt( mesh2FaceNodesId, "start_index", 0 );
-  int fillFace2DVertexValue = -999;
-  mNcFile->putAttrInt( mesh2FaceNodesId, "_FillValue", fillFace2DVertexValue );
+  mNcFile->putAttrInt( mesh2FaceNodesId, "_FillValue", FILL_FACE2D_VALUE );
 
   // Projected Coordinate System
   int pcsId = mNcFile->defineVar( "projected_coordinate_system", NC_INT, 0, nullptr );
@@ -778,6 +800,14 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
   std::vector<double> verticesCoordinates( verticesCoordCount );
   std::unique_ptr<MDAL::MeshVertexIterator> vertexIterator = mesh->readVertices();
 
+  if ( mesh->verticesCount() == 0 )
+  {
+    // if there is no vertices fill the first fake vertex, see global dimension
+    mNcFile->putDataDouble( mesh2dNodeXId, 0, FILL_COORDINATES_VALUE );
+    mNcFile->putDataDouble( mesh2dNodeYId, 0, FILL_COORDINATES_VALUE );
+    mNcFile->putDataDouble( mesh2dNodeZId, 0, FILL_COORDINATES_VALUE );
+  }
+  else
   {
     size_t vertexIndex = 0;
     size_t vertexFileIndex = 0;
@@ -792,7 +822,7 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
         mNcFile->putDataDouble( mesh2dNodeXId, vertexFileIndex, verticesCoordinates[3 * i] );
         mNcFile->putDataDouble( mesh2dNodeYId, vertexFileIndex, verticesCoordinates[3 * i + 1] );
         if ( std::isnan( verticesCoordinates[3 * i + 2] ) )
-          mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, fillNodeZCoodVal );
+          mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, FILL_COORDINATES_VALUE );
         else
           mNcFile->putDataDouble( mesh2dNodeZId, vertexFileIndex, verticesCoordinates[3 * i + 2] );
         vertexFileIndex++;
@@ -812,33 +842,43 @@ void MDAL::DriverUgrid::writeVariables( MDAL::Mesh *mesh )
   std::vector<int> vertexIndicesBuffer( vertexIndicesBufferLen );
 
   size_t faceIndex = 0;
-  while ( faceIndex < facesCount )
+
+  if ( facesCount == 0 )
   {
-    size_t facesRead = faceIterator->next(
-                         faceOffsetsBufferLen,
-                         faceOffsetsBuffer.data(),
-                         vertexIndicesBufferLen,
-                         vertexIndicesBuffer.data() );
-    if ( facesRead == 0 )
-      break;
-
-    for ( size_t i = 0; i < facesRead; i++ )
+    // if there is no vertices fill the first fake vertex, see global dimension
+    int fillValue = FILL_FACE2D_VALUE;
+    mNcFile->putDataArrayInt( 0, 0, 1, &fillValue );
+  }
+  else
+  {
+    while ( faceIndex < facesCount )
     {
-      std::vector<int> verticesFaceData( faceVerticesMax, fillFace2DVertexValue );
-      int startIndex = 0;
-      if ( i > 0 )
-        startIndex = faceOffsetsBuffer[ i - 1 ];
-      int endIndex = faceOffsetsBuffer[ i ];
+      size_t facesRead = faceIterator->next(
+                           faceOffsetsBufferLen,
+                           faceOffsetsBuffer.data(),
+                           vertexIndicesBufferLen,
+                           vertexIndicesBuffer.data() );
+      if ( facesRead == 0 )
+        break;
 
-      size_t k = 0;
-      for ( int j = startIndex; j < endIndex; ++j )
+      for ( size_t i = 0; i < facesRead; i++ )
       {
-        int vertexIndex = vertexIndicesBuffer[ static_cast<size_t>( j ) ];
-        verticesFaceData[k++] = vertexIndex;
+        std::vector<int> verticesFaceData( faceVerticesMax, FILL_FACE2D_VALUE );
+        int startIndex = 0;
+        if ( i > 0 )
+          startIndex = faceOffsetsBuffer[ i - 1 ];
+        int endIndex = faceOffsetsBuffer[ i ];
+
+        size_t k = 0;
+        for ( int j = startIndex; j < endIndex; ++j )
+        {
+          int vertexIndex = vertexIndicesBuffer[ static_cast<size_t>( j ) ];
+          verticesFaceData[k++] = vertexIndex;
+        }
+        mNcFile->putDataArrayInt( mesh2FaceNodesId, faceIndex + i, faceVerticesMax, verticesFaceData.data() );
       }
-      mNcFile->putDataArrayInt( mesh2FaceNodesId, faceIndex + i, faceVerticesMax, verticesFaceData.data() );
+      faceIndex += facesRead;
     }
-    faceIndex += facesRead;
   }
 
   // Time values (not implemented)

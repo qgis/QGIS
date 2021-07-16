@@ -291,8 +291,8 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
 
-  // Disable button for switching the map theme if the terrain generator is a mesh
-  mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  // Disable button for switching the map theme if the terrain generator is a mesh, or if there is no terrain
+  mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   mLabelFpsCounter->setVisible( map->isFpsCounterEnabled() );
 
   connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasDockWidget::cameraNavigationSpeedChanged );
@@ -346,8 +346,8 @@ void Qgs3DMapCanvasDockWidget::configure()
       mCanvas->cameraController()->setCameraPose( newCameraPose );
     }
 
-    // Disable map theme button if the terrain generator is a mesh
-    mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+    // Disable map theme button if the terrain generator is a mesh, or if there is no terrain
+    mBtnMapThemes->setDisabled( !mCanvas->map()->terrainGenerator() || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );

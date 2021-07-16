@@ -82,6 +82,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Set the attribute table model that backs this model
      *
@@ -90,6 +95,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \since QGIS 2.0
      */
     void setSourceModel( QgsAttributeTableModel *sourceModel );
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
     /**
      * Changes the sort order of the features. If set to TRUE, selected features

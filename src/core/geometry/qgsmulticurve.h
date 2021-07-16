@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     /**
      * Returns the curve with the specified \a index.
      *
-     * An IndexError will be raised if no curve with the specified index exists.
+     * \throws IndexError if no curve with the specified index exists.
      *
      * \since QGIS 3.16
      */

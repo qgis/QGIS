@@ -29,6 +29,7 @@ Stores global configuration for labeling engine
       DrawLabelRectOnly,
       DrawCandidates,
       DrawUnplacedLabels,
+      CollectUnplacedLabels,
     };
     typedef QFlags<QgsLabelingEngineSettings::Flag> Flags;
 

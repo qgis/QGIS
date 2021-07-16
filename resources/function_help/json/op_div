@@ -1,6 +1,7 @@
 {
   "name": "/",
   "type": "operator",
+  "groups": ["Operators"],
   "description": "Division of two values",
   "arguments": [
         { "arg": "a", "description": "value" },

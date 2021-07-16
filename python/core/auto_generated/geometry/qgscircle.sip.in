@@ -162,6 +162,7 @@ Example
 
 .. code-block:: python
 
+
       # [(0 0), (5 0)] and [(5 5), (10 5)] are parallels
       QgsCircle.from3TangentsMulti(QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 5), QgsPoint(10, 5), QgsPoint(2.5, 0), QgsPoint(7.5, 5))
       # [<QgsCircle: Circle (Center: Point (8.53553390593273775 2.5), Radius: 2.5, Azimuth: 0)>, <QgsCircle: Circle (Center: Point (1.46446609406726203 2.49999999999999911), Radius: 2.5, Azimuth: 0)>]

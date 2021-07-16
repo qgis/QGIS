@@ -27,6 +27,8 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgstemporalcontroller.h"
+#include "qgsmarkersymbol.h"
+#include "qgslinesymbol.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -231,7 +233,7 @@ void QgsRendererWidget::changeSymbolWidth()
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbol::Line )
+        if ( symbol->type() == Qgis::SymbolType::Line )
           static_cast<QgsLineSymbol *>( symbol )->setWidth( dlg.mSpinBox->value() );
       }
     }
@@ -260,7 +262,7 @@ void QgsRendererWidget::changeSymbolSize()
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbol::Marker )
+        if ( symbol->type() == Qgis::SymbolType::Marker )
           static_cast<QgsMarkerSymbol *>( symbol )->setSize( dlg.mSpinBox->value() );
       }
     }
@@ -289,7 +291,7 @@ void QgsRendererWidget::changeSymbolAngle()
         if ( !symbol )
           continue;
 
-        if ( symbol->type() == QgsSymbol::Marker )
+        if ( symbol->type() == Qgis::SymbolType::Marker )
           static_cast<QgsMarkerSymbol *>( symbol )->setAngle( dlg.mSpinBox->value() );
       }
     }
@@ -318,19 +320,21 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r->legendSymbolItems(), r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]() { emit widgetChanged(); emit symbolLevelsChanged(); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
+    {
+      setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
+    } );
     panel->openPanel( widget );
-    return;
   }
-
-  QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
-  if ( dlg.exec() )
+  else
   {
-    emit widgetChanged();
-    emit symbolLevelsChanged();
+    QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
+    if ( dlg.exec() )
+    {
+      setSymbolLevels( dlg.symbolLevels(), dlg.usingLevels() );
+    }
   }
 }
 
@@ -362,6 +366,10 @@ void QgsRendererWidget::setDockMode( bool dockMode )
   QgsPanelWidget::setDockMode( dockMode );
 }
 
+void QgsRendererWidget::disableSymbolLevels()
+{
+}
+
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
   QgsProperty ddSize = symbol->dataDefinedSize();
@@ -376,6 +384,10 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
   return panel;
 }
 
+void QgsRendererWidget::setSymbolLevels( const QList< QgsLegendSymbolItem > &, bool )
+{
+
+}
 
 //
 // QgsDataDefinedValueDialog
@@ -490,23 +502,50 @@ void QgsDataDefinedValueDialog::dataDefinedChanged()
   }
 }
 
+QgsDataDefinedSizeDialog::QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+  : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
+{
+  init( QgsSymbolLayer::PropertySize );
+  if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
+  {
+    mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
+    mDDBtn->setSymbol( mAssistantSymbol );
+  }
+}
+
 QgsProperty QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedSize();
 }
 
+double QgsDataDefinedSizeDialog::value( const QgsSymbol *symbol ) const
+{
+  return static_cast<const QgsMarkerSymbol *>( symbol )->size();
+}
+
 void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )
 {
   static_cast<QgsMarkerSymbol *>( symbol )->setDataDefinedSize( dd );
-  static_cast<QgsMarkerSymbol *>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
+  static_cast<QgsMarkerSymbol *>( symbol )->setScaleMethod( Qgis::ScaleMethod::ScaleDiameter );
 }
 
+
+QgsDataDefinedRotationDialog::QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+  : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
+{
+  init( QgsSymbolLayer::PropertyAngle );
+}
 
 QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedAngle();
+}
+
+double QgsDataDefinedRotationDialog::value( const QgsSymbol *symbol ) const
+{
+  return static_cast<const QgsMarkerSymbol *>( symbol )->angle();
 }
 
 void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )
@@ -515,10 +554,21 @@ void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsP
 }
 
 
+QgsDataDefinedWidthDialog::QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+  : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
+{
+  init( QgsSymbolLayer::PropertyStrokeWidth );
+}
+
 QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
   const QgsLineSymbol *line = static_cast<const QgsLineSymbol *>( symbol );
   return line->dataDefinedWidth();
+}
+
+double QgsDataDefinedWidthDialog::value( const QgsSymbol *symbol ) const
+{
+  return static_cast<const QgsLineSymbol *>( symbol )->width();
 }
 
 void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )

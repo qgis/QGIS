@@ -25,6 +25,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
+
 #include <QPainter>
 
 

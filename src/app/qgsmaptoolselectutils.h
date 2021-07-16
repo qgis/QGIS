@@ -139,7 +139,7 @@ namespace QgsMapToolSelectUtils
       QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
                                    QgsVectorLayer *vectorLayer,
                                    QgsVectorLayer::SelectBehavior behavior,
-                                   QgsGeometry selectionGeometry,
+                                   const QgsGeometry &selectionGeometry,
                                    QObject *parent = nullptr );
 
 

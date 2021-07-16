@@ -21,6 +21,8 @@
 #include "qgsauthmanager.h"
 #include "qgsapplication.h"
 
+#include <QRegularExpression>
+
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
   : QWidget( parent )
@@ -117,6 +119,6 @@ void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 
 bool QgsAuthConfigIdEdit::isAlphaNumeric( const QString &authcfg )
 {
-  QRegExp rx( "([a-z]|[A-Z]|[0-9]){7}" );
-  return rx.indexIn( authcfg ) != -1;
+  const thread_local QRegularExpression alphaNumericRegExp( "([a-z]|[A-Z]|[0-9]){7}" );
+  return authcfg.indexOf( alphaNumericRegExp ) != -1;
 }

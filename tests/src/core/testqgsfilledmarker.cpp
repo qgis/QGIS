@@ -32,6 +32,8 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsproperty.h"
+#include "qgsfillsymbol.h"
+#include "qgsmarkersymbol.h"
 
 //qgis test includes
 #include "qgsrenderchecker.h"

@@ -39,12 +39,50 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //! Constructor for QgsCodeEditorSQL
     QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+
+    virtual ~QgsCodeEditorSQL();
+
     /**
      * Set field names to be added to the lexer API.
      *
      * \since QGIS 3.14
      */
     void setFields( const QgsFields &fields );
+
+    /**
+     * Set field names to \a fieldNames to be added to the lexer API.
+     *
+     * \since QGIS 3.18
+     */
+    void setFieldNames( const QStringList &fieldNames );
+
+    /**
+     * Returns field names from the lexer API.
+     * \since QGIS 3.22
+     */
+    QStringList fieldNames() const;
+
+    /**
+     * Set extra keywords to \a extraKeywords.
+     *
+     * Extra keywords are usually added
+     * from provider connections and represent function and other provider specific
+     * keywords.
+     *
+     * \since QGIS 3.22
+     */
+    void setExtraKeywords( const QStringList &extraKeywords );
+
+    /**
+     * Returns the extra keywords.
+     *
+     * Extra keywords are usually added
+     * from provider connections and represent function and other provider specific
+     * keywords.
+     *
+     * \since QGIS 3.22
+     */
+    QStringList extraKeywords() const;
 
   protected:
     void initializeLexer() override;
@@ -53,8 +91,11 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     void updateApis();
     QsciAPIs *mApis = nullptr;
     QsciLexerSQL *mSqlLexer = nullptr;
+    QSet<QString> mExtraKeywords;
 
-    QStringList mFieldNames;
+    QSet<QString> mFieldNames;
+
+    friend class TestQgsQueryResultWidget;
 };
 
 #ifndef SIP_RUN

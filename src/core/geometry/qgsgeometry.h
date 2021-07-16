@@ -786,6 +786,15 @@ class CORE_EXPORT QgsGeometry
     bool deleteVertex( int atVertex );
 
     /**
+     * Converts the vertex at the given position from/to circular
+     * \returns FALSE if atVertex does not correspond to a valid vertex
+     * on this geometry (including if this geometry is a Point),
+     * or if the specified vertex can't be converted (e.g. start/end points).
+     * \since QGIS 3.20
+     */
+    bool toggleCircularAtVertex( int atVertex );
+
+    /**
      * Returns coordinates of a vertex.
      * \param atVertex index of the vertex
      * \returns Coordinates of the vertex or empty QgsPoint on error
@@ -1114,6 +1123,11 @@ class CORE_EXPORT QgsGeometry
      * The GEOS library is used to perform the intersection test. Geometries which are not
      * valid may return incorrect results.
      *
+     * \note For performance critical code, or when testing for intersection against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling intersects() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \see boundingBoxIntersects()
      */
     bool intersects( const QgsGeometry &geometry ) const;
@@ -1147,37 +1161,72 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Returns TRUE if the geometry completely contains another \a geometry.
+     *
+     * \note For performance critical code, or when testing for contains against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling contains() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is disjoint of another \a geometry.
+     *
+     * \note For performance critical code, or when testing for disjoint against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling disjoint() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry touches another \a geometry.
+     *
+     * \note For performance critical code, or when testing for touches against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling touches() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry overlaps another \a geometry.
+     *
+     * \note For performance critical code, or when testing for overlaps against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling overlaps() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
     /**
      * Returns TRUE if the geometry is completely within another \a geometry.
+     *
+     * \note For performance critical code, or when testing for within against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling within() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
-
     /**
      * Returns TRUE if the geometry crosses another \a geometry.
+     *
+     * \note For performance critical code, or when testing for crosses against many different
+     * geometries, consider using QgsGeometryEngine instead. This approach can be many orders of magnitude
+     * faster than calling crosses() directly. See createGeometryEngine() for details on how to use the
+     * QgsGeometryEngine class.
+     *
      * \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
@@ -1712,9 +1761,10 @@ class CORE_EXPORT QgsGeometry
      * Optionally, a specific random \a seed can be used when generating points. If \a seed
      * is 0, then a completely random sequence of points will be generated.
      *
-     * This method works only with (multi)polygon geometry types. If the geometry
-     * is not a polygon type, a TypeError will be raised. If the geometry
-     * is null, a ValueError will be raised.
+     * This method works only with (multi)polygon geometry types.
+     *
+     * \throws TypeError if the geometry is not a polygon type
+     * \throws ValueError if the geometry is null
      *
      * \since QGIS 3.10
      */
@@ -1853,9 +1903,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * This method works only with single-point geometry types. If the geometry
-     * is not a single-point type, a TypeError will be raised. If the geometry
-     * is null, a ValueError will be raised.
+     * This method works only with single-point geometry types.
+     *
+     * \throws TypeError if the geometry is not a single-point type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPoint() const SIP_TYPEHINT( QgsPointXY );
     % MethodCode
@@ -1896,9 +1947,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
      * (such as a CircularString), it will be automatically segmentized.
      *
-     * This method works only with single-line (or single-curve) geometry types. If the geometry
-     * is not a single-line type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with single-line (or single-curve).
+     *
+     * \throws TypeError if the geometry is not a single-line type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPolyline() const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
@@ -1940,9 +1992,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
      * (such as a CurvePolygon), it will be automatically segmentized.
      *
-     * This method works only with single-polygon (or single-curve polygon) geometry types. If the geometry
-     * is not a single-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with single-polygon (or single-curve polygon) geometry types.
+     *
+     * \throws TypeError if the geometry is not a single-polygon type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asPolygon() const SIP_TYPEHINT( QgsPolygonXY );
     % MethodCode
@@ -1982,9 +2035,10 @@ class CORE_EXPORT QgsGeometry
      *
      * Any z or m values present in the geometry will be discarded.
      *
-     * This method works only with multi-point geometry types. If the geometry
-     * is not a multi-point type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-point geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-point type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPoint() const SIP_TYPEHINT( QgsMultiPointXY );
     % MethodCode
@@ -2026,9 +2080,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved line type
      * (such as a MultiCurve), it will be automatically segmentized.
      *
-     * This method works only with multi-linestring (or multi-curve) geometry types. If the geometry
-     * is not a multi-linestring type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-linestring (or multi-curve) geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-linestring type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPolyline() const SIP_TYPEHINT( QgsMultiPolylineXY );
     % MethodCode
@@ -2070,9 +2125,10 @@ class CORE_EXPORT QgsGeometry
      * Any z or m values present in the geometry will be discarded. If the geometry is a curved polygon type
      * (such as a MultiSurface), it will be automatically segmentized.
      *
-     * This method works only with multi-polygon (or multi-curve polygon) geometry types. If the geometry
-     * is not a multi-polygon type, a TypeError will be raised. If the geometry is null, a ValueError
-     * will be raised.
+     * This method works only with multi-polygon (or multi-curve polygon) geometry types.
+     *
+     * \throws TypeError if the geometry is not a multi-polygon type
+     * \throws ValueError if the geometry is null
      */
     SIP_PYOBJECT asMultiPolygon() const SIP_TYPEHINT( QgsMultiPolygonXY );
     % MethodCode
@@ -2256,6 +2312,7 @@ class CORE_EXPORT QgsGeometry
         % End
 #endif
 
+        // TODO c++20 - replace with = default
         bool operator==( const QgsGeometry::Error &other ) const
         {
           return other.mMessage == mMessage && other.mHasLocation == mHasLocation && other.mLocation == mLocation;
@@ -2619,7 +2676,41 @@ class CORE_EXPORT QgsGeometry
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
-     * Creates and returns a new geometry engine
+     * Creates and returns a new geometry engine representing the specified \a geometry.
+     *
+     * A geometry engine is a low-level representation of a QgsAbstractGeometry object, optimised for use with external
+     * geometry libraries such as GEOS.
+     *
+     * QgsGeometryEngine objects provide a mechanism for optimized evaluation of geometric algorithms, including spatial relationships
+     * between geometries and operations such as buffers or clipping. QgsGeometryEngine is recommended for use in any
+     * performance critical code instead of directly using the equivalent QgsGeometry methods such as QgsGeometry::intersects().
+     *
+     * Many methods available in the QgsGeometryEngine class can benefit from pre-preparing geometries. For instance, whenever
+     * a large number of spatial relationships will be tested (such as calling intersects(), within(), etc) then the
+     * geometry should first be prepared by calling prepareGeometry() before performing the tests.
+     *
+     * ### Example
+     *
+     * \code{.py}
+     *   # polygon_geometry contains a complex polygon, with many vertices
+     *   polygon_geometry = QgsGeometry.fromWkt('Polygon((...))')
+     *
+     *   # create a QgsGeometryEngine representation of the polygon
+     *   polygon_geometry_engine = QgsGeometry.createGeometryEngine(polygon_geometry.constGet())
+     *
+     *   # since we'll be performing many intersects tests, we can speed up these tests considerably
+     *   # by first "preparing" the geometry engine
+     *   polygon_geometry_engine.prepareGeometry()
+     *
+     *   # now we are ready to quickly test intersection against many other objects
+     *   for feature in my_layer.getFeatures():
+     *       feature_geometry = feature.geometry()
+     *       # test whether the feature's geometry intersects our original complex polygon
+     *       if polygon_geometry_engine.intersects(feature_geometry.constGet()):
+     *           print('feature intersects the polygon!')
+     * \endcode
+     *
+     * QgsGeometryEngine operations are backed by the GEOS library (https://trac.osgeo.org/geos/).
      */
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
 

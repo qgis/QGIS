@@ -56,6 +56,8 @@
 #include "qgsproxyprogresstask.h"
 #include "qgisapp.h"
 #include "qgsorganizetablecolumnsdialog.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgstransactiongroup.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -193,6 +195,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   {
     r.setFilterFids( layer->selectedFeatureIds() );
   }
+  else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
+  {
+    r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+  }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );
 
@@ -225,6 +231,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
   connect( mLayer, &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
+
+  // When transaction group is enabled, collect related layers and connect modified actions to enable save action
+  const auto relations { QgsProject::instance()->relationManager()->referencedRelations( mLayer ) };
+  const auto transactionGroups = QgsProject::instance()->transactionGroups();
+  for ( const auto &relation : std::as_const( relations ) )
+  {
+    for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
+    {
+      if ( relation.isValid() && it.value()->layers().contains( { mLayer, relation.referencingLayer() } ) )
+      {
+        mReferencingLayers.push_back( relation.referencingLayer() );
+        connect( relation.referencingLayer(), &QgsVectorLayer::layerModified, this, &QgsAttributeTableDialog::updateLayerModifiedActions );
+      }
+    }
+  }
 
   // connect table info to window
   connect( mMainView, &QgsDualView::filterChanged, this, &QgsAttributeTableDialog::updateTitle );
@@ -315,6 +336,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
       mFeatureFilterWidget->filterSelected();
       break;
 
+    case QgsAttributeTableFilterModel::ShowEdited:
+      mFeatureFilterWidget->filterEdited();
+      break;
+
     case QgsAttributeTableFilterModel::ShowAll:
     default:
       mFeatureFilterWidget->filterShowAll();
@@ -378,7 +403,7 @@ void QgsAttributeTableDialog::updateTitle()
                : qobject_cast<QWidget *>( this );
   w->setWindowTitle( tr( " %1 — Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
-                     .arg( std::max( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
+                     .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
                    );
@@ -597,6 +622,13 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
 void QgsAttributeTableDialog::mActionSaveEdits_triggered()
 {
   QgisApp::instance()->saveEdits( mLayer, true, true );
+  for ( const auto &referencingLayer : std::as_const( mReferencingLayers ) )
+  {
+    if ( referencingLayer )
+    {
+      QgisApp::instance()->saveEdits( referencingLayer, true, true );
+    }
+  }
 }
 
 void QgsAttributeTableDialog::mActionReload_triggered()
@@ -707,6 +739,8 @@ void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
     {
       featureStore.addFeature( featureMap[id] );
     }
+
+    featureStore.setCrs( mLayer->crs() );
 
     QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
   }
@@ -894,7 +928,7 @@ void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
     }
     else
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), Qgis::Warning );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), Qgis::MessageLevel::Warning );
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
@@ -965,7 +999,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
       feedbackMessage += tr( "%1 on layer %2. " ).arg( context.handledFeatures( contextLayer ).size() ).arg( contextLayer->name() );
       deletedCount += context.handledFeatures( contextLayer ).size();
     }
-    QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::Success );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "%1 features deleted: %2" ).arg( deletedCount ).arg( feedbackMessage ), Qgis::MessageLevel::Success );
   }
 }
 
@@ -1046,7 +1080,19 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
 
 void QgsAttributeTableDialog::updateLayerModifiedActions()
 {
-  mActionSaveEdits->setEnabled( mActionToggleEditing->isEnabled() && mLayer->isEditable() && mLayer->isModified() );
+  bool saveEnabled { mActionToggleEditing->isEnabled() &&mLayer->isEditable() &&mLayer->isModified() };
+  if ( ! saveEnabled && mActionToggleEditing->isEnabled() )
+  {
+    for ( const auto &referencingLayer : std::as_const( mReferencingLayers ) )
+    {
+      if ( referencingLayer && referencingLayer->isEditable() && referencingLayer->isModified() )
+      {
+        saveEnabled = true;
+        break;
+      }
+    }
+  }
+  mActionSaveEdits->setEnabled( saveEnabled );
 }
 
 //

@@ -240,6 +240,7 @@ Constructor for QgsLayoutItemMapGrid.
 :param name: friendly display name for grid
 :param map: :py:class:`QgsLayoutItemMap` the grid is attached to
 %End
+    ~QgsLayoutItemMapGrid();
 
     virtual void draw( QPainter *painter );
 

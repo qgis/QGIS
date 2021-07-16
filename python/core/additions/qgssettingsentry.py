@@ -23,16 +23,15 @@ import qgis  # required to get base class of enums
 
 
 class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
-    """ class PyQgsSettingsEntryEnumFlag
-    ingroup core
+    """
+    class PyQgsSettingsEntryEnumFlag
     An enum settings entry.
     since QGIS 3.20
     """
 
     def __init__(self, key, pluginName, defaultValue, description=str()):
-        """ Constructor for PyQgsSettingsEntryEnumFlag.
-
-        :param self: the PyQgsSettingsEntryEnumFlag object
+        """
+        Constructor for PyQgsSettingsEntryEnumFlag.
         :param key: argument specifies the final part of the settings key.
         :param pluginName: argument is inserted in the key after the section.
         :param defaultValue: argument specifies the default value for the settings entry.
@@ -53,9 +52,8 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         super().__init__(key, pluginName, defaultValueStr, description)
 
     def value(self, dynamicKeyPart=None, useDefaultValueOverride=False, defaultValueOverride=None):
-        """ Get settings value.
-
-        :param self: the PyQgsSettingsEntryEnumFlag object
+        """
+        Get settings value.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         :param useDefaultValueOverride: argument specifies if defaultValueOverride should be used.
         :param defaultValueOverride: argument if valid is used instead of the normal default value.
@@ -75,9 +73,8 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
                                            self.section())
 
     def defaultValue(self):
-        """ Get settings default value.
-
-        :param self: the PyQgsSettingsEntryEnumFlag object
+        """
+        Get settings default value.
         """
 
         if self.__metaEnum is None or not self.__metaEnum.isValid():
@@ -98,9 +95,8 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         return defaultValue
 
     def setValue(self, value, dynamicKeyPart=None):
-        """ Set settings value.
-
-        :param self: the PyQgsSettingsEntryEnumFlag object
+        """
+        Set settings value.
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
 
@@ -120,9 +116,8 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         return super().setVariantValue(enumFlagKey, dynamicKeyPart)
 
     def settingsType(self):
-        """ Get the settings entry type.
-
-        :param self: the PyQgsSettingsEntryEnumFlag object
+        """
+        Get the settings entry type.
         """
 
         return self.SettingsType.EnumFlag
