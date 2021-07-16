@@ -259,7 +259,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
     if ( context.feedback() && context.feedback()->isCanceled() )
       break;
     // Async loading of nodes
-    const int currentGroupSize = std::min( std::max( nodes.size() - groupIndex, 0 ), groupSize );
+    const int currentGroupSize = std::min< size_t >( std::max< size_t >( nodes.size() - groupIndex, 0 ), groupSize );
     QVector<QgsPointCloudBlockRequest *> blockRequests( currentGroupSize, nullptr );
     QVector<bool> finishedLoadingBlock( currentGroupSize, false );
     QEventLoop loop;
