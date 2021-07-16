@@ -466,10 +466,10 @@ class QgsExpressionUtils
       else if ( value.type() == QVariant::Double || value.type() == static_cast<QVariant::Type>( QMetaType::Float ) )
       {
         bool ok;
-        const QString strVal { value.toString() };
-        const int dotPosition { strVal.indexOf( '.' ) };
-        const int precision { dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0 };
-        const QString res { QLocale().toString( value.toDouble( &ok ), 'f', precision ) };
+        const QString strVal = value.toString();
+        const int dotPosition = strVal.indexOf( '.' );
+        const int precision = dotPosition > 0 ? strVal.length() - dotPosition - 1 : 0;
+        const QString res = QLocale().toString( value.toDouble( &ok ), 'f', precision );
 
         if ( ok )
         {
