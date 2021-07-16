@@ -80,7 +80,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
         vl = QgsVectorLayer('{} table=\'cdb_lines\''.format(self.uri), 'test', 'spatialite')
         self.assertTrue(vl.isValid())
         conn = md.createConnection(vl.dataProvider().uri().uri(), {})
-        self.assertEqual(conn.uri(), self.uri + ' table="cdb_lines"')
+        self.assertEqual(conn.uri(), self.uri)
         conn.tables()
 
     def test_spatialite_table_uri(self):

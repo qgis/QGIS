@@ -103,7 +103,7 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
       return nullptr;
     }
 
-    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->dataProvider()->uri().uri(), {} ) ) };
+    std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { static_cast<QgsAbstractDatabaseProviderConnection *>( providerMetadata->createConnection( layer->source(), {} ) ) };
     return conn.release();
   }
   catch ( const QgsProviderConnectionException &ex )

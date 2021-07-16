@@ -95,6 +95,10 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
  * Query results are displayed in a table view.
  * Query execution and result fetching can be interrupted by pressing the "Stop" push button.
  *
+ * The widget supports an optional SQL layer update mode where the GUI is optimized for the update of
+ * an existing SQL (query) layer (i.e. buttons are labeled differently and the group box for
+ * query layers is expanded).
+ *
  * \note the ownership of the connection is transferred to the widget.
  *
  * \since QGIS 3.22
@@ -113,6 +117,18 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     virtual ~QgsQueryResultWidget();
 
     /**
+     * Initializes the widget from \a options.
+     */
+    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+
+    /**
+     * Sets the update SQL layer mode flag to \a updateMode (default is FALSE).
+     * When the widget is in update mode the create SQL layer button is renamed to "update" and the
+     * SQL layer creation group box is expanded.
+     */
+    void setUpdateSqlLayerMode( bool updateMode );
+
+    /**
      * Sets the connection to \a connection, ownership is transferred to the widget.
      */
     void setConnection( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER );
@@ -124,6 +140,11 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
 
   public slots:
+
+    /**
+     * Displays a message with \a text \a title and \a level in the widget's message bar.
+     */
+    void notify( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
     /**
      * Starts executing the query.
@@ -159,8 +180,6 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
 
   private slots:
 
-    void syncSqlOptions();
-
     /**
      * Updates buttons status.
      */
@@ -174,12 +193,13 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     std::unique_ptr<QgsConnectionsApiFetcher> mApiFetcher;
     QThread mApiFetcherWorkerThread;
     bool mWasCanceled = false;
-    QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
+    mutable QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
     bool mFirstRowFetched = false;
     QFutureWatcher<QgsAbstractDatabaseProviderConnection::QueryResult> mQueryResultWatcher;
     QString mSqlErrorMessage;
     long long mActualRowCount = -1;
     long long mFetchedRowsBatchCount = 0;
+    bool mUpdateSqlLayerMode = false;
 
     /**
      * Updates SQL layer columns.
@@ -205,6 +225,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      * Returns the sqlVectorLayerOptions
      */
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
+
 
     friend class TestQgsQueryResultWidget;
 
