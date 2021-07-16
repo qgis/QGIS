@@ -682,7 +682,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
   }
   bool flagW;
   components.width = query.queryItemValue( QStringLiteral( "width" ) ).toInt( & flagW );
-  if ( !flagW ||  components.width < 0 || components.width > INT_MAX )
+  if ( !flagW ||  components.width < 0 || components.width > std::numeric_limits<int>::max() )
   {
     QgsDebugMsg( "invalid or negative width input" );
     *ok = false;
@@ -697,7 +697,7 @@ QgsRasterDataProvider::DecodedUriParameters QgsRasterDataProvider::decodeVirtual
   }
   bool flagH;
   components.height = query.queryItemValue( QStringLiteral( "height" ) ).toInt( & flagH );
-  if ( !flagH ||  components.height < 0 || components.height > INT_MAX )
+  if ( !flagH ||  components.height < 0 || components.height > std::numeric_limits<int>::max() )
   {
     QgsDebugMsg( "invalid or negative width input" );
     *ok = false;
