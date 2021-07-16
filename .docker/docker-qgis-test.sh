@@ -56,8 +56,8 @@ if [ ${RUN_HANA:-"NO"} == "YES" ]; then
 
   export HANA_HOST=917df316-4e01-4a10-be54-eac1b6ab15fb.hana.prod-us10.hanacloud.ondemand.com
   export HANA_PORT=443
-  export HANA_USER=QGIS_CI
-  export HANA_PASSWORD="3w8dkX:NDrs&"
+  export HANA_USER=QGISCI
+  export HANA_PASSWORD="tQ&7W3Klr9!p"
 
   export QGIS_HANA_TEST_DB='driver='/usr/sap/hdbclient/libodbcHDB.so' host='${HANA_HOST}' port='${HANA_PORT}' user='${HANA_USER}' password='${HANA_PASSWORD}' sslEnabled=true sslValidateCertificate=False'
 
