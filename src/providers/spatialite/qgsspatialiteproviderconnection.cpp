@@ -668,7 +668,7 @@ QString QgsSpatiaLiteProviderConnection::pathFromUri() const
   return dsUri.database();
 }
 
-QMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection::sqlDictionary()
+QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsSpatiaLiteProviderConnection::sqlDictionary()
 {
   /*
    * List from: http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html
