@@ -2672,14 +2672,14 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &ids )
     conn->begin();
 
     QgsFeatureIds chunkIds;
-    QgsFeatureIds::const_iterator lastId = ids.constEnd();
-    --lastId;
-
+    const int countIds = ids.size();
+    int i = 0;
     for ( QgsFeatureIds::const_iterator it = ids.constBegin(); it != ids.constEnd(); ++it )
     {
       // create chunks of fids to delete, the last chunk may be smaller
       chunkIds.insert( *it );
-      if ( chunkIds.size() < 5000 && it != lastId )
+      i++;
+      if ( chunkIds.size() < 5000 && i < countIds )
         continue;
 
       const QString sql = QStringLiteral( "DELETE FROM %1 WHERE %2" )
