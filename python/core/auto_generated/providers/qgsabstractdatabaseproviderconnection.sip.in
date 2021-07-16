@@ -668,7 +668,7 @@ Returns the provider key.
 .. versionadded:: 3.16
 %End
 
-    virtual QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
+    virtual QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary();
 %Docstring
 Returns a dictionary of SQL keywords supported by the provider.
 The default implementation returns an list of common reserved words under the

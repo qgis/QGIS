@@ -322,7 +322,7 @@ QList<QgsVectorDataProvider::NativeType> QgsOracleProviderConnection::nativeType
   return types;
 }
 
-QMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
+QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsOracleProviderConnection::sqlDictionary()
 {
   return
   {

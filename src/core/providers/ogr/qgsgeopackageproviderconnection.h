@@ -81,7 +81,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QgsFields fields( const QString &schema, const QString &table ) const override;
-    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
 
   private:
 

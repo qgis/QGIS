@@ -714,7 +714,7 @@ QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const 
   return fieldList;
 }
 
-QMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection::sqlDictionary()
+QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection::sqlDictionary()
 {
   /*
    * last_insert_rowid + list from: http://www.gaia-gis.it/gaia-sins/spatialite-sql-4.2.0.html

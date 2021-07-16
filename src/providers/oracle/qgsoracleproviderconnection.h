@@ -72,7 +72,7 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
-    QMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
 
   private:
